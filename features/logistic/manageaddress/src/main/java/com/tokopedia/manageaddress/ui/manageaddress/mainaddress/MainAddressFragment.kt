@@ -961,17 +961,9 @@ class MainAddressFragment :
         )
     }
 
-    override fun onSuccessConfirmShareAddress(isApproved: Boolean) {
-        bottomSheetConfirmationShareAddress?.dismiss()
-
-        if (isApproved) {
-            showToaster(getString(R.string.success_share_address))
-        }
-    }
-
-    override fun onFailedShareAddress(errorMessage: String) {
-        bottomSheetConfirmationShareAddress?.dismiss()
-        showToaster(errorMessage, Toaster.TYPE_ERROR)
+    override fun showToast(isError: Boolean, msg: String) {
+        val type = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        showToaster(msg, type)
     }
 
     private fun showToaster(message: String, toastType: Int = Toaster.TYPE_NORMAL) {

@@ -1,6 +1,7 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import android.util.Log
+import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -9,6 +10,7 @@ import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.graphql.util.RemoteConfigHelper
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -98,15 +100,26 @@ open class RepositoryImpl @Inject constructor(
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
-                    // Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
-                    results[typeOfT] = CommonUtils.fromJson(data, typeOfT)
+                    //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
+                    results[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()){
+                        CommonUtils.fromJson(data, typeOfT, this@RepositoryImpl.javaClass)
+                    } else {
+                        CommonUtils.fromJson(data, typeOfT)
+                    }
                     isCachedData.put(typeOfT, false)
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors[typeOfT] =
+                    errors[typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()) {
+                        CommonUtils.fromJson(
+                            error,
+                            Array<GraphqlError>::class.java,
+                            this@RepositoryImpl.javaClass
+                        ).toList()
+                    } else {
                         CommonUtils.fromJson(error, Array<GraphqlError>::class.java).toList()
+                    }
                 }
                 LoggingUtils.logGqlParseSuccess("kt", requests.toString())
                 LoggingUtils.logGqlSuccessRateBasedOnStatusCode(operationName, httpStatusCode)
@@ -165,8 +178,12 @@ open class RepositoryImpl @Inject constructor(
                     continue
                 }
 
-                // Lookup for data
-                results[copyRequests[i].typeOfT] = CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                //Lookup for data
+                results[copyRequests[i].typeOfT] = if(RemoteConfigHelper.isEnableGqlParseErrorLoggingImprovement()){
+                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT, this@RepositoryImpl.javaClass)
+                } else {
+                    CommonUtils.fromJson(cachesResponse, copyRequests[i].typeOfT)
+                }
                 isCachedData[copyRequests[i].typeOfT] = true
                 copyRequests[i].isNoCache = true
                 refreshRequests.add(copyRequests[i])

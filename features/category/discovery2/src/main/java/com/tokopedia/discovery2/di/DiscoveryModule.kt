@@ -31,6 +31,8 @@ import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
 import com.tokopedia.discovery2.repository.productbundling.ProductBundlingGQLRepository
 import com.tokopedia.discovery2.repository.productbundling.ProductBundlingRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.repository.producthighlightrepository.ProductHighlightGQLRepository
+import com.tokopedia.discovery2.repository.producthighlightrepository.ProductHighlightRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
@@ -186,6 +188,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideShopCardRepository(): ShopCardRepository {
         return ShopCardGQLRepository()
+    }
+
+    @Provides
+    fun provideProductHighlightRepository(): ProductHighlightRepository {
+        return ProductHighlightGQLRepository()
     }
 
     @Provides

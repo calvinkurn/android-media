@@ -24,7 +24,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.FragmentManageProductDiscountBinding
 import com.tokopedia.shopdiscount.databinding.LayoutManageProductDiscountHeaderBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -46,6 +45,7 @@ import com.tokopedia.shopdiscount.utils.constant.ShopDiscountManageProductDiscou
 import com.tokopedia.shopdiscount.utils.constant.UrlConstant.SELLER_EDU_R2_ABUSIVE_URL
 import com.tokopedia.shopdiscount.utils.extension.digitsOnly
 import com.tokopedia.shopdiscount.utils.extension.parseTo
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.utils.formatter.SpannableHelper
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.ImageUnify
@@ -159,24 +159,21 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
             viewModel.updateMaxOrderData(newValue)
         }
         quantityEditorMaxOrder?.editText?.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
 
-                }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.updateMaxOrderData(quantityEditorMaxOrder?.getValue().orZero())
+            }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.updateMaxOrderData(quantityEditorMaxOrder?.getValue().orZero())
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-
-                }
-
-            })
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
     }
 
     private fun configDiscountPeriodSection(
@@ -202,7 +199,7 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
             selectedPeriodChip,
             mode
         )
-        bottomSheet.setOnApplyClickListener {setPeriodResultModel , selectedPeriodChip ->
+        bottomSheet.setOnApplyClickListener { setPeriodResultModel, selectedPeriodChip ->
             this.selectedPeriodChip = selectedPeriodChip
             setDiscountPeriodBasedOnBottomSheetResult(setPeriodResultModel)
         }
@@ -214,7 +211,7 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun setDiscountPeriodBasedOnExistingData(
-        setupProductData: ShopDiscountSetupProductUiModel.SetupProductData,
+        setupProductData: ShopDiscountSetupProductUiModel.SetupProductData
     ) {
         val startDate = setupProductData.slashPriceInfo.startDate
         val endDate = setupProductData.slashPriceInfo.endDate
@@ -225,7 +222,7 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun getFormattedDiscountPeriod(
-        setupProductData: ShopDiscountSetupProductUiModel.SetupProductData,
+        setupProductData: ShopDiscountSetupProductUiModel.SetupProductData
     ): String {
         val startDate = setupProductData.slashPriceInfo.startDate
         val endDate = setupProductData.slashPriceInfo.endDate
@@ -298,15 +295,15 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun observeDiscountPeriodDataBasedOnBenefitLiveData() {
-        viewModel.discountPeriodDataBasedOnBenefitLiveData.observe(viewLifecycleOwner, {
+        viewModel.discountPeriodDataBasedOnBenefitLiveData.observe(viewLifecycleOwner) {
             it?.let {
-                viewModel.updateProductDiscountPeriodData(it.first,it.second)
+                viewModel.updateProductDiscountPeriodData(it.first, it.second)
             }
-        })
+        }
     }
 
     private fun observeInputValidation() {
-        viewModel.inputValidation.observe(viewLifecycleOwner, { errorValidation ->
+        viewModel.inputValidation.observe(viewLifecycleOwner) { errorValidation ->
             buttonApply?.isEnabled = errorValidation == NONE
             tickerR2AbusiveError?.hide()
             textDiscountPeriodError?.hide()
@@ -339,20 +336,20 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
                     tickerR2AbusiveError?.apply {
                         show()
                         val averageSoldPrice =
-                            viewModel.getProductData().listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero().getCurrencyFormatted()
+                            viewModel.getProductData().listProductWarehouse.firstOrNull()?.avgSoldPrice.orZero()
+                                .getCurrencyFormatted()
                         val tickerDesc = String.format(
-                                getString(R.string.shop_discount_manage_product_error_r2_abusive_ticker_desc_format),
-                                averageSoldPrice
-                            )
+                            getString(R.string.shop_discount_manage_product_error_r2_abusive_ticker_desc_format),
+                            averageSoldPrice
+                        )
                         setHtmlDescription(tickerDesc)
-                        setDescriptionClickEvent(object: TickerCallback{
+                        setDescriptionClickEvent(object : TickerCallback {
                             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                                 applyRecommendedSoldPriceToDiscountedPrice()
                             }
 
                             override fun onDismiss() {
                             }
-
                         })
                     }
                 }
@@ -360,7 +357,7 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
                     textDiscountPeriodError?.show()
                 }
             }
-        })
+        }
     }
 
     private fun applyRecommendedSoldPriceToDiscountedPrice() {
@@ -392,42 +389,44 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
 
     private fun redirectToWebViewR2AbusiveSellerInformation() {
         RouteManager.route(
-            context, String.format(
+            context,
+            String.format(
                 "%s?url=%s",
-                ApplinkConst.WEBVIEW, SELLER_EDU_R2_ABUSIVE_URL
+                ApplinkConst.WEBVIEW,
+                SELLER_EDU_R2_ABUSIVE_URL
             )
         )
     }
 
     private fun observeUpdatedDiscountPercentageData() {
-        viewModel.updatedDiscountPercentageData.observe(viewLifecycleOwner, {
+        viewModel.updatedDiscountPercentageData.observe(viewLifecycleOwner) {
             textFieldDiscountPercentage?.textInputLayout?.editText?.apply {
                 removeTextChangedListener(textFieldDiscountPercentageWatcher)
                 setText(it.toString())
                 addTextChangedListener(textFieldDiscountPercentageWatcher)
             }
-        })
+        }
     }
 
     private fun observeUpdatedDiscountPriceData() {
-        viewModel.updatedDiscountPriceData.observe(viewLifecycleOwner, {
+        viewModel.updatedDiscountPriceData.observe(viewLifecycleOwner) {
             textFieldDiscountPrice?.textInputLayout?.editText?.apply {
                 removeTextChangedListener(textFieldDiscountPriceWatcher)
                 setText(it.toString())
                 addTextChangedListener(textFieldDiscountPriceWatcher)
             }
-        })
+        }
     }
 
     private fun observeUpdatedDiscountPeriodData() {
-        viewModel.updatedDiscountPeriodData.observe(viewLifecycleOwner, {
+        viewModel.updatedDiscountPeriodData.observe(viewLifecycleOwner) {
             it?.let {
                 updateDiscountPeriodText(it)
                 checkShouldValidateInputAfterPopulateData(
                     viewModel.getProductData().mappedResultData.minDisplayedPrice
                 )
             }
-        })
+        }
     }
 
     private fun updateDiscountPeriodText(
@@ -437,7 +436,7 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
     }
 
     private fun observeSellerBenefitLiveData() {
-        viewModel.slashPriceBenefitLiveData.observe(viewLifecycleOwner, {
+        viewModel.slashPriceBenefitLiveData.observe(viewLifecycleOwner) {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -449,7 +448,7 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
                     showErrorState(errorMessage)
                 }
             }
-        })
+        }
     }
 
     private fun populateProductData(
@@ -484,7 +483,6 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
 
                 override fun onDismiss() {
                 }
-
             })
         }
     }
@@ -541,9 +539,11 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
     ): String {
         return RangeFormatterUtil.getFormattedRangeString(
             mappedResultData.minOriginalPrice,
-            mappedResultData.maxOriginalPrice, {
+            mappedResultData.maxOriginalPrice,
+            {
                 it.getCurrencyFormatted()
-            }, { min, max ->
+            },
+            { min, max ->
                 String.format(
                     getString(R.string.shop_discount_manage_product_discount_original_price_format),
                     min.getCurrencyFormatted(),
@@ -675,6 +675,4 @@ class ShopDiscountManageProductFragment : BaseDaggerFragment() {
     fun onBackPressed() {
         activity?.finish()
     }
-
-
 }
