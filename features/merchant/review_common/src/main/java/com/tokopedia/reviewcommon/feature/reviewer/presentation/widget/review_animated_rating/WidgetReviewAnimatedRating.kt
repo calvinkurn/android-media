@@ -3,6 +3,7 @@ package com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_a
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Transition
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
@@ -23,10 +24,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,6 +41,7 @@ private const val STAR_ANIM_DELAY = 50
 private const val STAR_COLOR_ANIM_DURATION = 100
 private const val STAR_SCALE = 1f
 private const val STAR_SCALE_ANIM_DURATION = 400
+private const val STAR_SIZE_ANIM_DURATION = 400
 private const val STAR_SCALE_KEYFRAME_1_VALUE = 0.98546f
 private const val STAR_SCALE_KEYFRAME_1_TIME = 0
 private const val STAR_SCALE_KEYFRAME_2_VALUE = 0.57546f
@@ -50,62 +50,36 @@ private const val STAR_SCALE_KEYFRAME_3_VALUE = 1.1366f
 private const val STAR_SCALE_KEYFRAME_3_TIME = 333
 
 @Composable
-private fun ReviewStar(
-    modifier: Modifier = Modifier,
-    config: ReviewStarConfig
-) = with(config) {
-    val interactionSource by remember { mutableStateOf(MutableInteractionSource()) }
+private fun ReviewStar(state: ReviewStarState) {
+    /**
+     * `starStates` represent the active/inactive state of the stars and are determined by the color ID value.
+     * It is used to trigger the color and scale animations simultaneously, as both animations should run together.
+     */
+    val starState by remember(state) { mutableStateOf(state.color) }
+    /**
+     * sizeState represent the star size state and it is determined by the size value. It is used to
+     * trigger the star size animation
+    */
+    val sizeState by remember(state) { mutableStateOf(state.size) }
+    val starStateTransition = updateTransition(starState, label = "star state transition for ${state.contentDescription}")
+    val sizeStateTransition = updateTransition(sizeState, label = "size state transition for ${state.contentDescription}")
+    val color by starStateTransition.createColorAnimation(label = "color animation for ${state.contentDescription}")
+    val scale by starStateTransition.createScaleAnimation(label = "scale animation for ${state.contentDescription}")
+    val size by sizeStateTransition.createSizeAnimation(label = "size animation for ${state.contentDescription}")
+
     Image(
         painter = painterResource(id = R.drawable.review_ic_star),
         colorFilter = ColorFilter.tint(color),
-        contentDescription = contentDescription,
-        modifier = modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null
-        ) { onClick() }
+        contentDescription = state.contentDescription,
+        modifier = Modifier
+            .size(size)
+            .scale(scale)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { state.onClick() }
     )
 }
-
-private data class ReviewStarConfig(
-    val color: Color,
-    val contentDescription: String,
-    val onClick: () -> Unit
-)
-
-@Composable
-private fun WidgetReviewAnimatedStars(
-    modifier: Modifier = Modifier,
-    config: WidgetReviewAnimatedStarsConfig
-) = with(config) {
-    Row(modifier = modifier) {
-        starScaleStates.forEachIndexed { index, _ ->
-            val starRating = index.inc()
-            val reviewStarModifier = Modifier
-                .size(widgetReviewAnimatedRatingConfig.starSize)
-                .scale(starScaleStates[index].value)
-            val reviewStarConfig = ReviewStarConfig(
-                color = starColorStates[index].value,
-                contentDescription = "$starRating star rating",
-                onClick = {
-                    widgetReviewAnimatedRatingConfig.onStarClicked(
-                        widgetReviewAnimatedRatingConfig.rating,
-                        starRating
-                    )
-                }
-            )
-            ReviewStar(reviewStarModifier, reviewStarConfig)
-            if (index < starScaleStates.size.dec()) {
-                Spacer(modifier = Modifier.size(widgetReviewAnimatedRatingConfig.spaceInBetween))
-            }
-        }
-    }
-}
-
-private data class WidgetReviewAnimatedStarsConfig(
-    val starScaleStates: List<State<Float>>,
-    val starColorStates: List<State<Color>>,
-    val widgetReviewAnimatedRatingConfig: WidgetReviewAnimatedRatingConfig
-)
 
 @Composable
 fun WidgetReviewAnimatedRating(
@@ -113,96 +87,183 @@ fun WidgetReviewAnimatedRating(
     config: WidgetReviewAnimatedRatingConfig
 ) {
     with(config) {
-        val starStates = remember { mutableStateListOf(*createInitialStarStates()) }
-        val starTransitions = starStates.createStateTransition()
-        val starScaleStates = starTransitions.createScaleAnimation()
-        val starColorStates = starTransitions.createColorAnimation()
-        val widgetReviewAnimatedStarsConfig = WidgetReviewAnimatedStarsConfig(
-            starScaleStates = starScaleStates,
-            starColorStates = starColorStates,
-            widgetReviewAnimatedRatingConfig = config
-        )
+        val starStates = remember { mutableStateListOf(*createInitialStarStates(config)) }
 
-        LaunchedEffect(rating) {
+        /**
+         * Update star states if rating or star size is changed so that ReviewStar will recompose
+         */
+        LaunchedEffect(rating, starSize) {
             if (rating in Int.ZERO..STAR_COUNT) {
-                updateStarStates(rating = rating, starStates = starStates)
+                updateStarStates(config = config, starStates = starStates)
             }
         }
 
-        WidgetReviewAnimatedStars(modifier = modifier, config = widgetReviewAnimatedStarsConfig)
-    }
-}
-
-@Composable
-private fun SnapshotStateList<WidgetReviewAnimatedRatingState>.createStateTransition(): List<Transition<WidgetReviewAnimatedRatingState>> {
-    return mapIndexed { index, state ->
-        updateTransition(state, label = "star $index state")
+        Row(modifier = modifier) {
+            starStates.forEachIndexed { index, state ->
+                ReviewStar(state)
+                if (index < starStates.size.dec()) {
+                    Spacer(modifier = Modifier.size(spaceInBetween))
+                }
+            }
+        }
     }
 }
 
 @SuppressLint("UnusedTransitionTargetStateParameter")
 @Composable
-private fun List<Transition<WidgetReviewAnimatedRatingState>>.createScaleAnimation(): List<State<Float>> {
-    return mapIndexed { index, transition ->
-        transition.animateFloat(
-            transitionSpec = {
-                keyframes {
-                    durationMillis = STAR_SCALE_ANIM_DURATION
-                    delayMillis = targetState.delay
-                    STAR_SCALE_KEYFRAME_1_VALUE at STAR_SCALE_KEYFRAME_1_TIME
-                    STAR_SCALE_KEYFRAME_2_VALUE at STAR_SCALE_KEYFRAME_2_TIME
-                    STAR_SCALE_KEYFRAME_3_VALUE at STAR_SCALE_KEYFRAME_3_TIME
-                }
-            },
-            label = "star $index scale"
-        ) { _ -> STAR_SCALE }
-    }
+private fun Transition<ReviewStarState.AnimatedState<Int>>.createScaleAnimation(label: String): State<Float> {
+    return animateFloat(
+        transitionSpec = {
+            keyframes {
+                durationMillis = STAR_SCALE_ANIM_DURATION
+                delayMillis = targetState.delay
+                STAR_SCALE_KEYFRAME_1_VALUE at STAR_SCALE_KEYFRAME_1_TIME
+                STAR_SCALE_KEYFRAME_2_VALUE at STAR_SCALE_KEYFRAME_2_TIME
+                STAR_SCALE_KEYFRAME_3_VALUE at STAR_SCALE_KEYFRAME_3_TIME
+            }
+        },
+        label = label
+    ) { _ -> STAR_SCALE }
 }
 
 @Composable
-private fun List<Transition<WidgetReviewAnimatedRatingState>>.createColorAnimation(): List<State<Color>> {
-    return mapIndexed { index, transition ->
-        transition.animateColor(
-            transitionSpec = {
-                tween(
-                    durationMillis = STAR_COLOR_ANIM_DURATION,
-                    delayMillis = targetState.delay
-                )
-            },
-            label = "star $index color"
-        ) { state -> state.toColor(LocalContext.current) }
-    }
+private fun Transition<ReviewStarState.AnimatedState<Dp>>.createSizeAnimation(label: String): State<Dp> {
+    return animateDp(
+        transitionSpec = {
+            tween(
+                durationMillis = STAR_SIZE_ANIM_DURATION,
+                delayMillis = targetState.delay
+            )
+        },
+        label = label
+    ) { state -> state.value }
 }
 
-private fun createInitialStarStates(): Array<WidgetReviewAnimatedRatingState> {
-    return List(STAR_COUNT) {
-        WidgetReviewAnimatedRatingState.Inactive()
-    }.toTypedArray()
-}
+@Composable
+private fun Transition<ReviewStarState.AnimatedState<Int>>.createColorAnimation(
+    label: String
+) = animateColor(
+    transitionSpec = {
+        tween(
+            durationMillis = STAR_COLOR_ANIM_DURATION,
+            delayMillis = targetState.delay
+        )
+    },
+    label = label
+) { state -> state.toColor(LocalContext.current) }
+
+private fun createInitialStarStates(
+    config: WidgetReviewAnimatedRatingConfig
+): Array<ReviewStarState> = List(STAR_COUNT) { starPos ->
+    createInactiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc())
+}.toTypedArray()
 
 private fun updateStarStates(
-    rating: Int,
-    starStates: MutableList<WidgetReviewAnimatedRatingState>
-) {
-    val previousLastActiveRatingStar = starStates.indexOfLast {
-        it is WidgetReviewAnimatedRatingState.Active
-    }
-    val currentLastActiveRatingStar = rating.dec()
+    config: WidgetReviewAnimatedRatingConfig,
+    starStates: MutableList<ReviewStarState>
+) = with(config) {
+    recreateAffectedStarStates(config, starStates)
+    updateNonAffectedStarStates(config, starStates)
+}
 
-    if (previousLastActiveRatingStar > currentLastActiveRatingStar) {
-        val lastActiveStarToDeactivate = currentLastActiveRatingStar.inc()
-        (previousLastActiveRatingStar downTo lastActiveStarToDeactivate).forEach {
-            starStates[it] = WidgetReviewAnimatedRatingState.Inactive(
-                delay = abs(previousLastActiveRatingStar - it) * STAR_ANIM_DELAY
+private fun recreateAffectedStarStates(
+    config: WidgetReviewAnimatedRatingConfig,
+    starStates: MutableList<ReviewStarState>
+) = with(config) {
+    val currentLastActiveStarPos = starStates.indexOfLast {
+        it is ReviewStarState.Active
+    }
+    val expectedLastActiveStarPos = rating.dec()
+
+    if (currentLastActiveStarPos > expectedLastActiveStarPos) {
+        (currentLastActiveStarPos downTo expectedLastActiveStarPos.inc()).forEach { starPos ->
+            starStates[starPos] = createInactiveWidgetReviewStarStateFrom(
+                config = this,
+                delay = abs(currentLastActiveStarPos - starPos) * STAR_ANIM_DELAY,
+                starRating = starPos.inc()
             )
         }
-    } else if (previousLastActiveRatingStar < currentLastActiveRatingStar) {
-        val firstInactiveStarToActivate = previousLastActiveRatingStar.inc()
-        (firstInactiveStarToActivate..currentLastActiveRatingStar).forEach {
-            starStates[it] = WidgetReviewAnimatedRatingState.Active(
-                delay = abs(firstInactiveStarToActivate - it) * STAR_ANIM_DELAY
+    } else if (currentLastActiveStarPos < expectedLastActiveStarPos) {
+        (currentLastActiveStarPos.inc()..expectedLastActiveStarPos).forEach { starPos ->
+            starStates[starPos] = createActiveWidgetReviewStarStateFrom(
+                config = this,
+                delay = abs(currentLastActiveStarPos.inc() - starPos) * STAR_ANIM_DELAY,
+                starRating = starPos.inc()
             )
         }
+    }
+}
+
+fun updateNonAffectedStarStates(
+    config: WidgetReviewAnimatedRatingConfig,
+    starStates: MutableList<ReviewStarState>
+) {
+    val currentLastActiveStarPos = starStates.indexOfLast {
+        it is ReviewStarState.Active
+    }
+    val affectedStarRange = currentLastActiveStarPos..config.rating.dec()
+    (Int.ZERO until STAR_COUNT).forEach { starPos ->
+        if (starPos !in affectedStarRange) {
+            starStates[starPos] = starStates[starPos].update(config, starPos.inc())
+        }
+    }
+}
+
+private fun createInactiveWidgetReviewStarStateFrom(
+    config: WidgetReviewAnimatedRatingConfig,
+    delay: Int,
+    starRating: Int
+): ReviewStarState = with(config) {
+    return ReviewStarState.Inactive(
+        color = ReviewStarState.AnimatedState(
+            delay = delay,
+            value = ReviewStarState.Inactive.COLOR_RES_ID
+        ),
+        size = ReviewStarState.AnimatedState(
+            delay = Int.ZERO,
+            value = starSize
+        ),
+        contentDescription = "$starRating star rating"
+    ) { onStarClicked(rating, starRating) }
+}
+
+private fun createActiveWidgetReviewStarStateFrom(
+    config: WidgetReviewAnimatedRatingConfig,
+    delay: Int,
+    starRating: Int
+): ReviewStarState = with(config) {
+    return ReviewStarState.Active(
+        color = ReviewStarState.AnimatedState(
+            delay = delay,
+            value = ReviewStarState.Active.COLOR_RES_ID
+        ),
+        size = ReviewStarState.AnimatedState(
+            delay = Int.ZERO,
+            value = starSize
+        ),
+        contentDescription = "$starRating star rating"
+    ) { onStarClicked(rating, starRating) }
+}
+
+private fun ReviewStarState.update(
+    config: WidgetReviewAnimatedRatingConfig,
+    starRating: Int
+): ReviewStarState {
+    return when (this) {
+        is ReviewStarState.Active -> copy(
+            size = ReviewStarState.AnimatedState(
+                delay = Int.ZERO,
+                value = config.starSize
+            ),
+            onClick = { config.onStarClicked(config.rating, starRating) }
+        )
+        is ReviewStarState.Inactive -> copy(
+            size = ReviewStarState.AnimatedState(
+                delay = Int.ZERO,
+                value = config.starSize
+            ),
+            onClick = { config.onStarClicked(config.rating, starRating) }
+        )
     }
 }
 
@@ -248,7 +309,10 @@ private fun createPreviewConfigs(): MutableList<WidgetReviewAnimatedRatingConfig
         WidgetReviewAnimatedRatingConfig(
             rating = rating,
             starSize = calculateStarSize(index, DEFAULT_PREVIEW_SIZE_MULTIPLIER),
-            spaceInBetween = calculateSpaceInBetween(index, DEFAULT_PREVIEW_SPACE_IN_BETWEEN_MULTIPLIER),
+            spaceInBetween = calculateSpaceInBetween(
+                index,
+                DEFAULT_PREVIEW_SPACE_IN_BETWEEN_MULTIPLIER
+            ),
             onStarClicked = { previousRating, currentRating ->
                 if (previousRating != currentRating) onRatingChanged(index, currentRating)
             }
@@ -277,12 +341,12 @@ private fun onRatingChanged(index: Int, rating: Int) {
 private fun onEnlargeWidgets() {
     previewConfig.value.let {
         previewConfig.value = it.copy(
-            sizeMultiplier = it.sizeMultiplier.inc(),
+            sizeMultiplier = it.sizeMultiplier + 5,
             configs = it.configs.mapIndexed { index, config ->
                 config.copy(
                     starSize = calculateStarSize(
-                        index = index,
-                        multiplier = it.sizeMultiplier.inc()
+                        index = index.inc(),
+                        multiplier = it.sizeMultiplier + 5
                     )
                 )
             }.toMutableList()
@@ -293,12 +357,12 @@ private fun onEnlargeWidgets() {
 private fun onEnlargeSpaceInBetween() {
     previewConfig.value.let {
         previewConfig.value = it.copy(
-            spaceInBetweenMultiplier = it.spaceInBetweenMultiplier.inc(),
+            spaceInBetweenMultiplier = it.spaceInBetweenMultiplier + 5,
             configs = it.configs.mapIndexed { index, config ->
                 config.copy(
                     spaceInBetween = calculateSpaceInBetween(
-                        index = index,
-                        multiplier = it.spaceInBetweenMultiplier.inc()
+                        index = index.inc(),
+                        multiplier = it.spaceInBetweenMultiplier + 5
                     )
                 )
             }.toMutableList()
