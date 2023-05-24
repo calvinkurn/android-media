@@ -165,9 +165,9 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         viewModel.redeemResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    showUsePromoVoucherButton()
                     binding?.btnClaimPromoVoucher?.stopLoading()
                     onVoucherRedeemSuccess(result.data)
+                    dismiss()
                 }
                 is Fail -> {
                     binding?.btnClaimPromoVoucher?.stopLoading()
