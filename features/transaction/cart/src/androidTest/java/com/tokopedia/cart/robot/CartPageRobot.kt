@@ -265,7 +265,7 @@ class CartPageRobot {
                         position + 1 + i,
                         object : ViewAction {
                             override fun getDescription(): String =
-                                "performing assertion action on first CartShopViewHolder"
+                                "performing assertion action on CartItemViewHolder"
 
                             override fun getConstraints(): Matcher<View>? = null
 
@@ -316,7 +316,7 @@ class CartPageRobot {
                         position + 1 + i,
                         object : ViewAction {
                             override fun getDescription(): String =
-                                "performing assertion action on first CartShopViewHolder"
+                                "performing assertion action on first CartItemViewHolder"
 
                             override fun getConstraints(): Matcher<View>? = null
 
