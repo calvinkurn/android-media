@@ -29,7 +29,7 @@ class MediaUploaderTracker @Inject constructor(
         val compressionTime = timeInSec(data.startCompressedTime, data.endCompressedTime)
         val sizeBefore = File(data.originalVideoPath).length().formattedToMB()
         val sizeAfter = File(data.compressedVideoPath).length().formattedToMB()
-        val bitrate = data.compressedVideoMetadata?.bitrate.orZero()
+        val bitrate = data.compressedVideoMetadata?.bitrate.orZero() / 1024
         val duration = data.originalVideoMetadata?.duration.orZero().fromMillisToSec()
 
         val events = mutableMapOf(
@@ -51,7 +51,9 @@ class MediaUploaderTracker @Inject constructor(
     }
 
     private fun Number.fromMillisToSec(): String {
-        return TimeUnit.MILLISECONDS.toSeconds(this.toLong()).toString()
+        return TimeUnit.MILLISECONDS.toSeconds(this.toLong())
+            .toFloat()
+            .toString()
     }
 
     private fun uploadTypeLabel(isSimpleUpload: Boolean): String {
