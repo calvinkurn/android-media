@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -155,7 +156,8 @@ class PlayShortsViewModel @Inject constructor(
         _productSectionList,
         _tags,
         _uploadState,
-        _isAffiliate
+        _isAffiliate,
+        _bannerPreparation,
     ) { globalLoader,
         config,
         media,
@@ -167,7 +169,8 @@ class PlayShortsViewModel @Inject constructor(
         productSectionList,
         tags,
         uploadState,
-        isAffiliate ->
+        isAffiliate,
+        bannerPreparation ->
         PlayShortsUiState(
             globalLoader = globalLoader,
             config = config,
@@ -181,6 +184,7 @@ class PlayShortsViewModel @Inject constructor(
             tags = tags,
             uploadState = uploadState,
             isAffiliate = isAffiliate,
+            bannerPreparation = bannerPreparation,
         )
     }
 
@@ -230,7 +234,31 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
             is PlayShortsAction.ResetUploadState -> handleResetUploadState()
+            is PlayShortsAction.AddBannerPreparation -> handleAddBannerPreparation(action.data)
+            is PlayShortsAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(action.data)
         }
+    }
+
+    private fun setupShortsAffiliateEntryPoint(needToShow: Boolean) {
+        val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS_AFFILIATE)
+        if (needToShow) {
+            submitAction(PlayShortsAction.AddBannerPreparation(banner))
+        } else {
+            submitAction(PlayShortsAction.RemoveBannerPreparation(banner))
+        }
+    }
+
+    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            if (_bannerPreparation.value.contains(data)) return@launchCatchError
+            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
+        }, onError = {})
+    }
+
+    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+        viewModelScope.launchCatchError(block = {
+            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
+        }, onError = {})
     }
 
     private fun handleResetUploadState() {
@@ -476,6 +504,7 @@ class PlayShortsViewModel @Inject constructor(
         }
         val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
         _isAffiliate.update { checkIsAffiliate.isAffiliate }
+        setupShortsAffiliateEntryPoint(!_isAffiliate.value)
     }
 
     private suspend fun checkIsSuccessSubmitAffiliate(isSuccess: Boolean) {

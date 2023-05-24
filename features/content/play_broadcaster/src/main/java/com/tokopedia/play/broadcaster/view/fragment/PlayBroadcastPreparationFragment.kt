@@ -104,7 +104,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val analyticManager: PreparationAnalyticManager,
     private val userSession: UserSessionInterface,
     private val coachMarkSharedPref: ContentCoachMarkSharedPref,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : PlayBaseBroadcastFragment(),
     FragmentWithDetachableView,
     PreparationMenuView.Listener,

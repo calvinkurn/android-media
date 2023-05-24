@@ -3,8 +3,6 @@ package com.tokopedia.play.broadcaster.shorts.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase

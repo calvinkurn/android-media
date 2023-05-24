@@ -207,8 +207,8 @@ class ProductSetupFragment @Inject constructor(
                         mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.isEligibleForPin() ?: true,
                         mDataSource?.getPageSource().orUnknown(),
+                        mDataSource?.isEligibleForPin().orTrue(),
                         mDataSource?.fetchCommissionProduct().orFalse(),
                     ) as T
                 }
