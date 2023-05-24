@@ -14,6 +14,7 @@ class CategoryShowcaseItemCallback(
     private val shopId: String,
     private val categoryIdL1: String,
     private val startActivityForResult: (Intent, Int) -> Unit,
+    private val onAddToCartBlocked: () -> Unit,
     private val onCartQuantityChangedListener: (position: Int, product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit
 ): CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener {
     override fun onProductCardAddVariantClicked(
@@ -56,4 +57,6 @@ class CategoryShowcaseItemCallback(
         position: Int,
         product: CategoryShowcaseItemUiModel
     ) { /* waiting for trackers */ }
+
+    override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 }

@@ -23,6 +23,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addChoo
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addHeaderSpace
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProductRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addRecipeProgressBar
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
@@ -132,7 +133,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 categoryIdL2 = categoryL2Model.id,
                 title = categoryL2Model.title,
                 seeAllAppLink = categoryL2Model.appLink,
-                miniCartData = miniCartData
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         } else {
             layout.addCategoryShowcase(
@@ -141,7 +143,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 title = categoryL2Model.title,
                 state = TokoNowLayoutState.SHOW,
                 seeAllAppLink = categoryL2Model.appLink,
-                miniCartData = miniCartData
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
 
@@ -185,7 +188,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             layout.addCategoryShowcase(
                 categoryIdL2 = categoryL2Model.id,
                 state = TokoNowLayoutState.LOADING,
-                miniCartData = miniCartData
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
     }
@@ -223,6 +227,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                     headerResponse = headerResponse
                 )
                 layout.addChooseAddress(
+                    headerResponse = headerResponse
+                )
+                hasBlockedAddToCart = layout.addTicker(
                     headerResponse = headerResponse
                 )
                 layout.addCategoryTitle(

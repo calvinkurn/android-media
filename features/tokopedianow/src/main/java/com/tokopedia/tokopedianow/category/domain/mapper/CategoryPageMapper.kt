@@ -14,7 +14,8 @@ internal object CategoryPageMapper {
 
     private fun mapAceSearchProductToProductCard(
         product: AceSearchProductModel.Product,
-        miniCartData:  MiniCartSimplifiedData?
+        miniCartData:  MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ): ProductCardCompactUiModel = ProductCardCompactUiModel(
         productId = product.id,
         imageUrl = product.imageUrl300,
@@ -41,7 +42,8 @@ internal object CategoryPageMapper {
                 title = it.title,
                 imageUrl = it.url
             )
-        }
+        },
+        hasBlockedAddToCart = hasBlockedAddToCart
     )
 
     fun AceSearchProductModel.mapToShowcaseProductCard(
@@ -49,6 +51,7 @@ internal object CategoryPageMapper {
         title: String,
         seeAllAppLink: String,
         miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean,
         @TokoNowLayoutState state: Int
     ): CategoryShowcaseUiModel = CategoryShowcaseUiModel(
         id = categoryIdL2,
@@ -56,7 +59,8 @@ internal object CategoryPageMapper {
             CategoryShowcaseItemUiModel(
                 productCardModel = mapAceSearchProductToProductCard(
                     product = product,
-                    miniCartData = miniCartData
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 ),
                 parentProductId = product.parentId
             )

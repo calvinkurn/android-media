@@ -9,6 +9,9 @@ import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailRespons
 import com.tokopedia.tokopedianow.category.domain.response.CategoryHeaderResponse
 import com.tokopedia.tokopedianow.common.domain.model.GetCategoryListResponse
 import com.tokopedia.tokopedianow.common.domain.query.GetCategoryListQuery
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.createGetTargetedTickerRequest
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.getTargetedTickerResponse
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetCategoryHeaderUseCase(
@@ -30,22 +33,30 @@ class GetCategoryHeaderUseCase(
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(
-            createCategoryDetailRequest(
+            request = createGetTargetedTickerRequest(
+                page = CATEGORY_PAGE,
+                warehouseId = warehouseId.toString()
+            )
+        )
+        graphqlUseCase.addRequest(
+            request = createCategoryDetailRequest(
                 categoryId = categoryId,
                 warehouseId = warehouseId
             )
         )
         graphqlUseCase.addRequest(
-            createCategoryNavigationRequest(
+            request = createCategoryNavigationRequest(
                 warehouseId = warehouseId
             )
         )
 
         val response = graphqlUseCase.executeOnBackground()
+        val targetedTicker = getTargetedTickerResponse(response)
         val categoryDetail = getCategoryDetail(response)
         val categoryNavigation = getCategoryNavigation(response)
 
         return CategoryHeaderResponse(
+            targetedTicker = targetedTicker,
             categoryDetail = categoryDetail,
             categoryNavigation = categoryNavigation
         )

@@ -39,8 +39,8 @@ import javax.inject.Inject
 
 class TokoNowProductRecommendationViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
-    private val userSession: UserSessionInterface,
     private val addressData: TokoNowLocalAddress,
+    userSession: UserSessionInterface,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     addToCartUseCase: AddToCartUseCase,
     updateCartUseCase: UpdateCartUseCase,

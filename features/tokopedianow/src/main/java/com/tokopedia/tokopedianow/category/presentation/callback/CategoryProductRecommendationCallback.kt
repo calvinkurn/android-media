@@ -23,6 +23,7 @@ class CategoryProductRecommendationCallback(
     private val startActivityResult: (Intent, Int) -> Unit,
     private val hideProductRecommendationWidgetListener: () -> Unit,
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
+    private val onAddToCartBlocked: () -> Unit,
     private val openLoginPageListener: () -> Unit
 ): TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecommendationViewModel
@@ -76,9 +77,7 @@ class CategoryProductRecommendationCallback(
         directToSeeMorePage(appLink)
     }
 
-    override fun productCardAddToCartBlocked() {
-
-    }
+    override fun productCardAddToCartBlocked() = onAddToCartBlocked()
 
     private fun directToSeeMorePage(
         appLink: String

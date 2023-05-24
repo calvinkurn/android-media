@@ -304,6 +304,13 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         getMiniCart()
     }
 
+    protected fun showToasterWhenAddToCartBlocked() {
+        showToaster(
+            message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
+            type = Toaster.TYPE_ERROR
+        )
+    }
+
     protected fun updateToolbarNotification() {
         binding?.navToolbar?.updateNotification()
     }

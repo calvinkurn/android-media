@@ -14,6 +14,7 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOK
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
 import com.tokopedia.tokopedianow.category.domain.response.CategoryHeaderResponse
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
@@ -23,6 +24,7 @@ import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -54,6 +56,22 @@ internal object VisitableMapper {
         headerResponse: CategoryHeaderResponse
     )  {
         add(headerResponse.mapToChooseAddress())
+    }
+
+    /**
+     * -- Ticker Section --
+     */
+
+    fun MutableList<Visitable<*>>.addTicker(
+        headerResponse: CategoryHeaderResponse
+    ): Boolean  {
+        val tickerData = headerResponse.mapToTicker()
+        add(TokoNowTickerUiModel(
+                tickers = tickerData.second,
+                backgroundColor = headerResponse.categoryDetail.data.color
+            )
+        )
+        return tickerData.first
     }
 
     /**
@@ -107,6 +125,7 @@ internal object VisitableMapper {
         title: String = String.EMPTY,
         seeAllAppLink: String = String.EMPTY,
         miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean,
         @TokoNowLayoutState state: Int
     ) {
         add(
@@ -115,7 +134,8 @@ internal object VisitableMapper {
                 title = title,
                 state = state,
                 seeAllAppLink = seeAllAppLink,
-                miniCartData = miniCartData
+                miniCartData = miniCartData,
+                hasBlockedAddToCart = hasBlockedAddToCart
             )
         )
     }
@@ -125,7 +145,8 @@ internal object VisitableMapper {
         categoryIdL2: String,
         title: String,
         seeAllAppLink: String,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        hasBlockedAddToCart: Boolean
     ) {
         updateItemById(
             id = categoryIdL2,
@@ -135,7 +156,8 @@ internal object VisitableMapper {
                     title = title,
                     state = TokoNowLayoutState.SHOW,
                     seeAllAppLink = seeAllAppLink,
-                    miniCartData = miniCartData
+                    miniCartData = miniCartData,
+                    hasBlockedAddToCart = hasBlockedAddToCart
                 )
             }
         )

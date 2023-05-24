@@ -20,9 +20,11 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowCategoryMenu
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChooseAddressWidgetTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProgressBarTypeFactory
+import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTickerTypeFactory
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
@@ -31,6 +33,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProgressBarViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener
 
@@ -48,7 +51,8 @@ class CategoryAdapterTypeFactory(
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowProductRecommendationTypeFactory,
-    TokoNowProgressBarTypeFactory
+    TokoNowProgressBarTypeFactory,
+    TokoNowTickerTypeFactory
 {
     /* Category Component Ui Model */
     override fun type(uiModel: CategoryHeaderSpaceUiModel): Int = CategoryHeaderSpaceViewHolder.LAYOUT
@@ -61,6 +65,7 @@ class CategoryAdapterTypeFactory(
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProgressBarUiModel): Int = TokoNowProgressBarViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowTickerUiModel): Int = TokoNowTickerViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -97,6 +102,9 @@ class CategoryAdapterTypeFactory(
                 listener = tokoNowProductRecommendationListener
             )
             TokoNowProgressBarViewHolder.LAYOUT -> TokoNowProgressBarViewHolder(
+                itemView = view
+            )
+            TokoNowTickerViewHolder.LAYOUT -> TokoNowTickerViewHolder(
                 itemView = view
             )
             else -> super.createViewHolder(view, type)

@@ -284,6 +284,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         shopId = shopId,
         categoryIdL1 = categoryIdL1,
         startActivityForResult = ::startActivityForResult,
+        onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
         onCartQuantityChangedListener = { position, product, quantity ->
             if (!viewModel.isLoggedIn()) {
                 openLoginPage()
@@ -317,6 +318,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         categoryIdL1 = categoryIdL1,
         startActivityResult = ::startActivityForResult,
         openLoginPageListener = ::openLoginPage,
+        onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
         hideProductRecommendationWidgetListener = {
             viewModel.removeProductRecommendation()
         },

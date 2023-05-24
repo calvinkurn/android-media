@@ -48,6 +48,9 @@ class CategoryShowcaseItemViewHolder(
                     product = element
                 )
             }
+            setOnBlockAddToCartListener {
+                listener?.onProductCardAddToCartBlocked()
+            }
             addOnImpressionListener(element) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
@@ -85,5 +88,6 @@ class CategoryShowcaseItemViewHolder(
             position: Int,
             product: CategoryShowcaseItemUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 }
