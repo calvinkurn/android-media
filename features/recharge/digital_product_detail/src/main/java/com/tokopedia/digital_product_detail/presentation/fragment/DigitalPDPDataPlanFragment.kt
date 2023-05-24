@@ -63,6 +63,7 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoOtherComponent
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -82,6 +83,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
@@ -506,6 +508,14 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
+        viewModel.saveAccessTokenResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is RechargeNetworkResult.Success -> onSuccessSaveAccessToken(result.data)
+                is RechargeNetworkResult.Fail -> onFailedSaveAccessToken(result.error)
+                is RechargeNetworkResult.Loading -> onLoadingSaveAccessToken()
+            }
+        }
+
         viewModel.addToCartResult.observe(viewLifecycleOwner) { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
@@ -760,6 +770,9 @@ class DigitalPDPDataPlanFragment :
 
     private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceWidget()
+            hideCheckBalanceWidgetShimmering()
+
             // TODO: [Misael] Remove this line later
             if (checkBalanceData.iconUrl.isEmpty()) return
 
@@ -776,6 +789,7 @@ class DigitalPDPDataPlanFragment :
                 showCheckBalanceWidget()
             }
 
+            // TODO: [Misael] Back to this logic
 //            when (checkBalanceData.widgetType.lowercase()) {
 //                "otp" -> {
 //                    renderCheckBalanceOTPWidget(
@@ -809,8 +823,36 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedGetCheckBalance(throwable: Throwable) {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceWidget()
+            hideCheckBalanceWidgetShimmering()
+        }
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun onLoadingGetCheckBalance() {
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            hideCheckBalanceOtpWidget()
+            showCheckBalanceWidget()
+            showCheckBalanceWidgetShimmering()
+        }
+    }
+
+    private fun onSuccessSaveAccessToken(data: DigitalSaveAccessTokenResultModel) {
+        if (data.isSuccess) {
+            getIndosatCheckBalance()
+        } else {
+            showErrorToaster(MessageErrorException(data.message))
+        }
+    }
+
+    private fun onFailedSaveAccessToken(throwable: Throwable) {
+        showErrorToaster(throwable)
+    }
+
+    private fun onLoadingSaveAccessToken() {
+        // TODO: [Misael] show shimmering
     }
 
     private fun hideCheckBalanceWidget() {
@@ -819,13 +861,6 @@ class DigitalPDPDataPlanFragment :
             rechargePdpPaketDataClientNumberWidget.hideCheckBalanceOtpWidget()
             rechargePdpPaketDataClientNumberWidget.showClientNumberBottomPadding()
             setupDynamicScrollViewPadding()
-        }
-    }
-
-    private fun onLoadingGetCheckBalance() {
-        binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            hideCheckBalanceOtpWidget()
-            hideCheckBalanceWidget()
         }
     }
 

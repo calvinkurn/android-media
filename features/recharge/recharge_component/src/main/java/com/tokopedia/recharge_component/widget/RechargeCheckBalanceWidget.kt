@@ -81,6 +81,22 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         }
     }
 
+    fun showShimmering() {
+        binding.run {
+            checkBalanceRv.hide()
+            checkBalanceWarningContainer.hide()
+            checkBalanceShimmering.root.show()
+        }
+    }
+
+    fun hideShimmering() {
+        binding.run {
+            checkBalanceRv.show()
+            checkBalanceWarningContainer.show()
+            checkBalanceShimmering.root.hide()
+        }
+    }
+
     fun hideWarningMessage() {
         binding.checkBalanceWarningContainer.hide()
     }
