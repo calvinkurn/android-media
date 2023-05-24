@@ -19,10 +19,10 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -51,35 +51,36 @@ private const val STAR_SCALE_KEYFRAME_3_VALUE = 1.1366f
 private const val STAR_SCALE_KEYFRAME_3_TIME = 333
 
 @Composable
-private fun ReviewStar(state: ReviewStarState) {
+private fun ReviewStar(state: MutableState<ReviewStarState>) {
     /**
      * `starStates` represent the active/inactive state of the stars and are determined by the color ID value.
      * It is used to trigger the color and scale animations simultaneously, as both animations should run together.
      * We choose color as the determinant because active and inactive state have exactly 1 color representation
      */
-    val starState by remember(state) { derivedStateOf { state.color } }
+    val starState by remember { derivedStateOf { state.value.color } }
     /**
      * sizeState represent the star size state and it is determined by the size value. It is used to
      * trigger the star size animation
     */
-    val sizeState by remember(state) { derivedStateOf { state.size } }
-    val starStateTransition = updateTransition(starState, label = "star state transition for ${state.contentDescription}")
-    val sizeStateTransition = updateTransition(sizeState, label = "size state transition for ${state.contentDescription}")
-    val color by starStateTransition.createColorAnimation(label = "color animation for ${state.contentDescription}")
-    val scale by starStateTransition.createScaleAnimation(label = "scale animation for ${state.contentDescription}")
-    val size by sizeStateTransition.createSizeAnimation(label = "size animation for ${state.contentDescription}")
+    val sizeState by remember { derivedStateOf { state.value.size } }
+    val contentDescription by remember { derivedStateOf { state.value.contentDescription } }
+    val starStateTransition = updateTransition(starState, label = "star state transition for $contentDescription")
+    val sizeStateTransition = updateTransition(sizeState, label = "size state transition for $contentDescription")
+    val color by starStateTransition.createColorAnimation(label = "color animation for $contentDescription")
+    val scale by starStateTransition.createScaleAnimation(label = "scale animation for $contentDescription")
+    val size by sizeStateTransition.createSizeAnimation(label = "size animation for $contentDescription")
 
     Image(
         painter = painterResource(id = R.drawable.review_ic_star),
         colorFilter = ColorFilter.tint(color),
-        contentDescription = state.contentDescription,
+        contentDescription = contentDescription,
         modifier = Modifier
             .size(size)
             .scale(scale)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
-            ) { state.onClick() }
+            ) { state.value.onClick() }
     )
 }
 
@@ -89,7 +90,7 @@ fun WidgetReviewAnimatedRating(
     config: WidgetReviewAnimatedRatingConfig
 ) {
     with(config) {
-        val starStates = remember { mutableStateListOf(*createInitialStarStates(config)) }
+        val starStates = remember { createInitialStarStates(config) }
 
         /**
          * Update star states if rating or star size is changed so that ReviewStar will recompose
@@ -156,13 +157,13 @@ private fun Transition<ReviewStarState.AnimatedState<Int>>.createColorAnimation(
 
 private fun createInitialStarStates(
     config: WidgetReviewAnimatedRatingConfig
-): Array<ReviewStarState> = List(STAR_COUNT) { starPos ->
-    createInactiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc())
-}.toTypedArray()
+): List<MutableState<ReviewStarState>> = List(STAR_COUNT) { starPos ->
+    mutableStateOf(createInactiveWidgetReviewStarStateFrom(config, Int.ZERO, starPos.inc()))
+}
 
 private fun updateStarStates(
     config: WidgetReviewAnimatedRatingConfig,
-    starStates: MutableList<ReviewStarState>
+    starStates: List<MutableState<ReviewStarState>>
 ) = with(config) {
     recreateAffectedStarStates(config, starStates)
     updateNonAffectedStarStates(config, starStates)
@@ -170,16 +171,16 @@ private fun updateStarStates(
 
 private fun recreateAffectedStarStates(
     config: WidgetReviewAnimatedRatingConfig,
-    starStates: MutableList<ReviewStarState>
+    starStates: List<MutableState<ReviewStarState>>
 ) = with(config) {
     val currentLastActiveStarPos = starStates.indexOfLast {
-        it is ReviewStarState.Active
+        it.value is ReviewStarState.Active
     }
     val expectedLastActiveStarPos = rating.dec()
 
     if (currentLastActiveStarPos > expectedLastActiveStarPos) {
         (currentLastActiveStarPos downTo expectedLastActiveStarPos.inc()).forEach { starPos ->
-            starStates[starPos] = createInactiveWidgetReviewStarStateFrom(
+            starStates[starPos].value = createInactiveWidgetReviewStarStateFrom(
                 config = this,
                 delay = abs(currentLastActiveStarPos - starPos) * STAR_ANIM_DELAY,
                 starRating = starPos.inc()
@@ -187,7 +188,7 @@ private fun recreateAffectedStarStates(
         }
     } else if (currentLastActiveStarPos < expectedLastActiveStarPos) {
         (currentLastActiveStarPos.inc()..expectedLastActiveStarPos).forEach { starPos ->
-            starStates[starPos] = createActiveWidgetReviewStarStateFrom(
+            starStates[starPos].value = createActiveWidgetReviewStarStateFrom(
                 config = this,
                 delay = abs(currentLastActiveStarPos.inc() - starPos) * STAR_ANIM_DELAY,
                 starRating = starPos.inc()
@@ -198,15 +199,15 @@ private fun recreateAffectedStarStates(
 
 fun updateNonAffectedStarStates(
     config: WidgetReviewAnimatedRatingConfig,
-    starStates: MutableList<ReviewStarState>
+    starStates: List<MutableState<ReviewStarState>>
 ) {
     val currentLastActiveStarPos = starStates.indexOfLast {
-        it is ReviewStarState.Active
+        it.value is ReviewStarState.Active
     }
     val affectedStarRange = currentLastActiveStarPos..config.rating.dec()
     (Int.ZERO until STAR_COUNT).forEach { starPos ->
         if (starPos !in affectedStarRange) {
-            starStates[starPos] = starStates[starPos].update(config, starPos.inc())
+            starStates[starPos].value = starStates[starPos].value.update(config, starPos.inc())
         }
     }
 }
