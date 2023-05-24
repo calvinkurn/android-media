@@ -10,6 +10,7 @@ data class DenomWidgetModel(
    val isHorizontalMCCM: Boolean = true,
    val imageBackgroundUrl: String? = null,
    val imageBackgroundUrlDarkMode: String? = null,
+   val showMoreText: String = "",
 )
 
 data class DenomData(

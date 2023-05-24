@@ -21,6 +21,6 @@ class RechargeMCCMProductsRepositoryImpl @Inject constructor(
         channelName: String
     ): DenomWidgetModel = withContext(dispatchers.io) {
         val data = getRechargeMCCMUseCase.execute(clientNumbers, dgCategoryIds, dgOperatorIds, channelName)
-        return@withContext mapper.mapDigiPersoToMCCMProducts(data)
+        return@withContext mapper.mapDigiPersoToMCCMProducts(data.recommendationData)
     }
 }

@@ -63,9 +63,25 @@ class DigitalDenomMapper @Inject constructor() {
         )
     }
 
-    fun mapDigiPersoToMCCMProducts(data: DigitalDigiPersoGetPersonalizedItem): DenomWidgetModel {
-        //TODO MAP perso to mccm
-        return DenomWidgetModel()
+    fun mapDigiPersoToMCCMProducts(data: PersoRecommendationData): DenomWidgetModel {
+        return if (!data.items.isNullOrEmpty()) {
+            val firstProduct = data.items.first()
+            val denomList: MutableList<DenomData> = mutableListOf()
+            denomList.addAll(data.items.map {
+                digiPersoToMCCMItems(it)
+            })
+            val denomWidgetModel =  DenomWidgetModel(
+                mainTitle = data.title,
+                isHorizontalMCCM = firstProduct.mediaUrlType.equals(MCCM_LAYOUT_TYPE_HORIZONTAL,true),
+                imageBackgroundUrl = firstProduct.mediaURL,
+                imageBackgroundUrlDarkMode = firstProduct.mediaURLDarkMode,
+                showMoreText = data.textLink,
+                listDenomData = denomList
+            )
+            return denomWidgetModel
+        } else {
+            return DenomWidgetModel()
+        }
     }
 
     private fun getMainDataCollections(inputMultiTab: DigitalCatalogProductInputMultiTab): Pair<List<RechargeCatalogDataCollection>?, List<RechargeCatalogDataCollection>?> {
@@ -199,7 +215,31 @@ class DigitalDenomMapper @Inject constructor() {
         }
     }
 
+    private fun digiPersoToMCCMItems(perso: PersoRecommendationItem): DenomData {
+        return perso.let {
+            DenomData(
+                id = it.trackingData.productId,
+                //TODO need to asses status
+                //TODO need to asses promoStatus
+                categoryId = it.trackingData.categoryId, //TODO need to asses categoryId
+                operatorId = it.trackingData.operatorId,
+                //TODO need to asses isSpecialPromo
+                title = it.title,
+                price = it.price,
+                //TODO need to asses pricePlain,
+                slashPrice = it.slashedPrice,
+                //TODO need to asses slashedPricePlain
+                isShowChevron = !it.descriptions.isNullOrEmpty(),
+                quotaInfo = it.label1,
+                expiredDate = it.label2,
+                discountLabel = it.discount,
+            )
+        }
+    }
+
     companion object {
+        const val MCCM_LAYOUT_TYPE_DROPDOWN = "dropdown"
+        const val MCCM_LAYOUT_TYPE_HORIZONTAL = "horizontal"
         const val CLUSTER_MCCM_TYPE = "MCCM"
         const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"
         const val EMPTY_PRICE = "0"

@@ -388,15 +388,23 @@ class DigitalPDPDataPlanFragment :
         viewModel.mccmProductsData.observe(viewLifecycleOwner) {
             when(it) {
                 is RechargeNetworkResult.Success -> {
-                    //TODO UPDATE MCCM
+                    if (it.data.listDenomData.isNotEmpty()) {
+                        if (productId >= 0) {
+                            viewModel.setAutoSelectedDenom(
+                                it.data.listDenomData,
+                                productId.toString()
+                            )
+                        }
+                        val selectedPositionMCCM =
+                            viewModel.getSelectedPositionId(it.data.listDenomData)
+                        onSuccessMCCM(it.data, selectedPositionMCCM)
+                    } else {
+                        onLoadingAndFailMCCM()
+                    }
                 }
 
-                is RechargeNetworkResult.Fail -> {
-                    //TODO FAIL MCCM
-                }
-
-                is RechargeNetworkResult.Loading -> {
-                    //TODO Loading MCCM
+                is RechargeNetworkResult.Fail, RechargeNetworkResult.Loading -> {
+                    onLoadingAndFailMCCM()
                 }
             }
         }
@@ -424,7 +432,7 @@ class DigitalPDPDataPlanFragment :
                         onSuccessSortFilter()
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
-                    onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
+                    //onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
                     if (viewModel.isEmptyDenomMCCM(
                             denomData.data.denomFull.listDenomData,
@@ -444,7 +452,7 @@ class DigitalPDPDataPlanFragment :
 
                 is RechargeNetworkResult.Fail -> {
                     onFailedDenomFull()
-                    onLoadingAndFailMCCM()
+                    //onLoadingAndFailMCCM()
                 }
 
                 is RechargeNetworkResult.Loading -> {
@@ -452,7 +460,7 @@ class DigitalPDPDataPlanFragment :
                     hideEmptyState()
                     onShimmeringDenomFull()
                     onShimmeringOmniWidget()
-                    onLoadingAndFailMCCM()
+                    //onLoadingAndFailMCCM()
                 }
             }
         }
