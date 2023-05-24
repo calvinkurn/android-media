@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryCardBinding
+import com.tokopedia.play.databinding.ItemPlayExploreCategoryShimmerBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
@@ -36,6 +37,6 @@ internal class CategoryWidgetViewHolder {
         }
     }
 
-    internal class Shimmer(private val binding: ItemPlayExploreCategoryCardBinding) :
+    internal class Shimmer(private val binding: ItemPlayExploreCategoryShimmerBinding) :
         RecyclerView.ViewHolder(binding.root) {} //TODO() temp layout
 }

@@ -9,6 +9,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryCardBinding
+import com.tokopedia.play.databinding.ItemPlayExploreCategoryShimmerBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
 
 /**
@@ -53,7 +54,7 @@ class CategoryWidgetAdapterDelegate private constructor(){
             parent: ViewGroup,
             basicView: View
         ): CategoryWidgetViewHolder.Shimmer {
-            val binding = ItemPlayExploreCategoryCardBinding.inflate(
+            val binding = ItemPlayExploreCategoryShimmerBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
