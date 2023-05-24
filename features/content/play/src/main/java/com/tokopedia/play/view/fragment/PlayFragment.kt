@@ -8,8 +8,8 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import androidx.annotation.Nullable
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
@@ -21,7 +21,6 @@ import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -57,6 +56,7 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
 import com.tokopedia.content.common.view.addKeyboardInsetsListener
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
@@ -103,7 +103,7 @@ class PlayFragment @Inject constructor(
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
     private val sheetMaxHeight: Int
-        get() = (getScreenHeight() * SHEET_MAX_PERCENTAGE).roundToIntOrZero()
+        get() = (view?.height?.times(SHEET_MAX_PERCENTAGE))?.roundToIntOrZero().orZero()
 
     val viewModelProviderFactory = object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -146,8 +146,8 @@ class PlayFragment @Inject constructor(
 
                 variantSheet.dialog?.window?.setDimAmount(0f)
                 view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
-                    variantSheet.view?.findViewById<ConstraintLayout>(com.tkpd.atcvariant.R.id.cl_atc_variant)?.layoutParams?.height =
-                        sheetMaxHeight - insets.systemWindowInsetBottom - ivClose.top
+                    variantSheet.view?.findViewById<LinearLayout>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.layoutParams?.height =
+                        sheetMaxHeight - offset16
                 }
             }
         }
