@@ -38,7 +38,7 @@ class CartSingleOWOCTest {
     }
 
     @Test
-    fun happyFlowTest() {
+    fun happyFlowTest_SingleOWOCGroup() {
         activityRule.launchActivity(null)
 
         val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
