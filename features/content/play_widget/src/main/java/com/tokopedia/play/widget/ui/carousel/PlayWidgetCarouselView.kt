@@ -215,6 +215,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         updateChannels(
             mModel,
             selectedPosition = nextPosition,
+            shouldRoughlyScroll = true,
         )
     }
 
@@ -229,6 +230,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     private fun updateChannels(
         channels: List<PlayWidgetChannelUiModel> = mModel,
         selectedPosition: Int = mSelectedWidgetPos,
+        shouldRoughlyScroll: Boolean = false,
     ) {
         val dataWithFake = getDataWithFake(channels)
 
@@ -240,11 +242,21 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             )
         }) {
             if (channels.isEmpty()) return@submitList
-            roughlyScrollTo(selectedPosition) {
+            if (shouldRoughlyScroll) {
+                roughlyScrollTo(selectedPosition) {
+                    onWidgetSelected(selectedPosition)
+
+                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
+                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
+                }
+            } else {
+                binding.rvChannels.smoothScrollToPosition(selectedPosition)
                 onWidgetSelected(selectedPosition)
 
-                val focusedWidgets = getFocusedWidgets(binding.rvChannels)
-                mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
+                binding.rvChannels.post {
+                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
+                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
+                }
             }
         }
     }
@@ -284,7 +296,9 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             val firstItem = layoutManager.findFirstCompletelyVisibleItemPosition()
             val view = binding.rvChannels.findViewHolderForAdapterPosition(firstItem)?.itemView ?: return@post
             val scrollBy = ((2 * view.x + view.width) / 2 - binding.rvChannels.width / 2).toInt()
+
             binding.rvChannels.scrollBy(scrollBy, 0)
+
             onScrolled()
         }
     }
