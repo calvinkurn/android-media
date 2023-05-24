@@ -149,7 +149,7 @@ class FeedCampaignRibbonView(
 
                         startDelayProcess(THREE_SECOND) {
                             root.setTransition(root.currentState, R.id.availability_state)
-                            root.transitionToStart()
+                            root.transitionToEnd()
                         }
                     }
                 }
@@ -159,7 +159,7 @@ class FeedCampaignRibbonView(
 
                         startDelayProcess(THREE_SECOND) {
                             root.setTransition(root.currentState, R.id.start_in_state)
-                            root.transitionToStart()
+                            root.transitionToEnd()
                         }
                     }
                 }
@@ -167,12 +167,14 @@ class FeedCampaignRibbonView(
         }
     }
 
-    fun bindCampaignReminder(campaign: FeedCardCampaignModel) {
-        mCampaign = campaign
-        if (campaign.isReminderActive) {
-            binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
-        } else {
-            binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
+    fun bindCampaignReminder(campaignReminderStatus: Boolean) {
+        mCampaign = mCampaign?.copy(isReminderActive = campaignReminderStatus)
+        if (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING) {
+            if (mCampaign?.isReminderActive == true) {
+                binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
+            } else {
+                binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
+            }
         }
     }
 

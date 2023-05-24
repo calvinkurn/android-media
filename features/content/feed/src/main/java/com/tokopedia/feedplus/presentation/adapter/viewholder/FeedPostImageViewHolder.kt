@@ -25,7 +25,6 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
@@ -264,7 +263,7 @@ class FeedPostImageViewHolder(
             }
 
             if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
-                bindCampaignRibbonReminder(element.campaign)
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
@@ -297,10 +296,6 @@ class FeedPostImageViewHolder(
                 }
             }
         }
-    }
-
-    private fun bindCampaignRibbonReminder(campaign: FeedCardCampaignModel) {
-        campaignView.bindCampaignReminder(campaign)
     }
 
     private fun updateProductTagText(element: FeedCardImageContentModel) {

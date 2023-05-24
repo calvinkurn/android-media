@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -215,6 +216,10 @@ class FeedPostVideoViewHolder(
 
             if (payloads.contains(FEED_POST_COMMENT_COUNT)) {
                 bindComments(it)
+            }
+
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
