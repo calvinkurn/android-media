@@ -1234,7 +1234,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
                 videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
-                volume_icon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                volume_icon?.setImageResource(
+                    if (!GridPostAdapter.isMute) com.tokopedia.iconunify.R.drawable.iconunify_volume_up
+                    else com.tokopedia.iconunify.R.drawable.iconunify_volume_mute
+                )
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
