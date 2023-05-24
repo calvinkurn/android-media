@@ -5,8 +5,6 @@ import com.tokopedia.logisticseller.data.model.RescheduleReasonOptionModel
 import com.tokopedia.logisticseller.data.model.RescheduleTimeOptionModel
 
 sealed class ReschedulePickupUiEvent {
-    data class OpenBottomSheet(val bottomSheetState: RescheduleBottomSheetState) :
-        ReschedulePickupUiEvent()
 
     object SaveReschedule : ReschedulePickupUiEvent()
     data class LoadRescheduleInfo(val orderId: String) : ReschedulePickupUiEvent()
@@ -18,7 +16,6 @@ sealed class ReschedulePickupUiEvent {
     data class CustomReason(val reason: String) : ReschedulePickupUiEvent()
 
     data class ClickSubtitle(val url: String) : ReschedulePickupUiEvent()
-    object CloseBottomSheet : ReschedulePickupUiEvent()
     data class CloseDialog(val success: Boolean) : ReschedulePickupUiEvent()
     object PressBack : ReschedulePickupUiEvent()
 }

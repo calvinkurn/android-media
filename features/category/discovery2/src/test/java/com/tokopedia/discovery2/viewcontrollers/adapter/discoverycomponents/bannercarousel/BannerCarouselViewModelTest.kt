@@ -308,6 +308,7 @@ class BannerCarouselViewModelTest {
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+        unmockkObject(DiscoveryDataMapper)
     }
 
 
