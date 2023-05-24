@@ -30,6 +30,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
 
     override fun bind(element: VideoModel) {
         if (!element.url.contains(STRING_DEFAULT_TRANSCODING)) {
+            itemView.image.setImageResource(com.tokopedia.design.R.drawable.ic_loading_image)
             itemView.image.setOnClickListener {
                 if (element.url.isNotBlank()) {
                     listener.onVideoPlayerClicked(

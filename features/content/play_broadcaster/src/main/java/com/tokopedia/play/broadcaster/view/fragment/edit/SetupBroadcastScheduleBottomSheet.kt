@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
@@ -91,7 +90,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(BroadcastScheduleViewModel::class.java)
 
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheet_Setup_Pinned)
+        setStyle(DialogFragment.STYLE_NORMAL, com.tokopedia.play.broadcaster.R.style.BottomSheet_Setup_Pinned)
         initBottomSheet()
     }
 
@@ -126,15 +125,15 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
         isFullpage = false
         isDragable = true
         isHideable = true
-        setTitle(getString(R.string.play_broadcast_add_schedule_info))
-        val view = View.inflate(requireContext(), R.layout.bottom_sheet_play_broadcast_setup_schedule, null)
+        setTitle(getString(com.tokopedia.play.broadcaster.R.string.play_broadcast_add_schedule_info))
+        val view = View.inflate(requireContext(), com.tokopedia.play.broadcaster.R.layout.bottom_sheet_play_broadcast_setup_schedule, null)
         setChild(view)
     }
 
     private fun initView(view: View) {
         with(view) {
-            container = findViewById(R.id.container)
-            dateTimePicker = findViewById(R.id.date_time_picker)
+            container = findViewById(com.tokopedia.play.broadcaster.R.id.container)
+            dateTimePicker = findViewById(com.tokopedia.play.broadcaster.R.id.date_time_picker)
             safeInitButton()
         }
     }
@@ -150,7 +149,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
             onDateChangedListener = null
         )
 
-        btnSet?.text = getString(R.string.play_broadcast_set_schedule)
+        btnSet?.text = getString(com.tokopedia.play.broadcaster.R.string.play_broadcast_set_schedule)
         btnSet?.setOnClickListener {
             viewModel.setBroadcastSchedule(dateTimePicker.selectedDate)
             analytic.clickSaveScheduleOnFinalSetupPage()
