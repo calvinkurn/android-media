@@ -222,22 +222,27 @@ class UniversalInboxFragment :
         var index = Int.ZERO
         if (headlineIndexList != null && headlineIndexList?.isNotEmpty() == true) {
             val pageNum = endlessRecyclerViewScrollListener?.currentPage ?: Int.ZERO
-            if (pageNum == Int.ZERO) {
+            if (pageNum == Int.ZERO) { // Get headline position for first page recommendation
                 headlineExperimentPosition =
                     headlineIndexList?.get(Int.ZERO) ?: HEADLINE_POS_NOT_TO_BE_ADDED
+                // If the headline index size is 2 and page number is 1 (second page)
             } else if (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT &&
                 pageNum < HEADLINE_ADS_BANNER_COUNT
             ) {
                 headlineExperimentPosition =
-                    headlineIndexList?.get(Int.ONE) ?: HEADLINE_POS_NOT_TO_BE_ADDED
-                index = Int.ONE
+                    headlineIndexList?.get(Int.ONE) ?: HEADLINE_POS_NOT_TO_BE_ADDED // Get the second index
+                index = Int.ONE // Set index for topAds sdk
             }
-            if ((
-                headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED ||
-                    (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT && pageNum < HEADLINE_ADS_BANNER_COUNT)
-                ) &&
-                headlineExperimentPosition <= adapter.itemCount &&
-                (!isAdded || (headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT))
+            if (
+                (
+                    headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED ||
+                        (
+                            headlineIndexList?.size == HEADLINE_ADS_BANNER_COUNT &&
+                                pageNum < HEADLINE_ADS_BANNER_COUNT
+                            ) // If the headline index size is 2 and page number is 1 (second page)
+                    ) &&
+                headlineExperimentPosition <= adapter.itemCount && // Prevent out of bound exception
+                !isAdded // Only 1 headline allowed
             ) {
                 addTopAdsHeadlineUiModel(index)
             }
@@ -262,7 +267,8 @@ class UniversalInboxFragment :
 
     private fun setTopAdsBannerExperiment() {
         if (topAdsBannerExperimentPosition != TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED &&
-            topAdsBannerExperimentPosition <= adapter.itemCount && !isTopAdsBannerAdded
+            topAdsBannerExperimentPosition <= adapter.itemCount && // Prevent out of bound
+            !isTopAdsBannerAdded // Only one banner experiment allowed
         ) {
             val position = if (isAdded) {
                 topAdsBannerExperimentPosition + SHIFTING_INDEX
@@ -289,16 +295,18 @@ class UniversalInboxFragment :
         showLoadMoreLoading()
         topAdsHeadlineViewModel.getTopAdsHeadlineData(
             viewModel.getHeadlineAdsParam(Int.ZERO),
-        { data ->
-            headlineData = data
-            if (data.data.isEmpty()) {
-                return@getTopAdsHeadlineData
+            { data ->
+                headlineData = data
+                if (data.data.isEmpty()) {
+                    return@getTopAdsHeadlineData
+                }
+                setHeadlineIndexList(data)
+                viewModel.loadFirstPageRecommendation()
+            },
+            {
+                viewModel.loadFirstPageRecommendation()
             }
-            setHeadlineIndexList(data)
-            viewModel.loadFirstPageRecommendation()
-        }, {
-            viewModel.loadFirstPageRecommendation()
-        })
+        )
     }
 
     private fun setHeadlineIndexList(data: CpmModel) {
@@ -348,7 +356,7 @@ class UniversalInboxFragment :
     override fun onTdnBannerResponse(categoriesList: MutableList<List<TopAdsImageViewModel>>) {
         if (categoriesList.isEmpty()) return
         // If response size is 2, then there are 2 types of banner (carousel & single)
-        // one below static menu & one in the product recomm
+        // one below static menu & one in the product recommendation
         if (categoriesList.size == TOP_ADS_BANNER_COUNT) {
             topAdsBannerInProductCards = categoriesList[Int.ONE]
             setTopAdsBannerExperimentPosition()
