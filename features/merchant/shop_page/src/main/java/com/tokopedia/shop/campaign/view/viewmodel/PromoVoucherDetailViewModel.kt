@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.PromoVoucherDetail
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherDetailUseCase
@@ -34,11 +35,11 @@ class PromoVoucherDetailViewModel @Inject constructor(
     val useVoucherResult: LiveData<Result<Boolean>>
         get() = _useVoucherResult
 
-    fun getVoucherDetail(categorySlug: String) {
+    fun getVoucherDetail(slug: String) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val voucherDetail = getPromoVoucherDetailUseCase.execute(categorySlug)
+                val voucherDetail = getPromoVoucherDetailUseCase.execute(slug)
                 _voucherDetail.postValue(Success(voucherDetail))
             },
             onError = { throwable ->

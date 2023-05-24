@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.shop.R
+import com.tokopedia.applink.ApplinkConst
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -25,21 +26,24 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.user.session.UserSessionInterface
 
 class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BUNDLE_KEY_CATEGORY_SLUG = "category_slug"
+        private const val BUNDLE_KEY_SLUG = "slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
 
         @JvmStatic
         fun newInstance(
-            categorySlug: String,
+            slug: String,
             promoVoucherCode: String
         ): PromoVoucherDetailBottomSheet {
             return PromoVoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(BUNDLE_KEY_CATEGORY_SLUG, categorySlug)
+                    putString(BUNDLE_KEY_SLUG, slug)
                     putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
                 }
             }
@@ -63,9 +67,12 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[PromoVoucherDetailViewModel::class.java] }
-    private val categorySlug by lazy { arguments?.getString(BUNDLE_KEY_CATEGORY_SLUG).orEmpty() }
+    private val slug by lazy { arguments?.getString(BUNDLE_KEY_SLUG).orEmpty() }
     private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +112,7 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
         observeVoucherDetail()
         observeRedeemVoucher()
         observeUseVoucher()
-        viewModel.getVoucherDetail(categorySlug)
+        viewModel.getVoucherDetail(slug)
     }
 
 
@@ -237,6 +244,17 @@ class PromoVoucherDetailBottomSheet : BottomSheetUnify() {
 
     fun setOnVoucherUseSuccess(onVoucherUseSuccess : () -> Unit) {
         this.onVoucherUseSuccess = onVoucherUseSuccess
+    }
+
+    private fun redirectToVoucherProductPage(voucherId: Long) {
+        val route = UriUtil.buildUri(
+            ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
+            userSession.shopId,
+            voucherId.toString()
+        )
+        context?.let {
+            RouteManager.route(context, route)
+        }
     }
 
 }

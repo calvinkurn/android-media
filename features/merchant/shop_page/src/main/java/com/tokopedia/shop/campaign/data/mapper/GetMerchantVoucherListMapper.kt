@@ -15,7 +15,8 @@ class GetMerchantVoucherListMapper @Inject constructor() {
                     voucherName = voucher.title,
                     minimumPurchase = voucher.minimumUsageAmount,
                     remainingQuota = voucher.quotaLeft,
-                    source = ExclusiveLaunchVoucher.VoucherSource.MerchantCreated
+                    source = ExclusiveLaunchVoucher.VoucherSource.MerchantCreated,
+                    slug = voucher.slug
                 )
             }
         }

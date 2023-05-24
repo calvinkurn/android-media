@@ -150,11 +150,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             setUseDarkBackground(determineBackground())
             setOnVoucherClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
-                if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated) {
-                    redirectToVoucherProductPage(selectedVoucher.id)
-                } else {
-                    showVoucherDetailBottomSheet(selectedVoucher)
-                }
+                showVoucherDetailBottomSheet(selectedVoucher)
             }
             setOnVoucherClaimClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClaimClick
@@ -162,31 +158,13 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             }
             setOnVoucherUseClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherUseClick
-                redirectToVoucherProductPage(selectedVoucher.id)
-                dismiss()
+                showVoucherDetailBottomSheet(selectedVoucher)
             }
-        }
-    }
-
-    private fun redirectToVoucherProductPage(voucherId: Long) {
-        val route = UriUtil.buildUri(
-            ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
-            userSession.shopId,
-            voucherId.toString()
-        )
-        context?.let {
-            RouteManager.route(context, route)
         }
     }
 
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
         if (!isAdded) return
-
-        val categorySlug = if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
-            selectedVoucher.source.categorySlug
-        } else {
-            ""
-        }
 
         val promoVoucherCode = if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
             selectedVoucher.source.voucherCode
@@ -195,7 +173,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         }
 
         val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(
-            categorySlug = categorySlug,
+            slug = selectedVoucher.slug,
             promoVoucherCode = promoVoucherCode
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
