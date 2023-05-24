@@ -29,6 +29,8 @@ internal class CategoryWidgetViewHolder {
                 ivCategoryCreator.loadImage(item.video.coverUrl)
                 tvCategoryView.text = item.totalView.totalViewFmt
                 layoutLiveBadge.root.showWithCondition(item.channelType == PlayWidgetChannelType.Live)
+                val currentPosition = adapterPosition + 1
+                tvPlayCategoryRank.text = "$currentPosition."
             }
         }
 

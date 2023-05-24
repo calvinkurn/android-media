@@ -12,7 +12,7 @@
         android:layout_height="86dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_play_category_rank"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -93,4 +93,17 @@
         app:layout_constraintVertical_bias="1.0"
         app:typographyType="small"
         tools:text="16.5rb" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_play_category_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/unify_space_4"
+        app:layout_constraintTop_toTopOf="@+id/iv_category_video"
+        app:layout_constraintEnd_toStartOf="@id/iv_category_video"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="1." />
 </androidx.constraintlayout.widget.ConstraintLayout>
