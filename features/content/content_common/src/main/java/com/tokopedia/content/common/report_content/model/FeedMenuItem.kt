@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable
 
 data class FeedMenuItem(
     val name: String,
-    var drawable: Drawable?,
+    val drawable: Drawable?,
     val type: FeedMenuIdentifier,
     val contentData: FeedContentData? = null
 )

@@ -14,14 +14,14 @@ import com.tokopedia.unifyprinciples.R as unifyR
  */
 class FeedMenuViewHolder(
     private val binding: ItemFeedThreeDotsMenuBinding,
-    private val listener: Listener,
+    private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: FeedMenuItem) {
         binding.apply {
             tvName.text = item.name
-            ivIcon.setImageDrawable(item.drawable)
-            if (item.type == FeedMenuIdentifier.LAPORKAN){
+            if (item.drawable != null) ivIcon.setImageDrawable(item.drawable)
+            if (item.type == FeedMenuIdentifier.LAPORKAN) {
                 tvName.setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
@@ -46,7 +46,7 @@ class FeedMenuViewHolder(
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ): FeedMenuViewHolder {
             return FeedMenuViewHolder(
                 ItemFeedThreeDotsMenuBinding.inflate(
