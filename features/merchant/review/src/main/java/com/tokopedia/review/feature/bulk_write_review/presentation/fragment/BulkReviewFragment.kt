@@ -105,6 +105,9 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         private const val SUBMIT_LOADER_MAX_ALPHA = 0.5f
         private const val GLOBAL_ERROR_MIN_ALPHA = 0f
         private const val GLOBAL_ERROR_MAX_ALPHA = 1f
+
+        private const val APP_LINK_PARAM_INVOICE = "invoice"
+        private const val APP_LINK_PARAM_UTM_SOURCE = "utm_source"
     }
 
     @Inject
@@ -122,6 +125,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         ViewModelProvider(requireActivity(), viewModelFactory).get(BulkReviewViewModel::class.java)
     }
     private val activityResultHandler by lazy(LazyThreadSafetyMode.NONE) { ActivityResultHandler() }
+    private val appLinkHandler by lazy(LazyThreadSafetyMode.NONE) { AppLinkHandler() }
     private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
     private val coachMarkHandler by lazy(LazyThreadSafetyMode.NONE) { CoachMarkHandler() }
     private val dialogHandler by lazy(LazyThreadSafetyMode.NONE) { DialogHandler() }
@@ -279,7 +283,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             false
         }
         binding?.globalErrorBulkReview?.setActionClickListener {
-            viewModel.getData()
+            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         }
         binding?.viewOverlay?.setOnClickListener { /* noop, just to block the view behind */ }
     }
@@ -343,11 +347,19 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            viewModel.getData()
+            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         } else {
             val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
-            viewModel.onRestoreInstanceState(cacheManager)
+            viewModel.onRestoreInstanceState(
+                saveInstanceCacheManager = cacheManager,
+                onFailedRestoreState = {
+                    viewModel.getData(
+                        appLinkHandler.getInvoiceNumber(),
+                        appLinkHandler.getUtmSource()
+                    )
+                }
+            )
         }
     }
 
@@ -786,6 +798,16 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 }
                 else -> super@BulkReviewFragment.onActivityResult(requestCode, resultCode, data)
             }
+        }
+    }
+
+    private inner class AppLinkHandler {
+        fun getInvoiceNumber(): String {
+            return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_INVOICE).orEmpty()
+        }
+
+        fun getUtmSource(): String {
+            return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_UTM_SOURCE).orEmpty()
         }
     }
 

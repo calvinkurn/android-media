@@ -110,7 +110,8 @@
     <string name="content_desc_headerAction">button action</string>
     <string name="content_desc_menu">button menu</string>
     <string name="content_desc_caption">text caption</string>
-    <string name="content_product_bs_title">Dalam post ini</string>
+    <string name="content_product_bs_title">Produk pilihan</string>
+    <string name="content_product_bs_title_with_promo">Produk dan promo pilihan</string>
 
 
     <string name="feed_color_pojo_dms_hex_black_value">#000000</string>
@@ -200,8 +201,8 @@
     <string name="feeds_asgc_disc_x_products">Cek Sekarang! %d Barang Diskon s.d %s</string>
     <string name="feeds_asgc_disc_one_products">Cek Sekarang! Diskon s.d %s</string>
     <string name="feeds_ads_text">Ad</string>
-    <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
-    <string name="feeds_asgc_restock_text">Barang Restock</string>
+    <string name="feeds_asgc_new_product_text">Produk Terbaru</string>
+    <string name="feeds_asgc_restock_text">Produk Restock</string>
 
     //video Tab in feed
     <string name="feed_video_tab_success_add_reminder">Kami akan kirim pengingat, ya!</string>
@@ -209,7 +210,7 @@
     <string name="feed_video_tab_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="feed_video_tab_failed_to_set_reminder_text">Gagal pasang pengingat. Coba lagi, ya.</string>
     <string name="feed_video_tab_failed_to_unset_reminder_text">Gagal batalkan pengingat. Coba lagi, ya.</string>
-    <string name="feed_asgc_diskon_toko">Barang Diskon</string>
+    <string name="feed_asgc_diskon_toko">Produk Diskon</string>
     <string name="feed_asgc_flash_sale_toko">Flash Sale</string>
     <string name="feed_asgc_rilisan_special">Rilisan Spesial</string>
     <string name="feed_asgc_reminder_activate_fst_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Flash Sale dimulai.</string>
@@ -260,4 +261,9 @@ produk eksklusif ini.</string>
 
     <!-- Product Sharing Experience -->
     <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
+    <string name="feed_product_discount_percent">%d%%</string>
+
+    <!-- Product List Bottom Sheet-->
+    <string name="feed_product_add_to_cart">+ Keranjang</string>
+    <string name="feed_product_buy">Beli</string>
 </resources>

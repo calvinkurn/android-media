@@ -43,7 +43,7 @@
         app:layout_constraintStart_toEndOf="@+id/pdp_guideline_1"
         app:layout_constraintTop_toTopOf="@+id/info_detail_title"
         app:typographyType="display_2"
-        tools:text="4 hari asdf asdf asdf aslkdjf a;slkdjf a;lskdjf aslkdjf ;alksdjf ;alksdjf as;lkdjf askldfj l;askdj "
+        tools:text="4 hari"
         tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
