@@ -145,9 +145,15 @@ class PlayFragment @Inject constructor(
                 if (::variantSheet.isInitialized.not()) return
 
                 variantSheet.dialog?.window?.setDimAmount(0f)
-                view?.rootView?.doOnApplyWindowInsets { _, insets, _, _ ->
-                    variantSheet.view?.findViewById<LinearLayout>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)?.layoutParams?.height =
-                        sheetMaxHeight - offset16
+                val bottomSheetWrapper = variantSheet.view?.findViewById<LinearLayout>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
+                val rootView = variantSheet.view?.findViewById<View>(com.tkpd.atcvariant.R.id.cl_atc_variant)
+
+                bottomSheetWrapper?.layoutParams = bottomSheetWrapper?.layoutParams?.apply {
+                    height = sheetMaxHeight - offset16 //adjust bottom sheet wrapper height
+                }
+
+                rootView?.layoutParams = rootView?.layoutParams?.apply {
+                    height = ViewGroup.LayoutParams.MATCH_PARENT // fit to parent
                 }
             }
         }
