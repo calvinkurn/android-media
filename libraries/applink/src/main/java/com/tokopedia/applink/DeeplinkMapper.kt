@@ -20,6 +20,7 @@ import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedExplore
+import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedFollowing
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationHomeFeedVideo
 import com.tokopedia.applink.content.DeeplinkMapperContent.getWebHostWebViewLink
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
@@ -348,7 +349,7 @@ object DeeplinkMapper {
         ),
         DLP.startWith(ApplinkConst.BUYER_ORDER_EXTENSION, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION),
         DLP.startWith(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT),
-        DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
+        DLP.startWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.TELKOMSEL_OMNI) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
@@ -458,6 +459,10 @@ object DeeplinkMapper {
         DLP.exact(
             ApplinkConst.FEED_VIDEO,
             targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
+        ),
+        DLP.startWith(
+            ApplinkConst.FEED_FOLLOWING,
+            targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedFollowing(deeplink) }
         ),
         DLP(
             Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),

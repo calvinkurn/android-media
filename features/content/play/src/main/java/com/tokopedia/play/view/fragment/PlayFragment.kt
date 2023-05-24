@@ -56,7 +56,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.play_common.util.extension.dismissToaster
-import com.tokopedia.play_common.view.addKeyboardInsetsListener
+import com.tokopedia.content.common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins

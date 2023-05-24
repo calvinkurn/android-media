@@ -13,9 +13,7 @@ import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.Ev
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.EventName.VIEW_HOMEPAGE_IRIS
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.PlayTrackerConst.PROMOTIONS
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker.PlayTrackerConst.USER_ID
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class PlayAnalyticsTracker @Inject constructor(
     private val irisSession: IrisSession,
@@ -520,7 +518,7 @@ class PlayAnalyticsTracker @Inject constructor(
                 getGeneralDataNew(eventName, eventCategory, eventAction, eventLabel)
                         .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>
         )
-        
+
     }
     /**
      * Data Generator
