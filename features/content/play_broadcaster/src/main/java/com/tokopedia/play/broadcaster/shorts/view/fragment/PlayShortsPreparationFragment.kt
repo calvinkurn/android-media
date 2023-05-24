@@ -288,6 +288,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        openShortsAffiliateTncBottomSheet()
     }
 
     private fun setupView() {
