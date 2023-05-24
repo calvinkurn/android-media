@@ -4,7 +4,7 @@ import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gm.common.utils.PowerMerchantSpannableUtil
+import com.tokopedia.gm.common.utils.SpannableUtil
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhomecommon.R
@@ -24,6 +24,7 @@ class RichListCaptionViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_rich_list_caption_item
+        private const val BOLD_TEXT_REGEX = "<b.*?>(.*?)</b>"
     }
 
     private val binding by lazy { ShcRichListCaptionItemBinding.bind(itemView) }
@@ -36,22 +37,32 @@ class RichListCaptionViewHolder(
         with(binding) {
             if (element.ctaText.isNotBlank() && element.url.isNotBlank()) {
                 val ctaTextColor = com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                val caption = PowerMerchantSpannableUtil.createSpannableString(
-                    text = element.caption.parseAsHtml(),
+                val caption = SpannableUtil.createSpannableString(
+                    text = element.caption.parseAsHtml().toString(),
                     highlightText = element.ctaText,
                     colorId = root.context.getResColor(ctaTextColor),
+                    boldTextList = getBoldText(element.caption),
                     isBold = true
                 ) {
                     onCtaClicked(element.url)
                 }
-                tvShcCaption.apply {
-                    movementMethod = LinkMovementMethod.getInstance()
+                tvShcCaption.run {
                     text = caption
+                    movementMethod = LinkMovementMethod.getInstance()
                 }
             } else {
                 tvShcCaption.text = element.caption.parseAsHtml()
+                tvShcCaption.setOnClickListener {
+                    onCtaClicked(element.url)
+                }
                 URLSpanNoUnderline.stripUnderlines(tvShcCaption)
             }
         }
+    }
+
+    private fun getBoldText(caption: String): List<String> {
+        val regex = BOLD_TEXT_REGEX.toRegex()
+        val results = regex.find(caption)
+        return results?.groups?.map { it?.value.orEmpty() }.orEmpty()
     }
 }
