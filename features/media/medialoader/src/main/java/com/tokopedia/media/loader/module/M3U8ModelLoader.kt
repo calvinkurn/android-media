@@ -18,6 +18,7 @@ import com.google.android.exoplayer2.source.hls.playlist.HlsMasterPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsMediaPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylist
 import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylistParser
+import com.tokopedia.network.utils.ErrorHandler
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -42,6 +43,7 @@ class M3U8ModelLoader : ModelLoader<String, Bitmap> {
         return try {
             model.isM3u8() && model.hasVideoID()
         } catch (e: Exception) {
+            ErrorHandler.getErrorMessage(null, M3U8LoaderException().apply { initCause(e) })
             false
         }
     }
@@ -146,6 +148,7 @@ class M3U8DataFetcher(private val masterPlaylistUrl: String) : DataFetcher<Bitma
             retriever.setDataSource(url, mutableMapOf())
             retriever.getFrameAtTime(0L, MediaMetadataRetriever.OPTION_CLOSEST)
         } catch (t: Throwable) {
+            ErrorHandler.getErrorMessage(null, M3U8LoaderException().apply { initCause(t) })
             null
         } finally {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
