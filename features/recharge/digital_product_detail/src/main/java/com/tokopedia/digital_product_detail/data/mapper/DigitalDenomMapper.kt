@@ -227,7 +227,7 @@ class DigitalDenomMapper @Inject constructor() {
                 slashPricePlain = it.slashedPricePlain,
                 isShowChevron = !it.descriptions.isNullOrEmpty(),
                 quotaInfo = it.label1,
-                expiredDate = it.label2,
+                expiredDays = it.label2,
                 discountLabel = it.discount,
             )
         }
