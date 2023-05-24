@@ -10,6 +10,8 @@ import com.tokopedia.mediauploader.common.VideoMetaDataExtractorImpl
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.data.store.base.CacheDataStoreImpl
 import com.tokopedia.mediauploader.common.data.store.util.Serializer
+import com.tokopedia.mediauploader.data.repository.LogRepository
+import com.tokopedia.mediauploader.data.repository.LogRepositoryImpl
 import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
 import com.tokopedia.mediauploader.tracker.TrackerCacheDataStoreImpl
 import com.tokopedia.user.session.UserSession
@@ -36,6 +38,15 @@ object MediaUploaderDebugModule {
     @MediaUploaderTestScope
     fun provideGraphqlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    @MediaUploaderTestScope
+    fun provideLogRepository(
+        trackerCacheStore: TrackerCacheDataStore,
+        videoMetaDataExtractor: VideoMetaDataExtractor
+    ): LogRepository {
+        return LogRepositoryImpl(trackerCacheStore, videoMetaDataExtractor)
     }
 
     @Provides

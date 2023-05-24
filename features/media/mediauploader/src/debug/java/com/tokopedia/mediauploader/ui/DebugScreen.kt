@@ -32,7 +32,8 @@ import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.mediauploader.DebugMediaLoaderEvent
 import com.tokopedia.mediauploader.DebugMediaLoaderState
 import com.tokopedia.mediauploader.DebugMediaUploaderViewModelContract
-import com.tokopedia.mediauploader.LogType
+import com.tokopedia.mediauploader.data.entity.LogType
+import com.tokopedia.mediauploader.data.entity.Logs
 import com.tokopedia.mediauploader.ui.component.BrowseFileButton
 import com.tokopedia.mediauploader.ui.component.ConfigButton
 import com.tokopedia.mediauploader.ui.component.LoadImage
@@ -45,7 +46,9 @@ import kotlinx.coroutines.launch
 
 val debugViewModel = object : DebugMediaUploaderViewModelContract {
     override val state: StateFlow<DebugMediaLoaderState> =
-        MutableStateFlow(DebugMediaLoaderState())
+        MutableStateFlow(DebugMediaLoaderState().also {
+            it.log(LogType.Welcome, listOf(Logs("Foo", "Bar")))
+        })
 
     override fun setAction(event: DebugMediaLoaderEvent) = Unit
     override fun setSourceId(value: String) = Unit
@@ -90,8 +93,8 @@ fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
                 )
 
                 AnimatedVisibility(hasBrowseFile) {
-                    val file = state.filePaths.firstOrNull()
-                    if (file != null) LoadImage(file)
+                    val file = state.filePath.firstOrNull()
+                    if (file != null) LoadImage(file.toString())
                 }
 
                 ProgressLoaderItem(
@@ -123,6 +126,7 @@ fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
 
                 BrowseFileButton(
                     modifier = Modifier
+                        .padding(end = 8.dp)
                         .constrainAs(browseButton) {
                             bottom.linkTo(imagePreview.bottom)
                             end.linkTo(imagePreview.end)
@@ -143,11 +147,11 @@ fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
                         }
                 ) {
                     items(state.logs.reversed()) {
-                        val (type, content) = it
+                        val (type, logs) = it
 
                         LogItem(
                             type = LogType.map(type),
-                            content = content,
+                            logs = logs,
                             modifier = Modifier
                                 .animateItemPlacement()
                         )

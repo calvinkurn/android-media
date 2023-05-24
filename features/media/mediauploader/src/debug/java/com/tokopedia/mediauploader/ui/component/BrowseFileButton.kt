@@ -24,17 +24,17 @@ inline fun BrowseFileButton(
     val context = LocalContext.current
 
     Button(
+        modifier = modifier.padding(6.dp),
         shape = RoundedCornerShape(65.dp),
         colors = ButtonDefaults.buttonColors(
             NestTheme.colors.NN._0
         ),
-        modifier = modifier
-            .padding(6.dp),
         onClick = {
-            onClick(MediaPicker.intent(context) {
+            onClick(MediaPicker.intentWithGalleryFirst(context) {
                 singleSelectionMode()
                 maxVideoFileSize(262144000)
                 maxVideoDuration(60000)
+                minVideoDuration(1000)
             })
         }
     ) {

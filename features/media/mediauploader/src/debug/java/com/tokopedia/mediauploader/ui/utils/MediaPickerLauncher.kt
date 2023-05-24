@@ -18,7 +18,9 @@ fun launchMediaPicker(
         val result = MediaPicker.result(it.data)
 
         if (result.originalPaths.isNotEmpty()) {
-            viewModel.setAction(DebugMediaLoaderEvent.FileChosen(result.originalPaths))
+            viewModel.setAction(DebugMediaLoaderEvent.FileChosen(
+                result.originalPaths.first()
+            ))
         }
 
         content()
