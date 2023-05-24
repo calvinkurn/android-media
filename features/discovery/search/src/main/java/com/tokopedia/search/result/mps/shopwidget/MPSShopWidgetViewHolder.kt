@@ -135,7 +135,7 @@ class MPSShopWidgetViewHolder(
             slashedPrice =
                 if (product.discountPercentage > 0) product.originalPrice else "",
             formattedPrice = product.priceFormat,
-            countSoldRating = product.ratingAverage,
+            countSoldRating = product.ratingAverage.takeUnless { it == "0" } ?: "",
             labelGroupList = product.labelGroupList.map(::toLabelGroup),
             hasAddToCartButton = primaryButton != null,
             addToCardText = primaryButton?.text ?: "",
