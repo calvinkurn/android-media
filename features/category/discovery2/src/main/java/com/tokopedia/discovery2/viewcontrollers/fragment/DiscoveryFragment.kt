@@ -1447,7 +1447,7 @@ open class DiscoveryFragment :
                         handleAutoScrollUI()
                     }
                     if (this.isResumed) {
-                        recyclerView.smoothScrollToPosition(position, false)
+                        recyclerView.smoothScrollToPosition(position)
                     }
                     isManualScroll = false
                 }
