@@ -91,7 +91,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -248,7 +248,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -378,7 +378,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -454,7 +454,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -586,7 +586,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -666,7 +666,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
@@ -840,7 +840,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(
@@ -919,7 +919,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)
@@ -943,7 +943,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.switchProductCarouselChipTab(channelId = channelId, chipId = chipId)
             advanceTimeBy(SWITCH_PRODUCT_CAROUSEL_TAB_DELAY)

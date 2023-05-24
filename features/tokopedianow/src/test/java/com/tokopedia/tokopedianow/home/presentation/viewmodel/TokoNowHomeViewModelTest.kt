@@ -18,6 +18,7 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMedi
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmallWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -128,7 +129,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -169,7 +170,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
 
         onGetHomeLayoutItemList_returnNull()
@@ -187,14 +188,14 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -208,13 +209,13 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(createHomeLayoutData()))
 
-        viewModel.onScroll(1, LocalCacheModel(), listOf(), false)
+        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
 
         val expectedResponse = BannerDataModel(
             channelModel = ChannelModel(
@@ -308,7 +309,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -411,7 +412,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -463,7 +464,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -514,11 +515,11 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
 
         // fetch widget one by one
-        viewModel.onScroll(1, LocalCacheModel(), listOf(), false)
+        viewModel.onScroll(1, LocalCacheModel(), listOf(), true)
 
         // set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(Exception())
@@ -550,7 +551,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -571,7 +572,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -598,7 +599,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -632,7 +633,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -653,7 +654,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -695,7 +696,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -731,7 +732,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
 
         viewModel.refreshQuestList()
@@ -755,7 +756,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -811,7 +812,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
 
         viewModel.getLayoutComponentData(
@@ -895,7 +896,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
 
         viewModel.getLayoutComponentData(
@@ -948,6 +949,49 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0")
+        )
+
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRepurchaseWidgetUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given getRepurchaseProduct error when getHomeLayout should NOT add old repurchase widget`() {
+        val error = NullPointerException()
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRepurchaseWidget_thenReturn(error)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
             enableNewRepurchase = false
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
@@ -972,6 +1016,52 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
 
     @Test
     fun `given getRepurchaseProduct empty when getHomeLayout should NOT add repurchase widget`() {
+        val repurchaseProductResponse = RepurchaseData(
+            title = "Kamu pernah beli",
+            products = listOf()
+        )
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRepurchaseWidget_thenReturn(repurchaseProductResponse)
+
+        viewModel.getHomeLayout(
+            localCacheModel = LocalCacheModel(),
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = true
+        )
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+
+        val homeLayoutItems = listOf(
+            TokoNowChooseAddressWidgetUiModel(id = "0")
+        )
+
+        val expectedResult = Success(
+            HomeLayoutListUiModel(
+                items = homeLayoutItems,
+                state = TokoNowLayoutState.UPDATE
+            )
+        )
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRepurchaseWidgetUseCaseCalled()
+
+        viewModel.homeLayoutList
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given getRepurchaseProduct empty when getHomeLayout should NOT add old repurchase widget`() {
         val repurchaseProductResponse = RepurchaseData(
             title = "Kamu pernah beli",
             products = listOf()
@@ -1096,10 +1186,10 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(2, LocalCacheModel(), listOf(), false)
+        viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
 
         val expected = listOf(
             createHomeProductCardUiModel(
@@ -1122,13 +1212,68 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
     }
 
     @Test
+    fun `given homeLayoutItemList contains old repurchase when getRepurchaseWidgetProducts should product list`() {
+        val channelId = "1001"
+        val productId = "1"
+
+        val homeLayoutResponse = listOf(
+            HomeLayoutResponse(
+                id = "1001",
+                layout = "recent_purchase_tokonow",
+                header = Header(
+                    name = "Kamu pernah beli",
+                    serverTimeUnix = 0
+                )
+            )
+        )
+        val repurchaseProduct = RepurchaseProduct(
+            id = productId,
+            stock = 5,
+            maxOrder = 4,
+            minOrder = 3
+        )
+        val repurchaseResponse = RepurchaseData(
+            title = "Kamu pernah beli",
+            products = listOf(repurchaseProduct)
+        )
+
+        onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+        onGetRepurchaseWidget_thenReturn(repurchaseResponse)
+
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf(), false)
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+        viewModel.onScroll(2, LocalCacheModel(), listOf(), false)
+
+        val expected = listOf(
+            createHomeProductCardUiModel(
+                channelId = channelId,
+                productId = productId,
+                quantity = 0,
+                stock = 5,
+                product = ProductCardModel(
+                    hasAddToCartButton = true,
+                    nonVariant = ProductCardModel.NonVariant(minQuantity = 3, maxQuantity = 4)
+                ),
+                position = 1,
+                headerName = "Kamu pernah beli"
+            )
+        )
+
+        val actual = getOldRepurchaseProduct()
+
+        verifyGetHomeLayoutDataUseCaseCalled()
+        verifyGetRepurchaseWidgetUseCaseCalled()
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `given homeLayoutItemList does NOT contain repurchase when getRepurchaseWidgetProducts should return empty list`() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -1175,7 +1320,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
 
         viewModel.getLayoutComponentData(
@@ -1261,10 +1406,10 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
-        viewModel.onScroll(2, LocalCacheModel(), listOf(), false)
+        viewModel.onScroll(2, LocalCacheModel(), listOf(), true)
 
         val repurchaseUiModel = TokoNowRepurchaseUiModel(
             id = "1001",
@@ -1323,7 +1468,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -1368,7 +1513,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -1420,7 +1565,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             removeAbleWidgets = mutableListOf(
                 HomeRemoveAbleWidget(TokoNowLayoutType.SHARING_EDUCATION, hasSharingEducationBeenRemoved)
             ),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -1464,7 +1609,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -1510,7 +1655,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2030,7 +2175,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2084,7 +2229,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2139,7 +2284,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2193,7 +2338,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -2243,7 +2388,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2300,7 +2445,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2396,7 +2541,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -2449,7 +2594,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -2495,7 +2640,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = emptyList(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
@@ -2627,7 +2772,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2687,7 +2832,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2746,7 +2891,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
@@ -2810,7 +2955,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetPlayWidget_thenReturn(widgetState)
 
-        viewModel.getHomeLayout(LocalCacheModel(), emptyList(), false)
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList(), true)
         viewModel.autoRefreshPlayWidget(playWidgetUiModel)
 
         val homePlayWidgetUiModel = HomePlayWidgetUiModel(
@@ -2879,7 +3024,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetPlayWidget_thenReturn(playWidgetState)
 
-        viewModel.getHomeLayout(LocalCacheModel(), emptyList(), false)
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList(), true)
         viewModel.getLayoutComponentData(LocalCacheModel())
         viewModel.updatePlayWidget(channelId, totalView)
 
@@ -2953,7 +3098,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
         onGetPlayWidget_thenReturn(Exception())
 
-        viewModel.getHomeLayout(LocalCacheModel(), emptyList(), false)
+        viewModel.getHomeLayout(LocalCacheModel(), emptyList(), true)
         viewModel.autoRefreshPlayWidget(widget)
 
         val homeLayoutItems = listOf(
@@ -3094,7 +3239,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3153,7 +3298,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3218,7 +3363,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3299,7 +3444,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3372,7 +3517,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3431,7 +3576,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3496,7 +3641,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3577,7 +3722,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3650,7 +3795,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3715,7 +3860,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel
@@ -3782,7 +3927,7 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
         viewModel.getHomeLayout(
             localCacheModel = localCacheModel,
             removeAbleWidgets = listOf(),
-            enableNewRepurchase = false
+            enableNewRepurchase = true
         )
         viewModel.getLayoutComponentData(
             localCacheModel = localCacheModel

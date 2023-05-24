@@ -89,7 +89,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -253,7 +253,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, "2", 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -432,7 +432,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -591,7 +591,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -711,7 +711,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "1", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
@@ -777,7 +777,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             viewModel.getHomeLayout(
                 localCacheModel = LocalCacheModel(),
                 removeAbleWidgets = listOf(),
-                enableNewRepurchase = isEnableNewRepurchase
+                enableNewRepurchase = true
             )
             viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
             viewModel.onCartQuantityChanged(channelId, productId, 1, "5", 0, false, TokoNowLayoutType.PRODUCT_RECOM)
