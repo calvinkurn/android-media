@@ -389,6 +389,7 @@ class DigitalPDPDataPlanFragment :
             when(it) {
                 is RechargeNetworkResult.Success -> {
                     if (it.data.listDenomData.isNotEmpty()) {
+
                         if (productId >= 0) {
                             viewModel.setAutoSelectedDenom(
                                 it.data.listDenomData,
@@ -397,17 +398,25 @@ class DigitalPDPDataPlanFragment :
                         }
                         val selectedPositionMCCM =
                             viewModel.getSelectedPositionId(it.data.listDenomData)
-                        onSuccessMCCM(it.data, selectedPositionMCCM)
+                        if (it.data.isHorizontalMCCM) {
+                            onLoadingAndFailMCCMVertical()
+                            onSuccessMCCM(it.data, selectedPositionMCCM)
+                        } else {
+                            onLoadingAndFailMCCM()
+                            onSuccessMCCMVertical(it.data, selectedPositionMCCM)
+                        }
                         if (selectedPositionMCCM == null) {
                             onHideBuyWidget()
                         }
                     } else {
                         onLoadingAndFailMCCM()
+                        onLoadingAndFailMCCMVertical()
                     }
                 }
 
                 is RechargeNetworkResult.Fail, RechargeNetworkResult.Loading -> {
                     onLoadingAndFailMCCM()
+                    onLoadingAndFailMCCMVertical()
                 }
             }
         }
@@ -871,15 +880,49 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun onSuccessMCCMVertical(denomFull: DenomWidgetModel, selectedPosition: Int?) {
+        binding?.let {
+            var selectedInitialPosition = selectedPosition
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
+                viewModel.updateSelectedPositionId(selectedPosition)
+                onShowBuyWidget(viewModel.selectedFullProduct.denomData)
+            } else {
+                selectedInitialPosition = null
+            }
+            if (denomFull.listDenomData.isNotEmpty()) {
+                it.rechargePdpPaketDataPromoWidgetVertical.show()
+                it.rechargePdpPaketDataPromoWidgetVertical.renderMCCMVertical(
+                    this,
+                    denomFull,
+                    selectedInitialPosition
+                )
+            } else {
+                it.rechargePdpPaketDataPromoWidgetVertical.hide()
+            }
+        }
+    }
+
     private fun onLoadingAndFailMCCM() {
         binding?.let {
             it.rechargePdpPaketDataPromoWidget.hide()
         }
     }
 
+    private fun onLoadingAndFailMCCMVertical() {
+        binding?.let {
+            it.rechargePdpPaketDataPromoWidgetVertical.hide()
+        }
+    }
+
     private fun onClearSelectedMCCM(position: Int) {
         binding?.let {
             it.rechargePdpPaketDataPromoWidget.clearSelectedProduct(position)
+        }
+    }
+
+    private fun onClearSelectedMCCMVertical(position: Int) {
+        binding?.let {
+            it.rechargePdpPaketDataPromoWidgetVertical.clearSelectedProductMCCMVertical(position)
         }
     }
 
@@ -1005,6 +1048,7 @@ class DigitalPDPDataPlanFragment :
 
                 sortFilterPaketData.hide()
                 rechargePdpPaketDataPromoWidget.hide()
+                rechargePdpPaketDataPromoWidgetVertical.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
                 rechargePdpPaketDataOmniWidget.hide()
@@ -1493,7 +1537,7 @@ class DigitalPDPDataPlanFragment :
         isShowBuyWidget: Boolean
     ) {
         hideKeyboard()
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
             }
@@ -1510,9 +1554,11 @@ class DigitalPDPDataPlanFragment :
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE
+                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
+                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
             ) {
                 onClearSelectedMCCM(viewModel.selectedFullProduct.position)
+                onClearSelectedMCCMVertical(viewModel.selectedFullProduct.position)
             }
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,

@@ -229,6 +229,7 @@ class DigitalDenomMapper @Inject constructor() {
                 quotaInfo = it.label1,
                 expiredDays = it.label2,
                 discountLabel = it.discount,
+                productDescriptions = it.descriptions
             )
         }
     }

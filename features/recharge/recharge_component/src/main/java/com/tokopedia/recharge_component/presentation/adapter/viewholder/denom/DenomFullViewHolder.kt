@@ -229,7 +229,7 @@ class DenomFullViewHolder(
 
             cardDenomFull.run {
                 if (!isPlacebo) {
-                    layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || isOnlyOneSize){
+                    layoutParams.width = if (denomType == DenomWidgetEnum.FULL_TYPE || denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE || isOnlyOneSize){
                         ViewGroup.LayoutParams.MATCH_PARENT
                     } else getDimens(R.dimen.widget_denom_full_width)
 

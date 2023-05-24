@@ -35,6 +35,8 @@ object MCCMQuery {
                 discount
                 price
                 descriptions
+                pricePlain
+                slashedPricePlain
                 trackingData {
                     productID
                     operatorID

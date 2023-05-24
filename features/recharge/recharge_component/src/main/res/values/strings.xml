@@ -11,4 +11,6 @@
     <string name="out_of_stock_label_denom_digital">Stok Habis</string>
     <string name="omni_widget_title">Cek Penawaran Lainnya</string>
     <string name="omni_widget_desc">Temukan paket menarik dari Telkomsel di sini!</string>
+    <string name="mccm_show_more">Lihat lebih banyak</string>
+    <string name="mccm_show_less">Lihat lebih sedikit</string>
 </resources>
