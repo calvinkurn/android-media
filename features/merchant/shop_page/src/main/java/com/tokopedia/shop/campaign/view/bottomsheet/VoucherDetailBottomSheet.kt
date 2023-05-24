@@ -28,7 +28,6 @@ import javax.inject.Inject
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.shop.databinding.BottomsheetVoucherDetailBinding
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -213,9 +212,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
             tpgVoucherPrice.text = voucherDetail.voucherPrice
 
             webViewTnc.loadPartialWebView(voucherDetail.tnc)
-            webViewHowToUse.isVisible = voucherDetail.howToUse.isNotEmpty()
-            labelHowToUse.isVisible = voucherDetail.howToUse.isNotEmpty()
-            webViewHowToUse.loadPartialWebView(voucherDetail.howToUse)
 
             btnClaimPromoVoucher.text = voucherDetail.buttonLabel
             btnClaimPromoVoucher.isEnabled = !voucherDetail.isDisabledButton
