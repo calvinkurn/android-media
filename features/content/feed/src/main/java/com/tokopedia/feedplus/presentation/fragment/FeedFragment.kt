@@ -28,7 +28,6 @@ import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
@@ -58,7 +57,6 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -248,10 +246,7 @@ class FeedFragment :
 
     override fun onMenuClicked(
         id: String,
-        editable: Boolean,
-        deletable: Boolean,
-        reportable: Boolean,
-        contentData: FeedContentData,
+        menuItems: List<FeedMenuItem>,
         trackerModel: FeedTrackerDataModel
     ) {
         currentTrackerData = trackerModel
@@ -263,7 +258,7 @@ class FeedFragment :
                     it.classLoader
                 )
             feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(editable, deletable, reportable, contentData), id)
+            feedMenuSheet.setData(menuItems, id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
         }
     }
@@ -1022,53 +1017,6 @@ class FeedFragment :
                 )
             }
         }
-    }
-
-    private fun getMenuItemData(
-        editable: Boolean,
-        deletable: Boolean,
-        reportable: Boolean,
-        contentData: FeedContentData
-    ): List<FeedMenuItem> {
-        val items = arrayListOf<FeedMenuItem>()
-
-        if (editable) {
-            items.add(
-                FeedMenuItem(
-                    iconUnify = IconUnify.EDIT,
-                    name = com.tokopedia.feedcomponent.R.string.feed_component_edit,
-                    type = FeedMenuIdentifier.Edit,
-                    contentData = contentData
-                )
-            )
-        }
-        items.add(
-            FeedMenuItem(
-                iconUnify = IconUnify.VISIBILITY,
-                name = feedR.string.feed_watch_mode,
-                type = FeedMenuIdentifier.WatchMode
-            )
-        )
-        if (reportable) {
-            items.add(
-                FeedMenuItem(
-                    iconUnify = IconUnify.WARNING,
-                    name = com.tokopedia.content.common.R.string.content_common_menu_report,
-                    type = FeedMenuIdentifier.Report
-                )
-            )
-        }
-        if (deletable) {
-            items.add(
-                FeedMenuItem(
-                    iconUnify = IconUnify.DELETE,
-                    name = com.tokopedia.content.common.R.string.content_common_menu_delete,
-                    type = FeedMenuIdentifier.Delete
-                )
-            )
-        }
-
-        return items
     }
 
     private fun openProductTagBottomSheet(

@@ -6,7 +6,6 @@ import android.view.MotionEvent
 import androidx.annotation.LayoutRes
 import com.google.android.exoplayer2.ui.PlayerControlView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.feedplus.R
@@ -24,13 +23,7 @@ import com.tokopedia.feedplus.presentation.customview.FeedPlayerControl
 import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedLikeModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
@@ -103,9 +96,8 @@ class FeedPostVideoViewHolder(
             )
         }
 
-
-                val postGestureDetector = GestureDetector(
-                    binding.root.context,
+        val postGestureDetector = GestureDetector(
+            binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
@@ -145,7 +137,8 @@ class FeedPostVideoViewHolder(
 
                 override fun onLongPress(e: MotionEvent) {
                 }
-            })
+            }
+        )
 
         binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
             postGestureDetector.onTouchEvent(motionEvent)
@@ -172,12 +165,7 @@ class FeedPostVideoViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
-                        FeedContentData(
-                            data.text, data.id, data.author.id, absoluteAdapterPosition
-                        ),
+                        data.menuItems,
                         trackerData
                     )
                 }
@@ -212,7 +200,9 @@ class FeedPostVideoViewHolder(
                 listener.onPostImpression(
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                         it
-                    ), it.id, absoluteAdapterPosition
+                    ),
+                    it.id,
+                    absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()

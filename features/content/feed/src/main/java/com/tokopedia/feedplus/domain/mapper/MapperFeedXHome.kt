@@ -1,9 +1,11 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.feedplus.data.FeedXAuthor
-import com.tokopedia.feedplus.data.FeedXCampaign
-import com.tokopedia.feedplus.data.FeedXCard
+import com.tokopedia.content.common.report_content.model.FeedContentData
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.data.*
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_PLAY_LIVE
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
@@ -11,35 +13,9 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
-import com.tokopedia.feedplus.data.FeedXComments
-import com.tokopedia.feedplus.data.FeedXFollow
-import com.tokopedia.feedplus.data.FeedXHomeEntity
-import com.tokopedia.feedplus.data.FeedXLike
-import com.tokopedia.feedplus.data.FeedXMedia
-import com.tokopedia.feedplus.data.FeedXProduct
-import com.tokopedia.feedplus.data.FeedXScore
-import com.tokopedia.feedplus.data.FeedXView
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignRestrictionModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCtaGradientModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCommentItemModel
-import com.tokopedia.feedplus.presentation.model.FeedCommentModel
-import com.tokopedia.feedplus.presentation.model.FeedFollowModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedMediaModel
-import com.tokopedia.feedplus.presentation.model.FeedMediaTagging
-import com.tokopedia.feedplus.presentation.model.FeedModel
-import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
-import com.tokopedia.feedplus.presentation.model.FeedScoreModel
-import com.tokopedia.feedplus.presentation.model.FeedShareModel
-import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.iconunify.IconUnify
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
@@ -78,7 +54,6 @@ object MapperFeedHome {
             text = card.text,
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
-
                     texts = cta.texts,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
@@ -118,9 +93,7 @@ object MapperFeedHome {
                 imageUrl = medias.firstOrNull()?.mediaUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            reportable = card.reportable,
-            editable = card.editable,
-            deletable = card.deletable,
+            menuItems = getMenuItems(card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
@@ -180,9 +153,7 @@ object MapperFeedHome {
                 imageUrl = medias.firstOrNull()?.coverUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            reportable = card.reportable,
-            editable = card.editable,
-            deletable = card.deletable,
+            menuItems = getMenuItems(card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             playChannelId = card.playChannelId
@@ -353,6 +324,44 @@ object MapperFeedHome {
         label = score.label,
         value = score.value
     )
+
+    private fun getMenuItems(card: FeedXCard): List<FeedMenuItem> {
+        val contentData = FeedContentData(
+            card.text,
+            card.id,
+            card.author.id
+        )
+        return buildList {
+            add(
+                FeedMenuItem(
+                    iconUnify = IconUnify.VISIBILITY,
+                    name = R.string.feed_watch_mode,
+                    type = FeedMenuIdentifier.WatchMode,
+                    contentData = contentData
+                )
+            )
+            if (card.reportable) {
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.VISIBILITY,
+                        name = R.string.feed_watch_mode,
+                        type = FeedMenuIdentifier.WatchMode,
+                        contentData = contentData
+                    )
+                )
+            }
+            if (card.deletable) {
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.DELETE,
+                        name = com.tokopedia.content.common.R.string.content_common_menu_delete,
+                        type = FeedMenuIdentifier.Delete,
+                        contentData = contentData
+                    )
+                )
+            }
+        }
+    }
 
     private fun isImagesPost(card: FeedXCard): Boolean {
         return (
