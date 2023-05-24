@@ -54,6 +54,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -92,6 +93,8 @@ class FeedBaseFragment :
 
     @Inject
     lateinit var feedNavigationAnalytics: FeedNavigationAnalytics
+
+    private var mCoachMarkJob: Job? = null
 
     private val adapter by lazy {
         FeedPagerAdapter(
@@ -591,7 +594,8 @@ class FeedBaseFragment :
     }
 
     private fun showOnboarding(meta: MetaModel) {
-        viewLifecycleOwner.lifecycleScope.launch {
+        mCoachMarkJob?.cancel()
+        mCoachMarkJob = viewLifecycleOwner.lifecycleScope.launch {
             delay(ONBOARDING_SHOW_DELAY)
             mOnboarding?.dismiss()
             mOnboarding = ImmersiveFeedOnboarding.Builder(requireContext())
