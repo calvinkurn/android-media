@@ -46,6 +46,7 @@ class GetMerchantVoucherListUseCase @Inject constructor(
       quotaLeft
       quotaLeftLabel
       baseCode
+      eligibleProductIDs
       eligibleProductIDsLabel
       catalogType
       promoType
