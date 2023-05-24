@@ -35,7 +35,7 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
     private val adapter: FeedMenuAdapter by lazy {
         FeedMenuAdapter(object : FeedMenuViewHolder.Listener {
             override fun onClick(item: FeedMenuItem) {
-                if (item.type != FeedMenuIdentifier.LAPORKAN) {
+                if (item.type != FeedMenuIdentifier.Report) {
                     dismiss()
                 } else {
                     showHeader = true

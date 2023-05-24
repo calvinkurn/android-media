@@ -16,9 +16,9 @@ data class FeedContentData(
     val rowNumber: Int
 )
 
-enum class FeedMenuIdentifier(val value: String) {
-    EDIT("Ubah"),
-    LAPORKAN("Report"),
-    MODE_NONTON("Watch Mode"),
-    DELETE("Hapus")
+enum class FeedMenuIdentifier {
+    Edit,
+    Report,
+    WatchMode,
+    Delete;
 }

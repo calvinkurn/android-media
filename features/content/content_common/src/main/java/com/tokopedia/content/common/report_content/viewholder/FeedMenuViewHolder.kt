@@ -21,7 +21,7 @@ class FeedMenuViewHolder(
         binding.apply {
             tvName.text = item.name
             if (item.drawable != null) ivIcon.setImageDrawable(item.drawable)
-            if (item.type == FeedMenuIdentifier.LAPORKAN) {
+            if (item.type == FeedMenuIdentifier.Report) {
                 tvName.setTextColor(
                     MethodChecker.getColor(
                         itemView.context,

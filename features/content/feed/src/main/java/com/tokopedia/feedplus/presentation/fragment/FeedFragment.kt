@@ -273,7 +273,7 @@ class FeedFragment :
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.LAPORKAN -> {
+            FeedMenuIdentifier.Report -> {
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
@@ -285,7 +285,7 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.MODE_NONTON -> {
+            FeedMenuIdentifier.WatchMode -> {
                 adapter?.showClearView(binding.rvFeedPost.currentItem)
                 currentTrackerData?.let {
                     feedAnalytics.eventClickWatchMode(it)
@@ -293,7 +293,7 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.EDIT -> {
+            FeedMenuIdentifier.Edit -> {
                 val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
                 intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
                 intent.putExtra(
@@ -308,7 +308,7 @@ class FeedFragment :
                 startActivity(intent)
             }
 
-            FeedMenuIdentifier.DELETE -> {
+            FeedMenuIdentifier.Delete -> {
                 context?.let {
                     DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(feedR.string.dialog_delete_post_title))
@@ -1042,8 +1042,8 @@ class FeedFragment :
                         requireContext(),
                         IconUnify.EDIT
                     ),
-                    name = FeedMenuIdentifier.EDIT.value,
-                    type = FeedMenuIdentifier.EDIT,
+                    name = getString(com.tokopedia.feedcomponent.R.string.feed_component_edit),
+                    type = FeedMenuIdentifier.Edit,
                     contentData = contentData
                 )
             )
@@ -1051,8 +1051,8 @@ class FeedFragment :
         items.add(
             FeedMenuItem(
                 drawable = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY),
-                name = getString(feedR.string.feed_clear_mode),
-                type = FeedMenuIdentifier.MODE_NONTON
+                name = getString(feedR.string.feed_watch_mode),
+                type = FeedMenuIdentifier.WatchMode
             )
         )
         if (reportable) {
@@ -1067,7 +1067,7 @@ class FeedFragment :
                         )
                     ),
                     name = getString(feedR.string.feed_report),
-                    type = FeedMenuIdentifier.LAPORKAN
+                    type = FeedMenuIdentifier.Report
                 )
             )
         }
@@ -1082,8 +1082,8 @@ class FeedFragment :
                             unifyR.color.Unify_RN500
                         )
                     ),
-                    name = FeedMenuIdentifier.DELETE.value,
-                    type = FeedMenuIdentifier.DELETE
+                    name = getString(feedR.string.feed_delete),
+                    type = FeedMenuIdentifier.Delete
                 )
             )
         }
