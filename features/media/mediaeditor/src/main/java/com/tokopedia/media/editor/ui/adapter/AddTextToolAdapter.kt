@@ -11,6 +11,7 @@ import com.tokopedia.media.editor.ui.component.AddTextToolUiComponent
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.widget.ToolSelectionItem
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.R as principleR
 
 class AddTextToolAdapter(
     private val listener: AddTextToolUiComponent.Listener,
@@ -136,7 +137,7 @@ class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
                 layoutParams = lp
 
                 setBackgroundColor(
-                    ContextCompat.getColor(viewGroup.context, editorR.color.Unify_NN200)
+                    ContextCompat.getColor(viewGroup.context, principleR.color.Unify_NN200)
                 )
             }
 
