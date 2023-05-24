@@ -286,11 +286,19 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
 
     override fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {
         super.onAccordionStateChange(expanded, element)
-        val expandCollapse = if (expanded) "expand" else "collapse"
-        CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
-            "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
-            userSessionInterface?.userId ?: ""
-        )
+        if (isOriginBrand) {
+            val expandCollapse = if (expanded) "expand" else "collapse"
+            CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
+                "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
+                userSessionInterface?.userId ?: ""
+            )
+        } else {
+            val expandCollapse = if (expanded) "open" else "close"
+            CatalogAnalyticsLihatSemuaPage.sendClickDropUpButtonEvent(
+                "L1 name: ${element.catalogLibraryDataList?.rootCategoryName} - L1 ID: ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse - sort & filter: grid view - {ascending order/descending order}",
+                userSessionInterface?.userId ?: ""
+            )
+        }
     }
 
     override fun categoryListImpression(
