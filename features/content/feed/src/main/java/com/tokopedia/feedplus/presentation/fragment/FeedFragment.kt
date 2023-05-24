@@ -548,7 +548,7 @@ class FeedFragment :
 
         val action: () -> Unit = {
             trackerModel?.let {
-                feedAnalytics.eventClickProductLabel(it)
+                feedAnalytics.eventClickProductLabel(it, products)
                 feedAnalytics.eventClickContentProductLabel(it)
             }
             if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
@@ -961,6 +961,12 @@ class FeedFragment :
                         result.data,
                         feedMvcAnalytics
                     )
+                    if (!result.data.animatedInfoList.isNullOrEmpty() && currentTrackerData != null) {
+                        feedAnalytics.eventMvcWidgetImpression(
+                            currentTrackerData!!,
+                            result.data.animatedInfoList!!
+                        )
+                    }
                 }
                 is Fail -> productBottomSheet?.hideMerchantVoucherWidget()
             }
