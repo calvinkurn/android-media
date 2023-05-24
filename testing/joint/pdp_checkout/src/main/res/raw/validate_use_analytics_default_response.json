@@ -30,7 +30,8 @@
             {
               "code": "WCEPAT",
               "success": true,
-              "unique_id": "2538088-0-2051993-125529137",
+              "unique_id": "2538088-0-2051993-1255291371",
+              "cart_string_group": "2538088-0-2051993-125529137",
               "cart_id": 0,
               "order_id": 0,
               "shop_id": 2661965,
@@ -53,7 +54,7 @@
                   "code": "WCEPAT",
                   "type": "",
                   "order_id": 1,
-                  "unique_id": "2538088-0-2051993-125529137",
+                  "unique_id": "2661965-0-7377294-123297113",
                   "discount_amount": 20000,
                   "discount_details": [
                     {
@@ -128,7 +129,7 @@
             }
           },
           "ticker_info": {
-            "unique_id": "2538088-0-2051993-125529137",
+            "unique_id": "2661965-0-7377294-123297113",
             "status_code": 700002,
             "message": "Yay, sebagian ongkir untuk pesanan dalam transaksi ini ditanggung Tokopedia!"
           },

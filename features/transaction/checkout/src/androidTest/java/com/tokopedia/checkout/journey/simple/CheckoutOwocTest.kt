@@ -36,13 +36,14 @@ class CheckoutOwocTest {
     }
 
     @Test
-    fun owoc() {
+    fun newUiGroupType() {
         setup(safResponse = R.raw.saf_owoc_default_response)
         activityRule.launchActivity(null)
 
         checkoutPage {
             // Wait for SAF
             waitForData()
+            assertNewUiGroupType(activityRule)
             clickChooseDuration(activityRule)
             waitForData()
             selectFirstShippingDurationOption()
