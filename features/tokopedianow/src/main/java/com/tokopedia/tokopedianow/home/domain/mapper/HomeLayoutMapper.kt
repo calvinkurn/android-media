@@ -92,6 +92,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiM
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClaimCouponWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.oldrepurchase.HomeRepurchaseMapper
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 object HomeLayoutMapper {
@@ -162,7 +163,8 @@ object HomeLayoutMapper {
         localCacheModel: LocalCacheModel,
         isLoggedIn: Boolean,
         hasBlockedAddToCart: Boolean,
-        tickerList: List<TickerData>
+        tickerList: List<TickerData>,
+        enableNewRepurchase: Boolean
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -174,7 +176,7 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
+                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart, enableNewRepurchase)?.let { item ->
                     add(item)
                 }
 
@@ -199,11 +201,18 @@ object HomeLayoutMapper {
         removeAbleWidgets: List<HomeRemoveAbleWidget>,
         miniCartData: MiniCartSimplifiedData?,
         localCacheModel: LocalCacheModel,
-        hasBlockedAddToCart: Boolean
+        hasBlockedAddToCart: Boolean,
+        enableNewRepurchase: Boolean
     ) {
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-                mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel, hasBlockedAddToCart)?.let { item ->
+                mapToHomeUiModel(
+                    layoutResponse,
+                    miniCartData,
+                    localCacheModel,
+                    hasBlockedAddToCart,
+                    enableNewRepurchase
+                )?.let { item ->
                     add(item)
                 }
             }
@@ -352,15 +361,6 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel?>.mapTickerData(
-        item: TokoNowTickerUiModel,
-        tickerData: List<TickerData>
-    ) {
-        updateItemById(item.id) {
-            HomeLayoutItemUiModel(item.copy(tickers = tickerData), HomeLayoutItemState.LOADED)
-        }
-    }
-
     fun MutableList<HomeLayoutItemUiModel?>.mapQuestData(
         item: HomeQuestSequenceWidgetUiModel,
         questList: List<HomeQuestWidgetUiModel>,
@@ -383,6 +383,17 @@ object HomeLayoutMapper {
     ) {
         updateItemById(item.id) {
             val uiModel = mapToRepurchaseUiModel(item, response, miniCartData)
+            HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel?>.mapProductPurchaseData(
+        item: com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel,
+        response: RepurchaseData,
+        miniCartData: MiniCartSimplifiedData? = null
+    ) {
+        updateItemById(item.id) {
+            val uiModel = HomeRepurchaseMapper.mapToRepurchaseUiModel(item, response, miniCartData)
             HomeLayoutItemUiModel(uiModel, HomeLayoutItemState.LOADED)
         }
     }
@@ -638,6 +649,31 @@ object HomeLayoutMapper {
                 }
             }
         }
+
+        firstOrNull { it?.layout is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel }?.run {
+            val layoutUiModel = layout as com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
+            val productList = layoutUiModel.productList.toMutableList()
+            val productUiModel = productList.firstOrNull {
+                it.productId == productId
+            }
+            val index = layoutUiModel.productList.indexOf(productUiModel)
+
+            productUiModel?.product?.run {
+                if (hasVariant()) {
+                    copy(variant = variant?.copy(quantity = quantity))
+                } else {
+                    copy(
+                        hasAddToCartButton = quantity == DEFAULT_QUANTITY,
+                        nonVariant = nonVariant?.copy(quantity = quantity)
+                    )
+                }
+            }?.let {
+                updateItemById(layout.getVisitableId()) {
+                    productList[index] = productUiModel.copy(product = it)
+                    copy(layout = layoutUiModel.copy(productList = productList))
+                }
+            }
+        }
     }
 
     private fun MutableList<HomeLayoutItemUiModel?>.updateProductRecomQuantity(
@@ -822,6 +858,7 @@ object HomeLayoutMapper {
         miniCartData: MiniCartSimplifiedData? = null,
         localCacheModel: LocalCacheModel,
         hasBlockedAddToCart: Boolean,
+        isEnableNewRepurchase: Boolean,
     ): HomeLayoutItemUiModel? {
         val serviceType = localCacheModel.service_type
         val warehouseId = localCacheModel.warehouse_id
@@ -843,7 +880,11 @@ object HomeLayoutMapper {
             // region TokoNow Component
             // Layout need to fetch content data from other GQL, set state to not loaded.
             CATEGORY -> mapToCategoryLayout(response, notLoadedState)
-            REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, notLoadedState)
+            REPURCHASE_PRODUCT -> if(isEnableNewRepurchase) {
+                mapRepurchaseUiModel(response, notLoadedState)
+            } else {
+                HomeRepurchaseMapper.mapRepurchaseUiModel(response, notLoadedState)
+            }
             MAIN_QUEST -> mapQuestUiModel(response, notLoadedState)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, notLoadedState, serviceType)
             SHARING_REFERRAL -> mapSharingReferralUiModel(response, notLoadedState, warehouseId)

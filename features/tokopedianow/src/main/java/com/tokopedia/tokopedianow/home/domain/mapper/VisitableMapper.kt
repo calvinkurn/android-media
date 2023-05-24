@@ -29,6 +29,7 @@ object VisitableMapper {
             is HomeLayoutUiModel -> visitableId
             is HomeComponentVisitable -> visitableId()
             is TokoNowRepurchaseUiModel -> id
+            is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel -> id
             is TokoNowCategoryMenuUiModel -> id
             is TokoNowChooseAddressWidgetUiModel -> id
             is TokoNowTickerUiModel -> id

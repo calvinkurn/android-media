@@ -267,7 +267,11 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun getHomeLayout(localCacheModel: LocalCacheModel, removeAbleWidgets: List<HomeRemoveAbleWidget>) {
+    fun getHomeLayout(
+        localCacheModel: LocalCacheModel,
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
+        enableNewRepurchase: Boolean
+    ) {
         getHomeLayoutJob?.cancel()
         launchCatchError(block = {
             homeLayoutItemList.clear()
@@ -288,7 +292,8 @@ class TokoNowHomeViewModel @Inject constructor(
                 localCacheModel = localCacheModel,
                 isLoggedIn = userSession.isLoggedIn,
                 hasBlockedAddToCart = hasBlockedAddToCart,
-                tickerList = tickerData?.second.orEmpty()
+                tickerList = tickerData?.second.orEmpty(),
+                enableNewRepurchase = enableNewRepurchase
             )
 
             val data = HomeLayoutListUiModel(
@@ -314,7 +319,8 @@ class TokoNowHomeViewModel @Inject constructor(
     fun onScroll(
         lastVisibleItemIndex: Int,
         localCacheModel: LocalCacheModel,
-        removeAbleWidgets: List<HomeRemoveAbleWidget>
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
+        enableNewRepurchase: Boolean
     ) {
         if (shouldLoadMore(lastVisibleItemIndex)) {
             showProgressBar()
@@ -332,7 +338,8 @@ class TokoNowHomeViewModel @Inject constructor(
                     removeAbleWidgets = removeAbleWidgets,
                     miniCartData = miniCartData,
                     localCacheModel = localCacheModel,
-                    hasBlockedAddToCart = hasBlockedAddToCart
+                    hasBlockedAddToCart = hasBlockedAddToCart,
+                    enableNewRepurchase = enableNewRepurchase
                 )
 
                 getLayoutComponentData(localCacheModel)
@@ -798,12 +805,29 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
+            is com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
             else -> removeUnsupportedLayout(item)
         }
     }
 
     private suspend fun getRepurchaseDataAsync(
         item: TokoNowRepurchaseUiModel,
+        warehouseId: String
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getRepurchaseWidgetUseCase.execute(warehouseId)
+            if (response.products.isNotEmpty()) {
+                homeLayoutItemList.mapProductPurchaseData(item, response, miniCartData)
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private suspend fun getRepurchaseDataAsync(
+        item: com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel,
         warehouseId: String
     ): Deferred<Unit?> {
         return asyncCatchError(block = {

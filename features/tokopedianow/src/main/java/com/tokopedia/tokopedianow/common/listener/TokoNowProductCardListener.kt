@@ -7,28 +7,28 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRepurchaseProductViewHolder.TokoNowRepurchaseProductListener
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
-class TokoNowRepurchaseProductListener(
+class TokoNowProductCardListener(
     private val context: Context?,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
     private val userSession: UserSessionInterface,
     private val startActivityForResult: (Intent, Int) -> Unit
-) : TokoNowRepurchaseProductListener {
-    override fun onCartQuantityChanged(data: TokoNowRepurchaseProductUiModel, quantity: Int) {
+) : TokoNowProductCardViewHolder.TokoNowProductCardListener {
+    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModel.onCartQuantityChanged(
                 channelId = data.channelId,
                 productId = data.productId,
                 quantity = quantity,
                 shopId = data.shopId,
-                stock = data.availableStock,
-                isVariant = data.isVariant,
+                stock = data.stock,
+                isVariant = data.isVariant(),
                 type = TokoNowLayoutType.REPURCHASE_PRODUCT
             )
         } else {
@@ -36,15 +36,19 @@ class TokoNowRepurchaseProductListener(
         }
     }
 
-    override fun onProductCardImpressed(position: Int, data: TokoNowRepurchaseProductUiModel) {
-        trackRepurchaseImpression(position, data)
+    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
+        when (data.type) {
+            TokoNowLayoutType.REPURCHASE_PRODUCT -> trackRepurchaseImpression(position, data)
+        }
     }
 
-    override fun onProductCardClicked(position: Int, data: TokoNowRepurchaseProductUiModel) {
-        trackRepurchaseClick(position, data)
+    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
+        when (data.type) {
+            TokoNowLayoutType.REPURCHASE_PRODUCT -> trackRepurchaseClick(position, data)
+        }
     }
 
-    override fun onAddVariantClicked(data: TokoNowRepurchaseProductUiModel) {
+    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 context = it,
@@ -61,11 +65,11 @@ class TokoNowRepurchaseProductListener(
         return viewModel.createAffiliateLink(url)
     }
 
-    private fun trackRepurchaseImpression(position: Int, data: TokoNowRepurchaseProductUiModel) {
+    private fun trackRepurchaseImpression(position: Int, data: TokoNowProductCardUiModel) {
         analytics.onImpressRepurchase(position, data)
     }
 
-    private fun trackRepurchaseClick(position: Int, data: TokoNowRepurchaseProductUiModel) {
+    private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
         analytics.onClickRepurchase(position, data)
     }
 }

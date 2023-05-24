@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.common.model.olderpurchase
+package com.tokopedia.tokopedianow.common.model.oldrepurchase
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowRepurchaseTypeFactory
