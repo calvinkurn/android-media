@@ -711,6 +711,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
+            if(webView != null && isHelpUrl(url)){
+                launchWebviewForNewUrl(url);
+                return true;
+            }
             if (hasCheckOverrideAtInitialization(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
@@ -1160,7 +1164,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             globalError.setVisibility(View.GONE);
         }
         if(isHelpUrl(url)){
-            loadWeb();
+            launchWebviewForNewUrl(url);
             return;
         }
         webView.reload();
