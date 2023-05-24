@@ -362,7 +362,7 @@ class DigitalPDPDataPlanFragment :
                     binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(true)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -371,7 +371,7 @@ class DigitalPDPDataPlanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -380,7 +380,7 @@ class DigitalPDPDataPlanFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -390,7 +390,7 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -642,6 +642,12 @@ class DigitalPDPDataPlanFragment :
             listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRechargeCheckBalanceLoading()
         viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
+    }
+
+    private fun saveIndosatAccessToken(accessToken: String) {
+        val msisdn = binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: ""
+        viewModel.setRechargeUserAccessTokenLoading()
+        viewModel.saveRechargeUserAccessToken(msisdn, accessToken)
     }
 
     private fun getCatalogMenuDetail() {
@@ -1975,6 +1981,11 @@ class DigitalPDPDataPlanFragment :
                 addToCartFromUrl()
             } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                 showErrorFromCheckout(data)
+            } else if (requestCode == DigitalPDPConstant.REQUEST_CODE_INDOSAT_CHECK_BALANCE) {
+                if (data != null) {
+                    val accessToken = data.getStringExtra(EXTRA_CALLBACK_CLIENT_NUMBER) ?: ""
+                    saveIndosatAccessToken(accessToken)
+                }
             }
         }
     }
