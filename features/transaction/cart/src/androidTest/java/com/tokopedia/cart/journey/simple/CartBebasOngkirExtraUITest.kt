@@ -44,15 +44,15 @@ class CartBebasOngkirExtraUITest {
 
             assertMainContent()
 
-            assertCartShopViewHolderOnPosition(3) {
+            assertCartGroupViewHolderOnPosition(3) {
                 assertShowTokoCabangInfo()
                 assertShowFreeShippingImage()
             }
-            assertCartShopViewHolderOnPosition(6) {
+            assertCartGroupViewHolderOnPosition(6) {
                 assertNotShowTokoCabangInfo()
                 assertShowFreeShippingImage()
             }
-            assertCartShopViewHolderOnPosition(9) {
+            assertCartGroupViewHolderOnPosition(9) {
                 assertNotShowTokoCabangInfo()
                 assertNotShowFreeShippingImage()
             }

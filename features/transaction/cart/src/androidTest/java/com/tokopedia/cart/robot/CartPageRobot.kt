@@ -3,7 +3,7 @@ package com.tokopedia.cart.robot
 import android.content.Context
 import android.view.View
 import android.widget.CheckBox
-import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
@@ -25,6 +25,7 @@ import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopBottomViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
+import com.tokopedia.cart.view.viewholder.DisabledAccordionViewHolder
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -43,20 +44,43 @@ class CartPageRobot {
 
     private var cartData: CartData? = null
     private var availableCartList: List<Any> = emptyList()
+    private var unavailableCartList: List<Any> = emptyList()
 
     fun waitForData() {
         Thread.sleep(2000)
     }
 
     fun initData(context: Context) {
-        val jsonString = InstrumentationMockHelper.getRawString(context, com.tokopedia.cart.test.R.raw.cart_bundle_happy_flow_response)
+        val jsonString = InstrumentationMockHelper.getRawString(
+            context,
+            com.tokopedia.cart.test.R.raw.cart_bundle_happy_flow_response
+        )
         val jsonArray: JsonArray = CommonUtils.fromJson(
             jsonString,
             JsonArray::class.java
         )
         val jsonObject = jsonArray.asJsonArray[0].asJsonObject.getAsJsonObject("data")
-        cartData = Gson().fromJson(jsonObject, ShopGroupSimplifiedGqlResponse::class.java).shopGroupSimplifiedResponse.data
+        cartData = Gson().fromJson(
+            jsonObject,
+            ShopGroupSimplifiedGqlResponse::class.java
+        ).shopGroupSimplifiedResponse.data
         availableCartList = CartUiModelMapper.mapAvailableGroupUiModel(cartData!!)
+        unavailableCartList = CartUiModelMapper.mapUnavailableShopUiModel(context, cartData!!).first
+    }
+
+    fun initData(context: Context, cartRawRes: Int) {
+        val jsonString = InstrumentationMockHelper.getRawString(context, cartRawRes)
+        val jsonArray: JsonArray = CommonUtils.fromJson(
+            jsonString,
+            JsonArray::class.java
+        )
+        val jsonObject = jsonArray.asJsonArray[0].asJsonObject.getAsJsonObject("data")
+        cartData = Gson().fromJson(
+            jsonObject,
+            ShopGroupSimplifiedGqlResponse::class.java
+        ).shopGroupSimplifiedResponse.data
+        availableCartList = CartUiModelMapper.mapAvailableGroupUiModel(cartData!!)
+        unavailableCartList = CartUiModelMapper.mapUnavailableShopUiModel(context, cartData!!).first
     }
 
     fun assertMainContent() {
@@ -69,12 +93,16 @@ class CartPageRobot {
             RecyclerViewActions.actionOnItemAtPosition<TickerAnnouncementViewHolder>(
                 position,
                 object : ViewAction {
-                    override fun getDescription(): String = "performing assertion action on TickerAnnouncementViewHolder"
+                    override fun getDescription(): String =
+                        "performing assertion action on TickerAnnouncementViewHolder"
 
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        assertEquals(View.VISIBLE, view.findViewById<Ticker>(R.id.cartTicker).visibility)
+                        assertEquals(
+                            View.VISIBLE,
+                            view.findViewById<Ticker>(R.id.cartTicker).visibility
+                        )
                     }
                 }
             )
@@ -88,9 +116,15 @@ class CartPageRobot {
             override fun getConstraints(): Matcher<View> = ViewMatchers.isDisplayed()
 
             override fun perform(uiController: UiController?, view: View) {
-                assertEquals(View.VISIBLE, view.findViewById<CheckboxUnify>(R.id.checkbox_global).visibility)
+                assertEquals(
+                    View.VISIBLE,
+                    view.findViewById<CheckboxUnify>(R.id.checkbox_global).visibility
+                )
                 assertEquals(true, view.findViewById<CheckboxUnify>(R.id.checkbox_global).isChecked)
-                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.text_select_all).visibility)
+                assertEquals(
+                    View.VISIBLE,
+                    view.findViewById<Typography>(R.id.text_select_all).visibility
+                )
                 assertEquals(View.VISIBLE, view.visibility)
             }
         })
@@ -101,19 +135,23 @@ class CartPageRobot {
             RecyclerViewActions.actionOnItemAtPosition<CartTickerErrorViewHolder>(
                 position,
                 object : ViewAction {
-                    override fun getDescription(): String = "performing assertion action on CartTickerErrorViewHolder"
+                    override fun getDescription(): String =
+                        "performing assertion action on CartTickerErrorViewHolder"
 
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        assertEquals(message, view.findViewById<Typography>(R.id.ticker_description).text)
+                        assertEquals(
+                            message,
+                            view.findViewById<Typography>(R.id.ticker_description).text
+                        )
                     }
                 }
             )
         )
     }
 
-    fun assertFirstCartShopViewHolder(
+    fun assertFirstCartGroupViewHolder(
         view: View,
         position: Int,
         shopIndex: Int
@@ -122,16 +160,30 @@ class CartPageRobot {
             RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
                 position,
                 object : ViewAction {
-                    override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
+                    override fun getDescription(): String =
+                        "performing assertion action on first CartGroupViewHolder"
 
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        val cartGroupHolderData = availableCartList[shopIndex] as CartGroupHolderData
-                        assertEquals(cartGroupHolderData.groupName, view.findViewById<Typography>(R.id.tv_shop_name).text)
-                        assertEquals(cartGroupHolderData.fulfillmentName, view.findViewById<Typography>(R.id.tv_fulfill_district).text)
-                        assertEquals(View.VISIBLE, view.findViewById<ImageView>(R.id.image_shop_badge).visibility)
-                        assertEquals(View.VISIBLE, view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility)
+                        val cartGroupHolderData =
+                            availableCartList[shopIndex] as CartGroupHolderData
+                        assertEquals(
+                            if (cartGroupHolderData.groupBadge.isNotEmpty()) View.VISIBLE else View.GONE,
+                            view.findViewById<View>(R.id.image_shop_badge).visibility
+                        )
+                        assertEquals(
+                            cartGroupHolderData.groupName,
+                            view.findViewById<Typography>(R.id.tv_shop_name).text
+                        )
+                        assertEquals(
+                            cartGroupHolderData.fulfillmentName,
+                            view.findViewById<Typography>(R.id.tv_fulfill_district).text
+                        )
+                        assertEquals(
+                            if (cartGroupHolderData.freeShippingBadgeUrl.isNotEmpty()) View.VISIBLE else View.GONE,
+                            view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility
+                        )
                         assertEquals(
                             if (cartGroupHolderData.isCollapsed) View.VISIBLE else View.GONE,
                             view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility
@@ -145,6 +197,54 @@ class CartPageRobot {
         assertOnEachCartItem(
             view = view,
             recyclerViewId = R.id.rv_cart,
+            shopIndex = shopIndex,
+            position = position
+        )
+    }
+
+    fun assertFirstUnavailableCartGroupViewHolder(
+        view: View,
+        position: Int,
+        shopIndex: Int
+    ) {
+        onView(withId(R.id.rv_cart)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
+                position,
+                object : ViewAction {
+                    override fun getDescription(): String =
+                        "performing assertion action on first unavailable CartGroupViewHolder"
+
+                    override fun getConstraints(): Matcher<View>? = null
+
+                    override fun perform(uiController: UiController?, view: View) {
+                        val cartGroupHolderData =
+                            unavailableCartList[shopIndex] as CartGroupHolderData
+                        assertEquals(
+                            if (cartGroupHolderData.groupBadge.isNotEmpty()) View.VISIBLE else View.GONE,
+                            view.findViewById<View>(R.id.image_shop_badge).visibility
+                        )
+                        assertEquals(
+                            cartGroupHolderData.groupName,
+                            view.findViewById<Typography>(R.id.tv_shop_name).text
+                        )
+                        assertEquals(
+                            cartGroupHolderData.fulfillmentName,
+                            view.findViewById<Typography>(R.id.tv_fulfill_district).text
+                        )
+                        assertEquals(
+                            if (cartGroupHolderData.freeShippingBadgeUrl.isNotEmpty()) View.VISIBLE else View.GONE,
+                            view.findViewById<ImageUnify>(R.id.img_free_shipping).visibility
+                        )
+                        assertEquals(
+                            if (cartGroupHolderData.isCollapsed) View.VISIBLE else View.GONE,
+                            view.findViewById<RecyclerView>(R.id.rv_cart_item).visibility
+                        )
+                    }
+                }
+            )
+        )
+
+        assertOnEachUnavailableCartItem(
             shopIndex = shopIndex,
             position = position
         )
@@ -164,12 +264,37 @@ class CartPageRobot {
                     RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(
                         position + 1 + i,
                         object : ViewAction {
-                            override fun getDescription(): String = "performing assertion action on first CartShopViewHolder"
+                            override fun getDescription(): String =
+                                "performing assertion action on CartItemViewHolder"
 
                             override fun getConstraints(): Matcher<View>? = null
 
                             override fun perform(uiController: UiController?, view: View) {
-                                assertEquals(shop.productUiModelList[i].productName, view.findViewById<Typography>(R.id.text_product_name).text.toString())
+                                val cartItemHolderData = shop.productUiModelList[i]
+                                if (cartItemHolderData.isShopShown) {
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<ImageUnify>(R.id.image_shop_badge).visibility
+                                    )
+                                    assertEquals(
+                                        View.VISIBLE,
+                                        view.findViewById<Typography>(R.id.tv_shop_name).visibility
+                                    )
+                                    assertEquals(
+                                        cartItemHolderData.shopHolderData.shopName,
+                                        view.findViewById<Typography>(R.id.tv_shop_name).text
+                                    )
+                                } else {
+                                    assertEquals(
+                                        View.GONE,
+                                        view.findViewById<ConstraintLayout>(R.id.ll_shop_header).visibility
+                                    )
+                                }
+
+                                assertEquals(
+                                    cartItemHolderData.productName,
+                                    view.findViewById<Typography>(R.id.text_product_name).text.toString()
+                                )
                             }
                         }
                     )
@@ -181,34 +306,74 @@ class CartPageRobot {
 //        childRecyclerView.contentDescription = tempStoreDesc
     }
 
-    fun assertCartShopViewHolderOnPosition(position: Int, func: CartShopViewHolderRobot.() -> Unit) {
+    fun assertOnEachUnavailableCartItem(shopIndex: Int, position: Int) {
+        val shop = unavailableCartList[shopIndex] as CartGroupHolderData
+
+        for (i in 0 until shop.productUiModelList.size) {
+            onView(withId(R.id.rv_cart))
+                .perform(
+                    RecyclerViewActions.actionOnItemAtPosition<CartItemViewHolder>(
+                        position + 1 + i,
+                        object : ViewAction {
+                            override fun getDescription(): String =
+                                "performing assertion action on first CartItemViewHolder"
+
+                            override fun getConstraints(): Matcher<View>? = null
+
+                            override fun perform(uiController: UiController?, view: View) {
+                                val cartItemHolderData = shop.productUiModelList[i]
+                                assertEquals(
+                                    View.GONE,
+                                    view.findViewById<ConstraintLayout>(R.id.ll_shop_header).visibility
+                                )
+
+                                assertEquals(
+                                    cartItemHolderData.productName,
+                                    view.findViewById<Typography>(R.id.text_product_name).text.toString()
+                                )
+                            }
+                        }
+                    )
+                )
+        }
+    }
+
+    fun assertCartGroupViewHolderOnPosition(
+        position: Int,
+        func: CartGroupViewHolderRobot.() -> Unit
+    ) {
         onView(withId(R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<CartGroupViewHolder>(
                 position,
                 object : ViewAction {
-                    override fun getDescription(): String = "performing assertion action on CartShopViewHolder position $position"
+                    override fun getDescription(): String =
+                        "performing assertion action on CartGroupViewHolder position $position"
 
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        CartShopViewHolderRobot(view).apply(func)
+                        CartGroupViewHolderRobot(view).apply(func)
                     }
                 }
             )
         )
     }
 
-    fun assertCartShopBottomViewHolderOnPosition(position: Int, func: CartShopViewHolderRobot.() -> Unit) {
+    fun assertCartShopBottomViewHolderOnPosition(
+        position: Int,
+        func: CartGroupViewHolderRobot.() -> Unit
+    ) {
         onView(withId(R.id.rv_cart)).perform(
             RecyclerViewActions.actionOnItemAtPosition<CartShopBottomViewHolder>(
                 position,
                 object : ViewAction {
-                    override fun getDescription(): String = "performing assertion action on CartShopBottomViewHolder position $position"
+                    override fun getDescription(): String =
+                        "performing assertion action on CartShopBottomViewHolder position $position"
 
                     override fun getConstraints(): Matcher<View>? = null
 
                     override fun perform(uiController: UiController?, view: View) {
-                        CartShopViewHolderRobot(view).apply(func)
+                        CartGroupViewHolderRobot(view).apply(func)
                     }
                 }
             )
@@ -216,19 +381,20 @@ class CartPageRobot {
     }
 
     fun clickPromoButton() {
-        onView(withId(R.id.promo_checkout_btn_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed())).perform(object : ViewAction {
-            override fun getConstraints(): Matcher<View> {
-                return ViewMatchers.isDisplayed()
-            }
+        onView(withId(R.id.promo_checkout_btn_cart)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(object : ViewAction {
+                override fun getConstraints(): Matcher<View> {
+                    return ViewMatchers.isDisplayed()
+                }
 
-            override fun getDescription(): String {
-                return "click promo button"
-            }
+                override fun getDescription(): String {
+                    return "click promo button"
+                }
 
-            override fun perform(uiController: UiController?, view: View?) {
-                view?.performClick()
-            }
-        })
+                override fun perform(uiController: UiController?, view: View?) {
+                    view?.performClick()
+                }
+            })
     }
 
     fun clickBuyButton() {
@@ -245,6 +411,26 @@ class CartPageRobot {
                 view?.performClick()
             }
         })
+    }
+
+    fun clickDisabledItemAccordion(
+        position: Int
+    ) {
+        onView(withId(R.id.rv_cart)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<DisabledAccordionViewHolder>(
+                position,
+                object : ViewAction {
+                    override fun getDescription(): String =
+                        "performing assertion action on DisabledAccordionViewHolder position $position"
+
+                    override fun getConstraints(): Matcher<View>? = null
+
+                    override fun perform(uiController: UiController?, view: View) {
+                        view.performClick()
+                    }
+                }
+            )
+        )
     }
 
     infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {

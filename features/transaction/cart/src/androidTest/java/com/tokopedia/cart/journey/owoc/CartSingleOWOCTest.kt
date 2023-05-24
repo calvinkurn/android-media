@@ -1,4 +1,4 @@
-package com.tokopedia.cart.journey.simple
+package com.tokopedia.cart.journey.owoc
 
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @UiTest
-class CartHappyFlowTest {
+class CartSingleOWOCTest {
 
     @get:Rule
     var activityRule = object : IntentsTestRule<CartActivity>(CartActivity::class.java, false, false) {
@@ -33,12 +33,12 @@ class CartHappyFlowTest {
     @Before
     fun setup() {
         setupGraphqlMockResponse {
-            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_bundle_happy_flow_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_CART_LIST_KEY, InstrumentationMockHelper.getRawString(context, R.raw.cart_owoc_single_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 
     @Test
-    fun happyFlowTest() {
+    fun happyFlowTest_SingleOWOCGroup() {
         activityRule.launchActivity(null)
 
         val cartRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_cart)
@@ -46,14 +46,8 @@ class CartHappyFlowTest {
         cartPage {
             waitForData()
 
-            initData(context)
+            initData(context, R.raw.cart_owoc_single_response)
             assertMainContent()
-
-            scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 0)
-            assertCartSelectAllViewHolder()
-
-            scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 1)
-            assertTickerAnnouncementViewHolder(position = 1)
 
             scrollRecyclerViewToPosition(recyclerView = cartRecyclerView, position = 2)
             assertFirstCartGroupViewHolder(
