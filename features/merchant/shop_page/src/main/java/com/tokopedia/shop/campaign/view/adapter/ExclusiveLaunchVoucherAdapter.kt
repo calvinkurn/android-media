@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.databinding.ItemExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
@@ -70,7 +71,13 @@ class ExclusiveLaunchVoucherAdapter :
                         voucher.minimumPurchase.getNumberFormatted()
                     )
                 )
-                setRemainingQuota(voucher.remainingQuota)
+
+                val remainingQuota = if (voucher.remainingQuota.isMoreThanZero()) {
+                    context.getString(R.string.shop_page_placeholder_remaining_quota, voucher.remainingQuota)
+                } else {
+                    ""
+                }
+                setRemainingQuota(remainingQuota)
                 setVoucherName(voucher.voucherName)
 
                 val isMerchantCreatedVoucher = voucher.isMerchantVoucher()

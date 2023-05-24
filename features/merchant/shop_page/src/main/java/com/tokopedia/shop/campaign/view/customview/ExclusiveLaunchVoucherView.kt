@@ -1,7 +1,6 @@
 package com.tokopedia.shop.campaign.view.customview
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -34,9 +33,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
         binding?.tpgMinPurchase?.text = text
     }
 
-    fun setRemainingQuota(remainingQuota: Int) {
-        binding?.tpgRemainingQuota?.text =
-            context.getString(R.string.shop_page_placeholder_remaining_quota, remainingQuota)
+    fun setRemainingQuota(remainingQuota: String) {
+        binding?.tpgRemainingQuota?.text = remainingQuota
     }
 
     fun setOnPrimaryCtaClick(onClick: () -> Unit) {
