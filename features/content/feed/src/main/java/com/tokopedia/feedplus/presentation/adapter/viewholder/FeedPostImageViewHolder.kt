@@ -24,10 +24,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedMediaModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
 import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
@@ -41,12 +38,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.math.abs
 
 /**
@@ -90,10 +82,12 @@ class FeedPostImageViewHolder(
     init {
         with(binding) {
             indicatorFeedContent.activeColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
             )
             indicatorFeedContent.inactiveColor = ContextCompat.getColor(
-                binding.root.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
+                binding.root.context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White_44
             )
 
             rvFeedPostImageContent.layoutManager = layoutManager
@@ -123,7 +117,8 @@ class FeedPostImageViewHolder(
                 )
             }
 
-            val postGestureDetector = GestureDetector(root.context,
+            val postGestureDetector = GestureDetector(
+                root.context,
                 object : GestureDetector.SimpleOnGestureListener() {
                     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                         return true
@@ -151,7 +146,8 @@ class FeedPostImageViewHolder(
 
                     override fun onLongPress(e: MotionEvent) {
                     }
-                })
+                }
+            )
 
             rvFeedPostImageContent.setOnTouchListener { _, event ->
                 when (event.action) {
@@ -205,6 +201,8 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
@@ -217,19 +215,12 @@ class FeedPostImageViewHolder(
                             data.author.id,
                             absoluteAdapterPosition
                         ),
-                        trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data),
+                        trackerData
 
-                        )
+                    )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
-                    )
+                    listener.onSharePostClicked(getShareModel(data), trackerData)
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -279,10 +270,12 @@ class FeedPostImageViewHolder(
             }
 
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element,
-                    payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
@@ -532,6 +525,27 @@ class FeedPostImageViewHolder(
                     binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
                 }
             }
+        }
+    }
+
+    private fun getShareModel(data: FeedCardImageContentModel): FeedShareModel {
+        return if (data.isTopAds) {
+            val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
+            // intentionally, get data from 'products' instead of 'medias'
+            // as long as products value === medias value (please check the MapperTopAdsFeed.kt)
+            // todo: differentiate TopAds model with the rest
+            val productLink = if (data.products.size > selectedImagePosition) {
+                val productItem = data.products[selectedImagePosition]
+                Pair(productItem.applink, productItem.weblink)
+            } else {
+                Pair(data.share.appLink, data.share.webLink)
+            }
+            return data.share.copy(
+                appLink = productLink.first,
+                webLink = productLink.second
+            )
+        } else {
+            data.share
         }
     }
 
