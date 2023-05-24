@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/rootLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:background="@drawable/bg_exclusive_launch_voucher_dark">
+    android:layout_height="68dp"
+    android:background="@drawable/bg_exclusive_launch_voucher_dark"
+    xmlns:tools="http://schemas.android.com/tools">
 
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgBenefitName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/shop_page_placeholder_benefit_name"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/Unify_NN0"
-        app:layout_constraintEnd_toStartOf="@+id/tpgClaim"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_2" />
+        app:typographyType="display_2"
+        tools:text="Voucher Cashback 30% hingga Rp3.000.000 (Gopay Coins)" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgMinPurchase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="6dp"
         android:text="@string/shop_page_placeholder_minimal_purchase"
         android:textColor="@color/Unify_NN0"
-        app:typographyType="small"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpgBenefitName" />
+        app:layout_constraintTop_toBottomOf="@+id/tpgBenefitName"
+        app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgRemainingQuota"
@@ -50,13 +54,20 @@
         android:id="@+id/tpgClaim"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="@string/shop_page_claim"
         android:textColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="@+id/tpgMinPurchase"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="@+id/tpgBenefitName"
         app:typographyType="display_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="@string/shop_page_claim" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.80" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

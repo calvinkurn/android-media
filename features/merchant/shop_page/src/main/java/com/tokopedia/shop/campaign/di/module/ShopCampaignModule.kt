@@ -11,9 +11,6 @@ import dagger.Provides
 
 @Module(includes = [ShopCampaignViewModelModule::class])
 class ShopCampaignModule {
-    @Provides
-    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
-
     @ShopCampaignScope
     @Provides
     fun provideUserSessionInterface(
