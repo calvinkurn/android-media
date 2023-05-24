@@ -19,7 +19,6 @@ import com.tokopedia.shop.campaign.domain.entity.isMerchantVoucher
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
-import com.tokopedia.shop.common.extension.isOnDarkMode
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
@@ -145,7 +144,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         }
 
         exclusiveLaunchAdapter.apply {
-            setUseDarkBackground(determineBackground())
+            setUseDarkBackground(useDarkBackground)
             setOnVoucherClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
                 showVoucherDetailBottomSheet(selectedVoucher)
@@ -211,16 +210,5 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     fun setOnVoucherClaimSuccess(onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit) {
         this.onVoucherClaimSuccess = onVoucherClaimSuccess
-    }
-
-
-    private fun determineBackground(): Boolean {
-        val isDeviceDarkModeActive = isOnDarkMode()
-
-        return if (isDeviceDarkModeActive) {
-            true //Always use dark background for the voucher if device using dark mode
-        } else {
-            useDarkBackground
-        }
     }
 }
