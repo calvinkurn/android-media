@@ -54,6 +54,7 @@ private fun ReviewStar(state: ReviewStarState) {
     /**
      * `starStates` represent the active/inactive state of the stars and are determined by the color ID value.
      * It is used to trigger the color and scale animations simultaneously, as both animations should run together.
+     * We choose color as the determinant because active and inactive state have exactly 1 color representation
      */
     val starState by remember(state) { mutableStateOf(state.color) }
     /**
