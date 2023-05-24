@@ -64,7 +64,7 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
     private fun ExclusiveLaunchVoucher.claim(): ExclusiveLaunchVoucher {
         return if (this.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
             val newVoucherStatus = this.source.copy(isClaimed = true)
-            this.copy(source = newVoucherStatus)
+            this.copy(remainingQuota = Int.ZERO, source = newVoucherStatus)
         } else {
             this
         }
