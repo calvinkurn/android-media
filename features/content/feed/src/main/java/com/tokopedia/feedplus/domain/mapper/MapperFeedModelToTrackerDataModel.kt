@@ -22,8 +22,12 @@ class MapperFeedModelToTrackerDataModel(
     ) =
         FeedTrackerDataModel(
             activityId = model.id,
-            authorId = if (model.author.isShop) model.products.firstOrNull()?.shopId
-                ?: "" else model.author.id,
+            authorId = if (model.author.type.isShop) {
+                model.products.firstOrNull()?.shopId
+                    ?: ""
+            } else {
+                model.author.id
+            },
             tabType = tabType,
             typename = model.typename,
             type = model.type,
@@ -41,8 +45,12 @@ class MapperFeedModelToTrackerDataModel(
     ) =
         FeedTrackerDataModel(
             activityId = model.id,
-            authorId = if (model.author.isShop) model.products.firstOrNull()?.shopId
-                ?: "" else model.author.id,
+            authorId = if (model.author.type.isShop) {
+                model.products.firstOrNull()?.shopId
+                    ?: ""
+            } else {
+                model.author.id
+            },
             tabType = tabType,
             typename = model.typename,
             type = model.type,
@@ -54,15 +62,18 @@ class MapperFeedModelToTrackerDataModel(
             campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
             entryPoint = entryPoint
         )
-
 
     fun transformLiveContentToTrackerModel(
         model: FeedCardLivePreviewContentModel
     ) =
         FeedTrackerDataModel(
             activityId = model.id,
-            authorId = if (model.author.isShop) model.products.firstOrNull()?.shopId
-                ?: "" else model.author.id,
+            authorId = if (model.author.type.isShop) {
+                model.products.firstOrNull()?.shopId
+                    ?: ""
+            } else {
+                model.author.id
+            },
             tabType = tabType,
             typename = model.typename,
             type = model.type,
@@ -74,5 +85,4 @@ class MapperFeedModelToTrackerDataModel(
             campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
             entryPoint = entryPoint
         )
-
 }

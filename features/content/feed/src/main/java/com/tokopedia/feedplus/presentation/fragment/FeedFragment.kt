@@ -543,7 +543,10 @@ class FeedFragment :
 
         if (!checkForFollowerBottomSheet(
                 trackerModel?.activityId ?: "",
-                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+                positionInFeed,
+                campaign.status,
+                campaign.isExclusiveForMember,
+                action
             )
         ) {
             action()
@@ -635,7 +638,10 @@ class FeedFragment :
 
         if (!checkForFollowerBottomSheet(
                 trackerModel?.activityId ?: "",
-                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+                positionInFeed,
+                campaign.status,
+                campaign.isExclusiveForMember,
+                action
             )
         ) {
             action()
@@ -652,12 +658,12 @@ class FeedFragment :
                 }
                 author?.let {
                     if (userSession.isLoggedIn) {
-                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.isShop)
+                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.type.isShop)
                     } else {
                         feedPostViewModel.suspendFollow(
                             author.id,
                             author.encryptedUserId,
-                            author.isShop
+                            author.type.isShop
                         )
                         followLoginResult.launch(
                             RouteManager.getIntent(
@@ -1119,7 +1125,7 @@ class FeedFragment :
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )
-        if (hasVoucher && author.isShop) getMerchantVoucher(author.id)
+        if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }
 
     private fun getMerchantVoucher(shopId: String) {

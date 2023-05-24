@@ -39,6 +39,7 @@ import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedScoreModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
@@ -217,12 +218,11 @@ object MapperFeedHome {
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
-        type = author.type,
+        type = AuthorType.from(author.type),
         name = MethodChecker.fromHtml(author.name).toString(),
-        description = author.description,
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,
-        applink = author.applink,
+        appLink = author.applink,
         encryptedUserId = author.encryptedUserId,
         isLive = author.isLive
     )
@@ -314,12 +314,11 @@ object MapperFeedHome {
                     author = item.author.let { author ->
                         FeedAuthorModel(
                             id = author.id,
-                            type = author.type,
+                            type = AuthorType.from(author.type),
                             name = author.name,
-                            description = author.description,
                             badgeUrl = author.badgeUrl,
                             logoUrl = author.logoUrl,
-                            applink = author.applink,
+                            appLink = author.applink,
                             encryptedUserId = author.encryptedUserId,
                             isLive = author.isLive
                         )

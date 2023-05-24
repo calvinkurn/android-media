@@ -5,6 +5,7 @@ import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaTagging
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -30,12 +31,11 @@ object MapperTopAdsXFeed {
 
         val feedAuthor = FeedAuthorModel(
             id = data?.cpm?.cpmShop?.id.orEmpty(),
-            type = FeedAuthorModel.TYPE_SHOP,
+            type = AuthorType.Shop,
             name = authorName,
-            description = data?.cpm?.decription.orEmpty(),
             badgeUrl = data?.cpm?.badges?.firstOrNull()?.imageUrl.orEmpty(),
             logoUrl = data?.cpm?.cpmImage?.fullEcs.orEmpty(),
-            applink = data?.applinks.orEmpty(),
+            appLink = data?.applinks.orEmpty(),
             encryptedUserId = "",
             isLive = false
         )
