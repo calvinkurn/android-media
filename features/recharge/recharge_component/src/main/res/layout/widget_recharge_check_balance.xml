@@ -22,6 +22,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <include
+        android:id="@+id/check_balance_shimmering"
+        layout="@layout/view_recharge_check_balance_shimmering"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/check_balance_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/check_balance_warning_container"
         android:layout_width="match_parent"

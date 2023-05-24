@@ -398,6 +398,14 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hide()
     }
 
+    fun showCheckBalanceWidgetShimmering() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showShimmering()
+    }
+
+    fun hideCheckBalanceWidgetShimmering() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideShimmering()
+    }
+
     fun renderCheckBalanceOTPWidget(checkBalanceOTPModel: RechargeCheckBalanceOTPModel) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.run {
             setTitle(checkBalanceOTPModel.subtitle)

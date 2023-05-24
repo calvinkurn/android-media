@@ -28,6 +28,7 @@ import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomMo
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -114,6 +115,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
+
+    private val _saveAccessTokenResult = MutableLiveData<RechargeNetworkResult<DigitalSaveAccessTokenResultModel>>()
+    val saveAccessTokenResult: LiveData<RechargeNetworkResult<DigitalSaveAccessTokenResultModel>>
+        get() = _saveAccessTokenResult
 
     fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
@@ -277,6 +282,22 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             _indosatCheckBalance.value = RechargeNetworkResult.Success(persoData)
         }) {
             _indosatCheckBalance.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun setRechargeUserAccessTokenLoading() {
+        _saveAccessTokenResult.value = RechargeNetworkResult.Loading
+    }
+
+    fun saveRechargeUserAccessToken(
+        msisdn: String,
+        accessToken: String
+    ) {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
+            val result = repo.saveRechargeUserBalanceAccessToken(msisdn, accessToken)
+            _saveAccessTokenResult.value = RechargeNetworkResult.Success(result)
+        }) {
+            _saveAccessTokenResult.value = RechargeNetworkResult.Fail(it)
         }
     }
 

@@ -51,6 +51,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.M
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_INDOSAT_CHECK_BALANCE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_VERIFY_PHONE_NUMBER
@@ -59,6 +60,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.domain.model.DigitalCheckBalanceModel
+import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenResultModel
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
@@ -75,6 +77,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberCheckBalanceListener
@@ -85,7 +88,6 @@ import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
-import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -400,6 +402,14 @@ class DigitalPDPPulsaFragment :
             }
         }
 
+        viewModel.saveAccessTokenResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is RechargeNetworkResult.Success -> onSuccessSaveAccessToken(result.data)
+                is RechargeNetworkResult.Fail -> onFailedSaveAccessToken(result.error)
+                is RechargeNetworkResult.Loading -> onLoadingSaveAccessToken()
+            }
+        }
+
         viewModel.addToCartResult.observe(viewLifecycleOwner) { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
@@ -465,6 +475,12 @@ class DigitalPDPPulsaFragment :
             listOf(binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRechargeCheckBalanceLoading()
         viewModel.getRechargeCheckBalance(clientNumbers, listOf(categoryId))
+    }
+
+    private fun saveIndosatAccessToken(accessToken: String) {
+        val msisdn = binding?.rechargePdpPulsaClientNumberWidget?.getInputNumber() ?: ""
+        viewModel.setRechargeUserAccessTokenLoading()
+        viewModel.saveRechargeUserAccessToken(msisdn, accessToken)
     }
 
     private fun getCatalogProductInput(selectedOperatorKey: String) {
@@ -597,6 +613,9 @@ class DigitalPDPPulsaFragment :
 
     private fun onSuccessGetCheckBalance(checkBalanceData: DigitalCheckBalanceModel) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceWidget()
+            hideCheckBalanceWidgetShimmering()
+
             // TODO: [Misael] Remove this line later
             if (checkBalanceData.iconUrl.isEmpty()) return
 
@@ -613,6 +632,7 @@ class DigitalPDPPulsaFragment :
                 showCheckBalanceWidget()
             }
 
+            // TODO: [Misael] Back to this logic
 //            when (checkBalanceData.widgetType.lowercase()) {
 //                "otp" -> {
 //                    renderCheckBalanceOTPWidget(
@@ -629,26 +649,61 @@ class DigitalPDPPulsaFragment :
 //                else -> return
 //            }
 //
+            // =======
+            if (checkBalanceData.campaignLabelText.isNotEmpty()) {
+                showCheckBalanceWarning(
+                    checkBalanceData.campaignLabelText,
+                    checkBalanceData.iconUrl
+                )
+                removeClientNumberBottomPadding()
+            } else {
+                hideCheckBalanceWarning()
+            }
+
             setupDynamicScrollViewPadding()
         }
     }
 
     private fun onFailedGetCheckBalance(throwable: Throwable) {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceWidget()
+            hideCheckBalanceWidgetShimmering()
+        }
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
+    }
+
+
+    private fun onLoadingGetCheckBalance() {
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            hideCheckBalanceOtpWidget()
+            showCheckBalanceWidget()
+            showCheckBalanceWidgetShimmering()
+        }
+    }
+
+    private fun onSuccessSaveAccessToken(data: DigitalSaveAccessTokenResultModel) {
+        if (data.isSuccess) {
+            getIndosatCheckBalance()
+        } else {
+            showErrorToaster(MessageErrorException(data.message))
+        }
+    }
+
+    private fun onFailedSaveAccessToken(throwable: Throwable) {
+        showErrorToaster(throwable)
+    }
+
+    private fun onLoadingSaveAccessToken() {
+        // TODO: [Misael] show shimmering
     }
 
     private fun hideCheckBalanceWidget() {
         binding?.run {
             rechargePdpPulsaClientNumberWidget.hideCheckBalanceWidget()
             rechargePdpPulsaClientNumberWidget.hideCheckBalanceOtpWidget()
-        }
-    }
-
-    private fun onLoadingGetCheckBalance() {
-        binding?.rechargePdpPulsaClientNumberWidget?.run {
-            hideCheckBalanceOtpWidget()
-            hideCheckBalanceWidget()
+            rechargePdpPulsaClientNumberWidget.showClientNumberBottomPadding()
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -1495,6 +1550,11 @@ class DigitalPDPPulsaFragment :
                 addToCartFromUrl()
             } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
                 showErrorFromCheckout(data)
+            } else if (requestCode == REQUEST_CODE_INDOSAT_CHECK_BALANCE) {
+                if (data != null) {
+                    val accessToken = data.getStringExtra(EXTRA_CALLBACK_CLIENT_NUMBER) ?: ""
+                    saveIndosatAccessToken(accessToken)
+                }
             }
         }
     }

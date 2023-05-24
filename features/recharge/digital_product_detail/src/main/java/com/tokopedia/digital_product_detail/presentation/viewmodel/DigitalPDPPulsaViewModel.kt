@@ -272,11 +272,11 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         }
     }
 
-    fun setRechargeUsreAccessTokenLoading() {
+    fun setRechargeUserAccessTokenLoading() {
         _saveAccessTokenResult.value = RechargeNetworkResult.Loading
     }
 
-    fun saveRechargeUsereAccessToken(
+    fun saveRechargeUserAccessToken(
         msisdn: String,
         accessToken: String
     ) {
