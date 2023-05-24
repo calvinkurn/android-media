@@ -210,18 +210,10 @@ class PlayExploreWidgetFragment @Inject constructor(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupHeader() //TODO(): Move to parent
         setupView()
         fetchWidget()
         observeState()
         observeEvent()
-    }
-
-    private fun setupHeader() {
-        binding.widgetHeader.title = getString(playR.string.play_explore_widget_header_title)
-        binding.widgetHeader.closeListener = View.OnClickListener {
-            analytic?.clickCloseExplore()
-        }
     }
 
     private fun setupView() {

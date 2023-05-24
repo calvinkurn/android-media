@@ -83,6 +83,10 @@ class PlayExploreWidget @Inject constructor(
     }
 
     private fun setupView() {
+        binding.widgetHeader.title = getString(playR.string.play_explore_widget_header_title)
+        binding.widgetHeader.closeListener = View.OnClickListener {
+            dismiss()
+        }
         binding.vpPlayExploreWidget.adapter = vpAdapter
         TabsUnifyMediator(
             binding.tabPlayExploreWidget,

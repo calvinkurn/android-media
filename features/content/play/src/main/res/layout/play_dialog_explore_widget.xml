@@ -1,17 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:animateLayoutChanges="true"
+    android:background="@color/Unify_Background"
+    android:paddingTop="@dimen/content_common_space_16"
+    app:rcl_bottomRightRadius="@dimen/content_common_space_16"
+    app:rcl_topLeftRadius="@dimen/content_common_space_16">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_knob"
+        android:layout_width="4dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:src="@drawable/bottomsheet_knob_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <com.tokopedia.content.common.ui.custom.ContentHeaderView
+        android:id="@+id/widget_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.TabsUnify
         android:id="@+id/tab_play_explore_widget"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl6" />
+        android:layout_height="@dimen/layout_lvl6"
+        app:layout_constraintTop_toBottomOf="@+id/widget_header" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/vp_play_explore_widget"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/content_common_space_8"
+        android:layout_marginTop="@dimen/content_common_space_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/iv_knob"
+        app:layout_constraintTop_toBottomOf="@+id/tab_play_explore_widget"
+        app:layout_constraintVertical_bias="0.0" />
 
-</LinearLayout>
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>
