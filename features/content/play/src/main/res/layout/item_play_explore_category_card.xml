@@ -16,6 +16,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <include
+        android:id="@+id/layout_live_badge"
+        layout="@layout/layout_live_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginStart="@dimen/unify_space_4"
+        app:layout_constraintTop_toTopOf="@id/iv_category_video"
+        app:layout_constraintStart_toStartOf="@id/iv_category_video"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_category_video_title"
         android:layout_width="0dp"

@@ -1,9 +1,11 @@
 package com.tokopedia.play.ui.explorewidget.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryCardBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
  * @author by astidhiyaa on 23/05/23
@@ -25,6 +27,7 @@ internal class CategoryWidgetViewHolder {
                 tvCategoryVideoCreator.text = item.partner.name //TODO() check partner image
                 ivCategoryCreator.loadImage(item.video.coverUrl)
                 tvCategoryView.text = item.totalView.totalViewFmt
+                layoutLiveBadge.root.showWithCondition(item.channelType == PlayWidgetChannelType.Live)
             }
         }
 
