@@ -64,7 +64,9 @@ class FeedPostVideoViewHolder(
     init {
         binding.playerControl.setListener(object : FeedPlayerControl.Listener {
             override fun onScrubbing(
-                view: PlayerControlView, currPosition: Long, totalDuration: Long
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
             ) {
                 binding.videoTimeView.setCurrentPosition(currPosition)
                 binding.videoTimeView.setTotalDuration(totalDuration)
@@ -73,7 +75,9 @@ class FeedPostVideoViewHolder(
             }
 
             override fun onStopScrubbing(
-                view: PlayerControlView, currPosition: Long, totalDuration: Long
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
             ) {
                 binding.videoTimeView.hide()
                 hideClearView()
@@ -99,8 +103,9 @@ class FeedPostVideoViewHolder(
             )
         }
 
-        val postGestureDetector = GestureDetector(
-            binding.root.context,
+
+                val postGestureDetector = GestureDetector(
+                    binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
@@ -162,6 +167,8 @@ class FeedPostVideoViewHolder(
                 bindComments(data)
                 bindVideoPlayer(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
@@ -171,19 +178,11 @@ class FeedPostVideoViewHolder(
                         FeedContentData(
                             data.text, data.id, data.author.id, absoluteAdapterPosition
                         ),
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        )
+                        trackerData
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
-                    )
+                    listener.onSharePostClicked(data.share, trackerData)
                 }
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
@@ -237,9 +236,12 @@ class FeedPostVideoViewHolder(
             }
 
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element, payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
@@ -359,7 +361,6 @@ class FeedPostVideoViewHolder(
 
         videoPlayer.setVideoStateListener(object : VideoStateListener {
             override fun onInitialStateLoading() {
-
             }
 
             override fun onBuffering() {
@@ -382,7 +383,7 @@ class FeedPostVideoViewHolder(
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
             false,
-            playWhenReady = false,
+            playWhenReady = false
         )
     }
 
