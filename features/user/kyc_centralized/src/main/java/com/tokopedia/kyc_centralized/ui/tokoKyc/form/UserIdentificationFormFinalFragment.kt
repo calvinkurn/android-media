@@ -464,6 +464,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
         }
     }
 
+    /**
+     * allowSelfie is coming from KycProjectInfo API
+     * default value for remote config kyc selfie is false
+     */
     private val isKycSelfie: Boolean
         get() {
             try {
