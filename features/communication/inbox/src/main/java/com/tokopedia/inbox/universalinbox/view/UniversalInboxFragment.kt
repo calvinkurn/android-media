@@ -183,9 +183,12 @@ class UniversalInboxFragment :
                     binding?.inboxRv?.post {
                         adapter.notifyItemRangeChanged(Int.ZERO, it.data.size - Int.ONE)
                     }
+                    loadAllCounter()
                     loadTopAdsAndRecommendation()
                 }
-                is Fail -> {}
+                is Fail -> {
+                    // Do nothing
+                }
             }
         }
 
@@ -202,6 +205,15 @@ class UniversalInboxFragment :
             when (it) {
                 is Success -> {
                     addRecommendationItem(it.data)
+                }
+                is Fail -> {}
+            }
+        }
+
+        viewModel.allCounter.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    //TODO: HERE
                 }
                 is Fail -> {}
             }
@@ -306,7 +318,11 @@ class UniversalInboxFragment :
 
     private fun setupInboxMenu() {
         binding?.inboxLayoutSwipeRefresh?.isRefreshing = true
-        viewModel.getDummy()
+        viewModel.generateStaticMenu()
+    }
+
+    private fun loadAllCounter() {
+        viewModel.loadAllCounter()
     }
 
     private fun loadTopAdsAndRecommendation() {

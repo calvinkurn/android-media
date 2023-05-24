@@ -7,6 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
@@ -14,6 +17,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -47,10 +51,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
+    private val getAllCounterUseCase: UniversalInboxGetAllCounterUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private val userSession: UserSessionInterface,
+    private val resourceProvider: UniversalInboxResourceProvider,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
@@ -66,38 +72,60 @@ class UniversalInboxViewModel @Inject constructor(
     val inboxMenu: LiveData<Result<List<Any>>>
         get() = _inboxMenu
 
-    fun getDummy() {
-        val dummy = listOf(
-            UniversalInboxMenuSectionUiModel("Percakapan"),
+    private val _allCounter = MutableLiveData<Result<UniversalInboxAllCounterResponse>>()
+    val allCounter: LiveData<Result<UniversalInboxAllCounterResponse>>
+        get() = _allCounter
+
+    fun generateStaticMenu() {
+        val staticMenuList = arrayListOf(
+            UniversalInboxMenuSectionUiModel(resourceProvider.getSectionChatTitle()),
             UniversalInboxMenuUiModel(
-                title = "Chat Penjual",
+                title = resourceProvider.getMenuChatBuyerTitle(),
                 icon = IconUnify.CHAT,
-                counter = 2
+                counter = Int.ZERO
             ),
+            UniversalInboxMenuSectionUiModel(resourceProvider.getSectionOthersTitle()),
             UniversalInboxMenuUiModel(
-                title = "Chat Pembeli",
-                icon = IconUnify.SHOP,
-                counter = 100,
-                additionalInfo = UniversalInboxShopInfoUiModel(
-                    avatar = userSession.shopAvatar,
-                    shopName = userSession.shopName + " ${userSession.shopName}" + " ${userSession.shopName}" + " ${userSession.shopName}"
-                )
-            ),
-            UniversalInboxMenuSectionUiModel("Lainnya"),
-            UniversalInboxMenuUiModel(
-                title = "Diskusi Produk",
+                title = resourceProvider.getMenuDiscussionTitle(),
                 icon = IconUnify.DISCUSSION,
-                counter = 0
+                counter = Int.ZERO
             ),
             UniversalInboxMenuUiModel(
-                title = "Ulasan",
+                title = resourceProvider.getMenuReviewTitle(),
                 icon = IconUnify.STAR,
-                counter = 99
+                counter = Int.ZERO
             ),
             UniversalInboxMenuSeparatorUiModel(),
             UniversalInboxTopAdsBannerUiModel()
-        )
-        _inboxMenu.postValue(Success(dummy))
+        ).also {
+            if (userSession.hasShop()) {
+                it.add(2,
+                    UniversalInboxMenuUiModel(
+                        title = resourceProvider.getMenuChatSellerTitle(),
+                        icon = IconUnify.SHOP,
+                        counter = Int.ZERO,
+                        additionalInfo = UniversalInboxShopInfoUiModel(
+                            avatar = userSession.shopAvatar,
+                            shopName = userSession.shopName
+                        )
+                    )
+                )
+            }
+        }
+        _inboxMenu.postValue(Success(staticMenuList))
+    }
+
+    fun loadAllCounter() {
+        viewModelScope.launch {
+            withContext(dispatcher.io) {
+                try {
+                    val result = getAllCounterUseCase(userSession.shopId)
+                    _allCounter.postValue(Success(result))
+                } catch (throwable: Throwable) {
+                    _allCounter.postValue(Fail(throwable))
+                }
+            }
+        }
     }
 
     fun loadFirstPageRecommendation() {
