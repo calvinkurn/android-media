@@ -30,7 +30,6 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         const val RATING_FIVE = 5
 
         val LAYOUT = R.layout.item_catalog_review
-
     }
 
     private var isFromBottomSheet = false
@@ -39,24 +38,28 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
 
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
-    private var catalogDetailListener : CatalogDetailListener? = null
+    private var catalogDetailListener: CatalogDetailListener? = null
 
-    fun bind(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review,
-             listener: CatalogDetailListener?,
-             argIsFromBottomSheet : Boolean = false,
-             argCatalogName : String = "",
-             argCatalogId : String = ""
-         ) {
+    fun bind(
+        model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review,
+        listener: CatalogDetailListener?,
+        argIsFromBottomSheet: Boolean = false,
+        argCatalogName: String = "",
+        argCatalogId: String = ""
+    ) {
+        view.setOnClickListener {
+            listener?.onReviewClicked(bindingAdapterPosition, model.productUrl ?: "", isFromBottomSheet)
+        }
         isFromBottomSheet = argIsFromBottomSheet
         catalogName = argCatalogName
-        catalogId  = argCatalogId
+        catalogId = argCatalogId
         catalogDetailListener = listener
         setReviewStars(model.rating)
         view.findViewById<Typography>(R.id.txt_user_name_catalog)?.displayTextOrHide(model.reviewerName ?: "")
         view.findViewById<Typography>(R.id.txt_date_user_catalog)?.displayTextOrHide(model.reviewDate ?: "")
         setReviewDescription(model.reviewText ?: "", model.reviewId ?: "")
         view.findViewById<RecyclerView>(R.id.image_review_rv_catalog)
-        renderReviewImage(model,catalogDetailListener)
+        renderReviewImage(model, catalogDetailListener)
     }
 
     private fun getRatingDrawable(param: Int): Int {
@@ -81,28 +84,31 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         }
     }
 
-    private fun setReviewDescription(description : String, reviewId : String) {
+    private fun setReviewDescription(description: String, reviewId: String) {
         if (description.isEmpty()) {
             view.findViewById<Typography>(R.id.txt_desc_review_catalog)?.hide()
             return
         }
         view.findViewById<Typography>(R.id.txt_desc_review_catalog)?.apply {
-            if(!isFromBottomSheet){
+            if (!isFromBottomSheet) {
                 maxLines = MAX_LINES_REVIEW_DESCRIPTION
                 val formattingResult = reviewDescFormatter(context, description)
                 text = formattingResult.first
-                if(formattingResult.second) {
+                if (formattingResult.second) {
                     setOnClickListener {
                         CatalogDetailAnalytics.sendEvent(
                             CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                             CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
                             CatalogDetailAnalytics.ActionKeys.CLICK_SELENGKAPNYA_ON_REVIEW,
-                            "$catalogName - $catalogId - $reviewId",UserSession(context).userId,catalogId)
+                            "$catalogName - $catalogId - $reviewId",
+                            UserSession(context).userId,
+                            catalogId
+                        )
                         maxLines = Integer.MAX_VALUE
                         text = HtmlLinkHelper(context, description).spannedString
                     }
                 }
-            }else {
+            } else {
                 text = description
             }
 
@@ -123,14 +129,14 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         }
     }
 
-    private fun renderReviewImage(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review , catalogDetailListener: CatalogDetailListener?) {
+    private fun renderReviewImage(model: CatalogProductReviewResponse.CatalogGetProductReview.ReviewData.Review, catalogDetailListener: CatalogDetailListener?) {
         val catalogReviewImages = arrayListOf<CatalogImage>()
         model.reviewImageUrl?.forEach {
-            catalogReviewImages.add(CatalogImage(it,false))
+            catalogReviewImages.add(CatalogImage(it, false, ""))
         }
         val recyclerView = view.findViewById<RecyclerView>(R.id.image_review_rv_catalog)
         recyclerView.show()
         recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = CatalogImageReviewAdapter(catalogReviewImages,model.reviewId ?: "",isFromBottomSheet, catalogDetailListener)
+        recyclerView.adapter = CatalogImageReviewAdapter(catalogReviewImages, model.reviewId ?: "", isFromBottomSheet, catalogDetailListener)
     }
 }

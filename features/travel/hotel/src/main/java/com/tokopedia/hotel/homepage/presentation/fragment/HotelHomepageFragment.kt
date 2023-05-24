@@ -203,6 +203,9 @@ class HotelHomepageFragment :
                             hidePromoContainer()
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
                 stopTrace()
             }
@@ -214,6 +217,9 @@ class HotelHomepageFragment :
                 when (it) {
                     is Success -> {
                         renderHotelLastSearch(it.data)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -227,6 +233,9 @@ class HotelHomepageFragment :
                         if (it.data) {
                             loadRecentSearchData()
                         }
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }
@@ -767,9 +776,7 @@ class HotelHomepageFragment :
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
-        var minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
-        if (!(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_BOOK_FOR_TODAY, true))) minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_PLUS_1_DAY
-
+        val minSelectDateFromToday = SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY
         val hotelCalendarDialog = SelectionRangeCalendarWidget.getInstance(
             checkIn,
             checkOut,

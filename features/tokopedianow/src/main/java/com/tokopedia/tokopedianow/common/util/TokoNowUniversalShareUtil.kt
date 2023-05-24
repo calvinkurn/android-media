@@ -12,6 +12,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.requests.LinkerShareRequest
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -70,6 +71,8 @@ object TokoNowUniversalShareUtil {
     ) {
         val linkerShareData = linkerDataMapper(shareTokoNowData)
         linkerShareData.linkerData.apply {
+            id = ShopIdProvider.getShopId()
+            type = LinkerData.SHOP_TYPE
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
@@ -77,6 +80,8 @@ object TokoNowUniversalShareUtil {
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
             }
+            isAffiliate = shareModel.isAffiliate
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         }
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
@@ -89,7 +94,7 @@ object TokoNowUniversalShareUtil {
                 override fun onError(linkerError: LinkerError?) {
                     onError.invoke()
                 }
-            })
+            } )
         )
     }
 }

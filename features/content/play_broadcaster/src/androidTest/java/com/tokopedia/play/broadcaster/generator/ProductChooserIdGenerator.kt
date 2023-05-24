@@ -33,6 +33,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -68,7 +69,7 @@ class ProductChooserIdGenerator {
                 originalPriceNumber = 1000.0,
                 discountPercent = 50,
                 discountedPrice = "500",
-                discountedPriceNumber = 500.0,
+                discountedPriceNumber = 500.0
             )
         )
     )
@@ -82,9 +83,9 @@ class ProductChooserIdGenerator {
             endDateFmt = "",
             status = CampaignStatusUiModel(
                 status = CampaignStatus.Ongoing,
-                text = "Berlangsung",
+                text = "Berlangsung"
             ),
-            totalProduct = 50,
+            totalProduct = 50
         )
     )
 
@@ -93,7 +94,7 @@ class ProductChooserIdGenerator {
             id = "1",
             imageUrl = "",
             title = "Etalase 1",
-            totalProduct = 50,
+            totalProduct = 50
         )
     )
 
@@ -109,6 +110,7 @@ class ProductChooserIdGenerator {
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
             isEligibleForPin: Boolean,
+            source: PlayBroPageSource
             fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
@@ -120,6 +122,7 @@ class ProductChooserIdGenerator {
                 repo = repo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
+                source = source,
                 fetchCommissionProduct = fetchCommissionProduct,
             )
         }
@@ -152,6 +155,10 @@ class ProductChooserIdGenerator {
                             return 30
                         }
 
+                        override fun getPageSource(): PlayBroPageSource {
+                            return PlayBroPageSource.Live
+                        }
+
                         override fun fetchCommissionProduct(): Boolean {
                             return false
                         }
@@ -159,9 +166,9 @@ class ProductChooserIdGenerator {
                 }
             },
             ProductSummaryBottomSheet::class.java to {
-              ProductSummaryBottomSheet(
-                  analytic = mockk(relaxed = true),
-              )
+                ProductSummaryBottomSheet(
+                    analytic = mockk(relaxed = true)
+                )
             },
             ProductChooserBottomSheet::class.java to {
                 ProductChooserBottomSheet(
@@ -169,9 +176,9 @@ class ProductChooserIdGenerator {
                     NavigationBarColorDialogCustomizer(),
                     ProductChooserAnalyticManager(
                         mockk(relaxed = true),
-                        CoroutineDispatchersProvider,
+                        CoroutineDispatchersProvider
                     ),
-                    mockk(relaxed = true),
+                    mockk(relaxed = true)
                 )
             },
             EtalaseListBottomSheet::class.java to {
@@ -179,8 +186,8 @@ class ProductChooserIdGenerator {
                     NavigationBarColorDialogCustomizer(),
                     EtalaseListAnalyticManager(
                         mockk(relaxed = true),
-                        CoroutineDispatchersProvider,
-                    ),
+                        CoroutineDispatchersProvider
+                    )
                 )
             },
             ProductSummaryBottomSheet::class.java to {
@@ -209,7 +216,8 @@ class ProductChooserIdGenerator {
     )
 
     private val viewPrinter = ViewHierarchyPrinter(
-        printConditions, packageName = BuildConfig.LIBRARY_PACKAGE_NAME
+        printConditions,
+        packageName = LIBRARY_PACKAGE_NAME
     )
     private val fileWriter = FileWriter()
 
@@ -222,12 +230,12 @@ class ProductChooserIdGenerator {
             type = ContentCommonUserType.TYPE_SHOP,
             hasUsername = true,
             hasAcceptTnc = true,
-            enable = true,
+            enable = true
         )
 
         coEvery { repo.getProductsInEtalase(any(), any(), any(), any()) } returns PagedDataUiModel(
             dataList = mockSelectedProducts,
-            hasNextPage = false,
+            hasNextPage = false
         )
 
         coEvery { repo.getEtalaseList() } returns etalaseList
@@ -238,7 +246,7 @@ class ProductChooserIdGenerator {
     fun productChooserBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme,
+            themeResId = R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -257,7 +265,7 @@ class ProductChooserIdGenerator {
     fun sortFilterBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme,
+            themeResId = R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -280,7 +288,7 @@ class ProductChooserIdGenerator {
     fun etalaseListBottomSheet() {
         val scenario = launchFragment<ProductSetupFragment>(
             factory = fragmentFactory,
-            themeResId = R.style.AppTheme,
+            themeResId = R.style.AppTheme
         )
 
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -307,5 +315,9 @@ class ProductChooserIdGenerator {
                 uiController.loopMainThreadForAtLeast(delay)
             }
         }
+    }
+
+    companion object {
+        const val LIBRARY_PACKAGE_NAME = "com.tokopedia.play.broadcaster"
     }
 }

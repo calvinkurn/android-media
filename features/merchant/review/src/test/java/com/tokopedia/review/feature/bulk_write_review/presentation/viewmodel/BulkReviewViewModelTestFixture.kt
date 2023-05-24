@@ -37,6 +37,7 @@ import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkR
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemMediaUrisUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemRatingUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemTestimonyUiModel
+import com.tokopedia.review.feature.bulk_write_review.presentation.uimodel.BulkReviewItemUiModel
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewBadRatingCategoryBottomSheetUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewCancelReviewSubmissionDialogUiState
 import com.tokopedia.review.feature.bulk_write_review.presentation.uistate.BulkReviewExpandedTextAreaBottomSheetUiState
@@ -47,7 +48,7 @@ import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.utils.createSuccessResponse
 import com.tokopedia.reviewcommon.extension.get
-import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -57,7 +58,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
-import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -76,14 +76,14 @@ abstract class BulkReviewViewModelTestFixture {
         const val SAMPLE_USER_ID = "2546"
         const val SAMPLE_ERROR_MESSAGE = "Something went wrong!"
         const val SAMPLE_ERROR_CODE = "IS-WKWK"
-        const val SAMPLE_GET_BAD_RATING_CATEGORY_RESULT_SUCCESS_NON_EMPTY =
-            "json/get_bad_rating_category_use_case_result_success_non_empty.json"
-        const val SAMPLE_GET_FORM_RESULT_SUCCESS =
-            "json/bulk_write_review/get_form_use_case_result_success.json"
+        const val SAMPLE_INVOICE = "123/INV/456789"
+        const val SAMPLE_UTM_SOURCE = "review"
+        const val SAMPLE_GET_BAD_RATING_CATEGORY_RESULT_SUCCESS_NON_EMPTY = "json/get_bad_rating_category_use_case_result_success_non_empty.json"
+        const val SAMPLE_GET_FORM_RESULT_SUCCESS = "json/bulk_write_review/get_form_use_case_result_success.json"
     }
 
     @get:Rule
-    val rule = CoroutineTestRule()
+    val rule = UnconfinedTestRule()
 
     @RelaxedMockK
     lateinit var getFormUseCase: BulkReviewGetFormUseCase
@@ -166,7 +166,7 @@ abstract class BulkReviewViewModelTestFixture {
         getFormResult: BulkReviewGetFormResponse.Data.ProductRevGetBulkForm = getFormUseCaseResultSuccess
     ) {
         coEvery {
-            getFormUseCase(Unit)
+            getFormUseCase(any())
         } returns flow {
             emit(BulkReviewGetFormRequestState.Requesting())
             emit(BulkReviewGetFormRequestState.Complete.Success(getFormResult))
@@ -175,7 +175,7 @@ abstract class BulkReviewViewModelTestFixture {
 
     protected fun mockErrorGetFormResult() {
         coEvery {
-            getFormUseCase(Unit)
+            getFormUseCase(any())
         } returns flow {
             emit(BulkReviewGetFormRequestState.Requesting())
             emit(BulkReviewGetFormRequestState.Complete.Error(mockk(relaxed = true)))
@@ -291,7 +291,7 @@ abstract class BulkReviewViewModelTestFixture {
     protected fun doSuccessGetInitialData() {
         mockSuccessGetFormResult()
         mockSuccessBadRatingCategoryResult()
-        viewModel.getData()
+        viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
     }
 
     protected fun doRestoreInstanceState(
@@ -312,7 +312,6 @@ abstract class BulkReviewViewModelTestFixture {
     ) {
         mockkStatic("com.tokopedia.reviewcommon.extension.CacheManagerExtKt") {
             val saveInstanceCacheManager = mockk<SaveInstanceCacheManager>(relaxed = true)
-            val spykViewModel = spyk(viewModel)
 
             every {
                 saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
@@ -436,7 +435,9 @@ abstract class BulkReviewViewModelTestFixture {
                 )
             } returns mockActiveMediaPickerInboxID
 
-            spykViewModel.onRestoreInstanceState(saveInstanceCacheManager)
+            viewModel.onRestoreInstanceState(saveInstanceCacheManager) {
+                viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
+            }
 
             verify(exactly = 1) {
                 saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
@@ -524,7 +525,7 @@ abstract class BulkReviewViewModelTestFixture {
                 )
             }
 
-            assertionBlock(spykViewModel)
+            assertionBlock(viewModel)
         }
     }
 
@@ -545,83 +546,85 @@ abstract class BulkReviewViewModelTestFixture {
             .first { it.id == "6" }
     }
 
-    protected fun runCollectingBulkReviewPageUiState(block: (List<BulkReviewPageUiState>) -> Unit) {
+    protected fun runCollectingBulkReviewPageUiState(block: (List<BulkReviewPageUiState>) -> Unit) = rule.runTest {
         val uiStates = mutableListOf<BulkReviewPageUiState>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.bulkReviewPageUiState.toList(uiStates)
         }
         block(uiStates)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingBulkReviewRemoveReviewItemDialogUiState(block: (List<BulkReviewRemoveReviewItemDialogUiState>) -> Unit) {
+    protected fun runCollectingBulkReviewRemoveReviewItemDialogUiState(block: (List<BulkReviewRemoveReviewItemDialogUiState>) -> Unit) = rule.runTest {
         val uiStates = mutableListOf<BulkReviewRemoveReviewItemDialogUiState>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.removeReviewItemDialogUiState.toList(uiStates)
         }
         block(uiStates)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingBulkReviewBadRatingCategoryBottomSheetUiState(block: (List<BulkReviewBadRatingCategoryBottomSheetUiState>) -> Unit) {
+    protected fun runCollectingBulkReviewBadRatingCategoryBottomSheetUiState(block: (List<BulkReviewBadRatingCategoryBottomSheetUiState>) -> Unit) = rule.runTest {
         val uiStates = mutableListOf<BulkReviewBadRatingCategoryBottomSheetUiState>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.badRatingCategoryBottomSheetUiState.toList(uiStates)
         }
         block(uiStates)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingBulkReviewExpandedTextAreaBottomSheetUiState(block: (List<BulkReviewExpandedTextAreaBottomSheetUiState>) -> Unit) {
+    protected fun runCollectingBulkReviewExpandedTextAreaBottomSheetUiState(block: (List<BulkReviewExpandedTextAreaBottomSheetUiState>) -> Unit) = rule.runTest {
         val uiStates = mutableListOf<BulkReviewExpandedTextAreaBottomSheetUiState>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.expandedTextAreaBottomSheetUiState.toList(uiStates)
         }
         block(uiStates)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingBulkReviewCancelReviewSubmissionDialogUiState(block: (List<BulkReviewCancelReviewSubmissionDialogUiState>) -> Unit) {
+    protected fun runCollectingBulkReviewCancelReviewSubmissionDialogUiState(block: (List<BulkReviewCancelReviewSubmissionDialogUiState>) -> Unit) = rule.runTest {
         val uiStates = mutableListOf<BulkReviewCancelReviewSubmissionDialogUiState>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.cancelReviewSubmissionDialogUiState.toList(uiStates)
         }
         block(uiStates)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingBulkReviewPageToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) {
+    protected fun runCollectingBulkReviewPageToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) = rule.runTest {
         val toasterQueue = mutableListOf<CreateReviewToasterUiModel<Any>>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.bulkReviewPageToasterQueue.toList(toasterQueue)
         }
         block(toasterQueue)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingExpandedTextAreaToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) {
+    protected fun runCollectingExpandedTextAreaToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) = rule.runTest {
         val toasterQueue = mutableListOf<CreateReviewToasterUiModel<Any>>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.expandedTextAreaToasterQueue.toList(toasterQueue)
         }
         block(toasterQueue)
         uiStateCollectorJob.cancel()
     }
 
-    protected fun runCollectingBadRatingCategoryBottomSheetToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) {
+    protected fun runCollectingBadRatingCategoryBottomSheetToasterQueue(block: (List<CreateReviewToasterUiModel<Any>>) -> Unit) = rule.runTest {
         val toasterQueue = mutableListOf<CreateReviewToasterUiModel<Any>>()
-        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
-        val uiStateCollectorJob = scope.launch {
+        val uiStateCollectorJob = launch {
             viewModel.badRatingCategoryBottomSheetToasterQueue.toList(toasterQueue)
         }
         block(toasterQueue)
+        uiStateCollectorJob.cancel()
+    }
+
+    protected fun runCollectingReviewItemScrollRequest(block: (List<BulkReviewItemUiModel>) -> Unit) {
+        val reviewItems = mutableListOf<BulkReviewItemUiModel>()
+        val scope = CoroutineScope(rule.dispatchers.coroutineDispatcher)
+        val uiStateCollectorJob = scope.launch {
+            viewModel.reviewItemScrollRequest.toList(reviewItems)
+        }
+        block(reviewItems)
         uiStateCollectorJob.cancel()
     }
 }

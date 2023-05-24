@@ -11,17 +11,22 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.databinding.ItemPdpShimmerShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentBinding
 import com.tokopedia.product.detail.databinding.ItemShipmentOptionBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentBinding
 import com.tokopedia.product.detail.databinding.ViewShipmentErrorBinding
+import com.tokopedia.product.detail.databinding.ViewShipmentPlusBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.util.isInflated
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -71,6 +76,9 @@ class ShipmentViewHolder(
     private val viewMain: ViewShipmentBinding by viewMainDelegate
     private val viewError: ViewShipmentErrorBinding by viewErrorDelegate
     private val viewLoading: ItemPdpShimmerShipmentBinding by viewLoadingDelegate
+    private val viewShipmentPlus: ViewShipmentPlusBinding by lazyThreadSafetyNone {
+        ViewShipmentPlusBinding.bind(viewMain.vsShipmentPlus.inflate())
+    }
 
     override fun bind(element: ProductShipmentDataModel) {
         val rates = element.rates
@@ -132,6 +140,7 @@ class ShipmentViewHolder(
         renderCourier(element, rates)
         renderTickers(rates)
         renderTips(rates)
+        renderShipmentPlus(element.shipmentPlusData)
 
         itemView.addOnImpressionListener(element.impressHolder) {
             val componentTrackData = getComponentTrackData(element)
@@ -157,11 +166,12 @@ class ShipmentViewHolder(
         val boBadge = rates.boBadge
         val freeOngkirImageUrl = boBadge.imageUrl
         pdpShipmentIcon.showIfWithBlock(freeOngkirImageUrl.isNotEmpty()) {
-
             updateLayoutParams<MarginLayoutParams> {
-                marginEnd = if (boBadge.isUsingPadding)
+                marginEnd = if (boBadge.isUsingPadding) {
                     SHIPMENT_ICON_PADDING.toPx()
-                else 0
+                } else {
+                    0
+                }
             }
 
             setImageUrl(freeOngkirImageUrl)
@@ -298,12 +308,34 @@ class ShipmentViewHolder(
 
             val htmlString = HtmlLinkHelper(context, generateHtml(tips.message, tips.link))
             description = htmlString.spannedString ?: ""
-            setOnClickListener {
-                if (tips.action == TICKER_ACTION_APPLINK) {
-                    listener.goToApplink(tips.link)
-                } else {
-                    listener.goToWebView(tips.link)
+
+            val link = tips.link
+            if (link.isNotEmpty()) {
+                setOnClickListener {
+                    if (tips.action == TICKER_ACTION_APPLINK) {
+                        listener.goToApplink(link)
+                    } else {
+                        listener.goToWebView(link)
+                    }
                 }
+            }
+        }
+    }
+
+    private fun renderShipmentPlus(shipmentPlus: ShipmentPlusData) {
+        if (shipmentPlus.isShow) {
+            with(viewShipmentPlus) {
+                pdpShipmentPlusBackground.loadImage(shipmentPlus.getBackgroundUrl(context))
+                pdpShipmentPlusLogo.loadImage(shipmentPlus.getLogoUrl(context))
+                pdpShipmentPlusText.text = HtmlLinkHelper(context, shipmentPlus.text).spannedString
+                pdpShipmentPlus.setOnClickListener {
+                    listener.onClickShipmentPlusBanner(
+                        link = shipmentPlus.actionLink,
+                        trackerData = shipmentPlus.trackerData,
+                        componentTrackDataModel = componentTrackDataModel
+                    )
+                }
+                pdpShipmentPlus.show()
             }
         }
     }
@@ -351,6 +383,9 @@ class ShipmentViewHolder(
             pdpShipmentTitleStrike.hide()
             pdpShipmentTicker.hide()
             pdpShipmentTips.hide()
+            if (vsShipmentPlus.isInflated()) {
+                viewShipmentPlus.root.hide()
+            }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.account_settings
 
-
 /**
  * @author okasurya on 7/20/18.
  */
@@ -33,6 +32,12 @@ object AccountConstants {
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val BUSINESS_UNIT = "businessUnit"
         const val USER_PLATFORM = "user platform"
+        const val DEBIT_OR_CREDIT_CARD = "credit or debit card"
+        const val CLICK_PAYMENT = "clickPayment"
+        const val PAYMENT_SETTING_PAGE = "payment setting page"
+        const val PAYMENT = "payment"
+        const val TRACKER_ID_42695 = "42695"
+        const val USER_ID = "userId"
     }
 
     interface ErrorCodes {

@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -140,11 +143,9 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.globalError.visibility = View.GONE
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
-                        productSummaryListView.setProductList(
-                            state.productTagSectionList,
-                            viewModel.isEligibleForPin
-                        )
-                        if (state.productTagSectionList.isEmpty()) {
+                        productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin, viewModel.isNumerationShown)
+
+                        if(state.productTagSectionList.isEmpty()) {
                             binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
                             binding.globalError.visibility = View.VISIBLE
                             binding.flBtnDoneContainer.visibility = View.GONE
@@ -165,10 +166,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                             actionListener = { event.action?.invoke() },
                         )
 
-                        productSummaryListView.setProductList(
-                            emptyList(),
-                            viewModel.isEligibleForPin
-                        )
+                        productSummaryListView.setProductList(emptyList(), viewModel.isEligibleForPin, viewModel.isNumerationShown)
                         showLoading(false)
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {

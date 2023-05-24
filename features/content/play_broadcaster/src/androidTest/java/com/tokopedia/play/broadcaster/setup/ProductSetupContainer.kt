@@ -9,6 +9,7 @@ import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 
 /**
  * Created by kenny.hadisaputra on 02/03/22
@@ -26,7 +27,7 @@ class ProductSetupContainer(
             this,
             arguments
         ) {
-            override fun <T : ViewModel?> create(
+            override fun <T : ViewModel> create(
                 key: String,
                 modelClass: Class<T>,
                 handle: SavedStateHandle,
@@ -38,14 +39,12 @@ class ProductSetupContainer(
                         productSectionList: List<ProductTagSectionUiModel>,
                         savedStateHandle: SavedStateHandle,
                         isEligibleForPin: Boolean,
+                        source: PlayBroPageSource,
                         fetchCommissionProduct: Boolean,
                     ): PlayBroProductSetupViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create("123", 30, emptyList(), handle,
-                    isEligibleForPin = false,
-                    fetchCommissionProduct = false
-                ) as T
+                }.create("123", 30, emptyList(), handle, false, source = PlayBroPageSource.Live, false) as T
             }
         }
     }

@@ -21,6 +21,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.SelectedEtalaseModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
@@ -56,6 +57,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
     @Assisted val maxProduct: Int,
     @Assisted productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val savedStateHandle: SavedStateHandle,
+    @Assisted private val source: PlayBroPageSource,
     @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
     @Assisted("fetchCommissionProduct") private val fetchCommissionProduct: Boolean,
     private val repo: PlayBroadcastRepository,
@@ -70,6 +72,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            source: PlayBroPageSource,
             @Assisted("isEligibleForPin") isEligibleForPin: Boolean,
             @Assisted("fetchCommissionProduct") fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel
@@ -84,6 +87,9 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
 
     val isEligibleForPin: Boolean
         get() = savedStateHandle.isEligibleForPin()
+
+    val isNumerationShown: Boolean
+        get() = source == PlayBroPageSource.Live
 
     private val _campaignAndEtalase = MutableStateFlow(CampaignAndEtalaseUiModel.Empty)
     private val _selectedProductList = MutableStateFlow(

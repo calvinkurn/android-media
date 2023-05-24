@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
@@ -49,7 +49,7 @@ class CategoryWishlistTest: CategoryTestFixtures() {
         val fieldName = "visitableList"
         val fieldValue = mutableListOf<Visitable<*>>(
             ProductItemDataView(
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = productId,
                     isWishlistShown = true,
                     hasBeenWishlist = false
@@ -58,7 +58,7 @@ class CategoryWishlistTest: CategoryTestFixtures() {
         )
         val expectedValue = mutableListOf<Visitable<*>>(
             ProductItemDataView(
-                productCardModel = TokoNowProductCardViewUiModel(
+                productCardModel = ProductCardCompactUiModel(
                     productId = productId,
                     isWishlistShown = true,
                     hasBeenWishlist = true

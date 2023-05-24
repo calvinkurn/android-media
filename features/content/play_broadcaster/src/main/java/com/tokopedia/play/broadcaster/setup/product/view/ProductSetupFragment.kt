@@ -18,6 +18,8 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSumm
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import javax.inject.Inject
 
@@ -195,7 +197,7 @@ class ProductSetupFragment @Inject constructor(
                 this,
                 arguments
             ) {
-                override fun <T : ViewModel?> create(
+                override fun <T : ViewModel> create(
                     key: String,
                     modelClass: Class<T>,
                     handle: SavedStateHandle
@@ -205,7 +207,8 @@ class ProductSetupFragment @Inject constructor(
                         mDataSource?.maxProduct().orZero(),
                         mDataSource?.getProductSectionList().orEmpty(),
                         handle,
-                        mDataSource?.isEligibleForPin().orTrue(),
+                        mDataSource?.isEligibleForPin() ?: true,
+                        mDataSource?.getPageSource().orUnknown(),
                         mDataSource?.fetchCommissionProduct().orFalse(),
                     ) as T
                 }
@@ -226,6 +229,7 @@ class ProductSetupFragment @Inject constructor(
         fun getSelectedAccount(): ContentAccountUiModel
         fun creationId(): String
         fun maxProduct(): Int
+        fun getPageSource() : PlayBroPageSource
         fun fetchCommissionProduct(): Boolean
     }
 

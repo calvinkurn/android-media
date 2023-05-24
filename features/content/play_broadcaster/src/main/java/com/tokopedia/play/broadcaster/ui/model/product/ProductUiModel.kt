@@ -20,4 +20,5 @@ data class ProductUiModel(
     val stock: Long,
     val price: ProductPrice,
     val pinStatus: PinProductUiModel = PinProductUiModel.Empty,
+    val number: String = "",
 ) : Parcelable
