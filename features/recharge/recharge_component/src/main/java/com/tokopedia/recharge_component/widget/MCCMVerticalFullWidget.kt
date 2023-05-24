@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmFullBinding
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmVerticalFullBinding
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.model.denom.DenomData

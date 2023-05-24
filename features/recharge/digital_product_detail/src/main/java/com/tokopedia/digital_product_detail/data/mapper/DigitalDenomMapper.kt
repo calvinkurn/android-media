@@ -73,7 +73,6 @@ class DigitalDenomMapper @Inject constructor() {
                 isHorizontalMCCM = firstProduct.mediaUrlType.equals(MCCM_LAYOUT_TYPE_HORIZONTAL,true),
                 imageBackgroundUrl = firstProduct.mediaURL,
                 imageBackgroundUrlDarkMode = firstProduct.mediaURLDarkMode,
-                showMoreText = data.textLink,
                 listDenomData = denomList
             )
             return denomWidgetModel
