@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.databinding.FragmentPlayCategoryWidgetBinding
 import com.tokopedia.play.ui.explorewidget.adapter.CategoryWidgetAdapter
@@ -17,18 +18,22 @@ import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import kotlinx.coroutines.flow.collectLatest
+import javax.inject.Inject
 
 /**
  * @author by astidhiyaa on 23/05/23
  */
-class PlayCategoryWidgetFragment : BasePlayFragment() {
+class PlayCategoryWidgetFragment @Inject constructor(private val router: Router) :
+    BasePlayFragment() {
 
     private var _binding: FragmentPlayCategoryWidgetBinding? = null
     private val binding: FragmentPlayCategoryWidgetBinding get() = _binding!!
 
     private val categoryAdapter by lazyThreadSafetyNone {
         CategoryWidgetAdapter(object : CategoryWidgetViewHolder.Item.Listener {
-            override fun onClicked(item: PlayWidgetChannelUiModel) {}
+            override fun onClicked(item: PlayWidgetChannelUiModel) {
+                router.route(context, item.appLink)
+            }
         })
     }
 

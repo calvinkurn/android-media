@@ -8,4 +8,5 @@ data class PlayWidgetPartnerUiModel(
         val id: String,
         val name: String,
         val type: PartnerType,
+        val thumbnail: String = "",
 )

@@ -134,6 +134,9 @@ data class ContentItem(
 
         @SerializedName("type")
         val type: String = "",
+
+        @SerializedName("thumbnail_url")
+        val thumbnail: String = "",
     )
 
     data class Video(

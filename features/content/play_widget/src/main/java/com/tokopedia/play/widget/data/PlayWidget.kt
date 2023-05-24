@@ -49,6 +49,7 @@ data class PlayWidgetItemPartner(
         @SerializedName("ID") val id: String = "",
         @SerializedName("name") val name: String = "",
         @SerializedName("type") val type: String = "",
+        @SerializedName("thumbnail_url") val thumbnail: String = "",
 )
 
 data class PlayWidgetItemStat(

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.PlayDialogExploreWidgetBinding
@@ -22,6 +23,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 22/05/23
@@ -37,7 +39,7 @@ class PlayExploreWidget @Inject constructor(
     } // TODO() setup apply here only passed router
 
     private val fgCategory by lazyThreadSafetyNone {
-        PlayCategoryWidgetFragment()
+        PlayCategoryWidgetFragment(router) //TODO() dont pass via constructor use lateint
     }
 
     private val tabs = mapOf<String, Fragment>(
@@ -73,7 +75,7 @@ class PlayExploreWidget @Inject constructor(
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
+            (getScreenWidth() * 0.75).roundToInt(),
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

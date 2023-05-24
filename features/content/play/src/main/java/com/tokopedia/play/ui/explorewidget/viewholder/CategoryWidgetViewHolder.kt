@@ -20,7 +20,7 @@ internal class CategoryWidgetViewHolder {
                     listener.onClicked(item)
                 }
 
-                ivCategoryView.loadImage(item.video.coverUrl)
+                ivCategoryVideo.loadImage(item.video.coverUrl)
                 tvCategoryVideoTitle.text = item.title
                 tvCategoryVideoCreator.text = item.partner.name //TODO() check partner image
                 ivCategoryCreator.loadImage(item.video.coverUrl)
