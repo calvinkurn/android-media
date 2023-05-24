@@ -64,14 +64,6 @@ internal class PlayWidgetCarouselAdapter(
         }
     }
 
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        super.onViewRecycled(holder)
-        when (holder) {
-            is PlayWidgetCarouselViewHolder.VideoContent -> holder.onRecycled()
-            is PlayWidgetCarouselViewHolder.UpcomingContent -> holder.onRecycled()
-        }
-    }
-
     companion object {
         private const val TYPE_VIDEO = 0
         private const val TYPE_UPCOMING = 1

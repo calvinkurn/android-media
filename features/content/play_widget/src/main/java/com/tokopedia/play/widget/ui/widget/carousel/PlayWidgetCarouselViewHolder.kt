@@ -77,10 +77,6 @@ class PlayWidgetCarouselViewHolder private constructor() {
             }
         }
 
-        internal fun onRecycled() {
-            channelView.reset()
-        }
-
         companion object {
             fun create(
                 parent: ViewGroup,
@@ -171,10 +167,6 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     }
                 }
             }
-        }
-
-        internal fun onRecycled() {
-
         }
 
         companion object {

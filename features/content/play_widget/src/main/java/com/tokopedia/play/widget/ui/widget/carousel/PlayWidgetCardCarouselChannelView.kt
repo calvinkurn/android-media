@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardCarouselChannelBinding
 import com.tokopedia.play.widget.player.PlayVideoPlayer
@@ -112,10 +113,6 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mModel.channelType == PlayWidgetChannelType.Vod
     }
 
-    fun reset() {
-        binding.imgCover.setImageDrawable(null)
-    }
-
     fun setModel(model: PlayWidgetChannelUiModel, invalidate: Boolean = true) {
         this.mModel = model
         if (invalidate) invalidateUi(model)
@@ -125,7 +122,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.tvLiveBadge.showWithCondition(model.channelType == PlayWidgetChannelType.Live)
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = model.totalView.totalViewFmt
         binding.viewPlayWidgetCaption.root.text = model.title
-        binding.imgCover.setImageUrl(model.video.coverUrl)
+        binding.imgCover.loadImage(model.video.coverUrl)
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)

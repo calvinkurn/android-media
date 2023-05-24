@@ -233,14 +233,15 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         shouldRoughlyScroll: Boolean = false,
     ) {
         val dataWithFake = getDataWithFake(channels)
-
-        adapter.submitList(dataWithFake.mapIndexed { index, channel ->
+        val finalModel = dataWithFake.mapIndexed { index, channel ->
             val isSelected = index == selectedPosition
             PlayWidgetCarouselAdapter.Model(
                 channel.setMute(mIsMuted),
                 isSelected,
             )
-        }) {
+        }
+
+        adapter.submitList(finalModel) {
             if (channels.isEmpty()) return@submitList
             if (shouldRoughlyScroll) {
                 roughlyScrollTo(selectedPosition) {
@@ -321,7 +322,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
     }
 
     companion object {
-        private const val FAKE_COUNT_PER_SIDE = 10
+        private const val FAKE_COUNT_PER_SIDE = 7
     }
 
     interface Listener : PlayWidgetRouterListener {

@@ -13,7 +13,7 @@
 <!--    416dp-->
 
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -11,6 +11,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.databinding.ViewPlayWidgetCardCarouselUpcomingBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -61,7 +62,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
     private fun invalidateUi(model: PlayWidgetChannelUiModel) {
         binding.tvStartTime.text = model.startTime
         binding.viewPlayWidgetCaption.root.text = model.title
-        binding.imgCover.setImageUrl(model.video.coverUrl)
+        binding.imgCover.loadImage(model.video.coverUrl)
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
         binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)
