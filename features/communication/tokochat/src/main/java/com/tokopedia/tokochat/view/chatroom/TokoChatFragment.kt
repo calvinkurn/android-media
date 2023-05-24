@@ -110,8 +110,7 @@ open class TokoChatFragment :
     TokoChatReplyAreaListener,
     TokoChatAttachmentMenuListener,
     MaskingPhoneNumberBottomSheet.AnalyticsListener,
-    TokoChatBubblesAwarenessBottomSheet.AnalyticsListener
-{
+    TokoChatBubblesAwarenessBottomSheet.AnalyticsListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -190,9 +189,9 @@ open class TokoChatFragment :
 
     override fun onFragmentBackPressed(): Boolean {
         val shouldShowBubblesAwarenessBottomSheet =
-            TokoChatValueUtil.shouldShowBubblesAwareness()
-                && (activity?.isFromBubble() == false)
-                && viewModel.shouldShowBottomsheetBubblesCache()
+            TokoChatValueUtil.shouldShowBubblesAwareness() &&
+                (activity?.isFromBubble() == false) &&
+                viewModel.shouldShowBottomsheetBubblesCache()
 
         return if (shouldShowBubblesAwarenessBottomSheet) {
             showBubblesAwarenessBottomSheet()
@@ -598,7 +597,8 @@ open class TokoChatFragment :
 
     private fun addBubbleTicker() {
         if (TokoChatValueUtil.shouldShowBubblesAwareness() &&
-            viewModel.shouldShowTickerBubblesCache()
+            viewModel.shouldShowTickerBubblesCache() &&
+            (activity?.isFromBubble() == false)
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
                 message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
