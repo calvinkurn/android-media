@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.databinding.BottomsheetUserCompleteOnboardingBinding
-import com.tokopedia.content.common.util.withCache
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.R
+import com.tokopedia.content.common.databinding.BottomsheetUserCompleteOnboardingBinding
 import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
@@ -21,13 +23,13 @@ import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingU
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
+import com.tokopedia.content.common.util.hideKeyboard
+import com.tokopedia.content.common.util.withCache
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
-import android.view.inputmethod.EditorInfo
-import androidx.fragment.app.viewModels
-import com.tokopedia.content.common.util.hideKeyboard
 
 
 /**
@@ -78,6 +80,14 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.textFieldUsername.isClearable = false
+        binding.textFieldUsername.icon1.setImageDrawable(getIconUnifyDrawable(
+            requireContext(),
+            IconUnify.CHECK,
+            MethodChecker.getColor(
+                requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+            )
+        ))
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
         setTitle(getString(R.string.ugc_complete_onboarding_title))
