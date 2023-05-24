@@ -149,7 +149,7 @@ class FeedCampaignRibbonView(
 
                         startDelayProcess(THREE_SECOND) {
                             root.setTransition(root.currentState, R.id.availability_state)
-                            root.transitionToEnd()
+                            root.transitionToStart()
                         }
                     }
                 }
@@ -159,7 +159,7 @@ class FeedCampaignRibbonView(
 
                         startDelayProcess(THREE_SECOND) {
                             root.setTransition(root.currentState, R.id.start_in_state)
-                            root.transitionToEnd()
+                            root.transitionToStart()
                         }
                     }
                 }
