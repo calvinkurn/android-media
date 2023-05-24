@@ -17,6 +17,8 @@ import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -73,6 +75,20 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
     private fun renderCards(state: CachedState<PlayViewerNewUiState>) {
         if (state.isNotChanged { it.exploreWidget.category }) return
 
-        categoryAdapter.setItemsAndAnimateChanges(state.value.exploreWidget.category)
+        when (state.value.exploreWidget.category) {
+            is NetworkResult.Success -> categoryAdapter.setItemsAndAnimateChanges(state.value.exploreWidget.category.data)
+            else -> {
+                categoryAdapter.setItemsAndAnimateChanges(
+                    listOf(
+                        PlayWidgetShimmerUiModel,
+                        PlayWidgetShimmerUiModel,
+                        PlayWidgetShimmerUiModel,
+                        PlayWidgetShimmerUiModel,
+                        PlayWidgetShimmerUiModel
+                    )
+                )
+            }
+        }
+
     }
 }

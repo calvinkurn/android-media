@@ -160,14 +160,14 @@ data class FollowPopUpUiState(
 data class ExploreWidgetUiState(
     val shouldShow: Boolean,
     val data: ExploreWidgetUiModel,
-    val category: List<PlayWidgetItemUiModel>,
+    val category: NetworkResult<List<PlayWidgetItemUiModel>>,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
             get() = ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
-                category = emptyList(),
+                category = NetworkResult.Loading,
             )
     }
 }
