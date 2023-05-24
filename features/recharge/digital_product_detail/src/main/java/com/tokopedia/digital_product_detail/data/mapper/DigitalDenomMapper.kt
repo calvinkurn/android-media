@@ -217,16 +217,14 @@ class DigitalDenomMapper @Inject constructor() {
         return perso.let {
             DenomData(
                 id = it.trackingData.productId,
-                //TODO need to asses status
-                //TODO need to asses promoStatus
                 categoryId = it.trackingData.categoryId,
                 operatorId = it.trackingData.operatorId,
-                //TODO need to asses isSpecialPromo
+                isSpecialPromo = true,
                 title = it.title,
                 price = it.price,
-                //TODO need to asses pricePlain,
+                pricePlain = it.pricePlain,
                 slashPrice = it.slashedPrice,
-                //TODO need to asses slashedPricePlain
+                slashPricePlain = it.slashedPricePlain,
                 isShowChevron = !it.descriptions.isNullOrEmpty(),
                 quotaInfo = it.label1,
                 expiredDate = it.label2,

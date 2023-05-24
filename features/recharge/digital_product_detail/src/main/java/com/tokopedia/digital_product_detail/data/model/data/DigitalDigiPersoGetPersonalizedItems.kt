@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.data.model.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class DigitalDigiPersoGetPersonalizedItem(
@@ -45,6 +46,12 @@ data class PersoRecommendationItem(
     val discount: String,
     @SerializedName("slashedPrice")
     val slashedPrice: String,
+    @SerializedName("pricePlain")
+    @Expose
+    val pricePlain: Int = 0,
+    @SerializedName("slashedPricePlain")
+    @Expose
+    val slashedPricePlain: Int = 0,
     @SerializedName("appLink")
     val appLink: String,
     @SerializedName("webLink")
