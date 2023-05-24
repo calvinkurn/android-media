@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.PromoPlayAuthorConfigUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationMapper
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
@@ -22,6 +23,7 @@ class CentralizedPromoViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
     private val getPromotionUseCase: GetPromotionUseCase,
+    private val promoPlayAuthorConfigUseCase: PromoPlayAuthorConfigUseCase,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -57,8 +59,13 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPromoCreation(tabId: String): Result<BaseUiModel> {
         return try {
-            val response = getPromotionUseCase.execute(userSession.shopId, tabId)
-            val promotionListUiModel = PromoCreationMapper.mapperToPromoCreationUiModel(response)
+            val responseDeferred = async { getPromotionUseCase.execute(userSession.shopId, tabId) }
+            val hasPlayContentDeferred =
+                async { promoPlayAuthorConfigUseCase.execute(userSession.shopId) }
+            val promotionListUiModel = PromoCreationMapper.mapperToPromoCreationUiModel(
+                responseDeferred.await(),
+                hasPlayContentDeferred.await()
+            )
             Success(promotionListUiModel)
         } catch (t: Throwable) {
             Fail(t)

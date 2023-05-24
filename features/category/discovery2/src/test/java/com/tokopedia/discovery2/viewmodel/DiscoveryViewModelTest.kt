@@ -15,6 +15,7 @@ import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
+import com.tokopedia.discovery2.Constant.DISCOVERY_APPLINK
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
@@ -45,6 +46,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 class DiscoveryViewModelTest {
 
@@ -395,6 +397,56 @@ class DiscoveryViewModelTest {
         viewModel.getQueryParameterMapFromBundle(null)
 
         TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(null), map)
+    }
+
+    @Test
+    fun `test for getQueryParameterMapFromBundle when discoApplink is present in bundle`(){
+        val bundle: Bundle = mockk(relaxed = true)
+        com.tokopedia.discovery2.datamapper.discoComponentQuery = null
+        every { bundle.getString(DISCOVERY_APPLINK) } returns "tokopedia://discovery/deals"
+        val uri: Uri = mockk(relaxed = true)
+        every { uri.getQueryParameter(DiscoveryActivity.SOURCE) } returns "a"
+        every { uri.getQueryParameter(DiscoveryActivity.COMPONENT_ID) } returns "b"
+        every { uri.getQueryParameter(DiscoveryActivity.ACTIVE_TAB) } returns "c"
+        every { uri.getQueryParameter(DiscoveryActivity.TARGET_COMP_ID) } returns "d"
+        every { uri.getQueryParameter(DiscoveryActivity.PRODUCT_ID) } returns "e"
+        every { uri.getQueryParameter(DiscoveryActivity.PIN_PRODUCT) } returns "f"
+        every { uri.getQueryParameter(DiscoveryActivity.EMBED_CATEGORY) } returns "g"
+        every { uri.getQueryParameter(DiscoveryActivity.RECOM_PRODUCT_ID) } returns "h"
+        every { uri.getQueryParameter(DiscoveryActivity.CATEGORY_ID) } returns "i"
+        every { uri.getQueryParameter(DiscoveryActivity.DYNAMIC_SUBTITLE) } returns "j"
+        every { uri.getQueryParameter(DiscoveryActivity.TARGET_TITLE_ID) } returns "k"
+        every { uri.getQueryParameter(DiscoveryActivity.CAMPAIGN_ID) } returns "l"
+        every { uri.getQueryParameter(DiscoveryActivity.VARIANT_ID) } returns "m"
+        every { uri.getQueryParameter(DiscoveryActivity.SHOP_ID) } returns "n"
+        every { uri.query } returns "o"
+        every { uri.getQueryParameter(DiscoveryActivity.AFFILIATE_UNIQUE_ID) } returns "p"
+        every { uri.getQueryParameter(DiscoveryActivity.CHANNEL) } returns "q"
+        mockkStatic(Uri::class)
+        every { Uri.parse(any()) } returns uri
+
+        val map: MutableMap<String, String?> = mutableMapOf(
+            DiscoveryActivity.SOURCE to "a",
+            DiscoveryActivity.COMPONENT_ID to "b",
+            DiscoveryActivity.ACTIVE_TAB to "c",
+            DiscoveryActivity.TARGET_COMP_ID to "d",
+            DiscoveryActivity.PRODUCT_ID to "e",
+            DiscoveryActivity.PIN_PRODUCT to "f",
+            DiscoveryActivity.EMBED_CATEGORY to "g",
+            DiscoveryActivity.RECOM_PRODUCT_ID to "h",
+            DiscoveryActivity.CATEGORY_ID to "i",
+            DiscoveryActivity.DYNAMIC_SUBTITLE to "j",
+            DiscoveryActivity.TARGET_TITLE_ID to "k",
+            DiscoveryActivity.CAMPAIGN_ID to "l",
+            DiscoveryActivity.VARIANT_ID to "m",
+            DiscoveryActivity.SHOP_ID to "n",
+            DiscoveryActivity.QUERY_PARENT to "o",
+            DiscoveryActivity.AFFILIATE_UNIQUE_ID to "p",
+            DiscoveryActivity.CHANNEL to "q"
+        )
+
+        TestCase.assertEquals(viewModel.getQueryParameterMapFromBundle(bundle), map)
+        unmockkStatic(Uri::class)
     }
 
     /**************************** test for getDiscoveryData() *******************************************/
