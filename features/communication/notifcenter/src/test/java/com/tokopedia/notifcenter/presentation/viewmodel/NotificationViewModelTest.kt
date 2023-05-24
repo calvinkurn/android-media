@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.notifcenter.data.entity.affiliate.AffiliateEducationArticleResponse
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
@@ -21,7 +22,15 @@ import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
-import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.data.uimodel.affiliate.NotificationAffiliateEducationUiModel
+import com.tokopedia.notifcenter.domain.AffiliateEducationArticleUseCase
+import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
+import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
+import com.tokopedia.notifcenter.domain.NotifOrderListUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterDeleteReminderBumpUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
+import com.tokopedia.notifcenter.domain.NotifcenterSetReminderBumpUseCase
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.CLEAR_ALL_NOTIF_TYPE
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.DEFAULT_SHOP_ID
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
@@ -44,14 +53,33 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.coVerifyOrder
+import io.mockk.every
+import io.mockk.invoke
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.verify
+import io.mockk.verifyOrder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import rx.Observable
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class NotificationViewModelTest {
 
@@ -72,6 +100,7 @@ class NotificationViewModelTest {
     private val notifOrderListUseCase: NotifOrderListUseCase = mockk(relaxed = true)
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk(relaxed = true)
+    private val affiliateEducationArticleUseCase: AffiliateEducationArticleUseCase = mockk(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
 
@@ -83,6 +112,7 @@ class NotificationViewModelTest {
     private val filterListObserver: Observer<Resource<NotifcenterFilterResponse>> = mockk(relaxed = true)
     private val clearNotifObserver: Observer<Resource<ClearNotifCounterResponse>> = mockk(relaxed = true)
     private val orderListObserver: Observer<Resource<NotifOrderListResponse>> = mockk(relaxed = true)
+    private val affiliateEducationObserver: Observer<NotificationAffiliateEducationUiModel> = mockk(relaxed = true)
 
     private val viewModel = NotificationViewModel(
         notifcenterDetailUseCase,
@@ -99,11 +129,14 @@ class NotificationViewModelTest {
         userSessionInterface,
         addToCartUseCase,
         notifOrderListUseCase,
+        affiliateEducationArticleUseCase,
         dispatcher
     )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
+        Dispatchers.setMain(UnconfinedTestDispatcher())
         viewModel.notificationItems.observeForever(notificationItemsObserver)
         viewModel.recommendations.observeForever(recommendationsObserver)
         viewModel.deleteReminder.observeForever(deleteReminderObserver)
@@ -111,6 +144,7 @@ class NotificationViewModelTest {
         viewModel.topAdsBanner.observeForever(topAdsBannerObserver)
         viewModel.filterList.observeForever(filterListObserver)
         viewModel.clearNotif.observeForever(clearNotifObserver)
+        viewModel.affiliateEducationArticle.observeForever(affiliateEducationObserver)
     }
 
     @Test
@@ -239,6 +273,93 @@ class NotificationViewModelTest {
             notificationItemsObserver.onChanged(Success(expectedValue))
             topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView))
         }
+    }
+
+    @Test
+    fun `loadFirstPageNotification as affiliate should return data properly`() {
+        // given
+        val cardsItem = AffiliateEducationArticleResponse.CardsArticle.Data.CardsItem()
+        val eduResponse = AffiliateEducationArticleResponse(
+            AffiliateEducationArticleResponse.CardsArticle(
+                AffiliateEducationArticleResponse.CardsArticle.Data(
+                    listOf(
+                        cardsItem
+                    )
+                )
+            )
+        )
+        val notifResponse = NotifcenterDetailMapper().mapFirstPage(
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
+        )
+        val flow = flow { emit(Resource.success(eduResponse)) }
+
+        val role = RoleType.AFFILIATE
+        viewModel.reset() // filter id
+
+        coEvery { affiliateEducationArticleUseCase.getEducationArticles() } returns flow
+
+        every {
+            notifcenterDetailUseCase.getFirstPageNotification(
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
+            )
+        } answers {
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(notifResponse)
+        }
+
+        // when
+        viewModel.loadFirstPageNotification(role)
+
+        // then
+        coVerify {
+            notificationItemsObserver.onChanged(Success(notifResponse))
+        }
+        assertNotNull(viewModel.affiliateEducationArticle.value)
+    }
+
+    @Test
+    fun `loadFirstPageNotification as affiliate should return data properly even without education articles`() {
+        // given
+        val expectedThrowable = Throwable("Oops!")
+        val notifResponse = NotifcenterDetailMapper().mapFirstPage(
+            notifCenterDetailResponse,
+            needSectionTitle = false,
+            needLoadMoreButton = false
+        )
+
+        val role = RoleType.AFFILIATE
+        viewModel.reset() // filter id
+
+        coEvery { affiliateEducationArticleUseCase.getEducationArticles() } throws expectedThrowable
+
+        every {
+            notifcenterDetailUseCase.getFirstPageNotification(
+                viewModel.filter,
+                role,
+                captureLambda(),
+                any()
+            )
+        } answers {
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(notifResponse)
+        }
+
+        // when
+        viewModel.loadFirstPageNotification(role)
+
+        // then
+        verify {
+            notificationItemsObserver.onChanged(Success(notifResponse))
+        }
+        Assert.assertEquals(
+            null,
+            viewModel.affiliateEducationArticle.value
+        )
     }
 
     @Test
@@ -624,7 +745,8 @@ class NotificationViewModelTest {
         // given
         val listOfRecommWidget = productRecommResponse
             .productRecommendationWidget
-            .data.mappingToRecommendationModel()
+            .data
+            .mappingToRecommendationModel()
 
         val expectedValue = listOfRecommWidget.first()
 
@@ -919,12 +1041,49 @@ class NotificationViewModelTest {
     }
 
     @Test
+    fun `clearNotifCounter propagate success data to liveData for affiliate`() {
+        // Given
+        val role = RoleType.AFFILIATE
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(role) } returns flow
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
+    }
+
+    @Test
     fun clearNotifCounter_reset_type_zero_when_user_does_not_have_shop() {
         // Given
         val role = RoleType.BUYER
         val expectedValue = Resource.success(clearNotifCounterResponse)
         val flow = flow { emit(expectedValue) }
         every { clearNotifUseCase.clearNotifCounter(CLEAR_ALL_NOTIF_TYPE) } returns flow
+        every { userSessionInterface.shopId } returns DEFAULT_SHOP_ID
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
+    }
+
+    @Test
+    fun clearNotifCounter_when_user_does_not_have_shop_and_is_affiliate() {
+        // Given
+        val role = RoleType.AFFILIATE
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(role) } returns flow
         every { userSessionInterface.shopId } returns DEFAULT_SHOP_ID
 
         // when
@@ -1024,8 +1183,10 @@ class NotificationViewModelTest {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
         viewModel.cancelAllUseCase()
     }
 

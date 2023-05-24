@@ -81,7 +81,7 @@ object DynamicChannelComponentMapper {
                 promoName = channel.promoName,
                 campaignType = channel.campaignType
             ),
-            channelGrids = channel.grids.map {
+            channelGrids = channel.grids.mapIndexed { index, it ->
                 ChannelGrid(
                     id = it.id,
                     warehouseId = it.warehouseId,
@@ -140,7 +140,8 @@ object DynamicChannelComponentMapper {
                         )
                     },
                     expiredTime = it.expiredTime,
-                    categoryBreadcrumbs = it.categoryBreadcrumbs
+                    categoryBreadcrumbs = it.categoryBreadcrumbs,
+                    position = index
                 )
             }
         )
@@ -222,7 +223,7 @@ object DynamicChannelComponentMapper {
                 homeAttribution = channel.homeAttribution,
                 promoName = channel.promoName
             ),
-            channelGrids = channel.grids.map {
+            channelGrids = channel.grids.mapIndexed { index, it ->
                 ChannelGrid(
                     id = it.id,
                     warehouseId = it.warehouseId,
@@ -275,7 +276,8 @@ object DynamicChannelComponentMapper {
                             title = badge.title,
                             imageUrl = badge.imageUrl
                         )
-                    }
+                    },
+                    position = index
                 )
             }
         )
