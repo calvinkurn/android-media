@@ -23,10 +23,10 @@ import androidx.core.text.getSpans
 /**
  * This is a sealed class that contains all of the different ways text can be presented to the UI.
  */
-sealed class UiText {
-    data class StringText(val value: String?) : UiText()
+sealed interface UiText {
+    data class String(val value: kotlin.String) : UiText
 
-    data class ResourceText(@StringRes val value: Int?) : UiText()
+    data class Resource(@StringRes val value: Int) : UiText
 }
 
 /**
@@ -34,10 +34,10 @@ sealed class UiText {
  *
  * @param[context] If necessary, use this to evaluate a string resource.
  */
-fun UiText.getString(context: Context): String? {
+fun UiText.getString(context: Context): String {
     return when (this) {
-        is UiText.StringText -> this.value
-        is UiText.ResourceText -> this.value?.let { context.getString(it) }
+        is UiText.String -> value
+        is UiText.Resource -> context.getString(value)
     }
 }
 
@@ -45,7 +45,7 @@ fun UiText.getString(context: Context): String? {
  * A helper function that allows to get strings from a [Composable] context.
  */
 @Composable
-fun UiText.getString(): String? {
+fun UiText.getString(): String {
     return this.getString(LocalContext.current)
 }
 
@@ -54,14 +54,10 @@ fun UiText.getString(): String? {
  */
 @Composable
 fun CharSequence.toAnnotatedString(
-    urlSpanStyle: SpanStyle = SpanStyle(
-        color = Color.Blue,
-        textDecoration = TextDecoration.Underline
-    ),
     colorMapping: Map<Color, Color> = emptyMap()
 ): AnnotatedString {
     return if (this is Spanned) {
-        this.toAnnotatedString(urlSpanStyle, colorMapping)
+        this.toAnnotatedString(colorMapping)
     } else {
         buildAnnotatedString {
             append(this@toAnnotatedString.toString())
@@ -74,10 +70,6 @@ fun CharSequence.toAnnotatedString(
  */
 @Composable
 fun Spanned.toAnnotatedString(
-    urlSpanStyle: SpanStyle = SpanStyle(
-        color = Color.Blue,
-        textDecoration = TextDecoration.Underline
-    ),
     colorMapping: Map<Color, Color> = emptyMap()
 ): AnnotatedString {
     return buildAnnotatedString {
@@ -90,7 +82,6 @@ fun Spanned.toAnnotatedString(
         urlSpans.forEach { urlSpan ->
             val start = getSpanStart(urlSpan)
             val end = getSpanEnd(urlSpan)
-            addStyle(urlSpanStyle, start, end)
             addStringAnnotation("url", urlSpan.url, start, end) // NON-NLS
         }
         colorSpans.forEach { colorSpan ->

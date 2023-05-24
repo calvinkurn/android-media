@@ -1,14 +1,15 @@
 package com.tokopedia.loginregister.registerinitial.register
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -23,20 +24,6 @@ import org.junit.Test
 class RegisterNormalCase: RegisterInitialBase() {
 
     @Test
-    /* Show Go to login dialog if email exist */
-    fun gotoLoginIfEmailExist() {
-        isDefaultRegisterCheck = false
-        val data = RegisterCheckData(isExist = true , userID = "123456", registerType = "email", view = "yoris.prayogooooo@tokopedia.com")
-        registerCheckUseCase.response = RegisterCheckPojo(data)
-
-        runTest {
-            inputEmailOrPhone("yoris.prayogo@tokopedia.com")
-            clickSubmit()
-            isDialogDisplayed("Email Sudah Terdaftar")
-        }
-    }
-
-    @Test
     /* Go to login page if registered email dialog clicked */
     fun gotoLoginIfDialogClicked() {
         isDefaultRegisterCheck = false
@@ -49,10 +36,10 @@ class RegisterNormalCase: RegisterInitialBase() {
             clickSubmit()
             isDialogDisplayed("Email Sudah Terdaftar")
 
-            Espresso.onView(ViewMatchers.withText("Ya, Masuk"))
-                .inRoot(RootMatchers.isDialog())
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
+            onView(withText("Ya, Masuk"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
 
             intended(hasComponent(LoginActivity::class.java.name))
         }
@@ -133,10 +120,10 @@ class RegisterNormalCase: RegisterInitialBase() {
             clickSubmit()
             isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
 
-            Espresso.onView(ViewMatchers.withText("Ya, Masuk"))
-                .inRoot(RootMatchers.isDialog())
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
+            onView(withText("Ya, Masuk"))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+                .perform(click())
 
             intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }

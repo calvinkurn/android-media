@@ -22,7 +22,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestTypography(
     text: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    textStyle: TextStyle = NestTheme.typography.display3,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     onTextLayout: (TextLayoutResult) -> Unit = {}
@@ -37,11 +37,50 @@ fun NestTypography(
     )
 }
 
+@Preview(name = "Typography (Heading 1)")
+@Composable
+fun NestTypographyHeading1Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.heading1
+        )
+    }
+
+}
+
+@Preview(name = "Typography (Heading 2)")
+@Composable
+fun NestTypographyHeading2Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.heading2
+        )
+    }
+
+}
+
+@Preview(name = "Typography (Heading 3)")
+@Composable
+fun NestTypographyHeading3Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.heading3
+        )
+    }
+
+}
+
 @Composable
 fun NestTypography(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    textStyle: TextStyle = NestTheme.typography.display3,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     onTextLayout: (TextLayoutResult) -> Unit = {}
@@ -86,38 +125,61 @@ fun NestTypography(
     }
 }
 
-@Preview(name = "Typography")
+@Preview(name = "Typography (Display 1)")
 @Composable
-fun NestTypographyPreview() {
-    NestTypography(
-        text = "Flash Sale",
-        Modifier
-    )
+fun NestTypographyDisplay1Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.display1
+        )
+    }
+
 }
 
-@Preview(name = "Typography (Bold)")
+@Preview(name = "Typography (Display 2)")
 @Composable
-fun NestTypographyBoldPreview() {
-    NestTypography(
-        text = "Flash Sale",
-        Modifier,
-        textStyle = NestTheme.typography.display3.copy(fontWeight = FontWeight.Bold)
-    )
+fun NestTypographyDisplay2Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.display2
+        )
+    }
+}
+
+
+
+@Preview(name = "Typography (Display 3)")
+@Composable
+fun NestTypographyDisplay3Preview() {
+    NestTheme {
+        NestTypography(
+            text = "Jetpack Compose",
+            modifier = Modifier,
+            textStyle = NestTheme.typography.display3
+        )
+    }
 }
 
 @Preview(name = "Typography with Annotation String")
 @Composable
 fun NestTypographyAnnotationPreview() {
+    val helloColor = NestTheme.colors.NN._600
+    val worldColor = NestTheme.colors.GN._500
+
     NestTypography(
         text = buildAnnotatedString {
             withStyle(style = ParagraphStyle(lineHeight = 30.sp)) {
-                withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
+                withStyle(style = SpanStyle(color = helloColor)) {
                     append("Hello ")
                 }
                 withStyle(
                     style = SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        color = NestTheme.colors.GN._500
+                        color = worldColor
                     )
                 ) {
                     append("World ")

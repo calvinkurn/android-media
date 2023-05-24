@@ -5,7 +5,7 @@ import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import java.io.Closeable
 
 /**
@@ -35,7 +35,7 @@ class FollowerFollowingViewModelRobot(
 
     fun start(fn: suspend FollowerFollowingViewModelRobot.() -> Unit) {
         use {
-            runBlockingTest { fn() }
+            runTest { fn() }
         }
     }
 

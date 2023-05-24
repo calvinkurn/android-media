@@ -45,7 +45,9 @@
     <!--Cover-->
     <string name="play_prepare_cover_title_title">Tambah Cover</string>
     <string name="play_prepare_cover_title_header_description">Tambahkan cover yang kreatif supaya calon penontonmu jadi penasaran!</string>
+    <string name="play_prepare_cover_title_header_description_report_page">Karena kamu tidak tambah produk saat Live. Tapi kamu masih bisa upload gambar, lho.</string>
     <string name="play_prepare_cover_title_choose_template_title">Tambah produk dulu, ya</string>
+    <string name="play_prepare_cover_title_choose_template_title_report_page">Yaah, belum bisa pilih template</string>
     <string name="play_prepare_cover_title_choose_template_empty_description">Supaya foto produknya bisa ditampilkan di template cover pilihan untuk videomu.</string>
     <string name="play_prepare_cover_title_choose_template_description">Pilih warna &amp; judul cover yang sesuai dengan keinginan dan isi konten videomu.</string>
     <string name="play_prepare_cover_title_default_title_label">Judul live streaming</string>
@@ -58,7 +60,7 @@
     <string name="play_setup_cover_auto_generated_cover_coach_mark_title">Baru! Template untuk cover videomu ✨</string>
     <string name="play_setup_cover_auto_generated_cover_coach_mark_description">Desain template cover-nya bisa disesuaikan dengan produk &amp; promo di videomu nanti, lho!</string>
     <string name="play_setup_cover_auto_generated_cover_delete_cover_message">Template cover telah dihapus</string>
-    <string name="play_setup_cover_auto_generated_cover_error_load_message">Gagal memuat tamplate cover</string>
+    <string name="play_setup_cover_auto_generated_cover_error_load_message">Gagal memuat template cover</string>
     <string name="play_setup_cover_upload_image_toaster">Berhasil ganti cover dari pilih template ke upload gambar!</string>
     <string name="play_setup_cover_auto_generated_toaster">Berhasil ganti cover dari upload gambar ke pilih template!</string>
     <string name="play_setup_cover_auto_generated_toaster_update_cover_from_product">Ada perubahan di tampilan template cover karena kamu mengubah produk</string>
@@ -178,6 +180,7 @@
     <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
     <string name="play_bro_product_tag_no_price">Rp -</string>
     <string name="play_bro_product_discount_template">%d%%</string>
+    <string name="play_bro_product_tag_stock_empty_pinned">Habis</string>
 
     <!-- New Preparation -->
     <string name="play_bro_title_label">Judul</string>
@@ -295,6 +298,9 @@
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
     <string name="play_bro_banner_shorts_join_affiliate_title">Yuk, daftar Tokopedia Affiliate!</string>
     <string name="play_bro_banner_shorts_join_affiliate_description">Biar bisa dapat komisi cuma dengan promosikan produk di videomu.</string>
+
+    <string name="play_bro_banner_performance_title">Cek performa di Wawasan Video</string>
+    <string name="play_bro_banner_performance_subtitle">Untuk analisa video yang lebih detail</string>
 
     <!-- Shorts -->
     <string name="play_shorts_next_action_label">Lanjut</string>
