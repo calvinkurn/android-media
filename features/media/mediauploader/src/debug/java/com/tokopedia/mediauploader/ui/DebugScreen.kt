@@ -45,21 +45,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-val debugViewModel = object : DebugMediaUploaderViewModelContract {
-    override val state: StateFlow<DebugMediaLoaderState> =
-        MutableStateFlow(DebugMediaLoaderState().also {
-            it.log(LogType.Welcome, listOf(Logs("Foo", "Bar")))
-        })
-
-    override val config: StateFlow<DebugUploaderParam>
-        get() = MutableStateFlow(DebugUploaderParam.default())
-
-    override fun setAction(event: DebugMediaLoaderEvent) = Unit
-    override fun setSourceId(value: String) = Unit
-    override fun shouldCompress(status: Boolean) = Unit
-    override fun waitingTranscode(status: Boolean) = Unit
-}
-
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
@@ -185,3 +170,19 @@ fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
 fun DebugScreenPreview() {
     DebugScreen(debugViewModel)
 }
+
+val debugViewModel = object : DebugMediaUploaderViewModelContract {
+    override val state: StateFlow<DebugMediaLoaderState> =
+        MutableStateFlow(DebugMediaLoaderState().also {
+            it.log(LogType.Welcome, listOf(Logs("Foo", "Bar")))
+        })
+
+    override val config: StateFlow<DebugUploaderParam>
+        get() = MutableStateFlow(DebugUploaderParam.default())
+
+    override fun setAction(event: DebugMediaLoaderEvent) = Unit
+    override fun setSourceId(value: String) = Unit
+    override fun shouldCompress(status: Boolean) = Unit
+    override fun waitingTranscode(status: Boolean) = Unit
+}
+

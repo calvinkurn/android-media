@@ -65,6 +65,7 @@ fun ConfigBottomSheet(
 
 @Composable
 fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
+    // these variable aren't hoisted cause we only need to handle the checkbox status
     var shouldCompress by remember { mutableStateOf(false) }
     var waitingTranscode by remember { mutableStateOf(false) }
 
