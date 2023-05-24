@@ -926,6 +926,9 @@ class FeedFragment :
                     message = getString(feedR.string.feeds_add_to_cart_success_text),
                     actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
                     actionClickListener = {
+                        currentTrackerData?.let { trackerData ->
+                            feedAnalytics.eventClickViewCart(trackerData)
+                        }
                         goToCartPage()
                     }
                 )
@@ -957,16 +960,17 @@ class FeedFragment :
                 (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (result) {
                 is Success -> {
-                    productBottomSheet?.showMerchantVoucherWidget(
-                        result.data,
-                        feedMvcAnalytics
-                    )
                     if (!result.data.animatedInfoList.isNullOrEmpty() && currentTrackerData != null) {
                         feedAnalytics.eventMvcWidgetImpression(
                             currentTrackerData!!,
                             result.data.animatedInfoList!!
                         )
+                        feedMvcAnalytics.voucherList = result.data.animatedInfoList!!
                     }
+                    productBottomSheet?.showMerchantVoucherWidget(
+                        result.data,
+                        feedMvcAnalytics
+                    )
                 }
                 is Fail -> productBottomSheet?.hideMerchantVoucherWidget()
             }

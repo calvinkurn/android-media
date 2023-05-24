@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.analytics
 
 import android.os.Bundle
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getContentType
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getPostType
 import com.tokopedia.feedplus.analytics.FeedAnalytics.Companion.getPrefix
@@ -55,11 +56,12 @@ class FeedMVCAnalytics : DefaultMvcTrackerImpl() {
                 putParcelableArrayList(
                     KEY_PROMOTIONS,
                     ArrayList(voucherList.filterNotNull().mapIndexed { index, animatedInfos ->
+                        val name = MethodChecker.fromHtml(animatedInfos.title).toString()
                         Bundle().apply {
-                            putString(KEY_CREATIVE_NAME, animatedInfos.title)
+                            putString(KEY_CREATIVE_NAME, name)
                             putString(KEY_CREATIVE_SLOT, "${index + 1}")
                             putString(KEY_ITEM_ID, "")
-                            putString(KEY_ITEM_NAME, animatedInfos.title)
+                            putString(KEY_ITEM_NAME, name)
                         }
                     }),
                 )

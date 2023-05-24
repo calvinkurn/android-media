@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.analytics
 
 import android.os.Bundle
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.presentation.fragment.FeedBaseFragment
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
@@ -51,10 +52,11 @@ class FeedAnalytics @Inject constructor(
         const val VIEW_SUCCESS_REPORT_CONTENT = "view - success report content"
         const val CLICK_PRODUCT_TAG = "click - product tag"
         const val CLICK_PRODUCT_LABEL_PDP = "click - product label pdp"
-        const val VIEW_VOUCHER_BOTTOMSHEET = "view - voucher bottom sheet"
+        const val VIEW_VOUCHER_BOTTOMSHEET = "view - voucher bottomsheet"
         const val CLICK_PRODUCT = "click - product"
         const val CLICK_BUY_BUTTON = "click - beli button"
         const val CLICK_CART_BUTTON = "click - keranjang button"
+        const val CLICK_VIEW_CART = "click - lihat keranjang button"
         const val CLICK_CLOSE_PRODUCT_LIST = "click - close product list bottomsheet"
         const val CLICK_FOLLOW_BUTTON = "click - follow button"
         const val CLICK_CREATOR_NAME = "click - creator name"
@@ -86,7 +88,7 @@ class FeedAnalytics @Inject constructor(
         const val KEY_CREATIVE_SLOT = "creative_slot"
 
         const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottom sheet"
-        const val ITEM_LIST_PRODUCT_LABEL = "/unified feed - product label"
+        const val ITEM_LIST_PRODUCT_LABEL = "/unified feed - product list bottomsheet"
         const val UNIFIED_FEED_CONTENT = "unified-feed-content"
         const val CONTENT_IN_UNIFIED_FEED = "content in unified feed"
         const val CAMPAIGN_POST_IN_UNIFIED_FEED = "campaign post in unified feed"
@@ -382,14 +384,16 @@ class FeedAnalytics @Inject constructor(
         )
     }
 
-    fun eventClickProductLabel(trackerData: FeedTrackerDataModel,
-                               productList: List<FeedCardProductModel>) {
+    fun eventClickProductLabel(
+        trackerData: FeedTrackerDataModel,
+        productList: List<FeedCardProductModel>
+    ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(Event.SELECT_CONTENT,
             generateGeneralTrackerBundleData(
                 Event.SELECT_CONTENT,
                 CATEGORY_UNIFIED_FEED,
                 Action.CLICK_PRODUCT_LABEL_PDP,
-                getEventLabel(trackerData),
+                "${getEventLabel(trackerData)} - ${productList.firstOrNull()?.id ?: ""}",
                 "41604"
             ).also {
                 it.putString(
@@ -427,7 +431,7 @@ class FeedAnalytics @Inject constructor(
                 Event.VIEW_ITEM_LIST,
                 CATEGORY_UNIFIED_FEED,
                 Action.VIEW_PRODUCT_LIST_BOTTOMSHEET,
-                getEventLabel(trackerData),
+                "${getEventLabel(trackerData)} - ${productList.firstOrNull()?.id ?: ""}",
                 "41605"
             ).also {
                 it.putString(
@@ -468,11 +472,12 @@ class FeedAnalytics @Inject constructor(
                 it.putParcelableArrayList(
                     EnhanceEcommerce.KEY_PROMOTIONS,
                     ArrayList(mvcData.filterNotNull().mapIndexed { index, animatedInfos ->
+                        val name = MethodChecker.fromHtml(animatedInfos.title).toString()
                         Bundle().apply {
-                            putString(EnhanceEcommerce.KEY_CREATIVE_NAME, animatedInfos.title)
+                            putString(EnhanceEcommerce.KEY_CREATIVE_NAME, name)
                             putString(EnhanceEcommerce.KEY_CREATIVE_SLOT, "${index + 1}")
                             putString(EnhanceEcommerce.KEY_ITEM_ID, "")
-                            putString(EnhanceEcommerce.KEY_ITEM_NAME, animatedInfos.title)
+                            putString(EnhanceEcommerce.KEY_ITEM_NAME, name)
                         }
                     }),
                 )
@@ -587,6 +592,18 @@ class FeedAnalytics @Inject constructor(
                     ),
                 )
             }
+        )
+    }
+
+    fun eventClickViewCart(trackerData: FeedTrackerDataModel) {
+        sendEventTracker(
+            generateGeneralTrackerData(
+                Event.CLICK_CONTENT,
+                CATEGORY_UNIFIED_FEED,
+                Action.CLICK_VIEW_CART,
+                getEventLabel(trackerData),
+                "41611"
+            )
         )
     }
 
