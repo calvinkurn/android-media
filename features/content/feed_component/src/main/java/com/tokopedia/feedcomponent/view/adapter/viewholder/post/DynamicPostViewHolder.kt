@@ -625,6 +625,7 @@ open class DynamicPostViewHolder(
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun bindPostTag(
         postId: String,
         postTag: PostTag,
