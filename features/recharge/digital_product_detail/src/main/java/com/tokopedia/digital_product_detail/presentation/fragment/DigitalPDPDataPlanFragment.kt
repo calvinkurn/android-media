@@ -398,6 +398,9 @@ class DigitalPDPDataPlanFragment :
                         val selectedPositionMCCM =
                             viewModel.getSelectedPositionId(it.data.listDenomData)
                         onSuccessMCCM(it.data, selectedPositionMCCM)
+                        if (selectedPositionMCCM == null) {
+                            onHideBuyWidget()
+                        }
                     } else {
                         onLoadingAndFailMCCM()
                     }
@@ -420,8 +423,6 @@ class DigitalPDPDataPlanFragment :
                     }
                     val selectedPositionDenom =
                         viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
-                    val selectedPositionMCCM =
-                        viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
                     if (denomData.data.isFilterRefreshed) {
                         digitalPDPAnalytics.impressionFilterChip(
@@ -432,11 +433,10 @@ class DigitalPDPDataPlanFragment :
                         onSuccessSortFilter()
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
-                    //onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
-                    if (viewModel.isEmptyDenomMCCM(
-                            denomData.data.denomFull.listDenomData,
-                            denomData.data.denomMCCMFull.listDenomData
+                    //TODO asses if mccm empty and denom empty
+                    if (viewModel.isEmptyDenom(
+                            denomData.data.denomFull.listDenomData
                         )
                     ) {
                         showGlobalErrorState()
@@ -444,7 +444,7 @@ class DigitalPDPDataPlanFragment :
                         hideGlobalErrorState()
                     }
 
-                    if (selectedPositionDenom == null && selectedPositionMCCM == null) {
+                    if (selectedPositionDenom == null) {
                         onHideBuyWidget()
                     }
                     onSuccessOmniChannel(denomData.data.otherComponents)
@@ -452,7 +452,6 @@ class DigitalPDPDataPlanFragment :
 
                 is RechargeNetworkResult.Fail -> {
                     onFailedDenomFull()
-                    //onLoadingAndFailMCCM()
                 }
 
                 is RechargeNetworkResult.Loading -> {
@@ -460,7 +459,6 @@ class DigitalPDPDataPlanFragment :
                     hideEmptyState()
                     onShimmeringDenomFull()
                     onShimmeringOmniWidget()
-                    //onLoadingAndFailMCCM()
                 }
             }
         }

@@ -27,8 +27,6 @@ class DigitalDenomMapper @Inject constructor() {
 
         return InputMultiTabDenomModel(
             getDenomFullMapper(productsDenom?.text, dataCollectionProduct),
-            getDenomFullMapper(dataCollectionMCCM?.firstOrNull()?.name,
-                dataCollectionMCCM),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.otherComponents ?: emptyList(),
             inputMultiTab.multitabData.productInputs.firstOrNull()?.filterTagComponents ?: emptyList(),
             isRefresheedFilter
@@ -221,7 +219,7 @@ class DigitalDenomMapper @Inject constructor() {
                 id = it.trackingData.productId,
                 //TODO need to asses status
                 //TODO need to asses promoStatus
-                categoryId = it.trackingData.categoryId, //TODO need to asses categoryId
+                categoryId = it.trackingData.categoryId,
                 operatorId = it.trackingData.operatorId,
                 //TODO need to asses isSpecialPromo
                 title = it.title,
@@ -238,7 +236,6 @@ class DigitalDenomMapper @Inject constructor() {
     }
 
     companion object {
-        const val MCCM_LAYOUT_TYPE_DROPDOWN = "dropdown"
         const val MCCM_LAYOUT_TYPE_HORIZONTAL = "horizontal"
         const val CLUSTER_MCCM_TYPE = "MCCM"
         const val SPECIAL_PROMO_LABEL: String = "Traktiran Pengguna Baru"

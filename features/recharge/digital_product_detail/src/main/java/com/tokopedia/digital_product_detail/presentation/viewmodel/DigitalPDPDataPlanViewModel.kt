@@ -408,8 +408,8 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         setFilterDataParam(filterData)
     }
 
-    fun isEmptyDenomMCCM(listDenomData: List<DenomData>, listMCCMData: List<DenomData>): Boolean {
-        return listDenomData.isEmpty() && listMCCMData.isEmpty()
+    fun isEmptyDenom(listDenomData: List<DenomData>): Boolean {
+        return listDenomData.isEmpty()
     }
 
     private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {
