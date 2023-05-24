@@ -98,7 +98,6 @@ import com.tokopedia.loginregister.login.const.LoginConstants.Request.REQUEST_GO
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.GetDefaultChosenAddressService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -196,6 +195,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isShowBanner: Boolean = false
     private var isEnableFingerprint = false
     private var isEnableSilentVerif = false
+    private var isEnableOcl = false
     private var isEnableDirectBiometric = false
     private var isHitRegisterPushNotif: Boolean = false
     private var isEnableEncryptConfig: Boolean = false
@@ -342,11 +342,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
         isEnableDirectBiometric = isEnableDirectBiometric()
-
-        if (isOclEnabled()) {
-            goToOclChooseAccount()
-        }
-
+        isEnableOcl = isOclEnabled()
         refreshRolloutVariant()
     }
 
@@ -424,23 +420,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun checkSeamless() {
-        if (isEnableSeamlessLogin) {
-            showLoadingOverlay()
-            viewModel.checkSeamlessEligiblity()
-        } else {
-            hideLoadingOverlay()
-        }
-    }
-
     private fun checkLoginOption() {
-        if (isEnableDirectBiometric) {
-            viewModel.checkLoginOption()
-            showLoadingOverlay()
-        } else {
-            checkFingerprintAvailability()
-            checkSeamless()
-        }
+        viewModel.checkLoginOption(isEnableSeamlessLogin, isEnableFingerprint, isEnableDirectBiometric, isEnableOcl)
+        showLoadingOverlay()
     }
 
     private fun showLoadingOverlay() {
@@ -499,15 +481,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             when (it) {
                 is Success -> onSuccessRegisterCheck().invoke(it.data)
                 is Fail -> onErrorRegisterCheck().invoke(it.throwable)
-            }
-        }
-
-        viewModel.registerCheckFingerprint.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    onSuccessRegisterCheckFingerprint(it.data.data)
-                }
-                is Fail -> disableFingerprint()
             }
         }
 
@@ -633,18 +606,26 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun handleLoginOption(data: LoginOption) {
-        if (data.isEnableSeamless) routeToGojekSeamlessPage()
-        if (data.isEnableBiometrics) onSuccessRegisterCheckFingerprint(data.biometricsData, isShowDirectBiometricsPrompt(data.isEnableSeamless))
         hideLoadingOverlay()
+        if (data.isEnableSeamless) {
+            routeToGojekSeamlessPage()
+        } else if (data.isEnableOcl) {
+            goToOclChooseAccount()
+        } else if (data.isEnableDirectBiometric) {
+            analytics.trackClickBiometricLoginBtn()
+            gotoVerifyFingerprint()
+        }
+        // The non direct biometric won't be affected, we still have to show the biometric login btn
+        hideOrShowFingerprintBtn(data.isEnableBiometrics)
     }
 
     /**
      * @param isShowDirectBiometricsPrompt default false means that the param is not called from [handleLoginOption]
      */
-    private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult, isShowDirectBiometricsPrompt: Boolean = false) {
+    private fun hideOrShowFingerprintBtn(isRegistered: Boolean) {
         activity?.let {
-            if (isEnableFingerprint && data.isRegistered) {
-                enableFingerprint(isShowDirectBiometricsPrompt)
+            if (isRegistered) {
+                enableFingerprint()
             } else {
                 disableFingerprint()
             }
@@ -846,26 +827,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun checkFingerprintAvailability() {
-        if (!GlobalConfig.isSellerApp()) {
-            viewModel.registerCheckFingerprint()
-        }
-    }
-
     private fun disableFingerprint() {
         viewBinding?.fingerprintBtn?.hide()
     }
 
-    private fun enableFingerprint(isShowDirectBiometricsPrompt: Boolean) {
+    private fun enableFingerprint() {
         viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
-
-            if (isShowDirectBiometricsPrompt) {
-                analytics.trackClickBiometricLoginBtn()
-                gotoVerifyFingerprint()
-            }
-
             setOnClickListener {
                 analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
@@ -877,14 +846,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val value = abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "")
         return value.isNotEmpty()
     }
-
-    /**
-     * function to prevent clash biometrics prompt and seamless routing
-     * @param isEnableSeamless value is get from [LoginOption]
-     * @return true if [isEnableDirectBiometric] true && [isEnableSeamless] false
-     * @return false if [isEnableDirectBiometric] true && [isEnableSeamless] true
-     */
-    private fun isShowDirectBiometricsPrompt(isEnableSeamless: Boolean): Boolean = isEnableDirectBiometric && isEnableSeamless.not()
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {
