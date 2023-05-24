@@ -306,7 +306,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
                     it.faceFile,
                     projectId.toString(),
                     isKtpFileUsingEncryption,
-                    isFaceFileUsingEncryption
+                    isFaceFileUsingEncryption,
+                    it.isLiveness
                 )
             } else {
                 kycUploadViewModel.uploadImages(
@@ -314,7 +315,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(),
                     it.faceFile,
                     projectId.toString(),
                     isKtpFileUsingEncryption = false,
-                    isFaceFileUsingEncryption = false
+                    isFaceFileUsingEncryption = false,
+                    it.isLiveness
                 )
             }
         }
