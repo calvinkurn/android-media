@@ -11,8 +11,10 @@ import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.webview.data.model.WhiteListedFintechPath
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import com.tokopedia.webview.ext.encodeQueryNested
@@ -33,6 +35,7 @@ object WebViewHelper {
     private const val HOST_TOKOPEDIA = "tokopedia"
     private const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
     var whiteListedDomains = WhiteListedDomains()
+    var whiteListedFintechPath = WhiteListedFintechPath()
 
     private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
 
@@ -418,11 +421,43 @@ object WebViewHelper {
         }
     }
 
-    fun getMediaPickerIntent(context: Context): Intent {
+    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false): Intent {
         return MediaPicker.intent(context) {
             pageSource(PageSource.WebView)
-            modeType(ModeType.IMAGE_ONLY)
+            modeType(if (hasVideo) ModeType.COMMON else ModeType.IMAGE_ONLY)
             singleSelectionMode()
         }
     }
+
+    fun isWhiteListedFintechPathEnabled(context: Context): Boolean {
+        if (whiteListedFintechPath.path.isEmpty()) {
+            getWhitelistFintechPrefixUrl(context)
+        }
+        return whiteListedFintechPath.isEnabled
+    }
+
+    private fun getWhitelistFintechPrefixUrl(context: Context) {
+        try {
+            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            val whitelistedFintechPrefixes = remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_HIDE_TOOLBAR)
+            if (whitelistedFintechPrefixes.isNotBlank()) {
+                whiteListedFintechPath = Gson().fromJson(
+                    whitelistedFintechPrefixes,
+                    WhiteListedFintechPath::class.java
+                )
+            }
+        } catch (exception: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
+    }
+
+    fun isFintechUrlPathWhiteList(path: String): Boolean {
+        whiteListedFintechPath.path.forEach {
+            if (path.startsWith(it)) {
+                return true
+            }
+        }
+        return false
+    }
+
 }

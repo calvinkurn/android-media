@@ -54,14 +54,10 @@ fun UiText.getString(): String {
  */
 @Composable
 fun CharSequence.toAnnotatedString(
-    urlSpanStyle: SpanStyle = SpanStyle(
-        color = Color.Blue,
-        textDecoration = TextDecoration.Underline
-    ),
     colorMapping: Map<Color, Color> = emptyMap()
 ): AnnotatedString {
     return if (this is Spanned) {
-        this.toAnnotatedString(urlSpanStyle, colorMapping)
+        this.toAnnotatedString(colorMapping)
     } else {
         buildAnnotatedString {
             append(this@toAnnotatedString.toString())
@@ -74,10 +70,6 @@ fun CharSequence.toAnnotatedString(
  */
 @Composable
 fun Spanned.toAnnotatedString(
-    urlSpanStyle: SpanStyle = SpanStyle(
-        color = Color.Blue,
-        textDecoration = TextDecoration.Underline
-    ),
     colorMapping: Map<Color, Color> = emptyMap()
 ): AnnotatedString {
     return buildAnnotatedString {
@@ -90,7 +82,6 @@ fun Spanned.toAnnotatedString(
         urlSpans.forEach { urlSpan ->
             val start = getSpanStart(urlSpan)
             val end = getSpanEnd(urlSpan)
-            addStyle(urlSpanStyle, start, end)
             addStringAnnotation("url", urlSpan.url, start, end) // NON-NLS
         }
         colorSpans.forEach { colorSpan ->

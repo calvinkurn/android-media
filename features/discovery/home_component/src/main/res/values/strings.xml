@@ -49,4 +49,7 @@
 
     <string name="content_desc_todo_widget">Todo widget image</string>
     <string name="todo_close_button">Todo Close Button</string>
+
+    <string name="content_desc_deals_widget">Deals Widget Image</string>
+    <string name="content_desc_deals_widget_ribbon">Deals Widget Ribbon</string>
 </resources>
