@@ -5,5 +5,6 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 interface GroupDetailDataModel : Visitable<GroupDetailAdapterFactory> {
     fun type(): String
+    fun isAvailable(): Boolean = true
     fun equalsWith(newItem: GroupDetailDataModel): Boolean
 }

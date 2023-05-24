@@ -6,18 +6,18 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.EmptyStateData
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
 import javax.inject.Inject
 
 class TopAdsListAllInsightViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
+    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _productInsights =
@@ -33,31 +33,34 @@ class TopAdsListAllInsightViewModel @Inject constructor(
     fun getFirstPageData(
         adGroupType: String,
         insightType: Int,
-        mapper: InsightDataMapper,
+        mapper: InsightDataMapper?
     ) {
         launchCatchError(dispatcher.main, block = {
             if (adGroupType == "product") {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
-                _productInsights.value = topAdsListAllInsightCountsUseCase.invoke(
+                val data = topAdsListAllInsightCountsUseCase.invoke(
                     source = "gql.list_all_insight_counts.test",
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = "",
                     mapper = mapper
                 )
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                _productInsights.value = state
             } else {
-                _headlineInsights.value = topAdsListAllInsightCountsUseCase(
+                val data = topAdsListAllInsightCountsUseCase(
                     source = "gql.list_all_insight_counts.test",
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = "",
                     mapper = mapper
                 )
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                _headlineInsights.value = state
             }
-
         }, onError = {
-            _productInsights.value = TopAdsListAllInsightState.Fail(it)
-        })
+                _productInsights.value = TopAdsListAllInsightState.Fail(it)
+            })
     }
 
     fun getNextPageData(
@@ -69,27 +72,29 @@ class TopAdsListAllInsightViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             if (adGroupType == "product") {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
-                val data  = topAdsListAllInsightCountsUseCase(
+                val data = topAdsListAllInsightCountsUseCase(
                     source = "gql.list_all_insight_counts.test",
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = startCursor,
                     mapper = mapper
                 )
-                _productInsights.value = data
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                _productInsights.value = state
             } else {
-                _headlineInsights.value = topAdsListAllInsightCountsUseCase(
+                val data = topAdsListAllInsightCountsUseCase(
                     source = "gql.list_all_insight_counts.test",
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = startCursor,
                     mapper = mapper
                 )
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                _headlineInsights.value = state
             }
-
         }, onError = {
-            _productInsights.value = TopAdsListAllInsightState.Fail(it)
-        })
+                _productInsights.value = TopAdsListAllInsightState.Fail(it)
+            })
     }
 
     fun getChipsData(): MutableList<SaranTopAdsChipsUiModel> {
@@ -99,7 +104,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
             SaranTopAdsChipsUiModel("Biaya Kata Kunci"),
             SaranTopAdsChipsUiModel("Biaya Iklan"),
             SaranTopAdsChipsUiModel("Anggaran Harian"),
-            SaranTopAdsChipsUiModel("Kata Kunci Negatif"),
+            SaranTopAdsChipsUiModel("Kata Kunci Negatif")
         )
     }
 
@@ -125,5 +130,4 @@ class TopAdsListAllInsightViewModel @Inject constructor(
             }
         }
     }
-
 }

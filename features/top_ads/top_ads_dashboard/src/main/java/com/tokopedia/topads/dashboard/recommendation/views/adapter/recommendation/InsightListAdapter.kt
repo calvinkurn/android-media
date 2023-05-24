@@ -5,11 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 
-class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
+class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit) :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
 
     inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -38,18 +38,34 @@ class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
         private val groupCardProgressBar: ProgressBarUnify =
             view.findViewById(R.id.groupCardProgressBar)
 
-        fun bind(item: AdGroupUiModel, onInsightItemClick: ()->Unit) {
+        fun bind(
+            item: AdGroupUiModel,
+            onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit,
+            currentList: MutableList<InsightListUiModel>
+        ) {
             groupCardTitle.text = item.adGroupName
             groupCardInsightCount.show()
             groupCardInsightCount.text = HtmlCompat.fromHtml(
                 String.format(
                     view.context.getString(R.string.topads_group_card_insight_count_format),
                     item.count
-                ), HtmlCompat.FROM_HTML_MODE_LEGACY
+                ),
+                HtmlCompat.FROM_HTML_MODE_LEGACY
             )
             groupCardCountWarning.hide()
             setProgressBar(item.count)
-            view.setOnClickListener { onInsightItemClick()  }
+            view.setOnClickListener {
+                val list = ArrayList<String>()
+                currentList.map {
+                    (it as? AdGroupUiModel)?.adGroupName?.let { adGroupName ->
+                        list.add(
+                            adGroupName
+                        )
+                    }
+                }
+
+                onInsightItemClick(list, item.adGroupName, item.adGroupID)
+            }
         }
 
         private fun setProgressBar(count: Int) {
@@ -119,7 +135,6 @@ class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
         val loader: LoaderUnify = view.findViewById(R.id.bottomLoader)
         fun bind(item: LoadingUiModel) {
             loader.showWithCondition(item.isLoading)
-
         }
     }
 
@@ -166,7 +181,6 @@ class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
             } catch (e: Exception) {
                 Timber.e(e)
             }
-
         }
     }
 
@@ -194,7 +208,11 @@ class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (val item = getItem(position)) {
             is AdGroupUiModel -> {
-                (holder as? InsightListItemViewHolder)?.bind(item, onInsightItemClick)
+                (holder as? InsightListItemViewHolder)?.bind(
+                    item,
+                    onInsightItemClick,
+                    this.currentList
+                )
             }
             is LoadingUiModel -> {
                 (holder as? LoadingItemViewHolder)?.bind(item)
@@ -213,7 +231,6 @@ class InsightListAdapter(private val onInsightItemClick: ()->Unit) :
             else -> throw IllegalArgumentException("Invalid item type")
         }
     }
-
 }
 
 class InsightListDiffUtilCallBack : DiffUtil.ItemCallback<InsightListUiModel>() {

@@ -41,7 +41,7 @@ class GroupDetailAdapter(private val adapterTypeFactory: GroupDetailAdapterFacto
     }
 
     fun updateItem() {
-        val currentList: MutableList<GroupDetailDataModel> = ArrayList(currentList)
+        val currentList = currentList.toMutableList()
         currentList[2] = GroupDetailChipsUiModel()
         submitList(currentList)
     }

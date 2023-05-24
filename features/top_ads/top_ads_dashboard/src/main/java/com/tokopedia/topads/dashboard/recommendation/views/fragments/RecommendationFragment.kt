@@ -23,11 +23,11 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.RecommendationViewModel
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
@@ -85,8 +85,9 @@ class RecommendationFragment : BaseDaggerFragment() {
     private lateinit var detailPagerAdapter: TopAdsDashboardBasePagerAdapter
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is TopAdsHeadlineBaseFragment.AppBarActionHeadline)
+        if (context is TopAdsHeadlineBaseFragment.AppBarActionHeadline) {
             collapseStateCallBack = context
+        }
     }
 
     override fun onCreateView(
@@ -95,7 +96,9 @@ class RecommendationFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(
-            R.layout.topads_dash_fragment_saran_top_ads_layout, container, false
+            R.layout.topads_dash_fragment_saran_top_ads_layout,
+            container,
+            false
         )
         layoutAppBar = view.findViewById(R.id.appBarLayout)
         saranAdsTypeTab = view.findViewById(R.id.saranAdsTypeTab)
@@ -113,28 +116,30 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        layoutAppBar?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
-            when {
-                offset == 0 -> {
-                    if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
-                        onStateChanged(TopAdsProductIklanFragment.State.EXPANDED);
+        layoutAppBar?.addOnOffsetChangedListener(
+            AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+                when {
+                    offset == 0 -> {
+                        if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
+                            onStateChanged(TopAdsProductIklanFragment.State.EXPANDED)
+                        }
+                        mCurrentState = TopAdsProductIklanFragment.State.EXPANDED
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED;
-                }
-                abs(offset) >= appBarLayout.totalScrollRange -> {
-                    if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
-                        onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED);
+                    abs(offset) >= appBarLayout.totalScrollRange -> {
+                        if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
+                            onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED)
+                        }
+                        mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED;
-                }
-                else -> {
-                    if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
-                        onStateChanged(TopAdsProductIklanFragment.State.IDLE);
+                    else -> {
+                        if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
+                            onStateChanged(TopAdsProductIklanFragment.State.IDLE)
+                        }
+                        mCurrentState = TopAdsProductIklanFragment.State.IDLE
                     }
-                    mCurrentState = TopAdsProductIklanFragment.State.IDLE;
                 }
             }
-        })
+        )
         viewModel.loadRecommendationPage()
         setUpObserver()
         settingClickListener()
@@ -158,7 +163,6 @@ class RecommendationFragment : BaseDaggerFragment() {
                     renderTabAndViewPager(it.data)
                     renderTopLevelWidgetForNoTopAds(it.data.isHeadline && it.data.isProduct)
 //                    renderTopLevelWidgetForNoTopAds(false)
-
                 }
                 is Fail -> {
                     recommendationEmptyState?.show()
@@ -174,10 +178,8 @@ class RecommendationFragment : BaseDaggerFragment() {
                     renderTopLevelWidget(it.data)
                 }
                 is TopAdsListAllInsightState.Loading -> {
-
                 }
                 is TopAdsListAllInsightState.Fail -> {
-
                 }
             }
         }
@@ -208,7 +210,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun renderTopLevelWidget(
-        data: TopAdsTotalAdGroupsWithInsightResponse,
+        data: TopAdsTotalAdGroupsWithInsightResponse
     ) {
         if (context == null) return
         val count =
@@ -232,7 +234,6 @@ class RecommendationFragment : BaseDaggerFragment() {
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
-
         } else {
             insightWidgetTitle?.text = "Tingkatkan performa 10+ grup iklanmu, yuk!"
             insightWidgetIcon?.loadImage(
@@ -298,7 +299,6 @@ class RecommendationFragment : BaseDaggerFragment() {
         if (data.isHeadline) {
             list.add(FragmentTabItem("Iklan Toko", SaranTabsFragment(TYPE_SHOP)))
         }
-
     }
 
     private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
@@ -306,7 +306,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        const val TYPE_PRODUCT = 0
-        const val TYPE_SHOP = 1
+        const val TYPE_PRODUCT = 1
+        const val TYPE_SHOP = 3
     }
 }

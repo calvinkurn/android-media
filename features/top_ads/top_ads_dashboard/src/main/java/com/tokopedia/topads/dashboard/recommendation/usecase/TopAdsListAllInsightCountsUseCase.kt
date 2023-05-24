@@ -5,16 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TopAdsListAllInsightCountsUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsListAllInsightCountsResponse>(graphqlRepository) {
 
     init {
@@ -26,10 +23,10 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
         source: String,
         adGroupType: String,
         insightType: Int,
-        startCursor: String,
-        mapper: InsightDataMapper,
+        startCursor: String = "",
+        mapper: InsightDataMapper? = null
     ):
-        TopAdsListAllInsightState<InsightUiModel> {
+        TopAdsListAllInsightCountsResponse {
         setRequestParams(
             createRequestParam(
                 source,
@@ -43,10 +40,9 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
 
         return when {
             data.topAdsListAllInsightCounts.error.title.isEmpty() -> {
-                TopAdsListAllInsightState.Success(
-                    data.toInsightUiModel().also { it.insightType = insightType })
+                data
             }
-            else -> TopAdsListAllInsightState.Fail(Throwable(data.topAdsListAllInsightCounts.error.title))
+            else -> throw (Throwable(data.topAdsListAllInsightCounts.error.title))
         }
     }
 
@@ -55,11 +51,12 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
         adGroupType: String,
         insightType: Int,
         startCursor: String,
-        mapper: InsightDataMapper,
+        mapper: InsightDataMapper?
     ): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(
-            "filter", mapOf(
+            "filter",
+            mapOf(
                 "shopID" to userSession.shopId,
                 "adGroupTypes" to listOf(adGroupType),
                 if (insightType == 0) {
@@ -71,14 +68,15 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
                         "keyword_new_positive"
                     )
                 } else {
-                    "insightTypes" to listOf(mapper.insightTypeInputList[insightType])
+                    "insightTypes" to listOf(mapper?.insightTypeInputList?.get(insightType) ?: 0)
                 }
 
             )
         )
         requestParams.putString("source", source)
         requestParams.putObject(
-            "pageSetting", mapOf(
+            "pageSetting",
+            mapOf(
                 "size" to 20,
                 "startCursor" to startCursor
             )
@@ -113,5 +111,4 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
 
         override fun getTopOperationName(): String = OPERATION_NAME
     }
-
 }
