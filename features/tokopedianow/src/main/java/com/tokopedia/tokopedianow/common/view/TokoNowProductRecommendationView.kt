@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -38,6 +39,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private var viewModel: TokoNowProductRecommendationViewModel? = null
     private var listener: TokoNowProductRecommendationListener? = null
     private var requestParam: GetRecommendationRequestParam? = null
+    private var mTickerPageSource: String = String.EMPTY
 
     private fun TokoNowProductRecommendationViewModel.observeRecommendationWidget() {
         productRecommendation.observe(context as AppCompatActivity) {
@@ -122,9 +124,11 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
      * setting the data via fetching gql
      */
     fun setRequestParam(
-        getRecommendationRequestParam: GetRecommendationRequestParam? = null
+        getRecommendationRequestParam: GetRecommendationRequestParam? = null,
+        tickerPageSource: String
     ) {
         requestParam = getRecommendationRequestParam
+        mTickerPageSource = tickerPageSource
     }
 
     /**
@@ -154,7 +158,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
                 requestParam?.let { requestParam ->
                     setRecommendationPageName(requestParam.pageName)
-                    getFirstRecommendationCarousel(requestParam)
+                    getFirstRecommendationCarousel(requestParam, mTickerPageSource)
                 }
             }
         }

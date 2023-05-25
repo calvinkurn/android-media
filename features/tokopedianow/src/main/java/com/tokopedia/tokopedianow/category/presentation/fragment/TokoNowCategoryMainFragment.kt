@@ -132,24 +132,17 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
 
                     viewModel.getFirstPage()
 
-                    binding?.apply {
-                        rvCategory.show()
-                        categoryShimmering.root.hide()
-                    }
+                    binding?.showRecyclerView()
+//                    binding?.showGlobalError()
                 }
-                is Fail -> {}
+                is Fail -> binding?.showGlobalError()
             }
         }
     }
 
     private fun observeCategoryPage() {
         viewModel.categoryPage.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Success -> {
-                    adapter.submitList(result.data)
-                }
-                is Fail -> {}
-            }
+            adapter.submitList(result)
         }
     }
 
@@ -205,8 +198,12 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     private fun observeRemoveCartItem() {
         viewModel.removeCartItem.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Success -> onSuccessRemoveCartItem(result.data)
-                is Fail -> showErrorToaster(result)
+                is Success -> onSuccessRemoveCartItem(
+                    data = result.data
+                )
+                is Fail -> showErrorToaster(
+                    error = result
+                )
             }
         }
     }
@@ -267,8 +264,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     private fun observeRefreshState() {
         viewModel.refreshState.observe(viewLifecycleOwner) {
             binding?.apply {
-                rvCategory.hide()
-                categoryShimmering.root.show()
+                showShimmering()
                 rvCategory.removeOnScrollListener(onScrollListener)
                 rvCategory.addOnScrollListener(onScrollListener)
             }

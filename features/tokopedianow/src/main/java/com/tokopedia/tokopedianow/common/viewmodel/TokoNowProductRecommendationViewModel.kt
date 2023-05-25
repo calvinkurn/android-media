@@ -130,9 +130,9 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         if (type !in productRecommendationPageNames) productRecommendationPageNames.add(type)
     }
 
-    fun getFirstRecommendationCarousel(requestParam: GetRecommendationRequestParam) {
+    fun getFirstRecommendationCarousel(requestParam: GetRecommendationRequestParam, tickerPageSource: String) {
         launch {
-            val tickerData = getTickerDataAsync(addressData.getWarehouseId().toString()).await()
+            val tickerData = getTickerDataAsync(addressData.getWarehouseId().toString(), tickerPageSource).await()
             hasBlockedAddToCart = tickerData?.first.orFalse()
             getRecommendationCarousel(requestParam)
         }

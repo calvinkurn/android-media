@@ -14,20 +14,21 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOK
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
-import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
-import com.tokopedia.tokopedianow.category.domain.response.CategoryHeaderResponse
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 internal object VisitableMapper {
     const val DEFAULT_PRODUCT_PARENT_ID = "0"
@@ -39,10 +40,10 @@ internal object VisitableMapper {
 
     fun MutableList<Visitable<*>>.addHeaderSpace(
         space: Int,
-        headerResponse: CategoryHeaderResponse
+        detailResponse: CategoryDetailResponse
     ) {
         add(
-            headerResponse.mapToHeaderSpace(
+            detailResponse.mapToHeaderSpace(
                 space = space
             )
         )
@@ -53,9 +54,9 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addChooseAddress(
-        headerResponse: CategoryHeaderResponse
+        detailResponse: CategoryDetailResponse
     )  {
-        add(headerResponse.mapToChooseAddress())
+        add(detailResponse.mapToChooseAddress())
     }
 
     /**
@@ -63,15 +64,20 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addTicker(
-        headerResponse: CategoryHeaderResponse
+        detailResponse: CategoryDetailResponse,
+        tickerData: Pair<Boolean, List<TickerData>>?
     ): Boolean  {
-        val tickerData = headerResponse.mapToTicker()
-        add(TokoNowTickerUiModel(
-                tickers = tickerData.second,
-                backgroundColor = headerResponse.categoryDetail.data.color
+        return if (tickerData != null) {
+            add(
+                TokoNowTickerUiModel(
+                    tickers = tickerData.second,
+                    backgroundColor = detailResponse.categoryDetail.data.color
+                )
             )
-        )
-        return tickerData.first
+            tickerData.first
+        } else {
+            false
+        }
     }
 
     /**
@@ -79,9 +85,9 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addCategoryTitle(
-        headerResponse: CategoryHeaderResponse
+        detailResponse: CategoryDetailResponse
     ) {
-        add(headerResponse.mapToCategoryTitle())
+        add(detailResponse.mapToCategoryTitle())
     }
 
     /**
@@ -109,8 +115,9 @@ internal object VisitableMapper {
                     xSource = RECOM_WIDGET,
                     isTokonow = true,
                     pageNumber = PAGE_NUMBER_RECOM_WIDGET,
-                    xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
-                )
+                    xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE
+                ),
+                tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
             )
         )
     }

@@ -1,27 +1,21 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
-import com.tokopedia.tokopedianow.category.domain.response.CategoryHeaderResponse
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
-import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
-import com.tokopedia.unifycomponents.ticker.TickerData
 
 internal object CategoryDetailMapper {
-    fun CategoryHeaderResponse.mapToHeaderSpace(space: Int): CategoryHeaderSpaceUiModel = CategoryHeaderSpaceUiModel(
+    fun CategoryDetailResponse.mapToHeaderSpace(space: Int): CategoryHeaderSpaceUiModel = CategoryHeaderSpaceUiModel(
         space = space,
         backgroundColor = categoryDetail.data.color
     )
 
-    fun CategoryHeaderResponse.mapToChooseAddress(): TokoNowChooseAddressWidgetUiModel = TokoNowChooseAddressWidgetUiModel(
+    fun CategoryDetailResponse.mapToChooseAddress(): TokoNowChooseAddressWidgetUiModel = TokoNowChooseAddressWidgetUiModel(
         backgroundColor = categoryDetail.data.color
     )
 
-    fun CategoryHeaderResponse.mapToTicker(): Pair<Boolean, List<TickerData>> = TickerMapper.mapTickerData(
-        tickerList = targetedTicker
-    )
-
-    fun CategoryHeaderResponse.mapToCategoryTitle(): CategoryTitleUiModel = CategoryTitleUiModel(
+    fun CategoryDetailResponse.mapToCategoryTitle(): CategoryTitleUiModel = CategoryTitleUiModel(
         title = categoryDetail.data.name,
         backgroundColor = categoryDetail.data.color
     )

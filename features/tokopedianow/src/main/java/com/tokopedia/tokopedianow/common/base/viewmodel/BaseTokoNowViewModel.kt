@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -82,11 +83,13 @@ open class BaseTokoNowViewModel(
         setMiniCartData(miniCartData)
     }
 
-    fun isLoggedIn() = userSession.isLoggedIn
+    fun isLoggedIn(): Boolean = userSession.isLoggedIn
 
-    fun getUserId() = userSession.userId
+    fun getUserId(): String = userSession.userId
 
-    fun getDeviceId() = userSession.deviceId
+    fun getDeviceId(): String = userSession.deviceId
+
+    fun getTickerSourcePage(): String = String.EMPTY
 
     fun onCartQuantityChanged(
         productId: String,
@@ -179,11 +182,14 @@ open class BaseTokoNowViewModel(
         }
     }
 
-    suspend fun getTickerDataAsync(warehouseId: String): Deferred<Pair<Boolean, List<TickerData>>?> {
+    suspend fun getTickerDataAsync(
+        warehouseId: String,
+        page: String
+    ): Deferred<Pair<Boolean, List<TickerData>>?> {
         return asyncCatchError(block = {
             val tickerList = getTargetedTickerUseCase.execute(
-                page = GetTargetedTickerUseCase.HOME_PAGE,
-                warehouseId = warehouseId
+                warehouseId = warehouseId,
+                page = page
             )
             TickerMapper.mapTickerData(tickerList)
         }) {

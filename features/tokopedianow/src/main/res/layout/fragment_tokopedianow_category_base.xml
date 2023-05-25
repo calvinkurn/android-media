@@ -29,6 +29,26 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarInitialTheme="light" />
 
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_anchor="@id/nav_toolbar"
+        app:layout_anchorGravity="bottom"
+        android:layout_gravity="bottom"/>
+
+    <include
+        android:id="@+id/category_shimmering"
+        layout="@layout/layout_tokopedianow_category_base_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/tokonowSearchCategoryContainer"
         android:layout_width="match_parent"
@@ -57,18 +77,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <include
-            android:id="@+id/category_shimmering"
-            layout="@layout/layout_tokopedianow_category_base_shimmering"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -11,6 +11,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
@@ -85,6 +86,8 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override val tokonowSource: String
         get() = TOKONOW
+    override val tickerPageSource: String
+        get() = GetTargetedTickerUseCase.SEARCH_PAGE
 
     override fun loadFirstPage() {
         getSearchFirstPageUseCase.cancelJobs()

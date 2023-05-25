@@ -220,7 +220,27 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
 
     abstract fun getMiniCart()
 
-    protected fun showMiniCart(data: MiniCartSimplifiedData) {
+    protected fun FragmentTokopedianowCategoryBaseBinding.showRecyclerView() {
+        rvCategory.show()
+        categoryShimmering.root.hide()
+        globalError.hide()
+    }
+
+    protected fun FragmentTokopedianowCategoryBaseBinding.showGlobalError() {
+        rvCategory.hide()
+        categoryShimmering.root.hide()
+        globalError.show()
+    }
+
+    protected fun FragmentTokopedianowCategoryBaseBinding.showShimmering() {
+        rvCategory.hide()
+        categoryShimmering.root.show()
+        globalError.hide()
+    }
+
+    protected fun showMiniCart(
+        data: MiniCartSimplifiedData
+    ) {
         val miniCartWidget = binding?.miniCartWidget
         val showMiniCartWidget = data.isShowMiniCartWidget
 

@@ -286,6 +286,8 @@ abstract class BaseSearchCategoryViewModel(
 
     abstract val tokonowSource: String
 
+    abstract val tickerPageSource: String
+
     private fun isABTestNavigationRevamp() = true
 
     open fun onViewCreated(source: MiniCartSource? = null) {
@@ -492,7 +494,8 @@ abstract class BaseSearchCategoryViewModel(
             TokoNowProductRecommendationUiModel(
                 requestParam = createProductRecommendationRequestParam(
                     pageName = TOKONOW_NO_RESULT
-                )
+                ),
+                tickerPageSource = tickerPageSource
             )
         )
         if(feedbackFieldToggle){
@@ -1290,7 +1293,7 @@ abstract class BaseSearchCategoryViewModel(
             isTokonow = true,
             pageNumber = PAGE_NUMBER_RECOM_WIDGET,
             keywords = getRecomKeywords(),
-            xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+            xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE
     )
 
     protected open fun getRecomCategoryId(

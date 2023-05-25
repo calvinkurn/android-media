@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
-import com.tokopedia.tokopedianow.category.di.module.CategoryUseCaseModule.Companion.MAIN_CATEGORY_HEADER_USE_CASE_NAME
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryMenuMapper.mapToCategoryMenu
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryMenu
@@ -27,13 +26,15 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTick
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
-import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryHeaderUseCase
+import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
+import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
@@ -47,11 +48,11 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokoNowCategoryMainViewModel @Inject constructor(
+    private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
+    private val getCategoryNavigationUseCase: GetCategoryListUseCase,
     @Named(NOW_CATEGORY_L1)
     val categoryIdL1: String,
-    @Named(MAIN_CATEGORY_HEADER_USE_CASE_NAME)
-    val getCategoryHeaderUseCase: GetCategoryHeaderUseCase,
     addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
@@ -82,12 +83,12 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     private var moreShowcaseJob: Job? = null
 
     private val _categoryHeader = MutableLiveData<Result<List<Visitable<*>>>>()
-    private val _categoryPage = MutableLiveData<Result<List<Visitable<*>>>>()
+    private val _categoryPage = MutableLiveData<List<Visitable<*>>>()
     private val _scrollNotNeeded = MutableLiveData<Boolean>()
     private val _refreshState = MutableLiveData<Unit>()
 
     val categoryHeader: LiveData<Result<List<Visitable<*>>>> = _categoryHeader
-    val categoryPage: LiveData<Result<List<Visitable<*>>>> = _categoryPage
+    val categoryPage: LiveData<List<Visitable<*>>> = _categoryPage
     val scrollNotNeeded: LiveData<Boolean> = _scrollNotNeeded
     val refreshState: LiveData<Unit> = _refreshState
 
@@ -202,7 +203,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
             layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
 
-            _categoryPage.postValue(Success(layout))
+            _categoryPage.postValue(layout)
         }
     }
 
@@ -211,29 +212,39 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
-                getCategoryHeaderUseCase.setParams(
-                    categoryId = categoryIdL1,
-                    warehouseId = getWarehouseId()
+                val detailResponse = getCategoryDetailUseCase.execute(
+                    warehouseId = getWarehouseId(),
+                    categoryIdL1 = categoryIdL1
                 )
 
-                val headerResponse = getCategoryHeaderUseCase.executeOnBackground()
-                val categoryNavigationUiModel = headerResponse.categoryNavigation.mapToCategoryNavigation(categoryIdL1)
-                categoryNavigation = headerResponse.categoryNavigation.mapToCategoryMenu()
+                val categoryNavigationResponse = getCategoryNavigationUseCase.execute(
+                    warehouseId = getWarehouseId(),
+                    depth = 2
+                )
+
+                val tickerData = getTickerDataAsync(
+                    warehouseId = getWarehouseId(),
+                    page = CATEGORY_PAGE
+                ).await()
+
+                val categoryNavigationUiModel = categoryNavigationResponse.mapToCategoryNavigation(categoryIdL1)
+                categoryNavigation = categoryNavigationResponse.mapToCategoryMenu()
 
                 layout.clear()
 
                 layout.addHeaderSpace(
                     space = navToolbarHeight,
-                    headerResponse = headerResponse
+                    detailResponse = detailResponse
                 )
                 layout.addChooseAddress(
-                    headerResponse = headerResponse
+                    detailResponse = detailResponse
                 )
                 hasBlockedAddToCart = layout.addTicker(
-                    headerResponse = headerResponse
+                    detailResponse = detailResponse,
+                    tickerData = tickerData
                 )
                 layout.addCategoryTitle(
-                    headerResponse = headerResponse
+                    detailResponse = detailResponse
                 )
                 layout.addCategoryNavigation(
                     categoryNavigationUiModel = categoryNavigationUiModel
@@ -260,7 +271,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 hasAdded = true
             )
 
-            _categoryPage.postValue(Success(layout))
+            _categoryPage.postValue(layout)
         }
     }
 
@@ -275,7 +286,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 layout.addCategoryMenu(categoryMenu)
                 categoryNavigation = null
 
-                _categoryPage.value = Success(layout)
+                _categoryPage.value = layout
             }
         } else if (isAtTheBottomOfThePage && (moreShowcaseJob == null || moreShowcaseJob?.isCompleted == true)) {
             getMoreShowcases()
@@ -289,6 +300,6 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
     fun removeProductRecommendation() {
         layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
-        _categoryPage.postValue(Success(layout))
+        _categoryPage.postValue(layout)
     }
 }

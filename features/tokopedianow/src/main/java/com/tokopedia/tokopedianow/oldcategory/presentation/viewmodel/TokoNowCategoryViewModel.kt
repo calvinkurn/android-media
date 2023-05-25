@@ -37,6 +37,7 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuU
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper.APPLINK_PARAM_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
@@ -120,6 +121,8 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override val tokonowSource: String
         get() = TOKONOW_DIRECTORY
+    override val tickerPageSource: String
+        get() = GetTargetedTickerUseCase.CATEGORY_PAGE
 
     private fun getCategoryIdForTracking() =
             if (categoryL2.isNotEmpty()) "$categoryL1/$categoryL2"
@@ -181,7 +184,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         val recomData = TokoNowProductRecommendationUiModel(
             requestParam = createProductRecommendationRequestParam(
                 pageName = TOKONOW_CLP
-            )
+            ),
+            tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
         )
         return listOf(
             createAisleDataView(),
