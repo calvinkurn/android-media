@@ -100,11 +100,10 @@ class ExclusiveLaunchVoucherAdapter :
     }
 
     private fun getVoucherClaimStatus(context: Context, voucher: ExclusiveLaunchVoucher): String {
-        return when {
-            voucher.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated -> context.getString(R.string.shop_page_use)
-            voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo && voucher.source.isClaimed -> context.getString(R.string.shop_page_claimed)
-            voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo && !voucher.source.isClaimed -> context.getString(R.string.shop_page_claim)
-            else -> context.getString(R.string.shop_page_use)
+        return if (voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
+            voucher.source.claimStatus
+        } else {
+            context.getString(R.string.shop_page_use)
         }
     }
 

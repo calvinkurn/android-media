@@ -97,7 +97,6 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_B
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
-import com.tokopedia.shop.common.extension.isOnDarkMode
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
@@ -477,8 +476,8 @@ open class ShopPageHomeFragment :
     private fun showVoucherListBottomsheet() {
         //TODO: Replace with real category slugs from backend
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            useDarkBackground = false,
-            promoVouchersCategorySlugs = listOf(
+            useDarkBackground = true,
+            slugs = listOf(
                 "HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY", "MEGAEL12MAY",
                 "MEGAEL8MAY", "ELCPC523", "MEGAEL1JTMAY",
                 "MEGAEL150MAY"

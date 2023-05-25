@@ -18,7 +18,8 @@ class GetPromoVoucherListMapper @Inject constructor() {
                     remainingQuota = voucher.quota,
                     source = ExclusiveLaunchVoucher.VoucherSource.Promo(
                         voucher.isDisabledButton,
-                        voucher.couponCode
+                        voucher.couponCode,
+                        voucher.buttonStr
                     ),
                     slug = voucher.slug
                 )

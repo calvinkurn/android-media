@@ -13,7 +13,7 @@ data class ExclusiveLaunchVoucher(
      * MerchantCreated = No need to claim voucher first before use
      */
     sealed class VoucherSource {
-        data class Promo(val isClaimed: Boolean, val voucherCode: String): VoucherSource()
+        data class Promo(val isClaimed: Boolean, val voucherCode: String, val claimStatus: String): VoucherSource()
         data class MerchantCreated(val eligibleProductIds: List<String>) : VoucherSource()
     }
 }
