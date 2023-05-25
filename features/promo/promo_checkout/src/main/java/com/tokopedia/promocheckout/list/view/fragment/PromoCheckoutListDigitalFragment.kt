@@ -81,10 +81,12 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     }
 
     override fun loadData(page: Int) {
-        if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+        context?.let { context ->
+            if (isCouponActive) {
+                promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, context.resources)
+            }
+            promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), context.resources)
         }
-        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
     }
 
     override fun initInjector() {

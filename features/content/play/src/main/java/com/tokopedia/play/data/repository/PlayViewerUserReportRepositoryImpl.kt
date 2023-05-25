@@ -5,9 +5,9 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

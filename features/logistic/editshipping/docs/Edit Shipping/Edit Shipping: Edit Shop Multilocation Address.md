@@ -1,5 +1,5 @@
 ---
-title: Edit Shipping: Edit Shop Multilocation Address
+title: "Edit Shipping: Edit Shop Multilocation Address"
 labels:
 - multilocation
 - logistic

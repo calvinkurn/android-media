@@ -20,11 +20,12 @@ import com.tokopedia.report.view.fragment.models.ProductReportUiState
 
 @Composable
 fun ProductReportComposeContent(
+    modifier: Modifier = Modifier,
     uiState: ProductReportUiState,
     onEvent: (ProductReportUiEvent) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.tag("product_report_column")
+        modifier = modifier.tag("product_report_column")
     ) {
         item {
             ProductReportReasonHeader(
