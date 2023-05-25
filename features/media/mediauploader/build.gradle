@@ -58,6 +58,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.supportLibDependencies.kotlinMetaData
 
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.testDependencies.androidAnnotation

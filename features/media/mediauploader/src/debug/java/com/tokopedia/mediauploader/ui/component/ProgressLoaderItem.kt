@@ -20,6 +20,9 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun ProgressLoaderItem(type: String, value: Int, modifier: Modifier = Modifier) {
+    val typeColor = NestTheme.colors.NN._600
+    val valueColor = NestTheme.colors.GN._500
+
     Box(
         modifier = modifier
             .background(
@@ -30,13 +33,13 @@ fun ProgressLoaderItem(type: String, value: Int, modifier: Modifier = Modifier) 
         NestTypography(
             text = buildAnnotatedString {
                 withStyle(style = ParagraphStyle(lineHeight = 30.sp)) {
-                    withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
+                    withStyle(style = SpanStyle(color = typeColor)) {
                         append("$type: ")
                     }
                     withStyle(
                         style = SpanStyle(
                             fontWeight = FontWeight.Bold,
-                            color = NestTheme.colors.GN._500
+                            color = valueColor
                         )
                     ) {
                         append("$value%")

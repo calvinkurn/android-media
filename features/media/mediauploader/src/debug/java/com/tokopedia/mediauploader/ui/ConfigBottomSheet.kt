@@ -87,11 +87,7 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
             value = config.sourceId,
             modifier = Modifier
                 .fillMaxWidth(),
-            label = {
-                NestTypography(
-                    text = "Source ID"
-                )
-            },
+            label = "Source ID",
             onValueChanged = { text ->
                 viewModel.setSourceId(text)
             }
