@@ -81,4 +81,15 @@
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <com.tokopedia.unifycomponents.LocalLoad
+        android:id="@+id/check_balance_localload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:unify_local_load_title="Konten gagal ditampilkan"
+        app:unify_local_load_description="Klik ikon di samping buat coba lagi."
+        app:layout_constraintTop_toBottomOf="@id/check_balance_divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -406,6 +406,16 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideShimmering()
     }
 
+    fun showCheckBalanceWidgetLocalLoad(onClick: () -> Unit) {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showLocalLoad {
+            onClick.invoke()
+        }
+    }
+
+    fun hideCheckBalanceWidgetLocalLoad() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideLocalLoad()
+    }
+
     fun renderCheckBalanceOTPWidget(checkBalanceOTPModel: RechargeCheckBalanceOTPModel) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.run {
             setTitle(checkBalanceOTPModel.subtitle)
