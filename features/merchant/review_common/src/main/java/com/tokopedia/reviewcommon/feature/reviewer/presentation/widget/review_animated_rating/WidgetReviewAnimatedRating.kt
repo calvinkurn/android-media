@@ -1,6 +1,7 @@
 package com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.review_animated_rating
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Transition
 import androidx.compose.animation.core.animateDp
@@ -37,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.unifycomponents.toPx
@@ -93,7 +95,14 @@ private fun ReviewStar(state: MutableState<ReviewStarState>) {
                     drawImage(
                         image = starDrawable,
                         colorFilter = ColorFilter.tint(color),
-                        dstSize = IntSize(size.value.toInt().toPx(), size.value.toInt().toPx())
+                        dstSize = IntSize(
+                            size.value
+                                .toInt()
+                                .toPx(),
+                            size.value
+                                .toInt()
+                                .toPx()
+                        )
                     )
                 }
             }
@@ -312,18 +321,21 @@ private data class WidgetReviewAnimatedRatingPreviewConfig(
 
 private val previewConfig = mutableStateOf(createPreviewConfig())
 
-@Preview
+@Preview(name = "Light")
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun WidgetReviewAnimatedRatingPreview() {
     val config by remember { previewConfig }
 
-    Column {
-        config.configs.forEach { config -> WidgetReviewAnimatedRating(config = config) }
-        Button(onClick = ::onEnlargeWidgets) { Text(text = "Enlarge Widgets") }
-        Button(onClick = ::onEnlargeSpaceInBetween) { Text(text = "Enlarge Space in Between") }
-        Button(onClick = ::onIncreaseRating) { Text(text = "Increase Ratings") }
-        Button(onClick = ::onDecreaseRating) { Text(text = "Decrease Ratings") }
-        Button(onClick = ::onResetRating) { Text(text = "Reset Ratings") }
+    NestTheme {
+        Column {
+            config.configs.forEach { config -> WidgetReviewAnimatedRating(config = config) }
+            Button(onClick = ::onEnlargeWidgets) { Text(text = "Enlarge Widgets") }
+            Button(onClick = ::onEnlargeSpaceInBetween) { Text(text = "Enlarge Space in Between") }
+            Button(onClick = ::onIncreaseRating) { Text(text = "Increase Ratings") }
+            Button(onClick = ::onDecreaseRating) { Text(text = "Decrease Ratings") }
+            Button(onClick = ::onResetRating) { Text(text = "Reset Ratings") }
+        }
     }
 }
 
@@ -344,6 +356,7 @@ private fun createPreviewConfigs(): MutableList<WidgetReviewAnimatedRatingConfig
                 index,
                 DEFAULT_PREVIEW_SPACE_IN_BETWEEN_MULTIPLIER
             ),
+            skipInitialAnimation = true,
             onStarClicked = { previousRating, currentRating ->
                 if (previousRating != currentRating) onRatingChanged(index, currentRating)
             }
