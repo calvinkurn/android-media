@@ -85,4 +85,15 @@
     <string name="add_text_latar_content_title_color">Pilihan Warna:</string>
     <string name="add_text_latar_content_title_template">Pilih Template:</string>
     <string name="add_text_latar_content_btn_text">Lanjut</string>
+
+    <!-- Add Text dialog text -->
+    <string name="add_text_dialog_save_title">Mau simpan buat template?</string>
+    <string name="add_text_dialog_save_desc">Kamu bisa pakai lagi hasil edit teks ini di foto produk lainnya, praktis!</string>
+    <string name="add_text_dialog_save_primary_btn">Ya, Simpan</string>
+    <string name="add_text_dialog_save_secondary_btn">Tidak</string>
+
+    <string name="add_text_dialog_load_title">Mau pakai template?</string>
+    <string name="add_text_dialog_load_desc">Proses edit media saat ini akan diganti pakai template yang kamu simpan, ya.</string>
+    <string name="add_text_dialog_load_primary_btn">Ya, Pakai</string>
+    <string name="add_text_dialog_load_secondary_btn">Tidak</string>
 </resources>

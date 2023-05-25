@@ -473,13 +473,7 @@ class DetailEditorFragment @Inject constructor(
         if (isSave) {
             showAddTextTemplateSaveDialog()
         } else {
-            val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
-
-            data.addTextValue = savedTemplate.apply {
-                textValue = data.addTextValue?.textValue ?: ""
-            }
-
-            implementAddTextData()
+            showAddTextTemplateLoadDialog()
         }
     }
 
@@ -1518,10 +1512,10 @@ class DetailEditorFragment @Inject constructor(
     private fun showAddTextTemplateSaveDialog() {
         context?.let {
             DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle("Mau simpan buat template?")
-                setDescription("Kamu bisa pakai lagi hasil edit teks ini di foto produk lainnya, praktis!")
-                setPrimaryCTAText("Ya, Simpan")
-                setSecondaryCTAText("Tidak")
+                setTitle(getString(editorR.string.add_text_dialog_save_title))
+                setDescription(getString(editorR.string.add_text_dialog_save_desc))
+                setPrimaryCTAText(getString(editorR.string.add_text_dialog_save_primary_btn))
+                setSecondaryCTAText(getString(editorR.string.add_text_dialog_save_secondary_btn))
                 show()
 
                 setSecondaryCTAClickListener {
@@ -1532,6 +1526,33 @@ class DetailEditorFragment @Inject constructor(
                     val saveTemplate = Gson().toJson(data.addTextValue)
                     addTextCacheManager.set(saveTemplate)
                     addTextComponent.updateSaveToApply()
+                    dismiss()
+                }
+            }
+        }
+    }
+
+    private fun showAddTextTemplateLoadDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(editorR.string.add_text_dialog_load_title))
+                setDescription(getString(editorR.string.add_text_dialog_load_desc))
+                setPrimaryCTAText(getString(editorR.string.add_text_dialog_load_primary_btn))
+                setSecondaryCTAText(getString(editorR.string.add_text_dialog_load_secondary_btn))
+                show()
+
+                setSecondaryCTAClickListener {
+                    dismiss()
+                }
+
+                setPrimaryCTAClickListener {
+                    val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+
+                    data.addTextValue = savedTemplate.apply {
+                        textValue = data.addTextValue?.textValue ?: ""
+                    }
+
+                    implementAddTextData()
                     dismiss()
                 }
             }
