@@ -344,6 +344,24 @@ class MapperFeedXHome @Inject constructor(
             card.author.id
         )
         return buildList {
+            if (author.type.isShop && author.id == userSession.shopId) {
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.GRAPH,
+                        name = com.tokopedia.content.common.R.string.performance_see,
+                        type = FeedMenuIdentifier.SeePerformance,
+                        contentData = contentData
+                    )
+                )
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.GRAPH_REPORT,
+                        name = com.tokopedia.content.common.R.string.performance_learn_video_insight,
+                        type = FeedMenuIdentifier.LearnVideoInsight,
+                        contentData = contentData
+                    )
+                )
+            }
             add(
                 FeedMenuItem(
                     iconUnify = IconUnify.VISIBILITY,
