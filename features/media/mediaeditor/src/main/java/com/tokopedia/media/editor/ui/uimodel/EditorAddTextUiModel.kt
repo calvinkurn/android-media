@@ -29,6 +29,12 @@ class EditorAddTextUiModel(
 
     fun setLatarTemplate(latarTemplate: LatarTemplateDetail) {
         textTemplateLatar = latarTemplate
+        if (textTemplate == TEXT_TEMPLATE_BACKGROUND) {
+            // if using latar text can be only on bottom or right
+            if (textPosition == TEXT_POSITION_TOP || textPosition == TEXT_POSITION_LEFT) {
+                textPosition = TEXT_POSITION_BOTTOM
+            }
+        }
     }
 
     fun getLayoutAlignment(): Layout.Alignment {
