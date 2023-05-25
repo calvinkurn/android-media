@@ -19,14 +19,15 @@ class MedalDetailViewModel @Inject constructor(
     private val _badgeLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
     val badgeLiveData: LiveData<ScpResult> = _badgeLiveData
 
-    fun getMedalDetail(medaliSlug: String = "", sourceName: String = "") {
+    fun getMedalDetail(medaliSlug: String = "", sourceName: String = "", pageName: String = "") {
         viewModelScope.launchCatchError(
             block = {
                 val response = medalDetailUseCase.getMedalDetail(
                     medaliSlug = "INJECT_BADGE_1",
-                    sourceName = "homepage"
+                    sourceName = "homepage",
+                    pageName = "medali_detail_page"
                 )
-                if (response.scpRewardsCelebrationPage?.celebrationPage != null) {
+                if (response.detail != null) {
                     _badgeLiveData.postValue(Success(response))
                 } else {
                     throw Throwable()

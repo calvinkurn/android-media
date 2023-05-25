@@ -48,12 +48,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-
-    <View
-        android:id="@+id/view_curve"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@drawable/scp_medal_detail_rounded_bg"
-        app:layout_constraintBottom_toBottomOf="@id/iv_background" />
 </merge>
