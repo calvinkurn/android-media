@@ -26,7 +26,7 @@ object CatalogAnalyticsCategoryLandingPage {
             .setEvent(OPEN_SCREEN)
             .setCustomProperty(
                 EventKeys.SCREEN_NAME,
-                "/catalog library - kategori - $categoryId - $categoryName}"
+                "/catalog library - kategori - $categoryId - $categoryName"
             )
             .setCustomProperty(
                 EventKeys.TRACKER_ID,
