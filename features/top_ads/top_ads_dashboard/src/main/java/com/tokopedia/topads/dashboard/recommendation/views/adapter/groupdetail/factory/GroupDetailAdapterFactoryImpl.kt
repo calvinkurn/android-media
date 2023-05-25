@@ -3,13 +3,27 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerformanceWidgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.*
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.InsightTypeChipsViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.PerformanceWidgetViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.GroupDetailChipsViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.GroupInsightsViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianKataKunciViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianGroupBidViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianKeywordBidViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianNegativeKeywordViewHolder
 
 class GroupDetailAdapterFactoryImpl(
-    private val onChipClick: (Int) -> Unit
+    private val onChipClick: (Int) -> Unit,
+    private val onInsightTypeChipClick: ((MutableList<AdGroup>?) -> Unit)?,
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {
@@ -46,7 +60,7 @@ class GroupDetailAdapterFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view)
+            InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view, onInsightTypeChipClick)
             PerformanceWidgetViewHolder.LAYOUT -> PerformanceWidgetViewHolder(view)
             GroupDetailChipsViewHolder.LAYOUT -> GroupDetailChipsViewHolder(view, onChipClick)
             GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick)

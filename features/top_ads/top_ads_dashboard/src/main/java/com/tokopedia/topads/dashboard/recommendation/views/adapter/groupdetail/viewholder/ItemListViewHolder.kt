@@ -4,13 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.databinding.ViewholderItemListBinding
-import com.tokopedia.topads.dashboard.recommendation.utils.ScheduleSlotListener
+import com.tokopedia.topads.dashboard.recommendation.utils.OnItemSelectChangeListener
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.ItemListUiModel
-import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ItemListViewHolder(
     private val viewBinding: ViewholderItemListBinding,
-    private val listener: ScheduleSlotListener
+    private val listener: OnItemSelectChangeListener
 ) : AbstractViewHolder<ItemListUiModel>(viewBinding.root) {
 
     override fun bind(element: ItemListUiModel) {
@@ -31,15 +30,9 @@ class ItemListViewHolder(
             View.VISIBLE
         }
 
-        viewBinding.tvDescription.visibility = if (element.content.isEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
-
         viewBinding.container.setOnClickListener {
             if(!element.isSelected) {
-                listener.onClickItemListener(element.title)
+                listener.onClickItemListener(element.adType, element.groupId)
                 viewBinding.radioButton.isChecked = true
             }
         }
@@ -47,8 +40,6 @@ class ItemListViewHolder(
 
     private fun bindValue(element: ItemListUiModel) {
         viewBinding.tvTitle.text = element.title
-        viewBinding.tvDescription.text =
-            HtmlLinkHelper(itemView.context, element.content).spannedString
     }
 
     companion object {

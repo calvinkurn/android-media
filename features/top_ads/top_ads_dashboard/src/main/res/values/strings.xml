@@ -542,5 +542,9 @@
     <string name="topads_insight_current_budget">Anggaran Saat Ini</string>
     <string name="topads_insight_daily_budget">Anggaran Harian</string>
     <string name="topads_insight_savings_potential">Potensi Hemat</string>
+    <string name="topads_insight_ad_type_product">Iklan Produk</string>
+    <string name="topads_insight_ad_type_shop">Iklan Toko</string>
+    <string name="topads_insight_ad_type">Tipe Iklan</string>
+    <string name="topads_insight_ad_group">Grup iklan</string>
 </resources>
 

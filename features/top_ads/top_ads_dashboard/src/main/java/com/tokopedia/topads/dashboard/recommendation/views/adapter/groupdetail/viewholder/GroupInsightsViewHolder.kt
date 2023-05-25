@@ -7,13 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.unifycomponents.toPx
 
-class GroupInsightsViewHolder(private val view: View, private val onChipClick: (Int) -> Unit) :
+class GroupInsightsViewHolder(private val view: View, private val onChipClick: (Int) -> Unit, private val onInsightTypeChipClick: ((MutableList<AdGroup>?) -> Unit)? = null) :
     AbstractViewHolder<GroupInsightsUiModel>(view) {
 
     private val accordionUnify: AccordionUnify = itemView.findViewById(R.id.accordionUnify)
@@ -38,7 +39,10 @@ class GroupInsightsViewHolder(private val view: View, private val onChipClick: (
             View.inflate(view.context, R.layout.top_ads_group_insights_accordian_layout, null)
         val rv: RecyclerView = layout.findViewById(R.id.accordianRecyclerview)
         rv.layoutManager = LinearLayoutManager(view.context)
-        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(onChipClick))
+        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(
+            onChipClick,
+            onInsightTypeChipClick
+        ))
         rv.adapter = accordianAdapter
         accordianAdapter.submitList(listOf(expandItemDataModel))
         return layout
