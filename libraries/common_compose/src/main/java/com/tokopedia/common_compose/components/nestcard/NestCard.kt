@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.card2
+package com.tokopedia.common_compose.components.nestcard
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
@@ -26,6 +26,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.components.nestcard.NestCardType.Border
+import com.tokopedia.common_compose.components.nestcard.NestCardType.BorderActive
+import com.tokopedia.common_compose.components.nestcard.NestCardType.BorderDisabled
+import com.tokopedia.common_compose.components.nestcard.NestCardType.NoBorder
+import com.tokopedia.common_compose.components.nestcard.NestCardType.Shadow
+import com.tokopedia.common_compose.components.nestcard.NestCardType.ShadowActive
+import com.tokopedia.common_compose.components.nestcard.NestCardType.ShadowDisabled
+import com.tokopedia.common_compose.components.nestcard.NestCardType.StateBorder
 import com.tokopedia.common_compose.ui.NestTheme
 import kotlinx.coroutines.launch
 
@@ -80,7 +88,7 @@ fun NestCard(
     modifier: Modifier = Modifier,
     enableTransitionAnimation: Boolean = false,
     enableBounceAnimation: Boolean = false,
-    type: NestCardType = NestCardType.NoBorder,
+    type: NestCardType = NoBorder,
     onClick: () -> Unit,
     onLongPress: () -> Unit,
     content: @Composable () -> Unit
@@ -116,7 +124,7 @@ fun NestCard(
     var shadow = false
 
     when (type) {
-        is NestCardType.StateBorder -> {
+        is StateBorder -> {
             if (type.isSelected) {
                 shadow = true
                 borderColor = getNestCardBorderActiveColor()
@@ -125,26 +133,26 @@ fun NestCard(
                 borderColor = getNestCardBorderActiveColor()
             }
         }
-        is NestCardType.Border -> {
+        is Border -> {
             borderColor = getNestCardBorderColor()
         }
-        is NestCardType.Shadow -> {
+        is Shadow -> {
             shadow = true
         }
-        is NestCardType.BorderActive -> {
+        is BorderActive -> {
             borderColor = getNestCardBorderActiveColor()
             backgroundColor = NestTheme.colors.GN._50
         }
-        is NestCardType.ShadowActive -> {
+        is ShadowActive -> {
             shadow = true
             borderColor = getNestCardBorderActiveColor()
             backgroundColor = NestTheme.colors.GN._50
         }
-        is NestCardType.BorderDisabled -> {
+        is BorderDisabled -> {
             borderColor = getNestCardBorderColor()
             backgroundColor = getNestCardDisableBackgroundColor()
         }
-        is NestCardType.ShadowDisabled -> {
+        is ShadowDisabled -> {
             borderColor = getNestCardBorderColor()
             shadow = true
             backgroundColor = getNestCardDisableBackgroundColor()
