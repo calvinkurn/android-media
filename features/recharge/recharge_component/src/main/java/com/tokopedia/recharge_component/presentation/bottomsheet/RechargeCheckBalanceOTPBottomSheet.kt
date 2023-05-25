@@ -16,9 +16,14 @@ class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeCheckBalanceOtpBinding>()
     private lateinit var bottomSheetModel: RechargeCheckBalanceOTPBottomSheetModel
+    private var mListener: RechargeCheckBalanceOTPBottomSheetListener? = null
 
     fun show(fragmentManager: FragmentManager) {
         show(fragmentManager, TAG_CHECK_BALANCE_OTP_BOTTOM_SHEET)
+    }
+
+    fun setListener(listener: RechargeCheckBalanceOTPBottomSheetListener) {
+        mListener = listener
     }
 
     fun setBottomSheetModel(model: RechargeCheckBalanceOTPBottomSheetModel) {
@@ -53,9 +58,13 @@ class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
             bottomsheetOtpDescription.text = bottomSheetModel.description
             bottomsheetOtpButton.text = bottomSheetModel.buttonText
             bottomsheetOtpButton.setOnClickListener {
-                RouteManager.route(context, bottomSheetModel.buttonAppLink)
+                mListener?.onClickButton(bottomSheetModel.buttonAppLink)
             }
         }
+    }
+
+    interface RechargeCheckBalanceOTPBottomSheetListener {
+        fun onClickButton(applink: String)
     }
 
     companion object {
