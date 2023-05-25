@@ -455,6 +455,7 @@ class FeedCampaignRibbonView(
     }
 
     private fun startDelayProcess(delayDurationInMilis: Long, block: () -> Unit) {
+        scope.cancel()
         scope.launch {
             delay(delayDurationInMilis)
             block()
