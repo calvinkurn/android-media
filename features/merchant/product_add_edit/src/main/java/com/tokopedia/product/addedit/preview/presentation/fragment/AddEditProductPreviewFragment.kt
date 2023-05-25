@@ -34,6 +34,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -131,6 +132,7 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -630,35 +632,63 @@ class AddEditProductPreviewFragment :
 
     private fun setupDoneButton(view: View) {
         doneButton?.setOnClickListener {
-            updateProductImage()
-            if (isEditing()) {
-                ProductEditStepperTracking.trackFinishButton(shopId)
+            if (viewModel.productInputModel.value?.hasDTStock.orFalse()){
+                showEditDTProductsInActiveConfirmationDialog()
+            }else{
+                processSave(view)
             }
+        }
+    }
 
-            val validateMessage = viewModel.validateProductInput(
-                viewModel.productInputModel.value?.detailInputModel
-                    ?: DetailInputModel()
-            )
-            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
-            val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+    private fun showEditDTProductsInActiveConfirmationDialog() {
+        context?.let { it ->
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    getString(
+                        R.string.product_manage_confirm_inactive_dt_product_title
+                    )
+                )
+                setDescription(getString(R.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml())
+                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
+                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
+                setPrimaryCTAClickListener {
 
-            if (mustFillParentWeight) {
-                Toaster.build(
-                    view,
-                    getString(R.string.error_weight_not_filled),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).show()
-            } else if (validateMessage.isNotEmpty()) {
-                Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
-                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-                productLimitationBottomSheet?.setIsSavingToDraft(true)
-                productLimitationBottomSheet?.show(childFragmentManager, context)
-            } else {
-                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
-                    viewModel.validateProductNameInput(it)
+                    dismiss()
                 }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
+    }
+
+    private fun processSave(view: View){
+        updateProductImage()
+        if (isEditing()) {
+            ProductEditStepperTracking.trackFinishButton(shopId)
+        }
+
+        val validateMessage = viewModel.validateProductInput(
+            viewModel.productInputModel.value?.detailInputModel
+                ?: DetailInputModel()
+        )
+        val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+        val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
+
+        if (mustFillParentWeight) {
+            Toaster.build(
+                view,
+                getString(R.string.error_weight_not_filled),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).show()
+        } else if (validateMessage.isNotEmpty()) {
+            Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        } else if (isAddingOrDuplicating && !isProductLimitEligible) {
+            productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+            productLimitationBottomSheet?.setIsSavingToDraft(true)
+            productLimitationBottomSheet?.show(childFragmentManager, context)
+        } else {
+            viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                viewModel.validateProductNameInput(it)
             }
         }
     }

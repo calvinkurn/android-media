@@ -16,37 +16,39 @@ import kotlinx.parcelize.Parcelize
  * Created by faisalramd on 2020-04-01.
  */
 @Parcelize
-data class ProductInputModel (
-        var detailInputModel: DetailInputModel = DetailInputModel(),
-        var descriptionInputModel: DescriptionInputModel = DescriptionInputModel(),
-        var shipmentInputModel: ShipmentInputModel = ShipmentInputModel(),
-        var variantInputModel: VariantInputModel = VariantInputModel(),
-        var productId: Long = 0L,
-        var completionPercent: Int = 0,
-        var draftId: Long = 0L,
-        // requestCode related to checkEnabledOrNot function on preview page,
-        // it's for handling behaviour of enabling shipment and description stepper
-        // when click back pressed in add mode
-        var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE){NO_DATA},
-        var itemSold: Int = 0, // count of successful item transaction
-        var isDataChanged: Boolean = false,
-        var isDuplicate: Boolean = false
+data class ProductInputModel(
+    var detailInputModel: DetailInputModel = DetailInputModel(),
+    var descriptionInputModel: DescriptionInputModel = DescriptionInputModel(),
+    var shipmentInputModel: ShipmentInputModel = ShipmentInputModel(),
+    var variantInputModel: VariantInputModel = VariantInputModel(),
+    var productId: Long = 0L,
+    var completionPercent: Int = 0,
+    var draftId: Long = 0L,
+    // requestCode related to checkEnabledOrNot function on preview page,
+    // it's for handling behaviour of enabling shipment and description stepper
+    // when click back pressed in add mode
+    var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE) { NO_DATA },
+    var itemSold: Int = 0, // count of successful item transaction
+    var isDataChanged: Boolean = false,
+    var isDuplicate: Boolean = false,
+    var hasDTStock: Boolean = false
 ) : Parcelable {
-        @IgnoredOnParcel
-        var lastVariantData = ProductVariantInputModel()
+    @IgnoredOnParcel
+    var lastVariantData = ProductVariantInputModel()
 
-        fun getVariantDefaultVariantPrice(isEditMode: Boolean) = if (isEditMode ||
-                lastVariantData.price == Int.ZERO.toBigInteger()) {
-                detailInputModel.price
-        } else {
-                lastVariantData.price
-        }
+    fun getVariantDefaultVariantPrice(isEditMode: Boolean) = if (isEditMode ||
+        lastVariantData.price == Int.ZERO.toBigInteger()
+    ) {
+        detailInputModel.price
+    } else {
+        lastVariantData.price
+    }
 
-        fun resetVariantData() {
-                if (variantInputModel.hasVariant()) {
-                        lastVariantData = variantInputModel.getPrimaryVariantData()
-                        variantInputModel.products = emptyList()
-                        variantInputModel.selections = emptyList()
-                }
+    fun resetVariantData() {
+        if (variantInputModel.hasVariant()) {
+            lastVariantData = variantInputModel.getPrimaryVariantData()
+            variantInputModel.products = emptyList()
+            variantInputModel.selections = emptyList()
         }
+    }
 }

@@ -162,7 +162,7 @@ object ProductManageVariantMapper {
         }
     }
 
-    private fun getVariantName(optionIndexList: List<Int>, selections: List<Selection>): String {
+    fun getVariantName(optionIndexList: List<Int>, selections: List<Selection>): String {
         var variantName = ""
         val firstIndex = 0
         val firstOptionIndex = optionIndexList.firstOrNull()

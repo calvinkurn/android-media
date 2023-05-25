@@ -57,7 +57,8 @@ data class ProductVariantInputModel(
         var stock: Int? = null,
         var isPrimary: Boolean = false,
         var weight: Int? = null,
-        var weightUnit: String = UNIT_GRAM_STRING
+        var weightUnit: String = UNIT_GRAM_STRING,
+        var hasDTStock: Boolean = false
 ) : Parcelable
 
 @Parcelize

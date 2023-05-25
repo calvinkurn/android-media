@@ -250,12 +250,12 @@ class ProductManageQuickEditStockFragment(
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
-                        R.string.product_manage_dialog_edit_dt_products_inactive_title
+                        R.string.product_manage_confirm_inactive_dt_product_title
                     )
                 )
-                setDescription(getString(R.string.product_manage_dialog_edit_dt_products_inactive_desc))
-                setPrimaryCTAText(getString(R.string.product_manage_edit_dt_products_inactive_button))
-                setSecondaryCTAText(getString(R.string.product_manage_edit_dt_products_inactive_cancel_button))
+                setDescription(getString(R.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml())
+                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
+                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
                     saveProductStatus(ProductStatus.INACTIVE)
                     dismiss()

@@ -62,6 +62,7 @@ class GetProductUseCase @Inject constructor(
                     condition
                     mustInsurance
                     sku
+                    hasDTStock
                     category{
                       id
                       name
@@ -138,6 +139,7 @@ class GetProductUseCase @Inject constructor(
                         stock
                         weight
                         weightUnit
+                        hasDTStock
                         pictures {
                           picID
                           description
