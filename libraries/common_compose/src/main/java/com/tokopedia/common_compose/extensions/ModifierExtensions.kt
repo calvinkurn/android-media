@@ -77,3 +77,18 @@ internal fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier
     )
     return@composed this.then(background(brush, shape))
 }
+
+fun Modifier.clickableWithoutRipple(
+    interactionSource: MutableInteractionSource,
+    onClick: () -> Unit
+) = composed(
+    factory = {
+        this.then(
+            Modifier.clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            )
+        )
+    }
+)
