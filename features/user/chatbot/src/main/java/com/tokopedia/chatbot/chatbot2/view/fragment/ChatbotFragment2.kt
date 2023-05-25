@@ -2628,10 +2628,10 @@ class ChatbotFragment2 :
                         replyBoxBottomSheetPlaceHolder,
                         replyBoxBottomSheetTitle,
                         showAddAttachmentMenu,
-                        "",
-                        isError
+                        ""
                     )
             }
+            bigReplyBoxBottomSheet?.setErrorStatus(isError)
             BigReplyBoxBottomSheet.replyBoxClickListener = this
             bigReplyBoxBottomSheet?.clearContentPadding = true
             bigReplyBoxBottomSheet?.show(childFragmentManager, "")

@@ -52,8 +52,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         disableSendButton()
         bindClickListeners()
         setUpEditText()
-        if (isError)
-            setWordLengthError()
         getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
         changeSendButtonIcon(isEnabled = true)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -175,6 +173,11 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun setWordLengthWarning(wordCount: Int) {
         getBindingView().chatText.run {
+            if (isError) {
+                setWordLengthError()
+                isError = false
+                return@run
+            }
             if (this.editText.text.isEmpty()) {
                 val message = String.format(
                     context?.resources?.getString(R.string.chatbot_remaining_words)
@@ -216,21 +219,23 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         messageText = ""
     }
 
+    fun setErrorStatus(errorStatus: Boolean) {
+        this.isError = errorStatus
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(
             replyBoxBottomSheetPlaceHolder: String,
             replyBoxBottomSheetTitle: String,
             shouldShowAddAttachmentButton: Boolean,
-            msgText: String = "",
-            isError: Boolean = false
+            msgText: String = ""
         ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
                 this.labelText = replyBoxBottomSheetTitle
                 this.hintText = replyBoxBottomSheetPlaceHolder
                 this.shouldShowAddAttachmentButton = shouldShowAddAttachmentButton
                 this.messageText = msgText
-                this.isError = isError
             }
         }
 
