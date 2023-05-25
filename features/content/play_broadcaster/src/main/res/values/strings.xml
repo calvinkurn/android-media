@@ -343,4 +343,6 @@
     <string name="play_shorts_affiliate_commission_fmt">Komisi %s</string>
     <string name="play_shorts_affiliate_success_tnc_web_link">https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate</string>
     <string name="play_shorts_affiliate_success_learn_more_web_link">https://affiliate.tokopedia.com</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_title">Cek produk bertanda komisi di sini, ya</string>
+    <string name="play_shorts_affiliate_coach_mark_product_commission_subtitle">Tag produk di videonya biar bisa kamu promosikan supaya dapat komisi kalau ada yang beli.</string>
 </resources>
