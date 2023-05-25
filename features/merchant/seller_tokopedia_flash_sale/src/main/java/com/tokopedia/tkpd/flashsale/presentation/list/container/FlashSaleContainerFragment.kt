@@ -359,10 +359,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         tracker.sendClickReadArticleEvent(eventLabel)
     }
 
-    private fun getFilteredRollenceKey() {
+    private fun getFilteredRollenceKey(): List<String> {
         val prefixKey = "CT_"
         val filteredRollenceKeys = getAbTestPlatform()
             .getKeysByPrefix(prefix = prefixKey)
+        return filteredRollenceKeys.toList()
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
