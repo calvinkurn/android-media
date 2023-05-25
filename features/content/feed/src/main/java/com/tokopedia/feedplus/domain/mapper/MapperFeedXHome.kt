@@ -20,7 +20,9 @@ import com.tokopedia.iconunify.IconUnify
 /**
  * Created By : Muhammad Furqan on 01/03/23
  */
-object MapperFeedHome {
+class MapperFeedHome @Inject constructor(
+    private val userSession: UserSessionInterface
+) {
     fun transform(data: FeedXHomeEntity): FeedModel =
         FeedModel(
             items = data.items.filter { shouldShow(it) }.map { card ->
@@ -100,6 +102,14 @@ object MapperFeedHome {
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
             topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
+    }
+
+    private fun isReportable(card: FeedXCard): Boolean {
+        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
+            return card.author.id != userSession.shopId
+        } else {
+            card.reportable
+        }
     }
 
     private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel {

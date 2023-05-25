@@ -311,6 +311,7 @@ class FeedFragment :
                                 feedMenuItem.contentData?.postId.orEmpty(),
                                 feedMenuItem.contentData?.rowNumber.orZero()
                             )
+                            dismiss()
                         }
                         setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                         setSecondaryCTAClickListener {
