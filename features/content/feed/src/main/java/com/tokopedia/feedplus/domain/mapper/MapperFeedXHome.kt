@@ -350,6 +350,7 @@ class MapperFeedXHome @Inject constructor(
                         iconUnify = IconUnify.GRAPH,
                         name = com.tokopedia.content.common.R.string.performance_see,
                         type = FeedMenuIdentifier.SeePerformance,
+                        appLink = card.performanceSummaryPageLink,
                         contentData = contentData
                     )
                 )
@@ -358,6 +359,7 @@ class MapperFeedXHome @Inject constructor(
                         iconUnify = IconUnify.GRAPH_REPORT,
                         name = com.tokopedia.content.common.R.string.performance_learn_video_insight,
                         type = FeedMenuIdentifier.LearnVideoInsight,
+                        appLink = card.insightSummaryPageLink,
                         contentData = contentData
                     )
                 )

@@ -6,6 +6,7 @@ data class FeedMenuItem(
     @StringRes val name: Int,
     val iconUnify: Int,
     val type: FeedMenuIdentifier,
+    val appLink: String = "",
     val contentData: FeedContentData? = null
 )
 

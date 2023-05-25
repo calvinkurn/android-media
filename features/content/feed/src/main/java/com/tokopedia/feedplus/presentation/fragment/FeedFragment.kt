@@ -322,7 +322,10 @@ class FeedFragment :
                 }
             }
 
-            else -> {}
+            FeedMenuIdentifier.SeePerformance,
+            FeedMenuIdentifier.LearnVideoInsight -> {
+                RouteManager.route(requireContext(), feedMenuItem.appLink)
+            }
         }
     }
 

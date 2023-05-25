@@ -142,6 +142,8 @@ class FeedXHomeUseCase @Inject constructor(
               text
               appLink
               webLink
+              performanceSummaryPageLink
+              insightSummaryPageLink
               like {
                 label
                 count
