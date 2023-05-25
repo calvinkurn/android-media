@@ -3,10 +3,8 @@ package com.tokopedia.common_compose.card2
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatTweenSpec
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -22,7 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -88,14 +86,29 @@ fun NestCard(
     content: @Composable () -> Unit
 ) {
     val onTouch = remember { mutableStateOf(false) }
-    val scale = if (enableBounceAnimation) {
-        animateFloatAsState(
-            if (onTouch.value) 0.95F else 1.01f, animationSpec = FloatTweenSpec(
-                CARD_TRANSITION_DURATION, 0, easing = bezierCustomInterpolator
-            )
-        ).value
-    } else {
-        1F
+
+    val scaleAnimation = remember {
+        Animatable(initialValue = 1f)
+    }
+
+    LaunchedEffect(onTouch.value, enableBounceAnimation) {
+        if (enableBounceAnimation) {
+            if (onTouch.value) {
+                scaleAnimation.animateTo(
+                    0.95f,
+                    animationSpec = FloatTweenSpec(
+                        CARD_TRANSITION_DURATION, 0, easing = bezierCustomInterpolator
+                    )
+                )
+            } else {
+                scaleAnimation.animateTo(
+                    1.01f,
+                    animationSpec = FloatTweenSpec(
+                        CARD_TRANSITION_DURATION, 0, easing = bezierCustomInterpolator
+                    )
+                )
+            }
+        }
     }
 
     var borderColor = MaterialTheme.colors.surface
@@ -160,7 +173,10 @@ fun NestCard(
     Card(
         modifier = modifier
             .padding(16.dp)
-            .scale(scale)
+            .graphicsLayer {
+                scaleX = scaleAnimation.value
+                scaleY = scaleAnimation.value
+            }
             .pointerInput(Unit) {
                 configGesture(
                     onTouch = onTouch,
@@ -218,7 +234,11 @@ private fun BoxCustomRipple(
                 Modifier.matchParentSize().graphicsLayer {
                     //https://developer.android.com/jetpack/compose/performance/bestpractices#defer-reads
                     alpha = color.value
-                }.background(Color(0xFF525A67))
+                }.drawWithCache {
+                    onDrawBehind {
+                        drawRect(Color(0xFF525A67))
+                    }
+                }
             )
         }
     }
