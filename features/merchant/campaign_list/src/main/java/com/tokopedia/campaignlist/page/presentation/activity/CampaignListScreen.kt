@@ -38,7 +38,6 @@ import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestSearchBar
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.sort_filter.NestSortFilter
 import com.tokopedia.common_compose.sort_filter.SortFilter
@@ -126,8 +125,8 @@ private fun SearchBar(
     onSearchbarCleared: () -> Unit
 ) {
     NestSearchBar(
-        modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
+        modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,
         onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
