@@ -25,20 +25,20 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
     val vouchers: LiveData<Result<List<ExclusiveLaunchVoucher>>>
         get() = _vouchers
 
-    fun getExclusiveLaunchVouchers(promoVouchersCategorySlugs: List<String>) {
+    fun getExclusiveLaunchVouchers(voucherSlugs: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val merchantVouchersDeferred = async { getMerchantVoucherListUseCase.execute() }
-
-                val promoVoucherParam = GetPromoVoucherListUseCase.Param(categorySlug = "", categorySlugs = promoVouchersCategorySlugs)
-                val promoVouchersDeferred = async { getPromoVoucherListUseCase.execute(promoVoucherParam) }
+                val promoVouchersDeferred = async { getPromoVoucherListUseCase.execute(voucherSlugs) }
 
                 val merchantVouchers = merchantVouchersDeferred.await()
                 val promoVouchers = promoVouchersDeferred.await()
 
-                val availableMerchantVouchers = merchantVouchers.filter { it.remainingQuota > Int.ZERO && it.isMerchantLockedToProductVoucher() }
-                val exclusiveLaunchVouchers = availableMerchantVouchers + promoVouchers
+                val exclusiveLaunchVouchers = applyVoucherRule(
+                    promoVouchers = promoVouchers,
+                    merchantVouchers = merchantVouchers
+                )
 
                 _vouchers.postValue(Success(exclusiveLaunchVouchers))
             },
@@ -46,6 +46,23 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
                 _vouchers.postValue(Fail(throwable))
             }
         )
+    }
+
+    private fun applyVoucherRule(
+        promoVouchers: List<ExclusiveLaunchVoucher>,
+        merchantVouchers: List<ExclusiveLaunchVoucher>,
+    ): List<ExclusiveLaunchVoucher> {
+        val merchantVoucherProductsOnly = merchantVouchers.filter { it.remainingQuota > Int.ZERO && it.isMerchantLockedToProductVoucher() }
+
+        val hasPromoVouchers = promoVouchers.isNotEmpty()
+        val hasMerchantVouchers = merchantVoucherProductsOnly.isNotEmpty()
+
+        return when {
+            hasMerchantVouchers && hasPromoVouchers -> promoVouchers
+            hasMerchantVouchers -> merchantVouchers
+            hasPromoVouchers -> promoVouchers
+            else -> promoVouchers
+        }
     }
 
     fun updateVoucherAsClaimed(

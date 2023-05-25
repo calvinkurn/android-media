@@ -33,20 +33,17 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
-        private const val BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS = "category_slugs"
+        private const val BUNDLE_KEY_VOUCHER_SLUGS = "category_slugs"
 
         @JvmStatic
         fun newInstance(
             useDarkBackground: Boolean,
-            promoVouchersCategorySlugs: List<String>
+            slugs: List<String>
         ): ExclusiveLaunchVoucherListBottomSheet {
             return ExclusiveLaunchVoucherListBottomSheet().apply {
                 arguments = Bundle().apply {
                     putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
-                    putStringArrayList(
-                        BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS,
-                        ArrayList(promoVouchersCategorySlugs)
-                    )
+                    putStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS, ArrayList(slugs))
                 }
             }
         }
@@ -54,7 +51,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
     private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND).orFalse() }
-    private val promoVouchersCategorySlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_USE_PROMO_VOUCHERS_CATEGORY_SLUGS)?.toList().orEmpty() }
+    private val voucherSlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS)?.toList().orEmpty() }
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
     private var onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
     private var onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
@@ -110,7 +107,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        viewModel.getExclusiveLaunchVouchers(promoVouchersCategorySlugs)
+        viewModel.getExclusiveLaunchVouchers(voucherSlugs)
     }
 
     private fun observeVouchers() {
