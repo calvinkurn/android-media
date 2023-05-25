@@ -155,6 +155,9 @@ class DigitalPDPDataPlanFragment :
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+    private var isMCCMEmpty: Boolean = false
+    private var isProductListEmpty: Boolean = false
+
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
@@ -389,7 +392,6 @@ class DigitalPDPDataPlanFragment :
             when(it) {
                 is RechargeNetworkResult.Success -> {
                     if (it.data.listDenomData.isNotEmpty()) {
-
                         if (productId >= 0) {
                             viewModel.setAutoSelectedDenom(
                                 it.data.listDenomData,
@@ -405,12 +407,22 @@ class DigitalPDPDataPlanFragment :
                             onLoadingAndFailMCCM()
                             onSuccessMCCMVertical(it.data, selectedPositionMCCM)
                         }
+
                         if (selectedPositionMCCM == null) {
                             onHideBuyWidget()
                         }
                     } else {
                         onLoadingAndFailMCCM()
                         onLoadingAndFailMCCMVertical()
+
+                        isMCCMEmpty = true
+
+                        if(isMCCMEmpty && isProductListEmpty){
+                            showGlobalErrorState()
+                            isMCCMEmpty = false
+                        } else {
+                            hideGlobalErrorState()
+                        }
                     }
                 }
 
@@ -443,12 +455,13 @@ class DigitalPDPDataPlanFragment :
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
 
-                    //TODO asses if mccm empty and denom empty
-                    if (viewModel.isEmptyDenom(
-                            denomData.data.denomFull.listDenomData
-                        )
-                    ) {
+                    if (denomData.data.denomFull.listDenomData.isEmpty()){
+                        isProductListEmpty = true
+                    }
+
+                    if(isMCCMEmpty && isProductListEmpty){
                         showGlobalErrorState()
+                        isProductListEmpty = false
                     } else {
                         hideGlobalErrorState()
                     }
@@ -565,6 +578,7 @@ class DigitalPDPDataPlanFragment :
     ) {
         viewModel.run {
             if (isOperatorChanged) resetFilter()
+            isProductListEmpty = false
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
             getRechargeCatalogInputMultiTab(
@@ -585,6 +599,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun getMCCMProducts() {
+        isMCCMEmpty = false
         val clientNumbers =
             listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setMCCMProductsLoading()

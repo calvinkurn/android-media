@@ -408,10 +408,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         setFilterDataParam(filterData)
     }
 
-    fun isEmptyDenom(listDenomData: List<DenomData>): Boolean {
-        return listDenomData.isEmpty()
-    }
-
     private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {
         filterData = filterTagComponents
         filterData.forEach {
