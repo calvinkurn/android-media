@@ -104,6 +104,7 @@ public interface ApplinkConst {
     String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     String DIGITAL = "tokopedia://digital";
     String TELKOMSEL_OMNI = "tokopedia://telkomselomni";
+    String INDOSAT_CHECK_BALANCE = "tokopedia://isatcheckbal";
     String DIGITAL_PRODUCT = "tokopedia://digital/form";
     String DIGITAL_SUBHOMEPAGE_HOME = "tokopedia://recharge/home";
     String RECHARGE_SUBHOMEPAGE_HOME_NEW = "tokopedia://recharge/home?platform_id=31&personalize=true";
