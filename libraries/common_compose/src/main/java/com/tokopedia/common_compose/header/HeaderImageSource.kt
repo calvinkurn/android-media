@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import com.tokopedia.common_compose.principles.NestImage
+import com.tokopedia.common_compose.components.NestImage
 
 /**
  * Created by yovi.putra on 27/04/23"

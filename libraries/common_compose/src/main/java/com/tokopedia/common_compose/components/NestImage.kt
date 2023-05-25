@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles
+package com.tokopedia.common_compose.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
