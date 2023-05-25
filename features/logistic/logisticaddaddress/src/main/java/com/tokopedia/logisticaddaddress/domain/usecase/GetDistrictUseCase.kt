@@ -6,7 +6,7 @@ import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.common.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject

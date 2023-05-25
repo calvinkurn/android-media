@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
+package com.tokopedia.logisticaddaddress.features.common
 
 import android.content.Context
 import android.view.LayoutInflater

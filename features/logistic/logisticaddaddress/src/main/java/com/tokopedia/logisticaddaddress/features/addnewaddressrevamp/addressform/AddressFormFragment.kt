@@ -41,11 +41,11 @@ import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressReva
 import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
+import com.tokopedia.logisticaddaddress.features.common.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperError
@@ -314,7 +314,7 @@ class AddressFormFragment :
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -366,7 +366,7 @@ class AddressFormFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -399,7 +399,7 @@ class AddressFormFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -1264,7 +1264,9 @@ class AddressFormFragment :
                     setBtnSaveAddressEnable(true)
                 }
             }?.load(
-                viewLifecycleOwner, this, ConsentCollectionParam(
+                viewLifecycleOwner,
+                this,
+                ConsentCollectionParam(
                     collectionId = viewModel.getCollectionId()
                 )
             )

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress
+package com.tokopedia.logisticaddaddress.features.common
 
 import android.annotation.TargetApi
 import android.app.Activity

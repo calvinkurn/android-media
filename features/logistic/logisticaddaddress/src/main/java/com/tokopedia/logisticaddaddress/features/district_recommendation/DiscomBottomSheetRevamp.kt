@@ -40,11 +40,11 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.common.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.features.common.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.common.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant

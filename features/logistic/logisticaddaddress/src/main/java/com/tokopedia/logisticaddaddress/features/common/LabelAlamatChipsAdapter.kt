@@ -1,13 +1,11 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
+package com.tokopedia.logisticaddaddress.features.common
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.chips_item.view.*
 import kotlinx.android.synthetic.main.chips_unify_item.view.*
 
 /**

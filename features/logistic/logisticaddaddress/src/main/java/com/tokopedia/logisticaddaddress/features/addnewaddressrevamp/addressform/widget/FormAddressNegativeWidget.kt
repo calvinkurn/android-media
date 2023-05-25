@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.FormAddressNewAlamatNegativeBinding
-import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
+import com.tokopedia.logisticaddaddress.features.common.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.common.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setNotesWrapperWatcher
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setOnTouchLabelAddress
 import com.tokopedia.logisticaddaddress.utils.TextInputUtil.setWrapperWatcher

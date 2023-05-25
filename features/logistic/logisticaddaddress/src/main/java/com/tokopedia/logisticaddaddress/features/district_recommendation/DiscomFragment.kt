@@ -29,8 +29,8 @@ import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendati
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.features.common.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.features.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.IS_LOCALIZATION
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory

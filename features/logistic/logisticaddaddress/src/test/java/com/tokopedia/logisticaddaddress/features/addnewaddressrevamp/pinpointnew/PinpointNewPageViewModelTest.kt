@@ -17,10 +17,10 @@ import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeRespo
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
+import com.tokopedia.logisticaddaddress.features.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
+import com.tokopedia.logisticaddaddress.features.common.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

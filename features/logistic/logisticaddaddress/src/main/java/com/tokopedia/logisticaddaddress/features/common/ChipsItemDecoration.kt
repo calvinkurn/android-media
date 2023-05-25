@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress
+package com.tokopedia.logisticaddaddress.features.common
 
 import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
