@@ -7,7 +7,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LOGIN_WIDGET
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_PRODUCT_CLUSTER
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_PROMO_CARD
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_PROMO_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_PDP_BANNER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_PRODUCT_CLUSTER
@@ -43,6 +43,8 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CHEVRON_PROMOTION
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_PRODUCT_PROMOTION
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
@@ -423,16 +425,17 @@ class DigitalPDPAnalytics {
                 FLASH_SALE
             }
         val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CARD)
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CLUSTER)
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
+                "${categoryName} - ${operatorName} - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
-                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName, productListName)
             )
+            putString(TRACKER_ID, CLICK_PRODUCT_PROMOTION)
         }
 
         eventDataLayer.clickGeneralItemList(userId)
@@ -494,7 +497,18 @@ class DigitalPDPAnalytics {
         productListName: String,
         denomData: DenomData,
         position: Int,
+        denomType: DenomWidgetEnum
     ) {
+        val isMCCMorFlashSale =
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
+            ) {
+                MCCM
+            } else {
+                FLASH_SALE
+            }
+
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_CARD)
             putString(ITEM_LIST, productListName)
@@ -502,7 +516,7 @@ class DigitalPDPAnalytics {
             putString(TRACKER_ID, CLICK_CHEVRON_PROMOTION)
             putParcelableArrayList(
                 ITEMS,
-                mapperDenomToItemList(denomData, operatorName, position, MCCM, categoryName, productListName)
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName, productListName)
             )
         }
 

@@ -1602,7 +1602,8 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         productListTitle: String
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE
+            || layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1652,7 +1653,8 @@ class DigitalPDPDataPlanFragment :
                 userSession.userId,
                 productListTitle,
                 denomFull,
-                position
+                position,
+                layoutType
             )
         }
     }

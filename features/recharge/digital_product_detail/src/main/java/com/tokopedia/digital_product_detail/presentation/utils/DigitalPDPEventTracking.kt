@@ -70,7 +70,7 @@ object DigitalPDPEventTracking {
         const val CLICK_LAST_TRANSACTION_ICON = "click last transaction icon"
         const val CLICK_LOGIN_WIDGET = "click login widget"
         const val CLICK_CHEVRON = "click chevron on total bayar"
-        const val CLICK_PROMO_CARD = "click promo card"
+        const val CLICK_PROMO_CLUSTER = "click promo cluster"
         const val IMPRESSION_PRODUCT_CLUSTER = "impression product cluster"
         const val IMPRESSION_LAST_TRANSACTION_ICON = "impression last transaction icon"
         const val IMPRESSION_PDP_BANNER = "impression pdp banner"
@@ -92,5 +92,6 @@ object DigitalPDPEventTracking {
         const val CLICK_OMNI_CHANNEL_WIDGET = "42519"
         const val IMPRESSION_OMNI_CHANNEL_WIDGET = "42730"
         const val CLICK_CHEVRON_PROMOTION = "43960"
+        const val CLICK_PRODUCT_PROMOTION = "43968"
     }
 }
