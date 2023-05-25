@@ -1,7 +1,10 @@
 package com.tokopedia.product.detail.common.view
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
@@ -11,8 +14,10 @@ import com.tokopedia.unifycomponents.ChipsUnify
 /**
  * Created by Yehezkiel on 06/05/21
  */
-class ItemVariantChipViewHolder(val view: View,
-                                val listener: AtcVariantListener) : BaseAtcVariantItemViewHolder<VariantOptionWithAttribute>(view) {
+class ItemVariantChipViewHolder(
+    val view: View,
+    val listener: AtcVariantListener
+) : BaseAtcVariantItemViewHolder<VariantOptionWithAttribute>(view) {
 
     companion object {
         val LAYOUT = R.layout.atc_variant_chip_viewholder
@@ -21,6 +26,9 @@ class ItemVariantChipViewHolder(val view: View,
     }
 
     private val chipVariant = view.findViewById<ChipsUnify>(R.id.atc_variant_chip)
+    private val variantPromoIcon by lazyThreadSafetyNone {
+        view.findViewById<ImageView>(R.id.atc_variant_chip_promo_icon)
+    }
 
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {
         setState(element)
@@ -41,9 +49,8 @@ class ItemVariantChipViewHolder(val view: View,
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
         setViewListener(element, VariantConstant.IGNORE_STATE)
-        val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY
-                && element.currentState != VariantConstant.STATE_SELECTED_EMPTY
-        renderFlashSale(shouldShowFlashSale, element.flashSale)
+
+        renderFlashSale(element = element)
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
@@ -62,10 +69,11 @@ class ItemVariantChipViewHolder(val view: View,
         }
     }
 
-    private fun renderFlashSale(shouldRender: Boolean, isCampaignActive: Boolean) {
-        chipVariant.chip_new_notification.showIfWithBlock(shouldRender && isCampaignActive){
-            text = resources.getString(R.string.atc_variant_promo)
-        }
+    private fun renderFlashSale(element: VariantOptionWithAttribute) {
+        val isCampaignActive = element.flashSale
+        val shouldShowFlashSale = element.currentState != VariantConstant.STATE_EMPTY &&
+            element.currentState != VariantConstant.STATE_SELECTED_EMPTY
+        variantPromoIcon.showWithCondition(shouldShowFlashSale && isCampaignActive)
     }
 
     private fun setViewListener(element: VariantOptionWithAttribute, state: Int) {
@@ -74,9 +82,11 @@ class ItemVariantChipViewHolder(val view: View,
         }
     }
 
-    private fun ellipsize(text: String, maxChar: Int): String{
-        return if(text.length > maxChar){
+    private fun ellipsize(text: String, maxChar: Int): String {
+        return if (text.length > maxChar) {
             "${text.substring(0, maxChar)}..."
-        } else text
+        } else {
+            text
+        }
     }
 }

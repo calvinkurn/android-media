@@ -191,7 +191,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     private fun initView() {
         rvPlayGallery.layoutManager = GridLayoutManager(requireContext(), DEFAULT_GALLERY_SPAN_COUNT)
         rvPlayGallery.addItemDecoration(MediaGridInset(DEFAULT_GALLERY_SPAN_COUNT,
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
+            requireContext().resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
                 false))
         rvPlayGallery.adapter = albumMediaAdapter
 

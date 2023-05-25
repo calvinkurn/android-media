@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/carousel_shimmering_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/text_shimmer"
+        android:layout_width="137dp"
+        android:layout_height="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_shimmer_2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="1dp"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/text_shimmer_2"
+        android:layout_width="83dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="@id/text_shimmer"
+        app:layout_constraintTop_toBottomOf="@id/text_shimmer"
+        app:loader_corner_radius="1dp"
+        app:loader_type="line" />
+
+    <include
+        android:id="@+id/product_shimmer_1"
+        android:layout_marginTop="19dp"
+        layout="@layout/partial_tokopedianow_repurchase_product_card_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/text_shimmer_2"
+        app:layout_constraintTop_toBottomOf="@id/text_shimmer_2" />
+
+    <include
+        android:id="@+id/product_shimmer_2"
+        layout="@layout/partial_tokopedianow_repurchase_product_card_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/product_shimmer_1"
+        app:layout_constraintStart_toEndOf="@id/product_shimmer_1"
+        app:layout_constraintTop_toTopOf="@id/product_shimmer_1" />
+
+    <include
+        android:id="@+id/product_shimmer_3"
+        layout="@layout/partial_tokopedianow_repurchase_product_card_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/product_shimmer_2"
+        app:layout_constraintStart_toEndOf="@id/product_shimmer_2"
+        app:layout_constraintTop_toTopOf="@id/product_shimmer_2" />
+
+    <include
+        android:id="@+id/product_shimmer_4"
+        layout="@layout/partial_tokopedianow_repurchase_product_card_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/product_shimmer_3"
+        app:layout_constraintStart_toEndOf="@id/product_shimmer_3"
+        app:layout_constraintTop_toTopOf="@id/product_shimmer_3" />
+
+    <include
+        android:id="@+id/product_shimmer_5"
+        layout="@layout/partial_tokopedianow_repurchase_product_card_shimmer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/product_shimmer_4"
+        app:layout_constraintStart_toEndOf="@id/product_shimmer_4"
+        app:layout_constraintTop_toTopOf="@id/product_shimmer_4" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -75,6 +75,8 @@
     <string name="centralized_promo_reload">Muat ulang</string>
     <string name="centralized_promo_description"><![CDATA[<b> %s </b> \u2022 %s]]></string>
 
+    <string name="centralized_promo_play_performance">Lihat Performa</string>
+
     <string name="text_badge_new">Baru</string>
     <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
 

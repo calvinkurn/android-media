@@ -361,9 +361,4 @@ class ManageAddressViewModel @Inject constructor(
             }
         )
     }
-
-    override fun onCleared() {
-        super.onCleared()
-//        compositeSubscription.clear()
-    }
 }
