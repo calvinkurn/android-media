@@ -343,9 +343,9 @@ object MapperFeedHome {
             if (card.reportable) {
                 add(
                     FeedMenuItem(
-                        iconUnify = IconUnify.VISIBILITY,
-                        name = R.string.feed_watch_mode,
-                        type = FeedMenuIdentifier.WatchMode,
+                        iconUnify = IconUnify.WARNING,
+                        name = com.tokopedia.content.common.R.string.content_common_menu_report,
+                        type = FeedMenuIdentifier.Report,
                         contentData = contentData
                     )
                 )
