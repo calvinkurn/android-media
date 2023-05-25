@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -43,7 +42,7 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(
                     selectedProductIndex
                 )
             }
-            renderUpdateSeeMore(denomData.listDenomData)
+            renderUpdateSeeMore(denomData.listDenomData, denomFullListener)
         }
     }
 
@@ -82,11 +81,12 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(
         }
     }
 
-    private fun renderUpdateSeeMore(listDenomFull: List<DenomData>) {
+    private fun renderUpdateSeeMore(listDenomFull: List<DenomData>, denomFullListener: RechargeDenomFullListener) {
         with(widgetRechargeMCCMVerticalFullWidget) {
             if (listDenomFull.size > MIN_LIST) {
                 tgMccmSeeMore.show()
                 tgMccmSeeMore.setOnClickListener {
+                    denomFullListener.onShowMoreClicked()
                     tgMccmSeeMore.hide()
                     ivMccmSeeMoreArrow.hide()
                     adapterDenomFull.setDenomFullList(listDenomFull)

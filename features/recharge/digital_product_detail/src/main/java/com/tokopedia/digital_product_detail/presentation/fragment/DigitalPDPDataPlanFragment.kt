@@ -1658,6 +1658,15 @@ class DigitalPDPDataPlanFragment :
             )
         }
     }
+
+    override fun onShowMoreClicked() {
+        digitalPDPAnalytics.clickExpandMCCM(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+        )
+    }
     //endregion
 
     //region FilterBottomSheetListener

@@ -3,6 +3,7 @@ package com.tokopedia.digital_product_detail.presentation.utils
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_CHEVRON
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_CHEVRON_SHOW_MORE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LANJUT_BAYAR
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LOGIN_WIDGET
@@ -44,6 +45,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CHEVRON_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_PRODUCT_PROMOTION
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_SHOW_MORE_PROMOTION
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -671,6 +673,25 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(OPEN_SCREEN, eventDataLayer)
     }
 
+    fun clickExpandMCCM(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+    ){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_CHEVRON_SHOW_MORE)
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName} - ${operatorName} - $loyaltyStatus"
+            )
+            putString(TRACKER_ID, CLICK_SHOW_MORE_PROMOTION)
+        }
+
+        eventDataLayer.clickDigitalGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL, eventDataLayer)
+    }
+
     /** Common Tracking extension function*/
 
     fun Bundle.viewItemList(userId: String): Bundle {
@@ -694,6 +715,12 @@ class DigitalPDPAnalytics {
     fun Bundle.clickGeneralItemList(userId: String): Bundle {
         addGeneralTracker(userId)
         this.putString(TrackAppUtils.EVENT, SELECT_CONTENT)
+        return this
+    }
+
+    fun Bundle.clickDigitalGeneralItemList(userId: String): Bundle {
+        addGeneralTracker(userId)
+        this.putString(TrackAppUtils.EVENT, CLICK_DIGITAL)
         return this
     }
 

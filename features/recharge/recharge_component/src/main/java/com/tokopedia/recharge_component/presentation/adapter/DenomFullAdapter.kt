@@ -77,6 +77,10 @@ class DenomFullAdapter: RecyclerView.Adapter<DenomFullViewHolder>(), RechargeDen
         listener?.onDenomFullImpression(denomFull, layoutType, position, productTitleList)
     }
 
+    override fun onShowMoreClicked() {
+        //DO NOTHING
+    }
+
     fun setDenomFullList(listDenom: List<DenomData>) {
         this.listDenom = listDenom.toMutableList()
         notifyDataSetChanged()

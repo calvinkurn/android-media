@@ -86,6 +86,7 @@ object DigitalPDPEventTracking {
         const val CLICK_LANJUT_BAYAR = "click beli"
         const val CLICK_OMNI_CHANNEL_WIDGET = "click omni channel widget"
         const val VIEW_PDP_PAGE = "view pdp page"
+        const val CLICK_CHEVRON_SHOW_MORE = "click chevron show more"
     }
 
     object TrackerId {
@@ -93,5 +94,6 @@ object DigitalPDPEventTracking {
         const val IMPRESSION_OMNI_CHANNEL_WIDGET = "42730"
         const val CLICK_CHEVRON_PROMOTION = "43960"
         const val CLICK_PRODUCT_PROMOTION = "43968"
+        const val CLICK_SHOW_MORE_PROMOTION = "43965"
     }
 }
