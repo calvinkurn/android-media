@@ -496,8 +496,8 @@ private fun NestDefaultButton(
 @Composable
 private fun NestButtonProgressBar(loaderHeight: Dp, useWhiteColorLoader: Boolean) {
     NestLoader(
-        modifier = Modifier.size(loaderHeight),
-        variant = NestLoaderType.Circular(isWhite = useWhiteColorLoader)
+        variant = NestLoaderType.Circular(isWhite = useWhiteColorLoader),
+        modifier = Modifier.size(loaderHeight)
     )
 }
 

@@ -38,7 +38,7 @@ internal fun HeaderImage(
 ) {
     when (imageSource) {
         is HeaderImageSource.Remote -> {
-            NestImage(modifier = modifier, imageUrl = imageSource.source)
+            NestImage(imageUrl = imageSource.source, modifier = modifier)
         }
         is HeaderImageSource.Painter -> {
             Image(

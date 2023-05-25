@@ -276,14 +276,14 @@ fun CampaignItem(
                 )
 
                 NestImage(
+                    imageUrl = campaign.campaignPictureUrl,
                     modifier = Modifier
                         .size(62.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .constrainAs(campaignImage) {
                             start.linkTo(parent.start, margin = 12.dp)
                             top.linkTo(campaignType.bottom, margin = 12.dp)
-                        },
-                    imageUrl = campaign.campaignPictureUrl
+                        }
                 )
 
                 NestTypography(
