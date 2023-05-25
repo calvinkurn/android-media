@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.databinding.FragmentPlayCategoryWidgetBinding
@@ -39,6 +40,14 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         })
     }
 
+    private val scrollListener by lazyThreadSafetyNone {
+        object : EndlessRecyclerViewScrollListener(binding.rvPlayCategoryWidget.layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                // viewModel.submitAction(NextPageWidgets)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,6 +65,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
     }
 
     private fun setupView() {
+        binding.rvPlayCategoryWidget.addOnScrollListener(scrollListener)
         binding.rvPlayCategoryWidget.adapter = categoryAdapter
 
         //TODO() temp
@@ -89,6 +99,10 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
                 )
             }
         }
+    }
 
+    override fun onDestroyView() {
+        binding.rvPlayCategoryWidget.removeOnScrollListener(scrollListener)
+        super.onDestroyView()
     }
 }
