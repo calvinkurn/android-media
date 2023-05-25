@@ -1504,6 +1504,14 @@ class ShipmentFragment :
         shipmentDetailData.isTradein = isTradeIn
         return shipmentDetailData
     }
+
+    internal fun getStringResource(resId: Int): String {
+        return activity?.getString(resId) ?: ""
+    }
+
+    internal fun getStringResourceWithArgs(resId: Int, vararg formatArgs: Any): String {
+        return activity?.getString(resId, formatArgs) ?: ""
+    }
     // endregion
 
     // region analytics

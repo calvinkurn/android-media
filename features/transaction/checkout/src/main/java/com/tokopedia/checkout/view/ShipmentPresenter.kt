@@ -1003,7 +1003,7 @@ class ShipmentPresenter @Inject constructor(
             var errorMessage = throwable.message
             if (errorMessage == null) {
                 errorMessage =
-                    view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
+                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
             }
             view?.showToastError(errorMessage)
         }, AddressConstant.ANA_REVAMP_FEATURE_ID)
@@ -1079,8 +1079,7 @@ class ShipmentPresenter @Inject constructor(
                                 )
                             } else {
                                 val defaultErrorMessage =
-                                    v.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                                        ?: ""
+                                    v.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
                                 v.renderCheckoutCartError(defaultErrorMessage)
                                 v.logOnErrorCheckout(
                                     MessageErrorException(defaultErrorMessage),
@@ -1115,7 +1114,7 @@ class ShipmentPresenter @Inject constructor(
         } else {
             view?.hideLoading()
             view?.setHasRunningApiCall(false)
-            view?.showToastError(view?.activity?.getString(R.string.message_error_checkout_empty))
+            view?.showToastError(view?.getStringResource(R.string.message_error_checkout_empty))
         }
     }
 
@@ -4328,7 +4327,7 @@ class ShipmentPresenter @Inject constructor(
                         } else {
                             if (messageError.isEmpty()) {
                                 messageError =
-                                    view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
                                         ?: ""
                             }
                             view?.navigateToSetPinpoint(messageError, locationPass)
@@ -4436,7 +4435,7 @@ class ShipmentPresenter @Inject constructor(
                     view!!.setHasRunningApiCall(false)
                     if (setShippingAddressData.isSuccess) {
                         if (setShippingAddressData.messages.isEmpty()) {
-                            view!!.showToastNormal(view!!.activity?.getString(R.string.label_change_address_success) ?: "")
+                            view!!.showToastNormal(view!!.getStringResource(R.string.label_change_address_success))
                         } else {
                             view!!.showToastNormal(setShippingAddressData.messages[0])
                         }
@@ -4453,7 +4452,7 @@ class ShipmentPresenter @Inject constructor(
                                 view!!.renderChangeAddressFailed(reloadCheckoutPage)
                             }
                         } else {
-                            view!!.showToastError(view!!.activity?.getString(R.string.label_change_address_failed))
+                            view!!.showToastError(view!!.getStringResource(R.string.label_change_address_failed))
                             if (isHandleFallback) {
                                 view!!.renderChangeAddressFailed(reloadCheckoutPage)
                             }
@@ -4628,7 +4627,7 @@ class ShipmentPresenter @Inject constructor(
                                                                                 true
                                                                         }
                                                                         shipmentCartItemModel.errorTitle =
-                                                                            view?.activity?.getString(
+                                                                            view?.getStringResourceWithArgs(
                                                                                 R.string.checkout_error_unblocking_message,
                                                                                 shipmentCartItemModel.cartItemModels.size
                                                                             ) ?: ""
@@ -4692,7 +4691,7 @@ class ShipmentPresenter @Inject constructor(
                                 shipmentCartItemModel.firstProductErrorIndex =
                                     firstProductErrorIndex
                                 shipmentCartItemModel.unblockingErrorMessage =
-                                    view?.activity?.getString(
+                                    view?.getStringResourceWithArgs(
                                         R.string.checkout_error_unblocking_message,
                                         productErrorCount
                                     ) ?: ""
@@ -4804,7 +4803,7 @@ class ShipmentPresenter @Inject constructor(
                                                                     itemModel.isShopError = true
                                                                 }
                                                                 shipmentCartItemModel.errorTitle =
-                                                                    view?.activity?.getString(
+                                                                    view?.getStringResourceWithArgs(
                                                                         R.string.checkout_error_unblocking_message,
                                                                         shipmentCartItemModel.cartItemModels.size
                                                                     ) ?: ""
@@ -4865,7 +4864,7 @@ class ShipmentPresenter @Inject constructor(
                             shipmentCartItemModel.isHasUnblockingError = true
                             shipmentCartItemModel.firstProductErrorIndex = firstProductErrorIndex
                             shipmentCartItemModel.unblockingErrorMessage =
-                                view?.activity?.getString(
+                                view?.getStringResourceWithArgs(
                                     R.string.checkout_error_unblocking_message,
                                     productErrorCount
                                 ) ?: ""

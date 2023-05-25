@@ -106,10 +106,8 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         val uploadModel = mockk<UploadPrescriptionUiModel>(relaxed = true)
         presenter.setUploadPrescriptionData(uploadModel)
 
-        val mockContext = mockk<FragmentActivity>()
         val errorMessage = "error"
-        every { mockContext.getString(any()) } returns errorMessage
-        every { view.activity } returns mockContext
+        every { view.getStringResource(any()) } returns errorMessage
 
         // When
         presenter.processCheckout()

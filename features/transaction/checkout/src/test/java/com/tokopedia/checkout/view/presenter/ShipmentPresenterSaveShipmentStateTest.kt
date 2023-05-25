@@ -89,6 +89,9 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
                     selectedCourier = CourierItemData().apply {
                         shipperId = 1
                         shipperProductId = 2
+                        useDropshipper = false
+                        useInsurance = false
+                        isOrderPriority = false
                     }
                 }
             }
@@ -434,6 +437,170 @@ class ShipmentPresenterSaveShipmentStateTest : BaseShipmentPresenterTest() {
         presenter.processSaveShipmentState()
 
         // Then
+        coVerify(exactly = 1) { saveShipmentStateGqlUseCase(any()) }
+    }
+
+    @Test
+    fun checkParamsFromPresenter_Dropship() {
+        // Given
+        every { view.isTradeInByDropOff } returns false
+
+        val dropshipName = "dropship"
+        val dropshipPhone = "dropship123"
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 1,
+                        isPreOrder = true,
+                        preOrderDurationDay = 2
+                    )
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
+                    dropshipperName = dropshipName
+                    dropshipperPhone = dropshipPhone
+                    useDropshipper = true
+                }
+            }
+        )
+
+        val addressId = "123"
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = addressId
+        }
+
+        val capturedRequestParam = CapturingSlot<SaveShipmentStateRequest>()
+        coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
+
+        // When
+        presenter.processSaveShipmentState()
+
+        // Then
+        val params =
+            capturedRequestParam.captured
+        val saveShipmentDataArray =
+            params.requestDataList
+
+        assertEquals(1, saveShipmentDataArray.size)
+
+        val data = saveShipmentDataArray.first()
+        assertEquals(addressId, data.addressId)
+
+        val shopProductDataList = data.shopProductDataList
+        assertEquals(1, shopProductDataList.size)
+        assertEquals(dropshipName, shopProductDataList.first().dropshipData.name)
+        assertEquals(dropshipPhone, shopProductDataList.first().dropshipData.telpNo)
+        assertEquals(1, shopProductDataList.first().isDropship)
+
+        coVerify(exactly = 1) { saveShipmentStateGqlUseCase(any()) }
+    }
+
+    @Test
+    fun checkParamsFromPresenter_Insurance() {
+        // Given
+        every { view.isTradeInByDropOff } returns false
+
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 1
+                    )
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
+                    useInsurance = true
+                }
+            }
+        )
+
+        val addressId = "123"
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = addressId
+        }
+
+        val capturedRequestParam = CapturingSlot<SaveShipmentStateRequest>()
+        coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
+
+        // When
+        presenter.processSaveShipmentState()
+
+        // Then
+        val params =
+            capturedRequestParam.captured
+        val saveShipmentDataArray =
+            params.requestDataList
+
+        assertEquals(1, saveShipmentDataArray.size)
+
+        val data = saveShipmentDataArray.first()
+        assertEquals(addressId, data.addressId)
+
+        val shopProductDataList = data.shopProductDataList
+        assertEquals(1, shopProductDataList.size)
+        assertEquals(1, shopProductDataList.first().finsurance)
+
+        coVerify(exactly = 1) { saveShipmentStateGqlUseCase(any()) }
+    }
+
+    @Test
+    fun checkParamsFromPresenter_OrderPriority() {
+        // Given
+        every { view.isTradeInByDropOff } returns false
+
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(cartStringGroup = "").apply {
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "",
+                        productId = 1
+                    )
+                )
+                selectedShipmentDetailData = ShipmentDetailData().apply {
+                    selectedCourier = CourierItemData().apply {
+                        shipperId = 1
+                        shipperProductId = 2
+                    }
+                    isOrderPriority = true
+                }
+            }
+        )
+
+        val addressId = "123"
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            id = addressId
+        }
+
+        val capturedRequestParam = CapturingSlot<SaveShipmentStateRequest>()
+        coEvery { saveShipmentStateGqlUseCase(capture(capturedRequestParam)) } returns SaveShipmentStateData()
+
+        // When
+        presenter.processSaveShipmentState()
+
+        // Then
+        val params =
+            capturedRequestParam.captured
+        val saveShipmentDataArray =
+            params.requestDataList
+
+        assertEquals(1, saveShipmentDataArray.size)
+
+        val data = saveShipmentDataArray.first()
+        assertEquals(addressId, data.addressId)
+
+        val shopProductDataList = data.shopProductDataList
+        assertEquals(1, shopProductDataList.size)
+        assertEquals(1, shopProductDataList.first().isOrderPriority)
+
         coVerify(exactly = 1) { saveShipmentStateGqlUseCase(any()) }
     }
 }
