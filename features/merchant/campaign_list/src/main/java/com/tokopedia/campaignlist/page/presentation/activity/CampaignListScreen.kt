@@ -175,10 +175,10 @@ private fun Filter(
     val sortFilterItems = arrayListOf(campaignStatus, campaignType)
 
     NestSortFilter(
-        modifier = modifier.fillMaxWidth(),
         items = sortFilterItems,
-        onClearFilter = onClearFilter,
         showClearFilterIcon = shouldShowClearFilterIcon,
+        modifier = modifier.fillMaxWidth(),
+        onClearFilter = onClearFilter,
         onItemClicked = {}
     )
 }

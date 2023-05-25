@@ -26,12 +26,12 @@ import com.tokopedia.iconunify.R
 
 @Composable
 fun NestSortFilter(
-    modifier: Modifier = Modifier,
-    size: Size = Size.DEFAULT,
     items: List<SortFilter>,
     showClearFilterIcon: Boolean,
-    onItemClicked: (SortFilter) -> Unit,
-    onClearFilter: () -> Unit
+    modifier: Modifier = Modifier,
+    onClearFilter: () -> Unit = {},
+    onItemClicked: (SortFilter) -> Unit = {},
+    size: Size = Size.DEFAULT
 ) {
     val chipSize = when (size) {
         Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
@@ -211,9 +211,9 @@ private fun NestSortFilterPreview() {
                 }
                 NestTypography(text = "Quick Filter", textStyle = NestTheme.typography.heading5)
                 NestSortFilter(
-                    size = size,
                     items = items,
                     showClearFilterIcon = true,
+                    onClearFilter = { items = items.map { it.copy(isSelected = false) } },
                     onItemClicked = { sf ->
                         items = items.map {
                             if (it == sf) {
@@ -223,7 +223,7 @@ private fun NestSortFilterPreview() {
                             }
                         }
                     },
-                    onClearFilter = { items = items.map { it.copy(isSelected = false) } }
+                    size = size
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 NestTypography(text = "Advanced Filter", textStyle = NestTheme.typography.heading5)
