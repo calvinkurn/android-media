@@ -69,7 +69,7 @@ class ShopPageHeaderModule {
 
     @ShopPageHeaderScope
     @Provides
-    fun provideAffiliateUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): AffiliateEligibilityCheckUseCase {
+    fun provideAffiliateUseCase(graphqlRepository: GraphqlRepository): AffiliateEligibilityCheckUseCase {
         return AffiliateEligibilityCheckUseCase(graphqlRepository)
     }
 }
