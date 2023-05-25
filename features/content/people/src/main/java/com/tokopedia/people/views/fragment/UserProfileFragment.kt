@@ -627,7 +627,7 @@ class UserProfileFragment @Inject constructor(
         if (prev == value) return
 
         try {
-            if (value.isActive) {
+            if (value.isActive && !fabCreated) {
                 val items = arrayListOf<FloatingButtonItem>()
                 if (value.showLiveStream) items.add(createLiveFab())
                 if (value.showPost) items.add(createPostFab())
