@@ -1085,6 +1085,7 @@ class AddEditProductPreviewFragment :
                         moveToImagePicker()
                     }
                 }
+
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
@@ -1717,20 +1718,12 @@ class AddEditProductPreviewFragment :
 
     private fun moveToLocationPicker() {
         activity?.let {
-            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
-                val bundle = Bundle().apply {
-                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                }
-                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
-                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
-                }
-            } else {
-                RouteManager.getIntent(it, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-                    putExtra(EXTRA_IS_FULL_FLOW, false)
-                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
-                }
+            val bundle = Bundle().apply {
+                putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            }
+            RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
             }
         }
     }

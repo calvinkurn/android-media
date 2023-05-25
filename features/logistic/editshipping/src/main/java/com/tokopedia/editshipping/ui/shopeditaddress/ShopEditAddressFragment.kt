@@ -540,16 +540,6 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
                 pinpointPageResult.launch(this)
             }
-            val intent = RouteManager.getIntent(
-                activity,
-                ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-            )
-            intent.putExtra(EXTRA_IS_FULL_FLOW, false)
-            intent.putExtra(EXTRA_LAT, lat)
-            intent.putExtra(EXTRA_LONG, long)
-            intent.putExtra(EXTRA_WAREHOUSE_DATA, warehouseDataModel)
-            intent.putExtra(EXTRA_IS_EDIT_WAREHOUSE, true)
-            pinpointPageResult.launch(intent)
         }
     }
 

@@ -45,7 +45,7 @@ class CartAddressChoiceActivity : BaseCheckoutActivity(), ShipmentAddressListFra
         val intent: Intent
         when (typeRequest) {
             CheckoutConstant.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS -> {
-                intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
                 intent.putExtra(KERO_TOKEN, token)
                 intent.putExtra(EXTRA_REF, SCREEN_NAME_CART_NEW_USER)
                 startActivityForResult(intent, LogisticConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY)

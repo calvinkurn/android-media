@@ -176,7 +176,7 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
                 checkoutAnalyticsChangeAddress.eventClickAtcCartChangeAddressClickTambahAlamatBaruFromGantiAlamat()
                 checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahFromAlamatPengiriman()
             }
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalLogistic.ADD_ADDRESS_V3).apply {
                 putExtra(PARAM_TOKEN, token)
                 putExtra(EXTRA_REF, CartConstant.SCREEN_NAME_CART_EXISTING_USER)
             }

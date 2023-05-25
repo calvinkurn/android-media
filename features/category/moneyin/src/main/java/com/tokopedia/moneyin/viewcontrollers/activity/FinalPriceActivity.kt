@@ -93,7 +93,7 @@ class FinalPriceActivity : BaseMoneyInActivity<FinalPriceViewModel>(), Observer<
                     navigateToActivityRequest(goToCheckout, MoneyInCheckoutActivity.MONEY_IN_REQUEST_CHECKOUT)
                 } else {
                     val intent = RouteManager.getIntent(
-                            this, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+                            this, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
                     intent.putExtra(KERO_TOKEN, result.token)
                     startActivityForResult(intent, PINPOINT_ACTIVITY_REQUEST_CODE)
                 }
