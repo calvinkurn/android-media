@@ -5,27 +5,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -34,11 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.ButtonSize
-import com.tokopedia.common_compose.components.NestBottomSheetShape
-import com.tokopedia.common_compose.components.NestButton
-import com.tokopedia.common_compose.components.NestTextField
-import com.tokopedia.common_compose.components.NestTips
+import com.tokopedia.common_compose.components.*
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.clickableWithoutRipple
@@ -174,15 +154,16 @@ private fun ReschedulePickupScreenLayout(
             )
         }
         NestButton(
+            text = stringResource(id = R.string.title_button_reschedule_pickup),
+            {
+                onEvent(ReschedulePickupUiEvent.SaveReschedule)
+            },
             modifier = Modifier
                 .padding(end = 16.dp, start = 16.dp, bottom = 16.dp)
                 .fillMaxWidth(),
             size = ButtonSize.LARGE,
-            text = stringResource(id = R.string.title_button_reschedule_pickup),
             isEnabled = state.valid
-        ) {
-            onEvent(ReschedulePickupUiEvent.SaveReschedule)
-        }
+        )
     }
 }
 

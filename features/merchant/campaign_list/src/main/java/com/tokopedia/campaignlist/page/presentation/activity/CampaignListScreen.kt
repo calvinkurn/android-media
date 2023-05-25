@@ -3,11 +3,7 @@ package com.tokopedia.campaignlist.page.presentation.activity
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -166,7 +162,6 @@ private fun Filter(
     onClearFilter: () -> Unit,
     shouldShowClearFilterIcon: Boolean
 ) {
-
     val campaignStatus = SortFilter(
         title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.cl_campaign_list_label_status) else selectedCampaignStatus,
         isSelected = selectedCampaignStatus.isNotEmpty(),
@@ -222,8 +217,8 @@ fun CampaignItem(
     ) {
         Column {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-
-                val (ribbon,
+                val (
+                    ribbon,
                     statusImage,
                     campaignType,
                     campaignStatus,
@@ -318,7 +313,6 @@ fun CampaignItem(
                     textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
                 )
 
-
                 NestTypography(
                     text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
                     modifier = Modifier.constrainAs(campaignStartTime) {
@@ -359,16 +353,14 @@ fun CampaignItem(
                 )
             }
             NestButton(
+                text = stringResource(id = R.string.cl_action_share),
+                onClick = { onTapShareButton(campaign) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
-                size = ButtonSize.SMALL,
-                text = stringResource(id = R.string.cl_action_share),
-                onClick = { onTapShareButton(campaign) },
+                size = ButtonSize.SMALL
             )
         }
-
-
     }
 }
 
@@ -415,7 +407,6 @@ private fun CampaignListPreview() {
         endTime = "22:00 WIB"
     )
 
-
     val state = CampaignListViewModel.UiState(
         campaigns = listOf(campaign),
         campaignStatus = emptyList(),
@@ -455,7 +446,6 @@ private fun CampaignListFilterSelectedPreview() {
         endDate = "18/01/2020",
         endTime = "22:00 WIB"
     )
-
 
     val state = CampaignListViewModel.UiState(
         campaigns = listOf(campaign),
