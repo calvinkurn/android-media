@@ -78,26 +78,27 @@
         app:layout_goneMarginTop="0dp"
         tools:visibility="visible">
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/extra_text_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/extra_text_amount_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:visibility="gone"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
                 tools:text="Amount"
                 tools:visibility="visible" />
@@ -106,22 +107,24 @@
                 android:id="@+id/extra_text_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/extra_text_one"
-                android:layout_alignParentStart="true"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
+                app:layout_goneMarginTop="0dp"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/extra_text_one"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/extra_text_amount_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/extra_text_amount_one"
-                android:layout_alignParentEnd="true"
                 android:layout_marginTop="8dp"
-                android:visibility="gone"
+                app:layout_goneMarginTop="0dp"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/extra_text_amount_one"
                 app:typographyType="body_3" />
-        </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify2>
 
     <com.tokopedia.unifycomponents.DividerUnify
