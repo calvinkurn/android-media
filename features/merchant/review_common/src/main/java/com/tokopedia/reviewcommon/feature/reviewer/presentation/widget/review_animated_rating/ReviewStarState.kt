@@ -19,7 +19,7 @@ sealed interface ReviewStarState {
         override val onClick: () -> Unit
     ) : ReviewStarState {
         companion object {
-            val COLOR_RES_ID = com.tokopedia.unifyprinciples.R.color.Unify_NN200
+            val COLOR_RES_ID = com.tokopedia.unifyprinciples.R.color.Unify_NN500
         }
     }
 
@@ -34,7 +34,7 @@ sealed interface ReviewStarState {
         }
     }
 
-    data class AnimatedState<T: Any>(
+    data class AnimatedState<T : Any>(
         val delay: Int,
         val value: T
     )
