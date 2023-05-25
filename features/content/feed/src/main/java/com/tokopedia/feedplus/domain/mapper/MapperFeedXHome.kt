@@ -16,11 +16,13 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
 import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
  */
-class MapperFeedHome @Inject constructor(
+class MapperFeedXHome @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
     fun transform(data: FeedXHomeEntity): FeedModel =
@@ -95,21 +97,13 @@ class MapperFeedHome @Inject constructor(
                 imageUrl = medias.firstOrNull()?.mediaUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            menuItems = getMenuItems(card),
+            menuItems = getMenuItems(author, card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
             topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
-    }
-
-    private fun isReportable(card: FeedXCard): Boolean {
-        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
-            return card.author.id != userSession.shopId
-        } else {
-            card.reportable
-        }
     }
 
     private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel {
@@ -163,7 +157,7 @@ class MapperFeedHome @Inject constructor(
                 imageUrl = medias.firstOrNull()?.coverUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            menuItems = getMenuItems(card),
+            menuItems = getMenuItems(author, card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             playChannelId = card.playChannelId
@@ -335,7 +329,15 @@ class MapperFeedHome @Inject constructor(
         value = score.value
     )
 
-    private fun getMenuItems(card: FeedXCard): List<FeedMenuItem> {
+    private fun isReportable(card: FeedXCard): Boolean {
+        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
+            return card.author.id != userSession.shopId
+        } else {
+            card.reportable
+        }
+    }
+
+    private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<FeedMenuItem> {
         val contentData = FeedContentData(
             card.text,
             card.id,
@@ -350,7 +352,7 @@ class MapperFeedHome @Inject constructor(
                     contentData = contentData
                 )
             )
-            if (card.reportable) {
+            if (isReportable(card)) {
                 add(
                     FeedMenuItem(
                         iconUnify = IconUnify.WARNING,
