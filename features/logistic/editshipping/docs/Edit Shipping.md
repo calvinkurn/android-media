@@ -6,15 +6,15 @@ labels:
 ---
 
 <!--left header table-->
-| **Project Lead** | [Angga Prasetiyo](https://tokopedia.atlassian.net/wiki/people/5c90710f9701df2d3a08e7c1?ref=confluence)  |
-| --- | --- |
-| Product Manager | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)  |
-| Team | Minion Bob |
-| Status | <!--start status:GREEN-->RELEASE<!--end status--> |
-| Release date | - |
-| Module type | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| Product PRD | - |
-| Gradle module name | `features.editshipping` | `features/logistic/editshipping` | `com.tokopedia.editshipping` |
+| **Project Lead** | [Angga Prasetiyo](https://tokopedia.atlassian.net/wiki/people/5c90710f9701df2d3a08e7c1?ref=confluence) |
+|------------------|--------------------------------------------------------------------------------------------------------|
+| Product Manager  | [Aditya Rifaldi](https://tokopedia.atlassian.net/wiki/people/603c7cf8333ff40070ba5f3c?ref=confluence)  |
+| Team             | Minion Bob                                                                                             |
+| Status           | <!--start status:GREEN-->RELEASE<!--end status-->                                                      |
+| Release date     | -                                                                                                      |
+| Module type      | <!--start status:YELLOW-->FEATURE<!--end status-->                                                     |
+| Product PRD      | -                                                                                                      |
+| Module Location  | `features/logistic/editshipping`                                                                       |
 
 ## Background
 
