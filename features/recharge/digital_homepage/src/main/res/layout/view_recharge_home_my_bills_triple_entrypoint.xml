@@ -73,6 +73,7 @@
             app:layout_constraintGuide_percent="0.5" />
 
         <com.tokopedia.unifycomponents.DividerUnify
+            android:background="@color/divider_triple_entry_point"
             android:id="@+id/divider_middle"
             android:layout_width="0.8dp"
             android:layout_height="54dp"
@@ -81,6 +82,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.DividerUnify
+            android:background="@color/divider_triple_entry_point"
             android:id="@+id/divider_main"
             android:layout_width="match_parent"
             android:layout_height="0.8dp"
