@@ -17,18 +17,21 @@ import com.tokopedia.recharge_component.presentation.adapter.DenomFullAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
 
-class MCCMVerticalFullWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
-                                                       defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
-        private val widgetRechargeMCCMVerticalFullWidget = WidgetRechargeMccmVerticalFullBinding.inflate(
-            LayoutInflater.from(context), this, true)
+class MCCMVerticalFullWidget @JvmOverloads constructor(
+    @NotNull context: Context, attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : BaseCustomView(context, attrs, defStyleAttr) {
+    private val widgetRechargeMCCMVerticalFullWidget =
+        WidgetRechargeMccmVerticalFullBinding.inflate(
+            LayoutInflater.from(context), this, true
+        )
     private val adapterDenomFull = DenomFullAdapter()
 
     fun renderMCCMVertical(
         denomFullListener: RechargeDenomFullListener,
         denomData: DenomWidgetModel,
         selectedProductIndex: Int? = null
-    ){
+    ) {
         with(widgetRechargeMCCMVerticalFullWidget) {
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 tgMccmVerticalFullTitle.text = denomData.mainTitle
@@ -44,7 +47,7 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(@NotNull context: Context
         }
     }
 
-    fun clearSelectedProductMCCMVertical(position: Int){
+    fun clearSelectedProductMCCMVertical(position: Int) {
         adapterDenomFull.run {
             selectedProductIndex = null
             notifyItemChanged(position)
@@ -58,10 +61,10 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(@NotNull context: Context
         denomType: DenomWidgetEnum,
         selectedProduct: Int? = null
     ) {
-        with(widgetRechargeMCCMVerticalFullWidget){
+        with(widgetRechargeMCCMVerticalFullWidget) {
             rvMccmVerticalFull.run {
                 show()
-                with(adapterDenomFull){
+                with(adapterDenomFull) {
                     clearDenomFullData()
                     setDenomFullList(listDenomFull)
                     listener = denomFullListener
@@ -69,31 +72,24 @@ class MCCMVerticalFullWidget @JvmOverloads constructor(@NotNull context: Context
                     selectedProductIndex = selectedProduct
                     denomWidgetType = denomType
                     adapter = adapterDenomFull
-                    layoutManager = LinearLayoutManager(context, androidx.recyclerview.widget.RecyclerView.VERTICAL, false)
+                    layoutManager = LinearLayoutManager(
+                        context,
+                        androidx.recyclerview.widget.RecyclerView.VERTICAL,
+                        false
+                    )
                 }
             }
         }
     }
 
     private fun renderUpdateSeeMore(listDenomFull: List<DenomData>) {
-        var showLess = true
-        with(widgetRechargeMCCMVerticalFullWidget){
+        with(widgetRechargeMCCMVerticalFullWidget) {
             if (listDenomFull.size > MIN_LIST) {
                 tgMccmSeeMore.show()
                 tgMccmSeeMore.setOnClickListener {
-                    if (showLess) {
-                        tgMccmSeeMore.text =
-                            context.resources.getString(com.tokopedia.recharge_component.R.string.mccm_show_less)
-                        ivMccmSeeMoreArrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_normal_24)
-                        showLess = false
-                        adapterDenomFull.setDenomFullList(listDenomFull)
-                    } else {
-                        tgMccmSeeMore.text =
-                            context.resources.getString(com.tokopedia.recharge_component.R.string.mccm_show_more)
-                        ivMccmSeeMoreArrow.setImageResource(com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_normal_24)
-                        showLess = true
-                        adapterDenomFull.setDenomFullList(listDenomFull.subList(Int.ZERO, MIN_LIST))
-                    }
+                    tgMccmSeeMore.hide()
+                    ivMccmSeeMoreArrow.hide()
+                    adapterDenomFull.setDenomFullList(listDenomFull)
                 }
             } else {
                 tgMccmSeeMore.hide()
