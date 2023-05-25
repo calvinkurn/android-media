@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 
 /**
@@ -41,4 +42,33 @@ fun Map<String, Any>.forEachIndexed(callback: (idx: Int, entry: Map.Entry<String
     forEach {
         callback(counter++, it)
     }
+}
+
+inline fun View.doOnLayout(crossinline action: (view: View) -> Unit) {
+    if (ViewCompat.isLaidOut(this) && !isLayoutRequested) {
+        action(this)
+    } else {
+        doOnNextLayout {
+            action(it)
+        }
+    }
+}
+
+inline fun View.doOnNextLayout(crossinline action: (view: View) -> Unit) {
+    addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+        override fun onLayoutChange(
+            view: View,
+            left: Int,
+            top: Int,
+            right: Int,
+            bottom: Int,
+            oldLeft: Int,
+            oldTop: Int,
+            oldRight: Int,
+            oldBottom: Int
+        ) {
+            view.removeOnLayoutChangeListener(this)
+            action(view)
+        }
+    })
 }

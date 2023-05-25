@@ -65,6 +65,12 @@ interface CatalogDetailListener {
         isFromBottomSheet: Boolean = true
     ) {}
 
+    fun onReviewClicked(
+        position: Int,
+        productUrl: String,
+        isFromBottomSheet: Boolean = true
+    ) {}
+
     fun onCatalogForYouClick(adapterPosition: Int, catalogComparison: CatalogComparisonProductsResponse.CatalogComparisonList.CatalogComparison) {}
 
     fun onCatalogForYouImpressed(model: CatalogForYouModel, adapterPosition: Int) {}
