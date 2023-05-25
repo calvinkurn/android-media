@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactCarouselViewBinding
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.ProductCardCompactCarouselAdapter
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.adapter.differ.ProductCardCompactCarouselDiffer
@@ -99,6 +100,10 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         )
     }
 
+    override fun onProductCardAddToCartBlocked() {
+        listener?.onProductCardAddToCartBlocked()
+    }
+
     override fun onProductCardSeeMoreClickListener(
         seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
     ) {
@@ -159,6 +164,7 @@ class ProductCardCompactCarouselView @JvmOverloads constructor(
         fun onSeeMoreClicked(
             seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 
     interface ProductCardCompactCarouselBasicListener: ProductCardCompactCarouselListener {

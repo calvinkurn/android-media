@@ -42,9 +42,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -199,8 +199,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
-        val SEARCH_MENU_ID = R.id.menu_sah_search
+        private val SEARCH_MENU_ID = R.id.sah_search_action_menu
+        private val NOTIFICATION_MENU_ID = R.id.sah_notification_action_menu
 
         private const val KEY_SELLER_HOME_DATA = "seller_home_data"
         private const val REQ_CODE_MILESTONE_WIDGET = 8043
@@ -268,8 +268,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var sellerHomeListener: Listener? = null
     private var menu: Menu? = null
-    private val notificationDotBadge: NotificationDotBadge? by lazy {
-        NotificationDotBadge(context ?: return@lazy null)
+    private val notificationDotBadge by lazy {
+        NotificationDotBadge()
     }
     private val isNewLazyLoad by lazy {
         Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
@@ -313,8 +313,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         initPltPerformanceMonitoring()
+        setContentBackground()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
         getWidgetLayout()
@@ -402,20 +402,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        menu.clear()
-        inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
+        context?.let {
+            menu.clear()
+            inflater.inflate(R.menu.sah_menu_home_toolbar, menu)
 
-        for (i in Int.ZERO until menu.size()) {
-            menu.getItem(i)?.let { menuItem ->
-                menuItem.actionView?.setOnClickListener {
-                    onOptionsItemSelected(menuItem)
+            for (i in Int.ZERO until menu.size()) {
+                menu.getItem(i)?.let { menuItem ->
+                    menuItem.actionView?.setOnClickListener {
+                        onOptionsItemSelected(menuItem)
+                    }
                 }
             }
-        }
 
-        this.menu = menu
-        showNotificationBadge()
+            this.menu = menu
+            showNotificationBadge()
+        }
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -961,12 +963,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             context?.let {
                 val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
                 if (notifCenterCount > 0) {
-                    notificationDotBadge?.showBadge(menuItem ?: return@let)
+                    notificationDotBadge.showBadge(menuItem ?: return@let)
                 } else {
-                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
+                    notificationDotBadge.removeBadge(menuItem ?: return@let)
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    private fun setContentBackground() {
+        activity?.let {
+            val background = it.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            it.window.decorView.setBackgroundColor(background)
+        }
     }
 
     fun setNotifCenterCounter(count: Int) {
@@ -1143,8 +1152,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
 
-        isNewSellerState = (activity as? SellerHomeActivity)?.isNewSeller == true
-        setViewBackground(isNewSellerState)
+        setViewBackground()
     }
 
     private fun setupEmptyState() {
@@ -1368,8 +1376,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
                 activity?.let {
-                    shopShareHelper.onShareOptionClicked(
-                        it,
+                    shopShareHelper.onShareOptionClicked(it,
                         view,
                         shareDataModel,
                         callback = { shareModel, _ ->
@@ -1472,19 +1479,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         when (personaStatus) {
             STATUS_PERSONA_NOT_ROLLED_OUT -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId,
+                    userId = userSession.userId,
                     shouldVisible = false
                 )
             }
             STATUS_PERSONA_INACTIVE, STATUS_PERSONA_ACTIVE -> {
                 showPersonaBottomSheet(personaStatus)
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId, shouldVisible = true
+                    userId = userSession.userId,
+                    shouldVisible = true
                 )
             }
             STATUS_PERSONA_SHOW_POPUP -> {
                 sharedPref.setPersonaEntryPointVisibility(
-                    userSession.userId,
+                    userId = userSession.userId,
                     shouldVisible = true
                 )
             }
@@ -1520,11 +1528,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 val message = context.getString(R.string.sah_activate_persona_entry_point_info)
                 val cta = context.getString(R.string.saldo_btn_oke)
                 Toaster.build(
-                    rootView,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    cta
+                    rootView, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, cta
                 ).show()
             }
         }
@@ -1960,7 +1964,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else {
                 imgSahNewSellerLeft.gone()
                 imgSahNewSellerRight.gone()
-                setViewBackground(isNewSellerState)
+                setViewBackground()
             }
             setSectionWidgetTextColor()
         }
@@ -1992,70 +1996,29 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground(isNewSeller: Boolean) = binding?.run {
+    private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> {
-                if (isNewSeller) {
-                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_official_store)
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_OS_THEMATIC)
-                }
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_official_store)
             }
             isPowerMerchant -> {
-                if (isNewSeller) {
-                    showRegularHomeBackgroundNewSeller(R.drawable.sah_shop_state_bg_power_merchant)
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_PM_THEMATIC)
-                }
+                showRegularHomeBackground(R.drawable.sah_shop_state_bg_power_merchant)
             }
             else -> {
-                if (isNewSeller) {
-                    viewBgShopStatus.gone()
-                } else {
-                    showRegularHomeBackground(SellerHomeConst.Images.SAH_SHOP_STATE_BG_RM_THEMATIC)
-                }
+                viewBgShopStatus.gone()
             }
         }
     }
 
-    private fun showRegularHomeBackground(imageUrl: String) {
+    private fun showRegularHomeBackground(backgroundResource: Int) {
         binding?.run {
-            try {
-                val height =
-                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-                viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.loadImage(imageUrl) {
-                    listener(onSuccess = { _, _ ->
-                        viewBgShopStatus.visible()
-                        setHomeBackgroundRatio()
-                    })
-                }
-            } catch (e: Exception) {
-                viewBgShopStatus.hide()
-            }
-        }
-    }
-
-    private fun setHomeBackgroundRatio() {
-        binding?.run {
-            viewBgShopStatus.layoutParams.height =
-                (viewBgShopStatus.measuredWidth * SellerHomeConst.HOME_BACKGROUND_RATIO).toInt()
+            val height = requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
+            viewBgShopStatus.layoutParams.height = height
+            viewBgShopStatus.visible()
+            viewBgShopStatus.setImageResource(backgroundResource)
             viewBgShopStatus.requestLayout()
-        }
-    }
-
-    private fun showRegularHomeBackgroundNewSeller(imageResourceId: Int) {
-        binding?.run {
-            try {
-                val height =
-                    requireActivity().resources.getDimensionPixelSize(R.dimen.sah_dimen_280dp)
-                viewBgShopStatus.layoutParams.height = height
-                viewBgShopStatus.setImageResource(imageResourceId)
-            } catch (e: Exception) {
-                viewBgShopStatus.hide()
-            }
         }
     }
 

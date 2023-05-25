@@ -105,8 +105,8 @@ class MultiLineGraphViewHolder(
 
     private fun scrollMetricToPosition(position: Int) {
         binding.rvShcGraphMetrics.post {
-            val mPosition = if (position == Int.ZERO
-                || metricsAdapter.itemCount.minus(Int.ONE) == position
+            val mPosition = if (position == Int.ZERO ||
+                metricsAdapter.itemCount.minus(Int.ONE) == position
             ) {
                 position
             } else {
@@ -247,7 +247,6 @@ class MultiLineGraphViewHolder(
                         .toInt()
                 rvShcGraphMetrics.setMargin(dimen12dp, dimen8dp, dimen12dp, Int.ZERO)
             } else {
-
                 val dimen12dp = root.context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
                 val dimen16dp =
                     root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
@@ -294,8 +293,8 @@ class MultiLineGraphViewHolder(
             setTagNotification(element.tag)
             setupTooltip(element)
 
-            horLineShcMultiLineGraphBtm.isVisible = luvShcMultiLineGraph.isVisible
-                || tvShcMultiLineCta.isVisible
+            horLineShcMultiLineGraphBtm.isVisible = luvShcMultiLineGraph.isVisible ||
+                tvShcMultiLineCta.isVisible
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendMultiLineGraphImpressionEvent(element)
             }
@@ -342,8 +341,11 @@ class MultiLineGraphViewHolder(
     private fun getWidgetComponents(): List<View> {
         return with(binding) {
             listOf(
-                rvShcGraphMetrics, lvShcCurrentPeriod, lvShcLastPeriod,
-                chartViewShcMultiLine, tvShcMultiLineCta
+                rvShcGraphMetrics,
+                lvShcCurrentPeriod,
+                lvShcLastPeriod,
+                chartViewShcMultiLine,
+                tvShcMultiLineCta
             )
         }
     }
@@ -406,9 +408,11 @@ class MultiLineGraphViewHolder(
             shcMlgSuccessState.post {
                 metricsAdapter.setRecyclerViewWidth(shcMlgSuccessState.width)
             }
-            rvShcGraphMetrics.layoutManager =
-                LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
-            rvShcGraphMetrics.adapter = metricsAdapter
+
+            if (rvShcGraphMetrics.layoutManager == null) {
+                rvShcGraphMetrics.layoutManager = LinearLayoutManager(root.context, LinearLayoutManager.HORIZONTAL, false)
+                rvShcGraphMetrics.adapter = metricsAdapter
+            }
 
             metricsAdapter.setItems(items)
             rvShcGraphMetrics.post {
@@ -449,7 +453,6 @@ class MultiLineGraphViewHolder(
     }
 
     private fun getLineGraphConfig(lineChartDataSets: List<LineChartData>): LineChartConfigModel {
-
         val lineChartData: LineChartData? = getHighestYAxisValue(lineChartDataSets)
 
         return LineChartConfig.create {
@@ -461,7 +464,7 @@ class MultiLineGraphViewHolder(
             xAxis {
                 val xAxisLabels = lineChartData?.chartEntry?.map { it.xLabel }.orEmpty()
                 gridEnabled { false }
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
@@ -469,7 +472,7 @@ class MultiLineGraphViewHolder(
 
             yAxis {
                 val yAxisLabels = lineChartData?.yAxisLabel.orEmpty()
-                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96) }
+                textColor { itemView.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600) }
                 labelFormatter {
                     ChartYAxisLabelFormatter(yAxisLabels)
                 }
@@ -520,7 +523,7 @@ class MultiLineGraphViewHolder(
             tvShcTooltipHeader.visible()
             tvShcTooltipHeader.text = entry.xLabel
 
-            //show first metric tooltip
+            // show first metric tooltip
             try {
                 selectedMetrics[Int.ZERO].let { metric ->
                     val hexColor = getLineHexColor(metric.summary.lineColor)
@@ -532,7 +535,7 @@ class MultiLineGraphViewHolder(
                 Timber.i(e)
             }
 
-            //show second metric tooltip
+            // show second metric tooltip
             val lineGraphTooltip2 = findViewById<MultiLineGraphTooltipView>(R.id.ttvShcMlgTooltip2)
             try {
                 selectedMetrics.getOrNull(Int.ONE)?.let { metric ->
@@ -562,7 +565,7 @@ class MultiLineGraphViewHolder(
                 lineGraphTooltip1.showDot(Color.parseColor(hexColor))
                 lineGraphTooltip1.setContent(entry.xLabel, entry.yLabel)
 
-                //show current period tooltip
+                // show current period tooltip
                 try {
                     metric.linePeriod.currentPeriod[axisIndex].let {
                         lineGraphTooltip1.showDot(Color.parseColor(hexColor))
@@ -572,7 +575,7 @@ class MultiLineGraphViewHolder(
                     Timber.i(e)
                 }
 
-                //show last period tooltip
+                // show last period tooltip
                 val ttvShcMlgTooltip2 =
                     findViewById<MultiLineGraphTooltipView>(R.id.ttvShcMlgTooltip2)
                 try {
@@ -606,7 +609,7 @@ class MultiLineGraphViewHolder(
     private fun getLineChartData(metrics: List<MultiLineMetricUiModel>): List<LineChartData> {
         val isSingleMetric = metrics.size == Int.ONE
 
-        //map the `current` and `lastPeriod`
+        // map the `current` and `lastPeriod`
         if (isSingleMetric) {
             val metric = metrics[Int.ZERO]
 

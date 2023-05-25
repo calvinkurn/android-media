@@ -22,9 +22,9 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatStateItem
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.view.widget.LongClickMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -40,8 +40,8 @@ import com.tokopedia.utils.time.TimeHelper
  * @author : Steven 2019-08-07
  */
 class ChatItemListViewHolder constructor(
-        itemView: View,
-        var listener: ChatListItemListener
+    itemView: View,
+    var listener: ChatListItemListener
 ) : AbstractViewHolder<ItemChatListPojo>(itemView) {
 
     private val userName: Typography = itemView.findViewById(R.id.user_name)
@@ -203,7 +203,7 @@ class ChatItemListViewHolder constructor(
 
     private fun failChangeChatState(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(itemView.context, throwable)
-        Toaster.showError(itemView, errorMessage, Snackbar.LENGTH_LONG)
+        Toaster.build(itemView, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
@@ -253,6 +253,7 @@ class ChatItemListViewHolder constructor(
             val markAsUnread = getString(R.string.menu_mark_as_unread)
 
             var pinText: String = ""
+
             @DrawableRes val pinDrawable: Int
 
             if (element.isPinned) {
@@ -322,16 +323,16 @@ class ChatItemListViewHolder constructor(
             readSpanColor
         }
         labelSpan.setSpan(
-                ForegroundColorSpan(color),
-                0,
-                labelSpan.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            ForegroundColorSpan(color),
+            0,
+            labelSpan.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         labelSpan.setSpan(
-                StyleSpan(BOLD),
-                0,
-                labelSpan.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            StyleSpan(BOLD),
+            0,
+            labelSpan.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return labelSpan
     }
@@ -340,7 +341,7 @@ class ChatItemListViewHolder constructor(
         when (chatItem.attributes?.readStatus) {
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
-                if(chatItem.totalUnread.toIntOrZero() > 0) {
+                if (chatItem.totalUnread.toIntOrZero() > 0) {
                     unreadCounter.text = chatItem.totalUnread
                     unreadCounter.show()
                 }
@@ -370,11 +371,11 @@ class ChatItemListViewHolder constructor(
         @LayoutRes
         val LAYOUT = R.layout.item_chat_list
 
-        //state of chat
+        // state of chat
         const val STATE_CHAT_UNREAD = 1
         const val STATE_CHAT_READ = 2
 
-        //message payload
+        // message payload
         const val PAYLOAD_READ_STATE = 8796
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
@@ -385,5 +386,4 @@ class ChatItemListViewHolder constructor(
         const val SELLER_TAG = "Penjual"
         const val OFFICIAL_TAG = "Official"
     }
-
 }

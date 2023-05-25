@@ -1,21 +1,24 @@
 package com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.utils.createSuccessResponse
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductRevGetDetailedReviewMediaResponse
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
+import org.junit.Rule
 
 open class SharedReviewMediaGalleryViewModelTestFixture {
-    private val coroutineDispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     protected lateinit var viewModel: SharedReviewMediaGalleryViewModel
+
+    @get:Rule
+    val rule = UnconfinedTestRule()
 
     @RelaxedMockK
     lateinit var getDetailedReviewMediaUseCase: GetDetailedReviewMediaUseCase
@@ -38,7 +41,7 @@ open class SharedReviewMediaGalleryViewModelTestFixture {
     fun setUp() {
         MockKAnnotations.init(this)
         viewModel = SharedReviewMediaGalleryViewModel(
-            coroutineDispatchers, getDetailedReviewMediaUseCase, toggleLikeReviewUseCase, userSession
+            rule.dispatchers, getDetailedReviewMediaUseCase, toggleLikeReviewUseCase, userSession
         )
     }
 }

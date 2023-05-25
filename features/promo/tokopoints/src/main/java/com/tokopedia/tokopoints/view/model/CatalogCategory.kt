@@ -8,7 +8,7 @@ data class CatalogCategory(
     @SerializedName("id")
     var id: Int = 0,
     @SerializedName("parentID")
-    var parentID:Int = 0,
+    var parentID: Int = 0,
     @SerializedName("name")
     var name: String = "",
     @SerializedName("imageID")
@@ -20,11 +20,11 @@ data class CatalogCategory(
     @SerializedName("timeRemainingSeconds")
     var timeRemainingSeconds: Long = 0,
     @SerializedName("isSelected")
-    var isSelected:Boolean = false,
+    var isSelected: Boolean = false,
     @SerializedName("isHideSubCategory")
-    var isHideSubCategory:Boolean = false,
+    var isHideSubCategory: Boolean = false,
     @SerializedName("subCategory")
-    var subCategory: MutableList<CatalogSubCategory> = mutableListOf(),
+    var subCategory: MutableList<CatalogSubCategory> = mutableListOf()
 ) : Parcelable {
 
     override fun describeContents() = 0
@@ -48,7 +48,7 @@ data class CatalogCategory(
         imageUrl = `in`.readString() ?: "",
         timeRemainingSeconds = `in`.readLong(),
         isSelected = `in`.readByte().toInt() != 0,
-        isHideSubCategory = `in`.readByte().toInt() != 0,
+        isHideSubCategory = `in`.readByte().toInt() != 0
     )
 
     @JvmField

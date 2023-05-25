@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.viewmodel
 import android.util.Base64
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
@@ -22,6 +23,7 @@ import com.tokopedia.loginregister.goto_seamless.model.TempKeyResponse
 import com.tokopedia.loginregister.goto_seamless.usecase.GetTemporaryKeyUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.model.LoginOption
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -86,6 +88,7 @@ class LoginEmailPhoneViewModelTest {
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
     private var getTemporaryKeyObserver = mockk<Observer<Boolean>>(relaxed = true)
+    private var getLoginOptionObserver = mockk<Observer<LoginOption>>(relaxed = true)
 
     private var showLocationAdminPopUp = mockk<Observer<Result<Boolean>>>(relaxed = true)
 
@@ -101,6 +104,7 @@ class LoginEmailPhoneViewModelTest {
     private var gotoSeamlessPreference = mockk<GotoSeamlessPreference>(relaxed = true)
 
     private val messageException = MessageErrorException("error bro")
+    private val timeOut: Long = 5000
 
     @Before
     fun setUp() {
@@ -149,6 +153,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.getTemporaryKeyResponse.observeForever(getTemporaryKeyObserver)
         viewModel.navigateToGojekSeamless.observeForever(navigateGojekSeamlessObserver)
         viewModel.adminRedirection.observeForever(adminRedirection)
+        viewModel.getLoginOption.observeForever(getLoginOptionObserver)
     }
 
     private val throwable = Throwable("Error")
@@ -273,7 +278,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email Success`() {
-
         /* When */
         val responseToken = mockk<LoginTokenPojo>(relaxed = true)
 
@@ -289,7 +293,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email V2 Success`() {
-
         /* When */
         val loginToken = LoginToken(accessToken = "abc123")
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
@@ -451,7 +454,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email Failed`() {
-
         /* When */
         every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
             (secondArg() as LoginTokenSubscriber).onErrorLoginToken(throwable)
@@ -482,7 +484,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on go To Activation Page after Login Email`() {
-
         /* When */
         every { loginTokenUseCase.executeLoginEmailWithPassword(any(), any()) } answers {
             (secondArg() as LoginTokenSubscriber).onGoToActivationPage(messageException)
@@ -786,7 +787,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Failed Register Check Fingerprint`() {
-
         every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
             secondArg<(Throwable) -> Unit>().invoke(throwable)
         }
@@ -867,7 +867,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Failed Login Fingerprint`() {
-
         every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
             arg<(Throwable) -> Unit>(3).invoke(throwable)
         }
@@ -930,7 +929,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showLocationAdminPopUp?.invoke()
         }
@@ -945,7 +943,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Admin Redirection`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
         }
@@ -960,7 +957,6 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Show Location Admin Popup Error`() {
-
         every { getProfileUseCase.execute(any()) } answers {
             firstArg<GetProfileSubscriber>().showErrorGetAdminType?.invoke(throwable)
         }
@@ -1032,6 +1028,122 @@ class LoginEmailPhoneViewModelTest {
             tickerInfoUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
+        }
+    }
+
+    @Test
+    fun `check login option enable seamless and biometrics`() {
+        // Given
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = true,
+                    isEnableBiometrics = true,
+                    biometricsData = responseData
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check login option disable seamless and enable biometrics`() {
+        // Given
+        val exception = Exception("error")
+        val responseData = RegisterCheckFingerprintResult(isRegistered = true)
+        val response = RegisterCheckFingerprint(data = responseData)
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
+
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            firstArg<(RegisterCheckFingerprint) -> Unit>().invoke(response)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = false,
+                    isEnableBiometrics = true,
+                    biometricsData = responseData
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check login option enable seamless and disable biometrics`() {
+        // Given
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        val responseData = RegisterCheckFingerprintResult()
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = true,
+                    isEnableBiometrics = false,
+                    biometricsData = responseData
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `check login option disable seamless and disable biometrics`() {
+        // Given
+        val exception = Exception("error")
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws exception
+        val responseData = RegisterCheckFingerprintResult()
+
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+
+        every { registerCheckFingerprintUseCase.checkRegisteredFingerprint(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        // When
+        viewModel.checkLoginOption()
+
+        // Then
+        coVerify(timeout = timeOut) {
+            getLoginOptionObserver.onChanged(
+                LoginOption(
+                    isEnableSeamless = false,
+                    isEnableBiometrics = false,
+                    biometricsData = responseData
+                )
+            )
         }
     }
 }

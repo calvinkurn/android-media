@@ -30,7 +30,7 @@ class ProductSingleVariantViewHolder(
 
     private var containerAdapter: AtcVariantOptionAdapter? = null
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
-    private val emptyVariantData = VariantOptionWithAttribute()
+    private val emptyVariantData = VariantOptionWithAttribute.EMPTY
 
     companion object {
         val LAYOUT = R.layout.item_single_variant_view_holder

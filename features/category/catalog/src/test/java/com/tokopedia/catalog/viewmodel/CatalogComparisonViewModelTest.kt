@@ -14,6 +14,7 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -26,6 +27,9 @@ class CatalogComparisonViewModelTest {
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val repository : CatalogComparisonProductRepository = mockk(relaxed = true)
     private var useCase = spyk(CatalogComparisonProductUseCase(repository))

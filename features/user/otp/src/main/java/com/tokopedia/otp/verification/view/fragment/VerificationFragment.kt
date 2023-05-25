@@ -59,7 +59,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as RUnify
 
-
 /**
  * Created by Ade Fulki on 02/06/20.
  */
@@ -126,9 +125,9 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
         viewModel.isLoginRegisterFlow = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW)
-                ?: false
+            ?: false
         isMoreThanOneMethod = arguments?.getBoolean(OtpConstant.IS_MORE_THAN_ONE_EXTRA, true)
-                ?: true
+            ?: true
         activity?.runOnUiThread {
             handler = Handler()
         }
@@ -158,7 +157,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
                 }
             }
-
         }.start()
     }
 
@@ -195,7 +193,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     open fun sendOtp() {
-        if(!isSameIdentifier()) {
+        if (!isSameIdentifier()) {
             verificationPref.resetByMode(modeListData.modeText)
         }
 
@@ -211,27 +209,27 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 )
             } else if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
-                        otpType = otpData.otpType.toString(),
-                        mode = modeListData.modeText,
-                        msisdn = otpData.msisdn,
-                        email = otpData.email,
-                        otpDigit = modeListData.otpDigit,
-                        validateToken = otpData.accessToken,
-                        userIdEnc = otpData.userIdEnc
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    otpDigit = modeListData.otpDigit,
+                    validateToken = otpData.accessToken,
+                    userIdEnc = otpData.userIdEnc
                 )
             } else {
                 viewModel.sendOtp(
-                        otpType = otpData.otpType.toString(),
-                        mode = modeListData.modeText,
-                        msisdn = otpData.msisdn,
-                        email = otpData.email,
-                        otpDigit = modeListData.otpDigit
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    otpDigit = modeListData.otpDigit
                 )
             }
         } else {
-            if(isSameIdentifier()) {
+            if (isSameIdentifier()) {
                 resumeCountDown()
-            }  else {
+            } else {
                 setFooterText()
             }
         }
@@ -258,48 +256,57 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 email = otpData.email,
                 validateToken = otpData.accessToken
             )
-        } else if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
-                        otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()) &&
-                otpData.userIdEnc.isNotEmpty()) {
+        } else if ((
+            otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
+                otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()
+            ) &&
+            otpData.userIdEnc.isNotEmpty()
+        ) {
             viewModel.otpValidate2FA(
-                    code = code,
-                    otpType = otpData.otpType.toString(),
-                    mode = modeListData.modeText,
-                    userIdEnc = otpData.userIdEnc,
-                    validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero(),
-                    msisdn = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN).orEmpty()
+                code = code,
+                otpType = otpData.otpType.toString(),
+                mode = modeListData.modeText,
+                userIdEnc = otpData.userIdEnc,
+                validateToken = otpData.accessToken,
+                userId = otpData.userId.toIntOrZero(),
+                msisdn = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN).orEmpty()
             )
         } else {
             viewModel.otpValidate(
-                    code = code,
-                    otpType = otpData.otpType.toString(),
-                    msisdn = otpData.msisdn,
-                    email = otpData.email,
-                    mode = modeListData.modeText,
-                    userId = otpData.userId.toIntOrZero(),
-                    fpData = "",
-                    getSL = "",
-                    signature = "",
-                    timeUnix = ""
+                code = code,
+                otpType = otpData.otpType.toString(),
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                mode = modeListData.modeText,
+                userId = otpData.userId.toIntOrZero(),
+                fpData = "",
+                getSL = "",
+                signature = "",
+                timeUnix = ""
             )
         }
     }
 
     private fun initObserver() {
-        viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessSendOtp(it.data)
-                is Fail -> onFailedSendOtp().invoke(it.throwable)
+        viewModel.sendOtpResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> onSuccessSendOtp(it.data)
+                    is Fail -> onFailedSendOtp().invoke(it.throwable)
+                }
             }
-        })
-        viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
-            isOnValidation = false
-            when (it) {
-                is Success -> onSuccessOtpValidate(it.data)
-                is Fail -> onFailedOtpValidate(it.throwable)
+        )
+        viewModel.otpValidateResult.observe(
+            viewLifecycleOwner,
+            Observer {
+                isOnValidation = false
+                when (it) {
+                    is Success -> onSuccessOtpValidate(it.data)
+                    is Fail -> onFailedOtpValidate(it.throwable)
+                }
             }
-        })
+        )
     }
 
     open fun onSuccessSendOtp(otpRequestData: OtpRequestData) {
@@ -376,7 +383,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 // tracker auto submit success
                 verificationPref.userIdentifier = ""
                 viewModel.done = true
-                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
+                analytics.trackAutoSubmitVerification(otpData, modeListData, true)
                 trackSuccess()
                 verificationPref.resetByMode(modeListData.modeText)
                 val bundle = Bundle().apply {
@@ -477,7 +484,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                         setRunningCountdownText(TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished).toInt())
                     }
                 }
-
             }.start()
         }
     }
@@ -558,70 +564,70 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
 
         spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        when (otpData.otpType) {
-                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                                analytics.trackClickResendRegisterPhoneOtpButton()
-                            }
-                            OtpConstant.OtpType.REGISTER_EMAIL -> {
-                                analytics.trackClickResendRegisterEmailOtpButton()
-                            }
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    when (otpData.otpType) {
+                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                            analytics.trackClickResendRegisterPhoneOtpButton()
                         }
-
-                        sendOtp()
-                        viewBound.pin?.value = ""
-                        analytics.trackClickResendOtp(otpData, modeListData)
+                        OtpConstant.OtpType.REGISTER_EMAIL -> {
+                            analytics.trackClickResendRegisterEmailOtpButton()
+                        }
                     }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                start,
-                end,
-                0
+                    sendOtp()
+                    viewBound.pin?.value = ""
+                    analytics.trackClickResendOtp(otpData, modeListData)
+                }
+
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            start,
+            end,
+            0
         )
     }
 
     open fun setOtherMethodFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        analytics.trackClickUseOtherMethod(otpData, modeListData)
-                        (activity as VerificationActivity).goToVerificationMethodPage()
-                    }
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    viewModel.done = true
+                    analytics.trackClickUseOtherMethod(otpData, modeListData)
+                    (activity as VerificationActivity).goToVerificationMethodPage()
+                }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                message.indexOf(getString(R.string.with_other_method)),
-                message.indexOf(getString(R.string.with_other_method)) + getString(R.string.with_other_method).length,
-                0
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            message.indexOf(getString(R.string.with_other_method)),
+            message.indexOf(getString(R.string.with_other_method)) + getString(R.string.with_other_method).length,
+            0
         )
     }
 
     protected fun setOtherMethodPinFooterSpan(message: String, spannable: Spannable) {
         spannable.setSpan(
-                object : ClickableSpan() {
-                    override fun onClick(view: View) {
-                        viewModel.done = true
-                        analytics.trackClickUseOtherMethod(otpData, modeListData)
-                        (activity as VerificationActivity).goToVerificationMethodPage()
-                    }
+            object : ClickableSpan() {
+                override fun onClick(view: View) {
+                    viewModel.done = true
+                    analytics.trackClickUseOtherMethod(otpData, modeListData)
+                    (activity as VerificationActivity).goToVerificationMethodPage()
+                }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
-                        ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-                    }
-                },
-                message.indexOf(getString(R.string.login_with_other_method)),
-                message.indexOf(getString(R.string.login_with_other_method)) + getString(R.string.login_with_other_method).length,
-                0
+                override fun updateDrawState(ds: TextPaint) {
+                    ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
+                    ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+                }
+            },
+            message.indexOf(getString(R.string.login_with_other_method)),
+            message.indexOf(getString(R.string.login_with_other_method)) + getString(R.string.login_with_other_method).length,
+            0
         )
     }
 
