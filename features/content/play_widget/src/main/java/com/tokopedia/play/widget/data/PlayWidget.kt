@@ -50,6 +50,9 @@ data class PlayWidgetItemPartner(
         @SerializedName("ID") val id: String = "",
         @SerializedName("name") val name: String = "",
         @SerializedName("type") val type: String = "",
+        @SerializedName("thumbnailURL") val thumbnailUrl: String = "",
+        @SerializedName("badgeURL") val badgeUrl: String = "",
+        @SerializedName("appLink") val appLink: String = "",
 )
 
 data class PlayWidgetItemStat(
@@ -103,6 +106,7 @@ data class PlayWidgetItemProduct(
     @SerializedName("id") val id: String = "",
     @SerializedName("name") val name: String = "",
     @SerializedName("image_url") val imageUrl: String = "",
+    @SerializedName("price") val price: String = "",
     @SerializedName("price_fmt") val priceFmt: String = "",
     @SerializedName("app_link") val appLink: String = "",
 )

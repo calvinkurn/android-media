@@ -31,23 +31,37 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     listener.onMuteButtonClicked(view, item, shouldMute, absoluteAdapterPosition)
                 }
 
+                override fun onProductImpressed(
+                    view: PlayWidgetCardCarouselChannelView,
+                    item: PlayWidgetChannelUiModel,
+                    product: PlayWidgetProduct,
+                    position: Int
+                ) {
+                    listener.onProductImpressed(view, item, product, position, absoluteAdapterPosition)
+                }
+
                 override fun onProductClicked(
                     view: PlayWidgetCardCarouselChannelView,
-                    product: PlayWidgetProduct
+                    item: PlayWidgetChannelUiModel,
+                    product: PlayWidgetProduct,
+                    position: Int,
                 ) {
-                    listener.onProductClicked(view, product, absoluteAdapterPosition)
+                    listener.onProductClicked(view, item, product, position, absoluteAdapterPosition)
                 }
 
                 override fun onPartnerClicked(
                     view: PlayWidgetCardCarouselChannelView,
-                    partner: PlayWidgetPartnerUiModel
+                    item: PlayWidgetChannelUiModel,
                 ) {
-                    listener.onPartnerClicked(view, partner, absoluteAdapterPosition)
+                    listener.onPartnerClicked(view, item, absoluteAdapterPosition)
                 }
             })
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model) {
+            itemView.setOnClickListener {
+                listener.onChannelClicked(channelView, data.channel, absoluteAdapterPosition)
+            }
             itemView.addOnImpressionListener(data.channel.impressHolder) {
                 listener.onChannelImpressed(channelView, data.channel, absoluteAdapterPosition)
             }
@@ -94,6 +108,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 position: Int
             )
 
+            fun onChannelClicked(
+                view: PlayWidgetCardCarouselChannelView,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
             fun onMuteButtonClicked(
                 view: PlayWidgetCardCarouselChannelView,
                 item: PlayWidgetChannelUiModel,
@@ -101,15 +121,25 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 position: Int,
             )
 
+            fun onProductImpressed(
+                view: PlayWidgetCardCarouselChannelView,
+                item: PlayWidgetChannelUiModel,
+                product: PlayWidgetProduct,
+                productPosition: Int,
+                position: Int,
+            )
+
             fun onProductClicked(
                 view: PlayWidgetCardCarouselChannelView,
+                item: PlayWidgetChannelUiModel,
                 product: PlayWidgetProduct,
+                productPosition: Int,
                 position: Int,
             )
 
             fun onPartnerClicked(
                 view: PlayWidgetCardCarouselChannelView,
-                partner: PlayWidgetPartnerUiModel,
+                item: PlayWidgetChannelUiModel,
                 position: Int,
             )
         }
@@ -137,14 +167,17 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
                 override fun onPartnerClicked(
                     view: PlayWidgetCardCarouselUpcomingView,
-                    partner: PlayWidgetPartnerUiModel
+                    item: PlayWidgetChannelUiModel,
                 ) {
-                    listener.onPartnerClicked(view, partner, absoluteAdapterPosition)
+                    listener.onPartnerClicked(view, item, absoluteAdapterPosition)
                 }
             })
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model) {
+            itemView.setOnClickListener {
+                listener.onChannelClicked(upcomingView, data.channel, absoluteAdapterPosition)
+            }
             itemView.addOnImpressionListener(data.channel.impressHolder) {
                 listener.onChannelImpressed(upcomingView, data.channel, absoluteAdapterPosition)
             }
@@ -186,6 +219,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 position: Int
             )
 
+            fun onChannelClicked(
+                view: PlayWidgetCardCarouselUpcomingView,
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
             fun onReminderClicked(
                 view: PlayWidgetCardCarouselUpcomingView,
                 item: PlayWidgetChannelUiModel,
@@ -195,7 +234,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
             fun onPartnerClicked(
                 view: PlayWidgetCardCarouselUpcomingView,
-                partner: PlayWidgetPartnerUiModel,
+                item: PlayWidgetChannelUiModel,
                 position: Int,
             )
         }

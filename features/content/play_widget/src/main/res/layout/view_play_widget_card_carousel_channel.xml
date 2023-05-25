@@ -9,10 +9,6 @@
     app:rcl_cornerRadius="12dp"
     >
 
-<!--    234dp-->
-<!--    416dp-->
-
-
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/img_cover"
         android:layout_width="0dp"

@@ -92,5 +92,9 @@ data class PlayWidgetProduct(
     val name: String,
     val imageUrl: String,
     val appLink: String,
+    val price: String,
     val priceFmt: String,
-)
+) : ImpressionableModel {
+
+    override val impressHolder: ImpressHolder = ImpressHolder()
+}

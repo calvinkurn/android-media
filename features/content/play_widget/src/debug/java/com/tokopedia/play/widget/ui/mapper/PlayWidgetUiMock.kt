@@ -103,6 +103,7 @@ object PlayWidgetUiMock {
                imageUrl = "https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_960,f_auto/DCTM_Penguin_UK_DK_AL526630_wkmzns.jpg",
                appLink = "",
                priceFmt = "Rp${it + 1}00.000,00",
+               price = "${(it+1)}00000",
            )
         },
     )

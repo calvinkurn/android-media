@@ -122,6 +122,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.stopAutoRefreshJob
 import com.tokopedia.home.beranda.presentation.view.listener.BannerComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CampaignWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryNavigationCallback
 import com.tokopedia.home.beranda.presentation.view.listener.CategoryWidgetV2Callback
 import com.tokopedia.home.beranda.presentation.view.listener.ChooseAddressWidgetCallback
@@ -1480,7 +1481,8 @@ open class HomeRevampFragment :
             CategoryWidgetV2Callback(context, this),
             MissionWidgetComponentCallback(this, getHomeViewModel()),
             LegoProductCallback(this),
-            TodoWidgetComponentCallback(this, getHomeViewModel())
+            TodoWidgetComponentCallback(this, getHomeViewModel()),
+            CarouselPlayWidgetCallback(getTrackingQueueObj()!!, userSession),
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
             .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())

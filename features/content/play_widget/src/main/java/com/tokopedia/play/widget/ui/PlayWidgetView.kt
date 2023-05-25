@@ -191,6 +191,7 @@ class PlayWidgetView : LinearLayout, LifecycleObserver, IPlayWidgetView {
             widgetView.setData(model)
             widgetView.setWidgetListener(mWidgetListener)
             widgetView.setWidgetInternalListener(mWidgetInternalListener)
+            widgetView.setAnalyticListener(mAnalyticListener)
         }
     }
 

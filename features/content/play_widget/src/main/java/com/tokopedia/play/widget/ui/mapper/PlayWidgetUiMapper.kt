@@ -166,9 +166,9 @@ class PlayWidgetUiMapper @Inject constructor(
         id = partner.id,
         name = htmlTextTransformer.transform(partner.name),
         type = PartnerType.getTypeByValue(partner.type),
-        avatarUrl = "",
-        badgeUrl = "",
-        appLink = "",
+        avatarUrl = partner.thumbnailUrl,
+        badgeUrl = partner.badgeUrl,
+        appLink = partner.appLink,
     )
 
     private fun mapProducts(products: List<PlayWidgetItemProduct>) = products.map {
@@ -178,6 +178,7 @@ class PlayWidgetUiMapper @Inject constructor(
             imageUrl = it.imageUrl,
             appLink = it.appLink,
             priceFmt = it.priceFmt,
+            price = it.price,
         )
     }
 

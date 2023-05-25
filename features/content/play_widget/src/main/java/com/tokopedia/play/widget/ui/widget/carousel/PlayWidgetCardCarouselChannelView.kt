@@ -59,11 +59,32 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     private val adapter = PlayWidgetCarouselProductAdapter(
         object : PlayWidgetCarouselProductAdapter.ViewHolder.Listener {
-            override fun onClicked(
+            override fun onImpressed(
                 viewHolder: PlayWidgetCarouselProductAdapter.ViewHolder,
                 product: PlayWidgetProduct
             ) {
-                mListener?.onProductClicked(this@PlayWidgetCardCarouselChannelView, product)
+                if (!::mModel.isInitialized) return
+
+                mListener?.onProductImpressed(
+                    this@PlayWidgetCardCarouselChannelView,
+                    mModel,
+                    product,
+                    viewHolder.absoluteAdapterPosition,
+                )
+            }
+
+            override fun onClicked(
+                viewHolder: PlayWidgetCarouselProductAdapter.ViewHolder,
+                product: PlayWidgetProduct,
+            ) {
+                if (!::mModel.isInitialized) return
+
+                mListener?.onProductClicked(
+                    this@PlayWidgetCardCarouselChannelView,
+                    mModel,
+                    product,
+                    viewHolder.absoluteAdapterPosition,
+                )
             }
         }
     )
@@ -133,7 +154,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             binding.viewPlayWidgetPartnerInfo.imgBadge.show()
         }
         binding.viewPlayWidgetPartnerInfo.root.setOnClickListener {
-            mListener?.onPartnerClicked(this, model.partner)
+            mListener?.onPartnerClicked(this, model)
         }
 
 
@@ -289,14 +310,23 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             shouldMute: Boolean,
         )
 
+        fun onProductImpressed(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
+            product: PlayWidgetProduct,
+            position: Int,
+        )
+
         fun onProductClicked(
             view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
             product: PlayWidgetProduct,
+            position: Int,
         )
 
         fun onPartnerClicked(
             view: PlayWidgetCardCarouselChannelView,
-            partner: PlayWidgetPartnerUiModel,
+            item: PlayWidgetChannelUiModel,
         )
     }
 }

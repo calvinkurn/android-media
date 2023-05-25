@@ -27,10 +27,10 @@ internal const val VAL_BUSINESS_UNIT = "play"
 internal val VAL_CURRENT_SITE =
     if (GlobalConfig.isSellerApp()) "tokopediaseller" else "tokopediamarketplace"
 
-internal val irisSessionId: String
+val irisSessionId: String
     get() = TrackApp.getInstance().gtm.irisSessionId
 
-internal fun PlayWidgetChannelType.toTrackingType() = when (this) {
+fun PlayWidgetChannelType.toTrackingType() = when (this) {
     PlayWidgetChannelType.Live -> "live"
     PlayWidgetChannelType.Vod -> "vod"
     PlayWidgetChannelType.Upcoming -> "upcoming"
@@ -48,6 +48,6 @@ internal val PlayWidgetPromoType.isRilisanSpesial: Boolean
         else -> false
     }
 
-internal fun trackerMultiFields(vararg fields: Any?): String {
+fun trackerMultiFields(vararg fields: Any?): String {
     return fields.joinToString(separator = " - ")
 }

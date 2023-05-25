@@ -6,17 +6,18 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.play.widget.analytic.carousel.PlayWidgetCarouselAnalyticListener
 import com.tokopedia.play.widget.databinding.LayoutPlayWidgetCarouselBinding
 import com.tokopedia.play.widget.ui.IPlayWidgetView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetRouterListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.WidgetInList
 import com.tokopedia.play.widget.ui.model.ext.setMute
+import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselChannelView
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCardCarouselUpcomingView
 import com.tokopedia.play.widget.ui.widget.carousel.PlayWidgetCarouselAdapter
@@ -54,7 +55,25 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
+            mAnalyticListener?.onImpressChannelCard(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
+        }
 
+        override fun onChannelClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            mAnalyticListener?.onClickChannelCard(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
         }
 
         override fun onMuteButtonClicked(
@@ -63,15 +82,50 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             shouldMute: Boolean,
             position: Int
         ) {
+            mAnalyticListener?.onClickToggleMuteButton(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
+
             mIsMuted = shouldMute
             updateChannels()
         }
 
-        override fun onProductClicked(
+        override fun onProductImpressed(
             view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
             product: PlayWidgetProduct,
+            productPosition: Int,
             position: Int
         ) {
+            mAnalyticListener?.onImpressProductCard(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                product,
+                productPosition,
+                position,
+            )
+        }
+
+        override fun onProductClicked(
+            view: PlayWidgetCardCarouselChannelView,
+            item: PlayWidgetChannelUiModel,
+            product: PlayWidgetProduct,
+            productPosition: Int,
+            position: Int
+        ) {
+            mAnalyticListener?.onClickProductCard(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                product,
+                productPosition,
+                position,
+            )
+
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
                 product.appLink,
@@ -80,12 +134,19 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
         override fun onPartnerClicked(
             view: PlayWidgetCardCarouselChannelView,
-            partner: PlayWidgetPartnerUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
+            mAnalyticListener?.onClickPartnerName(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
+
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                partner.appLink,
+                item.partner.appLink,
             )
         }
     }
@@ -96,7 +157,25 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
+            mAnalyticListener?.onImpressChannelCard(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
+        }
 
+        override fun onChannelClicked(
+            view: PlayWidgetCardCarouselUpcomingView,
+            item: PlayWidgetChannelUiModel,
+            position: Int
+        ) {
+            mAnalyticListener?.onImpressChannelCard(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
         }
 
         override fun onReminderClicked(
@@ -105,6 +184,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
+            mAnalyticListener?.onClickToggleReminderChannel(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+                reminderType.reminded,
+            )
+
             mWidgetListener?.onReminderClicked(
                 this@PlayWidgetCarouselView,
                 item.channelId,
@@ -115,12 +202,19 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
         override fun onPartnerClicked(
             view: PlayWidgetCardCarouselUpcomingView,
-            partner: PlayWidgetPartnerUiModel,
+            item: PlayWidgetChannelUiModel,
             position: Int
         ) {
+            mAnalyticListener?.onClickPartnerName(
+                this@PlayWidgetCarouselView,
+                item,
+                mModel.config,
+                position,
+            )
+
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                partner.appLink,
+                item.partner.appLink,
             )
         }
     }
@@ -132,10 +226,11 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
     private val snapHelper = PagerSnapHelper()
 
-    private var mModel: List<PlayWidgetChannelUiModel> = emptyList()
+    private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
-    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
     private var mWidgetListener: Listener? = null
+    private var mWidgetInternalListener: PlayWidgetInternalListener? = null
+    private var mAnalyticListener: PlayWidgetCarouselAnalyticListener? = null
 
     private val itemDecoration = PlayWidgetCarouselItemDecoration(context)
     private val layoutManager = PlayWidgetCarouselLayoutManager(context)
@@ -193,19 +288,21 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
     fun setData(data: PlayWidgetUiModel) {
         val prevModel = mModel
-        mModel = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
+        mModel = data
+
+        val channels = data.items.filterIsInstance<PlayWidgetChannelUiModel>()
 
         val currPosition = this.mSelectedWidgetPos
         val currItem = adapter.currentList.getOrNull(currPosition)
 
         val nextPosition = if (currItem != null) {
             val currChannelId = currItem.channel.channelId
-            val newDataWithFake = getDataWithFake(mModel)
+            val newDataWithFake = getDataWithFake(channels)
             val newIndex = newDataWithFake.indexOfFirst { it.channelId == currChannelId }
 
             when {
                 newIndex != -1 -> newIndex
-                currPosition in FAKE_COUNT_PER_SIDE until mModel.size -> currPosition
+                currPosition in FAKE_COUNT_PER_SIDE until channels.size -> currPosition
                 else -> FAKE_COUNT_PER_SIDE
             }
         } else {
@@ -213,7 +310,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         }
 
         updateChannels(
-            mModel,
+            channels,
             selectedPosition = nextPosition,
             shouldRoughlyScroll = true,
         )
@@ -227,8 +324,12 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this.mWidgetInternalListener = listener
     }
 
+    fun setAnalyticListener(listener: PlayWidgetCarouselAnalyticListener?) {
+        mAnalyticListener = listener
+    }
+
     private fun updateChannels(
-        channels: List<PlayWidgetChannelUiModel> = mModel,
+        channels: List<PlayWidgetChannelUiModel> = mModel.items.filterIsInstance<PlayWidgetChannelUiModel>(),
         selectedPosition: Int = mSelectedWidgetPos,
         shouldRoughlyScroll: Boolean = false,
     ) {

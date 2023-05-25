@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.databinding.ItemPlayWidgetCarouselProductBinding
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 
@@ -45,6 +46,10 @@ class PlayWidgetCarouselProductAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: PlayWidgetProduct) {
+            itemView.addOnImpressionListener(item.impressHolder) {
+                listener.onImpressed(this, item)
+            }
+
             binding.imgProduct.setImageUrl(item.imageUrl)
             binding.tvProductName.text = item.name
             binding.tvProductPrice.text = item.priceFmt
@@ -68,6 +73,8 @@ class PlayWidgetCarouselProductAdapter(
         }
 
         interface Listener {
+            fun onImpressed(viewHolder: ViewHolder, product: PlayWidgetProduct)
+
             fun onClicked(viewHolder: ViewHolder, product: PlayWidgetProduct)
         }
     }

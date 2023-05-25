@@ -79,6 +79,9 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                       ID
                       name
                       type
+                      thumbnailURL
+                      badgeURL
+                      appLink
                     }
                     video {
                       ID
@@ -102,6 +105,14 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                       is_show_button
                     }
                     performanceSummaryPageLink
+                    pinnedProducts {
+                      id
+                      name
+                      image_url
+                      price
+                      price_fmt
+                      app_link
+                    }
                   }
                   __typename ... on PlayWidgetBanner {
                     backgroundURL

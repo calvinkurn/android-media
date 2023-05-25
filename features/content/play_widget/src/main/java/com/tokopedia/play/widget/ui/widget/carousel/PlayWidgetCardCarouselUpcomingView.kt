@@ -73,7 +73,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
             binding.viewPlayWidgetPartnerInfo.imgBadge.show()
         }
         binding.viewPlayWidgetPartnerInfo.root.setOnClickListener {
-            mListener?.onPartnerClicked(this, model.partner)
+            mListener?.onPartnerClicked(this, model)
         }
 
         setReminded(model.reminderType.reminded)
@@ -134,7 +134,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
 
         fun onPartnerClicked(
             view: PlayWidgetCardCarouselUpcomingView,
-            partner: PlayWidgetPartnerUiModel,
+            item: PlayWidgetChannelUiModel,
         )
     }
 }
