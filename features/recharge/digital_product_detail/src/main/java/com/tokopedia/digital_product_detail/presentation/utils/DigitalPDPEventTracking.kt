@@ -31,6 +31,7 @@ object DigitalPDPEventTracking {
 
         const val CATEGORY_ID = "category_id"
         const val DIMENSION45 = "dimension45"
+        const val DIMENSION40 = "dimension40"
         const val QUANTITY = "quantity"
         const val SHOP_ID = "shop_id"
         const val SHOP_NAME = "shop_name"
@@ -77,7 +78,7 @@ object DigitalPDPEventTracking {
         const val IMPRESSION_OMNI_CHANNEL_WIDGET = "impression omni channel widget"
         const val CLICK_FILTER_CHIP = "click filter chip"
         const val CLICK_CHEVRON_IN_PRODUCT_CLUSTER = "click chevron in product cluster"
-        const val CLICK_CHEVRON_IN_PROMO_SECTION = "click chevron in promo section"
+        const val CLICK_CHEVRON_IN_PROMO_CARD = "click chevron in promo card"
         const val CLICK_TRANSACTION_HISTORY_ICON = "click transaction history icon"
         const val CLICK_SCAN_BARCODE = "click scan barcode"
         const val CLICK_TRANSACTION_DETAIL_INFO = "click transaction detail info"
@@ -90,5 +91,6 @@ object DigitalPDPEventTracking {
     object TrackerId {
         const val CLICK_OMNI_CHANNEL_WIDGET = "42519"
         const val IMPRESSION_OMNI_CHANNEL_WIDGET = "42730"
+        const val CLICK_CHEVRON_PROMOTION = "43960"
     }
 }

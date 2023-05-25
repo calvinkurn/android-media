@@ -219,7 +219,7 @@ class DenomFullViewHolder(
 
                 setOnClickListener {
                     if (denomFull.status != DenomConst.DENOM_STATUS_OUT_OF_STOCK) {
-                        denomFullListener.onChevronDenomClicked(denomFull, position, denomType)
+                        denomFullListener.onChevronDenomClicked(denomFull, position, denomType, "")
                         if (!isSelectedItem) {
                             denomFullListener.onDenomFullClicked(denomFull, denomType, position, "", true)
                         }
@@ -255,7 +255,7 @@ class DenomFullViewHolder(
             }
 
             root.addOnImpressionListener(denomFull) {
-                denomFullListener.onDenomFullImpression(denomFull, denomType, position)
+                denomFullListener.onDenomFullImpression(denomFull, denomType, position, "")
             }
         }
     }

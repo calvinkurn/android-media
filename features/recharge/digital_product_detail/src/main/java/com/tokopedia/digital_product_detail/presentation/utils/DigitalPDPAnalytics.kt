@@ -15,6 +15,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.CATEGORY_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.CREATIVE_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.CREATIVE_SLOT
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.DIMENSION40
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.DIMENSION45
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.EMPTY_DISCOUNT_PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.FLASH_SALE
@@ -41,6 +42,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CHEVRON_PROMOTION
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
@@ -413,7 +415,8 @@ class DigitalPDPAnalytics {
     ) {
         val isMCCMorFlashSale =
             if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
             ) {
                 MCCM
             } else {
@@ -488,19 +491,23 @@ class DigitalPDPAnalytics {
         operatorName: String,
         loyaltyStatus: String,
         userId: String,
-        denomType: DenomWidgetEnum
+        productListName: String,
+        denomData: DenomData,
+        position: Int,
     ) {
-        val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_FULL_TYPE) MCCM else FLASH_SALE
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_CARD)
+            putString(ITEM_LIST, productListName)
+            putString(TrackAppUtils.EVENT_LABEL,  "${categoryName} - ${operatorName} - $loyaltyStatus")
+            putString(TRACKER_ID, CLICK_CHEVRON_PROMOTION)
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, MCCM, categoryName, productListName)
+            )
+        }
 
-        val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION,
-            DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_SECTION,
-            TrackAppUtils.EVENT_LABEL,
-            "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
-        )
-        data.clickDigitalItemList(userId)
-        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
     fun clickTransactionHistoryIcon(
@@ -738,7 +745,8 @@ class DigitalPDPAnalytics {
         operatorName: String,
         position: Int,
         isMCCMorFlashSale: String,
-        categoryName: String
+        categoryName: String,
+        productListName: String = ""
     ): ArrayList<Bundle> {
         val listItems = ArrayList<Bundle>()
         denomData.run {
@@ -754,6 +762,9 @@ class DigitalPDPAnalytics {
                     putString(ITEM_NAME, denomData.title)
                     putString(ITEM_VARIANT, isMCCMorFlashSale)
                     putString(PRICE, denomData.price)
+                    if (productListName.isNotEmpty()) {
+                        putString(DIMENSION40, productListName)
+                    }
                 }
             )
         }

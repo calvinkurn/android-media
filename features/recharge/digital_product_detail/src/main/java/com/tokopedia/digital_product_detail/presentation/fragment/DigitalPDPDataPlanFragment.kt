@@ -491,7 +491,7 @@ class DigitalPDPDataPlanFragment :
                     if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
-                        categoryId.toString(),
+                        atcData.data.categoryId,
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
                         userSession.userId,
@@ -1599,7 +1599,8 @@ class DigitalPDPDataPlanFragment :
     override fun onDenomFullImpression(
         denomFull: DenomData,
         layoutType: DenomWidgetEnum,
-        position: Int
+        position: Int,
+        productListTitle: String
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
@@ -1626,7 +1627,8 @@ class DigitalPDPDataPlanFragment :
     override fun onChevronDenomClicked(
         denomFull: DenomData,
         position: Int,
-        layoutType: DenomWidgetEnum
+        layoutType: DenomWidgetEnum,
+        productListTitle: String
     ) {
         childFragmentManager?.let {
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
@@ -1648,7 +1650,9 @@ class DigitalPDPDataPlanFragment :
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                layoutType
+                productListTitle,
+                denomFull,
+                position
             )
         }
     }
