@@ -87,8 +87,8 @@ class FeedAnalytics @Inject constructor(
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
 
-        const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottom sheet"
-        const val ITEM_LIST_PRODUCT_LABEL = "/unified feed - product list bottomsheet"
+        const val ITEM_LIST_PRODUCT_LIST_BOTTOMSHEET = "/unified feed - product list bottomsheet"
+        const val ITEM_LIST_PRODUCT_LABEL = "/unified feed - product label"
         const val UNIFIED_FEED_CONTENT = "unified-feed-content"
         const val CONTENT_IN_UNIFIED_FEED = "content in unified feed"
         const val CAMPAIGN_POST_IN_UNIFIED_FEED = "campaign post in unified feed"
