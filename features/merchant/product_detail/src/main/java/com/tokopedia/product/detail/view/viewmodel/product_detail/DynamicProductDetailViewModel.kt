@@ -91,6 +91,7 @@ import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAff
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -176,7 +177,6 @@ class DynamicProductDetailViewModel @Inject constructor(
         private const val CODE_300 = 300
         private const val VARIANT_LEVEL_TWO_INDEX = 1
         private const val MAX_VARIANT_LEVEL = 2
-        private const val DEFAULT_ATC_QUANTITY = 1
     }
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -928,7 +928,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                         ?: result.data.message.firstOrNull()
                     onFailedATCRecomTokonow(Throwable(error ?: ""), recomItem)
                 } else {
-                    updateMiniCartAfterATCRecomTokonow(
+                    updateRecomAtcStatusAndMiniCart(
                         result.data.message.first(),
                         false,
                         recomItem
@@ -949,7 +949,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             val param = AddToCartUseCase.getMinimumParams(
                 recomItem.productId.toString(),
                 recomItem.shopId.toString(),
-                quantity.coerceAtLeast(DEFAULT_ATC_QUANTITY)
+                quantity.coerceAtLeast(DEFAULT_QTY_1)
             )
             val result = withContext(dispatcher.io) {
                 addToCartUseCase.get().createObservable(param).toBlocking().single()
@@ -970,7 +970,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     )
                 }
                 recomItem.cartId = result.data.cartId
-                updateMiniCartAfterATCRecomTokonow(result.data.message.first(), true, recomItem)
+                updateRecomAtcStatusAndMiniCart(result.data.message.first(), true, recomItem)
             }
         }) {
             onFailedATCRecomTokonow(it, recomItem)
@@ -1003,7 +1003,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                         recommendationNowAffiliateData,
                         recomItem
                     )
-                    updateMiniCartAfterATCRecomTokonow(result.data.message, false, recomItem)
+                    updateRecomAtcStatusAndMiniCart(result.data.message, false, recomItem)
                 }
             }
         }) {
@@ -1032,7 +1032,7 @@ class DynamicProductDetailViewModel @Inject constructor(
             })
     }
 
-    private fun updateMiniCartAfterATCRecomTokonow(
+    private fun updateRecomAtcStatusAndMiniCart(
         message: String,
         isAtc: Boolean,
         recomItem: RecommendationItem

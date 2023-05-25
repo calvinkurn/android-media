@@ -266,10 +266,12 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.recommendation_widget_common.RecommendationTypeConst
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
+import com.tokopedia.recommendation_widget_common.extension.DEFAULT_QTY_1
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTracking
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.bottomsheet.ViewToViewBottomSheet
 import com.tokopedia.referral.Constants
@@ -668,7 +670,7 @@ open class DynamicProductDetailFragment :
         observeAddToCart()
         observeSingleVariantData()
         observeOnThumbnailVariantSelected()
-        observeATCTokonowData()
+        observeATCRecomData()
         observeATCTokonowResetCard()
         observeATCRecomTokonowNonLogin()
         observeATCRecomSendTracker()
@@ -1669,7 +1671,9 @@ open class DynamicProductDetailFragment :
         adapterPosition: Int,
         itemPosition: Int
     ) {
-        viewModel.atcRecomNonVariant(recomItem, recomItem.minOrder)
+        doActionOrLogin({
+            viewModel.atcRecomNonVariant(recomItem, recomItem.minOrder)
+        })
     }
 
     override fun onRecomAddToCartNonVariantQuantityChangedClick(
@@ -2568,7 +2572,7 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun observeATCTokonowData() {
+    private fun observeATCRecomData() {
         viewLifecycleOwner.observe(viewModel.atcRecom) { data ->
             data.doSuccessOrFail({
                 if (it.data.isNotEmpty()) {
@@ -2587,11 +2591,19 @@ open class DynamicProductDetailFragment :
     private fun observeATCRecomSendTracker() {
         viewLifecycleOwner.observe(viewModel.atcRecomTracker) { data ->
             data.doSuccessOrFail({
-                DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
-                    it.data,
-                    viewModel.userId,
-                    it.data.minOrder
-                )
+                if (viewModel.getDynamicProductInfoP1?.basic?.isTokoNow.orFalse()) {
+                    DynamicProductDetailTracking.Click.eventClickRecomAddToCart(
+                        it.data,
+                        viewModel.userId,
+                        it.data.minOrder
+                    )
+                } else {
+                    RecommendationCarouselTracking.sendEventAtcClick(
+                        it.data,
+                        viewModel.userId,
+                        it.data.minOrder.coerceAtLeast(DEFAULT_QTY_1)
+                    )
+                }
             }, {})
         }
     }
