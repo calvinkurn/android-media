@@ -4,10 +4,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
 import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticaddaddress.common.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
+import com.tokopedia.logisticaddaddress.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.DistrictBoundaryResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_boundary.Geometry
-import com.tokopedia.logisticaddaddress.features.common.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
-import com.tokopedia.logisticaddaddress.features.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import javax.inject.Inject
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.common
+package com.tokopedia.logisticaddaddress.common.adapter
 
 import android.view.LayoutInflater
 import android.view.View

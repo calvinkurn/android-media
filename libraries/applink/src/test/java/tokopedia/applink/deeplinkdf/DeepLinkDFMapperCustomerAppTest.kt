@@ -305,12 +305,6 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check add address v2 appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalLogistic.INTERNAL_LOGISTIC}/addaddress/v2/"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
     fun `check district recommendation shop settings then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/district-recommendation-shop-settings"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
@@ -1073,7 +1067,7 @@ class DeepLinkDFMapperCustomerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check seller persona internal appLink should return DF_SELLER_PERSONA in seller app`() {
-        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP+"/seller-persona"
+        val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP + "/seller-persona"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_PERSONA)
     }
 

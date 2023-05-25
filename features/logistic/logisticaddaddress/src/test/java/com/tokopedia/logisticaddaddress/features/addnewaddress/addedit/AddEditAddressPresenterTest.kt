@@ -7,7 +7,7 @@
 // import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 // import com.tokopedia.logisticCommon.domain.model.Place
 // import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
-// import com.tokopedia.logisticaddaddress.common.AddressConstants
+// import com.tokopedia.logisticaddaddress.features.common.AddressConstants
 // import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 // import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictZipcodes
 // import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.KeroDistrictRecommendation
@@ -16,7 +16,7 @@
 // import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 // import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 // //import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-// import com.tokopedia.logisticaddaddress.features.common.uimodel.get_district.GetDistrictDataUiModel
+// import com.tokopedia.logisticaddaddress.common.GetDistrictDataUiModel
 // import com.tokopedia.logisticaddaddress.helper.MockTimber
 // import com.tokopedia.network.exception.MessageErrorException
 // import io.mockk.*

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.common
+package com.tokopedia.logisticaddaddress.common
 
 import android.annotation.TargetApi
 import android.app.Activity
@@ -8,19 +8,11 @@ import android.location.LocationManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Secure.getInt
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DENIED
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_DONT_ASK_AGAIN
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRANTED
@@ -39,22 +31,6 @@ object AddNewAddressUtils {
     private const val LOCATION_REQUEST_FASTEST_INTERVAL = 2000L
 
     @JvmStatic
-    fun showToastError(message: String, view: View, activity: Activity) {
-        var msg = message
-        if (message.isEmpty()) {
-            msg = activity.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-        }
-        val snackbar = view.let { Snackbar.make(it, msg, Snackbar.LENGTH_SHORT) }
-        val snackbarTextView = snackbar.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        val snackbarActionButton = snackbar.view.findViewById<Button>(com.google.android.material.R.id.snackbar_action)
-        snackbar.view.background = ContextCompat.getDrawable(activity, R.drawable.bg_snackbar_error)
-        snackbarTextView?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-        snackbarActionButton?.setTextColor(ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-        snackbarTextView?.maxLines = MAX_LINES
-        snackbar.setAction(activity.getString(R.string.label_action_snackbar_close)) { }.show()
-    }
-
-    @JvmStatic
     @TargetApi(Build.VERSION_CODES.KITKAT)
     fun isLocationEnabled(context: Context): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -63,7 +39,6 @@ object AddNewAddressUtils {
         } else {
             val mode = getInt(context.contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF)
             mode != Settings.Secure.LOCATION_MODE_OFF
-
         }
     }
 
@@ -104,17 +79,6 @@ object AddNewAddressUtils {
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
         locationRequest.fastestInterval = LOCATION_REQUEST_FASTEST_INTERVAL
         return locationRequest
-    }
-
-    fun hideKeyboard(et: EditText, context: Context?) {
-        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) ?: return
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(et.windowToken, 0)
-    }
-
-    @JvmStatic
-    fun showKeyboard(context: Context?) {
-        val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 
     fun hasDefaultCoordinate(lat: Double, long: Double, exact: Boolean = false): Boolean {

@@ -25,12 +25,12 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.databinding.FragmentDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.common.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.IS_LOCALIZATION
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DistrictAdapterTypeFactory

@@ -10,9 +10,9 @@
 // import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 // import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 // import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
-// import com.tokopedia.logisticaddaddress.features.common.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
-// import com.tokopedia.logisticaddaddress.features.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
-// import com.tokopedia.logisticaddaddress.features.common.uimodel.get_district.GetDistrictDataUiModel
+// import com.tokopedia.logisticaddaddress.common.DistrictBoundaryGeometryUiModel
+// import com.tokopedia.logisticaddaddress.common.DistrictBoundaryResponseUiModel
+// import com.tokopedia.logisticaddaddress.common.GetDistrictDataUiModel
 // import com.tokopedia.logisticaddaddress.helper.MockTimber
 // import com.tokopedia.network.exception.MessageErrorException
 // import io.mockk.every

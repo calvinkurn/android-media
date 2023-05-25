@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.common
+package com.tokopedia.logisticaddaddress.common.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.chips_item.view.*
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class ZipCodeChipsAdapter(context: Context?, private var actionListener: ActionListener) : RecyclerView.Adapter<ZipCodeChipsAdapter.ViewHolder>() {
+class ZipCodeChipsAdapter(private var actionListener: ActionListener) : RecyclerView.Adapter<ZipCodeChipsAdapter.ViewHolder>() {
     var zipCodes = mutableListOf<String>()
 
     interface ActionListener {
