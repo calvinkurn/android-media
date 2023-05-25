@@ -181,8 +181,8 @@ class AdsLowOrganic @Inject constructor(
     )
 
     companion object {
-        const val EXP_NAME = "ads_low_organic_sup"
-        const val VAR_ADS = "var_ads"
+        const val EXP_NAME = "exp_alos_req"
+        const val VAR_ADS = "var1"
 
         private const val ADS_INJECT_LIMIT = 2
 
