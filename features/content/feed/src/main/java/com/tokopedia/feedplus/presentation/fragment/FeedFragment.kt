@@ -1383,7 +1383,7 @@ class FeedFragment :
                             onSuccessCopyLink = {
                                 showToast(
                                     message = getString(feedR.string.feed_copy_link_success_message),
-                                    actionText = getString(com.tokopedia.feedcomponent.R.string.feed_ok),
+                                    actionText = getString(com.tokopedia.content.common.R.string.feed_ok),
                                     actionClickListener = {
                                         feedAnalytics.sendClickOkeShareToasterEvent(trackerModel)
                                     }
