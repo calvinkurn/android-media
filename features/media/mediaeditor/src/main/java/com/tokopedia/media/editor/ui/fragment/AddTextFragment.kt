@@ -248,7 +248,7 @@ class AddTextFragment @Inject constructor(
     // alignment click listener
     private fun setAlignment(icon: IconUnify) {
         alignmentIndex++
-        if (alignmentIndex > TEXT_ALIGNMENT_RIGHT) alignmentIndex = 0
+        if (alignmentIndex > TEXT_ALIGNMENT_LEFT) alignmentIndex = 0
 
         val gravity: Int
         val iconRef = when (alignmentIndex) {

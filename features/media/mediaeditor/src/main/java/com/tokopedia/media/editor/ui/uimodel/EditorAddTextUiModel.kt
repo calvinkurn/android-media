@@ -52,8 +52,8 @@ class EditorAddTextUiModel(
 
     companion object {
         const val TEXT_ALIGNMENT_CENTER = 0
-        const val TEXT_ALIGNMENT_LEFT = 1
-        const val TEXT_ALIGNMENT_RIGHT = 2
+        const val TEXT_ALIGNMENT_RIGHT = 1
+        const val TEXT_ALIGNMENT_LEFT = 2
 
         const val TEXT_STYLE_REGULAR = 0
         const val TEXT_STYLE_BOLD = 1
