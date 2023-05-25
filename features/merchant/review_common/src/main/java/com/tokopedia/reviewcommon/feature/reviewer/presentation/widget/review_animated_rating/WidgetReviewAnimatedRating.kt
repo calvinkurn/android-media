@@ -26,15 +26,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.reviewcommon.R
+import com.tokopedia.unifycomponents.toPx
 import kotlin.math.abs
 
 private const val STAR_COUNT = 5
@@ -52,6 +57,7 @@ private const val STAR_SCALE_KEYFRAME_3_TIME = 333
 
 @Composable
 private fun ReviewStar(state: MutableState<ReviewStarState>) {
+    val resources = LocalContext.current.resources
     /**
      * `starStates` represent the active/inactive state of the stars and are determined by the color ID value.
      * It is used to trigger the color and scale animations simultaneously, as both animations should run together.
@@ -64,6 +70,9 @@ private fun ReviewStar(state: MutableState<ReviewStarState>) {
     */
     val sizeState by remember { derivedStateOf { state.value.size } }
     val contentDescription by remember { derivedStateOf { state.value.contentDescription } }
+    val starDrawable = remember {
+        ImageBitmap.imageResource(res = resources, id = R.drawable.ic_review_common_star_filled)
+    }
     val starStateTransition = updateTransition(starState, label = "star state transition for $contentDescription")
     val sizeStateTransition = updateTransition(sizeState, label = "size state transition for $contentDescription")
     val color by starStateTransition.createColorAnimation(label = "color animation for $contentDescription")
@@ -71,12 +80,23 @@ private fun ReviewStar(state: MutableState<ReviewStarState>) {
     val size by sizeStateTransition.createSizeAnimation(label = "size animation for $contentDescription")
 
     Image(
-        painter = painterResource(id = R.drawable.review_ic_star),
-        colorFilter = ColorFilter.tint(color),
+        painter = BitmapPainter(starDrawable),
         contentDescription = contentDescription,
         modifier = Modifier
             .size(size)
-            .scale(scale)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .drawWithCache {
+                onDrawWithContent {
+                    drawImage(
+                        image = starDrawable,
+                        colorFilter = ColorFilter.tint(color),
+                        dstSize = IntSize(size.value.toInt().toPx(), size.value.toInt().toPx())
+                    )
+                }
+            }
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
