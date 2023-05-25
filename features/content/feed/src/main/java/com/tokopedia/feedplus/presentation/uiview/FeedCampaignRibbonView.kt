@@ -26,8 +26,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -45,6 +45,8 @@ class FeedCampaignRibbonView(
 ) {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
+
+    private var animationJob: Job? = null
 
     private var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
     private var mProduct: FeedCardProductModel? = null
@@ -117,7 +119,7 @@ class FeedCampaignRibbonView(
     }
 
     fun resetView() {
-        scope.cancel()
+        animationJob?.cancel()
         with(binding) {
             root.background = MethodChecker.getDrawable(
                 root.context,
@@ -455,8 +457,8 @@ class FeedCampaignRibbonView(
     }
 
     private fun startDelayProcess(delayDurationInMilis: Long, block: () -> Unit) {
-        scope.cancel()
-        scope.launch {
+        animationJob?.cancel()
+        animationJob = scope.launch {
             delay(delayDurationInMilis)
             block()
         }
