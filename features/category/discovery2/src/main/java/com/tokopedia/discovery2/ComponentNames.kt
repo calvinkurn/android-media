@@ -7,8 +7,6 @@ enum class ComponentNames(val componentName: String) {
     DoubleBanner("banner_image_double"),
     TripleBanner("banner_image_triple"),
     QuadrupleBanner("banner_image_quadruple"),
-    HorizontalCategoryNavigation("horizontal_category_navigation"),
-    HorizontalCategoryNavigationIem("horizontal_category_navigation_item"),
     BrandRecommendation("brand_recommendation"),
     BrandRecommendationItem("brand_recommendation_item"),
     SliderBanner("slider_banner"),
@@ -20,11 +18,8 @@ enum class ComponentNames(val componentName: String) {
     ClaimCoupon("claim_coupon"),
     ClaimCouponItem("claim_coupon_item"),
     Margin("margin"),
-    ChipsFilter("chips_filter"),
     Tabs("tabs"),
     TabsItem("tabs_item"),
-    DynamicCategory("dynamic_category"),
-    DynamicCategoryItem("dynamic_category_item"),
     TimerSprintSale("timer_sprint_sale"),
     ShimmerProductCard("shimmer_product_card"),
     Shimmer("shimmer"),
@@ -33,7 +28,6 @@ enum class ComponentNames(val componentName: String) {
     BannerCarousel("banner_carousel"),
     BannerCarouselItemView("banner_carousel_item"),
     BannerCarouselShimmer("banner_carousel_shimmer"),
-    BottomNavigation("bottom_navigation"),
 
     // Product Card Revamp
     ProductCardRevamp("product_card_revamp"),

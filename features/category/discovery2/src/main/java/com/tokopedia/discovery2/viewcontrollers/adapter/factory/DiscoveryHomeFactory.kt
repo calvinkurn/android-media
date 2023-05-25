@@ -26,10 +26,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.caro
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circularsliderbanner.CircularSliderBannerViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circularsliderbanner.CircularSliderBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewHolder
@@ -44,10 +40,6 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cont
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcardemptystate.ContentCardEmptyStateViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcardemptystate.ContentCardEmptyStateViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryItemViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.dynamicCategory.DynamicCategoryViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
@@ -160,16 +152,6 @@ class DiscoveryHomeFactory {
                 ::YouTubeViewViewModel
             )
             initializeComponent(
-                ComponentsList.CategoryNavigation,
-                ::CategoryNavigationViewHolder,
-                ::CategoryNavigationViewModel
-            )
-            initializeComponent(
-                ComponentsList.CategoryNavigationIem,
-                ::CategoryNavigationItemViewHolder,
-                ::CategoryNavigationItemViewModel
-            )
-            initializeComponent(
                 ComponentsList.BannerTimer,
                 ::BannerTimerViewHolder,
                 ::BannerTimerViewModel
@@ -178,11 +160,6 @@ class DiscoveryHomeFactory {
                 ComponentsList.LihatSemua,
                 ::LihatSemuaViewHolder,
                 ::LihatSemuaViewModel
-            )
-            initializeComponent(
-                ComponentsList.ChipsFilterView,
-                ::ComingSoonViewHolder,
-                ::ComingSoonViewModel
             )
 //            initializeComponent(ComponentsList.SliderBanner, ::SliderBannerViewHolder, ::SliderBannerViewModel)
             initializeComponent(
@@ -228,16 +205,6 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.Spacing, ::SpacingViewHolder, ::SpacingViewModel)
             initializeComponent(ComponentsList.Tabs, ::TabsViewHolder, ::TabsViewModel)
             initializeComponent(ComponentsList.TabsItem, ::TabsItemViewHolder, ::TabsItemViewModel)
-            initializeComponent(
-                ComponentsList.DynamicCategory,
-                ::DynamicCategoryViewHolder,
-                ::DynamicCategoryViewModel
-            )
-            initializeComponent(
-                ComponentsList.DynamicCategoryItem,
-                ::DynamicCategoryItemViewHolder,
-                ::DynamicCategoryItemViewModel
-            )
             initializeComponent(
                 ComponentsList.TimerSprintSale,
                 ::TimerSprintSaleItemViewHolder,

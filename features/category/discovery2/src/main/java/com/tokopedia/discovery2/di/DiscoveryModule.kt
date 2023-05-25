@@ -22,8 +22,6 @@ import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlReposit
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
-import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
-import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
 import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
@@ -87,11 +85,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideCustomTopChatRepository(@ApplicationContext context: Context): CustomTopChatRepository {
         return CustomTopChatGqlRepository(provideGetStringMethod(context))
-    }
-
-    @Provides
-    fun provideCategoryNavigationRestRepository(): CategoryNavigationRepository {
-        return CategoryNavigationRestRepository()
     }
 
     @Provides
