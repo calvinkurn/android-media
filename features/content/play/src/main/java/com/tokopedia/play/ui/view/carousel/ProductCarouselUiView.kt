@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
@@ -71,9 +70,10 @@ class ProductCarouselUiView(
 
     private val defaultItemDecoration = ProductFeaturedItemDecoration(context)
 
-    private val lastCompletelyVisible by lazyThreadSafetyNone {
-        layoutManager.findLastCompletelyVisibleItemPosition()
-    }
+    private val lastCompletelyVisible : Int
+        get() {
+            return layoutManager.findLastCompletelyVisibleItemPosition()
+        }
 
     init {
         binding.rvProductFeatured.itemAnimator = null
