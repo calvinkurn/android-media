@@ -37,6 +37,7 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.Toaster
@@ -120,7 +121,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
                 is AccountLinkingStatusResult.Failed -> {
-                    showToaster(getString(R.string.goto_kyc_error_from_be))
+                    showToaster(it.throwable)
                     activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
                     activity?.finish()
                 }
@@ -135,8 +136,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 is CheckEligibilityResult.NonProgressive -> {
                     handleNonProgressiveFlow()
                 }
+                is CheckEligibilityResult.AwaitingApprovalGopay -> {
+
+                }
                 is CheckEligibilityResult.Failed -> {
-                    showToaster(getString(R.string.goto_kyc_error_from_be))
+                    showToaster(it.throwable)
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -169,7 +173,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 }
                 is RegisterProgressiveResult.Failed -> {
                     setButtonLoading(false)
-                    showToaster(getString(R.string.goto_kyc_error_from_be))
+                    showToaster(it.throwable)
                 }
             }
         }
@@ -327,7 +331,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toCaptureKycDocuments)
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(throwable: Throwable?) {
+        val message = throwable.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 

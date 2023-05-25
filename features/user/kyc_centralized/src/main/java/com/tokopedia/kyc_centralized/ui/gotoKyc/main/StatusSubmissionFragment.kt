@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -14,6 +17,7 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,6 +27,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycStatusSubmissionBinding
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
+import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -48,6 +53,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
     private var bottomSheetDetailBenefit: BenefitDetailBottomSheet? = null
 
+    private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        activity?.setResult(result.resultCode)
+        activity?.finish()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -71,6 +81,19 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         setUpView()
         initListener()
         initToolbar()
+        initBackPressedListener()
+    }
+
+    private fun initBackPressedListener() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    activity?.setResult(Activity.RESULT_OK)
+                    activity?.finish()
+                }
+            }
+        )
     }
 
     private fun initToolbar() {
@@ -119,7 +142,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 }
                 KycStatus.REJECTED.code.toString() -> {
                     GotoKycAnalytics.sendClickOnButtonVerifikasiUlangRejectPage(projectId)
-                    //Todo: direct to verifikasi ulang
+                    goToTransparentActivityToReVerify()
                 }
                 else -> {
                     activity?.setResult(Activity.RESULT_OK)
@@ -347,6 +370,18 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private fun showBottomSheetDetailBenefit() {
         bottomSheetDetailBenefit = BenefitDetailBottomSheet()
         bottomSheetDetailBenefit?.show(childFragmentManager, TAG_BOTTOM_SHEET_DETAIL_BENEFIT)
+    }
+
+    private fun goToTransparentActivityToReVerify() {
+        //need hide all layout because when user back from transparent activity, user will not see the rejected page
+        binding?.scrollView?.hide()
+        binding?.unifyToolbar?.hide()
+
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
+            putExtra(GotoKycTransparentFragment.IS_RE_VERIFY, true)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, projectId)
+        }
+        startReVerifyKycForResult.launch(intent)
     }
 
     private fun goToTokopediaCare() {

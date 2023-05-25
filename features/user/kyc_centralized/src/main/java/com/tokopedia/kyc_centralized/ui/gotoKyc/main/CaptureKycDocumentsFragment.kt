@@ -15,12 +15,13 @@ import com.gojek.kyc.sdk.core.constants.UnifiedKycFlowResult
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.isConnectionAvailable
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -125,6 +126,12 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
             tvSubtitle.hide()
             unifyToolbar.show()
             globalError.show()
+        }
+
+        if (!isConnectionAvailable(requireContext())) {
+            binding?.globalError?.setType(GlobalError.NO_CONNECTION)
+        } else {
+            binding?.globalError?.setType(GlobalError.MAINTENANCE)
         }
     }
 

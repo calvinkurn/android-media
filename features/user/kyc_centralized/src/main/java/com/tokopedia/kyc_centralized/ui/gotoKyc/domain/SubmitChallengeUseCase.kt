@@ -7,7 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.SubmitChallengeResponse
 import com.tokopedia.kyc_centralized.ui.gotoKyc.data.SubmitKYCChallenge
-import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class SubmitChallengeUseCase @Inject constructor(
@@ -37,7 +36,7 @@ class SubmitChallengeUseCase @Inject constructor(
             .submitKYCChallenge
 
         return if (response.errorMessages.isNotEmpty()) {
-            SubmitChallengeResult.Failed(MessageErrorException(response.errorMessages.first()))
+            SubmitChallengeResult.Failed(Throwable(message = response.errorMessages.first()))
         } else {
             when (response.message) {
                 KEY_WRONG_ANSWER -> {

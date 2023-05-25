@@ -18,12 +18,21 @@ class CheckEligibilityUseCase @Inject constructor(
 
             if (response.success == false) {
                 CheckEligibilityResult.Failed(MessageErrorException(response.errors?.first()?.message.orEmpty()))
-            } else if (response.data?.flow == KYCConstant.GotoKycFlow.PROGRESSIVE) {
-                CheckEligibilityResult.Progressive(response.data?.details?.maskedName.orEmpty())
-            } else if (response.data?.flow == KYCConstant.GotoKycFlow.NON_PROGRESSIVE){
-                CheckEligibilityResult.NonProgressive()
             } else {
-                CheckEligibilityResult.Failed(MessageErrorException(""))
+                when (response.data?.flow) {
+                    KYCConstant.GotoKycFlow.PROGRESSIVE -> {
+                        CheckEligibilityResult.Progressive(response.data?.details?.maskedName.orEmpty())
+                    }
+                    KYCConstant.GotoKycFlow.NON_PROGRESSIVE -> {
+                        CheckEligibilityResult.NonProgressive()
+                    }
+                    KYCConstant.GotoKycFlow.AWAITING_APPROVAL -> {
+                        CheckEligibilityResult.AwaitingApprovalGopay()
+                    }
+                    else -> {
+                        CheckEligibilityResult.Failed(Throwable(message = response.data?.flow.toString()))
+                    }
+                }
             }
         }
     }

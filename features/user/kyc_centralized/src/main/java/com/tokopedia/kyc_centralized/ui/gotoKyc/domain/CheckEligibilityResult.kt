@@ -5,6 +5,7 @@ sealed class CheckEligibilityResult(
     val throwable: Throwable? = null
 ) {
     class Progressive(encryptedName: String): CheckEligibilityResult(encryptedName = encryptedName)
-    class NonProgressive(): CheckEligibilityResult()
+    class NonProgressive: CheckEligibilityResult()
+    class AwaitingApprovalGopay: CheckEligibilityResult()
     class Failed(throwable: Throwable): CheckEligibilityResult(throwable = throwable)
 }
