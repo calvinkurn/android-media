@@ -319,13 +319,53 @@
                 android:visibility="gone"
                 app:constraint_referenced_ids="tg_campaign_relation, chips_campaign_relation_yes, chips_campaign_relation_no"
                 />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_campaign_fs_oos_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/campaign_rule_fs_out_of_stock_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rv_selected_previous_campaign"
+                app:typographyType="paragraph_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tg_campaign_fs_oos_subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/campaign_rule_fs_out_of_stock_subtitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_fs_oos_title"
+                app:typographyType="paragraph_3" />
+
+            <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+                android:id="@+id/switch_fs_oos_handling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tg_campaign_fs_oos_subtitle"
+                android:checked="true"
+                tools:checked="true" />
+
             <View
                 android:id="@+id/divider_campaign_rule_tnc"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sfs_1_dp"
                 android:layout_marginTop="16dp"
                 android:background="@color/Unify_NN50"
-                app:layout_constraintTop_toBottomOf="@+id/rv_selected_previous_campaign" />
+                app:layout_constraintTop_toBottomOf="@+id/switch_fs_oos_handling" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/checkbox_campaign_rule_tnc"
