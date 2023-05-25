@@ -13,12 +13,7 @@ import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
-import com.tokopedia.people.util.andThen
-import com.tokopedia.people.util.assertEmpty
-import com.tokopedia.people.util.assertEvent
-import com.tokopedia.people.util.assertFalse
-import com.tokopedia.people.util.assertTrue
-import com.tokopedia.people.util.equalTo
+import com.tokopedia.people.util.*
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -96,7 +91,7 @@ class UserProfileShopRecomViewModelTest {
     @Before
     fun setUp() {
         coEvery { mockUserSession.userId } returns mockOwnUserId
-        coEvery { mockRepo.getCreationInfo() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
         coEvery { mockRepo.getUserProfileTab(any()) } returns mockTabsModel
     }
 
