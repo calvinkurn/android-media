@@ -80,7 +80,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     videoInfo = mapVideoInfo(it.video),
                     emptyBottomSheetInfo = mapEmptyBottomSheet(it),
                     popupConfig = mapPopUp(it),
-                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig),
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig, it.config.categoryWidgetConfig),
                     showCart = it.config.showCart,
                 ),
                 partnerInfo = partnerInfo,
@@ -327,9 +327,10 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     }
 
     private fun mapExploreWidgetConfig(
-        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
+        categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
     ) = ExploreWidgetConfig(
-       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId, categoryGroup = categoryConfig.group, hasCategory = categoryConfig.hasCategory, categoryName = categoryConfig.categoryName,
     )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {

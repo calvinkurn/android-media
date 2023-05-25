@@ -144,6 +144,14 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       source_id
                       source_type
                     }
+                    explore_widget_dominant {
+                      group
+                      source_id
+                      source_type
+                      has_dominant_category
+                      category_name
+                      category_id
+                    }
                     channel_archived_screen {
                       title
                       description
