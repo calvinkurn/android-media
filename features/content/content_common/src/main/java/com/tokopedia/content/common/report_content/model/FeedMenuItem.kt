@@ -20,5 +20,7 @@ enum class FeedMenuIdentifier {
     Edit,
     Report,
     WatchMode,
+    SeePerformance,
+    LearnVideoInsight,
     Delete;
 }
