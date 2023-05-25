@@ -630,4 +630,29 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         assertEquals(1, couponListRecommendationRequest.isTradeInDropOff)
         assertEquals(1, couponListRecommendationRequest.orders[0].spId)
     }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request without trade in dropoff courier THEN should return without trade in dropoff courier`() {
+        // Given
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(1, couponListRecommendationRequest.isTradeIn)
+        assertEquals(1, couponListRecommendationRequest.isTradeInDropOff)
+        assertEquals(0, couponListRecommendationRequest.orders[0].spId)
+    }
 }
