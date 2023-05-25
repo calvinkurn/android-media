@@ -2,19 +2,25 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFee
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
-import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -24,16 +30,13 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldCl
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
-import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterEditAddressPinpointTest {
+class ShipmentPresenterPlatformFeeTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase
@@ -60,9 +63,6 @@ class ShipmentPresenterEditAddressPinpointTest {
     private lateinit var getRatesApiUseCase: GetRatesApiUseCase
 
     @MockK
-    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
-
-    @MockK
     private lateinit var clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase
 
     @MockK
@@ -80,7 +80,7 @@ class ShipmentPresenterEditAddressPinpointTest {
     @MockK
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
-    @MockK(relaxed = true)
+    @MockK
     private lateinit var shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener
 
     @MockK
@@ -92,22 +92,28 @@ class ShipmentPresenterEditAddressPinpointTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
-    @MockK
+    @MockK(relaxed = true)
+    private lateinit var getRatesWithScheduleUseCase: GetRatesWithScheduleUseCase
+
+    @MockK(relaxed = true)
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
     private lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
 
+    private var shipmentMapper = ShipmentMapper()
     private var shipmentDataConverter = ShipmentDataConverter()
+    private var platformFeeParams = PaymentFeeCheckoutRequest()
+    private var shippingDurationConverter = ShippingDurationConverter()
 
     private lateinit var presenter: ShipmentPresenter
 
@@ -148,170 +154,154 @@ class ShipmentPresenterEditAddressPinpointTest {
     }
 
     @Test
-    fun pinpointSuccess_ShouldRenderEditAddressSuccess() {
-        // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
+    fun verifyShipmentPlatformFeeDataIsEnabled() {
+        val response = DataProvider.provideShipmentAddressFormWithPlatformFeeEnabledResponse()
+        val cartShipmentAddressFormData = shipmentMapper
+            .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
+
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(cartShipmentAddressFormData)
         }
-
-        val latitude = "123"
-        val longitude = "456"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
-            """
-            {
-                "data": {
-                    "is_success": 1
-                }
-            }
-            """.trimIndent()
-        )
-
-        // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
-
-        // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.renderEditAddressSuccess(latitude, longitude)
-        }
-    }
-
-    @Test
-    fun pinpointFailed_ShouldNavigateToSetPinpointWithErrorMessage() {
-        // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-        val locationPass = LocationPass()
-
-        val errorMessage = "error"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
-            """
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": ["$errorMessage"]
-            }
-            """.trimIndent()
-        )
-
-        // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
-
-        // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.navigateToSetPinpoint(errorMessage, locationPass)
-        }
-    }
-
-    @Test
-    fun pinpointFailedWithoutErrorMessage_ShouldNavigateToSetPinpointWithDefaultErrorMessage() {
-        // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-        val locationPass = LocationPass()
-
-        val errorMessage = "error"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just(
-            """
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": []
-            }
-            """.trimIndent()
-        )
-
         every {
-            view.activityContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-        } returns errorMessage
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+                any()
+            )
+        } just Runs
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(presenter.getShipmentPlatformFeeData().isEnable)
+    }
+
+    @Test
+    fun verifyShipmentPlatformFeeDataIsDisabled() {
+        val response = DataProvider.provideShipmentAddressFormWithPlatformFeeDisabledResponse()
+        val cartShipmentAddressFormData = shipmentMapper
+            .convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
+
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(cartShipmentAddressFormData)
+        }
+        every {
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(
+                any()
+            )
+        } just Runs
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            false,
+            false,
+            false,
+            false,
+            false,
+            null,
+            "",
+            "",
+            false
+        )
+
+        // Then
+        assert(!presenter.getShipmentPlatformFeeData().isEnable)
+    }
+
+    @Test
+    fun getDynamicPlatformFeeReturnsSuccess() {
+        // Given
+        val platformFee = PaymentFeeGqlResponse(PaymentFeeResponse(success = true))
+
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.setParams(any())
+        } just Runs
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.execute(any(), any())
+        } answers {
+            firstArg<(PaymentFeeGqlResponse) -> Unit>().invoke(platformFee)
+        }
+
+        // When
+        presenter.getDynamicPaymentFee(platformFeeParams)
 
         // Then
         verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.navigateToSetPinpoint(errorMessage, locationPass)
+            view.showPaymentFeeData(platformFee)
         }
     }
 
     @Test
-    fun pinpointError_ShouldShowToastError() {
+    fun getDynamicPlatformFeeReturnsFailed() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
+        val platformFee = PaymentFeeGqlResponse(PaymentFeeResponse(success = false))
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.setParams(any())
+        } just Runs
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.execute(any(), any())
+        } answers {
+            firstArg<(PaymentFeeGqlResponse) -> Unit>().invoke(platformFee)
         }
 
-        val latitude = "123"
-        val longitude = "456"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
-
+        presenter.getDynamicPaymentFee(platformFeeParams)
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
 
         // Then
         verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.showToastError(any())
+            view.showPaymentFeeTickerFailedToLoad(any())
+        }
+    }
+
+    @Test
+    fun getDynamicPlatformFeeReturnsError() {
+        // Given
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.setParams(any())
+        } just Runs
+        coEvery {
+            dynamicPaymentFeeCheckoutUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(Throwable())
+        }
+
+        presenter.getDynamicPaymentFee(platformFeeParams)
+        // When
+
+        // Then
+        verifyOrder {
+            view.showPaymentFeeTickerFailedToLoad(any())
         }
     }
 }
