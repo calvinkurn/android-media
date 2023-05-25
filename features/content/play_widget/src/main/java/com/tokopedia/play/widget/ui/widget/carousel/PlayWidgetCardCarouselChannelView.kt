@@ -22,9 +22,9 @@ import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.carousel.product.PlayWidgetCarouselProductAdapter
 import com.tokopedia.play.widget.ui.carousel.product.PlayWidgetCarouselProductItemDecoration
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.ext.isMuted
+import com.tokopedia.play.widget.ui.model.ext.isWithProductNoCaptionVariant
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 /**
@@ -142,7 +142,6 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
     private fun invalidateUi(model: PlayWidgetChannelUiModel) {
         binding.tvLiveBadge.showWithCondition(model.channelType == PlayWidgetChannelType.Live)
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = model.totalView.totalViewFmt
-        binding.viewPlayWidgetCaption.root.text = model.title
         binding.imgCover.loadImage(model.video.coverUrl)
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
@@ -157,7 +156,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mListener?.onPartnerClicked(this, model)
         }
 
+        binding.viewPlayWidgetCaption.root.text = model.title
+        binding.viewPlayWidgetCaption.root.showWithCondition(!model.isWithProductNoCaptionVariant)
 
+        binding.rvProducts.showWithCondition(model.isWithProductNoCaptionVariant)
         adapter.submitList(model.products)
 
         setMuted(model.isMuted)
