@@ -362,14 +362,14 @@ private fun ReschedulePickupSummary(summary: String) {
     ) {
         NestTicker(
             title = "",
+            type = TickerType.ANNOUNCEMENT,
             description = HtmlLinkHelper(
                 LocalContext.current,
                 summary
             ).spannedString?.toAnnotatedString() ?: "",
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 6.dp),
-            closeButtonVisibility = false,
-            type = TickerType.ANNOUNCEMENT
+            closeButtonVisibility = false
         )
     }
 }

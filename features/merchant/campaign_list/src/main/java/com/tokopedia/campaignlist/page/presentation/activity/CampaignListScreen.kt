@@ -190,11 +190,11 @@ private fun Filter(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Unit) {
     NestTicker(
-        modifier = modifier.fillMaxWidth(),
         title = "",
+        type = TickerType.ANNOUNCEMENT,
         description = stringResource(id = R.string.cl_another_campaign_type_wording),
-        onDismissed = onDismissed,
-        type = TickerType.ANNOUNCEMENT
+        modifier = modifier.fillMaxWidth(),
+        onDismissed = onDismissed
     )
 }
 
