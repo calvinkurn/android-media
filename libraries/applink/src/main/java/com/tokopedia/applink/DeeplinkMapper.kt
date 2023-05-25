@@ -44,8 +44,28 @@ import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHome
 import com.tokopedia.applink.home.DeeplinkMapperHome.getRegisteredNavigationHomeOfficialStore
 import com.tokopedia.applink.imagepicker.DeeplinkMapperImagePicker
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.getDiscoveryDeeplink
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
+import com.tokopedia.applink.internal.ApplinkConstInternalFeed
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalMedia
+import com.tokopedia.applink.internal.ApplinkConstInternalOperational
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.logistic.DeeplinkMapperLogistic
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getRegisteredNavigationMarketplace
 import com.tokopedia.applink.marketplace.DeeplinkMapperMarketplace.getShopPageInternalAppLink
@@ -112,7 +132,6 @@ import com.tokopedia.tokopedia_applink_annotation.start.StartMatcher
  * tokopedia://product/add will be mapped to tokopedia-android-internal:// to prevent conflict.
  */
 @HostMatcher(ApplinkConst.INBOX_HOST, ApplinkConsInternalHome.HOME_INBOX)
-@ExactMatcher(ApplinkConst.SHOP_PENALTY, ApplinkConstInternalMarketplace.SHOP_PENALTY)
 @MatchPatternMatcher(ApplinkConst.SHOP_OPERATIONAL_HOUR, ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET)
 @MatchPatternMatcher(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT)
 @StartMatcher(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER)
@@ -405,6 +424,7 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.OFFICIAL_STORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeOfficialStore(deeplink) },
         DLP.startWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
         DLP.startWith(ApplinkConst.SHOP_SCORE_DETAIL) { _, uri, _, _ -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri) },
+        DLP.exact(ApplinkConst.SHOP_PENALTY) { _, _, _, _ -> ShopScoreDeepLinkMapper.getInternalApplinkPenalty() },
         DLP.exact(ApplinkConst.SHOP_PENALTY_DETAIL, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL),
         DLP.exact(ApplinkConst.ADMIN_INVITATION, ApplinkConstInternalMarketplace.ADMIN_INVITATION),
         DLP.startWith(ApplinkConst.ADMIN_ACCEPTED) { _, uri, _, _ -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri) },

@@ -33,3 +33,7 @@ interface ItemSortFilterPenaltyListener {
     fun onParentSortFilterClicked()
     fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem)
 }
+
+interface ItemPenaltySubsectionListener {
+    fun onIconClicked()
+}

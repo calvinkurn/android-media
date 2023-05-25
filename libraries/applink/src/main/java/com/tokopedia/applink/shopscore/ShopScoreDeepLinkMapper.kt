@@ -28,4 +28,17 @@ object ShopScoreDeepLinkMapper {
             UriUtil.buildUriAppendParams(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE, params)
         }
     }
+
+    fun getInternalApplinkPenalty(): String {
+        return if (getIsShopScorePenaltyNew()) {
+            ApplinkConstInternalMarketplace.SHOP_PENALTY
+        } else {
+            ApplinkConstInternalMarketplace.SHOP_PENALTY_OLD
+        }
+    }
+
+    // TODO: Use remote config
+    private fun getIsShopScorePenaltyNew(): Boolean {
+        return true
+    }
 }

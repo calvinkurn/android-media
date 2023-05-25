@@ -1,11 +1,11 @@
 package com.tokopedia.shop.score.penalty.presentation.fragment.tablet
 
-import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
+import com.tokopedia.shop.score.penalty.presentation.old.fragment.ShopPenaltyPageOldFragment
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 
-class ShopPenaltyListTabletFragment : ShopPenaltyPageFragment() {
+class ShopPenaltyListTabletFragment : ShopPenaltyPageOldFragment() {
 
     private var penaltyListListener: PenaltyListListener? = null
 

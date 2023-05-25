@@ -16,7 +16,7 @@ import com.tokopedia.shop.score.common.plt.ShopPenaltyPltConstants
 import com.tokopedia.shop.score.common.presentation.fragments.ShopPenaltyContainerFragment
 import com.tokopedia.shop.score.penalty.di.component.DaggerPenaltyComponent
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
-import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageFragment
+import com.tokopedia.shop.score.penalty.presentation.old.fragment.ShopPenaltyPageOldFragment
 import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
 open class ShopPenaltyPageOldActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent>,
@@ -34,7 +34,7 @@ open class ShopPenaltyPageOldActivity : BaseSimpleActivity(), HasComponent<Penal
         return if (DeviceScreenInfo.isTablet(this)) {
             ShopPenaltyContainerFragment.newInstance()
         } else {
-            ShopPenaltyPageFragment.newInstance()
+            ShopPenaltyPageOldFragment.newInstance()
         }
     }
 

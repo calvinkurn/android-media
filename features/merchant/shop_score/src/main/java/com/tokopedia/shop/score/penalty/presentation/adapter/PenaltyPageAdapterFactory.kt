@@ -5,15 +5,34 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.*
-import com.tokopedia.shop.score.penalty.presentation.model.*
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemHeaderCardPenaltyViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyEmptyViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyErrorViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyInfoNotificationViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyLoadingViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyPointCardViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltySubsectionViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyTickerViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPenaltyViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemPeriodDateFilterViewHolder
+import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
+import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyPointCardUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyTickerUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 
 class PenaltyPageAdapterFactory(
     private val itemPenaltyDetailPenaltyListener: ItemDetailPenaltyListener,
     private val itemHeaderCardPenaltyListener: ItemHeaderCardPenaltyListener,
     private val itemPenaltyErrorListener: ItemPenaltyErrorListener,
     private val itemSortFilterPenaltyListener: ItemSortFilterPenaltyListener,
-    private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener
+    private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener,
+    private val itemPenaltySubsectionListener: ItemPenaltySubsectionListener? = null
 ) : BaseAdapterTypeFactory(), PenaltyTypeFactory {
 
     override fun type(itemPenaltyUiModel: ItemPenaltyUiModel): Int {
@@ -44,6 +63,22 @@ class PenaltyPageAdapterFactory(
         return ItemPenaltyLoadingViewHolder.LAYOUT
     }
 
+    override fun type(itemPenaltyTickerUiModel: ItemPenaltyTickerUiModel): Int {
+        return ItemPenaltyTickerViewHolder.LAYOUT
+    }
+
+    override fun type(itemPenaltyInfoNotificationUiModel: ItemPenaltyInfoNotificationUiModel): Int {
+        return ItemPenaltyInfoNotificationViewHolder.LAYOUT
+    }
+
+    override fun type(itemPenaltySubsectionUiModel: ItemPenaltySubsectionUiModel): Int {
+        return ItemPenaltySubsectionViewHolder.LAYOUT
+    }
+
+    override fun type(itemPenaltyPointCardUiModel: ItemPenaltyPointCardUiModel): Int {
+        return ItemPenaltyPointCardViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ItemPenaltyViewHolder.LAYOUT -> ItemPenaltyViewHolder(
@@ -68,6 +103,10 @@ class PenaltyPageAdapterFactory(
                 itemSortFilterPenaltyListener
             )
             ItemPenaltyLoadingViewHolder.LAYOUT -> ItemPenaltyLoadingViewHolder(parent)
+            ItemPenaltyTickerViewHolder.LAYOUT -> ItemPenaltyTickerViewHolder(parent)
+            ItemPenaltyInfoNotificationViewHolder.LAYOUT -> ItemPenaltyInfoNotificationViewHolder(parent)
+            ItemPenaltySubsectionViewHolder.LAYOUT -> ItemPenaltySubsectionViewHolder(parent, itemPenaltySubsectionListener)
+            ItemPenaltyPointCardViewHolder.LAYOUT -> ItemPenaltyPointCardViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
