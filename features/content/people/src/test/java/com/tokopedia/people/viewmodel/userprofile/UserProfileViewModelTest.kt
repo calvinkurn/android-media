@@ -78,8 +78,6 @@ class UserProfileViewModelTest {
 
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
-
-        coEvery { mockShortsRemoteConfig.isShowEntryPoint() } returns true
     }
 
     @Test
@@ -92,7 +90,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -120,7 +117,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -146,7 +142,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -167,7 +162,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -193,7 +187,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -219,7 +212,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -246,7 +238,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -274,7 +265,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -299,7 +289,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -324,7 +313,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {
@@ -349,7 +337,6 @@ class UserProfileViewModelTest {
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-            shortsRemoteConfig = mockShortsRemoteConfig,
         )
 
         robot.use {

@@ -1,7 +1,6 @@
 package com.tokopedia.people.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.viewmodels.UserProfileViewModel
@@ -29,7 +28,6 @@ class UserProfileViewModelRobot(
     private val followRepo: UserFollowRepository = mockk(relaxed = true),
     private val userSession: UserSessionInterface = mockk(relaxed = true),
     private val dispatcher: CoroutineTestDispatchers = CoroutineTestDispatchers,
-    private val shortsRemoteConfig: PlayShortsEntryPointRemoteConfig = mockk(relaxed = true),
 ) : Closeable {
 
     val viewModel = UserProfileViewModel(
@@ -37,7 +35,6 @@ class UserProfileViewModelRobot(
         repo = repo,
         followRepo = followRepo,
         userSession = userSession,
-        playShortsEntryPointRemoteConfig = shortsRemoteConfig,
     )
 
     fun setup(fn: suspend UserProfileViewModelRobot.() -> Unit): UserProfileViewModelRobot {

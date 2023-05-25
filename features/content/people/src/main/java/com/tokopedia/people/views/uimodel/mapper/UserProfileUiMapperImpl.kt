@@ -4,6 +4,7 @@ import com.tokopedia.content.common.model.AuthorItem
 import com.tokopedia.content.common.model.Authors
 import com.tokopedia.content.common.model.Creation
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.kotlin.extensions.orFalse
@@ -33,6 +34,7 @@ import javax.inject.Inject
  */
 class UserProfileUiMapperImpl @Inject constructor(
     private val userSession: UserSessionInterface,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
@@ -89,6 +91,7 @@ class UserProfileUiMapperImpl @Inject constructor(
 
         fun getButtonTypeShortVideo(items: List<AuthorItem>): Boolean {
             return items.find { it.type == TYPE_SHORT_VIDEO }?.isActive.orFalse()
+                && playShortsEntryPointRemoteConfig.isShowEntryPoint()
         }
 
         val getAuthorItemTypeUser = getAuthorTypeUser(response.authors)?.items
