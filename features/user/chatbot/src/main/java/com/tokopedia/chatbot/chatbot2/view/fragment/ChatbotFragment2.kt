@@ -2649,6 +2649,8 @@ class ChatbotFragment2 :
             replyBubbleContainer?.referredMsg,
             onSendingMessage(msg, startTime, replyBubbleContainer?.referredMsg)
         )
+        bigReplyBoxBottomSheet?.clearMessageText()
+        enableSendButton()
     }
 
     override fun dismissBigReplyBoxBottomSheet(msg: String, wordLength: Int) {

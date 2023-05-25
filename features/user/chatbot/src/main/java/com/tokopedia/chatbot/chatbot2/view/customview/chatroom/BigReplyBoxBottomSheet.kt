@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.item_chatbot_quick_reply_view.view.*
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var isSendButtonActivated: Boolean = false
@@ -24,6 +25,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var hintText = ""
     private var shouldShowAddAttachmentButton: Boolean = false
     private var messageText: String = ""
+    private var isSendButtonClicked: Boolean = false
 
     private var _viewBinding: BottomsheetChatbotBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -89,6 +91,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private fun bindClickListeners() {
         getBindingView().sendButton.setOnClickListener {
             if (isSendButtonActivated) {
+                isSendButtonClicked = true
                 replyBoxClickListener?.getMessageContentFromBottomSheet(
                     getBindingView().chatText.editText.text?.toString() ?: ""
                 )
@@ -106,6 +109,9 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         setOnDismissListener {
             val text = getBindingView().chatText.editText.text?.toString() ?: ""
             hideKeyboard()
+            if (isSendButtonClicked) {
+                return@setOnDismissListener
+            }
             replyBoxClickListener?.dismissBigReplyBoxBottomSheet(
                 text,
                 getWordCount()
@@ -200,6 +206,10 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             setMessage(message)
             isInputError = true
         }
+    }
+
+    fun clearMessageText() {
+        getBindingView().chatText.editText.setText("")
     }
 
     companion object {
