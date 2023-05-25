@@ -783,9 +783,11 @@ class DigitalPDPDataPlanFragment :
 
     private fun onFailedGetCheckBalance(throwable: Throwable) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            hideCheckBalanceWidget()
             hideCheckBalanceWidgetShimmering()
             setupDynamicScrollViewPadding()
+            showCheckBalanceWidgetLocalLoad {
+                getIndosatCheckBalance()
+            }
         }
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
@@ -794,6 +796,7 @@ class DigitalPDPDataPlanFragment :
     private fun onLoadingGetCheckBalance() {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             hideCheckBalanceOtpWidget()
+            hideCheckBalanceWidgetLocalLoad()
             showCheckBalanceWidget()
             showCheckBalanceWidgetShimmering()
             setupDynamicScrollViewPadding()

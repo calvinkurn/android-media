@@ -101,6 +101,20 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
         binding.checkBalanceWarningContainer.hide()
     }
 
+    fun showLocalLoad(onClick: () -> Unit) {
+        binding.checkBalanceLocalload.run {
+            setOnClickListener { onClick.invoke() }
+            show()
+        }
+    }
+
+    fun hideLocalLoad() {
+        binding.checkBalanceLocalload.run {
+            setOnClickListener {  }
+            hide()
+        }
+    }
+
     interface RechargeCheckBalanceWidgetListener {
         fun onClickWidget()
     }
