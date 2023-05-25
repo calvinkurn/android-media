@@ -131,6 +131,8 @@ class CartGroupViewHolder(
                     cartGroupHolderData.groupAppLink
                 )
             }
+        } else {
+            binding.tvShopName.setOnClickListener(null)
         }
     }
 
