@@ -1771,9 +1771,10 @@ open class ProductManageFragment :
             } else if (result.success.isNotEmpty()) {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
-
-                clearSelectedProduct()
-                renderCheckedView()
+                if (result.failedDT.isEmpty()) {
+                    clearSelectedProduct()
+                    renderCheckedView()
+                }
             }
         }
     }
