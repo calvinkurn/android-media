@@ -1,7 +1,7 @@
-package com.tokopedia.feedplus.domain.usecase
+package com.tokopedia.content.common.usecase
 
-import com.tokopedia.feedplus.data.FeedXHeaderRequestFields
-import com.tokopedia.feedplus.data.FeedXHeaderResponse
+import com.tokopedia.content.common.model.FeedXHeaderRequestFields
+import com.tokopedia.content.common.model.FeedXHeaderResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
