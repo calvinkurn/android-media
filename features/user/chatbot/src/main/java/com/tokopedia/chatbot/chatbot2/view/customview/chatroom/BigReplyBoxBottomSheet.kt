@@ -26,6 +26,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     private var shouldShowAddAttachmentButton: Boolean = false
     private var messageText: String = ""
     private var isSendButtonClicked: Boolean = false
+    private var isError: Boolean = false
 
     private var _viewBinding: BottomsheetChatbotBigReplyBoxBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -51,6 +52,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         disableSendButton()
         bindClickListeners()
         setUpEditText()
+        if (isError)
+            setWordLengthError()
         getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
         changeSendButtonIcon(isEnabled = true)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -184,7 +187,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             }
             if (wordCount < MINIMUM_NUMBER_OF_WORDS) {
                 val message = String.format(
-                    context?.resources?.getString(R.string.chatbot_remaining_words)
+                    context?.resources?.getString(R.string.chatbot_remaining_words_while_typing)
                         .toBlankOrString(),
                     MINIMUM_NUMBER_OF_WORDS - wordCount
                 )
@@ -210,6 +213,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     fun clearMessageText() {
         getBindingView().chatText.editText.setText("")
+        messageText = ""
     }
 
     companion object {
@@ -218,13 +222,15 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             replyBoxBottomSheetPlaceHolder: String,
             replyBoxBottomSheetTitle: String,
             shouldShowAddAttachmentButton: Boolean,
-            msgText: String = ""
+            msgText: String = "",
+            isError: Boolean = false
         ): BigReplyBoxBottomSheet {
             return BigReplyBoxBottomSheet().apply {
                 this.labelText = replyBoxBottomSheetTitle
                 this.hintText = replyBoxBottomSheetPlaceHolder
                 this.shouldShowAddAttachmentButton = shouldShowAddAttachmentButton
                 this.messageText = msgText
+                this.isError = isError
             }
         }
 

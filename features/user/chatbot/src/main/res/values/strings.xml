@@ -82,6 +82,6 @@
     <string name="chatbot_retry_get_data">Coba lagi</string>
     <string name="chatbot_to_wifi_setting">Ke Pengaturan</string>
     <string name="chatbot_remaining_words">Minimal %1$d kata</string>
+    <string name="chatbot_remaining_words_while_typing">Butuh minimal %1$d kata lagi</string>
     <string name="chatbot_big_reply_word_error">Ceritakan lebih detail lagi, ya</string>
-
 </resources>

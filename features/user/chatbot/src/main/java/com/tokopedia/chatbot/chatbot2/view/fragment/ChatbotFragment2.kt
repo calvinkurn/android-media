@@ -2620,15 +2620,16 @@ class ChatbotFragment2 :
         attachmentMenuRecyclerView?.toggle()
         createAttachmentMenus()
     }
-
-    override fun goToBigReplyBoxBottomSheet() {
+    override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
         activity?.let {
             if (bigReplyBoxBottomSheet == null) {
                 bigReplyBoxBottomSheet = BigReplyBoxBottomSheet
                     .newInstance(
                         replyBoxBottomSheetPlaceHolder,
                         replyBoxBottomSheetTitle,
-                        showAddAttachmentMenu
+                        showAddAttachmentMenu,
+                        "",
+                        isError
                     )
             }
             BigReplyBoxBottomSheet.replyBoxClickListener = this
@@ -2660,7 +2661,6 @@ class ChatbotFragment2 :
             enableSendButton()
         } else {
             bigReplyBox?.disableSendButton()
-            disableSendButton()
         }
         hideKeyboard()
     }

@@ -2428,7 +2428,7 @@ class ChatbotFragment :
         createAttachmentMenus()
     }
 
-    override fun goToBigReplyBoxBottomSheet() {
+    override fun goToBigReplyBoxBottomSheet(isError: Boolean) {
         activity?.let {
             val bottomSheetUnify = BigReplyBoxBottomSheet
                 .newInstance(

@@ -46,11 +46,13 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBoxClickListener?.onAttachmentMenuClicked()
         }
         replyBox?.setOnClickListener {
-            replyBoxClickListener?.goToBigReplyBoxBottomSheet()
+            replyBoxClickListener?.goToBigReplyBoxBottomSheet(isError = false)
         }
         sendButton?.setOnClickListener {
             if (isSendButtonEnabled) {
                 replyBoxClickListener?.getMessageContentFromBottomSheet(replyBoxText?.text?.toString() ?: "")
+            } else {
+                replyBoxClickListener?.goToBigReplyBoxBottomSheet(isError = true)
             }
         }
     }
@@ -61,7 +63,6 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     fun disableSendButton() {
         sendButtonListener?.disableSendButton()
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
         isSendButtonEnabled = false
     }
 
