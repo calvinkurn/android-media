@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.dropoff.R
+import com.tokopedia.dropoff.databinding.FragmentAutocompleteBinding
 import com.tokopedia.dropoff.di.DaggerDropoffPickerComponent
 import com.tokopedia.dropoff.ui.dropoff_picker.DropOffAnalytics
 import com.tokopedia.dropoff.util.SimpleVerticalDivider
@@ -24,6 +24,7 @@ import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 const val DEBOUNCE_DELAY = 400L
@@ -38,11 +39,13 @@ class AutoCompleteFragment :
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    private var binding by autoClearedNullable<FragmentAutocompleteBinding>()
+
     private val viewModel by lazy {
-        ViewModelProvider(this, factory).get(AutoCompleteViewModel::class.java)
+        ViewModelProvider(this, factory)[AutoCompleteViewModel::class.java]
     }
 
-    private var searchTextView: SearchInputView? = null
     private val adapter: AutoCompleteAdapter = AutoCompleteAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,17 +54,19 @@ class AutoCompleteFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_autocomplete, container, false)
+        binding = FragmentAutocompleteBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchTextView = (view.findViewById<SearchInputView>(R.id.search_input_autocomplete)).apply {
+        binding?.searchInputAutocomplete?.apply {
             setDelayTextChanged(DEBOUNCE_DELAY)
             setListener(this@AutoCompleteFragment)
         }
-        with(view.findViewById<RecyclerView>(R.id.rv_autocomplete)) {
+
+        binding?.rvAutocomplete?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             addItemDecoration(SimpleVerticalDivider(context, R.layout.item_autocomplete_result))
@@ -90,7 +95,7 @@ class AutoCompleteFragment :
     override fun onResultClicked(data: AutoCompleteVisitable) {
         if (data is SuggestedPlace) {
             tracker.trackSelectLandmarkFromKeyword(
-                searchTextView?.searchText.orEmpty(),
+                binding?.searchInputAutocomplete?.searchText.orEmpty(),
                 data.mainText,
                 data.secondaryText
             )

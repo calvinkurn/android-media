@@ -14,7 +14,6 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.model.WalletBalance
 import com.tokopedia.thankyou_native.domain.usecase.*
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
-import com.tokopedia.thankyou_native.presentation.views.widgettag.WidgetTag
 import com.tokopedia.tokomember.model.MembershipRegister
 import com.tokopedia.tokomember.usecase.MembershipRegisterUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -132,6 +131,7 @@ class ThanksPageDataViewModel @Inject constructor(
         thankYouTopAdsViewModelUseCase.getTopAdsData(topAdsRequestParams, thanksPageData, {
             if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
+                topAdsRequestParams.tag = TopAdsRequestParams.TAG
                 _topAdsDataLiveData.postValue(topAdsRequestParams)
             }
         }, { it.printStackTrace() })
