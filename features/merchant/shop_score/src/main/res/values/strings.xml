@@ -341,7 +341,11 @@
     <string name="title_card_penalty_point">Potongan Poin Performa</string>
     <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
     <string name="title_filter_penalty_date">Tanggal</string>
+    <string name="title_penalty_calculation">Detail Perhitungan</string>
     <string name="title_penalty_calculation_score">Potongan Skor Performa Toko</string>
+    <string name="title_penalty_calculation_ongoing">Total Poin Penalti Sedang Berlangsung</string>
+    <string name="title_penalty_calculation_total_order">Total Pesanan Minggu Ini</string>
+    <string name="title_penalty_calculation_shop_level">Level Toko</string>
     <string name="title_penalty_calculation_formula_ongoing">Total Poin Penalti Sedang Berlangsung</string>
     <string name="title_penalty_calculation_formula_this_week">Total Pesanan Minggu Ini</string>
     <string name="title_penalty_calculation_formula_x">x</string>

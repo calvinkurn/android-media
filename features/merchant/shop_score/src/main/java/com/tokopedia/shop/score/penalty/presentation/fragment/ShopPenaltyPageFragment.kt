@@ -23,6 +23,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilte
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyCalculationBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
@@ -155,7 +156,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onIconClicked() {
-//        TODO("Not yet implemented")
+        PenaltyCalculationBottomSheet.createInstance().show(childFragmentManager)
     }
 
 
