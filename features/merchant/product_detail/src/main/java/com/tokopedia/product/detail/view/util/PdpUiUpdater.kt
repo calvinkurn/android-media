@@ -31,6 +31,7 @@ import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaContainerType
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
@@ -77,6 +78,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetSource
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import kotlin.math.roundToLong
 
@@ -814,6 +819,22 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     data
                 )
             }
+        }
+    }
+
+    fun updateComparisonBpcDataModel(data: RecommendationWidget) {
+        updateData(data.pageName) {
+            mapOfData[data.pageName] = PdpRecommendationWidgetDataModel(
+                recommendationWidgetModel = RecommendationWidgetModel(
+                    widget = data,
+                    metadata = RecommendationWidgetMetadata(
+                        pageSource = RecommendationWidgetSource.PDP.xSourceValue
+                    ),
+                    trackingModel = RecommendationWidgetTrackingModel(
+                        androidPageName = RecommendationWidgetSource.PDP.trackingValue
+                    )
+                )
+            )
         }
     }
 
