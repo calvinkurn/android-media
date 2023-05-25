@@ -1299,10 +1299,11 @@ class FeedFragment :
         isExclusiveForMember: Boolean,
         onDismiss: () -> Unit
     ): Boolean {
-        if (isExclusiveForMember && !feedPostViewModel.isFollowing(id)) {
+        val shouldShowFollowBottomSheet = isExclusiveForMember && !feedPostViewModel.isFollowing(id)
+        if (shouldShowFollowBottomSheet) {
             showFollowerBottomSheet(positionInFeed, campaignStatus, onDismiss)
         }
-        return isExclusiveForMember && !feedPostViewModel.isFollowing(id)
+        return shouldShowFollowBottomSheet
     }
 
     private fun showFollowerBottomSheet(
