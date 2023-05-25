@@ -17,16 +17,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.ImagePainter.State.Empty.painter
-import com.tokopedia.common_compose.R
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestChips(
-    modifier: Modifier = Modifier,
     text: String,
     isSelected: Boolean,
+    modifier: Modifier = Modifier,
     size: Size = Size.SMALL,
     showChevron: Boolean = false,
     onClick: () -> Unit = {}

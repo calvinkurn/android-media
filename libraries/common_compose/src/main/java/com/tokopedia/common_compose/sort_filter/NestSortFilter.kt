@@ -58,12 +58,11 @@ fun NestSortFilter(
                     text = it.title,
                     isSelected = it.isSelected,
                     size = chipSize,
-                    showChevron = it.showChevron,
-                    onClick = {
-                        onItemClicked(it)
-                        it.onClick()
-                    }
-                )
+                    showChevron = it.showChevron
+                ) {
+                    onItemClicked(it)
+                    it.onClick()
+                }
             }
         }
     }
@@ -143,12 +142,11 @@ fun NestSortFilterAdvanced(
                     text = it.title,
                     isSelected = it.isSelected,
                     size = chipSize,
-                    showChevron = it.showChevron,
-                    onClick = {
-                        onItemClicked(it)
-                        it.onClick()
-                    }
-                )
+                    showChevron = it.showChevron
+                ) {
+                    onItemClicked(it)
+                    it.onClick()
+                }
             }
         }
     }
