@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -152,6 +153,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
+        setUpOosSubtitleText()
         setUpRelatedCampaignRecyclerView()
         observeCampaign()
         observeSelectedPaymentMethod()
@@ -272,6 +274,31 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun setUpTNCText() {
         val binding = binding ?: return
         binding.checkboxCampaignRuleTnc.text = getTNCText()
+    }
+
+    private fun getOutOfStockSubtitleText(): SpannableString? {
+        val context = context ?: return null
+        val oosSubtitleText = getText(R.string.campaign_rule_fs_out_of_stock_subtitle) as SpannedString
+        val styledSpans = oosSubtitleText.getSpans(0, oosSubtitleText.length, StyleSpan::class.java)
+        val spannableString = SpannableString(oosSubtitleText)
+        val color = ContextCompat.getColor(
+            context,
+            com.tokopedia.unifyprinciples.R.color.Unify_GN500
+        )
+        styledSpans.forEach { span ->
+            spannableString.setSpan(
+                ForegroundColorSpan(color),
+                oosSubtitleText.getSpanStart(span),
+                oosSubtitleText.getSpanEnd(span),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        return spannableString
+    }
+
+    private fun setUpOosSubtitleText() {
+        val binding = binding ?: return
+        binding.tgCampaignFsOosSubtitle.text = getOutOfStockSubtitleText()
     }
 
     private fun observeSelectedPaymentMethod() {
