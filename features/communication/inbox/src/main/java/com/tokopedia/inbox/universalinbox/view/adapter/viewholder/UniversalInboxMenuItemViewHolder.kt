@@ -6,6 +6,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.inbox.R
 import com.tokopedia.inbox.databinding.UniversalInboxMenuItemBinding
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -14,7 +15,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.NotificationUnify
 
-class UniversalInboxMenuItemViewHolder(itemView: View): BaseViewHolder(itemView) {
+class UniversalInboxMenuItemViewHolder(
+    itemView: View,
+    private val listener: UniversalInboxMenuListener
+): BaseViewHolder(itemView) {
 
     private val binding: UniversalInboxMenuItemBinding? by viewBinding()
 
@@ -22,6 +26,7 @@ class UniversalInboxMenuItemViewHolder(itemView: View): BaseViewHolder(itemView)
         bindMenu(uiModel)
         bindShopInfo(uiModel)
         bindCounter(uiModel)
+        bindListener(uiModel)
     }
 
     private fun bindMenu(uiModel: UniversalInboxMenuUiModel) {
@@ -45,6 +50,12 @@ class UniversalInboxMenuItemViewHolder(itemView: View): BaseViewHolder(itemView)
             binding?.inboxImgShopAvatar?.loadImage(it.avatar)
         }
         binding?.inboxLayoutShopInfo?.showWithCondition(shopInfo != null)
+    }
+
+    private fun bindListener(uiModel: UniversalInboxMenuUiModel) {
+        binding?.inboxLayoutMenu?.setOnClickListener {
+            listener.onMenuClicked(uiModel)
+        }
     }
 
     companion object {

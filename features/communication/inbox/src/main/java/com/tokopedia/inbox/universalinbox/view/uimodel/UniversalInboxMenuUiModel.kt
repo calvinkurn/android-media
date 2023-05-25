@@ -1,9 +1,11 @@
 package com.tokopedia.inbox.universalinbox.view.uimodel
 
 data class UniversalInboxMenuUiModel (
+    val type: MenuItemType,
     val title: String,
     val icon: Int,
-    val counter: Int = 0,
+    var counter: Int = 0,
+    val applink: String,
     val additionalInfo: Any? = null
 ) {
 
@@ -14,4 +16,8 @@ data class UniversalInboxMenuUiModel (
             null
         }
     }
+}
+
+enum class MenuItemType {
+    CHAT_BUYER, CHAT_SELLER, DISCUSSION, REVIEW
 }

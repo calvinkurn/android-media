@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.universalinbox.view.viewmodel
+package com.tokopedia.inbox.universalinbox.view
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LiveData
@@ -6,18 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
-import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -55,8 +47,8 @@ class UniversalInboxViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
+    private val inboxMenuMapper: UniversalInboxMenuMapper,
     private val userSession: UserSessionInterface,
-    private val resourceProvider: UniversalInboxResourceProvider,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
@@ -77,41 +69,7 @@ class UniversalInboxViewModel @Inject constructor(
         get() = _allCounter
 
     fun generateStaticMenu() {
-        val staticMenuList = arrayListOf(
-            UniversalInboxMenuSectionUiModel(resourceProvider.getSectionChatTitle()),
-            UniversalInboxMenuUiModel(
-                title = resourceProvider.getMenuChatBuyerTitle(),
-                icon = IconUnify.CHAT,
-                counter = Int.ZERO
-            ),
-            UniversalInboxMenuSectionUiModel(resourceProvider.getSectionOthersTitle()),
-            UniversalInboxMenuUiModel(
-                title = resourceProvider.getMenuDiscussionTitle(),
-                icon = IconUnify.DISCUSSION,
-                counter = Int.ZERO
-            ),
-            UniversalInboxMenuUiModel(
-                title = resourceProvider.getMenuReviewTitle(),
-                icon = IconUnify.STAR,
-                counter = Int.ZERO
-            ),
-            UniversalInboxMenuSeparatorUiModel(),
-            UniversalInboxTopAdsBannerUiModel()
-        ).also {
-            if (userSession.hasShop()) {
-                it.add(2,
-                    UniversalInboxMenuUiModel(
-                        title = resourceProvider.getMenuChatSellerTitle(),
-                        icon = IconUnify.SHOP,
-                        counter = Int.ZERO,
-                        additionalInfo = UniversalInboxShopInfoUiModel(
-                            avatar = userSession.shopAvatar,
-                            shopName = userSession.shopName
-                        )
-                    )
-                )
-            }
-        }
+        val staticMenuList = inboxMenuMapper.getStaticMenu(userSession)
         _inboxMenu.postValue(Success(staticMenuList))
     }
 

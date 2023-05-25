@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.universalinbox.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
+import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuItemDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSectionDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMenuSeparatorDelegate
@@ -9,6 +10,10 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRe
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsHeadlineDelegate
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
+import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
@@ -19,14 +24,15 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class UniversalInboxAdapter(
     userSession: UserSessionInterface,
+    menuListener: UniversalInboxMenuListener,
     tdnBannerResponseListener: TdnBannerResponseListener,
     topAdsClickListener: TopAdsImageViewClickListener,
-    recommendationListener: RecommendationListener
+    recommendationListener: RecommendationListener,
 ) : BaseCommonAdapter() {
 
     init {
         delegatesManager.addDelegate(UniversalInboxMenuSectionDelegate())
-        delegatesManager.addDelegate(UniversalInboxMenuItemDelegate())
+        delegatesManager.addDelegate(UniversalInboxMenuItemDelegate(menuListener))
         delegatesManager.addDelegate(
             UniversalInboxTopAdsBannerDelegate(tdnBannerResponseListener, topAdsClickListener)
         )
@@ -79,5 +85,31 @@ class UniversalInboxAdapter(
             }
         }
         return null
+    }
+
+    fun updateAllCounters(counterData: UniversalInboxAllCounterResponse): List<Int> {
+        val listIndex = arrayListOf<Int>()
+        itemList.forEachIndexed { index, item ->
+            if (item is UniversalInboxMenuUiModel) {
+                when (item.type) {
+                    MenuItemType.CHAT_BUYER -> {
+                        item.counter = counterData.chatUnread.unreadBuyer
+                    }
+                    MenuItemType.CHAT_SELLER -> {
+                        item.counter = counterData.chatUnread.unreadSeller
+                    }
+                    MenuItemType.DISCUSSION -> {
+                        item.counter = counterData.othersUnread.discussionUnread
+                    }
+                    MenuItemType.REVIEW -> {
+                        item.counter = counterData.othersUnread.reviewUnread
+                    }
+                }
+                listIndex.add(index)
+            } else if (item is UniversalInboxMenuSeparatorUiModel) { // Not in static menu anymore
+                return@forEachIndexed
+            }
+        }
+        return listIndex
     }
 }

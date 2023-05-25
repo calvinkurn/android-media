@@ -315,7 +315,12 @@ class ChatTabListFragment constructor() :
         if (tabList.size == 1) {
             tabLayout?.hide()
         } else {
-            goToLastSeenTab()
+            val selectedTab = arguments?.getInt(SELECTED_TAB_KEY)
+            if (selectedTab != null) {
+                goToSelectedTab(selectedTab)
+            } else {
+                goToLastSeenTab()
+            }
         }
     }
 
@@ -362,6 +367,10 @@ class ChatTabListFragment constructor() :
                 )
             }
         }
+    }
+
+    private fun goToSelectedTab(selectedTab: Int) {
+        viewPager?.setCurrentItem(selectedTab, false)
     }
 
     private fun goToLastSeenTab() {
@@ -650,9 +659,15 @@ class ChatTabListFragment constructor() :
         private val SELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_G500
         private val UNSELECTED_ICON_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_NN500
 
+        const val SELECTED_TAB_KEY = "selected_tab"
+
         @JvmStatic
-        fun create(): ChatTabListFragment {
-            return ChatTabListFragment()
+        fun create(bundle: Bundle? = null): ChatTabListFragment {
+            return ChatTabListFragment().also { fragment ->
+                bundle?.let {
+                    fragment.arguments = it
+                }
+            }
         }
     }
 }
