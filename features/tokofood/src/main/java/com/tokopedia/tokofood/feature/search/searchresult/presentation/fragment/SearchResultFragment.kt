@@ -81,7 +81,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -719,9 +718,7 @@ class SearchResultFragment :
                         viewModel.updatePinpoint(address.latitude, address.longitude)
                     }
                 } else {
-                    locationPass.let { pass ->
-                        viewModel.updatePinpoint(pass.latitude, pass.longitude)
-                    }
+                    viewModel.updatePinpoint(locationPass.latitude, locationPass.longitude)
                 }
             }
         }
