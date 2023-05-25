@@ -30,7 +30,6 @@ import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
@@ -103,7 +102,6 @@ class UserProfileFragment @Inject constructor(
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
     private val impressionCoordinator: ShopRecomImpressCoordinator,
     private val coachMarkManager: ContentCoachMarkManager,
-    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -174,7 +172,6 @@ class UserProfileFragment @Inject constructor(
         setupCoachMark()
 
         if (arguments == null || requireArguments().getString(EXTRA_USERNAME).isNullOrBlank()) {
-            // TODO show error page
             activity?.finish()
         }
 
@@ -352,7 +349,9 @@ class UserProfileFragment @Inject constructor(
 
             fabUp.menuOpen = !fabUp.menuOpen
 
-            if (fabUp.menuOpen) userProfileTracker.viewCreateShorts(viewModel.profileUserID)
+            if (fabUp.menuOpen && viewModel.isShortVideoEntryPointShow) {
+                userProfileTracker.viewCreateShorts(viewModel.profileUserID)
+            }
         }
     }
 
@@ -632,8 +631,7 @@ class UserProfileFragment @Inject constructor(
                 val items = arrayListOf<FloatingButtonItem>()
                 if (value.showLiveStream) items.add(createLiveFab())
                 if (value.showPost) items.add(createPostFab())
-                if (value.showShortVideo && playShortsEntryPointRemoteConfig.isShowEntryPoint())
-                    items.add(createShortsFab())
+                if (value.showShortVideo) items.add(createShortsFab())
 
                 mainBinding.fabUp.addItem(items)
                 fabCreated = true

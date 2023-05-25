@@ -3,6 +3,7 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
@@ -45,7 +46,8 @@ class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
     private val followRepo: UserFollowRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -91,6 +93,8 @@ class UserProfileViewModel @AssistedInject constructor(
         get() = _profileInfo.value.shareLink.webLink
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
+
+    val isShortVideoEntryPointShow: Boolean get() = _creationInfo.value.showShortVideo
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
@@ -525,7 +529,14 @@ class UserProfileViewModel @AssistedInject constructor(
             return
         }
 
-        if (profileType == ProfileType.Self) _creationInfo.update { repo.getCreationInfo() }
+        if (profileType == ProfileType.Self) {
+            _creationInfo.update { repo.getCreationInfo() }
+            _creationInfo.update { data ->
+                data.copy(
+                    showShortVideo = data.showShortVideo && playShortsEntryPointRemoteConfig.isShowEntryPoint()
+                )
+            }
+        }
 
         if (isRefresh) loadProfileTab()
     }
