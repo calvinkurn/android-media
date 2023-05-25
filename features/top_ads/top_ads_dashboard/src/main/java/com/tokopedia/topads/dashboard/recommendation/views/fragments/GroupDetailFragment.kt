@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
@@ -23,6 +24,8 @@ import com.tokopedia.topads.dashboard.recommendation.viewmodel.GroupDetailViewMo
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_SHOP
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
@@ -69,13 +72,13 @@ class GroupDetailFragment : BaseDaggerFragment() {
     }
 
     private fun retrieveInitialData() {
-        val adType = arguments?.getInt("adType")
-        val insightList = arguments?.getStringArrayList("insightTypeList")
+        val adType = arguments?.getString("adType")
+        val insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList")?: arrayListOf()
         val adGroupName = arguments?.getString("adGroupName")
-        val adGroupId = arguments?.getString("groupId")
+        val adGroupId = arguments?.getString("groupId")?:""
         viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
         if (adType != null && adGroupId != null) {
-            loadData(adType, adGroupId)
+            loadData(if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP, adGroupId)
         }
     }
 

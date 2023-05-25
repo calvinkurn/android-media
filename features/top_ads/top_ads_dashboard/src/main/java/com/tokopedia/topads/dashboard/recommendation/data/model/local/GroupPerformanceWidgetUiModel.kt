@@ -4,10 +4,11 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 class GroupPerformanceWidgetUiModel(
     val impression: Int = 0,
-    val topSlotImpression: Int = 0
+    val topSlotImpression: Int = 0,
+    val totalPerformance:Int = 0
 ) : GroupDetailDataModel {
     override fun type(): String {
-        return ""
+        return "2"
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {

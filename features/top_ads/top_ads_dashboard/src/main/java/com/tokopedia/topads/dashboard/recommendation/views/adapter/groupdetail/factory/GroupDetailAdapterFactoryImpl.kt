@@ -44,6 +44,14 @@ class GroupDetailAdapterFactoryImpl(
         return AccordianNegativeKeywordViewHolder.LAYOUT
     }
 
+    override fun type(groupDetailEmptyStateUiModel: GroupDetailEmptyStateUiModel): Int {
+        return GroupDetailEmptyStateViewHolder.LAYOUT
+    }
+
+    override fun type(groupDetailInsightListUiModel: GroupDetailInsightListUiModel): Int {
+        return GroupDetailInsightListViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view)
@@ -54,6 +62,8 @@ class GroupDetailAdapterFactoryImpl(
             AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view)
             AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view)
             AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view)
+            GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view)
+            GroupDetailEmptyStateViewHolder.LAYOUT -> GroupDetailEmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

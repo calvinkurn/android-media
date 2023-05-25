@@ -42,15 +42,22 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 }
                 else -> {}
             }
+//            (groupDetailMapper.detailPageDataMap[TYPE_CHIPS] as GroupDetailChipsUiModel).isChipsAvailable = false
+//            groupDetailMapper.detailPageDataMap[8] = GroupDetailEmptyStateUiModel(
+//                EmptyStateData.getData()
+//            )
+//            if(true)return@coroutineScope groupDetailMapper.reArrangedDataMap()
+//            if ((groupDetailMapper.detailPageDataMap[TYPE_PERFORMANCE] as GroupPerformanceWidgetUiModel).)
             when (batchKeyword) {
                 is TopAdsListAllInsightState.Success -> {
-                    val groupData = batchKeyword.data.groups.firstOrNull()?.groupData
+                    val groupData =
+                        batchKeyword.data.topAdsBatchGetKeywordInsightByGroupIDV3.groups.firstOrNull()?.groupData
                     groupDetailMapper.detailPageDataMap[TYPE_POSITIVE_KEYWORD] =
                         GroupInsightsUiModel(
                             "Kata Kunci",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
 //                            !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
-                            true,
+                            false,
                             AccordianKataKunciUiModel(
                                 "Kata Kunci",
                                 groupData?.existingKeywordsBidRecom
@@ -60,7 +67,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         "Biaya Kata Kunci",
                         "Kunjungan pembeli menurun. Pakai kata kunci...",
 //                        !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
-                        true,
+                        false,
                         AccordianKeywordBidUiModel(
                             "Biaya Kata Kunci",
                             groupData?.newPositiveKeywordsRecom
@@ -71,7 +78,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                             "Kata Kunci Negatif",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
 //                            !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
-                            true,
+                            false,
                             AccordianNegativeKeywordUiModel(
                                 "Kata Kunci Negatif",
                                 groupData?.newNegativeKeywordsRecom
@@ -92,7 +99,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                             "Biaya Iklan",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
 //                            !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
-                            true,
+                            false,
                             AccordianGroupBidUiModel(
                                 text = "Biaya Iklan",
                                 groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
