@@ -4,6 +4,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -43,6 +44,9 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
     fun `GIVEN cart with shipment courier WHEN generate validate use request THEN should set courier correctly`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(
+                cartStringGroup = "123"
+            ),
             ShipmentCartItemModel(
                 cartStringGroup = "123",
                 cartItemModels = listOf(
@@ -184,6 +188,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
     fun `GIVEN previous validate use request without courier & bo and cart with shipment courier & bo WHEN generate validate use request THEN should set courier & bo correctly`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = "123"),
             ShipmentCartItemModel(
                 cartStringGroup = "123",
                 cartItemModels = listOf(
@@ -193,7 +198,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.generateValidateUsePromoRequest()
-        (presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel).apply {
+        (presenter.shipmentCartItemModelList[1] as ShipmentCartItemModel).apply {
             selectedShipmentDetailData = ShipmentDetailData(
                 selectedCourier = CourierItemData(
                     shipperProductId = 1,
@@ -205,6 +210,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
 
         // When
         val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+        presenter.setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
 
         // Then
         assertEquals(1, validateUsePromoRequest.orders[0].spId)
@@ -213,7 +219,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
         assertEquals(true, presenter.bboPromoCodes.contains("code"))
         assertEquals(1, validateUsePromoRequest.orders[1].spId)
         assertEquals(true, validateUsePromoRequest.orders[1].freeShippingMetadata.isNotEmpty())
-        assertEquals(true, validateUsePromoRequest.orders[1].codes.contains("code"))
+        assertEquals(false, validateUsePromoRequest.orders[1].codes.contains("code"))
     }
 
     @Test
@@ -238,6 +244,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
 
         // When
         val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+        presenter.setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
 
         // Then
         assertEquals(true, validateUsePromoRequest.codes.contains("global_code"))

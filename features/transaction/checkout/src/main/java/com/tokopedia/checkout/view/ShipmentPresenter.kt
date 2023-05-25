@@ -5403,19 +5403,14 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    private fun setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest: ValidateUsePromoRequest) {
+    internal fun setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest: ValidateUsePromoRequest) {
         validateUsePromoRequest.orders.filter { it.cartStringGroup != it.uniqueId }
             .groupBy { it.cartStringGroup }.filterValues { it.size > 1 }.values
             .forEach { ordersItems ->
                 val boCode = ordersItems.first().boCode
                 if (boCode.isNotEmpty()) {
-                    val existingAppliedUniqueId = validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.firstOrNull { it.code == boCode && it.cartStringGroup == ordersItems.first().cartStringGroup }?.uniqueId ?: ""
                     ordersItems.forEachIndexed { index, ordersItem ->
-                        if (existingAppliedUniqueId.isNotEmpty()) {
-                            if (ordersItem.uniqueId != existingAppliedUniqueId) {
-                                ordersItem.codes.remove(boCode)
-                            }
-                        } else if (index > 0) {
+                        if (index > 0) {
                             ordersItem.codes.remove(boCode)
                         }
                     }

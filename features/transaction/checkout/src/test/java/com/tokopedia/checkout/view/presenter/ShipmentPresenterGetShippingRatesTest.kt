@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -471,7 +472,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
         presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemTopModel(cartStringGroup = "111"), shipmentCartItemModel)
 
         // When
         presenter.processGetCourierRecommendation(

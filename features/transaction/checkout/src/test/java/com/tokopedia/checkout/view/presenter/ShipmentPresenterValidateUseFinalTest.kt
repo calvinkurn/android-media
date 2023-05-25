@@ -8,6 +8,7 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
@@ -15,6 +16,7 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
@@ -654,5 +656,69 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         assertEquals(1, couponListRecommendationRequest.isTradeIn)
         assertEquals(1, couponListRecommendationRequest.isTradeInDropOff)
         assertEquals(0, couponListRecommendationRequest.orders[0].spId)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request ocs THEN should return cart type ocs`() {
+        // Given
+        presenter.isOneClickShipment = true
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals("ocs", couponListRecommendationRequest.cartType)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with last apply THEN should return with global promo codes`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+        val codes = listOf("code")
+        presenter.lastApplyData.value = LastApplyUiModel(codes = codes)
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(codes, couponListRecommendationRequest.codes)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with insurance THEN should return with insurance price true`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(
+                cartStringGroup = "234"
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData(),
+                isInsurance = true
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(1, couponListRecommendationRequest.orders.first().isInsurancePrice)
     }
 }
