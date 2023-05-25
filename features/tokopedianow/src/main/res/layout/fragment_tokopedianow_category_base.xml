@@ -32,6 +32,7 @@
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
         android:visibility="gone"
+        android:translationZ="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_anchor="@id/nav_toolbar"

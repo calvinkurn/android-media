@@ -29,6 +29,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -38,6 +39,11 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.common.constant.RequestCode
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil
+import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.ERROR_MAINTENANCE
+import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.ERROR_PAGE_FULL
+import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.ERROR_PAGE_NOT_FOUND
+import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.ERROR_SERVER
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
@@ -143,6 +149,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             setupNavigationToolbar()
             setupRecyclerView()
             setupRefreshLayout()
+            showShimmering()
         }
     }
 
@@ -226,10 +233,92 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         globalError.hide()
     }
 
-    protected fun FragmentTokopedianowCategoryBaseBinding.showGlobalError() {
+    protected fun FragmentTokopedianowCategoryBaseBinding.showGlobalError(
+        throwable: Throwable
+    ) {
         rvCategory.hide()
         categoryShimmering.root.hide()
         globalError.show()
+
+        if (throwable is MessageErrorException) {
+            val errorCode = throwable.errorCode
+            val errorType = GlobalErrorUtil.getErrorType(
+                throwable = throwable,
+                errorCode = errorCode
+            )
+
+            globalError.setType(errorType)
+
+            when (errorCode) {
+                ERROR_PAGE_NOT_FOUND -> setupGlobalErrorPageNotFound()
+                ERROR_SERVER -> setupGlobalErrorServer()
+                ERROR_MAINTENANCE -> setupGlobalErrorMaintenance()
+                ERROR_PAGE_FULL -> setupGlobalErrorPageFull()
+            }
+        } else {
+            val errorType = GlobalErrorUtil.getErrorType(
+                throwable = throwable,
+                errorCode = String.EMPTY
+            )
+            globalError.setType(errorType)
+            setupGlobalErrorNoConnection()
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound(){
+        globalError.apply {
+            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
+            errorSecondaryAction.show()
+            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
+            setActionClickListener {
+                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+                activity?.finish()
+            }
+            setSecondaryActionClickListener {
+                RouteManager.route(context, ApplinkConst.HOME)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorServer() {
+        globalError.apply {
+            setActionClickListener {
+                refreshLayout()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorMaintenance() {
+        globalError.apply {
+            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
+            setActionClickListener {
+                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageFull() {
+        globalError.apply {
+            setActionClickListener {
+                refreshLayout()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorNoConnection() {
+        globalError.apply {
+            errorSecondaryAction.show()
+            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
+            setActionClickListener {
+                refreshLayout()
+            }
+            setSecondaryActionClickListener {
+                RouteManager.route(context, ApplinkConst.HOME)
+                activity?.finish()
+            }
+        }
     }
 
     protected fun FragmentTokopedianowCategoryBaseBinding.showShimmering() {

@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
@@ -133,9 +131,10 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
                     viewModel.getFirstPage()
 
                     binding?.showRecyclerView()
-//                    binding?.showGlobalError()
                 }
-                is Fail -> binding?.showGlobalError()
+                is Fail -> binding?.showGlobalError(
+                    throwable = result.throwable
+                )
             }
         }
     }

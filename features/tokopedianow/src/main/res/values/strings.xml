@@ -6,6 +6,7 @@
     <string name="tokopedianow_common_empty_state_desc">Siap-siap nikmati layanan 2 jam tiba &amp; gratis ongkir. Nantikan kabar dari kami, ya!</string>
     <string name="tokopedianow_common_empty_state_button_change_address">Ubah Alamat</string>
     <string name="tokopedianow_common_empty_state_button_return">Belanja di Tokopedia</string>
+    <string name="tokopedianow_common_error_state_button_back_to_tokonow_home_page">Ke Homepage Tokopedia NOW</string>
 
     <string name="tokopedianow_empty_state_no_address_and_local_cache_title">Masukkan alamat dulu buat akses Tokopedia NOW!</string>
     <string name="tokopedianow_empty_state_no_address_and_local_cache_description">Supaya bisa dapat rekomendasi produk dari Tokopedia NOW! ke alamatmu.</string>

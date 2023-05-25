@@ -38,6 +38,7 @@ import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -260,7 +261,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 _categoryHeader.postValue(Success(layout))
             },
             onError = {
-                /* error state on the page */
+                _categoryHeader.postValue(Fail(it))
             }
         )
     }
