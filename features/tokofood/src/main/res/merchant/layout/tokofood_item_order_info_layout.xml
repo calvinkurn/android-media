@@ -28,13 +28,21 @@
         app:typographyWeight="bold"
         tools:text="Rp.22.500" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_order_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="rv_selected_add_ons, customProductPrice" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/notesLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/rv_selected_add_ons">
+        app:layout_constraintTop_toBottomOf="@id/barrier_order_info">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iu_edit_note"

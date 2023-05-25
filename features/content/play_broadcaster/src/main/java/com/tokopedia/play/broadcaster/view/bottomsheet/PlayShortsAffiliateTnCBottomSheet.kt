@@ -54,13 +54,10 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     }
 
     private val clickableTnc = object : ClickableSpan() {
-        /** TODO
-         * change the tnc web-view app link later
-         */
         override fun onClick(p0: View) {
             router.route(
                 requireContext(),
-                generateWebViewApplink(getString(contentCommonR.string.ugc_onboarding_tnc_link))
+                generateWebViewApplink(getString(R.string.play_shorts_affiliate_success_tnc_web_link))
             )
         }
 
@@ -73,6 +70,10 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
+
+    init {
+        overlayClickDismiss = false
+    }
 
     private fun generateWebViewApplink(url: String): String {
         return getString(contentCommonR.string.up_webview_template, ApplinkConst.WEBVIEW, url)
@@ -113,18 +114,15 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         binding.btnContinue.setOnClickListener {
             if (binding.btnContinue.isLoading) return@setOnClickListener
             if (it.isEnabled) {
+                updateButtonState(true)
                 mListener?.onSubmitTnc()
             }
         }
     }
 
-    fun dismissed() {
-        dismiss()
-    }
-
-    fun updateButtonState(isLoading: Boolean) {
+    private fun updateButtonState(isLoading: Boolean) {
         binding.btnContinue.isLoading = isLoading
-        if (isLoading) binding.btnContinue.isClickable = false
+        binding.btnContinue.isClickable = !isLoading
     }
 
     fun setListener(listener: Listener) {
@@ -136,7 +134,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     }
 
     fun showErrorToast(throwable: Throwable) {
-        binding.btnContinue.isClickable = true
+        updateButtonState(false)
         toaster.showError(
             throwable,
             duration = Toaster.LENGTH_INDEFINITE,

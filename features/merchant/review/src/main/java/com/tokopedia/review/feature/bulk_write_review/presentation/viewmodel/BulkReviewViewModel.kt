@@ -17,6 +17,7 @@ import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.bulk_write_review.di.qualifier.BulkReviewGson
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestParams
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestParam
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestState
@@ -79,7 +80,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -264,6 +264,8 @@ class BulkReviewViewModel @Inject constructor(
         initialValue = emptyList()
     )
     private val bulkReviewStickyButtonUiState = combine(
+        shouldSubmitReview,
+        submitBulkReviewRequestState,
         bulkReviewVisitableList,
         anonymous,
         bulkReviewStickyButtonMapper::map
@@ -307,6 +309,9 @@ class BulkReviewViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(STATE_FLOW_TIMEOUT_MILLIS),
         initialValue = BulkReviewPageUiState.Loading
     )
+    private val _reviewItemScrollRequest = MutableSharedFlow<BulkReviewItemUiModel>()
+    val reviewItemScrollRequest: Flow<BulkReviewItemUiModel>
+        get() = _reviewItemScrollRequest
 
     init {
         observeMediaUrisForUpload()
@@ -317,8 +322,8 @@ class BulkReviewViewModel @Inject constructor(
         handleTrackers()
     }
 
-    fun getData() {
-        getForms()
+    fun getData(invoice: String, utmSource: String) {
+        getForms(invoice, utmSource)
         getBadRatingCategory()
     }
 
@@ -397,29 +402,48 @@ class BulkReviewViewModel @Inject constructor(
             it.copyAndReplace(matcher = { reviewItemTestimony ->
                 reviewItemTestimony.inboxID == inboxID
             }, copier = { reviewItemTestimony ->
-                    reviewItemTestimony.copy(
-                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
-                            focused = true
-                        )
+                reviewItemTestimony.copy(
+                    testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                        shouldShowTextArea = true,
+                        focused = true
                     )
-                })
+                )
+            })
         }
     }
 
     fun onReviewItemTextAreaLostFocus(inboxID: String, text: String) {
         reviewItemsTestimony.update {
-            it.filterAndPut(
+            it.copyAndReplace(
                 matcher = { reviewItemTestimony ->
-                    reviewItemTestimony.inboxID != inboxID
+                    reviewItemTestimony.inboxID == inboxID
                 },
-                newItem = BulkReviewItemTestimonyUiModel(
-                    inboxID = inboxID,
-                    testimonyUiModel = ReviewTestimonyUiModel(
-                        text = text,
-                        showTextArea = text.isNotBlank(),
-                        focused = false
+                copier = { reviewItemTestimony ->
+                    reviewItemTestimony.copy(
+                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                            shouldShowTextArea = text.isNotBlank(),
+                            focused = false
+                        )
                     )
-                )
+                }
+            )
+        }
+    }
+
+    fun onReviewItemTextAreaTextChanged(inboxID: String, text: String) {
+        reviewItemsTestimony.update {
+            it.copyAndReplace(
+                matcher = { reviewItemTestimony ->
+                    reviewItemTestimony.inboxID == inboxID
+                },
+                copier = { reviewItemTestimony ->
+                    reviewItemTestimony.copy(
+                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                            text = text,
+                            shouldApplyText = false
+                        )
+                    )
+                }
             )
         }
     }
@@ -480,22 +504,17 @@ class BulkReviewViewModel @Inject constructor(
     }
 
     fun onSubmitReviews() {
-        reviewItemsMediaPickerUiState.value.let { currentMediaPickerUiState ->
-            val firstFailMediaPickerUiState = currentMediaPickerUiState.entries.firstOrNull {
-                it.key !in removedReviewItemsInboxID.value &&
-                    it.value is CreateReviewMediaPickerUiState.FailedUpload
-            }?.value as? CreateReviewMediaPickerUiState.FailedUpload
-            val firstUploadingMediaPickerUiState = currentMediaPickerUiState.entries.firstOrNull {
-                it.key !in removedReviewItemsInboxID.value &&
-                    it.value is CreateReviewMediaPickerUiState.Uploading
-            }?.value as? CreateReviewMediaPickerUiState.Uploading
-            if (firstFailMediaPickerUiState != null) {
-                enqueueToasterErrorUploadMedia(firstFailMediaPickerUiState.errorCode)
-            } else if (firstUploadingMediaPickerUiState != null) {
-                enqueueToasterWaitForUploadMedia()
-            } else {
-                shouldSubmitReview.value = true
-            }
+        val itemWithFailMediaUpload = getFirstItemWithFailMediaUpload()
+        val itemWithUploadingMedia = getFirstItemWithUploadingMedia()
+        val itemWithEmptyOtherReasonTestimony = getFirstItemWithEmptyOtherReasonTestimony()
+        if (itemWithFailMediaUpload != null) {
+            enqueueToasterErrorUploadMedia(itemWithFailMediaUpload.getMediaUploadErrorCode())
+        } else if (itemWithUploadingMedia != null) {
+            enqueueToasterWaitForUploadMedia()
+        } else if (itemWithEmptyOtherReasonTestimony != null) {
+            scrollToReviewItemVisitable(itemWithEmptyOtherReasonTestimony)
+        } else {
+            shouldSubmitReview.value = true
         }
     }
 
@@ -574,7 +593,10 @@ class BulkReviewViewModel @Inject constructor(
         )
     }
 
-    fun onRestoreInstanceState(saveInstanceCacheManager: CacheManager) {
+    fun onRestoreInstanceState(
+        saveInstanceCacheManager: CacheManager,
+        onFailedRestoreState: () -> Unit
+    ) {
         viewModelScope.launch(coroutineDispatchers.io) {
             val savedGetFormRequestState = saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
                 customId = SAVE_STATE_KEY_GET_FORM_REQUEST_STATE,
@@ -697,15 +719,22 @@ class BulkReviewViewModel @Inject constructor(
                     // noop
                 }
             } else {
-                getData()
+                onFailedRestoreState()
             }
         }
     }
 
-    fun findFocusedReviewItemVisitable(): Pair<Int, BulkReviewItemUiModel>? {
-        return bulkReviewVisitableList.value.find {
-            it is BulkReviewItemUiModel && it.uiState is BulkReviewItemUiState.Focused
-        }?.let { bulkReviewVisitableList.value.indexOf(it) to it as BulkReviewItemUiModel }
+    fun scrollToFocusedReviewItemVisitable() {
+        bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .find { it.uiState is BulkReviewItemUiState.Focused }
+            ?.let(::scrollToReviewItemVisitable)
+    }
+
+    fun getReviewItemVisitablePosition(inboxID: String): Int {
+        val pageUiState = bulkReviewPageUiState.value as? BulkReviewPageUiState.Showing ?: return -1
+        return pageUiState.items.indexOfFirst { it is BulkReviewItemUiModel && it.inboxID == inboxID }
     }
 
     fun getAndUpdateActiveMediaPickerInboxID(inboxID: String): String {
@@ -1472,8 +1501,9 @@ class BulkReviewViewModel @Inject constructor(
                             inboxID = uiState.inboxID,
                             testimonyUiModel = ReviewTestimonyUiModel(
                                 text = text,
-                                showTextArea = text.isNotBlank(),
-                                focused = false
+                                shouldShowTextArea = text.isNotBlank(),
+                                focused = false,
+                                shouldApplyText = true
                             )
                         )
                     )
@@ -1494,8 +1524,9 @@ class BulkReviewViewModel @Inject constructor(
                     inboxID = inboxID,
                     testimonyUiModel = ReviewTestimonyUiModel(
                         text = String.EMPTY,
-                        showTextArea = true,
-                        focused = true
+                        shouldShowTextArea = true,
+                        focused = true,
+                        shouldApplyText = true
                     )
                 )
             )
@@ -1507,10 +1538,13 @@ class BulkReviewViewModel @Inject constructor(
             it.copyAndReplace(matcher = { reviewItemTestimony ->
                 reviewItemTestimony.inboxID == inboxID
             }, copier = { reviewItemTestimony ->
-                    reviewItemTestimony.copy(
-                        testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(text = text)
+                reviewItemTestimony.copy(
+                    testimonyUiModel = reviewItemTestimony.testimonyUiModel.copy(
+                        text = text,
+                        shouldApplyText = false
                     )
-                })
+                )
+            })
         }
     }
 
@@ -1583,9 +1617,11 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    private fun getForms() {
+    private fun getForms(invoice: String, utmSource: String) {
         viewModelScope.launch(coroutineDispatchers.io) {
-            getFormUseCase(Unit).collectLatest { requestState ->
+            getFormUseCase(
+                BulkReviewGetFormRequestParams(invoice, utmSource)
+            ).collectLatest { requestState ->
                 getFormRequestState.value = requestState
             }
         }
@@ -1616,6 +1652,33 @@ class BulkReviewViewModel @Inject constructor(
         } else {
             null
         }
+    }
+
+    private fun getFirstItemWithFailMediaUpload(): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .firstOrNull {
+                it.inboxID !in removedReviewItemsInboxID.value && it.isMediaUploadFailed()
+            }
+    }
+
+    private fun getFirstItemWithUploadingMedia(): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .firstOrNull {
+                it.inboxID !in removedReviewItemsInboxID.value && it.isUploadingMedia()
+            }
+    }
+
+    private fun getFirstItemWithEmptyOtherReasonTestimony(): BulkReviewItemUiModel? {
+        return bulkReviewVisitableList
+            .value
+            .filterIsInstance<BulkReviewItemUiModel>()
+            .firstOrNull {
+                it.inboxID !in removedReviewItemsInboxID.value && it.hasEmptyOtherReasonTestimony()
+            }
     }
 
     private fun <T> List<T>.copyAndReplace(
@@ -1825,5 +1888,9 @@ class BulkReviewViewModel @Inject constructor(
             rating = rating,
             timestamp = System.currentTimeMillis()
         )
+    }
+
+    private fun scrollToReviewItemVisitable(reviewItem: BulkReviewItemUiModel) {
+        viewModelScope.launch { _reviewItemScrollRequest.emit(reviewItem) }
     }
 }

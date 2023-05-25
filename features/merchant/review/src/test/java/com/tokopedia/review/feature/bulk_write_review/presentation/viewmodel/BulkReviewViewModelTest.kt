@@ -24,8 +24,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -48,7 +46,7 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             mockErrorGetFormResult()
             mockSuccessBadRatingCategoryResult()
-            viewModel.getData()
+            viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
             assertTrue(uiStates.last() is BulkReviewPageUiState.Error)
         }
 
@@ -57,14 +55,14 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState { uiStates ->
             mockSuccessGetFormResult()
             mockErrorBadRatingCategoryResult()
-            viewModel.getData()
+            viewModel.getData(SAMPLE_INVOICE, SAMPLE_UTM_SOURCE)
             assertTrue(uiStates.last() is BulkReviewPageUiState.Error)
         }
 
     @Test
     fun `getData should execute getFormUseCase once`() = runCollectingBulkReviewPageUiState {
         doSuccessGetInitialData()
-        coVerify(exactly = 1) { getFormUseCase(Unit) }
+        coVerify(exactly = 1) { getFormUseCase(any()) }
     }
 
     @Test
@@ -1017,6 +1015,26 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onReviewItemTextAreaTextChanged should update review item text area ui state`() =
+        runCollectingBulkReviewPageUiState { pageUiStates ->
+            val reviewItem = getFirstReviewItem()
+            val textToType = "Bagus sekali barangnya"
+
+            doSuccessGetInitialData()
+
+            viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+            viewModel.onReviewItemTextAreaGainFocus(reviewItem.inboxID)
+            viewModel.onReviewItemTextAreaTextChanged(reviewItem.inboxID, textToType)
+
+            val pageShowingUiState = pageUiStates.last() as BulkReviewPageUiState.Showing
+            val textAreaUiState = (pageShowingUiState.items.find {
+                it is BulkReviewItemUiModel && it.inboxID == reviewItem.inboxID
+            } as BulkReviewItemUiModel).uiState.textAreaUiState as BulkReviewTextAreaUiState.Showing
+            assertEquals(textToType, textAreaUiState.text)
+            assertFalse(textAreaUiState.shouldApplyText)
+        }
+
+    @Test
     fun `onConfirmRemoveReviewItem should execute BulkWriteReviewTracker#trackRemoveReviewItemDialogRemoveButtonClick once`() =
         runCollectingBulkReviewPageUiState {
             runCollectingBulkReviewRemoveReviewItemDialogUiState {
@@ -1705,6 +1723,36 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         }
 
     @Test
+    fun `onSubmitReviews should request scroll to review item with empty testimony and other bad rating category`() =
+        runCollectingBulkReviewPageUiState {
+            runCollectingReviewItemScrollRequest { scrollRequests ->
+                val reviewItem = getFirstReviewItem()
+                val otherBadRatingCategory = getOtherBadRatingCategory()
+
+                doSuccessGetInitialData()
+                mockAllSuccessSubmitBulkReview()
+
+                viewModel.onRatingChanged(reviewItem.inboxID, Constant.BAD_RATING)
+                viewModel.onBadRatingCategorySelectionChanged(
+                    position = Int.ZERO,
+                    badRatingCategoryID = otherBadRatingCategory.id,
+                    reason = otherBadRatingCategory.description,
+                    selected = true
+                )
+                viewModel.onDismissExpandedTextAreaBottomSheet("Saya tidak puas")
+                viewModel.onReviewItemTextAreaGainFocus(reviewItem.inboxID)
+                viewModel.onReviewItemTextAreaTextChanged(reviewItem.inboxID, "")
+                viewModel.onReviewItemTextAreaLostFocus(reviewItem.inboxID, "")
+                viewModel.onSubmitReviews()
+
+                coVerify(inverse = true) {
+                    submitUseCase(any())
+                }
+                assertEquals(reviewItem.inboxID, scrollRequests.last().inboxID)
+            }
+        }
+
+    @Test
     fun `onSubmitReviews should execute submitUseCase exactly once`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
@@ -1932,7 +1980,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         runCollectingBulkReviewPageUiState {
             mockSuccessGetFormResult()
             mockSuccessBadRatingCategoryResult()
-            doRestoreInstanceState { verify(inverse = true) { it.getData() } }
+            doRestoreInstanceState { verify(inverse = true) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -1953,7 +2005,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockGetFormRequestState = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -1963,7 +2019,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockGetBadRatingCategoryRequestState = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -1973,7 +2033,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockSubmitBulkReviewRequestState = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -1983,7 +2047,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockRemovedReviewItemsInboxID = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -1993,7 +2061,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsRating = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2003,7 +2075,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsBadRatingCategory = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2013,7 +2089,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsTestimony = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2023,7 +2103,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsMediaUris = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2033,7 +2117,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsMediaUploadResults = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2043,7 +2131,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockReviewItemsMediaUploadBatchNumber = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2053,7 +2145,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockAnonymous = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2063,7 +2159,11 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockShouldSubmitReview = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
@@ -2073,27 +2173,46 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
             mockSuccessBadRatingCategoryResult()
             doRestoreInstanceState(
                 mockActiveMediaPickerInboxID = null
-            ) { verify(exactly = 1) { it.getData() } }
+            ) { verify(exactly = 1) { it.getData(
+                SAMPLE_INVOICE,
+                SAMPLE_UTM_SOURCE
+            )
+            } }
         }
 
     @Test
-    fun `findFocusedReviewItemVisitable should return null when there's no focused review item`() =
+    fun `scrollToFocusedReviewItemVisitable should update reviewItemScrollRequest`() =
         runCollectingBulkReviewPageUiState {
-            doSuccessGetInitialData()
-            assertNull(viewModel.findFocusedReviewItemVisitable())
+            runCollectingReviewItemScrollRequest { reviewItemsToScroll ->
+                val reviewItem = getFirstReviewItem()
+
+                doSuccessGetInitialData()
+                viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+                viewModel.scrollToFocusedReviewItemVisitable()
+                assertEquals(reviewItem.inboxID, reviewItemsToScroll.last().inboxID)
+            }
         }
 
     @Test
-    fun `findFocusedReviewItemVisitable should return non-null when there's focused review item`() =
+    fun `getReviewItemVisitablePosition should return the position of supplied review item inbox ID`() =
         runCollectingBulkReviewPageUiState {
             val reviewItem = getFirstReviewItem()
 
             doSuccessGetInitialData()
-            viewModel.onClickTestimonyMiniAction(reviewItem.inboxID)
+            val position = viewModel.getReviewItemVisitablePosition(reviewItem.inboxID)
 
-            val focusedReviewItem = viewModel.findFocusedReviewItemVisitable()
-            assertEquals(Int.ONE, focusedReviewItem?.first)
-            assertNotNull(focusedReviewItem?.second)
+            assertEquals(1, position)
+        }
+
+    @Test
+    fun `getReviewItemVisitablePosition should return -1 when cannot find the supplied review item inbox ID`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+
+            doSuccessGetInitialData()
+            val position = viewModel.getReviewItemVisitablePosition("")
+
+            assertEquals(-1, position)
         }
 
     @Test
@@ -2104,6 +2223,32 @@ class BulkReviewViewModelTest : BulkReviewViewModelTestFixture() {
         assertEquals("", initialValue)
         assertEquals("123", priorValue)
     }
+
+    @Test
+    fun `getReviewItemMedia should return media paths`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+            val pickedMedia = listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg")
+
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(pickedMedia)
+            val reviewItemMedia = viewModel.getReviewItemMedia(reviewItem.inboxID)
+            assertEquals(pickedMedia, reviewItemMedia)
+        }
+
+    @Test
+    fun `getReviewItemMedia should return empty when supplied review item inbox id is not found`() =
+        runCollectingBulkReviewPageUiState {
+            val reviewItem = getFirstReviewItem()
+            val pickedMedia = listOf("1.mp4", "2.jpg", "3.jpg", "4.jpg", "5.jpg")
+
+            doSuccessGetInitialData()
+            viewModel.getAndUpdateActiveMediaPickerInboxID(reviewItem.inboxID)
+            viewModel.onReceiveMediaPickerResult(pickedMedia)
+            val reviewItemMedia = viewModel.getReviewItemMedia("")
+            assertEquals(listOf<String>(), reviewItemMedia)
+        }
 
     @Test
     fun `enqueueToasterDisabledAddMoreMedia should enqueue expected toaster`() =
