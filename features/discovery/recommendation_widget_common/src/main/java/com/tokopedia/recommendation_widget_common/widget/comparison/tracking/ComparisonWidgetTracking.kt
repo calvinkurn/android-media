@@ -1,7 +1,8 @@
-package com.tokopedia.recommendation_widget_common.widget
+package com.tokopedia.recommendation_widget_common.widget.comparison.tracking
 
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import java.util.*
@@ -22,8 +23,8 @@ object ComparisonWidgetTracking : BaseTrackerConst() {
         headerTitle: String,
         chipsTitle: String = "",
         recommendationItem: RecommendationItem,
-        position: Int,
-    ) : HashMap<String, Any> {
+        position: Int
+    ): HashMap<String, Any> {
         val isLogin = userId.isNotBlank()
         val trackingBuilder =
             BaseTrackerBuilder()
