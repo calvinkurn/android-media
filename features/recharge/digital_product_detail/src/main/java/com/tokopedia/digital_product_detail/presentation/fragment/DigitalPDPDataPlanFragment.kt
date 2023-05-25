@@ -67,6 +67,7 @@ import com.tokopedia.digital_product_detail.domain.model.DigitalSaveAccessTokenR
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
+import com.tokopedia.digital_product_detail.presentation.custom.activityresult.OpenRechargeCheckBalance
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegate
 import com.tokopedia.digital_product_detail.presentation.delegate.DigitalKeyboardDelegateImpl
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
@@ -133,6 +134,7 @@ class DigitalPDPDataPlanFragment :
     RechargeRecommendationCardListener,
     RechargeDenomFullListener,
     RechargeOmniWidget.RechargeOmniWidgetListener,
+    RechargeCheckBalanceOTPBottomSheet.RechargeCheckBalanceOTPBottomSheetListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
@@ -171,6 +173,12 @@ class DigitalPDPDataPlanFragment :
 
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
+    }
+
+    private val indosatCheckBalanceLauncher = registerForActivityResult(OpenRechargeCheckBalance()) { isSuccess ->
+        if (isSuccess) {
+            getIndosatCheckBalance()
+        }
     }
 
     override fun getScreenName(): String = ""
@@ -722,7 +730,10 @@ class DigitalPDPDataPlanFragment :
             hideCheckBalanceWidgetShimmering()
 
             // TODO: [Misael] Remove this line later
-            if (checkBalanceData.iconUrl.isEmpty()) return
+            if (checkBalanceData.iconUrl.isEmpty()) {
+                setupDynamicScrollViewPadding()
+                return
+            }
 
             if (checkBalanceData.widgets.isEmpty()) {
                 renderCheckBalanceOTPWidget(
@@ -774,6 +785,7 @@ class DigitalPDPDataPlanFragment :
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             hideCheckBalanceWidget()
             hideCheckBalanceWidgetShimmering()
+            setupDynamicScrollViewPadding()
         }
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
@@ -784,6 +796,7 @@ class DigitalPDPDataPlanFragment :
             hideCheckBalanceOtpWidget()
             showCheckBalanceWidget()
             showCheckBalanceWidgetShimmering()
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -796,11 +809,11 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedSaveAccessToken(throwable: Throwable) {
-        showErrorToaster(throwable)
+        onFailedGetCheckBalance(throwable)
     }
 
     private fun onLoadingSaveAccessToken() {
-        // TODO: [Misael] show shimmering
+        onLoadingGetCheckBalance()
     }
 
     private fun hideCheckBalanceWidget() {
@@ -1756,6 +1769,7 @@ class DigitalPDPDataPlanFragment :
     override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
         val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
         bottomSheet.setBottomSheetModel(model)
+        bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager)
     }
 
@@ -1764,6 +1778,14 @@ class DigitalPDPDataPlanFragment :
         bottomSheet.setBottomSheetTitle(model.title)
         bottomSheet.setCheckBalanceDetailModels(model.details)
         bottomSheet.show(childFragmentManager)
+    }
+    //endregion
+
+    //region RechargeCheckBalanceOTPBottomSheet
+    override fun onClickButton(applink: String) {
+        // TODO: [Misael] remove this dummy applink
+//        indosatCheckBalanceLauncher.launch(applink)
+        indosatCheckBalanceLauncher.launch("https://staging.tokopedia.com/mybills")
     }
     //endregion
 
