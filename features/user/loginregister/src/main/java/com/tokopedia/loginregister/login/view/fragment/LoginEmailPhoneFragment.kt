@@ -611,20 +611,22 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun handleLoginOption(data: LoginOption) {
         if (data.isEnableSeamless) routeToGojekSeamlessPage()
-        if (data.isEnableBiometrics) onSuccessRegisterCheckFingerprint(data.biometricsData)
+        if (data.isEnableBiometrics) onSuccessRegisterCheckFingerprint(data.biometricsData, isShowDirectBiometricsPrompt(data.isEnableSeamless))
         hideLoadingOverlay()
     }
 
-    private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult) {
+    /**
+     * @param isShowDirectBiometricsPrompt default false means that the param is not called from [handleLoginOption]
+     */
+    private fun onSuccessRegisterCheckFingerprint(data: RegisterCheckFingerprintResult, isShowDirectBiometricsPrompt: Boolean = false) {
         activity?.let {
             if (isEnableFingerprint && data.isRegistered) {
-                enableFingerprint()
+                enableFingerprint(isShowDirectBiometricsPrompt)
             } else {
                 disableFingerprint()
             }
         }
     }
-
     private fun onSuccessLoginBiometric() {
         analytics.trackOnLoginFingerprintSuccess()
         viewModel.getUserInfo()
@@ -821,12 +823,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewBinding?.fingerprintBtn?.hide()
     }
 
-    private fun enableFingerprint() {
+    private fun enableFingerprint(isShowDirectBiometricsPrompt: Boolean) {
         viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
 
-            if (isEnableDirectBiometric) {
+            if (isShowDirectBiometricsPrompt) {
                 analytics.trackClickBiometricLoginBtn()
                 gotoVerifyFingerprint()
             }
@@ -842,6 +844,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val value = abTestPlatform.getString(LoginConstants.RollenceKey.DIRECT_LOGIN_BIOMETRIC, "")
         return value.isNotEmpty()
     }
+
+    /**
+     * function to prevent clash biometrics prompt and seamless routing
+     * @param isEnableSeamless value is get from [LoginOption]
+     * @return true if [isEnableDirectBiometric] true && [isEnableSeamless] false
+     * @return false if [isEnableDirectBiometric] true && [isEnableSeamless] true
+     */
+    private fun isShowDirectBiometricsPrompt(isEnableSeamless: Boolean): Boolean = isEnableDirectBiometric && isEnableSeamless.not()
 
     private fun setLeftDrawableForFingerprint() {
         if (activity != null) {
