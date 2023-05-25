@@ -38,13 +38,16 @@ class ProductSetupContainer(
                         maxProduct: Int,
                         productSectionList: List<ProductTagSectionUiModel>,
                         savedStateHandle: SavedStateHandle,
-                        isEligibleForPin: Boolean,
                         source: PlayBroPageSource,
-                        fetchCommissionProduct: Boolean,
+                        isEligibleForPin: Boolean,
+                        fetchCommissionProduct: Boolean
                     ): PlayBroProductSetupViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create("123", 30, emptyList(), handle, false, source = PlayBroPageSource.Live, false) as T
+                }.create("123", 30, emptyList(), handle, source = PlayBroPageSource.Live,
+                    isEligibleForPin = false,
+                    fetchCommissionProduct = false
+                ) as T
             }
         }
     }

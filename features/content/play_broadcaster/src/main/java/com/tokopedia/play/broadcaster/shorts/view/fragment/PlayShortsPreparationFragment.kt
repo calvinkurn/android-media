@@ -371,21 +371,22 @@ class PlayShortsPreparationFragment @Inject constructor(
             preparationMenu.setOnMenuClickListener {
                 coachMark?.dismissCoachMark()
 
-                when (it.menuId) {
-                    DynamicPreparationMenu.TITLE -> {
+                when (it.menu) {
+                    DynamicPreparationMenu.Menu.Title -> {
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                         analytic.clickMenuTitle(viewModel.selectedAccount)
                         openSetupTitleBottomSheet()
                     }
-                    DynamicPreparationMenu.PRODUCT -> {
+                    DynamicPreparationMenu.Menu.Product -> {
                         analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
-                    DynamicPreparationMenu.COVER -> {
+                    DynamicPreparationMenu.Menu.Cover -> {
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
                         analytic.clickMenuCover(viewModel.selectedAccount)
                         openSetupCoverBottomSheet()
                     }
+                    else -> {}
                 }
             }
 
