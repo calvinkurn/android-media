@@ -15,15 +15,31 @@ class OnBoardAffiliateUseCase @Inject constructor(
 ) : CoroutineUseCase<OnboardAffiliateRequestModel, OnboardAffiliateResponseModel>(dispatcher.io) {
 
     override suspend fun execute(params: OnboardAffiliateRequestModel): OnboardAffiliateResponseModel {
-        val param = generateParams(params)
-        return repository.request(graphqlQuery(), param)
+        return try {
+            val param = generateParams(params)
+            repository.request(graphqlQuery(), param)
+        } catch (e: Exception) {
+            OnboardAffiliateResponseModel(
+                data = OnboardAffiliateResponseModel.Data(
+                    error = OnboardAffiliateResponseModel.Data.Error(
+                        errorType = 1,
+                        message = e.message.orEmpty(),
+                    ),
+                    status = 0,
+                )
+            )
+        }
     }
 
     private fun generateParams(params: OnboardAffiliateRequestModel): Map<String, Any> {
         return mapOf(
-            KEY_PARAM_NAME to VALUE_PARAM_NAME,
-            KEY_PARAM_CHANNEL_ID to params.channelID,
-            KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
+            KEY_PARAM_CHANNEL to listOf(
+                mapOf(
+                    KEY_PARAM_NAME to VALUE_PARAM_NAME,
+                    KEY_PARAM_CHANNEL_ID to params.channelID,
+                    KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
+                )
+            )
         )
     }
 

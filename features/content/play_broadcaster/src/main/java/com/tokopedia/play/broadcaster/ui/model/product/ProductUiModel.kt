@@ -12,6 +12,10 @@ import kotlinx.android.parcel.Parcelize
 data class ProductUiModel(
     val id: String,
     val name: String,
+    val hasCommission: Boolean = false,
+    val commissionFmt: String = "",
+    val commission: Long = 0,
+    val extraCommission: Boolean = false,
     val imageUrl: String,
     val stock: Long,
     val price: ProductPrice,

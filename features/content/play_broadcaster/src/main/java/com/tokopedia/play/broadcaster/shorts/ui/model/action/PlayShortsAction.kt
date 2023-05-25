@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.ui.model.action
 
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 
@@ -48,7 +49,7 @@ sealed interface PlayShortsAction {
     object ClickUploadVideo : PlayShortsAction
 
     /** Shorts x Affiliate */
-    object SubmitOnboardAffiliateTnc: PlayShortsAction
+    object SubmitOnboardAffiliateTnc : PlayShortsAction
 
     /** Others */
     object SetShowSetupCoverCoachMark : PlayShortsAction
@@ -57,4 +58,8 @@ sealed interface PlayShortsAction {
     ) : PlayShortsAction
 
     object ResetUploadState : PlayShortsAction
+
+    data class AddBannerPreparation(val data: PlayBroadcastPreparationBannerModel) : PlayShortsAction
+
+    data class RemoveBannerPreparation(val data: PlayBroadcastPreparationBannerModel) : PlayShortsAction
 }

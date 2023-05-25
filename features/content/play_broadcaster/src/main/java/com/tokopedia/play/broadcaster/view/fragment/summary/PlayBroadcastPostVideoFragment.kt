@@ -28,10 +28,13 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPostVideoBinding
+import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastSummaryAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastSummaryEvent
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
@@ -51,7 +54,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -62,7 +64,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
     private val userSession: UserSessionInterface,
     private val router: Router,
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
 ) : PlayBaseBroadcastFragment(),
     TagListViewComponent.Listener,
@@ -151,6 +152,43 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
                 val isShowCoachMark = parentViewModel.isShowSetupCoverCoachMark
                 childFragment.needToShowCoachMark(isShowCoachMark)
                 if (isShowCoachMark) parentViewModel.submitAction(PlayBroadcastAction.SetShowSetupCoverCoachMark)
+            }
+            is ProductSetupFragment -> {
+                childFragment.setDataSource(object : ProductSetupFragment.DataSource {
+                    override fun getProductSectionList(): List<ProductTagSectionUiModel> {
+                        return parentViewModel.productSectionList
+                    }
+
+                    override fun isEligibleForPin(): Boolean = false
+
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.uiState.value.selectedContentAccount
+                    }
+
+                    override fun creationId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun maxProduct(): Int {
+                        return parentViewModel.maxProduct
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
+                    }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
+                })
+
+                childFragment.setListener(object : ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetProduct(productTagSectionList)
+                        )
+                    }
+                })
             }
         }
     }
@@ -371,4 +409,15 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
+
+    override fun setupCoverProductClicked() {
+        openSetupProductBottomSheet()
+    }
+
+    private fun openSetupProductBottomSheet() {
+        childFragmentManager.beginTransaction()
+            .add(ProductSetupFragment::class.java, null, null)
+            .commit()
+    }
+
 }

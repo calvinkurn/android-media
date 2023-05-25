@@ -136,7 +136,7 @@ class ShortsUiModelBuilder {
     ): List<ProductTagSectionUiModel> {
         return List(1) {
             ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(size) { productCounter ->
-                ProductUiModel(productCounter.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+                ProductUiModel(productCounter.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0))
             })
         }
     }

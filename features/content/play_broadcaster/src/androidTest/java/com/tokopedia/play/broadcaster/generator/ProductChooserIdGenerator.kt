@@ -111,6 +111,7 @@ class ProductChooserIdGenerator {
             savedStateHandle: SavedStateHandle,
             isEligibleForPin: Boolean,
             source: PlayBroPageSource
+            fetchCommissionProduct: Boolean,
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
                 creationId = creationId,
@@ -121,7 +122,8 @@ class ProductChooserIdGenerator {
                 repo = repo,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
-                source = source
+                source = source,
+                fetchCommissionProduct = fetchCommissionProduct,
             )
         }
     }
@@ -141,7 +143,7 @@ class ProductChooserIdGenerator {
 
                         override fun getSelectedAccount(): ContentAccountUiModel {
                             return ContentAccountUiModel.Empty.copy(
-                                type = ContentCommonUserType.TYPE_SHOP
+                                type = ContentCommonUserType.TYPE_SHOP,
                             )
                         }
 
@@ -155,6 +157,10 @@ class ProductChooserIdGenerator {
 
                         override fun getPageSource(): PlayBroPageSource {
                             return PlayBroPageSource.Live
+                        }
+
+                        override fun fetchCommissionProduct(): Boolean {
+                            return false
                         }
                     })
                 }
