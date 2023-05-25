@@ -21,7 +21,7 @@ import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.LinkUiModel
 import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileCreationButtonUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileStatsUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -74,7 +74,7 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
-    override fun mapCreationButton(response: Creation): ProfileCreationButtonUiModel {
+    override fun mapCreationInfo(response: Creation): ProfileCreationInfoUiModel {
         fun getAuthorTypeUser(authors: List<Authors>): Authors? {
             return authors.find { it.type == ContentCommonUserType.TYPE_USER }
         }
@@ -92,9 +92,9 @@ class UserProfileUiMapperImpl @Inject constructor(
         }
 
         val getAuthorItemTypeUser = getAuthorTypeUser(response.authors)?.items
-            ?: return ProfileCreationButtonUiModel()
+            ?: return ProfileCreationInfoUiModel()
 
-        return ProfileCreationButtonUiModel(
+        return ProfileCreationInfoUiModel(
             isActive = response.isActive,
             showPost = getButtonTypePost(getAuthorItemTypeUser),
             showLiveStream = getButtonTypeLiveStream(getAuthorItemTypeUser),

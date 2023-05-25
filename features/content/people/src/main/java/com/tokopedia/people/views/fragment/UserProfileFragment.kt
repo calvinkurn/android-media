@@ -70,7 +70,7 @@ import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAG
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
-import com.tokopedia.people.views.uimodel.profile.ProfileCreationButtonUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -379,7 +379,7 @@ class UserProfileFragment @Inject constructor(
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderButtonAction(it.prevValue, it.value)
                 renderButtonOption(it.prevValue, it.value)
-                renderCreateContentButton(it.prevValue?.showCreationButton, it.value.showCreationButton)
+                renderCreationInfo(it.prevValue?.creationInfo, it.value.creationInfo)
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
                 renderProfileTab(it.prevValue?.profileTab, it.value.profileTab)
@@ -621,9 +621,9 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    private fun renderCreateContentButton(
-        prev: ProfileCreationButtonUiModel?,
-        value: ProfileCreationButtonUiModel
+    private fun renderCreationInfo(
+        prev: ProfileCreationInfoUiModel?,
+        value: ProfileCreationInfoUiModel
     ) {
         if (prev == value) return
 

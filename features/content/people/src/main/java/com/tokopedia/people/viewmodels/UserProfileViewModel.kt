@@ -20,7 +20,7 @@ import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileCreationButtonUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileType
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -95,7 +95,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
-    private val _showCreationButton = MutableStateFlow(ProfileCreationButtonUiModel())
+    private val _creationInfo = MutableStateFlow(ProfileCreationInfoUiModel())
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
@@ -113,7 +113,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileInfo,
         _followInfo,
         _profileType,
-        _showCreationButton,
+        _creationInfo,
         _shopRecom,
         _profileTab,
         _feedPostsContent,
@@ -123,7 +123,7 @@ class UserProfileViewModel @AssistedInject constructor(
     ) { profileInfo,
         followInfo,
         profileType,
-        showCreationButton,
+        creationInfo,
         shopRecom,
         profileTab,
         feedPostsContent,
@@ -134,7 +134,7 @@ class UserProfileViewModel @AssistedInject constructor(
             profileInfo = profileInfo,
             followInfo = followInfo,
             profileType = profileType,
-            showCreationButton = showCreationButton,
+            creationInfo = creationInfo,
             shopRecom = shopRecom,
             profileTab = profileTab,
             feedPostsContent = feedPostsContent,
@@ -525,7 +525,7 @@ class UserProfileViewModel @AssistedInject constructor(
             return
         }
 
-        if (profileType == ProfileType.Self) _showCreationButton.update { repo.getCreationButton() }
+        if (profileType == ProfileType.Self) _creationInfo.update { repo.getCreationInfo() }
 
         if (isRefresh) loadProfileTab()
     }

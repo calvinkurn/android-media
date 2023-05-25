@@ -11,7 +11,7 @@ import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileCreationButtonUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 
@@ -23,7 +23,7 @@ interface UserProfileUiMapper {
 
     fun mapFollowInfo(response: UserProfileIsFollow): FollowInfoUiModel
 
-    fun mapCreationButton(response: Creation): ProfileCreationButtonUiModel
+    fun mapCreationInfo(response: Creation): ProfileCreationInfoUiModel
 
     fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel
 

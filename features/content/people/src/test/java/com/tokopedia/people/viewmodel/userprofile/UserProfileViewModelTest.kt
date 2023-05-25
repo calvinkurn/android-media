@@ -109,7 +109,7 @@ class UserProfileViewModelTest {
     fun `when user load own data, it should call and emit whitelist data`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockHasAcceptTnc
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
@@ -134,7 +134,7 @@ class UserProfileViewModelTest {
     fun `when user load own data and already whitelisted, isWhitelist should be true`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockHasAcceptTnc
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
@@ -156,7 +156,7 @@ class UserProfileViewModelTest {
     fun `when user load own data, and need to onboarding`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockHasAcceptTnc
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
@@ -178,7 +178,7 @@ class UserProfileViewModelTest {
     fun `when user load own data, and no need to onboarding`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasNotAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockHasNotAcceptTnc
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,

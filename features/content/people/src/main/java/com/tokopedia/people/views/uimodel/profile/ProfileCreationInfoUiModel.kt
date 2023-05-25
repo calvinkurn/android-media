@@ -1,6 +1,6 @@
 package com.tokopedia.people.views.uimodel.profile
 
-data class ProfileCreationButtonUiModel(
+data class ProfileCreationInfoUiModel(
     val isActive: Boolean = false,
     val showPost: Boolean = false,
     val showLiveStream: Boolean = false,

@@ -20,7 +20,7 @@ import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileCreationButtonUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -63,13 +63,13 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCreationButton(): ProfileCreationButtonUiModel {
+    override suspend fun getCreationInfo(): ProfileCreationInfoUiModel {
         return withContext(dispatcher.io) {
             feedXHeaderUseCase.setRequestParams(
                 FeedXHeaderUseCase.createParam(listOf(CREATION.value))
             )
             val result = feedXHeaderUseCase.executeOnBackground()
-            mapper.mapCreationButton(result.feedXHeaderData.data.creation)
+            mapper.mapCreationInfo(result.feedXHeaderData.data.creation)
         }
     }
 
