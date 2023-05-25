@@ -273,8 +273,8 @@ private fun InputDay(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit, da
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.DAY) },
-        label = stringResource(id = R.string.label_day_reschedule_pick_up),
         enabled = false,
+        label = stringResource(id = R.string.label_day_reschedule_pick_up),
         placeholder = stringResource(id = R.string.placeholder_day_reschedule_pick_up),
         icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.DAY) }) }
     )
@@ -313,8 +313,8 @@ private fun InputReason(onOpenBottomSheet: (RescheduleBottomSheetState) -> Unit,
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp)
             .clickable { onOpenBottomSheet(RescheduleBottomSheetState.REASON) },
-        label = stringResource(id = R.string.label_reason_reschedule_pickup),
         enabled = false,
+        label = stringResource(id = R.string.label_reason_reschedule_pickup),
         icon1 = { DropDownIcon(onClick = { onOpenBottomSheet(RescheduleBottomSheetState.REASON) }) }
     )
 }
@@ -345,10 +345,10 @@ private fun InputCustomReason(
                 .padding(vertical = 8.dp, horizontal = 16.dp),
             label = stringResource(id = R.string.label_detail_reason_reschedule_pickup),
 
-            onValueChanged = { onOtherReasonChanged(it) },
+            error = error,
 
-            counter = 160,
-            error = error
+            onValueChanged = { onOtherReasonChanged(it) },
+            counter = 160
         )
     }
 }
