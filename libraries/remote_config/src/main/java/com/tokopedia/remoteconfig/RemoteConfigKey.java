@@ -236,8 +236,11 @@ public class RemoteConfigKey {
 
     public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
 
+    public static final String IS_USING_NEW_FEED = "android_main_app_show_unified_feed";
+
     public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
 
     public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
 
+    public static final String FEED_NEW_ICON = "FeedNewIcon";
 }

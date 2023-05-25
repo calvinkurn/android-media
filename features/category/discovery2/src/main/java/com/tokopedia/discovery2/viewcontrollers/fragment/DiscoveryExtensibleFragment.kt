@@ -1,5 +1,6 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
+import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
@@ -16,6 +17,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
+@Keep
 class DiscoveryExtensibleFragment : DiscoveryFragment() {
     private var tempViewModel: DiscoveryViewModel? = null
 
@@ -45,7 +47,7 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
         return trackingQueueInjected
     }
 
-    //Todo::
+    // Todo::
     fun injectionComponent() {
 //        After you inject this fragment
 //        How should we handle pageLoadTimeInterface.
@@ -73,8 +75,6 @@ class DiscoveryExtensibleFragment : DiscoveryFragment() {
             )[DiscoveryViewModel::class.java].apply {
                 this@DiscoveryExtensibleFragment.lifecycle.addObserver(BaseLifeCycleObserver(this))
             }
-
         }
     }
-
 }
