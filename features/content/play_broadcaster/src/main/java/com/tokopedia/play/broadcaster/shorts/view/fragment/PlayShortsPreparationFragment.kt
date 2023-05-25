@@ -297,6 +297,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        analytic.sendClickRegisterAffiliateCardEvent(viewModel.selectedAccount.id)
         openShortsAffiliateTncBottomSheet()
     }
 
