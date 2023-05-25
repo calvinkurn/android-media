@@ -70,7 +70,6 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_RECOM_WITH_ATC
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.VIEW_TO_VIEW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
@@ -720,8 +719,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 else -> {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
-                        val showAtcButton = data.pageName == PDP_RECOM_WITH_ATC
-                        cardModel = data.recommendationItemList.toProductCardModels(hasAtcButton = showAtcButton)
+                        cardModel = data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -972,7 +970,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             // update data based on tokonow cart
-            if (recomItem.isRecomProductShowVariantAndCart) {
+            if (recomItem.addToCartType == RecommendationItem.AddToCartType.QuantityEditor) {
                 recomItem.setDefaultCurrentStock()
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(
