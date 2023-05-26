@@ -405,7 +405,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
     suspend fun isFingerprintRegistered(): Boolean {
         return try {
             registerCheckFingerprintUseCase(Unit)
-        } catch (e: Exception) {
+        } catch (ignored: Exception) {
             false
         }
     }
