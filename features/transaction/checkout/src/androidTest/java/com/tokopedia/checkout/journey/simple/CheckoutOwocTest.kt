@@ -43,7 +43,8 @@ class CheckoutOwocTest {
         checkoutPage {
             // Wait for SAF
             waitForData()
-            assertNewUiGroupType(activityRule)
+            assertNewUiGroupType(activityRule, 0)
+            assertNewUiGroupType(activityRule, 1)
             clickChooseDuration(activityRule)
             waitForData()
             selectFirstShippingDurationOption()

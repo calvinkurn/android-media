@@ -54,17 +54,18 @@ class CheckoutPageRobot {
         return position
     }
 
-    private fun scrollRecyclerViewToFirstShipmentCartItem(activityRule: IntentsTestRule<ShipmentActivity>): Int {
+    private fun scrollRecyclerViewToShipmentCartItem(activityRule: IntentsTestRule<ShipmentActivity>, productIndex: Int): Int {
         val recyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_shipment)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
 
         var position = RecyclerView.NO_POSITION
+        var currentIndex = 0
         for (i in 0 until itemCount) {
             scrollRecyclerViewToPosition(activityRule, recyclerView, i)
             when (recyclerView.findViewHolderForAdapterPosition(i)) {
                 is ShipmentCartItemViewHolder -> {
                     position = i
-                    break
+                    if (currentIndex == productIndex) break else currentIndex += 1
                 }
             }
         }
@@ -223,8 +224,8 @@ class CheckoutPageRobot {
         }
     }
 
-    fun assertNewUiGroupType(activityRule: IntentsTestRule<ShipmentActivity>) {
-        val position = scrollRecyclerViewToFirstShipmentCartItem(activityRule)
+    fun assertNewUiGroupType(activityRule: IntentsTestRule<ShipmentActivity>, productIndex: Int) {
+        val position = scrollRecyclerViewToShipmentCartItem(activityRule, productIndex)
         if (position != RecyclerView.NO_POSITION) {
             onView(ViewMatchers.withId(R.id.rv_shipment))
                 .perform(
