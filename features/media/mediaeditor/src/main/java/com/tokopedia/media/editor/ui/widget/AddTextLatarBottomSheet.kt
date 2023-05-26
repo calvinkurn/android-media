@@ -1,12 +1,16 @@
 package com.tokopedia.media.editor.ui.widget
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color: Int, latarModel: Int) -> Unit) :
@@ -28,7 +32,7 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
         inflater.inflate(editorR.layout.add_text_latar_bottomsheet, container)?.apply {
             setChild(this)
 
-            initializeViewRef(this)
+            initializeView(this)
             initializeActiveState()
             initializeButtonListener()
             setLatarItem()
@@ -38,7 +42,7 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initializeViewRef(parent: View) {
+    private fun initializeView(parent: View) {
         parent.apply {
             colorButtonRef.add(
                 findViewById(editorR.id.btmsht_add_text_color_black)
@@ -58,6 +62,16 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             )
 
             mNextButton = findViewById(editorR.id.btmsht_add_text_action_lanjut)
+
+            findViewById<ChipsUnify>(editorR.id.btmsht_add_text_color_black).apply {
+                chip_image_icon.type = ImageUnify.TYPE_CIRCLE
+                chipImageResource = ColorDrawable(Color.BLACK)
+            }
+
+            findViewById<ChipsUnify>(editorR.id.btmsht_add_text_color_white).apply {
+                chip_image_icon.type = ImageUnify.TYPE_CIRCLE
+                chipImageResource = ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
+            }
         }
     }
 
