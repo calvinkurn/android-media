@@ -1,9 +1,6 @@
 package com.tokopedia.common_compose.components.ticker
 import com.tokopedia.common_compose.R
 
-import android.content.Context
-import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,8 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
@@ -25,15 +20,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -42,9 +35,7 @@ import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestGN
 import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.iconunify.IconUnify
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 
 enum class TickerType {
     ANNOUNCEMENT, WARNING, ERROR
@@ -222,7 +213,7 @@ fun NestTickerCard(
     // Implementation are specifically to cater ANNOUNCEMENT ticker type
     val backgroundColor = getBackgroundColor(tickerType)
     val strokeColor = getStrokeColor(tickerType)
-    val iconColor = getIconColor(LocalContext.current, tickerType)
+    val iconColor = getIconColor(tickerType)
     val surfaceShape = getSurfaceShape(tickerVariant)
     val tickerIcon = getIcon(tickerType)
     val closeIconColor = NestTheme.colors.NN._900
@@ -238,7 +229,7 @@ fun NestTickerCard(
                 Row(
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
-                    TickerimageIcon(Modifier.align(Alignment.CenterVertically), tickerIcon, iconColor)
+                    TickerimageIcon(tickerIcon, Modifier.align(Alignment.CenterVertically), iconColor)
                     Spacer(modifier = Modifier.width(8.dp))
                     TickerContent(
                         Modifier
@@ -320,8 +311,8 @@ private fun TickerCloseIcon(
     closeIconColor: Color = NestTheme.colors.NN._900
 ) {
     Icon(
-        imageVector = Icons.Outlined.Close,
-        modifier = Modifier.clickable { onDismissed() },
+        painter = painterResource(R.drawable.iconunify_close),
+        modifier = Modifier.clickable { onDismissed() }.size(16.dp),
         contentDescription = "Close Icon",
         tint = closeIconColor
     )
@@ -329,24 +320,15 @@ private fun TickerCloseIcon(
 
 @Composable
 private fun TickerimageIcon(
-    modifier: Modifier,
-    tickerIcon: Int,
-    iconColor: ColorType<Int>
+    tickerIconRes: Int,
+    modifier: Modifier = Modifier,
+    tickerIconColor: Color = NestTheme.colors.NN._900
 ) {
-    AndroidView(
+    Icon(
+        painter = painterResource(tickerIconRes),
         modifier = modifier.size(24.dp),
-        factory = {
-            val iconUnify = IconUnify(it)
-            iconUnify.apply {
-                this.setImage(
-                    newIconId = tickerIcon,
-                    newLightEnable = iconColor.light,
-                    newDarkEnable = iconColor.dark,
-                    newDarkDisable = iconColor.disabled,
-                    newLightDisable = iconColor.disabled
-                )
-            }
-        }
+        contentDescription = "Close Icon",
+        tint = tickerIconColor
     )
 }
 
@@ -367,13 +349,13 @@ private fun getTickerBorderShape(
 private fun getIcon(tickerType: TickerType) =
     when (tickerType) {
         TickerType.ANNOUNCEMENT -> {
-            IconUnify.INFORMATION
+            R.drawable.iconunify_information
         }
         TickerType.ERROR -> {
-            IconUnify.ERROR
+            R.drawable.iconunify_error
         }
         TickerType.WARNING -> {
-            IconUnify.WARNING
+            R.drawable.iconunify_warning
         }
     }
 
@@ -389,22 +371,16 @@ private fun getSurfaceShape(tickerVariant: TickerVariant) =
     }
 
 @Composable
-private fun getIconColor(context: Context, tickerType: TickerType) =
+private fun getIconColor(tickerType: TickerType) =
     when (tickerType) {
         TickerType.ANNOUNCEMENT -> {
-            ColorType(
-                default = ContextCompat.getColor(context, R.color.Unify_BN400)
-            )
+            NestTheme.colors.BN._400
         }
         TickerType.WARNING -> {
-            ColorType(
-                default = ContextCompat.getColor(context, R.color.Unify_YN300)
-            )
+            NestTheme.colors.YN._300
         }
         TickerType.ERROR -> {
-            ColorType(
-                default = ContextCompat.getColor(context, R.color.Unify_RN500)
-            )
+            NestTheme.colors.RN._500
         }
     }
 
