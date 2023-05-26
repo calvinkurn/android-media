@@ -188,7 +188,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
-        userSession.clearToken() // this is unnecessary
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
@@ -306,7 +305,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
-
 
         const val GOTO_SEAMLESS_PREF = "goto_seamless_pref"
         const val KEY_TEMPORARY = "temporary_key"
