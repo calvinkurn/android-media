@@ -25,11 +25,11 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 class ProductDescBottomSheet : BottomSheetUnify() {
 
-    private lateinit var listener: RechargeBuyWidgetListener
-    private lateinit var listenerProductDesc: RechargeProductDescListener
-    private lateinit var denomData: DenomData
-    private lateinit var layoutType: DenomWidgetEnum
-    private lateinit var productListTitle: String
+    private var listener: RechargeBuyWidgetListener? = null
+    private var listenerProductDesc: RechargeProductDescListener? = null
+    private var denomData: DenomData? = null
+    private var layoutType: DenomWidgetEnum? = null
+    private var productListTitle: String? = null
     private var position: Int? = null
 
     private var binding by autoClearedNullable<BottomSheetProductDescBinding>()
@@ -99,8 +99,7 @@ class ProductDescBottomSheet : BottomSheetUnify() {
 
         binding = BottomSheetProductDescBinding.inflate(LayoutInflater.from(context))
         binding?.run {
-            if (::denomData.isInitialized && ::layoutType.isInitialized &&
-                ::productListTitle.isInitialized && position != null) {
+            denomData?.let { denomData ->
                 rvProductDesc.run {
                     val linearLayoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -113,14 +112,14 @@ class ProductDescBottomSheet : BottomSheetUnify() {
                     addItemDecoration(dividerItemDecoration)
                 }
 
-                if (!denomData?.title.isNullOrEmpty()) {
+                if (!denomData.title.isEmpty()) {
                     tgTitleProductDesc.show()
-                    tgTitleProductDesc.text = denomData?.title
+                    tgTitleProductDesc.text = denomData.title
                 } else {
                     tgTitleProductDesc.hide()
                 }
 
-                if (!denomData?.greenLabel.isNullOrEmpty()) {
+                if (!denomData.greenLabel.isEmpty()) {
                     tickerWidgetProductDesc.show()
                     tickerWidgetProductDesc.setText(denomData.greenLabel)
                 } else {
@@ -135,11 +134,22 @@ class ProductDescBottomSheet : BottomSheetUnify() {
                     }
                 }
 
-                if (::listener.isInitialized) {
+                listener?.let { listener ->
                     buyWidgetProductDesc.renderBuyWidget(denomData, listener)
                 }
                 position?.let { position ->
-                    listenerProductDesc.onImpressProductBottomSheet(denomData, layoutType, productListTitle, position)
+                    listenerProductDesc?.let { listenerProductDesc ->
+                        layoutType?.let { layoutType ->
+                            productListTitle?.let { productListTitle ->
+                                listenerProductDesc.onImpressProductBottomSheet(
+                                    denomData,
+                                    layoutType,
+                                    productListTitle,
+                                    position
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -148,7 +158,13 @@ class ProductDescBottomSheet : BottomSheetUnify() {
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        listenerProductDesc.onCloseProductBottomSheet(denomData, layoutType)
+        denomData?.let { denomData ->
+            layoutType?.let { layoutType ->
+                listenerProductDesc?.let { listenerProductDesc ->
+                    listenerProductDesc.onCloseProductBottomSheet(denomData, layoutType)
+                }
+            }
+        }
         super.onDismiss(dialog)
     }
 
