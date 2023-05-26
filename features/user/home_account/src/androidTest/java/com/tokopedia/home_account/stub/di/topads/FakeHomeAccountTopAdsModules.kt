@@ -19,6 +19,7 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
@@ -107,5 +108,11 @@ class FakeHomeAccountTopAdsModules(val context: Context) {
     @ActivityScope
     fun provideAddVerifyPhoneAnalytics(): AddVerifyPhoneAnalytics {
         return AddVerifyPhoneAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideOclUtils(): OclUtils {
+        return OclUtils()
     }
 }
