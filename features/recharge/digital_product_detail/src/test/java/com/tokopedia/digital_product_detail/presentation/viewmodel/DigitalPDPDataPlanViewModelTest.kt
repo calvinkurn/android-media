@@ -695,45 +695,6 @@ class DigitalPDPDataPlanViewModelTest : DigitalPDPDataPlanViewModelTestFixture()
             verifyClientNumberThrottleJobNotSame(jobA, jobB)
         }
 
-    fun `when given list denom and list mccm is not empty, isEmptyDenomMCCM should return true`() {
-        val listDenom = listOf(DenomData())
-        val listMccm = listOf(DenomData())
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsNotEmpty(expectedResult)
-    }
-
-    @Test
-    fun `when given list denom empty and list mccm is not empty, isEmptyDenomMCCM should return true`() {
-        val listDenom = listOf<DenomData>()
-        val listMccm = listOf(DenomData())
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsNotEmpty(expectedResult)
-    }
-
-    @Test
-    fun `when given list denom is not empty and list mccm is empty, isEmptyDenomMCCM should return true`() {
-        val listDenom = listOf(DenomData())
-        val listMccm = listOf<DenomData>()
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsNotEmpty(expectedResult)
-    }
-
-    @Test
-    fun `when given list denom is empty and list mccm is empty, isEmptyDenomMCCM should return false`() {
-        val listDenom = listOf<DenomData>()
-        val listMccm = listOf<DenomData>()
-
-        val expectedResult = viewModel.isEmptyDenomMCCM(listDenom, listMccm)
-
-        verifyDenomAndMCCMIsEmpty(expectedResult)
-    }
-
     @Test
     fun `when resetFilter is used, filterData must be reseted`() {
         val initialFilter =

@@ -264,10 +264,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         }
     }
 
-    fun setMCCMProductsLoading() {
-        _mccmProductsData.value = RechargeNetworkResult.Loading
-    }
-
     fun getMCCMProducts(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         mccmProductsJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             val mccmProducts = repo.getMCCMProducts(
