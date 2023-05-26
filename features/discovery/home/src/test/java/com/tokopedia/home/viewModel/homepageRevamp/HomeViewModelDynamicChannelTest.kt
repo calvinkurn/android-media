@@ -4,18 +4,23 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
 import com.tokopedia.home.beranda.helper.Event
+import com.tokopedia.home.beranda.helper.RateLimiter
 import com.tokopedia.home.beranda.helper.Result
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDynamicChannelModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelLoadingModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelRetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -311,6 +316,86 @@ class HomeViewModelDynamicChannelTest {
         homeViewModel.refreshHomeData()
         homeViewModel.hideShowLoading.observeOnce {
             Assert.assertTrue(it.getContentIfNotHandled() ?: false)
+        }
+    }
+
+    @Test
+    fun `given above three mins rule when refresh then refreshHomeData`() {
+        every { userSession.isLoggedIn } returns true
+
+        homeViewModel = createHomeViewModel(
+            userSessionInterface = userSession,
+            getHomeUseCase = getHomeUseCase,
+            homeBalanceWidgetUseCase = getHomeBalanceWidgetUseCase
+        )
+        every { (homeViewModel.getProperty("homeRateLimit") as RateLimiter<String>).shouldFetch(any()) } returns true
+        homeViewModel.refreshWithThreeMinsRules(false)
+
+        verify { homeViewModel.refreshHomeData() }
+        homeViewModel.isNeedRefresh.observeOnce {
+            Assert.assertTrue(it.getContentIfNotHandled() == true)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given error atf when refresh data should update error atf to updateNetworkLiveData`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    DynamicChannelLoadingModel()
+                )
+            )
+        )
+        val mockErrorAtf = Result.errorAtf<Any>(error = Throwable())
+        getHomeUseCase.givenUpdateHomeDataReturn(mockErrorAtf)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        homeViewModel.refreshHomeData()
+        homeViewModel.updateNetworkLiveData.observeOnce {
+            Assert.assertEquals(it, mockErrorAtf)
+        }
+    }
+
+    @Test
+    fun `given cache data exists when init flow then update home data`() {
+        val mockExistingData = HomeDynamicChannelModel(
+            list = listOf(
+                HomeHeaderDataModel(),
+                TickerDataModel(),
+                BannerDataModel()
+            ),
+            isCache = true
+        )
+        getHomeUseCase.givenGetHomeDataReturn(mockExistingData)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+
+        justRun { homeViewModel invokeNoArgs "initFlow" }
+        Assert.assertEquals(homeViewModel.homeDataModel, mockExistingData)
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
+            Assert.assertEquals(it, mockExistingData)
+        }
+    }
+
+    @Test
+    fun `given non-cache data exists when init flow then update home data`() {
+        val mockExistingData = HomeDynamicChannelModel(
+            list = listOf(
+                HomeHeaderDataModel(),
+                TickerDataModel(),
+                BannerDataModel()
+            ),
+            isCache = false
+        )
+        getHomeUseCase.givenGetHomeDataReturn(mockExistingData)
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+
+        justRun { homeViewModel invokeNoArgs "initFlow" }
+        Assert.assertEquals(homeViewModel.homeDataModel, mockExistingData)
+        homeViewModel.homeLiveDynamicChannel.observeOnce {
+            Assert.assertEquals(it, mockExistingData)
+        }
+        homeViewModel.isRequestNetworkLiveData.observeOnce {
+            Assert.assertTrue(it.getContentIfNotHandled() == false)
         }
     }
 }

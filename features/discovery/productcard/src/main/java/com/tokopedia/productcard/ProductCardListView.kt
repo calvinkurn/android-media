@@ -85,6 +85,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val textCategoryBottom: Typography? by lazy(NONE) {
         findViewById(R.id.textCategoryBottom)
     }
+    private val mediaAnchorProduct: Space? by lazy(NONE) {
+        findViewById(R.id.mediaAnchorProduct)
+    }
     private val imageProduct: ImageView? by lazy(NONE) {
         findViewById(R.id.productCardImage)
     }
@@ -305,10 +308,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     private fun resizeImageProductSize() {
-        val layoutParams = imageProduct?.layoutParams
+        val layoutParams = mediaAnchorProduct?.layoutParams
         layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
-        imageProduct?.layoutParams = layoutParams
+        mediaAnchorProduct?.layoutParams = layoutParams
     }
 
     override fun recycle() {

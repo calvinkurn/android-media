@@ -9,16 +9,17 @@ import com.tokopedia.charts.common.utils.LabelFormatter
  */
 
 data class YAxisConfigModel(
-        override val typeface: Typeface?,
-        override val isEnabled: Boolean,
-        override val isLabelEnabled: Boolean,
-        override val isGridEnabled: Boolean,
-        override val mLabelPosition: Int,
-        override val axisMinimum: Float,
-        override val labelFormatter: LabelFormatter,
-        val spaceTop: Float,
-        val labelCount: Int
-): BaseAxisConfigModel {
+    override val typeface: Typeface?,
+    override val isEnabled: Boolean,
+    override val isLabelEnabled: Boolean,
+    override val isGridEnabled: Boolean,
+    override val mLabelPosition: Int,
+    override val axisMinimum: Float,
+    override val labelFormatter: LabelFormatter,
+    override val textColor: Int,
+    val spaceTop: Float,
+    val labelCount: Int
+) : BaseAxisConfigModel {
 
     companion object {
         const val LABEL_OUTSIDE_CHART = 0
