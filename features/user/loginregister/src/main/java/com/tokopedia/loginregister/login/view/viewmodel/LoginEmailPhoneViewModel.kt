@@ -431,8 +431,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
             )
         }
     }
-
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         clearBackgroundTask()
     }
