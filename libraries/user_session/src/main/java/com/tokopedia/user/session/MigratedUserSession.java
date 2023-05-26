@@ -60,14 +60,14 @@ public class MigratedUserSession {
     }
 
     protected void logoutDataStoreSession() {
-        if(isEnableDataStore()) {
-            UserSessionUtils.INSTANCE.logoutSession(getDataStore());
+        if (isEnableDataStore()) {
+            UserSessionUtils.logoutSession(getDataStore());
         }
     }
 
     protected void clearTokenDataStore() {
-        if(isEnableDataStore()) {
-            UserSessionUtils.INSTANCE.clearTokenDataStore(getDataStore());
+        if (isEnableDataStore()) {
+            UserSessionUtils.clearTokenDataStore(getDataStore());
         }
     }
 
