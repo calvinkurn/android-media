@@ -52,9 +52,9 @@ class BeautificationAnalyticTest {
             .verifyEventAction("click - beautification entry point")
             .verifyOpenScreen("/play broadcast - beauty filter creation bottomsheet")
 
-            .clickCustomFace(1)
+            .clickCustomFace(CUSTOM_FACE_1)
             .verifyEventAction("click - custom face shaping")
-            .clickCustomFace(0)
+            .clickCustomFace(NONE)
             .verifyEventAction("click - none beauty effects")
 
             .clickBeautificationPresetTab()
@@ -65,7 +65,7 @@ class BeautificationAnalyticTest {
             .clickDialogSecondaryCTA()
             .verifyEventAction("click - beauty filter reset")
 
-            .clickCustomFace(1)
+            .clickCustomFace(CUSTOM_FACE_1)
             .performDelay()
             .slideBeautificationSlider(200f)
             .performDelay(1000)
@@ -77,17 +77,17 @@ class BeautificationAnalyticTest {
             .verifyEventAction("click - yes reset filter")
 
             .clickBeautificationPresetTab()
-            .clickPreset(1)
+            .clickPreset(PRESET_1)
             .verifyEventAction("click - preset makeup")
 
-            .clickPreset(0)
+            .clickPreset(NONE)
             .verifyEventAction("click - none reset preset makeup")
 
             .mock {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
             }
             .clickBeautificationCustomFaceTab()
-            .clickCustomFace(2)
+            .clickCustomFace(CUSTOM_FACE_2)
             .verifyEventAction("view - failed apply beauty filter")
     }
 
@@ -108,7 +108,7 @@ class BeautificationAnalyticTest {
             .mock {
                 coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns false
             }
-            .clickPreset(1)
+            .clickPreset(PRESET_1)
             .performDelay()
             .mock {
                 coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns true
@@ -119,11 +119,11 @@ class BeautificationAnalyticTest {
             .verifyEventAction("view - failed download preset makeup")
 
             .clickBeautificationCustomFaceTab()
-            .clickCustomFace(0)
+            .clickCustomFace(NONE)
             .mock {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
             }
-            .clickCustomFace(1)
+            .clickCustomFace(CUSTOM_FACE_1)
             .performDelay()
             .mock {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns true
@@ -142,10 +142,10 @@ class BeautificationAnalyticTest {
             .verifyEventAction("view - beauty filter ongoing livestream")
             .verifyEventAction("click - beauty filter ongoing livestream")
 
-            .clickCustomFace(2)
+            .clickCustomFace(CUSTOM_FACE_2)
             .verifyEventAction("click - custom face shaping")
 
-            .clickCustomFace(0)
+            .clickCustomFace(NONE)
             .verifyEventAction("click - none beauty effects")
 
             .clickBeautificationPresetTab()
@@ -157,14 +157,14 @@ class BeautificationAnalyticTest {
             .verifyEventAction("click - beauty filter reset")
             .verifyEventAction("view - reset filter bottomsheet")
 
-            .clickCustomFace(1)
+            .clickCustomFace(CUSTOM_FACE_1)
             .performDelay()
             .slideBeautificationSlider(200f)
             .performDelay(1000)
             .verifyEventAction("click - slider beauty filter")
 
             .clickBeautificationPresetTab()
-            .clickPreset(1)
+            .clickPreset(PRESET_1)
             .performDelay()
             .slideBeautificationSlider(200f)
             .performDelay(1000)
@@ -175,10 +175,10 @@ class BeautificationAnalyticTest {
             .verifyEventAction("click - yes reset filter")
 
             .clickBeautificationPresetTab()
-            .clickPreset(2)
+            .clickPreset(PRESET_2)
             .verifyEventAction("click - preset makeup")
 
-            .clickPreset(0)
+            .clickPreset(NONE)
             .verifyEventAction("click - none reset preset makeup")
     }
 
@@ -191,7 +191,7 @@ class BeautificationAnalyticTest {
             .mock {
                 coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns false
             }
-            .clickPreset(1)
+            .clickPreset(PRESET_1)
             .performDelay()
             .mock {
                 coEvery { beautificationRobot.mockRepo.downloadPresetAsset(any(), any()) } returns true
@@ -202,11 +202,11 @@ class BeautificationAnalyticTest {
             .verifyEventAction("view - failed download preset makeup")
 
             .clickBeautificationCustomFaceTab()
-            .clickCustomFace(0)
+            .clickCustomFace(NONE)
             .mock {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
             }
-            .clickCustomFace(1)
+            .clickCustomFace(CUSTOM_FACE_1)
             .performDelay()
             .mock {
                 coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns true
@@ -224,7 +224,15 @@ class BeautificationAnalyticTest {
         beautificationRobot.launch()
             .performDelay(1000)
             .clickToasterCTA()
-            .verifyEventAction("click - reapply beauty filter")
             .verifyEventAction("view - reapply beauty filter")
+            .verifyEventAction("click - reapply beauty filter")
+    }
+
+    companion object {
+        private const val NONE = 0
+        private const val CUSTOM_FACE_1 = 1
+        private const val CUSTOM_FACE_2 = 2
+        private const val PRESET_1 = 1
+        private const val PRESET_2 = 2
     }
 }
