@@ -1,0 +1,66 @@
+package com.tokopedia.scp_rewards.detail.domain.model
+
+import com.google.gson.annotations.SerializedName
+
+data class MedalDetailResponseModel(
+    @SerializedName("scpRewardsGetMedaliDetailPage") val detail: RewardsGetMedaliDetail? = null
+)
+
+data class RewardsGetMedaliDetail(
+    @SerializedName("resultStatus") val resultStatus: ResultStatus = ResultStatus(),
+    @SerializedName("medaliDetailPage") val medaliDetailPage: MedaliDetailPage? = null
+) {
+    data class ResultStatus(
+        @SerializedName("code") val code: String = "",
+        @SerializedName("status") val status: String = ""
+    )
+}
+
+data class MedaliDetailPage(
+    @SerializedName("backgroundImageURL") val backgroundImageURL: String? = null,
+    @SerializedName("backgroundImageColor") val backgroundImageColor: String? = null,
+    @SerializedName("frameImageURL") val frameImageURL: String? = null,
+    @SerializedName("innerIconImageURL") val innerIconImageURL: String? = null,
+    @SerializedName("maskingImageURL") val maskingImageURL: String? = null,
+    @SerializedName("shutterImageURL") val shutterImageURL: String? = null,
+    @SerializedName("shutterText") val shutterText: String? = null,
+    @SerializedName("shimmerImageURL") val shimmerImageURL: String? = null,
+    @SerializedName("shimmerShutterLottieURL") val shimmerShutterLottieURL: String? = null,
+    @SerializedName("outerBlinkingLottieURL") val outerBlinkingLottieURL: String? = null,
+    @SerializedName("baseImageURL") val baseImageURL: String? = null,
+    @SerializedName("sourceText") val sourceText: String? = null,
+    @SerializedName("sourceFontColor") val sourceFontColor: String? = null,
+    @SerializedName("sourceBackgroundColor") val sourceBackgroundColor: String? = null,
+    @SerializedName("medaliName") val medaliName: String? = null,
+    @SerializedName("medaliDescription") val medaliDescription: String? = null,
+)
+
+data class Mission(
+    @SerializedName("title") val title: String? = null,
+    @SerializedName("progress") val progress: Int? = null,
+    @SerializedName("task") val task: List<Task>? = null,
+    @SerializedName("benefit") val benefit: List<Benefit>? = null,
+    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null,
+)
+
+data class Task(
+    @SerializedName("isCompleted") val isCompleted: Boolean = false,
+    @SerializedName("title") val title: String? = null,
+)
+
+data class Benefit(
+    @SerializedName("imageUrl") val imageUrl: String? = null,
+    @SerializedName("isActive") val isActive: Boolean = false,
+    @SerializedName("status") val status: String? = null,
+    @SerializedName("statusDescription") val statusDescription: String? = null,
+)
+
+data class BenefitButton(
+    @SerializedName("unifiedStyle") val unifiedStyle: String? = null,
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("url") val url: String? = null,
+    @SerializedName("appLink") val appLink: String? = null,
+    @SerializedName("isAutoApply") val isAutoApply: Boolean = false,
+    @SerializedName("couponCode") val couponCode: String? = null,
+)
+
