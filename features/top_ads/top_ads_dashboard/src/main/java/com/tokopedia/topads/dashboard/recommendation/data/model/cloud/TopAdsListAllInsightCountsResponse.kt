@@ -38,6 +38,18 @@ data class TopAdsListAllInsightCountsResponse(
         )
     }
 
+    fun toInsightUiAtHomeModel(): List<InsightListUiModel> {
+        return topAdsListAllInsightCounts.adGroups.map {
+            AdGroupUiModel(
+                it.adGroupID,
+                it.adGroupName,
+                it.adGroupType,
+                it.count,
+                showGroupType = true
+            )
+        }
+    }
+
     private fun toInsightListUiModel(adGroups: List<TopAdsListAllInsightCounts.AdGroup>): List<InsightListUiModel> {
         return adGroups.map {
             AdGroupUiModel(

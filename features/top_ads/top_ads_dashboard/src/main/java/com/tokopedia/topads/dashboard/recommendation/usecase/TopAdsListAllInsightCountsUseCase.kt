@@ -58,7 +58,7 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
             "filter",
             mapOf(
                 "shopID" to userSession.shopId,
-                "adGroupTypes" to listOf(adGroupType),
+                "adGroupTypes" to convertStringToList(adGroupType),
                 if (insightType == 0) {
                     "insightTypes" to listOf(
                         "keyword_bid",
@@ -83,6 +83,15 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
         )
         return requestParams
     }
+
+    private fun convertStringToList(input: String): List<String> {
+        return if (input.contains(",")) {
+            input.split(",").map { it.trim() }
+        } else {
+            listOf(input)
+        }
+    }
+
 
     object GqlQuery : GqlQueryInterface {
         private const val OPERATION_NAME = "topAdsListAllInsightCounts"

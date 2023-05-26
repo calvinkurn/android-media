@@ -6,16 +6,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.common.data.model.ticker.TickerInfo
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
@@ -32,7 +38,15 @@ import com.tokopedia.topads.dashboard.data.utils.Utils.asString
 import com.tokopedia.topads.dashboard.data.utils.Utils.openWebView
 import com.tokopedia.topads.dashboard.databinding.FragmentTopadsDashboardBerandaBaseBinding
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity.Companion.INSIGHT_PAGE
 import com.tokopedia.topads.dashboard.view.adapter.beranda.*
 import com.tokopedia.topads.dashboard.view.fragment.education.READ_MORE_URL
 import com.tokopedia.topads.dashboard.view.sheet.RecommendationInfoBottomSheet
@@ -43,12 +57,17 @@ import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivit
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickBalanceEvent
+import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
+import kotlinx.android.synthetic.main.layout_insight_center_beranda.*
+import kotlinx.android.synthetic.main.shimmer_layout_bottom_level_recommendation_at_home.*
+import kotlinx.android.synthetic.main.topads_dash_saran_topads_top_widget_layout.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -69,11 +88,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         SummaryAdTypesBottomSheet(summaryAdTypeList, ::adTypeChanged)
     }
     private val summaryInformationBottomSheet by lazy(LazyThreadSafetyMode.NONE) { SummaryInformationBottomSheet() }
-
-    private val kataKunciChipsDetailRvAdapter = TopAdsBerandsKataKunciChipsDetailRvAdapter()
-    private val kataKunciChipsRvAdapter =
-        TopAdsBerandsKataKunciChipsRvAdapter(::kataKunciItemSelected)
-    private val anggarnHarianAdapter = TopAdsBerandaAnggarnHarianAdapter()
     private val produkBerpotensiAdapter = TopadsImageRvAdapter()
     private val summaryRvAdapter = TopAdsBerandaSummaryRvAdapter()
     private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -86,6 +100,22 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private var topUpUCount: Int = 0
     private var autoTopUpBonus: Double = 0.0
     private var showAutoTopUpOldFlow = true
+
+
+    /*
+        Insight Widget
+    */
+    private val insightListAdapter by lazy { InsightListAdapter(onInsightItemClick) }
+
+    private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit =
+        { _, _, _ ->
+            moveToInsightPage()
+        }
+    private var needToHitInsight = true
+    /*
+        End
+    */
+
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -102,6 +132,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var mapper: InsightDataMapper
+
     private val topAdsDashboardViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[TopAdsDashboardViewModel::class.java]
     }
@@ -113,9 +146,15 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     ): View? {
         binding =
             FragmentTopadsDashboardBerandaBaseBinding.inflate(layoutInflater, container, false)
+        val view = inflater.inflate(
+            R.layout.fragment_topads_dashboard_beranda_base,
+            container,
+            false
+        )
         initializeView()
         return binding.root
     }
+
 
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
@@ -123,19 +162,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     override fun getScreenName(): String {
         return TopAdsDashboardBerandaFragment::class.java.name
-    }
-
-    private fun kataKunciItemSelected(item: KataKunciHomePageBase) {
-        when (item) {
-            is KataKunciSimpleButton -> {
-                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
-            }
-            is RecommendationStatistics.Statistics.Data.KeywordRecommendationStats.TopGroup -> {
-                context?.resources?.let {
-                    kataKunciChipsDetailRvAdapter.addItems(item, it)
-                }
-            }
-        }
     }
 
     private fun initializeView() {
@@ -154,37 +180,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 }
                 this.button.text = res.getString(R.string.topads_dashboard_atur_iklannya)
                 rvVertical.hide()
-            }
-
-            with(binding.layoutRecommendasi.layoutAnggaranHarian) {
-                this.layoutRoundedView.txtTitle.text =
-                    res.getString(R.string.topads_dash_potential_click)
-                this.txtTitle.text = res.getString(R.string.topads_dash_anggaran_harian)
-                context?.let {
-                    this.layoutRoundedView.imageView.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            it,
-                            com.tokopedia.unifycomponents.R.drawable.iconunify_saldo
-                        )
-                    )
-                }
-                this.button.text = res.getString(R.string.topads_dashboard_atur_anggaran_harian)
-                recyclerView.hide()
-            }
-
-            with(binding.layoutRecommendasi.layoutkataKunci) {
-                this.layoutRoundedView.txtTitle.text =
-                    res.getString(R.string.topads_dashboard_kata_kunci_yang)
-                this.txtTitle.text = res.getString(R.string.label_top_ads_keyword)
-                context?.let {
-                    this.layoutRoundedView.imageView.setImageDrawable(
-                        ContextCompat.getDrawable(
-                            it,
-                            com.tokopedia.unifycomponents.R.drawable.iconunify_keyword
-                        )
-                    )
-                }
-                this.button.text = res.getString(R.string.topads_dashboard_atur_kata_kunci)
             }
         }
     }
@@ -224,14 +219,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             ivRecommendasiInfo.setOnClickListener {
                 recommendationInfoBottomSheet.show(childFragmentManager, "")
             }
-            layoutkataKunci.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
-            }
-            layoutAnggaranHarian.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
-            }
             layoutProdukBerpostensi.button.setOnClickListener {
-                (activity as? TopAdsDashboardActivity)?.switchTab(CONST_3)
+                RouteManager.route(activity,"tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product")
             }
         }
     }
@@ -257,12 +246,18 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         binding.layoutLatestReading.rvLatestReading.adapter = latestReadingRvAdapter
         binding.layoutRecommendasi.layoutProdukBerpostensi.recyclerView.adapter =
             produkBerpotensiAdapter
-        binding.layoutRecommendasi.layoutAnggaranHarian.rvVertical.adapter =
-            anggarnHarianAdapter
-        binding.layoutRecommendasi.layoutkataKunci.recyclerView.adapter = kataKunciChipsRvAdapter
-        binding.layoutRecommendasi.layoutkataKunci.rvVertical.adapter =
-            kataKunciChipsDetailRvAdapter
+        setInsightRecyclerView()
         topAdsDashboardViewModel.getLatestReadings()
+    }
+
+    private fun setInsightRecyclerView() {
+        var insightRecyclerView = binding.layoutInsight.insightRecyclerview
+        insightRecyclerView.layoutManager = LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+        insightRecyclerView.adapter = insightListAdapter
     }
 
     private fun showInformationBottomSheet() {
@@ -328,7 +323,10 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         initializeListener()
         initializeGraph()
         loadData()
+        setInsightWidgetBehaviour()
     }
+
+
 
     private fun observeLiveData() {
         topAdsDashboardViewModel.shopDepositLiveData.observe(viewLifecycleOwner) {
@@ -336,6 +334,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 is Success -> {
                     binding.tambahKreditLayout.creditAmount.text = it.data.amountFmt
                 }
+
                 is Fail -> {}
             }
         }
@@ -353,6 +352,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                         )
                     }
                 }
+
                 is Fail -> {}
             }
         }
@@ -362,9 +362,8 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     setRecommendationProdukBerpostensi(it.data.productRecommendationStats)
-                    setRecommendationAnggaranHarian(it.data.dailyBudgetRecommendationStats)
-                    setRecommendationKataKunci(it.data.keywordRecommendationStats)
                 }
+
                 is Fail -> {}
             }
         }
@@ -385,6 +384,79 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 tickerTopAds.hide()
             }
         }
+
+        observeInsight()
+    }
+
+    private fun observeInsight() {
+        topAdsDashboardViewModel.productInsights.observe(viewLifecycleOwner) {
+            when (it) {
+                is TopAdsListAllInsightState.Success -> {
+                    onSuccessFetchProductInsight(it)
+                }
+                is TopAdsListAllInsightState.Fail -> {
+
+                }
+            }
+        }
+
+        topAdsDashboardViewModel.adGroupWithInsight.observe(viewLifecycleOwner) {
+            when (it) {
+                is TopAdsListAllInsightState.Success -> {
+                    topLevelWidgetShimmer?.hide()
+                    renderTopLevelWidget(it.data)
+                }
+
+                is TopAdsListAllInsightState.Loading -> {
+                }
+
+                is TopAdsListAllInsightState.Fail -> {
+                }
+            }
+        }
+    }
+
+    private fun renderTopLevelWidget(data: TopAdsTotalAdGroupsWithInsightResponse) {
+        if (context == null) return
+        val count =
+            data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
+        if (count == 0) {
+            insightWidgetTitle?.text = "Yay, semua iklanmu sudah maksimal!"
+            insightWidgetIcon?.loadImage(
+                ContextCompat.getDrawable(
+                    context!!,
+                    R.drawable.perfomace_widget_optimized_icon
+                )
+            )
+        } else if (count < 10) {
+            insightWidgetTitle?.text = "Tingkatkan performa 5 grup iklanmu, yuk!"
+            insightWidgetIcon?.loadImage(
+                ContextCompat.getDrawable(
+                    context!!,
+                    R.drawable.perfomace_widget_optimized_icon
+                )
+            )
+        } else {
+            insightWidgetTitle?.text = "Tingkatkan performa 10+ grup iklanmu, yuk!"
+            insightWidgetIcon?.loadImage(
+                ContextCompat.getDrawable(
+                    context!!,
+                    R.drawable.performance_widget_default_icon
+                )
+            )
+        }
+    }
+
+    private fun onSuccessFetchProductInsight(it: TopAdsListAllInsightState.Success<MutableList<InsightListUiModel>>) {
+        val temp = arrayListOf(EmptyStateUiListModel("0",topAdsDashboardViewModel.emptyStateData))
+        if(it.data.size.isZero()){
+            insightListAdapter.submitList(temp as List<InsightListUiModel>?)
+            insight_widget_see_more?.hide()
+        }else {
+            insightListAdapter.submitList(it.data.take(5))
+            insight_widget_see_more?.show()
+        }
+        shimmer_layout_bottom_level_recommendation_at_home?.hide()
     }
 
     private fun showTickerTopads(tickerInfo: TickerInfo) {
@@ -446,68 +518,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 )
             }
             produkBerpotensiAdapter.addItems(TopAdsDashboardBerandaUtils.mapImageModel(item.productList))
-        }
-    }
-
-    private fun setRecommendationAnggaranHarian(item: RecommendationStatistics.Statistics.Data.DailyBudgetRecommendationStats) {
-        with(binding.layoutRecommendasi.layoutAnggaranHarian) {
-            context?.resources?.let {
-                layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
-                    String.format(
-                        it.getString(R.string.topads_dashboard_kali_hari_value),
-                        item.totalClicks
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                txtDescription.text = HtmlCompat.fromHtml(
-                    String.format(
-                        it.getString(R.string.topads_dashboard_anggaran_harian_desc),
-                        item.count
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                val list = item.groupList
-                if (list.isNotEmpty()) {
-                    val items = mutableListOf<String>()
-                    items.add(list[0].groupName)
-
-                    val restCount = list.size - 1
-                    if (restCount > 0) {
-                        items.add(
-                            String.format(
-                                it.getString(R.string.topads_dashboard_grup_iklan),
-                                restCount
-                            )
-                        )
-                    }
-                    anggarnHarianAdapter.addItems(items)
-                }
-            }
-        }
-    }
-
-    private fun setRecommendationKataKunci(item: RecommendationStatistics.Statistics.Data.KeywordRecommendationStats) {
-        with(binding.layoutRecommendasi.layoutkataKunci) {
-            context?.resources?.let {
-                layoutRoundedView.txtSubTitle.text = HtmlCompat.fromHtml(
-                    String.format(
-                        it.getString(R.string.topads_dashboard_n_grup_iklanmu),
-                        item.groupCount
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                txtDescription.text = HtmlCompat.fromHtml(
-                    String.format(
-                        it.getString(R.string.topads_dashboard_kata_kunci_desc),
-                        item.groupCount
-                    ),
-                    HtmlCompat.FROM_HTML_MODE_LEGACY
-                )
-                kataKunciChipsRvAdapter.addItems(
-                    item.topGroups,
-                    it.getString(R.string.topads_dashboard_lihat_semua)
-                )
-            }
         }
     }
 
@@ -607,5 +617,44 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 REQUEST_CODE_SET_AUTO_TOPUP
             )
         }
+    }
+
+
+    private fun moveToInsightPage() {
+        activity?.let {
+            if(activity is TopAdsDashboardActivity){
+                (it as TopAdsDashboardActivity).switchTab(INSIGHT_PAGE)
+            }
+        }
+    }
+
+
+    private fun setInsightWidgetBehaviour() {
+        insight_widget_see_more?.setOnClickListener {
+            moveToInsightPage()
+        }
+
+        scroll_view?.viewTreeObserver?.addOnScrollChangedListener(object :
+            ViewTreeObserver.OnScrollChangedListener {
+            private var scrollY = 0
+
+            override fun onScrollChanged() {
+                val newScrollY = scroll_view.scrollY
+                if (newScrollY != scrollY && needToHitInsight) {
+                    needToHitInsight= false
+                    fetchInsight()
+                }
+                scrollY = newScrollY
+            }
+        })
+    }
+
+    private fun fetchInsight() {
+        topAdsDashboardViewModel.fetchInsightTitle()
+        topAdsDashboardViewModel.fetchInsightItems(
+            adGroupType = "product,headline",
+            insightType = 0,
+            mapper = mapper
+        )
     }
 }

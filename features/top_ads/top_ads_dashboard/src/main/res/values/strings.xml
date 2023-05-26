@@ -528,6 +528,9 @@
 
 <!--    <string name="topads_group_card_insight_count_format">%s saran untukmu</string>-->
     <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
+    <string name="topads_beranda_saran">Saran Topads</string>
+    <string name="topads_beranda_saran_see_full">Lihat Selengkapnya</string>
+
 
 </resources>
 

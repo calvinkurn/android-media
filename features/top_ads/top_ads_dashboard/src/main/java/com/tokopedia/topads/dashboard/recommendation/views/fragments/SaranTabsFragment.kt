@@ -26,7 +26,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsList
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
@@ -57,6 +57,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     private val viewModel: TopAdsListAllInsightViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory)[TopAdsListAllInsightViewModel::class.java]
     }
+
 
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
