@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_INFO
 import com.tokopedia.kyc_centralized.*
@@ -27,6 +28,12 @@ class KycFlowUiTest {
         UserIdentificationInfoActivity::class.java,
         false,
         false
+    )
+
+    @get:Rule
+    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     private val testComponent = FakeKycActivityComponentFactory()
