@@ -88,6 +88,13 @@ class AddTextActivity : BaseEditorActivity() {
         hideHeaderAction()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.textInput.value.isNullOrEmpty()) {
+            showHeaderAction()
+        }
+    }
+
     private fun initObserverInput() {
         viewModel.textInput.observe(this) {
             if (it.isNotEmpty()) {
