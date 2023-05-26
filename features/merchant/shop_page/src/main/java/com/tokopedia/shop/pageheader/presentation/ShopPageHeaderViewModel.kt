@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -18,7 +17,6 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
@@ -72,12 +70,8 @@ import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
-import com.tokopedia.universal_sharing.view.model.PageDetail
-import com.tokopedia.universal_sharing.view.model.Product
-import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -170,34 +164,6 @@ class ShopPageHeaderViewModel @Inject constructor(
     private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
     val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
         get() = _resultAffiliate
-
-    private val _affiliateMediatorLiveData = MediatorLiveData<AffiliatePDPInput>().apply {
-        value = AffiliatePDPInput().apply {
-            pageDetail = PageDetail(pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
-            pageType = PageType.SHOP.value
-            product = Product()
-            shop = Shop()
-            affiliateLinkType = AffiliateLinkType.SHOP
-        }
-        addSource(shopPageP1Data) {
-            if (it is Success) {
-                updateAffiliateInputWithP1Data(it.data)
-            }
-        }
-        addSource(shopPageShopShareData) {
-            if (it is Success) {
-                updateAffiliateInputWithShopInfo(it.data)
-            }
-        }
-        addSource(shopIdFromDomainData) {
-            if (it is Success) {
-                updateAffiliateInputWithShopId(it.data)
-            }
-        }
-    }
-
-    val affiliateMediatorLiveData: LiveData<AffiliatePDPInput>
-        get() = _affiliateMediatorLiveData
 
     /*
     Function getNewShopPageTabData is expected to perform faster than
@@ -643,31 +609,6 @@ class ShopPageHeaderViewModel @Inject constructor(
             } catch (e: Exception) {
                 _resultAffiliate.value = Fail(e)
             }
-        }
-    }
-
-    private fun updateAffiliateInputWithShopInfo(shopInfo: ShopInfo) {
-        affiliateMediatorLiveData.value?.let { input ->
-            _affiliateMediatorLiveData.value = input.copy(
-                shop = input.shop?.copy(shopStatus = shopInfo.statusInfo.shopStatus)
-            )
-        }
-    }
-
-    private fun updateAffiliateInputWithP1Data(data: ShopPageHeaderP1HeaderData) {
-        affiliateMediatorLiveData.value?.let { input ->
-            _affiliateMediatorLiveData.value = input.copy(
-                shop = input.shop?.copy(isOS = data.isOfficial, isPM = data.isGoldMerchant)
-            )
-        }
-    }
-
-    private fun updateAffiliateInputWithShopId(shopId: String) {
-        affiliateMediatorLiveData.value?.let { input ->
-            _affiliateMediatorLiveData.value = input.copy(
-                pageDetail = input.pageDetail?.copy(pageId = shopId),
-                shop = input.shop?.copy(shopID = shopId)
-            )
         }
     }
 }

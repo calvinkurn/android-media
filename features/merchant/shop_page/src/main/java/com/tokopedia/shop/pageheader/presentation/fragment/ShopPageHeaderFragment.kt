@@ -861,6 +861,16 @@ class ShopPageHeaderFragment :
                         it.shopStatus = result.data.statusInfo.shopStatus
                     }
                 }
+
+                checkAffiliate(
+                    AffiliatePDPInput().apply {
+                        pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
+                        pageType = PageType.SHOP.value
+                        product = Product()
+                        shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+                        affiliateLinkType = AffiliateLinkType.SHOP
+                    }
+                )
             }
         )
 
@@ -875,10 +885,6 @@ class ShopPageHeaderFragment :
                 }
             }
         )
-
-        shopHeaderViewModel?.affiliateMediatorLiveData?.observe(viewLifecycleOwner) {
-            checkAffiliate(it)
-        }
 
         shopHeaderViewModel?.resultAffiliate?.observe(viewLifecycleOwner) {
             if (it is Success) {
@@ -3435,12 +3441,6 @@ class ShopPageHeaderFragment :
     private fun checkAffiliate(data: AffiliatePDPInput) {
         var inputAffiliate = data
         if (isAffiliateInputValid(data.shop?.shopStatus ?: 0)) {
-            if (data.pageDetail?.pageId.isNullOrEmpty() && data.shop?.shopID.isNullOrEmpty()) {
-                inputAffiliate = data.copy(
-                    shop = data.shop?.copy(shopID = shopId),
-                    pageDetail = data.pageDetail?.copy(pageId = shopId)
-                )
-            }
             shopHeaderViewModel?.checkAffiliate(inputAffiliate)
         }
     }
