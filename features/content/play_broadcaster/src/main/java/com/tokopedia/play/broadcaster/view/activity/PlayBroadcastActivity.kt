@@ -432,32 +432,32 @@ class PlayBroadcastActivity : BaseActivity(),
             } else {
                 val isSuccess = broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
 
-                if (!isSuccess) {
-                    isAllFilterApplied = false
+                if (isSuccess) return@forEach
 
-                    if (withToaster) {
-                        analytic.viewFailApplyBeautyFilter(
+                isAllFilterApplied = false
+
+                if (!withToaster) return@forEach
+
+                analytic.viewFailApplyBeautyFilter(
+                    account = viewModel.selectedAccount,
+                    page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
+                    customFace = faceFilter.id,
+                )
+
+                showToaster(
+                    err = Exception("fail to apply face filter : ${faceFilter.id}"),
+                    customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
+                    duration = Toaster.LENGTH_SHORT,
+                    actionLabel = getString(R.string.play_broadcaster_retry),
+                    actionListener = {
+                        analytic.clickRetryApplyBeautyFilter(
                             account = viewModel.selectedAccount,
                             page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
                             customFace = faceFilter.id,
                         )
-
-                        showToaster(
-                            err = Exception("fail to apply face filter : ${faceFilter.id}"),
-                            customErrMessage = getString(R.string.play_broadcaster_fail_apply_filter),
-                            duration = Toaster.LENGTH_SHORT,
-                            actionLabel = getString(R.string.play_broadcaster_retry),
-                            actionListener = {
-                                analytic.clickRetryApplyBeautyFilter(
-                                    account = viewModel.selectedAccount,
-                                    page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
-                                    customFace = faceFilter.id,
-                                )
-                                applyFaceFilter(faceFilter)
-                            }
-                        )
+                        applyFaceFilter(faceFilter)
                     }
-                }
+                )
             }
         }
 
