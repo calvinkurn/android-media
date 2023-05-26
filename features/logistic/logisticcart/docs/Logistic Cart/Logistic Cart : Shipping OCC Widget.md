@@ -6,7 +6,7 @@ labels:
 ---
 
 <!--left header table-->
-| **Status**      | ​<!--start status:YELLOW-->IN TESTING<!--end status-->                                                                                                                                                          |
+| **Status**      | ​<!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                              |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Contributors    | ​[Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence) ​[Eka Desyantoro](https://tokopedia.atlassian.net/wiki/people/6283196bd9ddcc006e9c7a85?ref=confluence) ​ |
 | Product Manager | [Nuringtyas Rahwinarni](https://tokopedia.atlassian.net/wiki/people/5f58b98ed2c77e0075ac9865?ref=confluence)                                                                                                    |
