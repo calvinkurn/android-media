@@ -3,29 +3,26 @@ package com.tokopedia.affiliate.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.affiliate.TRANSACTION_ID
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
-import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class AffiliateSaldoWithdrawalDetailActivity :  BaseViewModelActivity<AffiliateViewModel>() {
+class AffiliateSaldoWithdrawalDetailActivity :
+    BaseSimpleActivity(),
+    HasComponent<AffiliateComponent> {
+    private val affiliateComponent: AffiliateComponent by lazy(LazyThreadSafetyMode.NONE) { initInject() }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
-
-    private lateinit var affiliateVM: AffiliateViewModel
+    @JvmField
+    var userSession: UserSessionInterface? = null
 
     override fun getLayoutRes() = R.layout.affiliate_activity_transaction_detail
 
@@ -33,32 +30,19 @@ class AffiliateSaldoWithdrawalDetailActivity :  BaseViewModelActivity<AffiliateV
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateComponent.injectWithdrawalDetailActivity(this)
         setupToolbar()
     }
 
-    override fun getViewModelType(): Class<AffiliateViewModel> {
-        return AffiliateViewModel::class.java
-    }
+    private fun initInject() =
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
+    override fun getComponent(): AffiliateComponent = affiliateComponent
 
-    override fun initInject() {
-        getComponent().injectWithdrawalDetailActivity(this)
-    }
-
-    private fun getComponent(): AffiliateComponent =
-            DaggerAffiliateComponent
-                    .builder()
-                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                    .build()
-
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateVM = viewModel as AffiliateViewModel
-    }
-
-    private fun setupToolbar(){
+    private fun setupToolbar() {
         findViewById<HeaderUnify>(R.id.saldoTransactionHeader).apply {
             isShowBackButton = true
             toolbar = this
@@ -69,11 +53,10 @@ class AffiliateSaldoWithdrawalDetailActivity :  BaseViewModelActivity<AffiliateV
             }
             this.title = TITLE
         }
-
     }
 
     override fun getNewFragment() = AffiliateSaldoWithdrawalDetailFragment.newInstance(
-            intent.getStringExtra(TRANSACTION_ID) ?: ""
+        intent.getStringExtra(TRANSACTION_ID) ?: ""
     )
 
     override fun getTagFragment() = TAG
@@ -87,6 +70,5 @@ class AffiliateSaldoWithdrawalDetailActivity :  BaseViewModelActivity<AffiliateV
 
         private const val TITLE = "Detail Penarikan Saldo"
         private const val TAG = "DETAIL_FRAGMENT"
-
     }
 }

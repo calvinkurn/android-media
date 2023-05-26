@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.ui.fragment.registration
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +27,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -40,21 +40,34 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAndConditionViewModel>(){
+class AffiliateTermsAndConditionFragment :
+    BaseViewModelFragment<AffiliateTermsAndConditionViewModel>() {
 
-    private lateinit var affiliateTermsAndConditionViewModel: AffiliateTermsAndConditionViewModel
+    private var affiliateTermsAndConditionViewModel: AffiliateTermsAndConditionViewModel? = null
     private val affiliateAdapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
 
-    private var channels = arrayListOf<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
+    private var channels: ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>? =
+        arrayListOf()
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelProvider) }
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
+    private val viewModelFragmentProvider by lazy {
+        viewModelProvider?.let { viewModelProvider ->
+            activity?.let { activity ->
+                ViewModelProvider(
+                    activity,
+                    viewModelProvider
+                )
+            }
+        }
+    }
 
-    private lateinit var registrationSharedViewModel: AffiliateRegistrationSharedViewModel
+    private var registrationSharedViewModel: AffiliateRegistrationSharedViewModel? = null
 
     @Inject
-    lateinit var userSessionInterface : UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     override fun getViewModelType(): Class<AffiliateTermsAndConditionViewModel> {
         return AffiliateTermsAndConditionViewModel::class.java
@@ -63,25 +76,26 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliateTermsAndConditionViewModel = viewModel as AffiliateTermsAndConditionViewModel
     }
-    override fun getVMFactory(): ViewModelProvider.Factory {
+
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        registrationSharedViewModel = viewModelFragmentProvider.get(AffiliateRegistrationSharedViewModel::class.java)
+        registrationSharedViewModel =
+            viewModelFragmentProvider?.get(AffiliateRegistrationSharedViewModel::class.java)
         getChannel(savedInstanceState)
         initObserver()
     }
 
     private fun getChannel(savedInstanceState: Bundle?) {
-        if(registrationSharedViewModel.listOfChannels.isNullOrEmpty()){
+        if (registrationSharedViewModel?.listOfChannels.isNullOrEmpty()) {
             savedInstanceState?.getSerializable(CHANNEL_LIST)?.let {
                 channels = it as ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>
             }
-        }
-        else{
-            channels = registrationSharedViewModel.listOfChannels
+        } else {
+            channels = registrationSharedViewModel?.listOfChannels
         }
     }
 
@@ -90,7 +104,11 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.affiliate_terms_and_condition_fragment_layout, container, false)
+        return inflater.inflate(
+            R.layout.affiliate_terms_and_condition_fragment_layout,
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,7 +120,8 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
         setUpNavBar()
         initClickListener()
         view?.findViewById<RecyclerView>(R.id.terms_condition_rv)?.run {
-            val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            val linearLayoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             layoutManager = linearLayoutManager
             adapter = affiliateAdapter
         }
@@ -111,12 +130,17 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     }
 
     private fun sendOpenScreenTracking() {
-        val loginText = if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN
+        val loginText =
+            if (userSessionInterface?.isLoggedIn == true) {
+                AffiliateAnalytics.LabelKeys.LOGIN
+            } else {
+                AffiliateAnalytics.LabelKeys.NON_LOGIN
+            }
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             "${AffiliateAnalytics.ScreenKeys.AFFILIATE_TERMS_AND_CONDITION}$loginText",
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -125,22 +149,32 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             AffiliateAnalytics.EventKeys.CLICK_PG,
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_REG_T_ANC_C,
-            if(userSessionInterface.isLoggedIn)AffiliateAnalytics.LabelKeys.LOGIN else AffiliateAnalytics.LabelKeys.NON_LOGIN,
-            userSessionInterface.userId
+            if (userSessionInterface?.isLoggedIn == true) {
+                AffiliateAnalytics.LabelKeys.LOGIN
+            } else {
+                AffiliateAnalytics.LabelKeys.NON_LOGIN
+            },
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun initClickListener() {
-        view?.findViewById<CheckboxUnify>(R.id.checkbox_terms)?.setOnCheckedChangeListener { _, isChecked ->
+        view?.findViewById<CheckboxUnify>(R.id.checkbox_terms)
+            ?.setOnCheckedChangeListener { _, isChecked ->
                 view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.isEnabled = isChecked
-        }
+            }
         view?.findViewById<UnifyButton>(R.id.terms_accept_btn)?.setOnClickListener {
             sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_DAFTAR)
-            affiliateTermsAndConditionViewModel.affiliateOnBoarding(channels)
+            if (channels != null) {
+                affiliateTermsAndConditionViewModel?.affiliateOnBoarding(channels!!)
+            }
         }
         view?.findViewById<Typography>(R.id.syarat_text)?.setOnClickListener {
             sendButtonClick(AffiliateAnalytics.ActionKeys.CLICK_SYARAT)
-            AffiliateWebViewBottomSheet.newInstance(getString(R.string.terms_and_condition_upper), AFFILIATE_TANDC_URL).show(childFragmentManager,"")
+            AffiliateWebViewBottomSheet.newInstance(
+                getString(R.string.terms_and_condition_upper),
+                AFFILIATE_TANDC_URL
+            ).show(childFragmentManager, "")
         }
         view?.findViewById<Typography>(R.id.kebijakan_text)?.setOnClickListener {
             context?.let {
@@ -150,12 +184,14 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     }
 
     private fun setUpNavBar() {
-        val customView = layoutInflater.inflate(R.layout.affiliate_navbar_custom_content,null,false)
+        val customView =
+            layoutInflater.inflate(R.layout.affiliate_navbar_custom_content, null, false)
         customView.findViewById<Typography>(R.id.navbar_sub_tittle).apply {
             show()
             text = getString(R.string.affiliate_subtitle_terms)
         }
-        customView.findViewById<Typography>(R.id.navbar_tittle).text = getString(R.string.daftar_affiliate)
+        customView.findViewById<Typography>(R.id.navbar_tittle).text =
+            getString(R.string.daftar_affiliate)
         view?.findViewById<com.tokopedia.header.HeaderUnify>(R.id.affiliate_terms_toolbar)?.apply {
             customView(customView)
             setNavigationOnClickListener {
@@ -163,44 +199,55 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
                 activity?.onBackPressed()
             }
         }
-
     }
 
     private fun initObserver() {
-        affiliateTermsAndConditionViewModel.getOnBoardingData().observe(this, { onBoardingData ->
-            if(onBoardingData.data?.status == REGISTRATION_SUCCESS){
-               registrationSharedViewModel.onRegisterationSuccess()
-            }else {
+        affiliateTermsAndConditionViewModel?.getOnBoardingData()?.observe(this) { onBoardingData ->
+            if (onBoardingData.data?.status == REGISTRATION_SUCCESS) {
+                registrationSharedViewModel?.onRegisterationSuccess()
+            } else {
                 view?.let {
-                    Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        it,
+                        getString(R.string.affiliate_registeration_error),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
-
             }
-        })
+        }
 
-        affiliateTermsAndConditionViewModel.getErrorMessage().observe(this , {
-            if (it is UnknownHostException
-                    || it is SocketTimeoutException) {
+        affiliateTermsAndConditionViewModel?.getErrorMessage()?.observe(this) {
+            if (it is UnknownHostException ||
+                it is SocketTimeoutException
+            ) {
                 view?.let { view ->
-                    Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        view,
+                        getString(R.string.affiliate_internet_error),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
             } else {
                 view?.let { view ->
-                    Toaster.build(view, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
-                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.build(
+                        view,
+                        getString(R.string.affiliate_registeration_error),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
-        })
+        }
 
-        affiliateTermsAndConditionViewModel.progressBar().observe(this , { progress ->
-            if(progress){
+        affiliateTermsAndConditionViewModel?.progressBar()?.observe(this) { progress ->
+            if (progress) {
                 view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
-            }else {
+            } else {
                 view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.hide()
             }
-        })
+        }
     }
 
     private fun setDataToRV(data: ArrayList<Visitable<AffiliateAdapterTypeFactory>>?) {
@@ -210,6 +257,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
     override fun initInject() {
         getComponent().injectTermAndConditionFragment(this)
     }
+
     private fun getComponent(): AffiliateComponent =
         DaggerAffiliateComponent
             .builder()
@@ -217,7 +265,7 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             .build()
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(CHANNEL_LIST,registrationSharedViewModel.listOfChannels)
+        outState.putSerializable(CHANNEL_LIST, registrationSharedViewModel?.listOfChannels)
         super.onSaveInstanceState(outState)
     }
 
@@ -229,5 +277,4 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             return AffiliateTermsAndConditionFragment()
         }
     }
-
 }

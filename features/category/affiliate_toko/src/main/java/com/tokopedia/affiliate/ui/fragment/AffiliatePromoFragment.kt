@@ -58,6 +58,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -85,10 +86,12 @@ class AffiliatePromoFragment :
     PromotionClickInterface {
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
 
@@ -101,7 +104,9 @@ class AffiliatePromoFragment :
         private const val MARGIN_HORIZONTAL_16 = 16
         private const val CAROUSEL_SHOW_BANNER = 1.05f
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
-        private const val TOKONOW_BANNER_LINK = "https://images.tokopedia.net/img/affiliate/asset/tokonow-banner.png"
+        private const val TOKONOW_BANNER_LINK =
+            "https://images.tokopedia.net/img/affiliate/asset/tokonow-banner.png"
+
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -137,8 +142,8 @@ class AffiliatePromoFragment :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             AffiliateAnalytics.ScreenKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -223,10 +228,11 @@ class AffiliatePromoFragment :
             ) {
                 carouselUnify.addItem(imageView)
                 imageView.setImageUrl(TOKONOW_BANNER_LINK)
-                imageView.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
-                    marginStart = MARGIN_HORIZONTAL_16
-                    marginEnd = MARGIN_HORIZONTAL_56
-                }
+                imageView.layoutParams =
+                    LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                        marginStart = MARGIN_HORIZONTAL_16
+                        marginEnd = MARGIN_HORIZONTAL_56
+                    }
                 imageView.setOnClickListener {
                     tokoNowData = affiliateTokoNowData()
                     affiliatePromoViewModel.getTokoNowBottomSheetInfo(getTokoNowPageId())
@@ -246,7 +252,7 @@ class AffiliatePromoFragment :
             AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_BANNER,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -318,7 +324,7 @@ class AffiliatePromoFragment :
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -366,9 +372,9 @@ class AffiliatePromoFragment :
                 view?.findViewById<Group>(R.id.disco_promotion_group)?.show()
                 view?.findViewById<Typography>(R.id.disco_inspiration_lihat_semua)
                     ?.setOnClickListener {
-                        context?.let {
+                        context?.let { ctx ->
                             startActivity(
-                                Intent(it, AffiliateDiscoPromoListActivity::class.java)
+                                Intent(ctx, AffiliateDiscoPromoListActivity::class.java)
                             )
                         }
                         sendDiscoLihatEvent()
@@ -380,7 +386,7 @@ class AffiliatePromoFragment :
                             affiliateAdapterFactory = AffiliateAdapterFactory(
                                 promotionClickInterface = this@AffiliatePromoFragment
                             ),
-                            userId = userSessionInterface.userId
+                            userId = userSessionInterface?.userId.orEmpty()
                         )
                     discoBannerAdapter.setVisitables(
                         it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
@@ -426,7 +432,7 @@ class AffiliatePromoFragment :
             AffiliateAnalytics.ActionKeys.CLICK_LIHAT_DISCO_BANNER,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -440,7 +446,7 @@ class AffiliatePromoFragment :
                 PAGE_ANNOUNCEMENT_PROMOSIKAN,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION,
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -453,7 +459,7 @@ class AffiliatePromoFragment :
         view?.findViewById<RelativeLayout>(R.id.recommended_layout)?.hide()
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
