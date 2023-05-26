@@ -10,8 +10,6 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -80,11 +78,6 @@ class AbTestPlatform @JvmOverloads constructor(val context: Context) : RemoteCon
 
     override fun getString(key: String?, defaultValue: String): String {
         // override customer app ab config features
-        if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
-            when (key) {
-                NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT -> return NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
-            }
-        }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue) ?: defaultValue
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
             return cacheValue

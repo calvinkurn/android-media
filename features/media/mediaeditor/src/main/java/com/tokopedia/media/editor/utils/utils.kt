@@ -212,13 +212,13 @@ fun Context.checkMemoryOverflow(memoryUsage: Int): Boolean {
     return getFreeMemory() < memoryUsage
 }
 
-fun Context.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null) {
+fun Context.showMemoryLimitToast(imageSize: Pair<Int, Int>, msg: String? = null, multiplier: Float) {
     // format = image width || image height || avail memory
     newRelicLog(
         mapOf(
             "Error" to (msg ?: ""),
             MEMORY_LIMIT_FIELD to "width: ${imageSize.first} || height: ${imageSize.second} || " +
-                "avail memory: ${this.getFreeMemory()}"
+                "avail memory: ${this.getFreeMemory()} -- multiplier $multiplier"
         )
     )
 
