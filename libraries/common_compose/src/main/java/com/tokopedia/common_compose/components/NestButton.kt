@@ -4,18 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonColors
@@ -59,8 +48,9 @@ import com.tokopedia.common_compose.ui.NestTheme
  */
 @Composable
 fun NestButton(
-    modifier: Modifier = Modifier,
     text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     variant: ButtonVariant = ButtonVariant.FILLED,
     size: ButtonSize = ButtonSize.MEDIUM,
     isEnabled: Boolean = true,
@@ -69,8 +59,7 @@ fun NestButton(
     loadingText: String = "",
     rightLoader: Boolean = true,
     leadingIcon: Int? = null,
-    trailingIcon: Int? = null,
-    onClick: () -> Unit,
+    trailingIcon: Int? = null
 ) {
     if (variant == ButtonVariant.FILLED) {
         FilledButton(modifier, isEnabled, text, size, isLoading, isClickable, loadingText, rightLoader, leadingIcon, trailingIcon, onClick)
@@ -145,7 +134,7 @@ private fun FilledButton(
         loaderHeight = size.loaderHeight,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -192,7 +181,7 @@ private fun GhostButton(
         loaderHeight = size.loaderHeight,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -239,10 +228,9 @@ private fun GhostAlternateButton(
         loaderHeight = size.loaderHeight,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        onClick = onClick,
+        onClick = onClick
     )
 }
-
 
 @Composable
 private fun GhostInvertedButton(
@@ -344,7 +332,7 @@ private fun TransactionFilledButton(
         loaderHeight = size.loaderHeight,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -395,7 +383,7 @@ private fun TransactionGhostButton(
         loaderHeight = size.loaderHeight,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -439,7 +427,7 @@ private fun TextButton(
         loaderHeight = size.loaderHeight,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -481,7 +469,6 @@ private fun NestDefaultButton(
             contentPadding = PaddingValues(horizontal = 16.dp),
             interactionSource = interactionSource
         ) {
-
             when {
                 isLoading && loadingText.isNotEmpty() -> LoadingWithTextButton(loadingText, rightLoader, textStyle, loaderHeight, useWhiteColorLoader)
                 isLoading && loadingText.isEmpty() -> NestButtonProgressBar(
@@ -502,29 +489,28 @@ private fun NestDefaultButton(
                 )
                 else -> NestButtonText(text = text, textStyle = textStyle)
             }
-
         }
-
-
     }
 }
 
 @Composable
 private fun NestButtonProgressBar(loaderHeight: Dp, useWhiteColorLoader: Boolean) {
     NestLoader(
-        modifier = Modifier.size(loaderHeight),
-        variant = NestLoaderType.Circular(isWhite = useWhiteColorLoader)
+        variant = NestLoaderType.Circular(isWhite = useWhiteColorLoader),
+        modifier = Modifier.size(loaderHeight)
     )
 }
+
 @Composable
 private fun NestButtonIcon(resourceId: Int, buttonIconHeightAndWidth: Dp) {
-    //TODO: Replace with NestIcon
+    // TODO: Replace with NestIcon
     Icon(
         modifier = Modifier.size(buttonIconHeightAndWidth),
         painter = painterResource(id = resourceId),
         contentDescription = "Icon"
     )
 }
+
 @Composable
 private fun NestButtonText(modifier: Modifier = Modifier, text: String, textStyle: TextStyle) {
     NestTypography(
@@ -560,7 +546,6 @@ private fun RowScope.LoadingWithTextButton(
         textStyle = textStyle
     )
 
-
     if (rightLoader) {
         NestButtonProgressBar(
             loaderHeight = loaderHeight,
@@ -568,7 +553,6 @@ private fun RowScope.LoadingWithTextButton(
         )
     }
 }
-
 
 @Composable
 private fun RowScope.ButtonWithLeftIcon(
@@ -582,7 +566,6 @@ private fun RowScope.ButtonWithLeftIcon(
     NestButtonText(text = text, textStyle = textStyle)
 }
 
-
 @Composable
 private fun RowScope.ButtonWithRightIcon(
     resourceId: Int,
@@ -594,7 +577,6 @@ private fun RowScope.ButtonWithRightIcon(
     Spacer(modifier = Modifier.width(8.dp))
     NestButtonIcon(resourceId = resourceId, buttonIconHeightAndWidth = buttonIconHeightAndWidth)
 }
-
 
 enum class ButtonVariant {
     FILLED,
@@ -676,42 +658,40 @@ private fun NestButtonPreview() {
                 NestButtonWithIcon()
             }
         }
-
     }
 }
-
 
 @Composable
 private fun NestButtonFilledPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -720,31 +700,31 @@ private fun NestButtonFilledPreview() {
 private fun NestButtonGhostPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -753,31 +733,31 @@ private fun NestButtonGhostPreview() {
 private fun NestButtonGhostAlternatePreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST_ALTERNATE,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST_ALTERNATE,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST_ALTERNATE,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -786,34 +766,33 @@ private fun NestButtonGhostAlternatePreview() {
 private fun NestButtonGhostInvertedPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
-
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.GHOST_INVERTED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -822,33 +801,33 @@ private fun NestButtonGhostInvertedPreview() {
 private fun NestButtonTextPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TEXT_ONLY,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TEXT_ONLY,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TEXT_ONLY,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -857,33 +836,33 @@ private fun NestButtonTextPreview() {
 private fun NestButtonTransactionFilledPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TRANSACTION_FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TRANSACTION_FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TRANSACTION_FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -892,31 +871,31 @@ private fun NestButtonTransactionFilledPreview() {
 private fun NestButtonTransactionGhostPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Enabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TRANSACTION_GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Disabled",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TRANSACTION_GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = false,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Loading",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.TRANSACTION_GHOST,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = true,
-            onClick = {},
+            isLoading = true
         )
     }
 }
@@ -925,43 +904,43 @@ private fun NestButtonTransactionGhostPreview() {
 private fun NestButtonSizesPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Large",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.LARGE,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Medium",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Small",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.SMALL,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Micro",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MICRO,
             isEnabled = true,
-            isLoading = false,
-            onClick = {},
+            isLoading = false
         )
     }
 }
@@ -970,27 +949,27 @@ private fun NestButtonSizesPreview() {
 private fun NestButtonLoadingStatePreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Left loader",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
-            rightLoader = false,
             loadingText = "",
-            onClick = {},
+            rightLoader = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Right loader",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
-            rightLoader = true,
             loadingText = "",
-            onClick = {},
+            rightLoader = true
         )
     }
 }
@@ -999,27 +978,27 @@ private fun NestButtonLoadingStatePreview() {
 private fun NestButtonWithLoadingTextPreview() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Left loader",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
-            rightLoader = false,
             loadingText = "Tunggu sebentar..",
-            onClick = {},
+            rightLoader = false
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Right loader",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = true,
-            rightLoader = true,
             loadingText = "Tunggu sebentar..",
-            onClick = {},
+            rightLoader = true
         )
     }
 }
@@ -1028,31 +1007,31 @@ private fun NestButtonWithLoadingTextPreview() {
 private fun NestButtonWithIcon() {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Left Icon",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
-            rightLoader = false,
             loadingText = "",
+            rightLoader = false,
             leadingIcon = R.drawable.iconunify_arrow_back,
-            trailingIcon = null,
-            onClick = {},
+            trailingIcon = null
         )
 
         NestButton(
-            modifier = Modifier.weight(1f),
             text = "Right icon",
+            onClick = {},
+            modifier = Modifier.weight(1f),
             variant = ButtonVariant.FILLED,
             size = ButtonSize.MEDIUM,
             isEnabled = true,
             isLoading = false,
-            rightLoader = false,
             loadingText = "",
+            rightLoader = false,
             leadingIcon = null,
-            trailingIcon = R.drawable.ic_system_action_close_normal_24,
-            onClick = {},
+            trailingIcon = R.drawable.ic_system_action_close_normal_24
         )
     }
 }
