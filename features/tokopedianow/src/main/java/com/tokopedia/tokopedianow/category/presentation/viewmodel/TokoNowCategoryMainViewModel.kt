@@ -76,6 +76,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 ) {
     private companion object {
         const val BATCH_SHOWCASE_TOTAL = 3
+        const val NO_WAREHOUSE_ID = "0"
     }
 
     private val layout: MutableList<Visitable<*>> = mutableListOf()
@@ -87,11 +88,13 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     private val _categoryPage = MutableLiveData<List<Visitable<*>>>()
     private val _scrollNotNeeded = MutableLiveData<Boolean>()
     private val _refreshState = MutableLiveData<Unit>()
+    private val _oosState = MutableLiveData<Unit>()
 
     val categoryHeader: LiveData<Result<List<Visitable<*>>>> = _categoryHeader
     val categoryPage: LiveData<List<Visitable<*>>> = _categoryPage
     val scrollNotNeeded: LiveData<Boolean> = _scrollNotNeeded
     val refreshState: LiveData<Unit> = _refreshState
+    val oosState: LiveData<Unit> = _oosState
 
     override fun updateProductCartQuantity(
         productId: String,
@@ -213,6 +216,11 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     ) {
         launchCatchError(
             block = {
+                if (getWarehouseId() == NO_WAREHOUSE_ID) {
+                    _oosState.postValue(Unit)
+                    return@launchCatchError
+                }
+
                 val detailResponse = getCategoryDetailUseCase.execute(
                     warehouseId = getWarehouseId(),
                     categoryIdL1 = categoryIdL1
@@ -295,6 +303,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     }
 
     fun refreshLayout() {
+        getMiniCart()
+        updateAddressData()
         moreShowcaseJob = null
         _refreshState.value = Unit
     }

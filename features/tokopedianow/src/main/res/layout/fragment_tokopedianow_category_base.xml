@@ -13,7 +13,7 @@
         android:layout_height="25dp"
         android:layout_gravity="top"
         android:background="@color/Unify_G500"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/nav_toolbar"
@@ -22,6 +22,7 @@
         android:minHeight="?actionBarSize"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
+        android:translationZ="3dp"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarBackButton="back"
         app:toolbarContentType="typeSearchbar"
@@ -34,7 +35,18 @@
         android:visibility="gone"
         android:translationZ="2dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/nav_toolbar"
+        app:layout_anchorGravity="bottom"
+        android:layout_gravity="bottom"/>
+
+    <com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView
+        android:id="@+id/oos_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:translationZ="2dp"
+        android:paddingTop="61dp"
+        android:visibility="visible"
         app:layout_anchor="@id/nav_toolbar"
         app:layout_anchorGravity="bottom"
         android:layout_gravity="bottom"/>
@@ -51,7 +63,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/tokonowSearchCategoryContainer"
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"

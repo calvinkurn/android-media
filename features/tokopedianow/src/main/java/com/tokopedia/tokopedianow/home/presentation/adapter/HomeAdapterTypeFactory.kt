@@ -145,7 +145,8 @@ class HomeAdapterTypeFactory(
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowServerErrorTypeFactory,
-    TokoNowProductRecommendationOocTypeFactory {
+    TokoNowProductRecommendationOocTypeFactory
+{
 
     // region Common TokoNow Component
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT

@@ -77,6 +77,10 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         )
     }
 
+    /**
+     * -- override function section --
+     */
+
     override fun initInjector() = getComponent(CategoryComponent::class.java).inject(this)
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
@@ -98,10 +102,12 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
 
     override fun getMiniCart() = viewModel.getMiniCart()
 
+    /**
+     * -- private function section --
+     */
+
     private fun getCategoryHeader() {
-        viewModel.getCategoryHeader(
-            navToolbarHeight = navToolbarHeight
-        )
+        viewModel.getCategoryHeader(navToolbarHeight)
     }
 
     private fun initAffiliateCookie() = viewModel.initAffiliateCookie()
@@ -120,6 +126,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         observeProductRecommendationUpdateCartItem()
         observeProductRecommendationToolbarNotification()
         observeRefreshState()
+        observeOosState()
     }
 
     private fun observeCategoryHeader() {
@@ -130,9 +137,9 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
 
                     viewModel.getFirstPage()
 
-                    binding?.showRecyclerView()
+                    binding?.showMainLayout()
                 }
-                is Fail -> binding?.showGlobalError(
+                is Fail -> binding?.showErrorLayout(
                     throwable = result.throwable
                 )
             }
@@ -263,11 +270,17 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     private fun observeRefreshState() {
         viewModel.refreshState.observe(viewLifecycleOwner) {
             binding?.apply {
-                showShimmering()
+                showShimmeringLayout()
                 rvCategory.removeOnScrollListener(onScrollListener)
                 rvCategory.addOnScrollListener(onScrollListener)
             }
             viewModel.getCategoryHeader(navToolbarHeight)
+        }
+    }
+
+    private fun observeOosState() {
+        viewModel.oosState.observe(viewLifecycleOwner) {
+            binding?.showOosLayout()
         }
     }
 
@@ -303,7 +316,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
 
     /**
-     * Callback Sections
+     * -- callback function section --
      */
 
     private fun createTitleCallback() = CategoryTitleCallback(

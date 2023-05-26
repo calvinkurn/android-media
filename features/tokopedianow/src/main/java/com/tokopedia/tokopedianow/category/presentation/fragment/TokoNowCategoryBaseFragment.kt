@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -46,6 +47,8 @@ import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.ERROR_PAGE_NOT_FOU
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil.ERROR_SERVER
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
+import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView.ActionListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
 import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.presentation.view.TokoNowCategoryFragment
@@ -63,7 +66,8 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
     ScreenShotListener,
     ShareBottomsheetListener,
     PermissionListener,
-    MiniCartWidgetListener
+    MiniCartWidgetListener,
+    ActionListener
 {
     private companion object {
         const val SCROLL_DOWN_DIRECTION = 1
@@ -72,6 +76,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
 
         const val PAGE_NAME = "TokoNow Category"
         const val TOKONOW_DIRECTORY = "tokonow_directory"
+        const val NO_ADDRESS_EVENT_TRACKER = "tokonow - category page"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = TokopediaImageUrl.THUMBNAIL_AND_OG_IMAGE_SHARE_URL
     }
 
@@ -103,6 +108,10 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
     private var shareTokonow: ShareTokonow? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
+
+    /**
+     * -- override function section --
+     */
 
     override fun getScreenName(): String = String.EMPTY
 
@@ -149,7 +158,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             setupNavigationToolbar()
             setupRecyclerView()
             setupRefreshLayout()
-            showShimmering()
+            showShimmeringLayout()
         }
     }
 
@@ -219,6 +228,21 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun onPrimaryBtnClicked() {
+        showBottomSheetChooseAddress()
+    }
+
+    override fun onSecondaryBtnClicked() {
+        RouteManager.route(context, ApplinkConst.HOME)
+        activity?.finish()
+    }
+
+    override fun onGetNoAddressEmptyStateEventCategoryTracker(): String = NO_ADDRESS_EVENT_TRACKER
+
+    /**
+     * -- abstract function section --
+     */
+
     abstract fun loadMore(
         isAtTheBottomOfThePage: Boolean
     )
@@ -227,18 +251,32 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
 
     abstract fun getMiniCart()
 
-    protected fun FragmentTokopedianowCategoryBaseBinding.showRecyclerView() {
-        rvCategory.show()
+    /**
+     * -- protected function section --
+     */
+
+    protected fun FragmentTokopedianowCategoryBaseBinding.showMainLayout() {
+        mainLayout.show()
         categoryShimmering.root.hide()
         globalError.hide()
+        oosLayout.hide()
     }
 
-    protected fun FragmentTokopedianowCategoryBaseBinding.showGlobalError(
+    protected fun FragmentTokopedianowCategoryBaseBinding.showOosLayout() {
+        mainLayout.hide()
+        globalError.hide()
+        categoryShimmering.root.hide()
+        oosLayout.show()
+        oosLayout.actionListener = this@TokoNowCategoryBaseFragment
+    }
+
+    protected fun FragmentTokopedianowCategoryBaseBinding.showErrorLayout(
         throwable: Throwable
     ) {
-        rvCategory.hide()
+        mainLayout.hide()
         categoryShimmering.root.hide()
         globalError.show()
+        oosLayout.hide()
 
         if (throwable is MessageErrorException) {
             val errorCode = throwable.errorCode
@@ -265,66 +303,11 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound(){
-        globalError.apply {
-            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
-            errorSecondaryAction.show()
-            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
-            setActionClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
-                activity?.finish()
-            }
-            setSecondaryActionClickListener {
-                RouteManager.route(context, ApplinkConst.HOME)
-                activity?.finish()
-            }
-        }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorServer() {
-        globalError.apply {
-            setActionClickListener {
-                refreshLayout()
-            }
-        }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorMaintenance() {
-        globalError.apply {
-            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
-            setActionClickListener {
-                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
-                activity?.finish()
-            }
-        }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageFull() {
-        globalError.apply {
-            setActionClickListener {
-                refreshLayout()
-            }
-        }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorNoConnection() {
-        globalError.apply {
-            errorSecondaryAction.show()
-            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
-            setActionClickListener {
-                refreshLayout()
-            }
-            setSecondaryActionClickListener {
-                RouteManager.route(context, ApplinkConst.HOME)
-                activity?.finish()
-            }
-        }
-    }
-
-    protected fun FragmentTokopedianowCategoryBaseBinding.showShimmering() {
-        rvCategory.hide()
+    protected fun FragmentTokopedianowCategoryBaseBinding.showShimmeringLayout() {
+        mainLayout.hide()
         categoryShimmering.root.show()
         globalError.hide()
+        oosLayout.hide()
     }
 
     protected fun showMiniCart(
@@ -427,6 +410,66 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
     protected fun openLoginPage() {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
+    }
+
+    /**
+     * -- private function section --
+     */
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageNotFound(){
+        globalError.apply {
+            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
+            errorSecondaryAction.show()
+            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
+            setActionClickListener {
+                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+                activity?.finish()
+            }
+            setSecondaryActionClickListener {
+                RouteManager.route(context, ApplinkConst.HOME)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorServer() {
+        globalError.apply {
+            setActionClickListener {
+                refreshLayout()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorMaintenance() {
+        globalError.apply {
+            errorAction.text = getString(R.string.tokopedianow_common_error_state_button_back_to_tokonow_home_page)
+            setActionClickListener {
+                RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageFull() {
+        globalError.apply {
+            setActionClickListener {
+                refreshLayout()
+            }
+        }
+    }
+
+    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorNoConnection() {
+        globalError.apply {
+            errorSecondaryAction.show()
+            errorSecondaryAction.text = getString(R.string.tokopedianow_common_empty_state_button_return)
+            setActionClickListener {
+                refreshLayout()
+            }
+            setSecondaryActionClickListener {
+                RouteManager.route(context, ApplinkConst.HOME)
+                activity?.finish()
+            }
+        }
     }
 
     private fun NavToolbar.setupNavigationToolbarInteraction() {
@@ -589,6 +632,31 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         return listOf(HintData(hint, hint))
     }
 
+    private fun showBottomSheetChooseAddress() {
+        val chooseAddressBottomSheet = ChooseAddressBottomSheet()
+        chooseAddressBottomSheet.setListener(object : ChooseAddressBottomSheet.ChooseAddressBottomSheetListener {
+            override fun getLocalizingAddressHostSourceBottomSheet(): String = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
+
+            override fun onAddressDataChanged() {
+                refreshLayout()
+            }
+
+            override fun onLocalizingAddressServerDown() { /* to do : nothing */ }
+
+            override fun onLocalizingAddressLoginSuccessBottomSheet() { /* to do : nothing */ }
+
+            override fun onDismissChooseAddressBottomSheet() { /* to do : nothing */ }
+
+            override fun isFromTokonowPage(): Boolean {
+                return true
+            }
+        })
+        chooseAddressBottomSheet.show(
+            manager = childFragmentManager,
+            tag = TokoNowEmptyStateOocViewHolder.SHIPPING_CHOOSE_ADDRESS_TAG
+        )
+    }
+
     private fun createNavRecyclerViewOnScrollListener(
         navToolbar: NavToolbar,
     ): RecyclerView.OnScrollListener {
@@ -645,6 +713,10 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         }
         return false
     }
+
+    /**
+     * -- function without modifier section --
+     */
 
     fun resetPadding() {
         val paddingZero = context?.resources?.getDimensionPixelSize(
