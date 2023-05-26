@@ -5,12 +5,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
 
-class GroupDetailInsightListViewHolder(private val view1: View) :
+class GroupDetailInsightListViewHolder(
+    private val view1: View,
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit
+) :
     AbstractViewHolder<GroupDetailInsightListUiModel>(view1) {
-    private val insightListAdapter = InsightListAdapter { _, _ -> }
+    private val insightListAdapter = InsightListAdapter(onInsightItemClick)
     private var groupCardRecyclerView: RecyclerView = view1.findViewById(R.id.groupCardRecyclerView)
     private val layoutManager by lazy {
         LinearLayoutManager(
@@ -21,7 +25,6 @@ class GroupDetailInsightListViewHolder(private val view1: View) :
     }
 
     override fun bind(element: GroupDetailInsightListUiModel?) {
-
         groupCardRecyclerView.layoutManager = layoutManager
         groupCardRecyclerView.adapter = insightListAdapter
         insightListAdapter.submitList(element?.adGroups)

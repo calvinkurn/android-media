@@ -21,7 +21,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
     private val topAdsGetBatchKeywordInsightUseCase: TopAdsGetBatchKeywordInsightUseCase,
     private val topAdsGroupPerformanceUseCase: TopAdsGroupPerformanceUseCase,
     private val topAdsGetAdGroupBidInsightUseCase: TopAdsGetAdGroupBidInsightUseCase,
-    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
+    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase
 ) {
 
     suspend fun executeOnBackground(
@@ -31,8 +31,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
     ): Map<Int, GroupDetailDataModel> {
         return coroutineScope {
             val batchKeywordAsync = async { getBatchKeywordInsight(groupId) }
-            val groupPerformanceAsync =
-                async { getGroupPerformance(groupId, adGroupType.toString()) }
+            val groupPerformanceAsync = async { getGroupPerformance(groupId, adGroupType.toString()) }
             val groupBidInsightAsync = async { getGroupBidInsight(groupId) }
             val groupWithInsightAsync = async { getGroupWithInsight() }
 
@@ -52,7 +51,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
 
             when (groupWithInsight) {
                 is TopAdsListAllInsightState.Success -> {
-                    if (groupWithInsight.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight == 0){
+                    if (groupWithInsight.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight == 0) {
                         (groupDetailMapper.detailPageDataMap[TYPE_CHIPS] as GroupDetailChipsUiModel).isChipsAvailable =
                             false
                         groupDetailMapper.detailPageDataMap[8] = GroupDetailEmptyStateUiModel(
@@ -140,7 +139,6 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }
-
     }
 
     private suspend fun getGroupBidInsight(groupId: String): TopAdsListAllInsightState<TopAdsAdGroupBidInsightResponse> {

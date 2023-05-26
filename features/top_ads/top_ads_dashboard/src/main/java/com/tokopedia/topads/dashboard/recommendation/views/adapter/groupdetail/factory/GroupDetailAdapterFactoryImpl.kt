@@ -9,7 +9,8 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttyp
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.*
 
 class GroupDetailAdapterFactoryImpl(
-    private val onChipClick: (Int) -> Unit
+    private val onChipClick: (Int) -> Unit,
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {
@@ -62,7 +63,7 @@ class GroupDetailAdapterFactoryImpl(
             AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view)
             AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view)
             AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view)
-            GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view)
+            GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view, onInsightItemClick)
             GroupDetailEmptyStateViewHolder.LAYOUT -> GroupDetailEmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

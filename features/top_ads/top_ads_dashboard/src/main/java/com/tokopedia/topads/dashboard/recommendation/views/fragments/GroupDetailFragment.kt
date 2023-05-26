@@ -37,7 +37,8 @@ class GroupDetailFragment : BaseDaggerFragment() {
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
-                onChipClick
+                onChipClick,
+                onInsightItemClick
             )
         )
     }
@@ -73,9 +74,9 @@ class GroupDetailFragment : BaseDaggerFragment() {
 
     private fun retrieveInitialData() {
         val adType = arguments?.getString("adType")
-        val insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList")?: arrayListOf()
+        val insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
         val adGroupName = arguments?.getString("adGroupName")
-        val adGroupId = arguments?.getString("groupId")?:""
+        val adGroupId = arguments?.getString("groupId") ?: ""
         viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
         if (adType != null && adGroupId != null) {
             loadData(if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP, adGroupId)
@@ -127,6 +128,14 @@ class GroupDetailFragment : BaseDaggerFragment() {
         )
         groupDetailAdapter.updateItem()
     }
+
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
+        { _, item ->
+            viewModel.loadDetailPageOnAction(
+                if (item.adGroupType == "product") TYPE_PRODUCT else TYPE_SHOP,
+                item.adGroupID
+            )
+        }
 
     private fun setUpRecyclerView() {
         groupDetailsRecyclerView?.layoutManager = LinearLayoutManager(context)
