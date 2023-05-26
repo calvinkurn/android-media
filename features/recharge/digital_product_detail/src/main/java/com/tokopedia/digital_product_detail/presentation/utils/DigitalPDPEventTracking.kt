@@ -28,6 +28,7 @@ object DigitalPDPEventTracking {
         const val EMPTY_DISCOUNT_PRICE = "Rp0"
         const val MCCM = "mccm"
         const val FLASH_SALE = "flash sale"
+        const val REGULAR = "regular"
 
         const val CATEGORY_ID = "category_id"
         const val DIMENSION45 = "dimension45"
@@ -87,6 +88,7 @@ object DigitalPDPEventTracking {
         const val CLICK_OMNI_CHANNEL_WIDGET = "click omni channel widget"
         const val VIEW_PDP_PAGE = "view pdp page"
         const val CLICK_CHEVRON_SHOW_MORE = "click chevron show more"
+        const val CLICK_CLOSE_BUTTON_PRODUCT_DESC = "click close button"
     }
 
     object TrackerId {
@@ -95,5 +97,6 @@ object DigitalPDPEventTracking {
         const val CLICK_CHEVRON_PROMOTION = "43960"
         const val CLICK_PRODUCT_PROMOTION = "43968"
         const val CLICK_SHOW_MORE_PROMOTION = "43965"
+        const val CLICK_CLOSE_PRODUCT_DESC = "43963"
     }
 }

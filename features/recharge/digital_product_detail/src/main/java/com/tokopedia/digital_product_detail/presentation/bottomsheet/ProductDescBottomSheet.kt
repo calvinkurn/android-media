@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.presentation.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
+import com.tokopedia.recharge_component.listener.RechargeProductDescListener
 import com.tokopedia.recharge_component.model.denom.DenomData
+import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
@@ -23,7 +26,9 @@ import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 class ProductDescBottomSheet : BottomSheetUnify() {
 
     private lateinit var listener: RechargeBuyWidgetListener
+    private lateinit var listenerProductDesc: RechargeProductDescListener
     private lateinit var denomData: DenomData
+    private lateinit var layoutType: DenomWidgetEnum
 
     private var binding by autoClearedNullable<BottomSheetProductDescBinding>()
 
@@ -67,6 +72,14 @@ class ProductDescBottomSheet : BottomSheetUnify() {
 
     fun setListener(listenerBuyWidget: RechargeBuyWidgetListener) {
         this.listener = listenerBuyWidget
+    }
+
+    fun setProductDescListener(listenerProductDescListener: RechargeProductDescListener) {
+        this.listenerProductDesc = listenerProductDescListener
+    }
+
+    fun setLayoutType(layoutType: DenomWidgetEnum) {
+        this.layoutType = layoutType
     }
 
     private fun initView() {
@@ -118,6 +131,11 @@ class ProductDescBottomSheet : BottomSheetUnify() {
         }
         setTitle(getString(R.string.bottom_sheet_prod_desc_title))
         setChild(binding?.root)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        listenerProductDesc.onCloseProductBottomSheet(denomData, layoutType)
+        super.onDismiss(dialog)
     }
 
     companion object {

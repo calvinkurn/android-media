@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_CHEVRON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_CHEVRON_SHOW_MORE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_CLOSE_BUTTON_PRODUCT_DESC
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LANJUT_BAYAR
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LOGIN_WIDGET
@@ -32,6 +33,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PROMOTIONS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.QUANTITY
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.REGULAR
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_TYPE
@@ -44,6 +46,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CHEVRON_PROMOTION
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_PRODUCT_DESC
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_PRODUCT_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_SHOW_MORE_PROMOTION
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -686,6 +689,40 @@ class DigitalPDPAnalytics {
                 "${categoryName} - ${operatorName} - $loyaltyStatus"
             )
             putString(TRACKER_ID, CLICK_SHOW_MORE_PROMOTION)
+        }
+
+        eventDataLayer.clickDigitalGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL, eventDataLayer)
+    }
+
+    fun clickCloseProductDescription(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomType: DenomWidgetEnum,
+    ) {
+        val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
+            denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
+            denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
+        ){
+            MCCM
+        } else if(
+            denomType == DenomWidgetEnum.GRID_TYPE ||
+            denomType == DenomWidgetEnum.FULL_TYPE
+        ){
+            REGULAR
+        } else {
+            FLASH_SALE
+        }
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_CLOSE_BUTTON_PRODUCT_DESC)
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName} - ${operatorName} - ${recommendationLogic} - $loyaltyStatus"
+            )
+            putString(TRACKER_ID, CLICK_CLOSE_PRODUCT_DESC)
         }
 
         eventDataLayer.clickDigitalGeneralItemList(userId)

@@ -86,6 +86,7 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
+import com.tokopedia.recharge_component.listener.RechargeProductDescListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
@@ -129,6 +130,7 @@ class DigitalPDPDataPlanFragment :
     ClientNumberAutoCompleteListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
     DigitalHistoryIconListener,
+    RechargeProductDescListener,
     DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -202,6 +204,7 @@ class DigitalPDPDataPlanFragment :
     override fun onAttachFragment(childFragment: Fragment) {
         if (childFragment is ProductDescBottomSheet) {
             childFragment.setListener(this)
+            childFragment.setProductDescListener(this)
         } else if (childFragment is FilterPDPBottomsheet) {
             childFragment.setListener(this)
         }
@@ -1340,6 +1343,24 @@ class DigitalPDPDataPlanFragment :
                 })
     }
 
+    //region RechargeProductDescListener
+
+    override fun onCloseProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum) {
+        digitalPDPAnalytics.clickCloseProductDescription(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            layoutType
+        )
+    }
+
+    override fun onImpressProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum) {
+
+    }
+
+    //endregion
+
     //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
@@ -1634,7 +1655,9 @@ class DigitalPDPDataPlanFragment :
         childFragmentManager?.let {
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
             productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setLayoutType(layoutType)
             productDescBottomSheet.setListener(this)
+            productDescBottomSheet.setProductDescListener(this)
             productDescBottomSheet.show(it, "")
         }
 
