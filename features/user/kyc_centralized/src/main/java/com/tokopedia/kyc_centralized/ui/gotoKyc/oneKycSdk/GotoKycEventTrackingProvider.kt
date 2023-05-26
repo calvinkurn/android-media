@@ -167,35 +167,6 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     }
                 }
             }
-            //TODO: remove this when unused (need confirm with PO)
-            GUIDELINE_CLICKED -> {
-                when (eventProperties[SCREEN_TYPE]) {
-                    SCREEN_TYPE_CAMERA -> {
-                        when (eventProperties[TYPE]) {
-                            KTP -> {
-                            }
-                            SELFIE -> {
-                            }
-                        }
-                    }
-                    SCREEN_TYPE_ALL_PREVIEW -> {
-                        when (eventProperties[TYPE]) {
-                            KTP -> {
-                            }
-                            SELFIE -> {
-                            }
-                        }
-                    }
-                    SCREEN_TYPE_DOCUMENT_INFO -> {
-                        when (eventProperties[TYPE]) {
-                            KTP -> {
-                            }
-                            SELFIE -> {
-                            }
-                        }
-                    }
-                }
-            }
             IMAGE_CAPTURE_MODE_BACK_PRESSED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
