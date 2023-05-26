@@ -1222,7 +1222,6 @@ class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelT
             val expectedUiModels = listOf(
                 MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(true)
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1248,7 +1247,6 @@ class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelT
             val expectedUiModels = listOf(
                 MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(false)
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1270,7 +1268,6 @@ class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelT
             val expectedUiModels = listOf(
                 MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(false)
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1291,7 +1288,6 @@ class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelT
             val expectedUiModels = listOf(
                 MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
             )
-            onGetEligibleForAnaRevamp_thenReturn(MessageErrorException())
             onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
             viewModel.visitables.collectFromSharedFlow(
@@ -1383,7 +1379,6 @@ class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelT
         val expectedUiModels = listOf(
             MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
         )
-        onGetEligibleForAnaRevamp_thenReturn(true)
         onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
         runBlocking {
@@ -1404,7 +1399,6 @@ class TokofoodSearchResultPageViewModelTest : TokofoodSearchResultPageViewModelT
         val expectedUiModels = listOf(
             MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
         )
-        onGetEligibleForAnaRevamp_thenReturn(true)
         onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
 
         runBlocking {
