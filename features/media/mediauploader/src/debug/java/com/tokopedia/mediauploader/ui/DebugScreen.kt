@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,111 +55,115 @@ fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
     val state by viewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
 
-    ConfigBottomSheet(viewModel) {
-        Surface(color = Color.White) {
-            ConstraintLayout(
+    ConfigBottomSheet(viewModel = viewModel) {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (
+                imagePreview,
+                logList,
+                browseButton,
+                configButton,
+                uploadButton,
+                progressLoader
+            ) = createRefs()
+
+            val launcher = launchMediaPicker(viewModel) {
+                hasBrowseFile = true
+            }
+
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .background(color = NestTheme.colors.NN._950)
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .constrainAs(imagePreview) {
+                        top.linkTo(parent.top)
+                    }
+            )
+
+            AnimatedVisibility(hasBrowseFile) {
+                val file = state.filePath.firstOrNull()
+                if (file != null) LoadImage(file.toString())
+            }
+
+            ProgressLoaderItem(
+                state.progress.first.toString(),
+                state.progress.second,
+                Modifier
+                    .padding(16.dp)
+                    .constrainAs(progressLoader) {
+                        bottom.linkTo(imagePreview.bottom)
+                    }
+            )
+
+            ConfigButton(
+                modifier = Modifier
+                    .constrainAs(configButton) {
+                        end.linkTo(browseButton.start)
+                        bottom.linkTo(imagePreview.bottom)
+                    },
+                onClick = {
+                    scope.launch {
+                        if (it.isVisible) {
+                            it.hide()
+                        } else {
+                            it.animateTo(ModalBottomSheetValue.Expanded)
+                        }
+                    }
+                }
+            )
+
+            BrowseFileButton(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .constrainAs(browseButton) {
+                        bottom.linkTo(imagePreview.bottom)
+                        end.linkTo(imagePreview.end)
+                    },
+                onClick = {
+                    launcher.launch(it)
+                }
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .constrainAs(logList) {
+                        top.linkTo(imagePreview.bottom)
+                        bottom.linkTo(uploadButton.top)
+                        height = Dimension.fillToConstraints
+                    }
             ) {
-                val (
-                    imagePreview,
-                    logList,
-                    browseButton,
-                    configButton,
-                    uploadButton,
-                    progressLoader
-                ) = createRefs()
+                items(state.logs.reversed()) {
+                    val (type, logs) = it
 
-                val launcher = launchMediaPicker(viewModel) {
-                    hasBrowseFile = true
+                    LogItem(
+                        type = LogType.map(type),
+                        logs = logs,
+                        modifier = Modifier
+                            .animateItemPlacement()
+                    )
                 }
+            }
 
-                Box(
-                    modifier = Modifier
-                        .background(color = NestTheme.colors.NN._950)
-                        .fillMaxWidth()
-                        .height(240.dp)
-                        .constrainAs(imagePreview) {
-                            top.linkTo(parent.top)
-                        }
-                )
-
-                AnimatedVisibility(hasBrowseFile) {
-                    val file = state.filePath.firstOrNull()
-                    if (file != null) LoadImage(file.toString())
-                }
-
-                ProgressLoaderItem(
-                    state.progress.first.toString(),
-                    state.progress.second,
-                    Modifier
-                        .padding(16.dp)
-                        .constrainAs(progressLoader) {
-                            bottom.linkTo(imagePreview.bottom)
-                        }
-                )
-
-                ConfigButton(
-                    modifier = Modifier
-                        .constrainAs(configButton) {
-                            end.linkTo(browseButton.start)
-                            bottom.linkTo(imagePreview.bottom)
-                        },
-                    onClick = {
-                        scope.launch {
-                            if (it.isVisible) {
-                                it.hide()
-                            } else {
-                                it.animateTo(ModalBottomSheetValue.Expanded)
-                            }
-                        }
-                    }
-                )
-
-                BrowseFileButton(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .constrainAs(browseButton) {
-                            bottom.linkTo(imagePreview.bottom)
-                            end.linkTo(imagePreview.end)
-                        },
-                    onClick = {
-                        launcher.launch(it)
-                    }
-                )
-
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .constrainAs(logList) {
-                            top.linkTo(imagePreview.bottom)
-                            bottom.linkTo(uploadButton.top)
-                            height = Dimension.fillToConstraints
-                        }
-                ) {
-                    items(state.logs.reversed()) {
-                        val (type, logs) = it
-
-                        LogItem(
-                            type = LogType.map(type),
-                            logs = logs,
-                            modifier = Modifier
-                                .animateItemPlacement()
-                        )
-                    }
-                }
-
-                NestButton(
-                    text = "Upload",
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .constrainAs(uploadButton) {
-                            bottom.linkTo(parent.bottom)
-                        }
-                ) {
+            Button(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .constrainAs(uploadButton) {
+                        bottom.linkTo(parent.bottom)
+                    },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = NestTheme.colors.GN._500,
+                    contentColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0,
+                    disabledContentColor = NestTheme.colors.NN._400,
+                    disabledBackgroundColor = NestTheme.colors.NN._100
+                ),
+                onClick = {
                     viewModel.setAction(DebugMediaLoaderEvent.Upload)
                 }
+            ) {
+                Text(text = "Upload")
             }
         }
     }

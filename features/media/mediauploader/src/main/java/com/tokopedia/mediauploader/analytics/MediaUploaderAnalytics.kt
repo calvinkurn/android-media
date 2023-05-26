@@ -14,12 +14,7 @@ class MediaUploaderAnalytics @Inject constructor(
     store: AnalyticsCacheDataStore
 ) : AnalyticsCacheDataStore by store {
 
-    suspend fun sendEvent(
-        sourceId: String,
-        file: File,
-        isRetry: Boolean,
-        isSimpleUpload: Boolean
-    ) {
+    suspend fun sendEvent(sourceId: String, file: File, isRetry: Boolean, isSimpleUpload: Boolean) {
         val cacheKey = key(sourceId, file.path)
         val data = getData(cacheKey) ?: return
 
@@ -33,12 +28,24 @@ class MediaUploaderAnalytics @Inject constructor(
         val bitrate = data.compressedVideoMetadata?.bitrate.orZero() / 1024
         val duration = data.originalVideoMetadata?.duration.orZero().fromMillisToSec()
 
+        val label = StringBuilder()
+            .label(isCompressed)
+            .label(isRetryStatus)
+            .label(uploadType)
+            .label(uploadTime)
+            .label(compressionTime)
+            .label(sizeBefore)
+            .label(sizeAfter)
+            .label(bitrate)
+            .label(duration)
+            .toString()
+
         val events = mutableMapOf(
-            KEY_EVENT to "viewCommunicationIris",
-            KEY_EVENT_CATEGORY to "vod compression",
-            KEY_EVENT_ACTION to "user completed video upload",
-            KEY_EVENT_LABEL to "$isCompressed - $isRetryStatus - $uploadType - $compressionTime - $uploadTime - $sizeBefore - $sizeAfter - $bitrate - $duration",
-            KEY_TRACKER_ID to "43117",
+            KEY_EVENT_CATEGORY to CATEGORY,
+            KEY_EVENT_ACTION to ACTION,
+            KEY_EVENT to EVENT,
+            KEY_EVENT_LABEL to label,
+            KEY_TRACKER_ID to TRACKER_ID,
             KEY_CURRENT_SITE to CURRENT_SITE,
             KEY_BUSINESS_UNIT to BUSINESS_UNIT,
         )
@@ -58,10 +65,15 @@ class MediaUploaderAnalytics @Inject constructor(
     }
 
     private fun uploadTypeLabel(isSimpleUpload: Boolean): String {
-        return if (isSimpleUpload) "simple" else "large"
+        return if (isSimpleUpload) SIMPLE else LARGE
+    }
+
+    private fun StringBuilder.label(`object`: Any?): StringBuilder {
+        return append(" - $`object`")
     }
 
     companion object {
+        // keys
         private const val KEY_EVENT = "event"
         private const val KEY_EVENT_CATEGORY = "eventCategory"
         private const val KEY_EVENT_ACTION = "eventAction"
@@ -70,7 +82,14 @@ class MediaUploaderAnalytics @Inject constructor(
         private const val KEY_CURRENT_SITE = "currentSite"
         private const val KEY_BUSINESS_UNIT = "businessUnit"
 
+        // values
         private const val BUSINESS_UNIT = "media"
+        private const val EVENT = "viewCommunicationIris"
         private const val CURRENT_SITE = "tokopediamarketplace"
+        private const val ACTION = "user completed video upload"
+        private const val CATEGORY = "vod compression"
+        private const val TRACKER_ID = "43118"
+        private const val SIMPLE = "simple"
+        private const val LARGE = "large"
     }
 }

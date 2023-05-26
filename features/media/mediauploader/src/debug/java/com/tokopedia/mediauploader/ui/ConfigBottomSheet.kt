@@ -37,8 +37,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ConfigBottomSheet(
-    viewModel: DebugMediaUploaderViewModelContract,
     modifier: Modifier = Modifier,
+    viewModel: DebugMediaUploaderViewModelContract,
     content: @Composable (ModalBottomSheetState) -> Unit = {}
 ) {
     val sheetState = rememberModalBottomSheetState(
