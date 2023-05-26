@@ -143,8 +143,9 @@ class MPSShopWidgetViewHolder(
         )
     }
 
-    private fun MPSShopWidgetViewAllCardDataView.toCarouselViewAllCard(): CarouselViewAllCardData =
-        CarouselViewAllCardData(title = text)
+    private fun MPSShopWidgetViewAllCardDataView.toCarouselViewAllCard(): CarouselViewAllCardData? {
+        return if (text.isNotBlank()) CarouselViewAllCardData(title = text) else null
+    }
 
     private fun toLabelGroup(labelGroupDataView: MPSProductLabelGroupDataView) =
         ProductCardModel.LabelGroup(
