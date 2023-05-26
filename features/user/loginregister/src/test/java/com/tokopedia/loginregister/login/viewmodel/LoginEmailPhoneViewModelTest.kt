@@ -60,6 +60,7 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
 import org.hamcrest.MatcherAssert
 import org.junit.Assert.assertEquals
@@ -1026,6 +1027,51 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
+    fun `login options - exception thrown from register check fingerprint usecase`() {
+        val gojekProfileData = GojekProfileData(authCode = "abcc")
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+        coEvery { registerCheckFingerprintUseCase(Unit) } throws Exception()
+
+        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = true)
+
+        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
+        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
+        assert(viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
+        assert(viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
+    }
+
+    @Test
+    fun `login options - exception thrown from gojek sdk`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws Exception()
+        coEvery { registerCheckFingerprintUseCase(Unit) } returns true
+
+        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = true)
+        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
+        assert(viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
+        assert(viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
+        assert(viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
+    }
+
+    @Test
+    fun `login options - exception thrown from register check fingerprint & gojek sdk`() {
+        mockkStatic(FirebaseCrashlytics::class)
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws Exception()
+        coEvery { registerCheckFingerprintUseCase(Unit) } throws Exception()
+
+        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = true)
+
+        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
+        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
+        assert(viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
+        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
+    }
+
+    @Test
     fun `login options - isEnableOcl true`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
         viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = true)
@@ -1039,16 +1085,70 @@ class LoginEmailPhoneViewModelTest {
     }
 
     @Test
-    fun `login options - throw Exception`() {
-        coEvery { registerCheckFingerprintUseCase(Unit) } throws MessageErrorException("Error")
-        mockkStatic(FirebaseCrashlytics::class)
-        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns Unit
+    fun `isGojekProfileExist - profile exists`() {
+        val gojekProfileData = GojekProfileData(authCode = "abc")
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
 
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = false)
-
-        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
-        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
-        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
-        assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
+        runBlocking {
+            assert(viewModel.isGojekProfileExist())
+        }
     }
+
+    @Test
+    fun `isGojekProfileExist - auth code empty`() {
+        val gojekProfileData = GojekProfileData(authCode = "")
+        coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
+
+        runBlocking {
+            assert(!viewModel.isGojekProfileExist())
+        }
+    }
+
+    @Test
+    fun `isGojekProfileExist - exception thrown`() {
+        coEvery { gotoSeamlessHelper.getGojekProfile() } throws Exception()
+
+        runBlocking {
+            assert(!viewModel.isGojekProfileExist())
+        }
+    }
+
+    @Test
+    fun `isFingerprintRegistered - fingerprint registered`() {
+        coEvery { registerCheckFingerprintUseCase(Unit) } returns true
+
+        runBlocking {
+            assert(viewModel.isFingerprintRegistered())
+        }
+    }
+
+    @Test
+    fun `isFingerprintRegistered - fingerprint not registered`() {
+        coEvery { registerCheckFingerprintUseCase(Unit) } returns false
+
+        runBlocking {
+            assert(!viewModel.isFingerprintRegistered())
+        }
+    }
+
+    @Test
+    fun `isFingerprintRegistered - exception thrown`() {
+        coEvery { registerCheckFingerprintUseCase(Unit) } throws Exception()
+
+        runBlocking {
+            assert(!viewModel.isFingerprintRegistered())
+        }
+    }
+
+    @Test
+    fun `onCleared test`() {
+        viewModel.onCleared()
+
+        verify {
+            tickerInfoUseCase.unsubscribe()
+            loginTokenUseCase.unsubscribe()
+            getProfileUseCase.unsubscribe()
+        }
+    }
+
 }
