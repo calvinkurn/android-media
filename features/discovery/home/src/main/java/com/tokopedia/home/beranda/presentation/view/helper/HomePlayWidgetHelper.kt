@@ -74,6 +74,9 @@ class HomePlayWidgetHelper(
                 is PlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
                 is PlayVideoState.Buffering -> mExoPlayerListener?.onPlayerBuffering()
                 is PlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
+                else -> {
+                    //no-op
+                }
             }
         }
     }
@@ -87,6 +90,9 @@ class HomePlayWidgetHelper(
                 }
                 is PlayConnectionState.Available -> {
                     resumeVideo()
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

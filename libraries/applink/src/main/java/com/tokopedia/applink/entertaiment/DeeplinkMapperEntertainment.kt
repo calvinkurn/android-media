@@ -3,22 +3,25 @@ package com.tokopedia.applink.entertaiment
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FirebaseRemoteConfigInstance
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 
 object DeeplinkMapperEntertainment {
     private const val EVENTS = "events"
     private const val EVENTS_DETAIL = "events/detail"
 
-    fun getRegisteredNavigationFromHttpEvents(deeplink: String): String {
+    fun getRegisteredNavigationFromHttpEvents(deeplink: String, context: Context): String {
         val uri = Uri.parse(deeplink)
         val path = uri.pathSegments.joinToString("/")
         return when {
-            path == EVENTS -> {
+            path == EVENTS && getRemoteConfigEntertainmentAlwaysNative(context) -> {
                 ApplinkConstInternalEntertainment.EVENT_HOME
             }
-            path.startsWith(EVENTS_DETAIL) -> {
+            path.startsWith(EVENTS_DETAIL) && getRemoteConfigEntertainmentAlwaysNative(context) -> {
                 ApplinkConstInternalEntertainment.EVENT_PDP + "/" + uri.lastPathSegment
             }
             else -> ""
@@ -45,5 +48,10 @@ object DeeplinkMapperEntertainment {
                 deeplink
             }
         }
+    }
+
+    fun getRemoteConfigEntertainmentAlwaysNative(context: Context): Boolean{
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE, false))
     }
 }

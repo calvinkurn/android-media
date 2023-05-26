@@ -7,7 +7,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -26,7 +26,7 @@ class ExtKtTest {
 
     @Test
     fun `given true map should return as expected`() {
-        runBlockingTest {
+        runTest {
             val input = mapOf("var1" to "foo")
 
             val actual = repository.request<Map<String, Any>, FooModel>("", input)
@@ -41,14 +41,14 @@ class ExtKtTest {
 
         val actual = repository.requestAsFlow<Map<String, Any>, FooModel>("", input)
 
-        runBlockingTest {
+        runTest {
             assertEquals(case, actual.single())
         }
     }
 
     @Test
     fun `given unit param should returns as expected`() {
-        runBlockingTest {
+        runTest {
             val actual = repository.request<Unit, FooModel>("", Unit)
             assertEquals(case, actual)
         }
@@ -56,7 +56,7 @@ class ExtKtTest {
 
     @Test
     fun `given data class param should returns as expected`() {
-        runBlockingTest {
+        runTest {
             val param = FooModel(1, "")
             val actual = repository.request<FooModel, FooModel>("", param)
             assertEquals(case, actual)
@@ -65,7 +65,7 @@ class ExtKtTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun `given map of arbitrary type should throw exception`() {
-        runBlockingTest {
+        runTest {
             repository.request<String, FooModel>("", "foo")
         }
     }

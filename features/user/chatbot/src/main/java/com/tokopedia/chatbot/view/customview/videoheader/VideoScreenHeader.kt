@@ -41,11 +41,10 @@ class VideoScreenHeader(context: Context, attributeSet: AttributeSet) :
     }
 
     companion object {
-        val LAYOUT = R.layout.chatbot_video_header_layout
+        val LAYOUT = R.layout.customview_chatbot_video_header_layout
     }
 
     interface OnClickBackButton {
         fun navigateToChatbotActivity()
     }
-
 }
