@@ -10,9 +10,13 @@ import com.tokopedia.product_service_widget.databinding.BottomsheetAddonBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class AddOnBottomSheet(private val addOnId: String) : BottomSheetUnify() {
+class AddOnBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetAddonBinding>()
+    private var productId: Long = 0L
+    private var pageSource: String = ""
+    private var cartId: Long = 0L
+    private var selectedAddonIds: List<String> = emptyList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         overlayClickDismiss = true
@@ -28,5 +32,21 @@ class AddOnBottomSheet(private val addOnId: String) : BottomSheetUnify() {
             .replace(R.id.parent_view,
                 AddOnFragment(), "")
             .commit()
+    }
+
+    fun setPageSource(pageSource: String) {
+        this.pageSource = pageSource
+    }
+
+    fun setCartId(cartId: Long) {
+        this.cartId = cartId
+    }
+
+    fun setSelectedAddonIds(selectedAddonIds: List<String>) {
+        this.selectedAddonIds = selectedAddonIds
+    }
+
+    fun setProductId(productId: Long) {
+        this.productId = productId
     }
 }

@@ -6,30 +6,38 @@ import android.os.Build
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.addon.presentation.bottomsheet.AddOnBottomSheet
+import com.tokopedia.addon.presentation.uimodel.AddOnApplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product_service_widget.R
 
 class AddOnBottomsheetActivity: BaseActivity() {
 
-    companion object {
-        private const val ADDON_ID_SEGMENT_INDEX: Int = 1
-        private const val GIFTING_BS_ID = "gifting_bs_id"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gifting_bottomsheet)
         setOrientation()
-        AddOnBottomSheet(getAddonIdFromUri()).apply {
-            setOnDismissListener {
-                finish()
-            }
-        }.show(supportFragmentManager, GIFTING_BS_ID)
+        parseApplinkData()
     }
 
-    private fun getAddonIdFromUri(): String {
-        val data = RouteManager.getIntent(this, intent.data.toString()).data
-        return data?.pathSegments?.getOrNull(ADDON_ID_SEGMENT_INDEX).orEmpty()
+    private fun parseApplinkData() {
+        RouteManager.getIntent(this, intent.data.toString()).data?.let { dataUri ->
+            val productId = AddOnApplinkMapper.getProductIdFromUri(dataUri)
+            val pageSource = AddOnApplinkMapper.getPageSourceFromUri(dataUri)
+            val cartId = AddOnApplinkMapper.getCartIdFromUri(dataUri)
+            val selectedAddonIds = AddOnApplinkMapper.getSelectedAddonIdsFromUri(dataUri)
+
+            val bottomSheet = AddOnBottomSheet().apply {
+                setOnDismissListener {
+                    finish()
+                }
+            }.apply {
+                setProductId(productId)
+                setPageSource(pageSource)
+                setCartId(cartId)
+                setSelectedAddonIds(selectedAddonIds)
+            }
+            bottomSheet.show(supportFragmentManager, "")
+        }
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
