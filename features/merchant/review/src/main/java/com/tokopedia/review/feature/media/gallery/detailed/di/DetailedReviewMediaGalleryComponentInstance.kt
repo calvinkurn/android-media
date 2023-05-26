@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.media.gallery.detailed.di
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.review.feature.media.gallery.detailed.di.component.DaggerDetailedReviewMediaGalleryComponent
 import com.tokopedia.review.feature.media.gallery.detailed.di.component.DetailedReviewMediaGalleryComponent

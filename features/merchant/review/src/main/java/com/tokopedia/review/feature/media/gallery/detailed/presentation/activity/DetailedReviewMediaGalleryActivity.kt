@@ -35,7 +35,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.common.extension.collectWhenResumed
 import com.tokopedia.review.databinding.ActivityDetailedReviewMediaGalleryBinding
-import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerHelper
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.review.feature.media.detail.presentation.fragment.ReviewDetailFragment
 import com.tokopedia.review.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
@@ -141,6 +141,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detailed_review_media_gallery)
         gestureDetector = GestureDetectorCompat(this, gestureListener)
+        setupTracker()
         setupInsetListener()
         setupMainLayout()
         setupFragments()
@@ -260,6 +261,10 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_Black
             )
         )
+    }
+
+    private fun setupTracker() {
+        ReviewDetailTrackerHelper.setTracker(sharedReviewMediaGalleryViewModel.getPageSource())
     }
 
     private fun setupInsetListener() {
@@ -641,7 +646,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                     .toString()
             )
             if (routed) {
-                ReviewDetailTracker.trackClickReviewerName(
+                ReviewDetailTrackerHelper.tracker?.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     sharedReviewMediaGalleryViewModel.currentReviewDetail.value?.feedbackID.orEmpty(),
                     userId,
