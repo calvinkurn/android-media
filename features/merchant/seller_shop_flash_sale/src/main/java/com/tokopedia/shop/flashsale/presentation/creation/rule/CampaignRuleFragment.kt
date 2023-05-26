@@ -278,7 +278,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun getOutOfStockSubtitleText(): SpannableString? {
         val context = context ?: return null
-        val oosSubtitleText = getText(R.string.campaign_rule_fs_out_of_stock_subtitle) as SpannedString
+        val oosSubtitleText = SpannedString(getText(R.string.campaign_rule_fs_out_of_stock_subtitle))
         val styledSpans = oosSubtitleText.getSpans(0, oosSubtitleText.length, StyleSpan::class.java)
         val spannableString = SpannableString(oosSubtitleText)
         val color = ContextCompat.getColor(
