@@ -18,7 +18,7 @@ import javax.inject.Inject
 class AffiliateRegistrationSharedViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
-    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
+    private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
 ) : BaseViewModel() {
 
     private var userActionLiveData = SingleLiveEventData<UserAction>()
@@ -36,10 +36,10 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
             onGetResult(response)
             progressBar.value = false
         }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-            errorMessage.value = it
-        })
+                progressBar.value = false
+                it.printStackTrace()
+                errorMessage.value = it
+            })
     }
 
     var listOfChannels = ArrayList<OnboardAffiliateRequest.OnboardAffiliateChannelRequest>()
@@ -49,19 +49,15 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
     }
 
     private fun onGetResult(response: AffiliateValidateUserData) {
-        if(response.validateAffiliateUserStatus.data?.isSystemDown == true){
+        if (response.validateAffiliateUserStatus.userStatusData?.isSystemDown == true) {
             userLoginPageLiveData.value = UserAction.SystemDown
-        }
-        else if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == false){
+        } else if (response.validateAffiliateUserStatus.userStatusData?.isEligible == true && response.validateAffiliateUserStatus.userStatusData?.isRegistered == false) {
             userLoginPageLiveData.value = UserAction.SignUpAction
-        }
-        else if(response.validateAffiliateUserStatus.data?.isEligible == false){
+        } else if (response.validateAffiliateUserStatus.userStatusData?.isEligible == false) {
             userLoginPageLiveData.value = UserAction.FraudAction
-        }
-        else if(response.validateAffiliateUserStatus.data?.isEligible == true && response.validateAffiliateUserStatus.data?.isRegistered == true){
+        } else if (response.validateAffiliateUserStatus.userStatusData?.isEligible == true && response.validateAffiliateUserStatus.userStatusData?.isRegistered == true) {
             userLoginPageLiveData.value = UserAction.RegisteredAction
         }
-
     }
 
     fun getUserName(): String {
@@ -93,8 +89,8 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
             affiliateAnnouncement.value =
                 affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
@@ -102,8 +98,6 @@ class AffiliateRegistrationSharedViewModel @Inject constructor(
     fun getLoginScreenAction(): SingleLiveEventData<UserAction> = userLoginPageLiveData
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getProgressBar(): LiveData<Boolean> = progressBar
-
-
 
     sealed class UserAction {
         object RegisteredAction : UserAction()

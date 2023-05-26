@@ -211,7 +211,7 @@ class AffiliateTermsAndConditionFragment :
 
     private fun initObserver() {
         affiliateTermsAndConditionViewModel?.getOnBoardingData()?.observe(this) { onBoardingData ->
-            if (onBoardingData.data?.status == REGISTRATION_SUCCESS) {
+            if (onBoardingData.onBoardData?.status == REGISTRATION_SUCCESS) {
                 registrationSharedViewModel?.onRegisterationSuccess()
             } else {
                 view?.let {

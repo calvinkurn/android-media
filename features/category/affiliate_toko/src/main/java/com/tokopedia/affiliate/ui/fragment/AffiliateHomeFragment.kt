@@ -342,32 +342,32 @@ class AffiliateHomeFragment :
         }
 
         affiliateHomeViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET) {
+            if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType == TICKER_BOTTOM_SHEET) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
                     if (it.getString(USER_ID, null) != userSessionInterface?.userId || it.getLong(
                             TICKER_ID,
                             -1
-                        ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                        ) != announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                     ) {
                         it.edit().apply {
                             putLong(
                                 TICKER_ID,
-                                announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
+                                announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0
                             )
                             putString(USER_ID, userSessionInterface?.userId)
                             apply()
                         }
 
                         AffiliateBottomSheetInfo.newInstance(
-                            announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0,
-                            announcementData.getAffiliateAnnouncementV2?.data?.tickerData?.first()
+                            announcementData.getAffiliateAnnouncementV2?.announcementData?.id ?: 0,
+                            announcementData.getAffiliateAnnouncementV2?.announcementData?.tickerData?.first()
                         ).show(childFragmentManager, "")
                     }
                 }
             } else {
                 sendTickerImpression(
-                    announcementData.getAffiliateAnnouncementV2?.data?.type,
-                    announcementData.getAffiliateAnnouncementV2?.data?.id
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.type,
+                    announcementData.getAffiliateAnnouncementV2?.announcementData?.id
                 )
                 view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)
                     ?.setAnnouncementData(

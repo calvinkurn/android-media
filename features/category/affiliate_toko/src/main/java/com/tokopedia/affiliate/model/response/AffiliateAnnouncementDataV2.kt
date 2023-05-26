@@ -10,7 +10,7 @@ class AffiliateAnnouncementDataV2(
 ) {
     data class GetAffiliateAnnouncementV2(
         @SerializedName("Data")
-        var `data`: Data?
+        var announcementData: Data?
     ) {
         data class Data(
             @SerializedName("Error")

@@ -50,31 +50,31 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
                         .getAffiliateCommissionDetail?.let { affiliateCommissionDetail ->
                             var tempCardDetails: List<TrafficCommissionCardDetail?>? =
                                 null
-                            affiliateCommissionDetail.data?.additionQueryKey?.let { key ->
+                            affiliateCommissionDetail.commissionDetailData?.additionQueryKey?.let { key ->
                                 additionKey = key
                             }
-                            affiliateCommissionDetail.data?.pageType?.let { type ->
+                            affiliateCommissionDetail.commissionDetailData?.pageType?.let { type ->
                                 pageType = type
                             }
-                            affiliateCommissionDetail.data?.detailTitle?.let {
+                            affiliateCommissionDetail.commissionDetailData?.detailTitle?.let {
                                 detailTitle.value = it
                             }
-                            commissionType = affiliateCommissionDetail.data?.commissionType
-                            if (affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
+                            commissionType = affiliateCommissionDetail.commissionDetailData?.commissionType
+                            if (affiliateCommissionDetail.commissionDetailData?.commissionType == TRAFFIC_TYPE) {
                                 affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(
                                     additionKey,
                                     lastItem,
                                     pageType
                                 ).let {
                                     tempCardDetails =
-                                        it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail
-                                    it.getAffiliateTrafficCommissionDetailCards?.data?.lastID?.let { lastID ->
+                                        it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.trafficCommissionCardDetail
+                                    it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.lastID?.let { lastID ->
                                         lastItem = lastID
                                     }
                                 }
                             }
                             detailList.value = getDetailListOrganize(
-                                affiliateCommissionDetail.data?.detail,
+                                affiliateCommissionDetail.commissionDetailData?.detail,
                                 tempCardDetails
                             )
                             commssionData.value = affiliateCommissionDetail
@@ -88,12 +88,12 @@ class AffiliateTransactionDetailViewModel @Inject constructor(
                         pageType
                     ).let {
                         shimmerVisibility.value = false
-                        it.getAffiliateTrafficCommissionDetailCards?.data?.lastID?.let { lastID ->
+                        it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.lastID?.let { lastID ->
                             lastItem = lastID
                         }
                         detailList.value = getDetailListOrganize(
                             null,
-                            it.getAffiliateTrafficCommissionDetailCards?.data?.trafficCommissionCardDetail,
+                            it.getAffiliateTrafficCommissionDetailCards?.trafficCommissionData?.trafficCommissionCardDetail,
                             page
                         )
                     }

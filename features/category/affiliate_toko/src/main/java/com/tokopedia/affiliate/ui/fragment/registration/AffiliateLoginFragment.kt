@@ -287,7 +287,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
         }
         affiliateLoginSharedViewModel?.getAffiliateAnnouncement()
             ?.observe(viewLifecycleOwner) { announcementData ->
-                if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                if (announcementData.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                     view?.findViewById<Ticker>(R.id.affiliate_login_ticker)
                         ?.setAnnouncementData(announcementData, activity)
                 }

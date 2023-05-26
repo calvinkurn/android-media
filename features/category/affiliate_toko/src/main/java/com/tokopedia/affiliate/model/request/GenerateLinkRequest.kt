@@ -20,13 +20,13 @@ data class GenerateLinkRequest(
     ) {
         data class Link(
             @SerializedName("Type")
-            val Type: String,
+            val type: String,
             @SerializedName("URL")
-            val URL: String,
+            val url: String,
             @SerializedName("Identifier")
-            val Identifier: String,
+            val identifier: String,
             @SerializedName("IdentifierType")
-            val IdentifierType: Int
+            val identifierType: Int
         )
     }
 }

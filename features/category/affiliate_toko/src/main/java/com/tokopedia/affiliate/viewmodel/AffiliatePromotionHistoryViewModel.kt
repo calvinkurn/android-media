@@ -26,7 +26,7 @@ class AffiliatePromotionHistoryViewModel @Inject constructor(
         launchCatchError(
             block = {
                 affiliatePerformanceUseCase.affiliatePerformance(page, PAGE_LIMIT)
-                    .getAffiliateItemsPerformanceList?.data?.sectionData?.let {
+                    .getAffiliateItemsPerformanceList?.itemPerformanceListData?.sectionData?.let {
                         totalItemsCount.value = it.itemTotalCount
                         convertDataToVisitables(it)?.let { visitables ->
                             affiliateDataList.value = visitables

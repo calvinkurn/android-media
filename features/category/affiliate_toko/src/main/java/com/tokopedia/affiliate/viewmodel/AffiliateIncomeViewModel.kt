@@ -23,7 +23,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 
-class AffiliateIncomeViewModel : BaseViewModel(){
+class AffiliateIncomeViewModel : BaseViewModel() {
 
     private var affiliateBalanceData = MutableLiveData<AffiliateBalance.AffiliateBalance.Data>()
     private var affiliateKycData = MutableLiveData<AffiliateKycDetailsData.KycProjectInfo>()
@@ -36,23 +36,23 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
     private var progressBar = MutableLiveData<Boolean>()
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
-    private var isUserBlackListed : Boolean = false
+    private var isUserBlackListed: Boolean = false
     var hasNext = true
 
-     val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
-     val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
-     val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
-     val affiliateValidateUseCaseUseCase = AffiliateValidateUserStatusUseCase(AffiliateRepository())
-     val affiliateAffiliateAnnouncementUseCase = AffiliateAnnouncementUseCase(AffiliateRepository())
+    val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
+    val affiliateTransactionHistoryUseCase = AffiliateTransactionHistoryUseCase(AffiliateRepository())
+    val affiliatKycHistoryUseCase = AffiliateKycUseCase(AffiliateRepository())
+    val affiliateValidateUseCaseUseCase = AffiliateValidateUserStatusUseCase(AffiliateRepository())
+    val affiliateAffiliateAnnouncementUseCase = AffiliateAnnouncementUseCase(AffiliateRepository())
 
     fun getAffiliateBalance() {
         launchCatchError(block = {
-                    affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.data?.let {
-                        affiliateBalanceData.value = it
-                    }
+            affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.balanceData?.let {
+                affiliateBalanceData.value = it
+            }
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun getAffiliateValidateUser(email: String) {
@@ -61,10 +61,10 @@ class AffiliateIncomeViewModel : BaseViewModel(){
                 affiliateValidateUseCaseUseCase.validateUserStatus(email)
             progressBar.value = false
         }, onError = {
-            progressBar.value = false
-            it.printStackTrace()
-            errorMessage.value = it
-        })
+                progressBar.value = false
+                it.printStackTrace()
+                errorMessage.value = it
+            })
     }
 
     fun getAnnouncementInformation() {
@@ -72,8 +72,8 @@ class AffiliateIncomeViewModel : BaseViewModel(){
             affiliateAnnouncement.value =
                 affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement(PAGE_ANNOUNCEMENT_TRANSACTION_HISTORY)
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
     fun getKycDetails() {
         launchCatchError(block = {
@@ -83,29 +83,29 @@ class AffiliateIncomeViewModel : BaseViewModel(){
             }
             affiliateKycLoader.value = false
         }, onError = {
-            affiliateKycError.value = it.message
-            affiliateKycLoader.value = false
-            it.printStackTrace()
-        })
+                affiliateKycError.value = it.message
+                affiliateKycLoader.value = false
+                it.printStackTrace()
+            })
     }
 
     fun getAffiliateTransactionHistory(page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt(), page).getAffiliateTransactionHistory?.data?.let {
+            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt(), page).getAffiliateTransactionHistory?.transactionData?.let {
                 hasNext = it.hasNext
                 convertDataToVisitables(it)?.let { visitables ->
                     affiliateDataList.value = visitables
                 }
             }
         }, onError = {
-            shimmerVisibility.value = false
-            it.printStackTrace()
-            errorMessage.value = it
-        })
+                shimmerVisibility.value = false
+                it.printStackTrace()
+                errorMessage.value = it
+            })
     }
 
-     fun convertDataToVisitables(data: AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+    fun convertDataToVisitables(data: AffiliateTransactionHistoryData.GetAffiliateTransactionHistory.Data?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         data?.transaction?.let { items ->
             for (transaction in items) {
@@ -130,20 +130,20 @@ class AffiliateIncomeViewModel : BaseViewModel(){
             rangeChanged.value = true
         }
     }
-    fun setBlacklisted(isBlackListed: Boolean){
+    fun setBlacklisted(isBlackListed: Boolean) {
         isUserBlackListed = isBlackListed
     }
-    fun getIsBlackListed(): Boolean{
+    fun getIsBlackListed(): Boolean {
         return isUserBlackListed
     }
     fun getAffiliateBalanceData(): LiveData<AffiliateBalance.AffiliateBalance.Data> = affiliateBalanceData
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getAffiliateKycData(): LiveData<AffiliateKycDetailsData.KycProjectInfo> = affiliateKycData
     fun getAffiliateKycLoader(): LiveData<Boolean> = affiliateKycLoader
-    fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
+    fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getKycErrorMessage(): LiveData<String> = affiliateKycError
-    fun getRangeChange() :LiveData<Boolean> = rangeChanged
+    fun getRangeChange(): LiveData<Boolean> = rangeChanged
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
     fun getAffiliateAnnouncement(): LiveData<AffiliateAnnouncementDataV2> = affiliateAnnouncement
 }

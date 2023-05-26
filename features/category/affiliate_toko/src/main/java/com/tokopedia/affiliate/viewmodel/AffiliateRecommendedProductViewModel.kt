@@ -5,14 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_LIMIT
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateRecommendedProductData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
-import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateRecommendedProductUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
@@ -23,26 +20,26 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     private var pageInfo = MutableLiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo>()
     private var errorMessage = MutableLiveData<String>()
     private val pageLimit = PAGE_LIMIT
-    var isUserBlackListed : Boolean = false
+    var isUserBlackListed: Boolean = false
 
-    fun getAffiliateRecommendedProduct(identifier : String,page : Int) {
+    fun getAffiliateRecommendedProduct(identifier: String, page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier,page,pageLimit).recommendedAffiliateProduct?.data?.let {
+            affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier, page, pageLimit).recommendedAffiliateProduct?.productData?.let {
                 pageInfo.value = it.pageInfo
                 affiliateDataList.value = convertDataToVisitable(it)
             }
         }, onError = {
-            shimmerVisibility.value = false
-            it.printStackTrace()
-            errorMessage.value = it.localizedMessage
-        })
+                shimmerVisibility.value = false
+                it.printStackTrace()
+                errorMessage.value = it.localizedMessage
+            })
     }
 
     fun convertDataToVisitable(it: AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
-        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         it?.cards?.firstOrNull()?.items?.let { items ->
-            for (product in items){
+            for (product in items) {
                 product?.let {
                     product.isLinkGenerationAllowed = !isUserBlackListed
                     tempList.add(AffiliateStaggeredPromotionCardModel(product))
@@ -55,5 +52,5 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getErrorMessage(): LiveData<String> = errorMessage
     fun getAffiliateItemCount(): LiveData<AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.PageInfo> = pageInfo
-    fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
+    fun getAffiliateDataItems(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
 }

@@ -328,10 +328,10 @@ class AffiliatePromoFragment :
             onGetValidateUserData(validateUserdata)
         }
         affiliatePromoViewModel.getAffiliateAnnouncement().observe(this) {
-            if (it.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+            if (it.getAffiliateAnnouncementV2?.announcementData?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
-                    it.getAffiliateAnnouncementV2?.data?.type,
-                    it.getAffiliateAnnouncementV2?.data?.id
+                    it.getAffiliateAnnouncementV2?.announcementData?.type,
+                    it.getAffiliateAnnouncementV2?.announcementData?.id
                 )
                 binding?.affiliateAnnouncementTicker?.setAnnouncementData(
                     it,

@@ -331,8 +331,8 @@ class AffiliateActivity :
 
     private fun setObservers() {
         affiliateVM?.getValidateUserdata()?.observe(this) { validateUserdata ->
-            if (validateUserdata.validateAffiliateUserStatus.data?.isRegistered == true &&
-                validateUserdata.validateAffiliateUserStatus.data?.isEligible == true
+            if (validateUserdata.validateAffiliateUserStatus.userStatusData?.isRegistered == true &&
+                validateUserdata.validateAffiliateUserStatus.userStatusData?.isEligible == true
             ) {
                 showAffiliatePortal()
             } else {

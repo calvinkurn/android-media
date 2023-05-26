@@ -163,7 +163,7 @@ class AffiliateHomeViewModelTest {
             null,
             arrayListOf(defaultMetricData)
         )
-        affiliateUserPerformaListData.getAffiliatePerformance.data?.userData = performData
+        affiliateUserPerformaListData.getAffiliatePerformance.performanceData?.userData = performData
         coEvery {
             affiliateUserPerformanceUseCase.affiliateUserperformance(any())
         } returns affiliateUserPerformaListData
@@ -204,7 +204,7 @@ class AffiliateHomeViewModelTest {
             arrayListOf(item),
             null
         )
-        affiliatePerformanceListData.getAffiliatePerformanceList?.data?.data = data
+        affiliatePerformanceListData.getAffiliatePerformanceList?.performanceList?.performanceListData = data
         coEvery {
             affiliatePerformanceDataUseCase.affiliateItemPerformanceList(
                 any(),
