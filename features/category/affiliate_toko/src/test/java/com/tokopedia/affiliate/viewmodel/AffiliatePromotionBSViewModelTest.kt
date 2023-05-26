@@ -24,7 +24,11 @@ class AffiliatePromotionBSViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateGenerateLinkUseCase: AffiliateGenerateLinkUseCase = mockk()
 
-    var affiliatePromotionBSViewModel = spyk(AffiliatePromotionBSViewModel(userSessionInterface, affiliateGenerateLinkUseCase))
+    var affiliatePromotionBSViewModel = spyk(
+        AffiliatePromotionBSViewModel(
+            affiliateGenerateLinkUseCase
+        )
+    )
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
@@ -48,21 +52,20 @@ class AffiliatePromotionBSViewModelTest {
     @Test
     fun affiliateGenerateLink() {
         val data: AffiliateGenerateLinkData.AffiliateGenerateLink.Data = mockk(relaxed = true)
-        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(),any(),any(), any(),any()) } returns data
+        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(), any(), any(), any(), any()) } returns data
 
-        affiliatePromotionBSViewModel.affiliateGenerateLink(0, "pdp","","", "","pdp")
+        affiliatePromotionBSViewModel.affiliateGenerateLink(0, "pdp", "", "", "", "pdp")
 
         assertEquals(affiliatePromotionBSViewModel.generateLinkData().value, data)
         assertEquals(affiliatePromotionBSViewModel.loading().value, false)
-
     }
 
     @Test
     fun affiliateGenerateLinkException() {
         val exception = "Generate Link Exception"
-        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(),any(),any(), any(), any(),any()) } throws Exception(exception)
+        coEvery { affiliateGenerateLinkUseCase.affiliateGenerateLink(any(), any(), any(), any(), any(), any()) } throws Exception(exception)
 
-        affiliatePromotionBSViewModel.affiliateGenerateLink(0, "pdp","","", "","pdp")
+        affiliatePromotionBSViewModel.affiliateGenerateLink(0, "pdp", "", "", "", "pdp")
 
         assertEquals(affiliatePromotionBSViewModel.getErrorMessage().value, exception)
         assertEquals(affiliatePromotionBSViewModel.loading().value, false)
