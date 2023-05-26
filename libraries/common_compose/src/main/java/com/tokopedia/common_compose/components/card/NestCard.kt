@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.components.nestcard
+package com.tokopedia.common_compose.components.card
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
@@ -26,44 +26,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.nestcard.NestCardType.Border
-import com.tokopedia.common_compose.components.nestcard.NestCardType.BorderActive
-import com.tokopedia.common_compose.components.nestcard.NestCardType.BorderDisabled
-import com.tokopedia.common_compose.components.nestcard.NestCardType.NoBorder
-import com.tokopedia.common_compose.components.nestcard.NestCardType.Shadow
-import com.tokopedia.common_compose.components.nestcard.NestCardType.ShadowActive
-import com.tokopedia.common_compose.components.nestcard.NestCardType.ShadowDisabled
-import com.tokopedia.common_compose.components.nestcard.NestCardType.StateBorder
+import com.tokopedia.common_compose.components.card.NestCardType.Border
+import com.tokopedia.common_compose.components.card.NestCardType.BorderActive
+import com.tokopedia.common_compose.components.card.NestCardType.BorderDisabled
+import com.tokopedia.common_compose.components.card.NestCardType.NoBorder
+import com.tokopedia.common_compose.components.card.NestCardType.Shadow
+import com.tokopedia.common_compose.components.card.NestCardType.ShadowActive
+import com.tokopedia.common_compose.components.card.NestCardType.ShadowDisabled
+import com.tokopedia.common_compose.components.card.NestCardType.StateBorder
 import com.tokopedia.common_compose.ui.NestTheme
 import kotlinx.coroutines.launch
-
-@Composable
-private fun getNestCardBorderActiveColor(): Color {
-    return NestTheme.colors.GN._500
-}
-
-@Composable
-private fun getNestCardBorderColor(): Color {
-    return NestTheme.colors.NN._200
-}
-
-@Composable
-private fun getNestCardBackgroundColor(): Color {
-    return if (isSystemInDarkTheme()) {
-        NestTheme.colors.NN._50
-    } else {
-        NestTheme.colors.NN._0
-    }
-}
-
-@Composable
-private fun getNestCardDisableBackgroundColor(): Color {
-    return if (isSystemInDarkTheme()) {
-        NestTheme.colors.NN._100
-    } else {
-        NestTheme.colors.NN._50
-    }
-}
 
 sealed interface NestCardType {
     data class StateBorder(val isSelected: Boolean) : NestCardType
@@ -82,15 +54,14 @@ sealed interface NestCardType {
     }
 }
 
-
 @Composable
 fun NestCard(
     modifier: Modifier = Modifier,
     enableTransitionAnimation: Boolean = false,
     enableBounceAnimation: Boolean = false,
     type: NestCardType = NoBorder,
-    onClick: () -> Unit,
-    onLongPress: () -> Unit,
+    onClick: () -> Unit = {},
+    onLongPress: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     val onTouch = remember { mutableStateOf(false) }
@@ -157,7 +128,8 @@ fun NestCard(
             shadow = true
             backgroundColor = getNestCardDisableBackgroundColor()
         }
-        else -> {
+        is NoBorder -> {
+
         }
     }
 
@@ -266,5 +238,33 @@ private fun NestCardMainPreview() {
             }) {
             CardContentComplexExample()
         }
+    }
+}
+
+@Composable
+private fun getNestCardBorderActiveColor(): Color {
+    return NestTheme.colors.GN._500
+}
+
+@Composable
+private fun getNestCardBorderColor(): Color {
+    return NestTheme.colors.NN._200
+}
+
+@Composable
+private fun getNestCardBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        NestTheme.colors.NN._50
+    } else {
+        NestTheme.colors.NN._0
+    }
+}
+
+@Composable
+private fun getNestCardDisableBackgroundColor(): Color {
+    return if (isSystemInDarkTheme()) {
+        NestTheme.colors.NN._100
+    } else {
+        NestTheme.colors.NN._50
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.components.nestcard
+package com.tokopedia.common_compose.components.card
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -27,12 +27,11 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
-import com.tokopedia.common_compose.components.nestcard.NestCardType.Border
-import com.tokopedia.common_compose.components.nestcard.NestCardType.BorderActive
-import com.tokopedia.common_compose.components.nestcard.NestCardType.BorderDisabled
-import com.tokopedia.common_compose.components.nestcard.NestCardType.Companion
-import com.tokopedia.common_compose.components.nestcard.NestCardType.ShadowActive
-import com.tokopedia.common_compose.components.nestcard.NestCardType.ShadowDisabled
+import com.tokopedia.common_compose.components.card.NestCardType.Border
+import com.tokopedia.common_compose.components.card.NestCardType.BorderActive
+import com.tokopedia.common_compose.components.card.NestCardType.BorderDisabled
+import com.tokopedia.common_compose.components.card.NestCardType.ShadowActive
+import com.tokopedia.common_compose.components.card.NestCardType.ShadowDisabled
 import com.tokopedia.common_compose.ui.NestTheme
 
 

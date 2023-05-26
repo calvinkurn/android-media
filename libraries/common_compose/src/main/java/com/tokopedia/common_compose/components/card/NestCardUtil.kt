@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.components.nestcard
+package com.tokopedia.common_compose.components.card
 
 import android.animation.TimeInterpolator
 import androidx.compose.animation.core.Easing
