@@ -29,7 +29,6 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
@@ -58,6 +57,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -526,6 +526,9 @@ class PlayViewModel @AssistedInject constructor(
 
     val userId: String
         get() = userSession.userId
+
+    val shopId: String
+        get() = userSession.shopId
 
     val isCastAllowed: Boolean
         get() {
@@ -1098,6 +1101,14 @@ class PlayViewModel @AssistedInject constructor(
             }
             EmptyPageWidget -> handleEmptyExplore()
             is SelectReason -> handleSelectedReason(action.reasonId)
+            is CommentVisibilityAction -> {
+                _isBottomSheetsShown.update { action.isOpen }
+                viewModelScope.launch {
+                    _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
+                }
+                if(!action.isOpen) return
+                updateCommentConfig()
+            }
         }
     }
 
@@ -1170,6 +1181,7 @@ class PlayViewModel @AssistedInject constructor(
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
         updateCartCount()
+        updateCommentConfig()
 
         sendInitialLog()
     }
@@ -2970,6 +2982,13 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private fun updateCommentConfig() {
+        if (!channelType.isVod) return
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getCountComment(channelId)
+            _channelDetail.update { it.copy(commentConfig = response) }
+        }){}
+    }
     private fun handleEmptyExplore() {
         val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
         val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)

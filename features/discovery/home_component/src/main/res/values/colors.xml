@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="dms_vps_widget_background">#FDFBFE</color>
+    <color name="dms_ribbon_anchor_static_dark">#B31D40</color>
+    <color name="home_dms_header_see_all_border_inverted">#4DFFFFFF</color>
 </resources>

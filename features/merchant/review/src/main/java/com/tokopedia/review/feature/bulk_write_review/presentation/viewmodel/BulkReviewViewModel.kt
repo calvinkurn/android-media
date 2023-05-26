@@ -17,6 +17,7 @@ import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.bulk_write_review.di.qualifier.BulkReviewGson
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetBadRatingCategoryRequestState
+import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestParams
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewGetFormRequestState
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestParam
 import com.tokopedia.review.feature.bulk_write_review.domain.model.BulkReviewSubmitRequestState
@@ -79,7 +80,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -322,8 +322,8 @@ class BulkReviewViewModel @Inject constructor(
         handleTrackers()
     }
 
-    fun getData() {
-        getForms()
+    fun getData(invoice: String, utmSource: String) {
+        getForms(invoice, utmSource)
         getBadRatingCategory()
     }
 
@@ -593,7 +593,10 @@ class BulkReviewViewModel @Inject constructor(
         )
     }
 
-    fun onRestoreInstanceState(saveInstanceCacheManager: CacheManager) {
+    fun onRestoreInstanceState(
+        saveInstanceCacheManager: CacheManager,
+        onFailedRestoreState: () -> Unit
+    ) {
         viewModelScope.launch(coroutineDispatchers.io) {
             val savedGetFormRequestState = saveInstanceCacheManager.get<BulkReviewGetFormRequestState>(
                 customId = SAVE_STATE_KEY_GET_FORM_REQUEST_STATE,
@@ -716,7 +719,7 @@ class BulkReviewViewModel @Inject constructor(
                     // noop
                 }
             } else {
-                getData()
+                onFailedRestoreState()
             }
         }
     }
@@ -1614,9 +1617,11 @@ class BulkReviewViewModel @Inject constructor(
         }
     }
 
-    private fun getForms() {
+    private fun getForms(invoice: String, utmSource: String) {
         viewModelScope.launch(coroutineDispatchers.io) {
-            getFormUseCase(Unit).collectLatest { requestState ->
+            getFormUseCase(
+                BulkReviewGetFormRequestParams(invoice, utmSource)
+            ).collectLatest { requestState ->
                 getFormRequestState.value = requestState
             }
         }

@@ -19,9 +19,7 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
 
-        testInstrumentationRunnerArguments clearPackageData: 'true',
-                // Leak Canary Listener, if do not want to use, just comment the code below
-                'listener': 'leakcanary.FailTestOnLeakRunListener'
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     testOptions {

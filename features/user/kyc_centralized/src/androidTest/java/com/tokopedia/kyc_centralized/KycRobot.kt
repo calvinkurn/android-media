@@ -10,14 +10,16 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
-import com.tokopedia.kyc_centralized.util.waitOnView
-import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity
 import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
+import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity
+import com.tokopedia.kyc_centralized.util.waitOnView
 
 class KycRobot {
 
     fun checkTermsAndCondition() {
-        onView(withId(R.id.checkboxPurposes)).perform(click())
+        // waiting for user consent
+        Thread.sleep(500)
+        onView(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes)).perform(click())
     }
 
     fun atInfoClickNext() {
@@ -39,12 +41,12 @@ class KycRobot {
     }
 
     fun atFaceIntroClickNext() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_000)
         onView(withId(R.id.button)).perform(click())
     }
 
     fun atFinalPressCta() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_000)
         onView(withId(R.id.upload_button)).perform(click())
     }
 
@@ -52,7 +54,6 @@ class KycRobot {
         Thread.sleep(2_000)
         onView(withId(R.id.kyc_upload_error_button)).perform(click())
     }
-
 }
 
 class KycResultRobot {
@@ -72,7 +73,6 @@ class KycResultRobot {
     fun hasRedirectUrl(rule: IntentsTestRule<UserIdentificationInfoSimpleActivity>, url: String) {
         assertThat(rule.activityResult.resultData, hasExtra(PARAM_REDIRECT_URL, url))
     }
-
 }
 
 fun kycRobot(func: KycRobot.() -> Unit): KycRobot {
