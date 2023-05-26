@@ -97,6 +97,8 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_B
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
+import com.tokopedia.shop.common.extension.isOnDarkMode
+import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.*
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
@@ -475,8 +477,25 @@ open class ShopPageHomeFragment :
     }
 
     private fun showVoucherListBottomsheet() {
-        val bottomsheet = ExclusiveLaunchVoucherListBottomSheet()
-        bottomsheet.show(childFragmentManager, bottomsheet.tag)
+        //TODO: Replace with real category slugs from backend
+        val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
+            useDarkBackground = false,
+            promoVouchersCategorySlugs = listOf(
+                "HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY", "MEGAEL12MAY",
+                "MEGAEL8MAY", "ELCPC523", "MEGAEL1JTMAY",
+                "MEGAEL150MAY"
+            )
+        )
+        bottomSheet.setOnVoucherClaimSuccess {
+            //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
+        }
+        bottomSheet.setOnVoucherUseSuccess {
+            showToaster(
+                view ?: return@setOnVoucherUseSuccess,
+                context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {

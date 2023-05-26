@@ -1,12 +1,11 @@
 package com.tokopedia.shop.campaign.view.customview
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.shop.databinding.CustomViewExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
 
@@ -16,41 +15,56 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var binding : CustomViewExclusiveLaunchVoucherBinding? = null
+    private var binding: CustomViewExclusiveLaunchVoucherBinding? = null
+
 
     init {
-        binding = CustomViewExclusiveLaunchVoucherBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = CustomViewExclusiveLaunchVoucherBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
-    fun setVoucherName(benefit: Long, benefitMax: Long) {
-        binding?.tpgRemainingQuota?.text = context.getString(R.string.shop_page_placeholder_benefit_name, benefit.toString(), benefitMax.toString())
+    fun setVoucherName(voucherName: String) {
+        binding?.tpgBenefitName?.text = voucherName
     }
 
-    fun setMinimumPurchase(minimumPurchase: Long) {
-        val unit = if(minimumPurchase > 1_000_000) "jt" else "rb"
-        val formattedMinimumPurchase = "$minimumPurchase $unit"
-        binding?.tpgRemainingQuota?.text = context.getString(R.string.shop_page_placeholder_minimal_purchase, formattedMinimumPurchase)
+    fun setMinimumPurchase(text: String) {
+        binding?.tpgMinPurchase?.text = text
     }
 
     fun setRemainingQuota(remainingQuota: Int) {
-        if (remainingQuota.isMoreThanZero()) {
-            binding?.tpgRemainingQuota?.visible()
-            binding?.tpgRemainingQuota?.text = context.getString(R.string.shop_page_placeholder_remaining_quota, remainingQuota)
-        } else {
-            binding?.tpgRemainingQuota?.gone()
-        }
+        binding?.tpgRemainingQuota?.text =
+            context.getString(R.string.shop_page_placeholder_remaining_quota, remainingQuota)
     }
 
-    fun setOnPrimaryCtaClick(block: () -> Unit) {
-        binding?.tpgClaim?.setOnClickListener { block() }
+    fun setOnPrimaryCtaClick(onClick: () -> Unit) {
+        binding?.tpgClaim?.setOnClickListener { onClick() }
     }
 
     fun setPrimaryCta(ctaText: String, onClick: () -> Unit) {
-        binding?.tpgClaim?.setOnClickListener { onClick() }
         binding?.tpgClaim?.text = ctaText
+        setOnPrimaryCtaClick(onClick)
     }
 
-    fun destroy() {
-        binding = null
+    fun useDarkBackground() {
+        binding?.run {
+            rootLayout.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_dark)
+            tpgBenefitName.setTextColorCompat(R.color.Unify_Static_White)
+            tpgMinPurchase.setTextColorCompat(R.color.Unify_Static_White)
+            tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
+            tpgClaim.setTextColorCompat(R.color.clr_dms_voucher_claim)
+        }
+    }
+
+    fun useLightBackground() {
+        binding?.run {
+            rootLayout.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_light)
+            tpgBenefitName.setTextColorCompat(R.color.Unify_NN950)
+            tpgMinPurchase.setTextColorCompat(R.color.Unify_NN950)
+            tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
+            tpgClaim.setTextColorCompat(R.color.Unify_GN500)
+        }
     }
 }
