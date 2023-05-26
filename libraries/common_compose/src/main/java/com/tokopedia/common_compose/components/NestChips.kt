@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.extensions.applyIf
 import com.tokopedia.common_compose.extensions.dashedStroke
 import com.tokopedia.common_compose.extensions.noRippleClickable
-import com.tokopedia.common_compose.principles.NestImage
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.common_compose.utils.NoMinimumTouchViewConfiguration
@@ -57,20 +56,20 @@ sealed interface NestChipsLeft {
 
     data class Color(
         val color: androidx.compose.ui.graphics.Color,
-        override val isCircle: Boolean = false,
+        override val isCircle: Boolean = false
     ) : NestChipsLeft
 
     data class NetworkImage(
         val url: String,
         val contentDescription: String? = null,
-        override val isCircle: Boolean = false,
+        override val isCircle: Boolean = false
     ) : NestChipsLeft
 
     data class Painter(
         val painter: androidx.compose.ui.graphics.painter.Painter,
         val color: androidx.compose.ui.graphics.Color? = null,
         val contentDescription: String? = null,
-        override val isCircle: Boolean = false,
+        override val isCircle: Boolean = false
     ) : NestChipsLeft
 }
 
@@ -83,7 +82,7 @@ enum class NestChipsSize(
 ) {
     Small(32.dp, 16.dp, 8.dp, 10.dp, 1),
     Medium(40.dp, 16.dp, 8.dp, 12.dp, 1),
-    Large(48.dp, 24.dp, 12.dp, 8.dp, 2),
+    Large(48.dp, 24.dp, 12.dp, 8.dp, 2)
 }
 
 @Composable
@@ -148,7 +147,7 @@ fun NestChips(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = paddingStart, end = size.paddingHorizontal),
+            modifier = Modifier.padding(start = paddingStart, end = size.paddingHorizontal)
         ) {
             NestChipsLeft(left = left, chipsSize = size, Modifier.padding(end = 8.dp))
             NestTypography(
@@ -198,7 +197,7 @@ private fun NestChipsLeft(
                     painter = it.painter,
                     colorFilter = it.color?.let { color -> ColorFilter.tint(color) },
                     contentDescription = it.contentDescription,
-                    modifier = leftModifier,
+                    modifier = leftModifier
                 )
             }
             is NestChipsLeft.NetworkImage -> {
@@ -210,7 +209,7 @@ private fun NestChipsLeft(
             is NestChipsLeft.Color -> {
                 Surface(
                     modifier = leftModifier,
-                    color = it.color,
+                    color = it.color
                 ) {}
             }
         }
@@ -241,7 +240,8 @@ private fun AllSample() {
                             selected = it == size,
                             onClick = {
                                 size = it
-                            })
+                            }
+                        )
                         Text(text = it.name)
                     }
                 }
@@ -255,7 +255,8 @@ private fun AllSample() {
                             selected = it == state,
                             onClick = {
                                 state = it
-                            })
+                            }
+                        )
                         Text(text = it.name)
                     }
                 }
@@ -352,7 +353,7 @@ private fun AllSample() {
                     left = NestChipsLeft.Painter(
                         painterResource(id = iconUnifyR.drawable.iconunify_bell_filled),
                         Color.Blue,
-                        isCircle = true,
+                        isCircle = true
                     ),
                     onClick = {
                         Toast.makeText(context, "Chips Left Painter (Circle) Clicked", Toast.LENGTH_SHORT).show()
@@ -377,7 +378,7 @@ private fun AllSample() {
                     size = size,
                     left = NestChipsLeft.NetworkImage(
                         "https://news.stanford.edu/wp-content/uploads/2020/10/Birds_Culture-1-copy.jpg",
-                        isCircle = true,
+                        isCircle = true
                     ),
                     onClick = {
                         Toast.makeText(context, "Chips Left Network Image (Circle) Clicked", Toast.LENGTH_SHORT).show()
