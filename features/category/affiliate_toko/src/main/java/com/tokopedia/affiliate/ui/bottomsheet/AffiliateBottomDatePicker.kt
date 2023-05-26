@@ -42,7 +42,8 @@ class AffiliateBottomDatePicker : BottomSheetUnify(), AffiliateDatePickerInterfa
     private var identifier = IDENTIFIER_HOME
 
     @Inject
-    @JvmField var viewModelProvider: ViewModelProvider.Factory? = null
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
     private var affiliateDatePickerBottomSheetViewModel: AffiliateDatePickerBottomSheetViewModel? = null
 
     private fun initInject() {
@@ -127,14 +128,14 @@ class AffiliateBottomDatePicker : BottomSheetUnify(), AffiliateDatePickerInterfa
     private fun initObserver() {
         affiliateDatePickerBottomSheetViewModel?.getAffiliateFilterItems()?.observe(this) { list ->
             list?.let {
-                adapter.submitList(list as List<Visitable<*>>?)
+                adapter.submitList(list as? List<Visitable<*>>)
             }
         }
         affiliateDatePickerBottomSheetViewModel?.getShimmerVisibility()?.observe(this) { shimmer ->
             if (shimmer != null && shimmer) {
                 val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
                 repeat(SHIMMER_COUNT) { itemList.add(AffiliateShimmerViewModel()) }
-                adapter.submitList(itemList as List<Visitable<*>>?)
+                adapter.submitList(itemList as? List<Visitable<*>>)
             }
         }
         affiliateDatePickerBottomSheetViewModel?.getTickerInfo()?.observe(this) { info ->

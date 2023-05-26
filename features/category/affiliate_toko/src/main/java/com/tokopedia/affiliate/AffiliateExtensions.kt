@@ -73,7 +73,7 @@ fun AffiliateTermsAndConditionFragment.createListForTermsAndCondition(
 
 fun View.hideKeyboard(context: Context?) {
     try {
-        val imm = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager?
+        val imm = context?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(this.windowToken, 0)
     } catch (e: IllegalStateException) {
         Timber.e(e)
