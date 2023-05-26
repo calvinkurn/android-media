@@ -80,7 +80,11 @@ class PlayExploreWidgetMapper @Inject constructor() {
                         totalView = PlayWidgetTotalView(totalViewFmt = it.stats.view.formatted, isVisible = channelType != PlayWidgetChannelType.Upcoming),
                         promoType = PlayWidgetPromoType.getByType(it.configurations.promoLabels.firstOrNull()?.type.orEmpty(), it.configurations.promoLabels.firstOrNull()?.text.orEmpty()),
                         reminderType = getReminderType(it.configurations.reminder.isSet),
-                        partner = PlayWidgetPartnerUiModel(it.partner.id, partnerName, PartnerType.valueOf(it.partner.type)),
+                        partner = PlayWidgetPartnerUiModel(
+                            id = it.partner.id,
+                            name = partnerName,
+                            type = PartnerType.getTypeByValue(it.partner.name)
+                        ),
                         video = PlayWidgetVideoUiModel(it.video.id, it.isLive, it.coverUrl, it.video.streamUrl),
                         channelType = channelType,
                         hasGame = it.configurations.promoLabels.firstOrNull { it.type == GIVEAWAY } != null,

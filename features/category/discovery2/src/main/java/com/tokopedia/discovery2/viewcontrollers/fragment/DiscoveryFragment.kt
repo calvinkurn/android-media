@@ -11,7 +11,12 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatDelegate
@@ -34,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -48,8 +54,26 @@ import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
-import com.tokopedia.discovery2.analytics.*
-import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.analytics.AFFILIATE
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
+import com.tokopedia.discovery2.analytics.CLICK_SCREENSHOT_SHARE_CHANNEL
+import com.tokopedia.discovery2.analytics.CLICK_SHARE_CHANNEL
+import com.tokopedia.discovery2.analytics.EMPTY_STRING
+import com.tokopedia.discovery2.analytics.EVENT_CLICK_DISCOVERY
+import com.tokopedia.discovery2.analytics.SHARE
+import com.tokopedia.discovery2.analytics.UNIFY_CLICK_SHARE
+import com.tokopedia.discovery2.analytics.UNIFY_CLOSE_SCREENSHOT_SHARE
+import com.tokopedia.discovery2.analytics.UNIFY_CLOSE_SHARE
+import com.tokopedia.discovery2.analytics.UTM_DISCOVERY
+import com.tokopedia.discovery2.analytics.VIEW_DISCOVERY_IRIS
+import com.tokopedia.discovery2.analytics.VIEW_SCREENSHOT_SHARE
+import com.tokopedia.discovery2.analytics.VIEW_UNIFY_SHARE
+import com.tokopedia.discovery2.data.AdditionalInfo
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.data.ParamsForOpenScreen
+import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
@@ -92,7 +116,9 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -125,11 +151,18 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -138,7 +171,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.*
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -168,6 +205,7 @@ open class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var recyclerViewPaddingResetNeeded: Boolean = false
     private var thematicHeaderColor: String = ""
     private var navScrollListener: NavRecyclerViewScrollListener? = null
     private var autoScrollSectionID: String? = null
@@ -346,7 +384,7 @@ open class DiscoveryFragment :
         if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
             navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
             navToolbar.setIcon(
-                IconBuilder()
+                IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_SOS))
                     .addIcon(
                         IconList.ID_MESSAGE,
                         onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
@@ -431,8 +469,9 @@ open class DiscoveryFragment :
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE))
+                if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION) && (newState == RecyclerView.SCROLL_STATE_IDLE)) {
                     ivToTop.hide()
+                }
                 if (scrollDist > MINIMUM) {
                     scrollDist = 0
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
@@ -444,6 +483,10 @@ open class DiscoveryFragment :
                     discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
                     if (mAnchorHeaderView.childCount == 0) {
                         setupObserveAndShowAnchor()
+                    }
+                    if (userPressed && recyclerViewPaddingResetNeeded) {
+                        recyclerViewPaddingResetNeeded = false
+                        recyclerView.setPadding(0, 0, 0, 0)
                     }
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrollToLastSection()
@@ -484,7 +527,6 @@ open class DiscoveryFragment :
             toolbarTransitionRangePixel = searchBarTransitionRange,
             navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
                 override fun onAlphaChanged(offsetAlpha: Float) {
-
                 }
 
                 override fun onSwitchToDarkToolbar() {
@@ -518,17 +560,17 @@ open class DiscoveryFragment :
                 navToolbar.setupToolbarWithStatusBar(it)
             }
         }
-
     }
 
-    private fun hideShowChooseAddressOnScroll(){
-        if(!hideShowChangeAvailable)
+    private fun hideShowChooseAddressOnScroll() {
+        if (!hideShowChangeAvailable) {
             return
+        }
         hideShowChangeAvailable = false
-        if(!shouldShowChooseAddressWidget) {
+        if (!shouldShowChooseAddressWidget) {
             chooseAddressWidget?.hide()
             chooseAddressWidgetDivider?.hide()
-        }else{
+        } else {
             chooseAddressWidget?.show()
             if (isLightThemeStatusBar != true) {
                 chooseAddressWidgetDivider?.show()
@@ -541,12 +583,13 @@ open class DiscoveryFragment :
     private fun scrollToLastSection() {
         if (!userPressed && !autoScrollSectionID.isNullOrEmpty()) {
             scrollToSection(autoScrollSectionID!!)
-        }else if(!userPressed && isTabPresentToDoubleScroll){
+        } else if (!userPressed && isTabPresentToDoubleScroll) {
 //            isTabPresentToDoubleScroll = false
             pinnedAlreadyScrolled = false
             discoveryAdapter.currentList?.let {
-                if (it.isNotEmpty())
+                if (it.isNotEmpty()) {
                     scrollToPinnedComponent(it)
+                }
             }
         }
     }
@@ -922,7 +965,7 @@ open class DiscoveryFragment :
             hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
             context?.let {
-                navToolbar.setIconCustomColor(getDarkIconColor(it),getLightIconColor(it))
+                navToolbar.setIconCustomColor(getDarkIconColor(it), getLightIconColor(it))
             }
             if (isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
@@ -936,7 +979,6 @@ open class DiscoveryFragment :
         } else {
             hasColouredHeader = false
         }
-
     }
 
     private fun setupHexBackgroundColor(color: String) {
@@ -1258,7 +1300,8 @@ open class DiscoveryFragment :
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString = "${pageInfoHolder?.share?.description} ${linkerShareData?.url}"
@@ -1403,13 +1446,25 @@ open class DiscoveryFragment :
                 isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
                     userPressed = false
-                    if (this.isResumed)
-                        recyclerView.smoothScrollToPosition(position, isTabPresent)
+                    if (position > 0 && isTabPresent) {
+                        handleAutoScrollUI()
+                    }
+                    if (this.isResumed) {
+                        recyclerView.smoothScrollToPosition(position)
+                    }
                     isManualScroll = false
                 }
             }
             pinnedAlreadyScrolled = true
         }
+    }
+
+    private fun handleAutoScrollUI() {
+        recyclerViewPaddingResetNeeded = true
+        shouldShowChooseAddressWidget = false
+        chooseAddressWidget?.hide()
+        chooseAddressWidgetDivider?.hide()
+        recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(55).toInt(), 0, 0)
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -1596,7 +1651,10 @@ open class DiscoveryFragment :
             }
         }
         AdultManager.handleActivityResult(
-            activity, requestCode, resultCode, data,
+            activity,
+            requestCode,
+            resultCode,
+            data,
             object : AdultManager.Callback {
                 override fun onFail() {
                     activity?.finish()
@@ -1769,7 +1827,8 @@ open class DiscoveryFragment :
                         sendOpenScreenAnalytics(
                             it.data.identifier,
                             it.data.additionalInfo,
-                            it.data.isAffiliate)
+                            it.data.isAffiliate
+                        )
                     }
                     else -> sendOpenScreenAnalytics(discoveryViewModel.pageIdentifier)
                 }
@@ -1792,8 +1851,9 @@ open class DiscoveryFragment :
         val affiliateChannelID = if (isAffiliate && affiliateUID.isNotEmpty()) {
             val trackerID = discoveryViewModel.getTrackerIDForAffiliate()
             "$affiliateUID - $trackerID - $AFFILIATE"
-        } else
+        } else {
             ""
+        }
         if (identifier.isNullOrEmpty()) {
             getDiscoveryAnalytics().trackOpenScreen(
                 discoveryViewModel.pageIdentifier,
@@ -1915,10 +1975,11 @@ open class DiscoveryFragment :
     }
 
     override fun onChangeTextColor(): Int {
-        return if (hasColouredHeader && isLightThemeStatusBar != false)
+        return if (hasColouredHeader && isLightThemeStatusBar != false) {
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-        else
+        } else {
             com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
     }
 
     private fun fetchUserLatestAddressData() {
@@ -2220,7 +2281,7 @@ open class DiscoveryFragment :
         return discoveryViewModel.createAffiliateLink(applink)
     }
 
-    fun getItemCount(): Int{
+    fun getItemCount(): Int {
         return discoveryAdapter.itemCount
     }
 
@@ -2232,5 +2293,4 @@ open class DiscoveryFragment :
             discoveryComponent.provideSubComponent()
         }
     }
-
 }
