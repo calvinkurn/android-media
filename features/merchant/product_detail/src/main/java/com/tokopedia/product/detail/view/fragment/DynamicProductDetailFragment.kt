@@ -685,6 +685,7 @@ open class DynamicProductDetailFragment :
         observeVerticalRecommendation()
         observeOneTimeMethod()
         observeProductMediaRecomData()
+        observeAffiliateEligibility()
     }
 
     private fun observeOneTimeMethod() {
@@ -2906,13 +2907,30 @@ open class DynamicProductDetailFragment :
                     affiliateChannel = affiliateChannel
                 )
             }
-
             onSuccessGetDataP2(it, boeData, ratesData, shipmentPlus)
+            checkAffiliateEligibility(it.shopInfo)
             getProductDetailActivity()?.stopMonitoringP2Data()
             ProductDetailServerLogger.logBreadCrumbSuccessGetDataP2(
                 isSuccess = it.shopInfo.shopCore.shopID.isNotEmpty()
             )
             stickyLoginView?.loadContent()
+        }
+    }
+
+    private fun observeAffiliateEligibility() {
+        viewModel.resultAffiliate.observe(viewLifecycleOwner) {
+            if (it is Success && it.data.affiliateEligibility?.isEligible == true) {
+                updateToolbarShareAffiliate()
+            }
+        }
+    }
+
+    private fun checkAffiliateEligibility(shopInfo: ShopInfo) {
+        if (isShareAffiliateIconEnabled()) {
+            viewModel.getDynamicProductInfoP1?.let { dataP1 ->
+                val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
+                viewModel.checkAffiliateEligibility(affiliateInput)
+            }
         }
     }
 
@@ -4315,7 +4333,7 @@ open class DynamicProductDetailFragment :
                     .addIcon(IconList.ID_SEARCH, disableRouteManager = true) {
                         goToApplink(getLocalSearchApplink())
                     }
-                    .addIcon(getShareIcon()) {
+                    .addIcon(IconList.ID_SHARE) {
                         onClickShareProduct()
                     }
                     .addIcon(IconList.ID_CART) {}
@@ -4328,16 +4346,18 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun getShareIcon(): Int {
+    private fun updateToolbarShareAffiliate() {
+        if (!GlobalConfig.isSellerApp()) {
+            navToolbar?.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST) ?: return
+        }
+    }
+
+    private fun isShareAffiliateIconEnabled(): Boolean {
         val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.PDP_SHOW_SHARE_AFFILIATE
         ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
 
-        if (isAbTestEnabled) {
-            return IconList.ID_SHARE_AB_TEST
-        } else {
-            return IconList.ID_SHARE
-        }
+        return isAbTestEnabled
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(

@@ -99,6 +99,9 @@ import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase.Companio
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -153,6 +156,7 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val updateCartUseCase: Lazy<UpdateCartUseCase>,
     private val deleteCartUseCase: Lazy<DeleteCartUseCase>,
     private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
+    private val affiliateEligibilityUseCase: Lazy<AffiliateEligibilityCheckUseCase>,
     private val remoteConfig: RemoteConfig,
     val userSessionInterface: UserSessionInterface,
     private val affiliateCookieHelper: Lazy<AffiliateCookieHelper>,
@@ -290,6 +294,11 @@ class DynamicProductDetailViewModel @Inject constructor(
     private val _productMediaRecomBottomSheetState = MutableLiveData<ProductMediaRecomBottomSheetState>()
     val productMediaRecomBottomSheetState: LiveData<ProductMediaRecomBottomSheetState>
         get() = _productMediaRecomBottomSheetState
+
+    private val _resultAffiliate = MutableLiveData<Result<GenerateAffiliateLinkEligibility>>()
+
+    val resultAffiliate: LiveData<Result<GenerateAffiliateLinkEligibility>>
+        get() = _resultAffiliate
 
     val userId: String
         get() = userSessionInterface.userId
@@ -1263,6 +1272,19 @@ class DynamicProductDetailViewModel @Inject constructor(
 
     fun dismissProductMediaRecomBottomSheet() {
         _productMediaRecomBottomSheetState.value = ProductMediaRecomBottomSheetState.Dismissed
+    }
+
+    fun checkAffiliateEligibility(affiliatePDPInput: AffiliatePDPInput) {
+        launch {
+            try {
+                val result = affiliateEligibilityUseCase.get().apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPInput)
+                }.executeOnBackground()
+                _resultAffiliate.value = Success(result)
+            } catch (e: Exception) {
+                _resultAffiliate.value = Fail(e)
+            }
+        }
     }
 
     private suspend fun loadProductMediaRecomBottomSheetData(
