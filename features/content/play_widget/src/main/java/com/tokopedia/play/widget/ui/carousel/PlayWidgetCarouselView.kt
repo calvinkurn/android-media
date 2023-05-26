@@ -55,12 +55,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            mAnalyticListener?.onImpressChannelCard(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onImpressChannelCard(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
         }
 
         override fun onChannelClicked(
@@ -68,12 +70,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            mAnalyticListener?.onClickChannelCard(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onClickChannelCard(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
         }
 
         override fun onMuteButtonClicked(
@@ -82,12 +86,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             shouldMute: Boolean,
             position: Int
         ) {
-            mAnalyticListener?.onClickToggleMuteButton(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onClickToggleMuteButton(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
 
             mIsMuted = shouldMute
             updateChannels()
@@ -344,22 +350,28 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
         adapter.submitList(finalModel) {
             if (channels.isEmpty()) return@submitList
-            if (shouldRoughlyScroll) {
-                roughlyScrollTo(selectedPosition) {
-                    onWidgetSelected(selectedPosition)
-
-                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
-                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
-                }
-            } else {
-                binding.rvChannels.smoothScrollToPosition(selectedPosition)
+            roughlyScrollTo(selectedPosition) {
                 onWidgetSelected(selectedPosition)
 
-                binding.rvChannels.post {
-                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
-                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
-                }
+                val focusedWidgets = getFocusedWidgets(binding.rvChannels)
+                mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
             }
+//            if (shouldRoughlyScroll) {
+//                roughlyScrollTo(selectedPosition) {
+//                    onWidgetSelected(selectedPosition)
+//
+//                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
+//                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
+//                }
+//            } else {
+//                binding.rvChannels.smoothScrollToPosition(selectedPosition)
+//                onWidgetSelected(selectedPosition)
+//
+//                binding.rvChannels.post {
+//                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
+//                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
+//                }
+//            }
         }
     }
 
@@ -399,7 +411,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             val view = binding.rvChannels.findViewHolderForAdapterPosition(firstItem)?.itemView ?: return@post
             val scrollBy = ((2 * view.x + view.width) / 2 - binding.rvChannels.width / 2).toInt()
 
-            binding.rvChannels.scrollBy(scrollBy, 0)
+            binding.rvChannels.scrollBy(scrollBy - 15, 0)
 
             onScrolled()
         }
@@ -420,6 +432,13 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
         mSelectedWidgetPos = position
         updateChannels(selectedPosition = position)
+    }
+
+    private fun isPositionValid(positionInAdapter: Int, onValid: (Int) -> Unit) {
+        val realPosition = positionInAdapter - FAKE_COUNT_PER_SIDE
+        if (realPosition < 0 || realPosition >= mModel.items.size) return
+
+        onValid(realPosition)
     }
 
     companion object {
