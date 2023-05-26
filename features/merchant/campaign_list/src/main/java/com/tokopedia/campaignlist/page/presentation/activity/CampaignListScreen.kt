@@ -3,11 +3,7 @@ package com.tokopedia.campaignlist.page.presentation.activity
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -36,17 +32,12 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
-import com.tokopedia.common_compose.components.ButtonSize
-import com.tokopedia.common_compose.components.NestButton
-import com.tokopedia.common_compose.components.NestLabel
-import com.tokopedia.common_compose.components.NestLabelType
+import com.tokopedia.common_compose.components.*
 import com.tokopedia.common_compose.components.ticker.NestTicker
 import com.tokopedia.common_compose.components.ticker.TickerType
 import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.header.NestHeaderType
 import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.principles.NestImage
-import com.tokopedia.common_compose.principles.NestSearchBar
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.sort_filter.NestSortFilter
 import com.tokopedia.common_compose.sort_filter.SortFilter
@@ -134,8 +125,8 @@ private fun SearchBar(
     onSearchbarCleared: () -> Unit
 ) {
     NestSearchBar(
-        modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.cl_search_active_campaign),
+        modifier = modifier.fillMaxWidth(),
         onSearchBarCleared = onSearchbarCleared,
         onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
@@ -166,7 +157,6 @@ private fun Filter(
     onClearFilter: () -> Unit,
     shouldShowClearFilterIcon: Boolean
 ) {
-
     val campaignStatus = SortFilter(
         title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.cl_campaign_list_label_status) else selectedCampaignStatus,
         isSelected = selectedCampaignStatus.isNotEmpty(),
@@ -184,10 +174,10 @@ private fun Filter(
     val sortFilterItems = arrayListOf(campaignStatus, campaignType)
 
     NestSortFilter(
-        modifier = modifier.fillMaxWidth(),
         items = sortFilterItems,
-        onClearFilter = onClearFilter,
         showClearFilterIcon = shouldShowClearFilterIcon,
+        modifier = modifier.fillMaxWidth(),
+        onClearFilter = onClearFilter,
         onItemClicked = {}
     )
 }
@@ -195,11 +185,11 @@ private fun Filter(
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Unit) {
     NestTicker(
-        modifier = modifier.fillMaxWidth(),
         title = "",
+        type = TickerType.ANNOUNCEMENT,
         description = stringResource(id = R.string.cl_another_campaign_type_wording),
-        onDismissed = onDismissed,
-        type = TickerType.ANNOUNCEMENT
+        modifier = modifier.fillMaxWidth(),
+        onDismissed = onDismissed
     )
 }
 
@@ -222,8 +212,8 @@ fun CampaignItem(
     ) {
         Column {
             ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-
-                val (ribbon,
+                val (
+                    ribbon,
                     statusImage,
                     campaignType,
                     campaignStatus,
@@ -281,14 +271,14 @@ fun CampaignItem(
                 )
 
                 NestImage(
+                    imageUrl = campaign.campaignPictureUrl,
                     modifier = Modifier
                         .size(62.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .constrainAs(campaignImage) {
                             start.linkTo(parent.start, margin = 12.dp)
                             top.linkTo(campaignType.bottom, margin = 12.dp)
-                        },
-                    imageUrl = campaign.campaignPictureUrl
+                        }
                 )
 
                 NestTypography(
@@ -317,7 +307,6 @@ fun CampaignItem(
                     },
                     textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
                 )
-
 
                 NestTypography(
                     text = stringResource(id = R.string.cl_campaign_time_template, campaign.startTime),
@@ -359,16 +348,14 @@ fun CampaignItem(
                 )
             }
             NestButton(
+                text = stringResource(id = R.string.cl_action_share),
+                onClick = { onTapShareButton(campaign) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp),
-                size = ButtonSize.SMALL,
-                text = stringResource(id = R.string.cl_action_share),
-                onClick = { onTapShareButton(campaign) },
+                size = ButtonSize.SMALL
             )
         }
-
-
     }
 }
 
@@ -397,7 +384,7 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
         AVAILABLE_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREY
         else -> NestLabelType.HIGHLIGHT_LIGHT_RED
     }
-    NestLabel(modifier = modifier, labelText = campaignStatus, labelType = nestLabelType)
+    NestLabel(labelText = campaignStatus, labelType = nestLabelType, modifier = modifier)
 }
 
 @Preview(name = "Campaign List - Light Mode")
@@ -414,7 +401,6 @@ private fun CampaignListPreview() {
         endDate = "18/01/2020",
         endTime = "22:00 WIB"
     )
-
 
     val state = CampaignListViewModel.UiState(
         campaigns = listOf(campaign),
@@ -455,7 +441,6 @@ private fun CampaignListFilterSelectedPreview() {
         endDate = "18/01/2020",
         endTime = "22:00 WIB"
     )
-
 
     val state = CampaignListViewModel.UiState(
         campaigns = listOf(campaign),
