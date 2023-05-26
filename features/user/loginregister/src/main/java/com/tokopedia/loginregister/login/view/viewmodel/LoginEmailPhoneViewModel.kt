@@ -393,19 +393,36 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
 
+    suspend fun isGojekProfileExist(): Boolean {
+        return try {
+            gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
+        } catch (ignored: Exception) {
+            false
+        }
+    }
+
+    suspend fun isFingerprintRegistered(): Boolean {
+        return try {
+            registerCheckFingerprintUseCase(Unit)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     fun checkLoginOption(isEnableSeamless: Boolean, isEnableFingerprint: Boolean, isEnableDirectBiometric: Boolean, isEnableOcl: Boolean) {
         launch {
             try {
                 var enableSeamless = isEnableSeamless
                 // Access the SDK if seamless login config is enabled.
                 if(isEnableSeamless) {
-                    enableSeamless = gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
+                    enableSeamless = isGojekProfileExist()
                 }
                 var isBiometricRegistered = false
                 // If one of the biometrics config is enabled then we hit the api to reduce network usage.
                 if(isEnableFingerprint || isEnableDirectBiometric) {
-                    isBiometricRegistered = registerCheckFingerprintUseCase(Unit)
+                    isBiometricRegistered = isFingerprintRegistered()
                 }
+
                 mutableLoginOption.value = LoginOption(
                     isEnableSeamless = enableSeamless,
                     isEnableBiometrics = (isBiometricRegistered && isEnableFingerprint),
