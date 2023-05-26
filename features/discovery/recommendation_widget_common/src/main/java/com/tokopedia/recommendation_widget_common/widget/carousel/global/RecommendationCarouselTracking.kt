@@ -13,13 +13,17 @@ object RecommendationCarouselTracking {
     private const val TRACKER_ID_ATC = "43020"
     private const val ATC_DIMENSION_40_FORMAT = "/product - %s - rekomendasi untuk anda - %s%s - %s - %s"
 
-    fun sendEventAtcClick(recomItem: RecommendationItem, userId: String, quantity: Int) {
+    fun sendEventAtcClick(
+        recomItem: RecommendationItem,
+        userId: String,
+        quantity: Int,
+        androidPageName: String = RecommendationWidgetSource.PDP.trackingValue // remove default value after recommendation carousel widget migration
+    ) {
         val bundle = Bundle().apply {
             putString(TrackerConstant.EVENT, RecommendationTrackingConstants.Action.ADD_TO_CART)
             putString(TrackerConstant.EVENT_ACTION, EVENT_ACTION_ATC)
 
-            // [IMPORTANT] need to be changed into RecommendationWidgetTrackingModel.androidPageName once migrated to global component
-            putString(TrackerConstant.EVENT_CATEGORY, RecommendationWidgetSource.PDP.trackingValue)
+            putString(TrackerConstant.EVENT_CATEGORY, androidPageName)
 
             putString(TrackerConstant.EVENT_LABEL, recomItem.productId.toString())
 
@@ -40,8 +44,7 @@ object RecommendationCarouselTracking {
                     )
                 )
                 putString(RecommendationTrackingConstants.Tracking.DIMENSION_45, recomItem.cartId)
-                // [IMPORTANT] need to be changed into RecommendationWidgetTrackingModel.androidPageName once migrated to global component
-                putString(RecommendationTrackingConstants.Tracking.DIMENSION_90, "%s.%s".format(RecommendationWidgetSource.PDP.trackingValue, recomItem.recommendationType))
+                putString(RecommendationTrackingConstants.Tracking.DIMENSION_90, "%s.%s".format(androidPageName, recomItem.recommendationType))
                 putString(RecommendationTrackingConstants.Tracking.ITEM_BRAND, RecommendationTrackingConstants.Tracking.VALUE_NONE_OTHER)
                 putString(RecommendationTrackingConstants.Tracking.ITEM_CATEGORY, recomItem.categoryBreadcrumbs)
                 putLong(RecommendationTrackingConstants.Tracking.ITEM_ID, recomItem.productId)
