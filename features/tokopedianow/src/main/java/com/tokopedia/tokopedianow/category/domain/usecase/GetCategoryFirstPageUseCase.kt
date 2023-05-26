@@ -28,7 +28,7 @@ import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_TOKONOW_DIRECTOR
 import com.tokopedia.tokopedianow.searchcategory.utils.QUICK_FILTER_TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.searchcategory.utils.SLUG
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_CATEGORY
-import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSES
+import com.tokopedia.tokopedianow.searchcategory.utils.WAREHOUSE_ID
 import com.tokopedia.usecase.coroutines.UseCase
 
 class GetCategoryFirstPageUseCase(
@@ -70,7 +70,7 @@ class GetCategoryFirstPageUseCase(
 
     private fun createTokonowCategoryDetailRequest(): GraphqlRequest {
         val categoryID = useCaseRequestParams.parameters[CATEGORY_ID] ?: ""
-        val warehouses = useCaseRequestParams.parameters[WAREHOUSES] ?: ""
+        val warehouseId = useCaseRequestParams.parameters[WAREHOUSE_ID] ?: ""
 
         return GraphqlRequest(
             TOKONOW_CATEGORY_DETAIL_GQL_QUERY,
@@ -78,7 +78,7 @@ class GetCategoryFirstPageUseCase(
             mapOf(
                 CATEGORY_ID to categoryID,
                 SLUG to "",
-                WAREHOUSES to warehouses
+                WAREHOUSE_ID to warehouseId
             )
         )
     }
@@ -105,8 +105,8 @@ class GetCategoryFirstPageUseCase(
 
     companion object {
         private const val TOKONOW_CATEGORY_DETAIL_GQL_QUERY = """
-            query TokonowCategoryDetail(${'$'}categoryID: String!, ${'$'}slug: String!, ${'$'}warehouses:[WarehousePerService!]){
-              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, warehouses: ${'$'}warehouses) {
+            query TokonowCategoryDetail(${'$'}categoryID: String!, ${'$'}slug: String!, ${'$'}warehouseID: String!){
+              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, warehouseID: ${'$'}warehouseID) {
                 header {
                   process_time
                   messages
