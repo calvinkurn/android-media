@@ -2,6 +2,7 @@ package com.tokopedia.scp_rewards.widget.medalHeader
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,7 +18,6 @@ import com.tokopedia.scp_rewards.common.utils.MEDAL_AUTOPLAY
 import com.tokopedia.scp_rewards.common.utils.MEDAL_SHUTTER_CLOSE
 import com.tokopedia.scp_rewards.common.utils.MEDAL_SHUTTER_OPEN
 import com.tokopedia.scp_rewards.common.utils.downloadImage
-import com.tokopedia.scp_rewards.common.utils.loadImage
 import com.tokopedia.scp_rewards.common.utils.loadLottieFromUrl
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
 import kotlinx.coroutines.CoroutineScope
@@ -65,7 +65,7 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) : Cons
                 val image0 = async { this@MedalHeaderView.context.downloadImage(data.maskUrl) }
                 val image1 = async { this@MedalHeaderView.context.downloadImage(data.shimmerUrl) }
                 val image2 = async { this@MedalHeaderView.context.downloadImage(data.frameUrl) }
-                val image3 = async { this@MedalHeaderView.context.downloadImage(data.maskUrl) }
+                val image3 = async { this@MedalHeaderView.context.downloadImage(data.maskingShapeUrl) }
                 val image4 = async { this@MedalHeaderView.context.downloadImage(data.shutterUrl) }
                 val image5 = async { this@MedalHeaderView.context.downloadImage(data.medalUrl) }
 
@@ -160,6 +160,7 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) : Cons
     }
 
     private fun WidgetMedalHeaderBinding.loadBackground(backgroundUrl: String?, backgroundColor: String?) {
-        ivBackground.loadImage(backgroundUrl)
+        ivBackground.setImageUrl(backgroundUrl.orEmpty())
+        binding.apply { setBackgroundColor(Color.parseColor(backgroundColor ?: "#000000")) }
     }
 }

@@ -9,6 +9,7 @@ data class MedalHeader(
     val coachMarkInformation: String? = null,
     val frameUrl: String? = null,
     val maskUrl: String? = null,
+    val maskingShapeUrl: String? = null,
     val medalUrl: String? = null,
     val shutterUrl: String? = null,
     val shimmerUrl: String? = null

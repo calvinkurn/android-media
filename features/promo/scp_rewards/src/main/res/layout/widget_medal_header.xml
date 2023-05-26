@@ -6,17 +6,16 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_background"
         android:layout_width="0dp"
         android:layout_height="300dp"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </androidx.appcompat.widget.AppCompatImageView>
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_view_sparks"
