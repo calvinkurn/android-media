@@ -111,7 +111,8 @@ class MPSViewModel @Inject constructor(
 
     private fun mandatoryParams(): Map<String, String> = mpsState.parameter +
             chooseAddressParams() +
-            uniqueIdParams()
+            uniqueIdParams() +
+            deviceParams()
 
     private fun uniqueIdParams() = mapOf(
         SearchApiConst.UNIQUE_ID to getUniqueId(),
@@ -121,6 +122,10 @@ class MPSViewModel @Inject constructor(
         return if (userSession.isLoggedIn) AuthHelper.getMD5Hash(userSession.userId)
         else AuthHelper.getMD5Hash(userSession.deviceId)
     }
+
+    private fun deviceParams() = mapOf(
+        SearchApiConst.DEVICE to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE
+    )
 
     private fun chooseAddressParams() =
         chooseAddressModel?.toSearchParams() ?: mapOf()
