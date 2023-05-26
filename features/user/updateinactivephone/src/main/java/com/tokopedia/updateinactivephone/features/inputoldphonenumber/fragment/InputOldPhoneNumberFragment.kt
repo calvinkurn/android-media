@@ -46,6 +46,10 @@ open class InputOldPhoneNumberFragment : BaseDaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
+
         return inflater.inflate(R.layout.fragment_input_old_phone_number, container, false)
     }
 
