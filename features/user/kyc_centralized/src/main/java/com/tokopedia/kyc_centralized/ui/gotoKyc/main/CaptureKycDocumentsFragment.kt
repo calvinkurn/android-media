@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.isConnectionAvailable
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -129,6 +130,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         }
 
         if (!isConnectionAvailable(requireContext())) {
+            GotoKycAnalytics.sendViewConnectionIssuePage(projectId = args.parameter.projectId)
             binding?.globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
             binding?.globalError?.setType(GlobalError.MAINTENANCE)

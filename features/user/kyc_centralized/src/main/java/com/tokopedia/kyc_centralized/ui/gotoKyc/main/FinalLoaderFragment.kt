@@ -18,6 +18,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
@@ -135,9 +136,11 @@ class FinalLoaderFragment : BaseDaggerFragment() {
             val error = throwable.getGotoKycErrorMessage(requireContext())
             when (throwable) {
                 is UnknownHostException, is ConnectException -> {
+                    GotoKycAnalytics.sendViewConnectionIssuePage(args.parameter.projectId)
                     binding?.globalError?.setType(GlobalError.NO_CONNECTION)
                 }
                 is SocketTimeoutException -> {
+                    GotoKycAnalytics.sendViewTimeoutPage(projectId = args.parameter.projectId)
                     binding?.globalError?.apply {
                     errorIllustration.loadImage(getString(R.string.img_url_goto_kyc_error_timeout))
 
