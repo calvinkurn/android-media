@@ -15,8 +15,8 @@ import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
-import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
-import com.tokopedia.mediauploader.tracker.TrackerCacheDataStoreImpl
+import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStoreImpl
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
@@ -119,8 +119,8 @@ abstract class MediaUploaderModule {
         fun provideTrackerCacheDataStore(
             @ApplicationContext context: Context,
             metaDataExtractor: VideoMetaDataExtractor
-        ): TrackerCacheDataStore {
-            return TrackerCacheDataStoreImpl(
+        ): AnalyticsCacheDataStore {
+            return AnalyticsCacheDataStoreImpl(
                 metaDataExtractor,
                 object : CacheDataStoreImpl<UploaderTracker>(context) {
                     override fun default(cache: UploaderTracker.() -> Unit) = UploaderTracker().apply(cache)

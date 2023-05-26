@@ -8,7 +8,7 @@ import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.data.entity.LogType
 import com.tokopedia.mediauploader.data.repository.LogRepository
-import com.tokopedia.mediauploader.tracker.TrackerCacheDataStore
+import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ interface DebugMediaUploaderViewModelContract {
 }
 
 class DebugMediaUploaderViewModel @Inject constructor(
-    private val trackerCacheStore: TrackerCacheDataStore,
+    private val trackerCacheStore: AnalyticsCacheDataStore,
     private val uploaderUseCase: UploaderUseCase,
     private val logRepository: LogRepository
 ) : ViewModel(), DebugMediaUploaderViewModelContract {

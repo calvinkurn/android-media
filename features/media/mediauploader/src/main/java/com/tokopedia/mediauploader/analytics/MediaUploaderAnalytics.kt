@@ -1,19 +1,20 @@
-package com.tokopedia.mediauploader.tracker
+package com.tokopedia.mediauploader.analytics
 
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
 import com.tokopedia.track.TrackApp
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class MediaUploaderTracker @Inject constructor(
+class MediaUploaderAnalytics @Inject constructor(
     private val uploadStateManager: LargeUploadStateCacheManager,
-    store: TrackerCacheDataStore
-) : TrackerCacheDataStore by store {
+    store: AnalyticsCacheDataStore
+) : AnalyticsCacheDataStore by store {
 
-    suspend fun sendTracker(
+    suspend fun sendEvent(
         sourceId: String,
         file: File,
         isRetry: Boolean,

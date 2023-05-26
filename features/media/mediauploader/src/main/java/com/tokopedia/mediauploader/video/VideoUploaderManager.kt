@@ -5,7 +5,7 @@ import com.tokopedia.mediauploader.UploaderManager
 import com.tokopedia.mediauploader.common.FeatureToggleUploader
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
-import com.tokopedia.mediauploader.tracker.MediaUploaderTracker
+import com.tokopedia.mediauploader.analytics.MediaUploaderAnalytics
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
@@ -23,7 +23,7 @@ class VideoUploaderManager @Inject constructor(
     private val videoCompression: SetVideoCompressionUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,
     private val largeUploaderManager: LargeUploaderManager,
-    private val tracker: MediaUploaderTracker
+    private val analytics: MediaUploaderAnalytics
 ) : UploaderManager {
 
     private var isSimpleUpload = true
@@ -43,8 +43,8 @@ class VideoUploaderManager @Inject constructor(
         policyManager.set(policy)
 
         // init tracker
-        val trackerCacheKey = tracker.key(sourceId, file.path)
-        tracker.setOriginalVideoInfo(trackerCacheKey, file)
+        val trackerCacheKey = analytics.key(sourceId, file.path)
+        analytics.setOriginalVideoInfo(trackerCacheKey, file)
 
         // compress video if needed
         val filePath = shouldCompressVideoFile(
@@ -75,7 +75,7 @@ class VideoUploaderManager @Inject constructor(
                     setProgressUploader(loader)
 
                     // start upload time tracker
-                    tracker.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
+                    analytics.setStartUploadTime(trackerCacheKey, System.currentTimeMillis())
 
                     val upload = if (!isSimpleUpload) {
                         largeUploaderManager(filePath, sourceId, withTranscode, isRetry)
@@ -85,10 +85,10 @@ class VideoUploaderManager @Inject constructor(
 
                     upload.also {
                         // set the end upload time tracker
-                        tracker.setEndUploadTime(trackerCacheKey, System.currentTimeMillis())
+                        analytics.setEndUploadTime(trackerCacheKey, System.currentTimeMillis())
 
                         // send tracker to thanos
-                        tracker.sendTracker(sourceId, file, isRetry, isSimpleUpload)
+                        analytics.sendEvent(sourceId, file, isRetry, isSimpleUpload)
                     }
                 }
             }

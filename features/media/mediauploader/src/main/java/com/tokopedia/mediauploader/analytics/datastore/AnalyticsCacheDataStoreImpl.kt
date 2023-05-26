@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.tracker
+package com.tokopedia.mediauploader.analytics.datastore
 
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
@@ -6,10 +6,10 @@ import com.tokopedia.mediauploader.common.data.store.base.CacheDataStore
 import java.io.File
 import javax.inject.Inject
 
-class TrackerCacheDataStoreImpl @Inject constructor(
+class AnalyticsCacheDataStoreImpl @Inject constructor(
     private val metaDataExtractor: VideoMetaDataExtractor,
     store: CacheDataStore<UploaderTracker>
-) : CacheDataStore<UploaderTracker> by store, TrackerCacheDataStore {
+) : CacheDataStore<UploaderTracker> by store, AnalyticsCacheDataStore {
 
     override fun key(sourceId: String, originalPath: String): String {
         return "$sourceId$originalPath"
@@ -19,7 +19,7 @@ class TrackerCacheDataStoreImpl @Inject constructor(
         return get(key)
     }
 
-    override suspend fun setCompressionTracker(
+    override suspend fun setCompressionInfo(
         key: String,
         data: UploaderTracker.() -> Unit
     ) = set(key, data)
