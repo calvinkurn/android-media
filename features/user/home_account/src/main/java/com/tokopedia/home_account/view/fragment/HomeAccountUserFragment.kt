@@ -1477,7 +1477,7 @@ open class HomeAccountUserFragment :
         }
         child.oclSubtitleText.movementMethod = LinkMovementMethod.getInstance()
         child.oclSubtitleText.setText(getTncOclSpan(), TextView.BufferType.SPANNABLE)
-        child.imageUnify.loadImage(URL_IMG_OCL_HEADER)
+        child.imageUnify.loadImage(getString(R.string.ocl_bottomsheet_main_image))
         BottomSheetUnify().apply {
             setChild(child.root)
             setCloseClickListener {
@@ -1743,7 +1743,7 @@ open class HomeAccountUserFragment :
                 addNameLayout.findViewById(R.id.layout_bottom_sheet_add_name_icon)
             val bottomSheet = BottomSheetUnify()
 
-            ImageUtils.loadImage(iconAddName, URL_ICON_ADD_NAME_BOTTOM_SHEET)
+            ImageUtils.loadImage(iconAddName, getString(R.string.add_name_url_icon))
             iconAddName.setOnClickListener {
                 gotoChangeName(profile)
                 bottomSheet.dismiss()
@@ -1848,9 +1848,6 @@ open class HomeAccountUserFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val FPM_BUYER = "mp_account_buyer"
-        private const val URL_ICON_ADD_NAME_BOTTOM_SHEET =
-            "https://images.tokopedia.net/img/android/user/profile_page/Group3082@3x.png"
-        private const val URL_IMG_OCL_HEADER = "https://images.tokopedia.net/img/user/home_account/img_ocl_header.png"
         private const val USER_CENTRALIZED_ASSET_CONFIG_USER_PAGE = "user_page"
 
         private const val REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT = "android_user_privacy_account_enabled"
