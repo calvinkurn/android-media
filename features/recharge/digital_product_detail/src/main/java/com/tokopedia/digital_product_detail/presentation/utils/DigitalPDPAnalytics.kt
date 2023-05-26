@@ -14,6 +14,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_PDP_BANNER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_PRODUCT_CLUSTER
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_PROMO_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESS_PRODUCT_DESC
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.VIEW_PROMO_CARD
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.CATEGORY_ID
@@ -52,6 +53,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_PRODUCT_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.CLICK_SHOW_MORE_PROMOTION
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_BOTTOM_SHEET_PRODUCT_DESC
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.TrackerId.IMPRESS_PROMO_CLUSTER_PRODUCT
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_component.model.denom.DenomData
@@ -393,6 +395,41 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
+
+    fun impressMCCMProductNew(
+        productListName: String,
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomData: DenomData,
+        denomType: DenomWidgetEnum,
+        position: Int
+    ) {
+        val isMCCMorFlashSale =
+            if (denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+                MCCM
+            } else {
+                FLASH_SALE
+            }
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_PROMO_CLUSTER)
+            putString(ITEM_LIST, productListName)
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName} - ${operatorName} - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
+            )
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName, productListName)
+            )
+            putString(TRACKER_ID, IMPRESS_PROMO_CLUSTER_PRODUCT)
+        }
+
+        eventDataLayer.viewItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
+    }
+
     fun clickChevronBuyWidget(
         categoryName: String,
         operatorName: String,
@@ -425,8 +462,7 @@ class DigitalPDPAnalytics {
     ) {
         val isMCCMorFlashSale =
             if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE
             ) {
                 MCCM
             } else {
@@ -460,10 +496,7 @@ class DigitalPDPAnalytics {
         position: Int
     ) {
         val isMCCMorFlashSale =
-            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-            ) {
+            if (denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
                 MCCM
             } else {
                 FLASH_SALE

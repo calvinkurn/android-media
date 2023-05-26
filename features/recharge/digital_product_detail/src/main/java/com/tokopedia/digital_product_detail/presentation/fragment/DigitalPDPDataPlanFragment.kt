@@ -1661,7 +1661,16 @@ class DigitalPDPDataPlanFragment :
                 position
             )
         } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
-
+            digitalPDPAnalytics.impressMCCMProductNew(
+                productListTitle,
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+                denomFull,
+                layoutType,
+                position
+            )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),

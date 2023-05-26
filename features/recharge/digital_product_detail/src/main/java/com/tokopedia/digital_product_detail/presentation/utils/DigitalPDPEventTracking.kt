@@ -61,6 +61,7 @@ object DigitalPDPEventTracking {
         const val VIEW_FAVORITE_NUMBER_CHIP = "view favorite number chip"
         const val VIEW_FAVORITE_CONTACT_CHIP = "view favorite contact chip"
         const val VIEW_PROMO_CARD = "view promo card"
+        const val IMPRESSION_PROMO_CLUSTER = "impression promo cluster"
         const val CLICK_FAVORITE_NUMBER_CHIP = "click favorite number chip"
         const val CLICK_FAVORITE_CONTACT_CHIP = "click favorite contact chip"
         const val CLICK_AUTOCOMPLETE_FAVORITE_NUMBER = "click autocomplete fav number"
@@ -102,5 +103,6 @@ object DigitalPDPEventTracking {
         const val CLICK_SHOW_MORE_PROMOTION = "43965"
         const val CLICK_CLOSE_PRODUCT_DESC = "43963"
         const val IMPRESS_BOTTOM_SHEET_PRODUCT_DESC = "43961"
+        const val IMPRESS_PROMO_CLUSTER_PRODUCT = "43964"
     }
 }
