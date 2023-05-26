@@ -9,6 +9,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_LOGIN_WIDGET
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_PRODUCT_CLUSTER
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_PROMO_CARD
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.CLICK_PROMO_CLUSTER
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_LAST_TRANSACTION_ICON
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Action.IMPRESSION_PDP_BANNER
@@ -413,6 +414,42 @@ class DigitalPDPAnalytics {
     }
 
     fun clickMCCMProduct(
+        productListName: String,
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String,
+        denomData: DenomData,
+        denomType: DenomWidgetEnum,
+        position: Int
+    ) {
+        val isMCCMorFlashSale =
+            if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
+                denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
+            ) {
+                MCCM
+            } else {
+                FLASH_SALE
+            }
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, CLICK_PROMO_CARD)
+            putString(ITEM_LIST, productListName)
+            putString(
+                TrackAppUtils.EVENT_LABEL,
+                "${categoryName}_${operatorName}_${isMCCMorFlashSale}_$loyaltyStatus"
+            )
+            putParcelableArrayList(
+                ITEMS,
+                mapperDenomToItemList(denomData, operatorName, position, isMCCMorFlashSale, categoryName)
+            )
+        }
+
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
+    fun clickMCCMProductNew(
         productListName: String,
         categoryName: String,
         operatorName: String,

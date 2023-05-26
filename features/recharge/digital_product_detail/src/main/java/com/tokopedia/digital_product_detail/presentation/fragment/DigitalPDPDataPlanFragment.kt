@@ -1583,7 +1583,7 @@ class DigitalPDPDataPlanFragment :
         isShowBuyWidget: Boolean
     ) {
         hideKeyboard()
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
             }
@@ -1598,6 +1598,23 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
+
+        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE){
+
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
+                onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
+            }
+            digitalPDPAnalytics.clickMCCMProductNew(
+                productListTitle,
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+                denomFull,
+                layoutType,
+                position
+            )
+
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
                 viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
@@ -1633,8 +1650,7 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         productListTitle: String
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE
-            || layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
@@ -1644,6 +1660,8 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
+        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),

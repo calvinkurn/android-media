@@ -72,6 +72,8 @@ object DigitalPDPEventTracking {
         const val CLICK_LOGIN_WIDGET = "click login widget"
         const val CLICK_CHEVRON = "click chevron on total bayar"
         const val CLICK_PROMO_CLUSTER = "click promo cluster"
+        const val CLICK_PROMO_CARD = "click promo card"
+
         const val IMPRESSION_PRODUCT_CLUSTER = "impression product cluster"
         const val IMPRESSION_LAST_TRANSACTION_ICON = "impression last transaction icon"
         const val IMPRESSION_PDP_BANNER = "impression pdp banner"
