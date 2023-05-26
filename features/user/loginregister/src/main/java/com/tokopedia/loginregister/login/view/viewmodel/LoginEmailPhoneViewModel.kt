@@ -414,12 +414,12 @@ class LoginEmailPhoneViewModel @Inject constructor(
         launch {
             var enableSeamless = isEnableSeamless
             // Access the SDK if seamless login config is enabled.
-            if(isEnableSeamless) {
+            if (isEnableSeamless) {
                 enableSeamless = isGojekProfileExist()
             }
             var isBiometricRegistered = false
             // If one of the biometrics config is enabled then we hit the api to reduce network usage.
-            if(isEnableFingerprint || isEnableDirectBiometric) {
+            if (isEnableFingerprint || isEnableDirectBiometric) {
                 isBiometricRegistered = isFingerprintRegistered()
             }
 
