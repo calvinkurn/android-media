@@ -245,6 +245,24 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         }
     }
 
+    override suspend fun setTwitterAccessToken(token: String) {
+        userSessionSetter {
+            setTwitterAccessToken(token)
+        }
+    }
+
+    override suspend fun setTwitterAccessTokenSecret(token: String) {
+        userSessionSetter {
+            setTwitterAccessTokenSecret(token)
+        }
+    }
+
+    override suspend fun setTwitterShouldPost(shouldPost: Boolean) {
+        userSessionSetter {
+            setTwitterShouldPost(shouldPost)
+        }
+    }
+
     override suspend fun clearToken() {
         userSessionSetter {
             clearAccessToken()
@@ -273,6 +291,9 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
             loginMethod = ""
             clearTwitterShouldPost()
             clearIsShopOfficialStore()
+            clearTwitterAccessToken()
+            clearTwitterAccessTokenSecret()
+            twitterShouldPost = false
         }
     }
 

@@ -41,6 +41,9 @@ object DataStoreMigrationHelper {
                 userSessionDataStore.setLoginMethod(userSessionInterface.loginMethod.trim())
                 userSessionDataStore.setIsShopOfficialStore(userSessionInterface.isShopOfficialStore)
                 userSessionDataStore.setAndroidId(userSessionInterface.androidId.trim())
+                userSessionDataStore.setTwitterAccessToken(userSessionInterface.twitterAccessToken.orEmpty())
+                userSessionDataStore.setTwitterAccessTokenSecret(userSessionInterface.twitterAccessTokenSecret.orEmpty())
+                userSessionDataStore.setTwitterShouldPost(userSessionInterface.twitterShouldPost)
             } catch (e: Exception) {
                 ServerLogger.log(
                     Priority.P2,
@@ -133,6 +136,15 @@ object DataStoreMigrationHelper {
         }
         if (dataStore.getTokenType().first().trim() != userSession.tokenType.trim()) {
             result.add("tokenType")
+        }
+        if (dataStore.getTwitterAccessToken().first() != userSession.twitterAccessToken.orEmpty()) {
+            result.add("twitterAccessToken")
+        }
+        if (dataStore.getTwitterAccessTokenSecret().first() != userSession.twitterAccessTokenSecret.orEmpty()) {
+            result.add("twitterAccessTokenSecret")
+        }
+        if (dataStore.getTwitterShouldPost().first() != userSession.twitterShouldPost) {
+            result.add("twitterShouldPost")
         }
         return result
     }

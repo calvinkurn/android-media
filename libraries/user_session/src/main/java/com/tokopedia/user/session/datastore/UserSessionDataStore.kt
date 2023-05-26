@@ -79,6 +79,12 @@ interface UserSessionDataStore {
 
     suspend fun setAndroidId(androidId: String)
 
+    suspend fun setTwitterAccessToken(token: String)
+
+    suspend fun setTwitterAccessTokenSecret(token: String)
+
+    suspend fun setTwitterShouldPost(shouldPost: Boolean)
+
     suspend fun clearToken()
 
     suspend fun logoutSession()

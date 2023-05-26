@@ -28,9 +28,9 @@ data class UserSessionModel(
     val shopAvatar: String = "avatar",
     val isPowerMerchantIdle: Boolean = false,
     val autofillUserData: String = "autofilldata",
-//    val twitterAccessToken: String = "twtToken",
-//    val twitterSecretToken: String = "twtSecret",
-//    val twitterShouldPost: Boolean = false,
+    val twitterAccessToken: String = "twtToken",
+    val twitterSecretToken: String = "twtSecret",
+    val twitterShouldPost: Boolean = false,
     val loginMethod: String = "default",
     val isShopOS: Boolean = false,
     val gtmLoginId: String = "gtm_loginId",
@@ -58,8 +58,8 @@ internal fun UserSession.setModel(model: UserSessionModel) {
     shopAvatar = model.shopAvatar
     setIsPowerMerchantIdle(model.isPowerMerchantIdle)
     autofillUserData = model.autofillUserData
-//    setTwitterAccessTokenAndSecret(model.twitterAccessToken, model.twitterSecretToken)
-//    twitterShouldPost = model.twitterShouldPost
+    setTwitterAccessTokenAndSecret(model.twitterAccessToken, model.twitterSecretToken)
+    twitterShouldPost = model.twitterShouldPost
     loginMethod = model.loginMethod
     setIsShopOfficialStore(model.isShopOS)
     // setgtmloginid
@@ -92,9 +92,9 @@ internal suspend fun UserSessionDataStore.getUserModel(): UserSessionModel {
         getShopAvatar().first(),
         isPowerMerchantIdle().first(),
         getAutofillUserData().first(),
-//        getTwitterAccessToken().first(),
-//        getTwitterAccessTokenSecret().first(),
-//        getTwitterShouldPost().first(),
+        getTwitterAccessToken().first(),
+        getTwitterAccessTokenSecret().first(),
+        getTwitterShouldPost().first(),
         getLoginMethod().first(),
         isShopOfficialStore().first(),
         getGTMLoginID().first(),
@@ -129,9 +129,9 @@ internal fun UserSession.getUserModel(): UserSessionModel {
         shopAvatar,
         isPowerMerchantIdle,
         autofillUserData,
-//        twitterAccessToken.orEmpty(),
-//        twitterAccessTokenSecret.orEmpty(),
-//        twitterShouldPost,
+        twitterAccessToken.orEmpty(),
+        twitterAccessTokenSecret.orEmpty(),
+        twitterShouldPost,
         loginMethod,
         isShopOfficialStore,
         gtmLoginID,

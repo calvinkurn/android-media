@@ -33,6 +33,8 @@ object UserSessionUtils {
                 AUTOFILL_USER_DATA -> userSessionDataStore?.setAutofillUserData(value)
                 LOGIN_METHOD -> userSessionDataStore?.setLoginMethod(value)
                 UUID_KEY -> userSessionDataStore?.setUUID(value)
+                TWITTER_ACCESS_TOKEN -> userSessionDataStore?.setTwitterAccessToken(value)
+                TWITTER_ACCESS_TOKEN_SECRET -> userSessionDataStore?.setTwitterAccessTokenSecret(value)
                 else -> {}
             }
         }
@@ -56,6 +58,7 @@ object UserSessionUtils {
                 IS_GOLD_MERCHANT -> userSessionDataStore?.setIsGoldMerchant(value)
                 IS_LOCATION_ADMIN -> userSessionDataStore?.setIsLocationAdmin(value)
                 IS_MULTI_LOCATION_SHOP -> userSessionDataStore?.setIsMultiLocationShop(value)
+                TWITTER_SHOULD_POST -> userSessionDataStore?.setTwitterShouldPost(value)
                 else -> {}
             }
         }
