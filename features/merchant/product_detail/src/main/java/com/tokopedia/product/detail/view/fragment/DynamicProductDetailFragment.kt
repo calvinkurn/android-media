@@ -5817,7 +5817,7 @@ open class DynamicProductDetailFragment :
         ViewToViewTracker.eventImpressViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            androidPageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId,
@@ -5834,7 +5834,7 @@ open class DynamicProductDetailFragment :
         ViewToViewTracker.eventClickViewToView(
             position = itemPosition,
             product = data.recommendationData,
-            androidPageName = data.recommendationData.pageName,
+            androidPageName = ViewToViewTracker.PAGE_PDP,
             pageTitle = title,
             viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
             viewModel.userId

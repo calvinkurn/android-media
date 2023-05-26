@@ -30,7 +30,7 @@ object ViewToViewTracker {
     fun eventImpressViewToView(
         position: Int,
         product: RecommendationItem,
-        androidPageName: String = PAGE_PDP,
+        androidPageName: String = PAGE_PDP, // remove default value once migrated to global, use RecommendationWidgetTrackingModel.androidPageName instead
         pageTitle: String,
         productId: String,
         userId: String,
@@ -104,7 +104,7 @@ object ViewToViewTracker {
     fun eventClickViewToView(
         position: Int,
         product: RecommendationItem,
-        androidPageName: String = PAGE_PDP,
+        androidPageName: String = PAGE_PDP, // remove default value once migrated to global, use RecommendationWidgetTrackingModel.androidPageName instead
         pageTitle: String,
         productId: String,
         userId: String
