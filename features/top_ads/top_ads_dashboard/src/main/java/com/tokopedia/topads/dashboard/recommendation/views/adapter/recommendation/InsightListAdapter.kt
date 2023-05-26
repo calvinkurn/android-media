@@ -41,7 +41,6 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
         fun bind(
             item: AdGroupUiModel,
             onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit,
-            currentList: MutableList<InsightListUiModel>
         ) {
             groupCardTitle.text = item.adGroupName
             groupCardInsightCount.show()
@@ -56,7 +55,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             setProgressBar(item.count)
             view.setOnClickListener {
                 val list = ArrayList<AdGroupUiModel>()
-                currentList.map {
+                this@InsightListAdapter.currentList.map {
                     (it as? AdGroupUiModel)?.let {  adGroupUiModel ->
                         list.add(adGroupUiModel)
                     }
@@ -207,8 +206,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             is AdGroupUiModel -> {
                 (holder as? InsightListItemViewHolder)?.bind(
                     item,
-                    onInsightItemClick,
-                    this.currentList
+                    onInsightItemClick
                 )
             }
             is LoadingUiModel -> {

@@ -2,12 +2,14 @@ package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PERFORMANCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_UN_OPTIMIZED_GROUP
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
@@ -39,18 +41,8 @@ class GroupDetailMapper @Inject constructor() {
             detailPageDataMap.values.forEach {
                 if ((it as? GroupInsightsUiModel)?.isAvailable() == true) isPresent = true
             }
-            if (!isPresent) {
-
-                //handle and show other groups here
-                val adGroups =
-                    (detailPageDataMap[TYPE_INSIGHT] as? InsightTypeChipsUiModel)?.adGroupList
-                        ?: mutableListOf()
-                detailPageDataMap[9] = GroupDetailInsightListUiModel(adGroups = adGroups.subList(0, 5))
-
-//                detailPageDataMap[8] = GroupDetailEmptyStateUiModel(
-//                    EmptyStateData.getData()
-//                )
-//                detailPageDataMap.remove(TYPE_CHIPS)
+            if (!isPresent && detailPageDataMap[TYPE_EMPTY_STATE] == null) {
+                addDataForUnoptimisedGroup()
             }
             detailPageDataMap
         } else {
@@ -62,16 +54,29 @@ class GroupDetailMapper @Inject constructor() {
                 if (i == selectedIndex) {
                     detailPageDataMap[i]?.let { map.put(i, it) }
                     if (detailPageDataMap[i]?.isAvailable() == false) {
-                        map[8] = getEmptyStateData(position)
+                        map[TYPE_EMPTY_STATE] = getEmptyStateData(position)
                     } else {
-                        detailPageDataMap.remove(8)
-                        map.remove(8)
+                        detailPageDataMap.remove(TYPE_EMPTY_STATE)
+                        map.remove(TYPE_EMPTY_STATE)
                     }
                 } else {
                     map[i] = GroupInsightsUiModel()
                 }
             }
             map
+        }
+    }
+
+    private fun addDataForUnoptimisedGroup() {
+        detailPageDataMap.remove(TYPE_CHIPS)
+        val adGroups =
+            (detailPageDataMap[TYPE_INSIGHT] as? InsightTypeChipsUiModel)?.adGroupList
+                ?: mutableListOf()
+        if (adGroups.size > 5) {
+            detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] =
+                GroupDetailInsightListUiModel(adGroups = adGroups.subList(0, 5))
+        } else {
+            detailPageDataMap[TYPE_UN_OPTIMIZED_GROUP] = GroupDetailInsightListUiModel(adGroups = adGroups)
         }
     }
 
