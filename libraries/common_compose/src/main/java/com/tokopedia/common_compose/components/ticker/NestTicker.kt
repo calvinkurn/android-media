@@ -75,9 +75,6 @@ data class TickerIndicator (
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun NestTicker(
-    title: CharSequence,
-    type: TickerType,
-    description: CharSequence,
     ticker: List<NestTickerData>,
     modifier: Modifier = Modifier,
     onDismissed: () -> Unit = {},
@@ -93,7 +90,7 @@ fun NestTicker(
          * Reserve height for carousel type
          */
         val tickerHeightState = remember { mutableStateOf(0.dp) }
-        GetTickerHeight(Modifier, ticker, tickerHeightState)
+        LargestTickerComponent(ticker, tickerHeightState, Modifier)
 
         HorizontalPager(
             modifier = Modifier.height(tickerHeightState.value),
@@ -134,13 +131,8 @@ private fun SetupAutoScroll(pagerState: PagerState, autoScrollDuration: Long) {
             delay(autoScrollDuration)
 
             val size = pagerState.pageCount
-            val currentPosition = pagerState.currentPage
-            var targetPage = currentPosition
-            if (currentPosition < (size - 1)) {
-                targetPage++
-            } else {
-                targetPage = 0
-            }
+            var currentPosition = pagerState.currentPage
+            val targetPage = if (currentPosition < size - 1) ++currentPosition else 0
 
             pagerState.animateScrollToPage(page = targetPage)
 
@@ -149,18 +141,17 @@ private fun SetupAutoScroll(pagerState: PagerState, autoScrollDuration: Long) {
 }
 
 @Composable
-private fun GetTickerHeight(
-    modifier: Modifier,
+private fun LargestTickerComponent(
     ticker: List<NestTickerData>,
     tickerHeightState: MutableState<Dp>,
-) {
+    modifier: Modifier
+    ) {
     val desc = findLongestTickerDescription(ticker)
     val density = LocalDensity.current
     NestTickerCard(
         modifier = modifier
             .onGloballyPositioned { layoutCoordinates ->
                 tickerHeightState.value = with(density) { layoutCoordinates.size.height.toDp() }
-                Log.d("devarasize", "height: ${tickerHeightState.value}")
             }
             .wrapContentHeight()
             .fillMaxWidth()
@@ -326,7 +317,7 @@ private fun TickerContent(
 @Composable
 private fun TickerCloseIcon(
     onDismissed: () -> Unit,
-    closeIconColor: Color
+    closeIconColor: Color = NestTheme.colors.NN._900
 ) {
     Icon(
         imageVector = Icons.Outlined.Close,
