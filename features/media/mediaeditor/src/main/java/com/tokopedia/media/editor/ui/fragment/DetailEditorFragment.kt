@@ -48,6 +48,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_BLACK
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_WHITE
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_FREE
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel.Companion.EMPTY_RATIO
@@ -430,6 +431,11 @@ class DetailEditorFragment @Inject constructor(
     // === Listener add text
     override fun onAddFreeText() {
         editorDetailAnalytics.clickAddTextFreeText()
+
+        if (data.addTextValue?.textTemplate == TEXT_TEMPLATE_BACKGROUND) {
+            isEdited = true
+        }
+
         TEXT_TEMPLATE_FREE.let { templateIndex ->
             data.addTextValue?.let {
                 it.textTemplate = templateIndex
@@ -442,7 +448,11 @@ class DetailEditorFragment @Inject constructor(
     override fun onAddSingleBackgroundText() {
         editorDetailAnalytics.clickAddTextBackgroundText()
         showAddTextLatarSelection{ color, model ->
-            EditorAddTextUiModel.TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
+            if (data.addTextValue?.textTemplate == TEXT_TEMPLATE_FREE) {
+                isEdited = true
+            }
+
+            TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
                 data.addTextValue?.let {
                     it.textTemplate = templateIndex
                     it.setLatarTemplate(LatarTemplateDetail(
