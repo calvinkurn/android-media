@@ -151,11 +151,14 @@ class AddTextFilterRepositoryImpl @Inject constructor(
     }
 
     private fun createStaticLayout(data: EditorAddTextUiModel, width: Int, paint: TextPaint): StaticLayout {
-        val text = if (data.getLatarTemplate() != null){
-            TextUtils.ellipsize(data.textValue, paint, width.toFloat(), TextUtils.TruncateAt.END)
-        } else {
-            data.textValue
+        val text = data.textValue.let {
+            if (data.getLatarTemplate() != null) {
+                ellipsizeDrawText(it, paint, width.toFloat())
+            } else {
+                it
+            }
         }
+
         val alignment = data.getLayoutAlignment()
 
         return StaticLayout(
@@ -167,6 +170,22 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             0f,
             false
         )
+    }
+
+    private fun ellipsizeDrawText(text: String, paint: TextPaint, width: Float): CharSequence {
+        val indexOfNewLine = text.indexOf("\n")
+        return if (indexOfNewLine < 0 || indexOfNewLine > text.length - 1) {
+            // ellipsize without substring for new line
+            TextUtils.ellipsize(text, paint, width, TextUtils.TruncateAt.END)
+        } else {
+            // ellipsize with substring for new line
+            TextUtils.ellipsize(
+                text.substring(0, indexOfNewLine),
+                paint,
+                width,
+                TextUtils.TruncateAt.END
+            )
+        }
     }
 
     companion object {
