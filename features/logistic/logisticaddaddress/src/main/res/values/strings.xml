@@ -49,7 +49,6 @@
 
     <string name="navigate_up">Navigate Up</string>
     <string name="pointer">Map Pointer</string>
-    <string name="title_bottomsheet_search_location">Cari Lokasi</string>
     <string name="current_location">Current Location</string>
     <string name="tv_current_location_text">Gunakan lokasi saya saat ini</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
@@ -59,8 +58,6 @@
     <string name="invalid_desc">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
     <string name="out_of_indonesia_title">Lokasi di luar jangkauan</string>
     <string name="out_of_indonesia_desc">Saat ini Tokopedia hanya melayani pengiriman di Indonesia.</string>
-    <string name="undetected_title">Alamatmu di peta kurang lengkap</string>
-    <string name="undetected_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="research_description">ic_research</string>
     <string name="invalid_img_description">alamat tidak mendukung</string>
     <string name="change_pinpoint">Ubah Pinpoint</string>
@@ -89,12 +86,8 @@
     <string name="btn_ok">Ok</string>
     <string name="btn_lain_kali">Lain Kali</string>
     <string name="activate_location_service">Aktifkan Layanan Lokasi</string>
-    <string name="validate_label_alamat">Label Alamat harus diisi</string>
-    <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
     <string name="validate_no_ponsel">No. Ponsel harus diisi</string>
-    <string name="validate_no_ponsel_less_char">Nomor HP penerima terlalu pendek, min. 9 angka</string>
     <string name="validate_detail_alamat">Detail Alamat harus diisi</string>
-    <string name="validate_kota_kecamatan">Kota Kecamatan harus diisi</string>
     <string name="validate_kode_pos">Kode Pos harus diisi</string>
     <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
     <string name="validate_alamat">Alamat harus diisi</string>
@@ -102,7 +95,6 @@
     <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
     <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="not_found_location">Lokasi tidak terdeteksi</string>
-    <string name="not_found_location_desc">Kami tidak dapat menentukan lokasimu, silakan geser pada peta atau tulis secara manual</string>
     <string name="content_desc_place_name">text nama tempat</string>
     <string name="content_desc_et_detail_address">input detail alamat</string>
     <string name="content_desc_btn_choose_location">button pilih lokasi ini</string>
@@ -141,12 +133,8 @@
         <item>Kos</item>
     </string-array>
 
-    <string name="toaster_not_avail_shop_loc">Lokasi pinpoint (peta) tidak sesuai dengan kota/kecamatan mu. Harap ulangi pinpoint.</string>
-
     <string name="contact_not_found">Kontak tidak ditemukan</string>
     <string name="rationale_need_contact">Untuk pakai fitur ini, izinkan Tokpedia mengakses kontakmu.</string>
-    <string name="contact_title_coachmark">Pilih no. HP langsung dari kontakmu</string>
-    <string name="contact_desc_coachmark">Jadi lebih mudah menambahkan nomor HP penerima pesanan!</string>
 
     <!--Search Page-->
     <string name="txt_hint_search">Tulis nama jalan/gedung/perumahan</string>

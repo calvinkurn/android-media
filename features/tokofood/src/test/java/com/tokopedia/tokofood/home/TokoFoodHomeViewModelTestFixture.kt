@@ -97,22 +97,6 @@ abstract class TokoFoodHomeViewModelTestFixture {
         )
     }
 
-    protected fun onGetEligibleForAnaRevamp_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureResponse) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse.data)
-        }
-    }
-
-    protected fun onGetEligibleForAnaRevamp_thenReturn(errorThrowable: Throwable) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(errorThrowable)
-        }
-    }
-
     protected fun onGetChooseAddress_thenReturn(getStateChosenAddressResponse: GetStateChosenAddressQglResponse) {
         coEvery {
             getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
