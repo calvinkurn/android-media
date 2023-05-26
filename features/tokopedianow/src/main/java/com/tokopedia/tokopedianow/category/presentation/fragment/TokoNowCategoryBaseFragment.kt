@@ -15,6 +15,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery.common.utils.UrlParamUtils
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
@@ -284,14 +285,14 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
                 throwable = throwable,
                 errorCode = errorCode
             )
-
             globalError.setType(errorType)
 
             when (errorCode) {
                 ERROR_PAGE_NOT_FOUND -> setupGlobalErrorPageNotFound()
-                ERROR_SERVER -> setupGlobalErrorServer()
+                ERROR_SERVER -> setupActionGlobalErrorClickListener()
                 ERROR_MAINTENANCE -> setupGlobalErrorMaintenance()
-                ERROR_PAGE_FULL -> setupGlobalErrorPageFull()
+                ERROR_PAGE_FULL -> setupActionGlobalErrorClickListener()
+                else -> setupActionGlobalErrorClickListener()
             }
         } else {
             val errorType = GlobalErrorUtil.getErrorType(
@@ -299,7 +300,12 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
                 errorCode = String.EMPTY
             )
             globalError.setType(errorType)
-            setupGlobalErrorNoConnection()
+
+            if (errorType == GlobalError.NO_CONNECTION) {
+                setupGlobalErrorNoConnection()
+            } else {
+                setupActionGlobalErrorClickListener()
+            }
         }
     }
 
@@ -432,11 +438,9 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorServer() {
-        globalError.apply {
-            setActionClickListener {
-                refreshLayout()
-            }
+    private fun FragmentTokopedianowCategoryBaseBinding.setupActionGlobalErrorClickListener() {
+        globalError.setActionClickListener {
+            refreshLayout()
         }
     }
 
@@ -446,14 +450,6 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             setActionClickListener {
                 RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
                 activity?.finish()
-            }
-        }
-    }
-
-    private fun FragmentTokopedianowCategoryBaseBinding.setupGlobalErrorPageFull() {
-        globalError.apply {
-            setActionClickListener {
-                refreshLayout()
             }
         }
     }

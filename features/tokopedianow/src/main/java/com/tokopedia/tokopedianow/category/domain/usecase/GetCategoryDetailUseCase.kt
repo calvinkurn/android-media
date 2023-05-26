@@ -15,9 +15,11 @@ class GetCategoryDetailUseCase @Inject constructor(
     companion object {
         private const val SUCCESS_CODE = "200"
         private const val DEFAULT_CODE = "0"
+        private const val SOURCE = "category-page"
 
         const val PARAM_CATEGORY_ID = "categoryID"
         const val PARAM_SLUG = "slug"
+        const val PARAM_SOURCE = "source"
         const val PARAM_WAREHOUSE_ID = "warehouseID"
     }
 
@@ -38,6 +40,7 @@ class GetCategoryDetailUseCase @Inject constructor(
             RequestParams.create().apply {
                 putString(PARAM_CATEGORY_ID, categoryIdL1)
                 putString(PARAM_SLUG, String.EMPTY)
+                putString(PARAM_SOURCE, SOURCE)
                 putString(PARAM_WAREHOUSE_ID, warehouseId)
             }.parameters
         )

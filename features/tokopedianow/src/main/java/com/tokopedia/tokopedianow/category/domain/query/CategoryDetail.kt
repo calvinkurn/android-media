@@ -6,8 +6,13 @@ internal object CategoryDetail: GqlQueryInterface {
     override fun getOperationNameList(): List<String> = listOf("TokonowCategoryDetail")
 
     override fun getQuery(): String = """
-            query TokonowCategoryDetail(${'$'}categoryID: String!, ${'$'}slug: String!, ${'$'}warehouseID: String!){
-              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, warehouseID: ${'$'}warehouseID) {
+            query TokonowCategoryDetail(
+                ${'$'}categoryID: String!, 
+                ${'$'}slug: String!, 
+                ${'$'}source: String!, 
+                ${'$'}warehouseID: String!
+            ){
+              TokonowCategoryDetail(categoryID: ${'$'}categoryID, slug: ${'$'}slug, source: ${'$'}source, warehouseID: ${'$'}warehouseID) {
                 header {
                   process_time
                   messages
@@ -20,6 +25,15 @@ internal object CategoryDetail: GqlQueryInterface {
                   url
                   applinks
                   imageUrl
+                  color
+                  recommendation {
+                    id
+                    name
+                    url
+                    applinks
+                    imageUrl
+                    color
+                  }
                   navigation {
                     prev {
                       id

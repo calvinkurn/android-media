@@ -64,7 +64,37 @@ data class CategoryDetailResponse(
 
             @SerializedName("color")
             @Expose
-            val color: String = "#FFFAE6",
+            val color: String = "",
+
+            @SerializedName("recommendation")
+            @Expose
+            val recommendation: List<RecommendationItem> = listOf()
+    )
+
+    data class RecommendationItem(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = "",
+
+        @SerializedName("applinks")
+        @Expose
+        val applinks: String = "",
+
+        @SerializedName("imageUrl")
+        @Expose
+        val imageUrl: String = "",
+
+        @SerializedName("color")
+        @Expose
+        val color: String = ""
     )
 
     data class Navigation(
