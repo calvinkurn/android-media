@@ -23,8 +23,8 @@ class MedalDetailViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val response = medalDetailUseCase.getMedalDetail(
-                    medaliSlug = "INJECT_BADGE_1",
-                    sourceName = "homepage",
+                    medaliSlug = "MEDALI_TESTING",
+                    sourceName = "celebration_page",
                     pageName = "medali_detail_page"
                 )
                 if (response.detail != null) {

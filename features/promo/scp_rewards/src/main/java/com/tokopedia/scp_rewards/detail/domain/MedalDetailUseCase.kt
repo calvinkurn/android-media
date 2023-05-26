@@ -31,11 +31,12 @@ private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
           backgroundImageURL
           backgroundImageColor
           frameImageURL
+          frameMaskingImageURL
           innerIconImageURL
           maskingImageURL
           shutterImageURL
           shutterText
-          shimmerImageURL
+          shimmerAltImageURL
           shimmerShutterLottieURL
           outerBlinkingImageURL
           outerBlinkingLottieURL

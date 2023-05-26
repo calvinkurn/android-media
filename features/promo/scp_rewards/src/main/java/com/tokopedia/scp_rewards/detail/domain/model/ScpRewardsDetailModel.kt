@@ -22,9 +22,10 @@ data class MedaliDetailPage(
     @SerializedName("frameImageURL") val frameImageURL: String? = null,
     @SerializedName("innerIconImageURL") val innerIconImageURL: String? = null,
     @SerializedName("maskingImageURL") val maskingImageURL: String? = null,
+    @SerializedName("frameMaskingImageURL") val frameMaskingImageURL: String? = null,
     @SerializedName("shutterImageURL") val shutterImageURL: String? = null,
     @SerializedName("shutterText") val shutterText: String? = null,
-    @SerializedName("shimmerImageURL") val shimmerImageURL: String? = null,
+    @SerializedName("shimmerAltImageURL") val shimmerImageURL: String? = null,
     @SerializedName("shimmerShutterLottieURL") val shimmerShutterLottieURL: String? = null,
     @SerializedName("outerBlinkingLottieURL") val outerBlinkingLottieURL: String? = null,
     @SerializedName("baseImageURL") val baseImageURL: String? = null,
@@ -33,14 +34,22 @@ data class MedaliDetailPage(
     @SerializedName("sourceBackgroundColor") val sourceBackgroundColor: String? = null,
     @SerializedName("medaliName") val medaliName: String? = null,
     @SerializedName("medaliDescription") val medaliDescription: String? = null,
+    @SerializedName("coachMark") val coachMark: CoachMark? = null,
+    @SerializedName("mission") val mission: Mission? = null,
+    @SerializedName("benefit") val benefit: List<Benefit>? = null,
+    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null,
+)
+
+data class CoachMark(
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("showNumberOfTimes") val showNumberOfTimes: Int? = null,
+    @SerializedName("timeOut") val timeOut: Long? = null,
 )
 
 data class Mission(
     @SerializedName("title") val title: String? = null,
     @SerializedName("progress") val progress: Int? = null,
     @SerializedName("task") val task: List<Task>? = null,
-    @SerializedName("benefit") val benefit: List<Benefit>? = null,
-    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null,
 )
 
 data class Task(

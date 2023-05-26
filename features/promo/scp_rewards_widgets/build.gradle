@@ -26,7 +26,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
 
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     //Image Dependecies
     implementation rootProject.ext.networkDependencies.glide
 
