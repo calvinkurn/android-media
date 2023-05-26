@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
-import com.tokopedia.scp_rewards.common.utils.loadImage
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
@@ -24,8 +23,9 @@ const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05
 const val IMG_DETAIL_BG = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg.png"
 const val CONTENT = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png"
 const val FRAME = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_frame.png"
-const val SHIMMER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
-const val MASK = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
+const val SHIMMER = "https://user-images.githubusercontent.com/121924518/240866873-6121041d-b841-43fe-8c54-76815f095f39.png"
+const val MASK = "https://user-images.githubusercontent.com/121924518/240869225-f2a42fca-a6ad-4a27-ba1b-a04051864e34.png"
+const val MASKING_SHAPE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
 const val SHUTTER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_shutter.png"
 const val LOTTIE_BADGE = "https://gist.githubusercontent.com/rooparshgojek/8502ff5cb6f84b918141a213498f007a/raw/9e5bf0fae736334521b47a07a5d0d76346c9fc57/medali-detail.json"
 const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/08/medali_outer_blinking.json"
@@ -91,6 +91,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 frameUrl = FRAME,
                 shimmerUrl = SHIMMER,
                 maskUrl = MASK,
+                maskingShapeUrl = MASKING_SHAPE,
                 shutterUrl = SHUTTER
             )
         )
@@ -99,7 +100,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
             MedalDetail()
         )
 
-        binding.ivBadgeBase.loadImage(IMG_DETAIL_BASE)
+        binding.ivBadgeBase.setImageUrl(IMG_DETAIL_BASE)
     }
 
     private fun setupViewModelObservers() {
