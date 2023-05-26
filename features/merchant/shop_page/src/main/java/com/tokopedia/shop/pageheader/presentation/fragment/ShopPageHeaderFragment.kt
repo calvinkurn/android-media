@@ -2066,22 +2066,11 @@ class ShopPageHeaderFragment :
     private fun createCampaignTabFragment(
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
-        return ShopPageCampaignFragment.createInstance(
-            shopId,
-            shopPageHeaderDataModel?.isOfficial ?: false,
-            shopPageHeaderDataModel?.isGoldMerchant ?: false,
-            shopPageHeaderDataModel?.shopName.orEmpty(),
-            shopAttribution ?: "",
-            shopRef,
-            shopPageHeaderDataModel?.isEnableDirectPurchase.orFalse()
-        ).apply {
-            setListWidgetLayoutData(
-                HomeLayoutData(
-                    widgetIdList = tabData.data.widgetIdList
-                )
-            )
-            setPageBackgroundColor(tabData.listBackgroundColor)
-            setPageTextColor(tabData.textColor)
+        return ShopPageCampaignFragment.createInstance(shopId).apply {
+            setListWidgetLayoutData(tabData.data.homeLayoutData)
+
+            setCampaignTabBackgroundColor(tabData.listBackgroundColor.firstOrNull().orEmpty())
+//            setHomeTabBackgroundPatternImage(tabData.backgroundImage)
         }
     }
 
@@ -3324,5 +3313,11 @@ class ShopPageHeaderFragment :
             stockQty,
             shopId
         )
+    }
+
+    fun selectShopTab(tabName: String) {
+        val selectedTabPosition = getTabPositionBasedOnTabName(tabName)
+        viewPager?.setCurrentItem(selectedTabPosition, false)
+        tabLayout?.getTabAt(selectedTabPosition)?.select()
     }
 }

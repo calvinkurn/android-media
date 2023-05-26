@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
 import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
@@ -48,7 +49,7 @@ import com.tokopedia.shop.home.view.model.GetCampaignNotifyMeUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCardDonationUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeDisplayBannerItemUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
@@ -421,7 +422,7 @@ object ShopPageHomeMapper {
                         mapToDisplayImageWidget(widgetResponse, widgetLayout)
                     }
                     BANNER_TIMER -> {
-                        mapToBannerTimerWidget(widgetResponse, widgetLayout)
+                        ShopPageWidgetMapper.mapToBannerTimerWidget(widgetResponse, widgetLayout)
                     }
                     else -> null
                 }
@@ -475,19 +476,6 @@ object ShopPageHomeMapper {
         }
     }
 
-    private fun mapToBannerTimerWidget(
-        widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
-    )= ShopHomeDisplayBannerItemUiModel(
-        widgetId = widgetResponse.widgetID,
-        layoutOrder = widgetResponse.layoutOrder,
-        name = widgetResponse.name,
-        type = widgetResponse.type,
-        header = mapToHeaderModel(widgetResponse.header),
-        isFestivity = widgetLayout?.isFestivity.orFalse(),
-        data = mapToBannerItemWidget(widgetResponse.data.firstOrNull())
-    )
-
     private fun mapToProductPersonalizationUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
         isMyProduct: Boolean,
@@ -537,7 +525,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToProductBundleListUiModel(
+    fun mapToProductBundleListUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
         shopId: String,
         widgetLayout: ShopPageWidgetLayoutUiModel?
@@ -690,7 +678,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapCampaignListProduct(
+    internal fun mapCampaignListProduct(
         statusCampaign: String,
         listProduct: List<ShopLayoutWidget.Widget.Data.Product>
     ): List<ShopHomeProductUiModel> {
@@ -782,7 +770,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToDisplayImageWidget(
+    fun mapToDisplayImageWidget(
         widgetResponse: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetLayoutUiModel?
     ): ShopHomeDisplayWidgetUiModel {
@@ -866,7 +854,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToProductWidgetUiModel(
+    fun mapToProductWidgetUiModel(
         widgetModel: ShopLayoutWidget.Widget,
         isMyOwnProduct: Boolean,
         isEnableDirectPurchase: Boolean,
@@ -883,7 +871,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
+    fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
         return BaseShopHomeWidgetUiModel.Header(
             header.title,
             header.subtitle,
@@ -929,26 +917,6 @@ object ShopPageHomeMapper {
                 this.parentId = it.parentId
             }
         }
-    }
-
-    private fun mapToBannerItemWidget(
-        data: ShopLayoutWidget.Widget.Data?,
-    ): ShopHomeDisplayBannerItemUiModel.Data {
-        return ShopHomeDisplayBannerItemUiModel.Data(
-            appLink =  data?.appLink.orEmpty(),
-            imageUrl =  data?.imageUrl.orEmpty(),
-            linkType =  data?.linkType.orEmpty(),
-            campaignId = data?.campaignId.orEmpty(),
-            timeDescription = data?.timeInfo?.timeDescription.orEmpty(),
-            timeCounter = data?.timeInfo?.timeCounter.orZero(),
-            startDate = data?.timeInfo?.startDate.orEmpty(),
-            endDate = data?.timeInfo?.endDate.orEmpty(),
-            bgColor = data?.timeInfo?.bgColor.orEmpty(),
-            textColor = data?.timeInfo?.textColor.orEmpty(),
-            status = data?.timeInfo?.status ?: -1,
-            totalNotify = data?.totalNotify.orZero(),
-            totalNotifyWording = data?.totalNotifyWording.orEmpty()
-        )
     }
 
     private fun mapToShowcaseListItemUiModel(
@@ -1033,7 +1001,7 @@ object ShopPageHomeMapper {
     /*
      * Play widget
      */
-    private fun mapCarouselPlayWidget(
+    fun mapCarouselPlayWidget(
         model: ShopLayoutWidget.Widget,
         widgetLayout: ShopPageWidgetLayoutUiModel?
     ) = CarouselPlayWidgetUiModel(

@@ -11,7 +11,6 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
  */
 
 interface TypeFactoryShopHome {
-    fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int
     fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int
     fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int
     fun type(etalaseLabelViewModel: ShopProductSortFilterUiModel): Int

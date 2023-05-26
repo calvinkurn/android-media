@@ -20,12 +20,12 @@ import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopUtil
-import com.tokopedia.shop.databinding.ItemShopHomeDisplayBannerItemBinding
+import com.tokopedia.shop.databinding.ItemShopHomeDisplayBannerTimerBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerItemWidgetListener
-import com.tokopedia.shop.home.view.model.ShopHomeDisplayBannerItemUiModel
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaignInt
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -39,12 +39,12 @@ import kotlinx.coroutines.delay
 import java.math.RoundingMode
 import java.util.*
 
-class ShopHomeDisplayBannerItemViewHolder(
+class ShopHomeDisplayBannerTimerViewHolder(
     itemView: View,
-    private val listener: ShopHomeDisplayBannerItemWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayBannerItemUiModel>(itemView), CoroutineScope {
+    private val listener: ShopHomeDisplayBannerTimerWidgetListener
+) : AbstractViewHolder<ShopWidgetDisplayBannerTimerUiModel>(itemView), CoroutineScope {
 
-    private val viewBinding: ItemShopHomeDisplayBannerItemBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeDisplayBannerTimerBinding? by viewBinding()
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
     private val imageBanner: ImageUnify? = viewBinding?.imageBanner
@@ -61,11 +61,11 @@ class ShopHomeDisplayBannerItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_display_banner_item
+        val LAYOUT = R.layout.item_shop_home_display_banner_timer
         private const val DURATION_TO_HIDE_REMIND_ME_WORDING = 5000L
     }
 
-    override fun bind(uiModel: ShopHomeDisplayBannerItemUiModel) {
+    override fun bind(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         setHeader(uiModel)
         setTimer(uiModel)
         if (!GlobalConfig.isSellerApp())
@@ -76,7 +76,7 @@ class ShopHomeDisplayBannerItemViewHolder(
     }
 
     private fun setHeader(
-        model: ShopHomeDisplayBannerItemUiModel
+        model: ShopWidgetDisplayBannerTimerUiModel
     ) {
         val title = model.header.title
         setTitle(title)
@@ -98,7 +98,7 @@ class ShopHomeDisplayBannerItemViewHolder(
         }
     }
 
-    private fun setTnc(title: String, model: ShopHomeDisplayBannerItemUiModel) {
+    private fun setTnc(title: String, model: ShopWidgetDisplayBannerTimerUiModel) {
         imageTnc?.apply {
             val statusCampaign = model.data?.status ?: -1
             if (title.isEmpty() || isStatusCampaignFinished(statusCampaign)) {
@@ -106,13 +106,13 @@ class ShopHomeDisplayBannerItemViewHolder(
             } else {
                 show()
                 setOnClickListener {
-                    listener.onClickTncDisplayBannerItemWidget(model)
+                    listener.onClickTncDisplayBannerTimerWidget(model)
                 }
             }
         }
     }
 
-    private fun setCta(uiModel: ShopHomeDisplayBannerItemUiModel) {
+    private fun setCta(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         val ctaText = uiModel.header.ctaText
         val statusCampaign = uiModel.data?.status ?: -1
         val isShowCta = checkIsShowCta(ctaText, statusCampaign)
@@ -123,7 +123,7 @@ class ShopHomeDisplayBannerItemViewHolder(
             } else {
                 text = ctaText
                 setOnClickListener {
-                    listener.onClickCtaDisplayBannerItemWidget(uiModel)
+                    listener.onClickCtaDisplayBannerTimerWidget(uiModel)
                 }
                 show()
             }
@@ -135,7 +135,7 @@ class ShopHomeDisplayBannerItemViewHolder(
     }
 
     private fun setTimer(
-        model: ShopHomeDisplayBannerItemUiModel
+        model: ShopWidgetDisplayBannerTimerUiModel
     ) {
         val statusCampaign = model.data?.status ?: -1
         if (!isStatusCampaignFinished(statusCampaign)) {
@@ -170,7 +170,7 @@ class ShopHomeDisplayBannerItemViewHolder(
     private fun setTimerUnify(
         dateCampaign: Date,
         timeCounter: Long,
-        model: ShopHomeDisplayBannerItemUiModel
+        model: ShopWidgetDisplayBannerTimerUiModel
     ) {
         timerMoreThanOneDay?.gone()
         if (!timeCounter.isZero()) {
@@ -198,7 +198,7 @@ class ShopHomeDisplayBannerItemViewHolder(
     }
 
     private fun checkFestivity(
-        model: ShopHomeDisplayBannerItemUiModel
+        model: ShopWidgetDisplayBannerTimerUiModel
     ) {
         if (model.isFestivity) {
             configFestivity()
@@ -263,12 +263,12 @@ class ShopHomeDisplayBannerItemViewHolder(
         }
     }
 
-    private fun setBannerImage(uiModel: ShopHomeDisplayBannerItemUiModel) {
+    private fun setBannerImage(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         val imageBannerUrl = uiModel.data?.imageUrl.orEmpty()
         imageBanner?.setImageUrl(imageBannerUrl, heightRatio = getHeightRatio(uiModel))
     }
 
-    private fun setRemindMe(uiModel: ShopHomeDisplayBannerItemUiModel) {
+    private fun setRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         hideAllRemindMeLayout()
         uiModel.data?.isRemindMe?.let { isRemindMe ->
             buttonRemindMe?.show()
@@ -301,7 +301,7 @@ class ShopHomeDisplayBannerItemViewHolder(
         buttonRemindMe?.hide()
     }
 
-    private fun hideRemindMeText(model: ShopHomeDisplayBannerItemUiModel, isRemindMe: Boolean) {
+    private fun hideRemindMeText(model: ShopWidgetDisplayBannerTimerUiModel, isRemindMe: Boolean) {
         val totalNotifyWording = model.data?.totalNotifyWording.orEmpty()
         remindMeText?.apply {
             val colorText = if(isRemindMe){
@@ -327,7 +327,7 @@ class ShopHomeDisplayBannerItemViewHolder(
         }
     }
 
-    private fun checkRemindMeLoading(uiModel: ShopHomeDisplayBannerItemUiModel) {
+    private fun checkRemindMeLoading(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         if (uiModel.data?.showRemindMeLoading == true) {
             remindMeIcon?.hide()
             remindMeText?.hide()
@@ -338,10 +338,10 @@ class ShopHomeDisplayBannerItemViewHolder(
         }
     }
 
-    private fun setWidgetImpressionListener(model: ShopHomeDisplayBannerItemUiModel) {
+    private fun setWidgetImpressionListener(model: ShopWidgetDisplayBannerTimerUiModel) {
         model.data?.let {
             itemView.addOnImpressionListener(model.impressHolder) {
-                listener.onImpressionDisplayBannerItemWidget(
+                listener.onImpressionDisplayBannerTimerWidget(
                     ShopUtil.getActualPositionFromIndex(bindingAdapterPosition),
                     model
                 )
@@ -362,11 +362,11 @@ class ShopHomeDisplayBannerItemViewHolder(
         return statusCampaign == StatusCampaignInt.UPCOMING.statusCampaign
     }
 
-        private fun getIndexRatio(data: ShopHomeDisplayBannerItemUiModel, index: Int): Int {
+        private fun getIndexRatio(data: ShopWidgetDisplayBannerTimerUiModel, index: Int): Int {
         return data.header.ratio.split(":").getOrNull(index).toIntOrZero()
     }
 
-    private fun getHeightRatio(uiModel: ShopHomeDisplayBannerItemUiModel): Float {
+    private fun getHeightRatio(uiModel: ShopWidgetDisplayBannerTimerUiModel): Float {
         val indexZero = getIndexRatio(uiModel, 0).toFloat()
         val indexOne = getIndexRatio(uiModel, 1).toFloat()
         return (indexOne / indexZero)

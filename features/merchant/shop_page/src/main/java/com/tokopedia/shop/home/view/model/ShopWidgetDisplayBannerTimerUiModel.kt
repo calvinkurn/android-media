@@ -1,9 +1,12 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 
-data class ShopHomeDisplayBannerItemUiModel(
+data class ShopWidgetDisplayBannerTimerUiModel(
     override val widgetId: String = "",
     override val layoutOrder: Int = -1,
     override val name: String = "",
@@ -33,7 +36,20 @@ data class ShopHomeDisplayBannerItemUiModel(
         var isHideRemindMeTextAfterXSeconds: Boolean = false
     ) : ImpressHolder()
 
-    override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
-        return typeFactory.type(this)
+
+    override fun type(typeFactory: ShopWidgetTypeFactory): Int {
+        return when (typeFactory) {
+            is ShopHomeAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+
+            is ShopCampaignTabAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+
+            else -> {
+                Int.ZERO
+            }
+        }
     }
 }

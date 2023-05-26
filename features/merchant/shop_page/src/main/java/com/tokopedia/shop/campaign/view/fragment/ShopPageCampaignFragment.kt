@@ -1,10 +1,14 @@
 package com.tokopedia.shop.campaign.view.fragment
 
-import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -14,120 +18,98 @@ import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.imageassets.TokopediaImageUrl
-import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
+import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
+import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
+import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
+import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
+import com.tokopedia.shop.campaign.view.viewmodel.ShopCampaignViewModel
+import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
+import com.tokopedia.shop.databinding.FragmentShopPageCampaignBinding
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
-import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
-import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
+import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
-import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
-import com.tokopedia.shop_widget.thematicwidget.viewholder.ThematicWidgetViewHolder
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class ShopPageCampaignFragment :
     ShopPageHomeFragment(),
     WidgetConfigListener,
     ShopCampaignProductBundleParentWidgetViewHolder.Listener,
-    ShopHomeListener {
+    ShopHomeListener,
+    ShopCampaignInterface,
+    ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
+    ShopCampaignCarouselProductListener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
-        private const val KEY_IS_OFFICIAL_STORE = "IS_OFFICIAL_STORE"
-        private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-        private const val KEY_SHOP_NAME = "SHOP_NAME"
-        private const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
-        private const val KEY_SHOP_REF = "SHOP_REF"
-        private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
+        private const val LOAD_WIDGET_ITEM_PER_PAGE = 30
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
-        private const val CONFETTI_URL = TokopediaImageUrl.CONFETTI_URL
-        private const val KEY_ENABLE_SHOP_DIRECT_PURCHASE = "ENABLE_SHOP_DIRECT_PURCHASE"
 
-        fun createInstance(
-            shopId: String,
-            isOfficialStore: Boolean,
-            isGoldMerchant: Boolean,
-            shopName: String,
-            shopAttribution: String,
-            shopRef: String,
-            isEnableDirectPurchase: Boolean
-        ): ShopPageCampaignFragment {
+        fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
-            bundle.putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
-            bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
-            bundle.putString(KEY_SHOP_NAME, shopName)
-            bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
-            bundle.putString(KEY_SHOP_REF, shopRef)
-            bundle.putBoolean(KEY_ENABLE_SHOP_DIRECT_PURCHASE, isEnableDirectPurchase)
             return ShopPageCampaignFragment().apply {
                 arguments = bundle
             }
         }
     }
 
+    private val viewBindingCampaignTab: FragmentShopPageCampaignBinding? by viewBinding()
+    private var campaignTabBackgroundColor: String = ""
+    private var campaignTabBackgroundPatternImage: String = ""
     private var recyclerViewTopPadding = 0
     private var isClickToScrollToTop = false
     private var latestCompletelyVisibleItemIndex = -1
-    private var listBackgroundColor: List<String> = listOf()
     private var textColor: String = ""
-    private var topView: View? = null
-    private var centerView: View? = null
-    private var bottomView: View? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
+    private var viewModelCampaign: ShopCampaignViewModel? = null
+
     private val shopCampaignTabAdapter: ShopCampaignTabAdapter
         get() = adapter as ShopCampaignTabAdapter
     private val shopCampaignTabAdapterTypeFactory by lazy {
-        val userSession = UserSession(context)
-        val _shopId = arguments?.getString(KEY_SHOP_ID, "") ?: ""
-        val _isMyShop = ShopUtil.isMyShop(shopId = _shopId, userSessionShopId = userSession.shopId.orEmpty())
         ShopCampaignTabAdapterTypeFactory(
-            listener = this,
-            onMerchantVoucherListWidgetListener = this,
-            shopHomeEndlessProductListener = this,
-            shopHomeCarouselProductListener = this,
-            shopProductEtalaseListViewHolderListener = this,
-            shopHomeCampaignNplWidgetListener = this,
-            shopHomeFlashSaleWidgetListener = this,
-            shopProductChangeGridSectionListener = this,
+            shopHomeDisplayWidgetListener = this,
+            shopCampaignDisplayBannerTimerWidgetListener = this,
+            shopCampaignCarouselProductListener = this,
             playWidgetCoordinator = playWidgetCoordinator,
-            isShowTripleDot = !_isMyShop,
-            shopHomeShowcaseListWidgetListener = this,
             shopHomePlayWidgetListener = this,
-            shopHomeCardDonationListener = this,
             multipleProductBundleListener = this,
             singleProductBundleListener = this,
-            thematicWidgetListener = thematicWidgetProductClickListenerImpl(),
-            shopHomeProductListSellerEmptyListener = this,
-            widgetConfigListener = this,
             bundlingParentListener = this,
-            shopHomeListener = this,
-            shopHomeDisplayBannerItemWidgetListener = this
+            shopCampaignInterface = this,
+            sliderBannerHighlightListener = this
         )
     }
 
@@ -135,6 +117,20 @@ class ShopPageCampaignFragment :
 
     @Inject
     lateinit var shopCampaignTabTracker: ShopCampaignTabTracker
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModelCampaign =
+            ViewModelProviders.of(this, viewModelFactory).get(ShopCampaignViewModel::class.java)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_shop_page_campaign, container, false)
+    }
 
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
@@ -149,66 +145,73 @@ class ShopPageCampaignFragment :
         getRecyclerView(view)?.visible()
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
-        shopCampaignTabAdapter.isOwner = isOwner
         shopPageHomeLayoutUiModel?.let {
-            setShopHomeWidgetLayoutData(it)
+            setShopWidgetLayoutData(it)
+            setWidgetLayoutPlaceholder()
         }
-        setWidgetLayoutPlaceholder()
     }
 
     override fun setWidgetLayoutPlaceholder() {
-        if (listWidgetLayout.isNotEmpty()) {
-            shopCampaignTabAdapter.hideLoading()
-            val shopHomeWidgetContentData =
-                ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(
-                    listWidgetLayout,
-                    isOwner,
-                    isLogin,
-                    isThematicWidgetShown,
-                    isEnableDirectPurchase,
-                    shopId
-                )
-            shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
-        }
+        val shopHomeWidgetContentData =
+            ShopPageCampaignMapper.mapShopCampaignWidgetLayoutToListShopCampaignWidget(
+                listWidgetLayout,
+                shopId
+            )
+        shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
+    }
+
+    override fun setShopWidgetLayoutData(dataWidgetLayoutUiModel: ShopPageHomeWidgetLayoutUiModel) {
+        listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.toMutableList()
+        val shopCampaignWidgetContentData =
+            ShopPageCampaignMapper.mapShopCampaignWidgetLayoutToListShopCampaignWidget(
+                dataWidgetLayoutUiModel.listWidgetLayout,
+                shopId
+            )
+        shopCampaignTabAdapter.setCampaignLayoutData(shopCampaignWidgetContentData)
     }
 
     override fun initView() {
-        super.initView()
-        topView = viewBinding?.topView
-        centerView = viewBinding?.centerView
-        bottomView = viewBinding?.bottomView
+        globalErrorShopPage = viewBindingCampaignTab?.globalError
+    }
+
+    override fun observeShopHomeWidgetContentData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModelCampaign?.shopCampaignWidgetContentData?.collect {
+                when (it) {
+                    is Success -> {
+                        onSuccessGetShopHomeWidgetContentData(it.data)
+                        renderCampaignTabBackgroundColor()
+                    }
+
+                    is Fail -> {
+                        val throwable = it.throwable
+                        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                        if (!ShopUtil.isExceptionIgnored(throwable)) {
+                            ShopUtil.logShopPageP2BuyerFlowAlerting(
+                                tag = ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG,
+                                functionName = this@ShopPageCampaignFragment::observeShopHomeWidgetContentData.name,
+                                liveDataName = ShopHomeViewModel::shopHomeWidgetContentData.name,
+                                userId = userId,
+                                shopId = shopId,
+                                shopName = shopName,
+                                errorMessage = errorMessage,
+                                stackTrace = Log.getStackTraceString(throwable),
+                                errType = ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
+                            )
+                        }
+                        showErrorToast(errorMessage)
+                    }
+                }
+            }
+            viewModelCampaign?.shopCampaignHomeWidgetContentDataError?.collect {
+                shopCampaignTabAdapter.removeShopHomeWidget(it)
+            }
+        }
     }
 
     override fun onSuccessGetShopHomeWidgetContentData(mapWidgetContentData: Map<Pair<String, String>, Visitable<*>?>) {
-        if (shopCampaignTabAdapter.isAllWidgetLoading()) {
-            setCampaignTabBackgroundGradient()
-            checkShowCampaignTabConfetti()
-        }
-        super.onSuccessGetShopHomeWidgetContentData(mapWidgetContentData)
+        shopCampaignTabAdapter.updateShopCampaignWidgetContentData(mapWidgetContentData)
     }
-
-    private fun checkShowCampaignTabConfetti() {
-        if (isShowConfetti()) {
-            setConfettiAlreadyShown()
-            showConfetti()
-        }
-    }
-
-    private fun showConfetti() {
-        (parentFragment as? ShopPageHeaderFragment)?.setupShopPageLottieAnimation(CONFETTI_URL)
-    }
-
-    private fun isShowConfetti(): Boolean {
-        return (parentFragment as? ShopPageHeaderFragment)?.isShowConfetti().orFalse()
-    }
-
-    private fun setConfettiAlreadyShown() {
-        (parentFragment as? ShopPageHeaderFragment)?.setConfettiAlreadyShown()
-    }
-
-    override fun observeShopProductFilterParameterSharedViewModel() {}
-
-    override fun observeShopChangeProductGridSharedViewModel() {}
 
     // region mvc widget listener
     override fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int) {
@@ -359,239 +362,29 @@ class ShopPageCampaignFragment :
     }
     //endregion
 
-    // region flash sale toko widget
-    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
-        shopCampaignTabTracker.impressionShopBannerWidget(
-            shopId,
-            model.name,
-            model.widgetId,
-            ShopUtil.getActualPositionFromIndex(position),
-            userId
-        )
-    }
-
-    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel, widgetModel: ShopHomeFlashSaleUiModel, position: Int, parentPosition: Int) {
-        shopCampaignTabTracker.clickCampaignTabProduct(
-            model.id.orEmpty(),
-            model.name.orEmpty(),
-            model.displayedPrice.toLongOrZero(),
-            widgetModel.name,
-            shopId,
-            userId,
-            widgetModel.header.title,
-            ShopUtil.getActualPositionFromIndex(position)
-        )
-        goToPDP(model.productUrl)
-    }
-
-    override fun onFlashSaleProductImpression(
-        shopHomeProductUiModel: ShopHomeProductUiModel,
-        flashSaleUiModel: ShopHomeFlashSaleUiModel?,
-        position: Int,
-        parentPosition: Int
-    ) {
-        shopCampaignTabTracker.impressionCampaignTabProduct(
-            shopHomeProductUiModel.id.orEmpty(),
-            shopHomeProductUiModel.name.orEmpty(),
-            shopHomeProductUiModel.displayedPrice.toLongOrZero(),
-            flashSaleUiModel?.name.orEmpty(),
-            shopId,
-            userId,
-            flashSaleUiModel?.header?.title.orEmpty(),
-            ShopUtil.getActualPositionFromIndex(position)
-        )
-    }
-    // endregion
-
-    // region npl widget
-    override fun onCampaignCarouselProductItemClicked(
-        parentPosition: Int,
-        itemPosition: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        sendShopHomeWidgetClickedTracker(
-            ShopPageTrackingConstant.VALUE_SHOP_DECOR_CAMPAIGN,
-            shopHomeNewProductLaunchCampaignUiModel.name,
-            shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(parentPosition),
-            shopHomeNewProductLaunchCampaignUiModel.widgetMasterId,
-            shopHomeNewProductLaunchCampaignUiModel.isFestivity
-        )
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopCampaignTabTracker.clickCampaignTabProduct(
-                shopHomeProductViewModel?.id.orEmpty(),
-                shopHomeProductViewModel?.name.orEmpty(),
-                shopHomeProductViewModel?.displayedPrice.toLongOrZero(),
-                it.name,
-                shopId,
-                userId,
-                shopHomeNewProductLaunchCampaignUiModel.header.title,
-                ShopUtil.getActualPositionFromIndex(itemPosition)
-            )
-        }
-        shopHomeProductViewModel?.let {
-            goToPDP(it.productUrl)
-        }
-    }
-
-    override fun onCampaignCarouselProductItemImpression(
-        parentPosition: Int,
-        itemPosition: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-        shopHomeProductViewModel: ShopHomeProductUiModel?
-    ) {
-        shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let {
-            shopCampaignTabTracker.impressionCampaignTabProduct(
-                shopHomeProductViewModel?.id.orEmpty(),
-                shopHomeProductViewModel?.name.orEmpty(),
-                shopHomeProductViewModel?.displayedPrice.toLongOrZero(),
-                shopHomeNewProductLaunchCampaignUiModel.name,
-                shopId,
-                userId,
-                shopHomeNewProductLaunchCampaignUiModel.header.title,
-                ShopUtil.getActualPositionFromIndex(itemPosition)
-            )
-        }
-    }
-
-    override fun onImpressionCampaignNplWidget(
-        position: Int,
-        shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel
-    ) {
-        shopCampaignTabTracker.impressionShopBannerWidget(
-            shopId,
-            shopHomeNewProductLaunchCampaignUiModel.name,
-            shopHomeNewProductLaunchCampaignUiModel.widgetId,
-            ShopUtil.getActualPositionFromIndex(position),
-            userId
-        )
-    }
-
-    override fun onClickCampaignBannerAreaNplWidget(
-        model: ShopHomeNewProductLaunchCampaignUiModel,
-        widgetPosition: Int,
-        position: Int
-    ) {
-        shopCampaignTabTracker.clickShopBannerWidget(
-            shopId,
-            model.name,
-            model.widgetId,
-            ShopUtil.getActualPositionFromIndex(widgetPosition),
-            userId
-        )
-        model.data?.firstOrNull()?.let {
-            context?.let { context ->
-                val appLink = model.header.ctaLink
-                if (appLink.isNotEmpty()) {
-                    RouteManager.route(context, appLink)
-                }
-            }
-        }
-    }
-    // endregion
-
-    // region Thematic Widget
-    private fun thematicWidgetProductClickListenerImpl(): ThematicWidgetViewHolder.ThematicWidgetListener = object : ThematicWidgetViewHolder.ThematicWidgetListener {
-
-        override fun onThematicWidgetImpressListener(model: ThematicWidgetUiModel, position: Int) {
-            shopCampaignTabTracker.impressionShopBannerWidget(
-                shopId,
-                model.name,
-                model.widgetId,
-                ShopUtil.getActualPositionFromIndex(position),
-                userId
-            )
-        }
-
-        override fun onProductCardThematicWidgetImpressListener(
-            products: List<ProductCardUiModel>,
-            position: Int,
-            thematicWidgetUiModel: ThematicWidgetUiModel?
-        ) {
-            products.firstOrNull()?.let {
-                shopCampaignTabTracker.impressionCampaignTabProduct(
-                    it.id.orEmpty(),
-                    it.name.orEmpty(),
-                    it.displayedPrice.toLongOrZero(),
-                    thematicWidgetUiModel?.name.orEmpty(),
-                    shopId,
-                    userId,
-                    thematicWidgetUiModel?.header?.title.orEmpty(),
-                    ShopUtil.getActualPositionFromIndex(position)
-                )
-            }
-        }
-
-        override fun onProductCardThematicWidgetClickListener(
-            product: ProductCardUiModel,
-            thematicWidgetUiModel: ThematicWidgetUiModel?,
-            position: Int
-        ) {
-            shopCampaignTabTracker.clickCampaignTabProduct(
-                product.id.orEmpty(),
-                product.name.orEmpty(),
-                product.displayedPrice.toLongOrZero(),
-                thematicWidgetUiModel?.name.orEmpty(),
-                shopId,
-                userId,
-                thematicWidgetUiModel?.header?.title.orEmpty(),
-                ShopUtil.getActualPositionFromIndex(position)
-            )
-            RouteManager.route(context, product.productUrl)
-        }
-
-        override fun onProductCardSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
-            shopPageHomeTracking.clickProductCardSeeAllThematicWidgetCampaign(
-                campaignId = campaignId,
-                campaignName = campaignName,
-                shopId = shopId,
-                userId = userId
-            )
-            RouteManager.route(context, appLink)
-        }
-
-        override fun onSeeAllThematicWidgetClickListener(appLink: String, campaignId: String, campaignName: String) {
-            shopPageHomeTracking.clickSeeAllThematicWidgetCampaign(
-                campaignId = campaignId,
-                campaignName = campaignName,
-                shopId = shopId,
-                userId = userId
-            )
-            RouteManager.route(context, appLink)
-        }
-
-        override fun onThematicWidgetTimerFinishListener(model: ThematicWidgetUiModel?) {
-            model?.apply {
-                shopCampaignTabAdapter.removeWidget(this)
-            }
-        }
-    }
-    // endregion
-
     override fun getWidgetTextColor(): Int {
         return parseColor(textColor)
     }
 
-    private fun setCampaignTabBackgroundGradient() {
-        if (listBackgroundColor.isNotEmpty()) {
-            topView?.show()
-            centerView?.show()
-            bottomView?.show()
-            val colors = IntArray(listBackgroundColor.size)
-            for (i in listBackgroundColor.indices) {
-                colors[i] = parseColor(listBackgroundColor.getOrNull(i).orEmpty())
-            }
-            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-            gradient.cornerRadius = 0f
-            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
-            centerView?.background = gradient
-            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
-        } else {
-            topView?.hide()
-            centerView?.hide()
-            bottomView?.hide()
-        }
+    private fun renderCampaignTabBackgroundColor() {
+//        if (listBackgroundColor.isNotEmpty()) {
+//            topView?.show()
+//            centerView?.show()
+//            bottomView?.show()
+//            val colors = IntArray(listBackgroundColor.size)
+//            for (i in listBackgroundColor.indices) {
+//                colors[i] = parseColor(listBackgroundColor.getOrNull(i).orEmpty())
+//            }
+//            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+//            gradient.cornerRadius = 0f
+//            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
+//            centerView?.background = gradient
+//            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
+//        } else {
+//            topView?.hide()
+//            centerView?.hide()
+//            bottomView?.hide()
+//        }
     }
 
     private fun parseColor(colorHex: String): Int {
@@ -627,7 +420,8 @@ class ShopPageCampaignFragment :
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return object : DataEndlessScrollListener(staggeredGridLayoutManager, shopCampaignTabAdapter) {
+        return object :
+            DataEndlessScrollListener(staggeredGridLayoutManager, shopCampaignTabAdapter) {
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
@@ -667,6 +461,7 @@ class ShopPageCampaignFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
+                    //TODO need to add changes from play on home tab after PR #32199 merged
                 }
             }
 
@@ -679,9 +474,9 @@ class ShopPageCampaignFragment :
         firstVisibleItemPosition: Int
     ) {
         val shouldLoadLastVisibleItem =
-            shopCampaignTabAdapter.isLoadNextHomeWidgetData(lastVisibleItemPosition)
+            shopCampaignTabAdapter.isLoadNextCampaignWidgetData(lastVisibleItemPosition)
         val shouldLoadFirstVisibleItem =
-            shopCampaignTabAdapter.isLoadNextHomeWidgetData(firstVisibleItemPosition)
+            shopCampaignTabAdapter.isLoadNextCampaignWidgetData(firstVisibleItemPosition)
         if (shouldLoadLastVisibleItem || shouldLoadFirstVisibleItem) {
             val position = if (shouldLoadLastVisibleItem) {
                 lastVisibleItemPosition
@@ -689,7 +484,7 @@ class ShopPageCampaignFragment :
                 firstVisibleItemPosition
             }
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
-            shopCampaignTabAdapter.updateShopHomeWidgetStateToLoading(listWidgetLayoutToLoad)
+            shopCampaignTabAdapter.updateShopCampaignWidgetStateToLoading(listWidgetLayoutToLoad)
 
             val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
@@ -708,12 +503,10 @@ class ShopPageCampaignFragment :
         if (listWidgetLayoutToLoad.isNotEmpty()) {
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
-            viewModel?.getWidgetContentData(
+            viewModelCampaign?.getWidgetContentData(
                 listWidgetLayoutToLoad.toList(),
                 shopId,
                 widgetUserAddressLocalData,
-                isThematicWidgetShown,
-                isEnableDirectPurchase
             )
         }
     }
@@ -754,27 +547,69 @@ class ShopPageCampaignFragment :
         (parentFragment as? ShopPageHeaderFragment)?.showScrollToTopButton()
     }
 
-    fun setPageBackgroundColor(listBackgroundColor: List<String>) {
-        this.listBackgroundColor = listBackgroundColor
-        checkIfListBackgroundColorValueIsEmpty()
+    fun setCampaignTabBackgroundColor(backgroundColor: String) {
+        this.campaignTabBackgroundColor = backgroundColor
     }
 
-    @SuppressLint("ResourceType")
-    private fun checkIfListBackgroundColorValueIsEmpty() {
-        if (listBackgroundColor.all { it.isEmpty() }) {
-            this.listBackgroundColor = getDefaultListBackgroundColor()
+    fun setCampaignTabBackgroundPatternImage(backgroundPatternImage: String) {
+        this.campaignTabBackgroundPatternImage = backgroundPatternImage
+    }
+
+    override fun isCampaignTabDarkMode(): Boolean {
+        return true
+    }
+
+    override fun resumeSliderBannerAutoScroll() {
+        shopCampaignTabAdapter.resumeSliderBannerAutoScroll()
+    }
+
+    override fun pauseSliderBannerAutoScroll() {
+        shopCampaignTabAdapter.pauseSliderBannerAutoScroll()
+    }
+
+    override fun onProductImageClicked(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData) {
+        RouteManager.route(context, productData.appLink)
+    }
+
+    override fun onProductImageImpression(productData: ShopWidgetDisplaySliderBannerHighlightUiModel.ProductHighlightData) {
+    }
+
+    override fun onWidgetSliderBannerHighlightImpression(
+        uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel,
+        bindingAdapterPosition: Int
+    ) {
+    }
+
+    override fun onWidgetSliderBannerHighlightCtaClicked(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
+        val appLink = uiModel.header.ctaLink
+        if(Uri.parse(appLink).lastPathSegment.equals("home", true)) {
+            (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
         }
     }
 
-    @SuppressLint("ResourceType")
-    private fun getDefaultListBackgroundColor(): List<String> {
-        return listOf(
-            getString(R.color.clr_dms_shop_campaign_tab_first_color),
-            getString(R.color.clr_dms_shop_campaign_tab_second_color)
-        )
+    override fun onCampaignCarouselProductItemClicked(
+        parentPosition: Int,
+        itemPosition: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
+        productUiModel: ShopHomeProductUiModel?
+    ) {
     }
 
-    fun setPageTextColor(textColor: String) {
-        this.textColor = textColor
+    override fun onCampaignCarouselProductItemImpression(
+        parentPosition: Int,
+        itemPosition: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
+        productUiModel: ShopHomeProductUiModel?
+    ) {
     }
+
+    override fun onCtaClicked(carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?) {
+    }
+
+    override fun onCampaignCarouselProductWidgetImpression(
+        position: Int,
+        carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel
+    ) {
+    }
+
 }

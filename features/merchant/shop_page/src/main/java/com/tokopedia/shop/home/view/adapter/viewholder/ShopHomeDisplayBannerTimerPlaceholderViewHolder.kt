@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 
-class ShopHomeDisplayBannerItemPlaceholderViewHolder(
+class ShopHomeDisplayBannerTimerPlaceholderViewHolder(
     itemView: View
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView) {
 
