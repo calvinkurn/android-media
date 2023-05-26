@@ -35,7 +35,7 @@ class AffiliatePerformanceChipRVVH(
             layoutManager = rvLayoutManager
             adapter = chipAdapter
         }
-        chipAdapter.addMoreData(
+        chipAdapter.setVisitables(
             element?.itemTypes?.map { AffiliatePerformanceChipModel(it) }
         )
     }
