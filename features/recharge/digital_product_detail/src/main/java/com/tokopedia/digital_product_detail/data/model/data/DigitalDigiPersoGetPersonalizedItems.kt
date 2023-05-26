@@ -48,10 +48,10 @@ data class PersoRecommendationItem(
     val slashedPrice: String,
     @SerializedName("pricePlain")
     @Expose
-    val pricePlain: Int = 0,
+    val pricePlain: Double = 0.0,
     @SerializedName("slashedPricePlain")
     @Expose
-    val slashedPricePlain: Int = 0,
+    val slashedPricePlain: Double = 0.0,
     @SerializedName("appLink")
     val appLink: String,
     @SerializedName("webLink")
