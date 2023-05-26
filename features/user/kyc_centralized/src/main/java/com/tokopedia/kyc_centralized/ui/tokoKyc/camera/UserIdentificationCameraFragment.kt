@@ -58,11 +58,6 @@ class UserIdentificationCameraFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
-        }
-
         if (arguments != null) {
             viewMode = arguments?.getInt(ARG_VIEW_MODE, 1) ?: 1
         }
