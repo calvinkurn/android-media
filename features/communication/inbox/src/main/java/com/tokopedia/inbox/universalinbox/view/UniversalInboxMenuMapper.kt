@@ -4,6 +4,7 @@ import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxResourceProvider
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_REVIEW_INBOX
@@ -13,7 +14,10 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxShopInfoUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -84,5 +88,27 @@ class UniversalInboxMenuMapper @Inject constructor(
         return Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(
             PAGE_SOURCE_KEY, PAGE_SOURCE_REVIEW_INBOX
         ).build().toString()
+    }
+
+    fun mapWidgetMetaToUiModel(
+        widgetMeta: UniversalInboxWidgetMetaResponse? = null
+    ): UniversalInboxWidgetMetaUiModel {
+        val result = UniversalInboxWidgetMetaUiModel()
+        if (widgetMeta != null) {
+            widgetMeta.metaData.forEach {
+                val uiModel = UniversalInboxWidgetUiModel(
+                    icon = it.icon.toIntOrZero(),
+                    title = it.title,
+                    subtext = it.subtext,
+                    applink = it.applink,
+                    counter = Int.ZERO,
+                    type = it.type
+                )
+                result.widgetList.add(uiModel)
+            }
+        } else {
+            result.isError = true
+        }
+        return result
     }
 }

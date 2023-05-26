@@ -34,11 +34,13 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -68,6 +70,7 @@ import javax.inject.Inject
 class UniversalInboxFragment :
     BaseDaggerFragment(),
     UniversalInboxEndlessScrollListener.Listener,
+    UniversalInboxWidgetListener,
     UniversalInboxMenuListener,
     UniversalInboxCounterListener,
     TdnBannerResponseListener,
@@ -159,6 +162,7 @@ class UniversalInboxFragment :
             this,
             this,
             this,
+            this,
             this
         )
         binding?.inboxRv?.layoutManager = StaggeredGridLayoutManager(
@@ -195,6 +199,7 @@ class UniversalInboxFragment :
                         adapter.notifyItemRangeChanged(Int.ZERO, it.data.size - Int.ONE)
                     }
                     refreshCounter()
+                    loadWidgetMeta()
                     loadTopAdsAndRecommendation()
                 }
                 is Fail -> {
@@ -203,21 +208,10 @@ class UniversalInboxFragment :
             }
         }
 
-        viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
-            removeLoadMoreLoading()
-            when (it) {
-                is Success -> onSuccessGetFirstRecommendationData(it.data)
-                is Fail -> {}
-            }
-        }
-
-        viewModel.morePageRecommendation.observe(viewLifecycleOwner) {
-            removeLoadMoreLoading()
-            when (it) {
-                is Success -> {
-                    addRecommendationItem(it.data)
-                }
-                is Fail -> {}
+        viewModel.widget.observe(viewLifecycleOwner) {
+            adapter.addItem(Int.ZERO, it)
+            binding?.inboxRv?.post {
+                adapter.notifyItemChanged(Int.ZERO)
             }
         }
 
@@ -239,6 +233,24 @@ class UniversalInboxFragment :
                             adapter.notifyItemRangeChanged(firstIndex, updatedMenuList.size)
                         }
                     }
+                }
+                is Fail -> {}
+            }
+        }
+
+        viewModel.firstPageRecommendation.observe(viewLifecycleOwner) {
+            removeLoadMoreLoading()
+            when (it) {
+                is Success -> onSuccessGetFirstRecommendationData(it.data)
+                is Fail -> {}
+            }
+        }
+
+        viewModel.morePageRecommendation.observe(viewLifecycleOwner) {
+            removeLoadMoreLoading()
+            when (it) {
+                is Success -> {
+                    addRecommendationItem(it.data)
                 }
                 is Fail -> {}
             }
@@ -346,6 +358,10 @@ class UniversalInboxFragment :
         viewModel.generateStaticMenu()
     }
 
+    private fun loadWidgetMeta() {
+        viewModel.loadWidgetMeta()
+    }
+
     override fun refreshCounter() {
         viewModel.loadAllCounter()
     }
@@ -389,6 +405,14 @@ class UniversalInboxFragment :
         }
         if (activity is UniversalInboxActivity) {
             (activity as UniversalInboxActivity).listener = this
+        }
+    }
+
+    override fun onClickWidget(item: UniversalInboxWidgetUiModel) {
+        if (item.applink.isEmpty()) return
+        context?.let {
+            val intent = RouteManager.getIntent(it, item.applink)
+            inboxMenuResultLauncher.launch(intent)
         }
     }
 

@@ -10,7 +10,9 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRe
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsHeadlineDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxWidgetMetaDelegate
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
@@ -24,13 +26,15 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class UniversalInboxAdapter(
     userSession: UserSessionInterface,
+    widgetListener: UniversalInboxWidgetListener,
     menuListener: UniversalInboxMenuListener,
     tdnBannerResponseListener: TdnBannerResponseListener,
     topAdsClickListener: TopAdsImageViewClickListener,
-    recommendationListener: RecommendationListener,
+    recommendationListener: RecommendationListener
 ) : BaseCommonAdapter() {
 
     init {
+        delegatesManager.addDelegate(UniversalInboxWidgetMetaDelegate(widgetListener))
         delegatesManager.addDelegate(UniversalInboxMenuSectionDelegate())
         delegatesManager.addDelegate(UniversalInboxMenuItemDelegate(menuListener))
         delegatesManager.addDelegate(
