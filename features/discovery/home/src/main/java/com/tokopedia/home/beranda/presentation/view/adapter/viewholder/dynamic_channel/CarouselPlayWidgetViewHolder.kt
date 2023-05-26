@@ -31,6 +31,9 @@ class CarouselPlayWidgetViewHolder(
 
     override fun bind(element: CarouselPlayWidgetDataModel?) {
         element?.let {
+            callback.setHomeChannelId(element.homeChannel.id)
+            callback.setHeaderTitle(element.homeChannel.header.name)
+
             val state = it.widgetState
             if (state.widgetType == PlayWidgetType.Carousel) {
                 playWidgetViewHolder.coordinator.setAnalyticListener(carouselAnalyticListener)

@@ -29,8 +29,16 @@ class CarouselPlayWidgetCallback(
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else ""
 
-    private val homeChannelId = ""
-    private val headerTitle = ""
+    private var mHomeChannelId = ""
+    private var mHeaderTitle = ""
+
+    fun setHomeChannelId(channelId: String) {
+        mHomeChannelId = channelId
+    }
+
+    fun setHeaderTitle(headerTitle: String) {
+        mHeaderTitle = headerTitle
+    }
 
     private val model = PlayWidgetHomeAnalyticModel()
 
@@ -58,17 +66,17 @@ class CarouselPlayWidgetCallback(
                 verticalWidgetPosition, /** widgetPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
-                homeChannelId,
+                mHomeChannelId,
             ),
             promotions = listOf(
                 Promotion(
-                    id = "${homeChannelId}_0_${item.channelId}",
+                    id = "${mHomeChannelId}_0_${item.channelId}",
                     name = trackerMultiFields(
                         "/",
                         verticalWidgetPosition,
                         "dynamic channel play home widget btf",
                         "banner",
-                        headerTitle,
+                        mHeaderTitle,
                     ),
                     creative = model.promotionsCreativeName,
                     position = channelPosition.toString()
@@ -79,7 +87,7 @@ class CarouselPlayWidgetCallback(
             .appendCurrentSite("tokopediamarketplace")
             .appendCustomKeyValue("trackerId", "43568")
             .appendCustomKeyValue("sessionIris", irisSessionId)
-            .appendCustomKeyValue("channelId", homeChannelId)
+            .appendCustomKeyValue("channelId", mHomeChannelId)
             .build()
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -109,17 +117,17 @@ class CarouselPlayWidgetCallback(
                 verticalWidgetPosition, /** widgetPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
-                homeChannelId,
+                mHomeChannelId,
             ),
             promotions = listOf(
                 Promotion(
-                    id = "${homeChannelId}_0_${item.channelId}",
+                    id = "${mHomeChannelId}_0_${item.channelId}",
                     name = trackerMultiFields(
                         "/",
                         verticalWidgetPosition,
                         "dynamic channel play home widget btf",
                         "banner",
-                        headerTitle,
+                        mHeaderTitle,
                     ),
                     creative = model.promotionsCreativeName,
                     position = channelPosition.toString()
@@ -130,7 +138,7 @@ class CarouselPlayWidgetCallback(
             .appendCurrentSite("tokopediamarketplace")
             .appendCustomKeyValue("trackerId", "43569")
             .appendCustomKeyValue("sessionIris", irisSessionId)
-            .appendCustomKeyValue("channelId", homeChannelId)
+            .appendCustomKeyValue("channelId", mHomeChannelId)
             .build()
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -161,7 +169,7 @@ class CarouselPlayWidgetCallback(
                     verticalWidgetPosition, /** widgetPosition **/
                     "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                     item.recommendationType, /** recommendationType **/
-                    homeChannelId,
+                    mHomeChannelId,
                 )
             )
             .setCustomProperty("trackerId", "43572")
@@ -198,7 +206,7 @@ class CarouselPlayWidgetCallback(
                     verticalWidgetPosition, /** widgetPosition **/
                     "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                     item.recommendationType, /** recommendationType **/
-                    homeChannelId,
+                    mHomeChannelId,
                 )
             )
             .setCustomProperty("trackerId", "43574")
@@ -236,7 +244,7 @@ class CarouselPlayWidgetCallback(
                     verticalWidgetPosition, /** widgetPosition **/
                     "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                     item.recommendationType, /** recommendationType **/
-                    homeChannelId,
+                    mHomeChannelId,
                 )
             )
             .setCustomProperty("trackerId", "43576")
@@ -271,7 +279,7 @@ class CarouselPlayWidgetCallback(
             item.recommendationType,
             "",
             "play",
-            headerTitle,
+            mHeaderTitle,
         )
 
         val trackerMap = mapOf(
@@ -287,7 +295,7 @@ class CarouselPlayWidgetCallback(
                 verticalWidgetPosition, /** widgetPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
-                homeChannelId,
+                mHomeChannelId,
                 product.id,
             ),
             "item_list" to itemList,
@@ -295,7 +303,7 @@ class CarouselPlayWidgetCallback(
                 "impressions" to listOf(
                     mapOf(
                         "dimension40" to itemList,
-                        "dimension84" to homeChannelId,
+                        "dimension84" to mHomeChannelId,
                         "index" to productPosition + 1,
                         "item_brand" to "",
                         "item_category" to "",
@@ -339,7 +347,7 @@ class CarouselPlayWidgetCallback(
             item.recommendationType,
             "",
             "play",
-            headerTitle,
+            mHeaderTitle,
         )
 
         val trackerMap = mapOf(
@@ -355,7 +363,7 @@ class CarouselPlayWidgetCallback(
                 verticalWidgetPosition, /** widgetPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
-                homeChannelId,
+                mHomeChannelId,
                 product.id,
             ),
             "item_list" to itemList,
@@ -364,7 +372,7 @@ class CarouselPlayWidgetCallback(
                     "products" to listOf(
                         mapOf(
                             "dimension40" to itemList,
-                            "dimension84" to homeChannelId,
+                            "dimension84" to mHomeChannelId,
                             "index" to productPosition + 1,
                             "item_brand" to "",
                             "item_category" to "",
