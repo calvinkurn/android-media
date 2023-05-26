@@ -85,6 +85,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
+
         kycSharedPreference.saveStringCache(
             key = KYCConstant.SharedPreference.KEY_KYC_FLOW_TYPE,
             value = KYCConstant.SharedPreference.VALUE_KYC_FLOW_TYPE_CKYC
