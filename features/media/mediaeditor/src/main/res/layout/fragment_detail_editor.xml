@@ -35,6 +35,7 @@
             android:layout_height="56dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
+            android:translationZ="3dp"
             android:visibility="gone"
             tools:visibility="visible" />
 
