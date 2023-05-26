@@ -183,9 +183,7 @@ object CartUiModelMapper {
                     availableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                 maximumWeightWording =
                     availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumWeightWording ?: ""
-                maximumShippingWeight = availableGroup.groupShopCartData.sumOf {
-                    it.shop.maximumShippingWeight
-                }
+                maximumShippingWeight = availableGroup.groupShopCartData.getOrNull(0)?.shop?.maximumShippingWeight ?: 0.0
                 if (availableGroup.checkboxState) {
                     isAllSelected = availableGroup.checkboxState
                     isPartialSelected = false
