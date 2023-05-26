@@ -1435,8 +1435,8 @@ open class HomeAccountUserFragment :
     fun getTncOclSpan(): SpannableString {
         val sourceString = SpannableString(requireContext().resources.getString(R.string.ocl_btm_sheet_subtitle))
 
-        val startIndexTermAndCondition = sourceString.indexOf(TERM_AND_CONDITION)
-        val endIndexTermAndCondition = startIndexTermAndCondition.plus(TERM_AND_CONDITION.length)
+        val startIndexTermAndCondition = sourceString.indexOf(getString(R.string.ocl_btm_sheet_tnc_index))
+        val endIndexTermAndCondition = startIndexTermAndCondition.plus(getString(R.string.ocl_btm_sheet_tnc_index).length)
 
         sourceString.setSpan(
             clickableSpan(ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION),

@@ -25,8 +25,12 @@ class GetOclStatusUseCase @Inject constructor(
         """.trimIndent()
 
     override suspend fun execute(params: String): OclStatus {
-        val mapParam = mapOf("ocl_jwt_token" to params)
+        val mapParam = mapOf(PARAM_OCL_JWT to params)
         val result: OclStatusResponse = repository.request(graphqlQuery(), mapParam)
         return result.data
+    }
+
+    companion object {
+        const val PARAM_OCL_JWT = "ocl_jwt_token"
     }
 }

@@ -7,7 +7,9 @@ import javax.inject.Inject
 class OclPreference @Inject constructor(@ApplicationContext context: Context) {
 
     private val KEY_OCL_TOKEN = "ocl_data"
-    private val preference = context.getSharedPreferences("OCL_PREFERENCE", Context.MODE_PRIVATE)
+    private val OCL_PREF_NAME = "OCL_PREFERENCE"
+
+    private val preference = context.getSharedPreferences(OCL_PREF_NAME, Context.MODE_PRIVATE)
 
     fun storeToken(token: String) {
         preference.edit().putString(KEY_OCL_TOKEN, token).apply()
