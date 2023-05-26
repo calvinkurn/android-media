@@ -719,8 +719,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 else -> {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
-                        cardModel =
-                            data.recommendationItemList.toProductCardModels()
+                        cardModel = data.recommendationItemList.toProductCardModels()
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -971,7 +970,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         val dataList = recomWidget.copyRecomItemList()
         dataList.forEach { recomItem ->
             // update data based on tokonow cart
-            if (recomItem.isRecomProductShowVariantAndCart) {
+            if (recomItem.addToCartType == RecommendationItem.AddToCartType.QuantityEditor) {
                 recomItem.setDefaultCurrentStock()
                 miniCart?.let { cartData ->
                     recomItem.updateItemCurrentStock(

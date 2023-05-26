@@ -41,7 +41,10 @@ class SectionViewHolder(
                 val shouldShowTooltip =
                     tooltip.shouldShow && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
                 if (shouldShowTooltip) {
-                    tvSectionTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
+                    tvSectionTitle.setUnifyDrawableEnd(
+                        iconId = IconUnify.INFORMATION,
+                        colorIcon = root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+                    )
                     tvSectionTitle.setOnClickListener {
                         showSectionTooltip(element, tooltip)
                     }
