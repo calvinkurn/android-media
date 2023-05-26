@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.features.addnewaddress
+package com.tokopedia.logisticaddaddress.features.common
 
 import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.AddressConstants
