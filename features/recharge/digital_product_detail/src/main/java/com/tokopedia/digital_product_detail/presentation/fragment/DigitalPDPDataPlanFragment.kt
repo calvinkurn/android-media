@@ -1355,8 +1355,18 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
-    override fun onImpressProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum) {
-
+    override fun onImpressProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum,
+                                             productListTitle: String, position: Int) {
+        digitalPDPAnalytics.impressProductDescription(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            layoutType,
+            denomData,
+            productListTitle,
+            position
+        )
     }
 
     //endregion
@@ -1656,6 +1666,8 @@ class DigitalPDPDataPlanFragment :
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
             productDescBottomSheet.setDenomData(denomFull)
             productDescBottomSheet.setLayoutType(layoutType)
+            productDescBottomSheet.setProductListTitle(productListTitle)
+            productDescBottomSheet.setPosition(position)
             productDescBottomSheet.setListener(this)
             productDescBottomSheet.setProductDescListener(this)
             productDescBottomSheet.show(it, "")

@@ -29,6 +29,8 @@ class ProductDescBottomSheet : BottomSheetUnify() {
     private lateinit var listenerProductDesc: RechargeProductDescListener
     private lateinit var denomData: DenomData
     private lateinit var layoutType: DenomWidgetEnum
+    private lateinit var productListTitle: String
+    private var position: Int? = null
 
     private var binding by autoClearedNullable<BottomSheetProductDescBinding>()
 
@@ -82,6 +84,14 @@ class ProductDescBottomSheet : BottomSheetUnify() {
         this.layoutType = layoutType
     }
 
+    fun setProductListTitle(productListTitle: String) {
+        this.productListTitle = productListTitle
+    }
+
+    fun setPosition(position: Int) {
+        this.position = position
+    }
+
     private fun initView() {
         isFullpage = false
         isDragable = false
@@ -89,7 +99,8 @@ class ProductDescBottomSheet : BottomSheetUnify() {
 
         binding = BottomSheetProductDescBinding.inflate(LayoutInflater.from(context))
         binding?.run {
-            if (::denomData.isInitialized) {
+            if (::denomData.isInitialized && ::layoutType.isInitialized &&
+                ::productListTitle.isInitialized && position != null) {
                 rvProductDesc.run {
                     val linearLayoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -126,6 +137,9 @@ class ProductDescBottomSheet : BottomSheetUnify() {
 
                 if (::listener.isInitialized) {
                     buyWidgetProductDesc.renderBuyWidget(denomData, listener)
+                }
+                position?.let { position ->
+                    listenerProductDesc.onImpressProductBottomSheet(denomData, layoutType, productListTitle, position)
                 }
             }
         }

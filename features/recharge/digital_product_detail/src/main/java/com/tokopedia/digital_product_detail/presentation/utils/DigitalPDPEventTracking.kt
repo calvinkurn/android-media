@@ -89,6 +89,7 @@ object DigitalPDPEventTracking {
         const val VIEW_PDP_PAGE = "view pdp page"
         const val CLICK_CHEVRON_SHOW_MORE = "click chevron show more"
         const val CLICK_CLOSE_BUTTON_PRODUCT_DESC = "click close button"
+        const val IMPRESS_PRODUCT_DESC = "impression product detail"
     }
 
     object TrackerId {
@@ -98,5 +99,6 @@ object DigitalPDPEventTracking {
         const val CLICK_PRODUCT_PROMOTION = "43968"
         const val CLICK_SHOW_MORE_PROMOTION = "43965"
         const val CLICK_CLOSE_PRODUCT_DESC = "43963"
+        const val IMPRESS_BOTTOM_SHEET_PRODUCT_DESC = "43961"
     }
 }
