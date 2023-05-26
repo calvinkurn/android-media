@@ -10,17 +10,17 @@ import com.tokopedia.productcard.ProductCardModel
 class AffiliatePromotionProductCard {
 
     enum class AdditionalInfoType(val type: Int) {
-        COMMISSION_AMOUNT_TYPE(1),
-        DISCOUNT_PERCENTAGE_TYPE(2),
-        SLASHED_PRICE_TYPE(3),
-        FINAL_PRICE_TYPE(4),
-        PRODUCT_STOCK_TYPE(5)
+        COMMISSION_AMOUNT_TYPE(COMMISSION_AMOUNT),
+        DISCOUNT_PERCENTAGE_TYPE(DISCOUNT_PERCENTAGE),
+        SLASHED_PRICE_TYPE(SLASHED_PRICE),
+        FINAL_PRICE_TYPE(FINAL_PRICE),
+        PRODUCT_STOCK_TYPE(PRODUCT_STOCK)
     }
 
     enum class FooterType(val type: Int) {
-        SHOP(1),
-        RATING(2),
-        SALES(3)
+        SHOP(SHOP_TYPE),
+        RATING(RATING_TYPE),
+        SALES(SALES_TYPE)
     }
 
     companion object {
@@ -34,7 +34,14 @@ class AffiliatePromotionProductCard {
         private const val LABEL_SISA = "gimmick"
         private const val LABEL_SISA_COLOR = "textDarkRed"
         private const val LABEL_INTEGRITY = "integrity"
-
+        private const val COMMISSION_AMOUNT = 1
+        private const val DISCOUNT_PERCENTAGE = 2
+        private const val SLASHED_PRICE = 3
+        private const val FINAL_PRICE = 4
+        private const val PRODUCT_STOCK = 5
+        private const val SHOP_TYPE = 1
+        private const val RATING_TYPE = 2
+        private const val SALES_TYPE = 3
         fun toAffiliateProductModel(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item): ProductCardModel {
             val labelGroupList = arrayListOf(
                 ProductCardModel.LabelGroup(

@@ -12,8 +12,11 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlMode
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.TextFieldUnify2
 
-class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdateInterface: PortfolioUrlTextUpdateInterface?)
-    : AbstractViewHolder<AffiliatePortfolioUrlModel>(itemView) {
+class AffiliatePortfolioItemVH(
+    itemView: View,
+    private val portfolioUrlTextUpdateInterface: PortfolioUrlTextUpdateInterface?
+) :
+    AbstractViewHolder<AffiliatePortfolioUrlModel>(itemView) {
 
     companion object {
         @JvmField
@@ -22,26 +25,25 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
     }
     private val urlEtView: TextFieldUnify2 = itemView.findViewById<TextFieldUnify2>(R.id.social_link_et)
     private var data: AffiliatePortfolioUrlModel? = null
-    private val textWatcher = object :TextWatcher{
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        }
+    private val textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             data?.portfolioItm?.firstTime = false
-            portfolioUrlTextUpdateInterface?.onUrlUpdate(adapterPosition,
-                s.toString())
+            portfolioUrlTextUpdateInterface?.onUrlUpdate(
+                bindingAdapterPosition,
+                s.toString()
+            )
 
-            if(s.toString().isNotEmpty()){
-                data?.portfolioItm?.isError = !isValidUrl(s.toString(),data)
-            }else {
+            if (s.toString().isNotEmpty()) {
+                data?.portfolioItm?.isError = !isValidUrl(s.toString(), data)
+            } else {
                 data?.portfolioItm?.isError = false
             }
             setState(data)
         }
 
-        override fun afterTextChanged(s: Editable?) {
-        }
-
+        override fun afterTextChanged(s: Editable?) = Unit
     }
     override fun bind(element: AffiliatePortfolioUrlModel?) {
         setData(element)
@@ -50,12 +52,12 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
     }
 
     private fun setKeyListeners() {
-        urlEtView.editText.setOnKeyListener(object  : View.OnKeyListener{
+        urlEtView.editText.setOnKeyListener(object : View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                 if ((event?.action == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER))
-                {
-                    portfolioUrlTextUpdateInterface?.onNextKeyPressed(adapterPosition,true)
+                    (keyCode == KeyEvent.KEYCODE_ENTER)
+                ) {
+                    portfolioUrlTextUpdateInterface?.onNextKeyPressed(bindingAdapterPosition, true)
                     return true
                 }
                 return false
@@ -69,7 +71,7 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
     }
 
     private fun setFocus(element: AffiliatePortfolioUrlModel?) {
-        if(element?.portfolioItm?.isFocus == true){
+        if (element?.portfolioItm?.isFocus == true) {
             urlEtView.editText.requestFocus()
         }
         urlEtView.editText.setSelection(urlEtView.editText.text.length)
@@ -77,8 +79,11 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
 
     private fun setTextWatchers() {
         urlEtView.editText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) urlEtView.editText.addTextChangedListener(textWatcher)
-            else urlEtView.editText.removeTextChangedListener(textWatcher)
+            if (hasFocus) {
+                urlEtView.editText.addTextChangedListener(textWatcher)
+            } else {
+                urlEtView.editText.removeTextChangedListener(textWatcher)
+            }
         }
     }
 
@@ -90,22 +95,21 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
     }
 
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
-        return if(element?.portfolioItm?.regex != null){
+        return if (element?.portfolioItm?.regex != null) {
             val regex = Regex(element.portfolioItm.regex!!, setOf(RegexOption.IGNORE_CASE))
             regex.matches(text) && PatternsCompat.WEB_URL.matcher(text).matches()
-        } else{
+        } else {
             PatternsCompat.WEB_URL.matcher(text).matches()
         }
     }
 
     private fun setState(element: AffiliatePortfolioUrlModel?) {
         urlEtView.isInputError = element?.portfolioItm?.isError == true
-        if(element?.portfolioItm?.isError == true && element.portfolioItm.firstTime == false) {
+        if (element?.portfolioItm?.isError == true && element.portfolioItm.firstTime == false) {
             element.portfolioItm.errorContent?.let { message ->
                 urlEtView.setMessage(message)
             }
-        }
-        else{
+        } else {
             element?.portfolioItm?.successContent?.let { message ->
                 urlEtView.setMessage(message)
             }

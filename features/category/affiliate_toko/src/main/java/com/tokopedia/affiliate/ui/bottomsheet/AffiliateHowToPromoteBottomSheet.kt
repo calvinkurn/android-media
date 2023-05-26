@@ -20,7 +20,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
-
 class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private val steps: ArrayList<Pair<String, Boolean>> = arrayListOf()
@@ -37,6 +36,8 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
         const val STATE_HOW_TO_PROMOTE = 1
         const val STATE_PRODUCT_INACTIVE = 2
         const val STATE_PERFORMA_INFO = 4
+        private const val START_SPAN = 137
+        private const val END_SPAN = 151
 
         fun newInstance(
             state: Int,
@@ -69,7 +70,8 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
         showKnob = false
         contentView = View.inflate(
             context,
-            R.layout.affiliate_how_to_promote_bottom_sheet, null
+            R.layout.affiliate_how_to_promote_bottom_sheet,
+            null
         )
         arguments?.let {
             state = it.getInt(STATE)
@@ -127,8 +129,9 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
                 }
                 if (step.second) {
                     getSpannableString(step.first, typography)
-                } else
+                } else {
                     typography.text = step.first
+                }
                 linearLayout.addView(typography)
             }
         }
@@ -157,8 +160,8 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
             }
         }
         val boldSpan = StyleSpan(Typeface.BOLD)
-        spannableString.setSpan(boldSpan, 137, 151, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(clickableSpan, 137, 151, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(boldSpan, START_SPAN, END_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(clickableSpan, START_SPAN, END_SPAN, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         typography.text = spannableString
         typography.movementMethod = LinkMovementMethod.getInstance()
     }
