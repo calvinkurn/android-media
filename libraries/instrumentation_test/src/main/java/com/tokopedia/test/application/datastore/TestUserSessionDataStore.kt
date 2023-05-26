@@ -271,7 +271,7 @@ class TestUserSessionDataStore : UserSessionDataStore {
         // no-op
     }
 
-    override suspend fun getAndroidId(context: Context): Flow<String> {
+    override fun getAndroidId(context: Context): Flow<String> {
         return flow { }
     }
 

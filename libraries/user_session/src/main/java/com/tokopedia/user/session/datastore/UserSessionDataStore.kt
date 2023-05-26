@@ -160,5 +160,5 @@ interface UserSessionDataStore {
 
     fun isMultiLocationShop(): Flow<Boolean>
 
-    suspend fun getAndroidId(context: Context): Flow<String>
+    fun getAndroidId(context: Context): Flow<String>
 }

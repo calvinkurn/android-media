@@ -4,7 +4,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 data class UserSessionModel(
     val isLogin: Boolean = true,
@@ -102,7 +101,7 @@ internal suspend fun UserSessionDataStore.getUserModel(): UserSessionModel {
         isShopAdmin().first(),
         isLocationAdmin().first(),
         isMultiLocationShop().first(),
-        runBlocking { getAndroidId(ApplicationProvider.getApplicationContext()).first() }
+        getAndroidId(ApplicationProvider.getApplicationContext()).first()
     )
 }
 

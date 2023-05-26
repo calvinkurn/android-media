@@ -449,19 +449,18 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         }
     }
 
-    override suspend fun getAndroidId(context: Context): Flow<String> {
-        val adsId = getUserSessionFlow().map { it.androidId }
-        return if (adsId.first().isEmpty()) {
-            val newAndroidId = md5(
-                Settings.Secure.getString(
-                    context.contentResolver,
-                    Settings.Secure.ANDROID_ID
+    override fun getAndroidId(context: Context): Flow<String> {
+        return getUserSessionFlow().map {
+            it.androidId.ifEmpty {
+                val newAndroidId = md5(
+                    Settings.Secure.getString(
+                        context.contentResolver,
+                        Settings.Secure.ANDROID_ID
+                    )
                 )
-            )
-            setAndroidId(newAndroidId)
-            adsId
-        } else {
-            adsId
+                setAndroidId(newAndroidId)
+                newAndroidId
+            }
         }
     }
 
