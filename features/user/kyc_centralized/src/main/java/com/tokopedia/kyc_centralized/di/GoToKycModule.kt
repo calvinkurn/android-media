@@ -174,7 +174,8 @@ open class GoToKycModule {
     @ActivityScope
     fun provideKycSdkAnalyticsConfig() = KycSdkAnalyticsConfig(
         apiKey = "a1b3f286-bb73-4f02-b2bb-34781cceab6d",
-        url = "https://toko-raccoon-integration.gojekapi.com/api/v1/events"
+        url = "https://toko-raccoon-integration.gojekapi.com/api/v1/events",
+        enableDebugLogs = GlobalConfig.isAllowDebuggingTools()
     )
 
     @ActivityScope
