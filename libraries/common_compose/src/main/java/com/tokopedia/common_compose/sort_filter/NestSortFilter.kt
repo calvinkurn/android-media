@@ -20,6 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestChips
+import com.tokopedia.common_compose.components.NestChipsRight
+import com.tokopedia.common_compose.components.NestChipsSize
+import com.tokopedia.common_compose.components.NestChipsState
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
@@ -34,8 +37,8 @@ fun NestSortFilter(
     size: Size = Size.DEFAULT
 ) {
     val chipSize = when (size) {
-        Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
-        Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
+        Size.DEFAULT -> NestChipsSize.Small
+        Size.LARGE -> NestChipsSize.Large
     }
     Row(modifier = modifier) {
         val closeVisible by remember(items) {
@@ -56,13 +59,22 @@ fun NestSortFilter(
             items(items) {
                 NestChips(
                     text = it.title,
-                    isSelected = it.isSelected,
+                    state = if (it.isSelected) {
+                        NestChipsState.Selected
+                    } else {
+                        NestChipsState.Default
+                    },
                     size = chipSize,
-                    showChevron = it.showChevron
-                ) {
-                    onItemClicked(it)
-                    it.onClick()
-                }
+                    right = if (it.showChevron) {
+                        NestChipsRight.Chevron {}
+                    } else {
+                        null
+                    },
+                    onClick = {
+                        onItemClicked(it)
+                        it.onClick()
+                    }
+                )
             }
         }
     }
@@ -101,8 +113,8 @@ fun NestSortFilterAdvanced(
     onItemClicked: (SortFilter) -> Unit
 ) {
     val chipSize = when (size) {
-        Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
-        Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
+        Size.DEFAULT -> NestChipsSize.Small
+        Size.LARGE -> NestChipsSize.Large
     }
     val ld = LocalDensity.current
     val selectedSize = items.filter { it.isSelected }.size
@@ -140,13 +152,22 @@ fun NestSortFilterAdvanced(
             items(items) {
                 NestChips(
                     text = it.title,
-                    isSelected = it.isSelected,
+                    state = if (it.isSelected) {
+                        NestChipsState.Selected
+                    } else {
+                        NestChipsState.Default
+                    },
                     size = chipSize,
-                    showChevron = it.showChevron
-                ) {
-                    onItemClicked(it)
-                    it.onClick()
-                }
+                    right = if (it.showChevron) {
+                        NestChipsRight.Chevron {}
+                    } else {
+                        null
+                    },
+                    onClick = {
+                        onItemClicked(it)
+                        it.onClick()
+                    }
+                )
             }
         }
     }
