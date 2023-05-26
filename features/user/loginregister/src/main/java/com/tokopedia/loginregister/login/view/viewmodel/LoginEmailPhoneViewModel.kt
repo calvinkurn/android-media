@@ -396,7 +396,8 @@ class LoginEmailPhoneViewModel @Inject constructor(
     suspend fun isGojekProfileExist(): Boolean {
         return try {
             gotoSeamlessHelper.getGojekProfile().authCode.isNotEmpty()
-        } catch (ignored: Exception) {
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             false
         }
     }
@@ -411,28 +412,23 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun checkLoginOption(isEnableSeamless: Boolean, isEnableFingerprint: Boolean, isEnableDirectBiometric: Boolean, isEnableOcl: Boolean) {
         launch {
-            try {
-                var enableSeamless = isEnableSeamless
-                // Access the SDK if seamless login config is enabled.
-                if(isEnableSeamless) {
-                    enableSeamless = isGojekProfileExist()
-                }
-                var isBiometricRegistered = false
-                // If one of the biometrics config is enabled then we hit the api to reduce network usage.
-                if(isEnableFingerprint || isEnableDirectBiometric) {
-                    isBiometricRegistered = isFingerprintRegistered()
-                }
-
-                mutableLoginOption.value = LoginOption(
-                    isEnableSeamless = enableSeamless,
-                    isEnableBiometrics = (isBiometricRegistered && isEnableFingerprint),
-                    isEnableOcl = isEnableOcl,
-                    isEnableDirectBiometric = (isBiometricRegistered && isEnableDirectBiometric)
-                )
-            } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
-                mutableLoginOption.value = LoginOption(isEnableSeamless = false, isEnableBiometrics = false, isEnableOcl = false, isEnableDirectBiometric = false)
+            var enableSeamless = isEnableSeamless
+            // Access the SDK if seamless login config is enabled.
+            if(isEnableSeamless) {
+                enableSeamless = isGojekProfileExist()
             }
+            var isBiometricRegistered = false
+            // If one of the biometrics config is enabled then we hit the api to reduce network usage.
+            if(isEnableFingerprint || isEnableDirectBiometric) {
+                isBiometricRegistered = isFingerprintRegistered()
+            }
+
+            mutableLoginOption.value = LoginOption(
+                isEnableSeamless = enableSeamless,
+                isEnableBiometrics = (isBiometricRegistered && isEnableFingerprint),
+                isEnableOcl = isEnableOcl,
+                isEnableDirectBiometric = (isBiometricRegistered && isEnableDirectBiometric)
+            )
         }
     }
 
