@@ -57,38 +57,6 @@
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 app:typographyType="display_3"
                 />
-
-            <LinearLayout
-                android:id="@+id/shop_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/loginphone_dp_5"
-                android:orientation="horizontal"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/image_shop"
-                    android:layout_width="@dimen/spacing_lvl4"
-                    android:layout_height="@dimen/spacing_lvl4"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_shop_greyscale"
-                    android:contentDescription="Image Shop" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/shop_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl2"
-                    android:layout_marginLeft="@dimen/spacing_lvl2"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="@dimen/loginphone_sp_6"
-                    android:textColor="@color/Unify_N700_44"
-                    android:textSize="@dimen/unify_font_14"
-                    app:typographyType="body_1"
-                    app:typographyWeight="bold" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
