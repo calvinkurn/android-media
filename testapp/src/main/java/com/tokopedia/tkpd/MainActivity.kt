@@ -179,4 +179,6 @@ class MainActivity : AppCompatActivity() {
         object DEVELOPER_OPTION : HomeDestination
         object APPLINK : HomeDestination
     }
+
 }
+

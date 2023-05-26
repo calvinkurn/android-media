@@ -8,6 +8,7 @@ import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,7 +23,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
     lateinit var somAcceptOrderUseCase: SomAcceptOrderUseCase
@@ -65,7 +66,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun acceptOrder_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    open fun acceptOrder_shouldReturnSuccess() = coroutineTestRule.runTest {
         every {
             userSessionInterface.shopId
         } returns "1234567890"
@@ -82,7 +83,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun acceptOrder_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    open fun acceptOrder_shouldReturnFail() = coroutineTestRule.runTest {
         every {
             userSessionInterface.shopId
         } returns null
@@ -97,7 +98,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun rejectOrder_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    open fun rejectOrder_shouldReturnSuccess() = coroutineTestRule.runTest {
         coEvery {
             somRejectOrderUseCase.execute(any())
         } returns SomRejectOrderResponse.Data(SomRejectOrderResponse.Data.RejectOrder(success = 1, message = listMsg))
@@ -110,7 +111,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun rejectOrder_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    open fun rejectOrder_shouldReturnFail() = coroutineTestRule.runTest {
         coEvery {
             somRejectOrderUseCase.execute(any())
         } throws Throwable()
@@ -121,7 +122,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun editAwb_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    open fun editAwb_shouldReturnSuccess() = coroutineTestRule.runTest {
         coEvery {
             somEditRefNumUseCase.execute()
         } returns SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg))
@@ -133,7 +134,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun editAwb_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    open fun editAwb_shouldReturnFail() = coroutineTestRule.runTest {
         coEvery {
             somEditRefNumUseCase.execute()
         } throws Throwable()
@@ -144,7 +145,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun rejectCancelOrder_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    open fun rejectCancelOrder_shouldReturnSuccess() = coroutineTestRule.runTest {
         coEvery {
             somRejectCancelOrderUseCase.execute(any())
         } returns SomRejectCancelOrderResponse.Data()
@@ -155,7 +156,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    open fun rejectCancelOrder_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    open fun rejectCancelOrder_shouldReturnFail() = coroutineTestRule.runTest {
         coEvery {
             somRejectCancelOrderUseCase.execute(any())
         } throws Throwable()
@@ -166,7 +167,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    fun validateOrders_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun validateOrders_shouldReturnSuccess() = coroutineTestRule.runTest {
         val orderIds = listOf(orderId)
         val param = SomValidateOrderRequest(orderIds)
         coEvery {
@@ -184,7 +185,7 @@ abstract class SomOrderBaseViewModelTest<T: SomOrderBaseViewModel> {
     }
 
     @Test
-    fun validateOrders_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun validateOrders_shouldReturnFail() = coroutineTestRule.runTest {
         val orderIds = listOf(orderId)
         val param = SomValidateOrderRequest(orderIds)
         coEvery {

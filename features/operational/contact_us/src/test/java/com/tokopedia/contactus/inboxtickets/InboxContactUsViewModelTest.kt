@@ -23,6 +23,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -184,6 +185,24 @@ class InboxContactUsViewModelTest {
         assertEquals("256", actual.idMessage)
         assertEquals(true, actual.unReadNotification)
         assertEquals("Silahkan Masuk", actual.welcomeMessage)
+    }
+
+    @Test
+    fun `check when getTopBotStatus success hit but error and have message`() {
+        val errorMessage = "Error Satu Yakk!!"
+        coEvery { chipTopUsecase.invoke(Unit) } returns createTopBotResponse(
+            SUCCESS,
+            true,
+            "Silahkan Masuk",
+            true,
+            messageError = arrayListOf(errorMessage)
+        )
+        viewModel.getTopBotStatus()
+        val actual = viewModel.uiState.value
+        val errorMessageActual = actual.errorMessageChatBotWidget
+        val isChatbotWidgetShown = actual.showChatBotWidget
+        assertEquals(false, isChatbotWidgetShown)
+        assertEquals(errorMessage, errorMessageActual)
     }
 
     @Test
@@ -374,7 +393,8 @@ class InboxContactUsViewModelTest {
         isSuccessHit: Int,
         isActive: Boolean,
         welcomeMessage: String = "",
-        unreadNotif: Boolean = false
+        unreadNotif: Boolean = false,
+        messageError: List<String> = arrayListOf()
     ): ChipTopBotStatusResponse {
         return ChipTopBotStatusResponse(
             ChipTopBotStatusResponse.ChipTopBotStatusInbox(
@@ -385,7 +405,8 @@ class InboxContactUsViewModelTest {
                     messageId = "256",
                     unreadNotif = unreadNotif,
                     welcomeMessage = welcomeMessage
-                )
+                ),
+                    messageError= messageError
             )
         )
     }

@@ -47,7 +47,7 @@ class SearchPageViewModelTest {
 
     @Test
     fun `Get Auto Complete List Success`() {
-        coEvery { repo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
+        coEvery { repo.getAutoComplete(any(), any(), any()) } returns AutoCompleteResponse()
         searchPageViewModel.loadAutoComplete("Jakarta")
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerpersona.databinding.ItemPersonaSimpleListBinding
+import com.tokopedia.utils.resources.isAppDarkMode
 import timber.log.Timber
 
 /**
@@ -53,12 +54,19 @@ class PersonaSimpleListAdapter : Adapter<PersonaSimpleListAdapter.ResultViewHold
             with(binding) {
                 tvSpResultInfoItem.text = item
 
-                val textColor = if (isSelectedMode) {
-                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
-                } else {
-                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                val textColor = when {
+                    isAppDarkMode() && isSelectedMode -> {
+                        com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96
+                    }
+                    isSelectedMode -> {
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    }
+                    else -> {
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    }
                 }
-                tvSpResultInfoItem.setTextColor(textColor)
+
+                tvSpResultInfoItem.setTextColor(root.context.getResColor(textColor))
                 root.setOnClickListener {
                     itemClickListener?.invoke()
                 }

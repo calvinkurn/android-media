@@ -1,7 +1,7 @@
 package com.tokopedia.play.model
 
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
+import com.tokopedia.play.widget.ui.model.PartnerType
 
 /**
  * Created by jegul on 09/02/21

@@ -20,15 +20,21 @@ class TopchatProductAttachmentPreviewUiModel(
         roomMetaData: RoomMetaData,
         message: String,
         userLocationInfo: LocalCacheModel,
-        localId: String
+        localId: String,
+        sourceReply: String
     ): Any {
         val startTime = generateStartTime()
         val msgId = roomMetaData.msgId
         val toUid = roomMetaData.receiver.uid
         return TopChatWebSocketParam.generateParamSendProductAttachment(
-            this, msgId, startTime,
-            toUid, message, userLocationInfo,
-            localId
+            this,
+            msgId,
+            startTime,
+            toUid,
+            message,
+            userLocationInfo,
+            localId,
+            sourceReply
         )
     }
 
@@ -41,15 +47,18 @@ class TopchatProductAttachmentPreviewUiModel(
         message: String
     ): SendableUiModel {
         return this.apply {
-            updateCanShowFooter(canShowFooterProductAttachment(
-                true, roomMetaData.sender.role
-            ))
+            updateCanShowFooter(
+                canShowFooterProductAttachment(
+                    true,
+                    roomMetaData.sender.role
+                )
+            )
         }
     }
 
     private fun canShowFooterProductAttachment(isOpposite: Boolean, role: String): Boolean {
-        return (!isOpposite && role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true))
-                || (isOpposite && !role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true))
+        return (!isOpposite && role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true)) ||
+            (isOpposite && !role.equals(ChatRoomHeaderUiModel.Companion.ROLE_USER, ignoreCase = true))
     }
 
     class Builder : ProductAttachmentUiModel.Builder() {

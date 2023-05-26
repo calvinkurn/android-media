@@ -8,6 +8,7 @@ import com.tokopedia.deals.common.listener.CurrentLocationCallback
 import com.tokopedia.deals.databinding.LayoutDealsChangeLocationBinding
 import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.location_picker.ui.fragment.DealsSelectLocationFragment
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 
@@ -27,7 +28,9 @@ class SelectLocationBottomSheet (private val selectedLocation: String = "", priv
     }
     private fun initBottomSheet() {
         isFullpage = true
-        setTitle(getString(R.string.deals_location_bottomsheet_title))
+        context?.let { context ->
+            setTitle(context.resources.getString(R.string.deals_location_bottomsheet_title))
+        }
         binding = LayoutDealsChangeLocationBinding.inflate(LayoutInflater.from(requireContext()))
 
         setChild(binding.root)
@@ -40,8 +43,10 @@ class SelectLocationBottomSheet (private val selectedLocation: String = "", priv
     }
 
     private fun setLayoutMargin() {
-        val padding = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
-        bottomSheetWrapper.setPadding(0, padding, 0, 0)
-        bottomSheetHeader.setPadding(padding, 0, padding, 0)
+        context?.let { context ->
+            val padding = context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
+            bottomSheetWrapper.setPadding(Int.ZERO, padding, Int.ZERO, Int.ZERO)
+            bottomSheetHeader.setPadding(padding, Int.ZERO, padding, Int.ZERO)
+        }
     }
 }

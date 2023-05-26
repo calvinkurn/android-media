@@ -74,6 +74,9 @@ dependencies {
 
     // need androidx.core for androidx.core.view.*
     implementation rootProject.ext.supportLibDependencies.design
+
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
     implementation "com.google.accompanist:accompanist-pager:0.23.1"
 
 }
