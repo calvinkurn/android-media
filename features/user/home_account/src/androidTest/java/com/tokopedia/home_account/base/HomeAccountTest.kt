@@ -10,7 +10,6 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
-import com.tokopedia.home_account.stub.di.user.HomeAccountUserComponentsStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
@@ -79,7 +78,4 @@ abstract class HomeAccountTest {
         Thread.sleep(3000)
     }
 
-    companion object {
-        lateinit var homeAccountUserComponents: HomeAccountUserComponentsStub
-    }
 }

@@ -10,16 +10,6 @@
         android:label="New Home Account Test"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:debuggable,android:label">
-        <activity
-            android:name=".stub.view.activity.HomeAccountUserActivityStub"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
 
     </application>
 </manifest>
