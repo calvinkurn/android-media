@@ -61,23 +61,12 @@ class HomeAccountNewTopAdsVerificationTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val applicationContext: Context
-        get() = InstrumentationRegistry
-            .getInstrumentation().context.applicationContext
-
     private var topAdsCount = 0
     private val topAdsAssertion = TopAdsAssertion(context) { topAdsCount }
     private var recyclerView: SwipeRecyclerView? = null
 
     @Before
     fun setTopAdsAssertion() {
-//        component = DaggerHomeAccountTopAdsComponentsStub.builder()
-//            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-//            .fakeHomeAccountTopAdsModules(FakeHomeAccountTopAdsModules(context))
-//            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-//            .sessionModule(SessionModule())
-//            .build()
-//        setCoachMarkToFalse()
         val stub = ActivityComponentFactoryStub()
         ActivityComponentFactory.instance = stub
     }
