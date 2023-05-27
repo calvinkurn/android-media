@@ -1,7 +1,6 @@
 package com.tokopedia.home_account.stub.di.user
 
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.home_account.base.HomeAccountTest
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
 import com.tokopedia.home_account.di.HomeAccountUserViewModelModules
@@ -24,8 +23,5 @@ import dagger.Component
 interface HomeAccountUserComponentsStub : HomeAccountUserComponents {
 
     fun userSession(): UserSessionInterface
-
-    fun inject(test: HomeAccountTest)
-
     fun inject(test: HomeAccountCassavaTest)
 }
