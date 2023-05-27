@@ -36,7 +36,7 @@ class HomeAccountUiTest {
     }
 
     @Test
-    fun fundsAndInvestmentPage() {
+    fun generalFlowTest() {
         activityTestRule.launchActivity(Intent())
 
         homeAccountRobot {
