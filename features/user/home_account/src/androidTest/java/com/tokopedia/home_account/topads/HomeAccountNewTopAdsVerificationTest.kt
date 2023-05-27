@@ -17,23 +17,19 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.data.pref.AccountPreference
-import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
-import com.tokopedia.home_account.stub.di.DaggerHomeAccountTopAdsComponentsStub
+import com.tokopedia.home_account.di.ActivityComponentFactory
+import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
 import com.tokopedia.home_account.stub.di.HomeAccountTopAdsComponentsStub
-import com.tokopedia.home_account.stub.di.topads.FakeHomeAccountTopAdsModules
-import com.tokopedia.home_account.stub.view.activity.InstrumentationNewHomeAccountTestActivity
 import com.tokopedia.home_account.test.R
+import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
 import com.tokopedia.home_account.view.adapter.viewholder.ProductItemViewHolder
 import com.tokopedia.home_account.view.custom.SwipeRecyclerView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
-import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
@@ -41,11 +37,11 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@CassavaTest
+@TopAdsTest
 class HomeAccountNewTopAdsVerificationTest {
     @get:Rule
-    var activityRule = object : IntentsTestRule<InstrumentationNewHomeAccountTestActivity>(
-        InstrumentationNewHomeAccountTestActivity::class.java,
+    var activityRule = object : IntentsTestRule<HomeAccountUserActivity>(
+        HomeAccountUserActivity::class.java,
         false,
         false
     ) {
@@ -70,23 +66,20 @@ class HomeAccountNewTopAdsVerificationTest {
             .getInstrumentation().context.applicationContext
 
     private var topAdsCount = 0
-    private val topAdsAssertion = TopAdsAssertion(
-        context,
-        TopAdsVerificatorInterface {
-            topAdsCount
-        }
-    )
+    private val topAdsAssertion = TopAdsAssertion(context) { topAdsCount }
     private var recyclerView: SwipeRecyclerView? = null
 
     @Before
     fun setTopAdsAssertion() {
-        component = DaggerHomeAccountTopAdsComponentsStub.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .fakeHomeAccountTopAdsModules(FakeHomeAccountTopAdsModules(context))
-            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
-            .sessionModule(SessionModule())
-            .build()
-        setCoachMarkToFalse()
+//        component = DaggerHomeAccountTopAdsComponentsStub.builder()
+//            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+//            .fakeHomeAccountTopAdsModules(FakeHomeAccountTopAdsModules(context))
+//            .homeAccountUserUsecaseModules(HomeAccountUserUsecaseModules())
+//            .sessionModule(SessionModule())
+//            .build()
+//        setCoachMarkToFalse()
+        val stub = ActivityComponentFactoryStub()
+        ActivityComponentFactory.instance = stub
     }
 
     @After
@@ -97,7 +90,7 @@ class HomeAccountNewTopAdsVerificationTest {
 
     private fun waitForData() {
         // tempoary changed to 1 minute to test is long load time is the problem
-        Thread.sleep(10000)
+        Thread.sleep(2000)
     }
 
     private fun login() {
