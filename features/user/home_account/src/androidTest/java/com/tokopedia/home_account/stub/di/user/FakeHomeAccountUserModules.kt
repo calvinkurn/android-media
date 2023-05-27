@@ -6,16 +6,20 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.domain.FakeUserSession
+import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_DARK_MODE_TOGGLE
+import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,6 +28,8 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Lazy
 import dagger.Module
 import dagger.Provides
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -55,7 +61,11 @@ class FakeHomeAccountUserModules(val context: Context) {
     @Provides
     @ActivityScope
     fun provideRemoteConfig(@ApplicationContext context: Context?): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
+        return mockk(relaxed = true) {
+            every { getBoolean(HomeAccountUserFragment.REMOTE_CONFIG_KEY_PRIVACY_ACCOUNT, any()) } returns true
+            every { getBoolean(SETTING_SHOW_DARK_MODE_TOGGLE, any()) } returns true
+            every { getBoolean(SETTING_SHOW_SCREEN_RECORDER, any()) } returns true
+        }
     }
 
     @Provides
@@ -86,6 +96,14 @@ class FakeHomeAccountUserModules(val context: Context) {
     @Provides
     @ActivityScope
     fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
+
+    @Provides
+    @ActivityScope
+    fun provideAbTestPlatform(): AbTestPlatform {
+        return mockk() {
+            every { getString(ROLLENCE_PRIVACY_CENTER) } returns ""
+        }
+    }
 
     @Provides
     @ActivityScope
