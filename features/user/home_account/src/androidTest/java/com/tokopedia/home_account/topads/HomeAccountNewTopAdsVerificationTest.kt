@@ -19,7 +19,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
-import com.tokopedia.home_account.stub.di.HomeAccountTopAdsComponentsStub
 import com.tokopedia.home_account.test.R
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.adapter.HomeAccountUserAdapter
@@ -133,7 +132,4 @@ class HomeAccountNewTopAdsVerificationTest {
         return itemAdapter
     }
 
-    companion object {
-        var component: HomeAccountTopAdsComponentsStub? = null
-    }
 }
