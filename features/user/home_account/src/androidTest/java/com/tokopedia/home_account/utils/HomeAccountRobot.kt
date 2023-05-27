@@ -5,16 +5,16 @@ import android.app.Instrumentation
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule.Companion.MODE_SUBSET
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.R
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 
@@ -49,6 +49,15 @@ class HomeAccountRobot {
         onView(withText(id)).perform(click())
     }
 
+    fun privacyCenterItemsDoNotExist() {
+        onView(withText("Shake Shake")).check(doesNotExist())
+        onView(withText("Geolokasi")).check(doesNotExist())
+    }
+
+    fun hasApplinkOf(applink: String) {
+        intended(hasData(applink))
+    }
+
     fun scrollToPengaturanAkun() {
         val afterPengaturanAplikasiPosition = 5
         onView(withId(R.id.home_account_user_fragment_rv)).perform(
@@ -75,8 +84,8 @@ class HomeAccountRobot {
 
     fun switchShakeShake() {
         onView(
-            CoreMatchers.allOf(
-                ViewMatchers.hasSibling(withText("Shake Shake")),
+            allOf(
+                hasSibling(withText("Shake Shake")),
                 withId(R.id.account_user_item_common_switch)
             )
         ).perform(click())
@@ -110,4 +119,8 @@ fun stubAllIntent() {
     intending(anyIntent()).respondWith(
         Instrumentation.ActivityResult(Activity.RESULT_OK, null)
     )
+}
+
+fun stubInternalIntent() {
+    intending(isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
 }
