@@ -3,22 +3,20 @@ package com.tokopedia.home_account.topads
 import android.Manifest
 import android.app.Activity
 import android.app.Instrumentation
-import android.content.Context
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.home_account.AccountConstants
-import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
 import com.tokopedia.home_account.stub.di.HomeAccountTopAdsComponentsStub
@@ -90,7 +88,8 @@ class HomeAccountNewTopAdsVerificationTest {
     fun testTopAdsNewHomeAccount() {
         activityRule.launchActivity(Intent())
         recyclerView = activityRule.activity.findViewById(R.id.home_account_user_fragment_rv)
-        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        intending(isInternal())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         waitForData()
         performUserJourney()
         topAdsAssertion.assert()
@@ -98,7 +97,8 @@ class HomeAccountNewTopAdsVerificationTest {
 
     private fun performUserJourney() {
         recyclerView?.id?.let {
-            Espresso.onView(ViewMatchers.withId(it)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            onView(withId(it))
+                .check(matches(isDisplayed()))
         }
 
         recyclerView?.let {
@@ -115,8 +115,13 @@ class HomeAccountNewTopAdsVerificationTest {
         if (viewHolder is ProductItemViewHolder) {
             val item = recyclerView.getItemAdapter().getItem(index) as RecommendationItem
             if (item.isTopAds) {
-                Espresso.onView(ViewMatchers.withId(recyclerView.id))
-                    .perform(RecyclerViewActions.actionOnItemAtPosition<ProductItemViewHolder>(index, ViewActions.click()))
+                onView(withId(recyclerView.id))
+                    .perform(
+                        RecyclerViewActions.actionOnItemAtPosition<ProductItemViewHolder>(
+                            index,
+                            ViewActions.click()
+                        )
+                    )
                 topAdsCount++
             }
         }
@@ -125,11 +130,6 @@ class HomeAccountNewTopAdsVerificationTest {
     private fun scrollHomeAccountRecyclerViewToPosition(recyclerView: RecyclerView, position: Int) {
         val layoutManager = recyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPositionWithOffset(position, 0) }
-    }
-
-    private fun setCoachMarkToFalse() {
-        val prefs = context.getSharedPreferences("testPrefs", Context.MODE_PRIVATE)
-        AccountPreference(prefs).saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
     }
 
     private fun RecyclerView?.getItemAdapter(): HomeAccountUserAdapter {
