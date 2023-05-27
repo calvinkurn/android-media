@@ -1,10 +1,16 @@
 package com.tokopedia.home_account
 
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.home_account.base.HomeAccountTest
+import com.tokopedia.home_account.common.ViewActionUtils
 import com.tokopedia.home_account.utils.QueryUtils
 import com.tokopedia.home_account.utils.ViewUtils
 import com.tokopedia.test.application.annotations.CassavaTest
@@ -40,20 +46,19 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     }
 
     // 4.Cassava Test ID - 798
-    // This tests is disabled for now, because it keep failing at firebase testlab with unknown cause.
-    // We will fix it ASAP.
-//    @Test
-//    fun click_more_account_settings() {
-//        runTest {
-//            Intents.intending(IntentMatchers.anyIntent()).respondWith(
-//                Instrumentation.ActivityResult(
-//                    Activity.RESULT_OK, null
-//                )
-//            )
-//            ViewActionUtils.waitOnView(withId(R.id.home_account_member_layout_member_forward))
-//                .check(matches(isDisplayed())).perform(click())
-//        }.validate(QueryUtils.queryMoreSettings("Member"))
-//    }
+    @Test
+    fun click_more_account_settings() {
+        runTest {
+            intending(IntentMatchers.anyIntent()).respondWith(
+                Instrumentation.ActivityResult(
+                    Activity.RESULT_OK,
+                    null
+                )
+            )
+            ViewActionUtils.waitOnView(withId(R.id.home_account_member_layout_member_forward))
+                .check(matches(isDisplayed())).perform(click())
+        }.validate(QueryUtils.queryMoreSettings("Member"))
+    }
 
     // 5.Cassava Test ID - 802
     @Test
@@ -70,7 +75,6 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_bank_account() {
         runTest {
-            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView(
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT
@@ -82,7 +86,6 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_instant_payment() {
         runTest {
-            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView(
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
@@ -94,7 +97,6 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_account_security() {
         runTest {
-            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView(
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY
@@ -106,7 +108,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_notification() {
         runTest {
-            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
+//            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView(
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_NOTIFICATION
@@ -118,7 +120,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_more_application_setting() {
         runTest {
-            ViewUtils.clickSettingMoreView("Pengaturan Aplikasi")
+            ViewUtils.openPengaturanAplikasi("Pengaturan Aplikasi")
         }.validate(QueryUtils.queryMoreSettings(AccountConstants.Analytics.Label.LABEL_APP_SETTING))
     }
 
@@ -126,7 +128,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun toogle_shake_switch() {
         runTest {
-            ViewUtils.clickSettingMoreView("Pengaturan Aplikasi")
+            ViewUtils.openPengaturanAplikasi("Pengaturan Aplikasi")
 
             ViewUtils.clickSwitchOnApplicationSetting("Shake Shake")
         }.validate(

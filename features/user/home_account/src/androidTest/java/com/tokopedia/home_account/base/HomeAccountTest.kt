@@ -11,9 +11,7 @@ import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
 import com.tokopedia.home_account.stub.di.user.HomeAccountUserComponentsStub
-import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.After
 import org.junit.Before
@@ -46,7 +44,6 @@ abstract class HomeAccountTest {
         val stub = ActivityComponentFactoryStub()
         ActivityComponentFactory.instance = stub
         stub.component.inject(this)
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
     @After
@@ -60,7 +57,7 @@ abstract class HomeAccountTest {
     }
 
     fun Unit.validate(query: List<Map<String, String>>) {
-        Thread.sleep(3000)
+        Thread.sleep(2000)
         val queryMatcher = cassavaTestRule.validate(
             query,
             CassavaTestRule.MODE_SUBSET
@@ -70,7 +67,6 @@ abstract class HomeAccountTest {
 
     protected fun launchDefaultFragment() {
         setupHomeAccountUserActivity {
-            it.putExtras(Intent(context, HomeAccountUserActivityStub::class.java))
         }
     }
 
@@ -80,6 +76,7 @@ abstract class HomeAccountTest {
         val intent = Intent()
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
+        Thread.sleep(3000)
     }
 
     companion object {
