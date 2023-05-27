@@ -21,7 +21,7 @@ import org.hamcrest.MatcherAssert.assertThat
 class HomeAccountRobot {
 
     init {
-        waitForIt(2.0f)
+        waitForIt(3.0f)
     }
 
     fun clickProfile() {
