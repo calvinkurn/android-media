@@ -21,7 +21,7 @@ import org.hamcrest.MatcherAssert.assertThat
 class HomeAccountRobot {
 
     init {
-        Thread.sleep(3000)
+        waitForIt(2.0f)
     }
 
     fun clickProfile() {
@@ -59,13 +59,13 @@ class HomeAccountRobot {
     }
 
     fun scrollToPengaturanAkun() {
-        val afterPengaturanAplikasiPosition = 5
+        val afterPengaturanAkun = 5
         onView(withId(R.id.home_account_user_fragment_rv)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(
-                afterPengaturanAplikasiPosition
+                afterPengaturanAkun
             )
         )
-        Thread.sleep(2000)
+        waitForIt(2.0f)
     }
 
     fun scrollToPengaturanAplikasi() {
@@ -79,7 +79,7 @@ class HomeAccountRobot {
         onView(withId(R.id.home_account_user_fragment_rv)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(afterPengaturanAplikasiPosition)
         )
-        Thread.sleep(2000)
+        waitForIt(2.0f)
     }
 
     fun switchShakeShake() {
@@ -92,7 +92,6 @@ class HomeAccountRobot {
     }
 
     fun assertClickTrackerAtFirstPage(rule: CassavaTestRule) {
-        waitForIt()
         assertThat(
             rule.validate(CassavaQueries.clickTrackerFirstPage, MODE_SUBSET),
             hasAllSuccess()
@@ -100,7 +99,6 @@ class HomeAccountRobot {
     }
 
     fun assertClickTrackerAtPengaturanAkun(rule: CassavaTestRule) {
-        waitForIt()
         assertThat(
             rule.validate(CassavaQueries.clickTrackerPengaturanAkun, MODE_SUBSET),
             hasAllSuccess()
@@ -108,7 +106,6 @@ class HomeAccountRobot {
     }
 
     fun assertClickTracketAtPengaturanAplikasi(rule: CassavaTestRule) {
-        waitForIt()
         assertThat(
             rule.validate(CassavaQueries.clickTrackerPengaturanAplikasi, MODE_SUBSET),
             hasAllSuccess()
@@ -116,7 +113,7 @@ class HomeAccountRobot {
     }
 }
 
-private fun waitForIt(second: Int = 1) = Thread.sleep(second * 1000L)
+private fun waitForIt(second: Float = 0.5f) = Thread.sleep((second * 1000).toLong())
 
 fun homeAccountRobot(func: HomeAccountRobot.() -> Unit) = HomeAccountRobot().apply(func)
 

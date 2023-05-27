@@ -10,6 +10,7 @@ import com.tokopedia.applink.user.DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
@@ -30,6 +31,7 @@ import dagger.Module
 import dagger.Provides
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.spyk
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -84,6 +86,13 @@ class FakeHomeAccountUserModules(val context: Context) {
     @ActivityScope
     fun provideHomeAccountPref(@ApplicationContext context: Context): SharedPreferences {
         return PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    @Provides
+    fun provideAccountPref(pref: SharedPreferences): AccountPreference {
+        return spyk(AccountPreference(pref)) {
+            every { isShowCoachmark() } returns false
+        }
     }
 
     @Provides
