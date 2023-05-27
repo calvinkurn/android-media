@@ -36,6 +36,10 @@ class HomeAccountRobot {
         onView(withText(text)).perform(click())
     }
 
+    fun clickSectionWithText(id: Int) {
+        onView(withText(id)).perform(click())
+    }
+
     fun scrollToPengaturanAkun() {
         val afterPengaturanAplikasiPosition = 5
         onView(withId(R.id.home_account_user_fragment_rv)).perform(
@@ -43,7 +47,7 @@ class HomeAccountRobot {
                 afterPengaturanAplikasiPosition
             )
         )
-        Thread.sleep(10000)
+        Thread.sleep(2000)
     }
 
     fun scrollToPengaturanAplikasi() {
@@ -57,7 +61,7 @@ class HomeAccountRobot {
         onView(withId(R.id.home_account_user_fragment_rv)).perform(
             scrollToPosition<RecyclerView.ViewHolder>(afterPengaturanAplikasiPosition)
         )
-        Thread.sleep(1000)
+        Thread.sleep(2000)
     }
 
     fun switchShakeShake() {
@@ -71,6 +75,10 @@ class HomeAccountRobot {
 
     fun assertClickTrackerAtFirstPage(rule: CassavaTestRule) {
         assertThat(rule.validate(CassavaQueries.clickTrackerFirstPage, MODE_SUBSET), hasAllSuccess())
+    }
+
+    fun assertClickTrackerAtPengaturanAkun(rule: CassavaTestRule) {
+        assertThat(rule.validate(CassavaQueries.clickTrackerPengaturanAkun, MODE_SUBSET), hasAllSuccess())
     }
 
     fun assertClickTracketAtPengaturanAplikasi(rule: CassavaTestRule) {

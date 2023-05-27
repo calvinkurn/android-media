@@ -3,6 +3,7 @@ package com.tokopedia.home_account.main
 import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.home_account.R
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
 import com.tokopedia.home_account.utils.homeAccountRobot
@@ -50,6 +51,12 @@ class HomeAccountCassavaTest {
 
         homeAccountRobot {
             scrollToPengaturanAkun()
+            clickSectionWithText(R.string.menu_account_title_address_list)
+            clickSectionWithText(R.string.menu_account_title_bank)
+            clickSectionWithText(R.string.menu_account_title_instant_payment)
+            clickSectionWithText(R.string.menu_account_title_security)
+            clickSectionWithText(R.string.menu_account_title_notification)
+            assertClickTrackerAtPengaturanAkun(cassavaTestRule)
         }
     }
 
