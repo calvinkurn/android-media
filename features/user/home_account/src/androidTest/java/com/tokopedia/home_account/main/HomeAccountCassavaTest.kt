@@ -27,7 +27,6 @@ class HomeAccountCassavaTest {
     fun before() {
         val stub = ActivityComponentFactoryStub()
         ActivityComponentFactory.instance = stub
-        stub.component.inject(this)
     }
 
     @Test

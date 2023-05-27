@@ -9,13 +9,13 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule.Companion.MODE_SUBSET
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.R
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 
 class HomeAccountRobot {
@@ -30,6 +30,15 @@ class HomeAccountRobot {
 
     fun clickMember() {
         onView(withId(R.id.home_account_member_layout_member_forward)).perform(click())
+    }
+
+    fun clickLihatSemuaSaldoPoint() {
+        onView(
+            allOf(
+                hasSibling(withText("Saldo & Points")),
+                withId(R.id.home_account_view_more)
+            )
+        ).perform(click())
     }
 
     fun clickWalletWithText(text: String) {
@@ -74,15 +83,24 @@ class HomeAccountRobot {
     }
 
     fun assertClickTrackerAtFirstPage(rule: CassavaTestRule) {
-        assertThat(rule.validate(CassavaQueries.clickTrackerFirstPage, MODE_SUBSET), hasAllSuccess())
+        assertThat(
+            rule.validate(CassavaQueries.clickTrackerFirstPage, MODE_SUBSET),
+            hasAllSuccess()
+        )
     }
 
     fun assertClickTrackerAtPengaturanAkun(rule: CassavaTestRule) {
-        assertThat(rule.validate(CassavaQueries.clickTrackerPengaturanAkun, MODE_SUBSET), hasAllSuccess())
+        assertThat(
+            rule.validate(CassavaQueries.clickTrackerPengaturanAkun, MODE_SUBSET),
+            hasAllSuccess()
+        )
     }
 
     fun assertClickTracketAtPengaturanAplikasi(rule: CassavaTestRule) {
-        assertThat(rule.validate(CassavaQueries.clickTrackerPengaturanAplikasi, MODE_SUBSET), hasAllSuccess())
+        assertThat(
+            rule.validate(CassavaQueries.clickTrackerPengaturanAplikasi, MODE_SUBSET),
+            hasAllSuccess()
+        )
     }
 }
 

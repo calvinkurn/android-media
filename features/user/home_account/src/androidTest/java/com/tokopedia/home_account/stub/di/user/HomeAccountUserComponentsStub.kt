@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.home_account.di.HomeAccountUserComponents
 import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
 import com.tokopedia.home_account.di.HomeAccountUserViewModelModules
-import com.tokopedia.home_account.main.HomeAccountCassavaTest
+import com.tokopedia.home_account.main.HomeAccountUiTest
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
@@ -23,5 +23,5 @@ import dagger.Component
 interface HomeAccountUserComponentsStub : HomeAccountUserComponents {
 
     fun userSession(): UserSessionInterface
-    fun inject(test: HomeAccountCassavaTest)
+    fun inject(test: HomeAccountUiTest)
 }
