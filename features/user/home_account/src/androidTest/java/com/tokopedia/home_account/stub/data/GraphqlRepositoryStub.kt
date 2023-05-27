@@ -12,8 +12,10 @@ import com.tokopedia.home_account.explicitprofile.data.ExplicitProfileSaveMultiA
 import com.tokopedia.home_account.explicitprofile.data.ExplicitprofileGetQuestion
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.test.R
+import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
+import timber.log.Timber
 
 class GraphqlRepositoryStub : GraphqlRepository {
 
@@ -56,6 +58,12 @@ class GraphqlRepositoryStub : GraphqlRepository {
                 GqlMockUtil.createSuccessResponse<TokopointsBalanceDataModel>(
                     R.raw.success_get_tokopoint_balance_and_point
                 )
+            }
+            "productRecommendationWidgetV2" -> {
+                GqlMockUtil.createSuccessResponse<RecommendationEntity>(R.raw.product_recommendation)
+            }
+            "productRecommendationWidget" -> {
+                GqlMockUtil.createSuccessResponse<RecommendationEntity>(R.raw.product_recommendation)
             }
             else -> {
                 requests.firstOrNull()?.query?.let {
@@ -112,7 +120,10 @@ class GraphqlRepositoryStub : GraphqlRepository {
                                 false
                             )
                         }
-                        else -> throw Exception("query is not exists")
+                        else -> {
+                            Timber.w("unhandled request: ${GqlQueryParser.parse(requests)}")
+                            throw Exception("query is not exists")
+                        }
                     }
                 }
                 throw Exception("request empty")
