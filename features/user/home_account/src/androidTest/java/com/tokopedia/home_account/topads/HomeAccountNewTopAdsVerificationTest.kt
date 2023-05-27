@@ -28,7 +28,6 @@ import com.tokopedia.home_account.view.custom.SwipeRecyclerView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.test.application.annotations.TopAdsTest
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import org.junit.After
 import org.junit.Before
@@ -37,6 +36,7 @@ import org.junit.Test
 
 @TopAdsTest
 class HomeAccountNewTopAdsVerificationTest {
+
     @get:Rule
     var activityRule = object : IntentsTestRule<HomeAccountUserActivity>(
         HomeAccountUserActivity::class.java,
@@ -45,7 +45,6 @@ class HomeAccountNewTopAdsVerificationTest {
     ) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            login()
             setupTopAdsDetector()
         }
     }
@@ -75,22 +74,13 @@ class HomeAccountNewTopAdsVerificationTest {
         activityRule.finishActivity()
     }
 
-    private fun waitForData() {
-        // tempoary changed to 1 minute to test is long load time is the problem
-        Thread.sleep(2000)
-    }
-
-    private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
-    }
-
     @Test
     fun testTopAdsNewHomeAccount() {
         activityRule.launchActivity(Intent())
         recyclerView = activityRule.activity.findViewById(R.id.home_account_user_fragment_rv)
         intending(isInternal())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        waitForData()
+        Thread.sleep(1000)
         performUserJourney()
         topAdsAssertion.assert()
     }
