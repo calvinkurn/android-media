@@ -1,17 +1,8 @@
 package com.tokopedia.home_account
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.home_account.base.HomeAccountTest
-import com.tokopedia.home_account.common.ViewActionUtils
-import com.tokopedia.home_account.utils.QueryUtils
+import com.tokopedia.home_account.utils.CassavaQueries
+import com.tokopedia.home_account.utils.CassavaQueries.queryMoreSettings
 import com.tokopedia.home_account.utils.ViewUtils
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.Test
@@ -19,46 +10,46 @@ import org.junit.Test
 @CassavaTest
 class HomeAccountInstrumentTest : HomeAccountTest() {
 
-    // 1.Cassava Test ID - 759
-    @Test
-    fun click_profile() {
-        runTest {
-            onView(withId(R.id.home_account_profile_section)).perform(click())
-        }.validate(
-            QueryUtils.queryProfile()
-        )
-    }
-
-    // 2.Cassava Test ID - 796
-    @Test
-    fun click_ovo_wallet() {
-        runTest {
-            ViewUtils.clickWalletViewHolder("OVO")
-        }.validate(QueryUtils.queryOvo())
-    }
-
-    // 3.Cassava Test ID - 797
-    @Test
-    fun click_saldo() {
-        runTest {
-            ViewUtils.clickWalletViewHolder("Saldo Tokopedia")
-        }.validate(QueryUtils.querySaldo())
-    }
-
-    // 4.Cassava Test ID - 798
-    @Test
-    fun click_more_account_settings() {
-        runTest {
-            intending(IntentMatchers.anyIntent()).respondWith(
-                Instrumentation.ActivityResult(
-                    Activity.RESULT_OK,
-                    null
-                )
-            )
-            ViewActionUtils.waitOnView(withId(R.id.home_account_member_layout_member_forward))
-                .check(matches(isDisplayed())).perform(click())
-        }.validate(QueryUtils.queryMoreSettings("Member"))
-    }
+//    // 1.Cassava Test ID - 759
+//    @Test
+//    fun click_profile() {
+//        runTest {
+//            onView(withId(R.id.home_account_profile_section)).perform(click())
+//        }.validate(
+//            QueryUtils.queryProfile()
+//        )
+//    }
+//
+//    // 2.Cassava Test ID - 796
+//    @Test
+//    fun click_ovo_wallet() {
+//        runTest {
+//            ViewUtils.clickWalletViewHolder("OVO")
+//        }.validate(QueryUtils.queryOvo())
+//    }
+//
+//    // 3.Cassava Test ID - 797
+//    @Test
+//    fun click_saldo() {
+//        runTest {
+//            ViewUtils.clickWalletViewHolder("Saldo Tokopedia")
+//        }.validate(QueryUtils.querySaldo())
+//    }
+//
+//    // 4.Cassava Test ID - 798
+//    @Test
+//    fun click_more_account_settings() {
+//        runTest {
+//            intending(IntentMatchers.anyIntent()).respondWith(
+//                Instrumentation.ActivityResult(
+//                    Activity.RESULT_OK,
+//                    null
+//                )
+//            )
+//            ViewActionUtils.waitOnView(withId(R.id.home_account_member_layout_member_forward))
+//                .check(matches(isDisplayed())).perform(click())
+//        }.validate(QueryUtils.queryMoreSettings("Member"))
+//    }
 
     // 5.Cassava Test ID - 802
     @Test
@@ -68,7 +59,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS
             )
-        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS))
+        }.validate(CassavaQueries.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS))
     }
 
     // 6.Cassava Test ID - 803
@@ -79,7 +70,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT
             )
-        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT))
+        }.validate(CassavaQueries.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT))
     }
 
     // 7. Cassava Test ID - 804
@@ -90,7 +81,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT
             )
-        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT))
+        }.validate(CassavaQueries.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT))
     }
 
     // 9. Cassava Test ID - 806
@@ -101,7 +92,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY
             )
-        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY))
+        }.validate(CassavaQueries.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY))
     }
 
     // 10. Cassava Test ID - 807
@@ -113,7 +104,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
                 "Pengaturan Akun",
                 AccountConstants.Analytics.Label.LABEL_NOTIFICATION
             )
-        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_NOTIFICATION))
+        }.validate(CassavaQueries.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_NOTIFICATION))
     }
 
     // 11. Cassava Test ID - 808
@@ -121,7 +112,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     fun click_more_application_setting() {
         runTest {
             ViewUtils.openPengaturanAplikasi("Pengaturan Aplikasi")
-        }.validate(QueryUtils.queryMoreSettings(AccountConstants.Analytics.Label.LABEL_APP_SETTING))
+        }.validate(listOf(queryMoreSettings(AccountConstants.Analytics.Label.LABEL_APP_SETTING)))
     }
 
     // 12. Cassava Test ID - 809
@@ -133,8 +124,8 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
             ViewUtils.clickSwitchOnApplicationSetting("Shake Shake")
         }.validate(
             listOf(
-                QueryUtils.queryShakeCampaign(false),
-                QueryUtils.queryShakeCampaign(true)
+                CassavaQueries.queryShakeCampaign(false),
+                CassavaQueries.queryShakeCampaign(true)
             )
         )
     }

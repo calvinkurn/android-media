@@ -13,6 +13,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.home_account.R
@@ -105,7 +106,7 @@ object ViewUtils {
     }
 
     fun clickWalletViewHolder(title: String) {
-        intending(IntentMatchers.anyIntent()).respondWith(
+        intending(anyIntent()).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 null
