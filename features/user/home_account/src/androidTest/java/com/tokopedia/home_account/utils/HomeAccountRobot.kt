@@ -92,6 +92,7 @@ class HomeAccountRobot {
     }
 
     fun assertClickTrackerAtFirstPage(rule: CassavaTestRule) {
+        waitForIt()
         assertThat(
             rule.validate(CassavaQueries.clickTrackerFirstPage, MODE_SUBSET),
             hasAllSuccess()
@@ -99,6 +100,7 @@ class HomeAccountRobot {
     }
 
     fun assertClickTrackerAtPengaturanAkun(rule: CassavaTestRule) {
+        waitForIt()
         assertThat(
             rule.validate(CassavaQueries.clickTrackerPengaturanAkun, MODE_SUBSET),
             hasAllSuccess()
@@ -106,12 +108,15 @@ class HomeAccountRobot {
     }
 
     fun assertClickTracketAtPengaturanAplikasi(rule: CassavaTestRule) {
+        waitForIt()
         assertThat(
             rule.validate(CassavaQueries.clickTrackerPengaturanAplikasi, MODE_SUBSET),
             hasAllSuccess()
         )
     }
 }
+
+private fun waitForIt(second: Int = 1) = Thread.sleep(second * 1000L)
 
 fun homeAccountRobot(func: HomeAccountRobot.() -> Unit) = HomeAccountRobot().apply(func)
 
