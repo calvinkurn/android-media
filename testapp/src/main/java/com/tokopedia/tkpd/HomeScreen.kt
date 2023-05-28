@@ -19,10 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.components.NestButton
-import com.tokopedia.common_compose.header.NestHeaderType
-import com.tokopedia.common_compose.principles.NestHeader
-import com.tokopedia.common_compose.ui.NestTheme
+import com.tokopedia.nest.components.NestButton
+import com.tokopedia.nest.principles.NestTypography
+import com.tokopedia.nest.ui.NestTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnsupportedDarkModeColor")
@@ -44,9 +43,10 @@ fun HomeScreen(
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-            NestHeader(
-                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false)
-            )
+//            NestHeader(
+//                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false)
+//            )
+            NestTypography(text = "Tokopedia Test App", textStyle = NestTheme.typography.heading3)
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
             } else {
