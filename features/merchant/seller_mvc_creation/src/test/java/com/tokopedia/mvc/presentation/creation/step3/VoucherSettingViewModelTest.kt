@@ -183,7 +183,7 @@ class VoucherSettingViewModelTest {
     fun `when handling navigation to next step, should emit the correct action accordingly`() {
         runBlockingTest {
             // Given
-            mockProductVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val voucherConfiguration = viewModel.getCurrentVoucherConfiguration()
@@ -217,7 +217,7 @@ class VoucherSettingViewModelTest {
             // Given
             val promoType = PromoType.DISCOUNT
 
-            mockProductVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val expectedPromoType = PromoType.DISCOUNT
@@ -271,7 +271,7 @@ class VoucherSettingViewModelTest {
             // Given
             val nominalInput = 10000L
 
-            mockProductVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val expectedNominal = 10000L
@@ -325,7 +325,7 @@ class VoucherSettingViewModelTest {
             // Given
             val maxDeductionInput = 10000L
 
-            mockProductVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val expectedMaxDeduction = 10000L
@@ -352,7 +352,7 @@ class VoucherSettingViewModelTest {
             // Given
             val minPurchaseInput = 5000L
 
-            mockProductVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val expectedMinPurchase = 5000L
@@ -406,7 +406,7 @@ class VoucherSettingViewModelTest {
             // Given
             val targetBuyerInput = VoucherTargetBuyer.ALL_BUYER
 
-            mockProductVoucherConfigurationInitiation()
+            mockShopVoucherConfigurationInitiation()
             mockVoucherValidationPartialGQLCall()
 
             val expectedTargetBuyer = VoucherTargetBuyer.ALL_BUYER
@@ -487,7 +487,7 @@ class VoucherSettingViewModelTest {
     }
 
     private fun mockProductVoucherConfigurationInitiation() {
-        val pageMode = PageMode.CREATE
+        val pageMode = PageMode.EDIT
         val startPeriod = Date().roundTimePerHalfHour().removeTime()
 
         val voucherConfiguration =
@@ -508,7 +508,7 @@ class VoucherSettingViewModelTest {
     }
 
     private fun mockShopVoucherConfigurationInitiation() {
-        val pageMode = PageMode.CREATE
+        val pageMode = PageMode.EDIT
         val startPeriod = Date().roundTimePerHalfHour().removeTime()
 
         val voucherConfiguration =
