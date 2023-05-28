@@ -39,10 +39,7 @@ class GroupInsightsViewHolder(private val view: View, private val onChipClick: (
             View.inflate(view.context, R.layout.top_ads_group_insights_accordian_layout, null)
         val rv: RecyclerView = layout.findViewById(R.id.accordianRecyclerview)
         rv.layoutManager = LinearLayoutManager(view.context)
-        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(
-            onChipClick,
-            onInsightTypeChipClick
-        ))
+        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(onChipClick, { _, _ -> },onInsightTypeChipClick))
         rv.adapter = accordianAdapter
         accordianAdapter.submitList(listOf(expandItemDataModel))
         return layout

@@ -68,7 +68,7 @@ class InsightTypeChipsViewHolder(val itemView: View, private val onInsightTypeCh
         insightTypeChipsRv.adapter = adapter
         element?.let {
             adapter.insightChipsList = element.chipsList
-            adapter.adGroupList = element.adGroupList
+//            adapter.adGroupList = element.adGroupList
         }
     }
 

@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
-import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
@@ -55,26 +55,17 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun loadInsightTypeChips(
-        adType: Int?,
-        insightList: ArrayList<String>?,
-        adGroupName: String?
+        adType: String?,
+        insightList: ArrayList<AdGroupUiModel>,
+        adGroupName: String?,
     ) {
         val list =
             mutableListOf(
-                if (TYPE_PRODUCT == adType) "Iklan Produk" else "Iklan Toko",
+                if ("product" == adType) "Iklan Produk" else "Iklan Toko",
                 adGroupName ?: ""
             )
-        val mappedInsightList =
-            mutableListOf<TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup>()
-        insightList?.map {
-            mappedInsightList.add(
-                TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup(
-                    adGroupName = it
-                )
-            )
-        }
         groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
-            InsightTypeChipsUiModel(list, mappedInsightList)
+            InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
     fun loadDetailPageOnAction(adType: Int, adgroupID: String, isSwitchAdType: Boolean = false) {
@@ -96,7 +87,7 @@ class GroupDetailViewModel @Inject constructor(
                 TopAdsListAllInsightState.Success(
                     InsightTypeChipsUiModel(
                         list,
-                        data.topAdsListAllInsightCounts.adGroups.toMutableList()
+                        groupDetailMapper.toAdGroupUiModelList(data.topAdsListAllInsightCounts.adGroups.toMutableList())
                     )
                 )
             } else {

@@ -23,6 +23,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -303,10 +305,5 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     private fun onStateChanged(state: TopAdsProductIklanFragment.State?) {
         collapseStateCallBack?.setAppBarStateHeadline(state)
-    }
-
-    companion object {
-        const val TYPE_PRODUCT = 1
-        const val TYPE_SHOP = 3
     }
 }

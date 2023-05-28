@@ -10,6 +10,9 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianK
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailEmptyStateUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.InsightTypeChipsViewHolder
@@ -20,9 +23,12 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.v
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianGroupBidViewHolder
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianKeywordBidViewHolder
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.AccordianNegativeKeywordViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.GroupDetailInsightListViewHolder
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.GroupDetailEmptyStateViewHolder
 
 class GroupDetailAdapterFactoryImpl(
     private val onChipClick: (Int) -> Unit,
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<AdGroup>?) -> Unit)?,
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
@@ -58,6 +64,14 @@ class GroupDetailAdapterFactoryImpl(
         return AccordianNegativeKeywordViewHolder.LAYOUT
     }
 
+    override fun type(groupDetailEmptyStateUiModel: GroupDetailEmptyStateUiModel): Int {
+        return GroupDetailEmptyStateViewHolder.LAYOUT
+    }
+
+    override fun type(groupDetailInsightListUiModel: GroupDetailInsightListUiModel): Int {
+        return GroupDetailInsightListViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view, onInsightTypeChipClick)
@@ -68,6 +82,8 @@ class GroupDetailAdapterFactoryImpl(
             AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view)
             AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view)
             AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view)
+            GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view, onInsightItemClick)
+            GroupDetailEmptyStateViewHolder.LAYOUT -> GroupDetailEmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

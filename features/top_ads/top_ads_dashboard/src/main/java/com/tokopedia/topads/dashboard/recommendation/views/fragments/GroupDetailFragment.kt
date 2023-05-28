@@ -16,8 +16,9 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.InsightConstants.AD_TYPE_PRODUCT
-import com.tokopedia.topads.dashboard.recommendation.common.InsightConstants.AD_TYPE_SHOP
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -33,8 +34,8 @@ import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
-    private var adType : Int? = 1
-    private var insightList : ArrayList<String>? = null
+    private var adType : String? = ""
+    private var insightList : ArrayList<AdGroupUiModel>? = null
     private var adGroupName : String? = ""
     private var adGroupId : String? = ""
     private var groupDetailsRecyclerView: RecyclerView? = null
@@ -44,6 +45,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
                 onChipClick,
+                onInsightItemClick,
                 ::onInsightTypeChipClick
             )
         )
@@ -79,13 +81,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun retrieveInitialData() {
-        adType = arguments?.getInt("adType")
-        insightList = arguments?.getStringArrayList("insightTypeList")
+        insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
+        adType = arguments?.getString("adType")
         adGroupName = arguments?.getString("adGroupName")
         adGroupId = arguments?.getString("groupId")
-        viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
+        viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
         if (adType != null && adGroupId != null) {
-            loadData(adType!!, adGroupId!!)
+            loadData(if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP, adGroupId ?: "")
         }
     }
 
@@ -135,6 +137,14 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailAdapter.updateItem()
     }
 
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
+        { _, item ->
+            viewModel.loadDetailPageOnAction(
+                if (item.adGroupType == "product") TYPE_PRODUCT else TYPE_SHOP,
+                item.adGroupID
+            )
+        }
+
     private fun setUpRecyclerView() {
         groupDetailsRecyclerView?.layoutManager = LinearLayoutManager(context)
         groupDetailsRecyclerView?.adapter = groupDetailAdapter
@@ -174,14 +184,14 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         if(groupList.isNullOrEmpty()) {
             val list = arrayListOf(
                 ItemListUiModel(
-                    adType = AD_TYPE_PRODUCT,
+                    adType = TYPE_PRODUCT,
                     title = getString(R.string.topads_insight_ad_type_product),
-                    isSelected = (adType == AD_TYPE_PRODUCT)
+                    isSelected = ("product" == adType)
                 ),
                 ItemListUiModel(
-                    adType = AD_TYPE_SHOP,
+                    adType = TYPE_SHOP,
                     title = getString(R.string.topads_insight_ad_type_shop),
-                    isSelected = (adType == AD_TYPE_SHOP)
+                    isSelected = (adType != "product")
                 )
             )
             ListBottomSheet.show(
@@ -190,7 +200,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 list,
                 ListBottomSheet.CHOOSE_AD_TYPE_BOTTOMSHEET,
                 this,
-                adType,
+                if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP,
                 "" //don't send group id in case of choose ad type bottomsheet
             )
         } else {
@@ -198,7 +208,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             groupList.forEach {
                 list.add(
                     ItemListUiModel(
-                        adType = this.adType ?: AD_TYPE_PRODUCT,
+                        adType = if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP,
                         title = it.adGroupName,
                         groupId = it.adGroupID,
                         isSelected = it.adGroupID == this.adGroupId
@@ -211,7 +221,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 list,
                 ListBottomSheet.CHOOSE_AD_GROUP_BOTTOMSHEET,
                 this,
-                this.adType,
+                if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP,
                 this.adGroupId
             )
         }
@@ -219,8 +229,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     override fun onClickItemListener(adType: Int, groupId: String) {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
-        this.adType = adType
-        this.adGroupId = adGroupId
+        this.adType = if (adType == TYPE_PRODUCT) "product" else "headline"
+        this.adGroupId = groupId
         this.adGroupName = ""
         viewModel.loadDetailPageOnAction(adType, groupId, true)
     }

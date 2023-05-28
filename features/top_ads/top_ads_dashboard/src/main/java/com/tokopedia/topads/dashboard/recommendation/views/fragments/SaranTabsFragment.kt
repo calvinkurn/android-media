@@ -17,8 +17,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
@@ -27,7 +29,6 @@ import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsi
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
-import com.tokopedia.topads.dashboard.recommendation.views.fragments.RecommendationFragment.Companion.TYPE_PRODUCT
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
@@ -202,13 +203,14 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         }
     }
 
-    private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit =
-        { nameList, name, adGroupID ->
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
+        { adGroupList, item ->
             val bundle = Bundle()
-            bundle.putInt("adType", tabType)
-            bundle.putStringArrayList("insightTypeList", nameList)
-            bundle.putString("adGroupName", name)
-            bundle.putString("groupId", adGroupID)
+            bundle.putString("adType", item.adGroupType)
+            bundle.putString("adGroupName", item.adGroupName)
+            bundle.putString("groupId", item.adGroupID)
+            bundle.putInt("count", item.count)
+            bundle.putParcelableArrayList("insightTypeList", adGroupList)
             Intent(context, GroupDetailActivity::class.java).apply {
                 this.putExtra("groupDetailBundle", bundle)
                 startActivity(this)

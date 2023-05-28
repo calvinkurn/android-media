@@ -1,14 +1,16 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-data class AccordianKeywordBidUiModel(
-    val text: String = "",
-    val newPositiveKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom>?
-) : GroupDetailDataModel {
+class GroupDetailInsightListUiModel(
+    private val title: String = "Coba cek dan maksimalkan iklanmu yang lain, ya.",
+    val adGroups: MutableList<InsightListUiModel> = mutableListOf(),
+    var insightType: Int = 0
+) :
+    GroupDetailDataModel {
+
     override fun type(): String {
-        return ""
+        return "4"
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {
@@ -18,5 +20,4 @@ data class AccordianKeywordBidUiModel(
     override fun equalsWith(newItem: GroupDetailDataModel): Boolean {
         return this == newItem
     }
-
 }

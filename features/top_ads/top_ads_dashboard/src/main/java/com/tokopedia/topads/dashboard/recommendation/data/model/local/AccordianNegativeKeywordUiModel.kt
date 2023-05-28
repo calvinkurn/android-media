@@ -5,7 +5,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 data class AccordianNegativeKeywordUiModel(
     val text: String = "",
-    val newNegativeKeywordsRecom: List<TopAdsBatchGroupInsightResponse.Group.GroupData.NewNegativeKeywordsRecom>?,
+    val newNegativeKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom>?,
 
     ) : GroupDetailDataModel {
     override fun type(): String {
