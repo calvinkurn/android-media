@@ -25,7 +25,8 @@ class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
         val JAVA_ISSUE = Issue.create(
             id = "ImageUrlDeclarationDetector",
             briefDescription = "Image URL declaration outside of `libraries/images_assets` module is not allowed",
-            explanation = "Please create constant variable for this in `libraries/images_assets` module instead",
+            explanation = "In order to make a centralized remote resources. So, you have to create the constant variable " +
+                    "for this in `libraries/images_assets` module instead.",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,

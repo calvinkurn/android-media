@@ -28,7 +28,27 @@ class ImageUrlDeclarationDetectorTest {
     """.trimIndent()
 
     @Test
-    fun `should show warning if image url declared out side of image_assets module`() {
+    fun `should show warning if image url declared in a class and out side of image_assets module`() {
+        lint().files(kotlin("""
+            class ImageUrl {
+                
+                companion object {
+                    const val EMPTY_DATA_URL = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
+                }
+
+                fun someMethod() {
+                    val localImageUrl = "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"        
+                }
+            }
+        """.trimIndent()))
+            .issues(issue)
+            .allowMissingSdk()
+            .run()
+            .expectWarningCount(2)
+    }
+
+    @Test
+    fun `should show warning if image url declared in a kotlin object out side of image_assets module`() {
         lint().files(kotlin(kotlinFile))
             .issues(issue)
             .allowMissingSdk()
