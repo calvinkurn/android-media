@@ -20,8 +20,6 @@ class CatalogPopularBrandsVM @Inject constructor(
     val brandsWithCatalogsLiveData: LiveData<Result<CatalogLibraryDataModel>> =
         _brandsWithCatalogsLiveData
 
-    private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()
-
     fun getBrandsWithCatalogs() {
         catalogBrandsPopularWithCatalogsUseCase.cancelJobs()
         catalogBrandsPopularWithCatalogsUseCase.getBrandPopularWithCatalogs(
@@ -31,7 +29,7 @@ class CatalogPopularBrandsVM @Inject constructor(
     }
 
     private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse) {
-        if (brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()) {
+        if (brandsPopularResponse.catalogGetBrandPopular.brands.isEmpty()) {
             onFailHomeData(IllegalStateException("No Brands Response Data"))
         } else {
             brandsPopularResponse.let {

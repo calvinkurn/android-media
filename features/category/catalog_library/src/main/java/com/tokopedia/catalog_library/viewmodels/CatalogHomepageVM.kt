@@ -127,7 +127,7 @@ class CatalogHomepageVM @Inject constructor(
     }
 
     private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse) {
-        if (brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()) {
+        if (brandsPopularResponse.catalogGetBrandPopular.brands.isEmpty()) {
             onFailHomeData(IllegalStateException("No Brands Response Data"))
         } else {
             brandsPopularResponse.let {
