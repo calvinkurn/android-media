@@ -28,9 +28,14 @@ class SearchBarViewModel @Inject constructor(
     private val mpsLocalCache: MpsLocalCache,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.main) {
-    private val _searchParameterLiveData: MutableLiveData<Map<String, String>> = MutableLiveData()
+    private val _searchParameterLiveData: MutableLiveData<Map<String, String>> = MutableLiveData(
+        mapOf()
+    )
 
-    val searchParameterLiveData: LiveData<Map<String, String>> = _searchParameterLiveData.asFlow()
+    val searchParameterLiveData: LiveData<Map<String, String>>
+        get() = _searchParameterLiveData
+
+    val searchParameterLiveDataWithDelay: LiveData<Map<String, String>> = _searchParameterLiveData.asFlow()
         .debounce(SEARCH_PARAMETER_DELAY_MS)
         .asLiveData()
 

@@ -118,4 +118,8 @@ internal open class SearchBarViewModelTestFixtures {
         viewModel.searchBarKeywordErrorEvent.value shouldBe expected
     }
 
+    protected fun `Then verify search parameter`(expectedParams: Map<String, String>) {
+        viewModel.searchParameterLiveData.value shouldBe expectedParams
+    }
+
 }

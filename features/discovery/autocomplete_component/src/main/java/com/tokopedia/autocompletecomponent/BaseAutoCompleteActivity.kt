@@ -275,7 +275,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             it.searchBarStateLiveData.observe(this) { mpsState ->
                 renderSearchBarState(mpsState)
             }
-            it.searchParameterLiveData.observe(this) { searchParameter ->
+            it.searchParameterLiveDataWithDelay.observe(this) { searchParameter ->
                 onSearchParameterChange(searchParameter)
             }
             it.searchBarKeywordErrorEvent.observe(this) { error ->
