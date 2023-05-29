@@ -33,6 +33,8 @@ import com.tokopedia.kyc_centralized.util.BitmapProcessingListener
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import androidx.core.content.ContextCompat
+import com.tokopedia.unifyprinciples.R as unifyR
 import java.io.File
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
@@ -78,7 +80,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
         super.onCreate(savedInstanceState)
 
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, unifyR.color.Unify_Background))
         }
 
         arguments?.let {

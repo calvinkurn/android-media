@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -15,6 +16,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.features.inputoldphonenumber.model.PhoneFormState
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_CLICK
 import com.tokopedia.updateinactivephone.common.analytics.InputOldPhoneNumberAnalytics.Companion.LABEL_FAILED
@@ -47,8 +49,9 @@ open class InputOldPhoneNumberFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, unifyR.color.Unify_Background))
         }
+
 
         return inflater.inflate(R.layout.fragment_input_old_phone_number, container, false)
     }
