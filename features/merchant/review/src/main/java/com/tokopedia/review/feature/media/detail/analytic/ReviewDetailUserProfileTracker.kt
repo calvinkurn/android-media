@@ -1,5 +1,7 @@
 package com.tokopedia.review.feature.media.detail.analytic
 
+import android.util.Log
+
 /**
  * Created By : Jonathan Darwin on May 26, 2023
  */
@@ -11,7 +13,7 @@ class ReviewDetailUserProfileTracker : ReviewDetailTracker {
         productId: String,
         isFromGallery: Boolean
     ) {
-
+        Log.d("<LOG>", "ReviewDetailUserProfileTracker will be provided in the next PR")
     }
 
     override fun trackOnShopReviewLikeReviewClicked(
@@ -19,7 +21,7 @@ class ReviewDetailUserProfileTracker : ReviewDetailTracker {
         isLiked: Boolean,
         shopId: String
     ) {
-
+        Log.d("<LOG>", "ReviewDetailUserProfileTracker will be provided in the next PR")
     }
 
     override fun trackOnSeeAllClicked(
@@ -27,11 +29,11 @@ class ReviewDetailUserProfileTracker : ReviewDetailTracker {
         productId: String,
         isFromGallery: Boolean
     ) {
-
+        Log.d("<LOG>", "ReviewDetailUserProfileTracker will be provided in the next PR")
     }
 
     override fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
-
+        Log.d("<LOG>", "ReviewDetailUserProfileTracker will be provided in the next PR")
     }
 
     override fun trackClickReviewerName(
@@ -44,6 +46,6 @@ class ReviewDetailUserProfileTracker : ReviewDetailTracker {
         label: String,
         trackerId: String
     ) {
-
+        Log.d("<LOG>", "ReviewDetailUserProfileTracker will be provided in the next PR")
     }
 }

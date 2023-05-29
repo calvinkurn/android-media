@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewDetailCommonBinding
-import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerHelper
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.review.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.review.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
@@ -45,6 +45,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var reviewDetailTracker: ReviewDetailTracker
 
     @Inject
     @ReviewDetailViewModelFactory
@@ -236,14 +239,14 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
             val invertedLikeStatus = reviewDetailViewModel.getInvertedLikeStatus()
             if (feedbackID != null && invertedLikeStatus != null) {
                 if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                    ReviewDetailTrackerHelper.tracker?.trackOnLikeReviewClicked(
+                    reviewDetailTracker.trackOnLikeReviewClicked(
                         feedbackId = feedbackID,
                         isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                         productId = sharedReviewMediaGalleryViewModel.getProductId(),
                         isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery()
                     )
                 } else {
-                    ReviewDetailTrackerHelper.tracker?.trackOnShopReviewLikeReviewClicked(
+                    reviewDetailTracker.trackOnShopReviewLikeReviewClicked(
                         feedbackId = feedbackID,
                         isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                         shopId = sharedReviewMediaGalleryViewModel.getShopId()
@@ -270,7 +273,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                 ).build().toString()
             )
             if (routed) {
-                ReviewDetailTrackerHelper.tracker?.trackClickReviewerName(
+                reviewDetailTracker.trackClickReviewerName(
                     sharedReviewMediaGalleryViewModel.isFromGallery(),
                     reviewDetailViewModel.getFeedbackID().orEmpty(),
                     userId,
@@ -291,13 +294,13 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     private inner class ReviewDetailSupplementaryInfoListener: ReviewDetailSupplementaryInfo.Listener {
         override fun onDescriptionSeeMoreClicked() {
             if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                ReviewDetailTrackerHelper.tracker?.trackOnSeeAllClicked(
+                reviewDetailTracker.trackOnSeeAllClicked(
                     reviewDetailViewModel.getFeedbackID().orEmpty(),
                     sharedReviewMediaGalleryViewModel.getProductId(),
                     sharedReviewMediaGalleryViewModel.isFromGallery()
                 )
             } else {
-                ReviewDetailTrackerHelper.tracker?.trackOnShopReviewSeeAllClicked(
+                reviewDetailTracker.trackOnShopReviewSeeAllClicked(
                     reviewDetailViewModel.getFeedbackID().orEmpty(),
                     sharedReviewMediaGalleryViewModel.getShopId()
                 )

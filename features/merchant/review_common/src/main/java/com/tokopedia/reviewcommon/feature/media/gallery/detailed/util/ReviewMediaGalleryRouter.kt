@@ -43,6 +43,7 @@ object ReviewMediaGalleryRouter {
         cacheManager.put(EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT, preloadedDetailedReviewMediaResult)
         return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.REVIEW_MEDIA_GALLERY).apply {
             putExtra(EXTRAS_CACHE_MANAGER_ID, cacheManager.id.orEmpty())
+            putExtra(EXTRAS_PAGE_SOURCE, pageSource)
         }
     }
 
