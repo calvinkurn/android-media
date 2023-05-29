@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.model.FeedComplaintSubmitReportResponse
-import com.tokopedia.content.common.report_content.model.FeedReportRequestParamModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.content.common.util.UiEventManager
 import com.tokopedia.createpost.common.domain.usecase.cache.DeleteMediaPostCacheUseCase
@@ -63,6 +62,9 @@ class FeedMainViewModelTest {
         coEvery {
             userSession.isLoggedIn
         } returns true
+        coEvery {
+            onBoardingPreferences.hasShownSwipeOnboarding()
+        } returns false
 
         viewModel = FeedMainViewModel(
             feedXHeaderUseCase,
@@ -520,11 +522,10 @@ class FeedMainViewModelTest {
     @Test
     fun onReportContent_whenFailUsecase_shouldChangeValueToFail() {
         // given
-        coEvery { submitReportUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { submitReportUseCase.executeOnBackground() } throws MessageErrorException("Failed to fetch")
+        coEvery { submitReportUseCase(any()) } throws MessageErrorException("Failed to fetch")
 
         // when
-        viewModel.reportContent(FeedReportRequestParamModel("", "", "", ""))
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
 
         // then
         val response = viewModel.reportResponse.value
@@ -541,11 +542,10 @@ class FeedMainViewModelTest {
                 success = false
             )
         )
-        coEvery { submitReportUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { submitReportUseCase.executeOnBackground() } returns dummyResponse
+        coEvery { submitReportUseCase(any()) } returns dummyResponse
 
         // when
-        viewModel.reportContent(FeedReportRequestParamModel("", "", "", ""))
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
 
         // then
         val response = viewModel.reportResponse.value
@@ -562,11 +562,10 @@ class FeedMainViewModelTest {
                 success = true
             )
         )
-        coEvery { submitReportUseCase.setRequestParams(any()) } coAnswers {}
-        coEvery { submitReportUseCase.executeOnBackground() } returns dummyResponse
+        coEvery { submitReportUseCase(any()) } returns dummyResponse
 
         // when
-        viewModel.reportContent(FeedReportRequestParamModel("", "", "", ""))
+        viewModel.reportContent(FeedComplaintSubmitReportUseCase.Param("", "", "", ""))
 
         // then
         val response = viewModel.reportResponse.value
