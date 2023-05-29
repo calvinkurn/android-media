@@ -17,6 +17,8 @@ class AddOnBottomSheet : BottomSheetUnify() {
     private var pageSource: String = ""
     private var cartId: Long = 0L
     private var selectedAddonIds: List<String> = emptyList()
+    private var isTokocabang: Boolean = false
+    private var warehouseId: Long = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         overlayClickDismiss = true
@@ -30,7 +32,14 @@ class AddOnBottomSheet : BottomSheetUnify() {
         setTitle(getString(R.string.gifting_title_bottomsheet))
         childFragmentManager.beginTransaction()
             .replace(R.id.parent_view,
-                AddOnFragment(), "")
+                AddOnFragment.newInstance(
+                    productId,
+                    pageSource,
+                    cartId,
+                    selectedAddonIds,
+                    warehouseId,
+                    isTokocabang
+                ), "")
             .commit()
     }
 
@@ -48,5 +57,13 @@ class AddOnBottomSheet : BottomSheetUnify() {
 
     fun setProductId(productId: Long) {
         this.productId = productId
+    }
+
+    fun setWarehouseId(warehouseId: Long) {
+        this.warehouseId = warehouseId
+    }
+
+    fun setIsTokocabang(isTokocabang: Boolean) {
+        this.isTokocabang = isTokocabang
     }
 }

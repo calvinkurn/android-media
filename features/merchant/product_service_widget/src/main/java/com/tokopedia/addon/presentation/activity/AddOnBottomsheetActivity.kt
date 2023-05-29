@@ -25,6 +25,8 @@ class AddOnBottomsheetActivity: BaseActivity() {
             val pageSource = AddOnApplinkMapper.getPageSourceFromUri(dataUri)
             val cartId = AddOnApplinkMapper.getCartIdFromUri(dataUri)
             val selectedAddonIds = AddOnApplinkMapper.getSelectedAddonIdsFromUri(dataUri)
+            val warehouseId = AddOnApplinkMapper.getWarehouseIdFromUri(dataUri)
+            val isTokocabang = AddOnApplinkMapper.getIsTokocabangFromUri(dataUri)
 
             val bottomSheet = AddOnBottomSheet().apply {
                 setOnDismissListener {
@@ -35,6 +37,8 @@ class AddOnBottomsheetActivity: BaseActivity() {
                 setPageSource(pageSource)
                 setCartId(cartId)
                 setSelectedAddonIds(selectedAddonIds)
+                setWarehouseId(warehouseId)
+                setIsTokocabang(isTokocabang)
             }
             bottomSheet.show(supportFragmentManager, "")
         }
