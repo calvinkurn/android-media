@@ -3,11 +3,16 @@ package com.tokopedia.mvc.presentation.detail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
+import com.tokopedia.mvc.data.mapper.ProductListMapper
+import com.tokopedia.mvc.data.mapper.ShopBasicDataMapper
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
+import com.tokopedia.mvc.data.response.ProductListResponse
+import com.tokopedia.mvc.data.response.ShopBasicDataResponse
 import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.VoucherDetailWithVoucherCreationMetadata
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
@@ -22,6 +27,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -67,6 +73,12 @@ class VoucherDetailViewModelTest {
     @RelaxedMockK
     lateinit var mapper: GetInitiateVoucherPageMapper
 
+    @RelaxedMockK
+    lateinit var shopBasicDataMapper: ShopBasicDataMapper
+
+    @RelaxedMockK
+    lateinit var productListMapper: ProductListMapper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -84,7 +96,9 @@ class VoucherDetailViewModelTest {
         with(viewModel) {
             voucherDetail.observeForever(voucherDetailObserver)
             generateVoucherImageMetadata.observeForever(generateVoucherImageMetaDataObserver)
-            openDownloadVoucherImageBottomSheet.observeForever(openDownloadVoucherImageBottomSheetObserver)
+            openDownloadVoucherImageBottomSheet.observeForever(
+                openDownloadVoucherImageBottomSheetObserver
+            )
             redirectToProductListPage.observeForever(redirectToProductListPageObserver)
             updateVoucherStatusData.observeForever(updateVoucherStatusDataObserver)
         }
@@ -95,7 +109,9 @@ class VoucherDetailViewModelTest {
         with(viewModel) {
             voucherDetail.removeObserver(voucherDetailObserver)
             generateVoucherImageMetadata.removeObserver(generateVoucherImageMetaDataObserver)
-            openDownloadVoucherImageBottomSheet.removeObserver(openDownloadVoucherImageBottomSheetObserver)
+            openDownloadVoucherImageBottomSheet.removeObserver(
+                openDownloadVoucherImageBottomSheetObserver
+            )
             redirectToProductListPage.removeObserver(redirectToProductListPageObserver)
             updateVoucherStatusData.removeObserver(updateVoucherStatusDataObserver)
         }
@@ -146,6 +162,200 @@ class VoucherDetailViewModelTest {
         }
     }
 
+//    @Test
+//    fun `when updateVoucherStatus() is called, should update voucher status data correctly`() {
+//        runBlocking {
+//            //Given
+//            val expectedResult = Success(UpdateStatusVoucherDataModel())
+//            val data = VoucherDetailData()
+//
+//            mockGetInitiateVoucherPageGqlCall()
+//            mockUpdateVoucherStatusGQLCall()
+//
+//            viewModel.getVoucherDetail(10L)
+//
+//            //When
+//            viewModel.updateVoucherStatus(data)
+//
+//            //Then
+//            val actual = viewModel.updateVoucherStatusData.getOrAwaitValue()
+//            assertEquals(expectedResult, actual)
+//        }
+//    }
+//
+//    @Test
+//    fun `when updateVoucherStatus() is error, should throw the error`() {
+//        runBlockingTest {
+//            // Given
+//            val voucherId = 10
+//            val error = MessageErrorException("Error")
+//
+//            coEvery { cancelVoucherUseCase.execute(voucherId, any(), any()) } throws error
+//
+//            val expected = Fail(error)
+//
+//            // When
+//            viewModel.updateVoucherStatus(VoucherDetailData())
+//
+//            // Then
+//            val actual = viewModel.updateVoucherStatusData.getOrAwaitValue()
+//            assertEquals(expected, actual)
+//        }
+//    }
+
+    @Test
+    fun `when getCurrentVoucherDetailData() is called, should return the latest voucher detail data`() {
+        runBlockingTest {
+            // Given
+            val voucherId = 10L
+            mockGetVoucherDetailByIDGQLCall(voucherId)
+            mockGetInitiateVoucherPageGqlCall()
+
+            val expectedResult = Success(
+                VoucherDetailWithVoucherCreationMetadata(
+                    voucherDetail = VoucherDetailData(voucherId = 10),
+                    creationMetadata = mapper.map(GetInitiateVoucherPageResponse()),
+                    tickerWording = ""
+                )
+            )
+
+            viewModel.getVoucherDetail(voucherId)
+
+            // When
+            viewModel.getCurrentVoucherDetailData()
+
+            // Then
+            val actual = viewModel.voucherDetail.getOrAwaitValue()
+            assertEquals(expectedResult, actual)
+        }
+    }
+
+    @Test
+    fun `when getSpendingEstimation() is called, should return the corresponding formatted spending estimation`() {
+        // Given
+        val expectedResult = "Rp50.000"
+        val voucherDiscount = 10000L
+        val voucherQuota = 5L
+        val voucherDetailData = VoucherDetailData(
+            voucherDiscountAmount = voucherDiscount,
+            voucherQuota = voucherQuota
+        )
+
+        // When
+        val actual = viewModel.getSpendingEstimation(voucherDetailData)
+
+        // Then
+        assertEquals(expectedResult, actual)
+    }
+
+    @Test
+    fun `when getPercentage() is called, should return the data accordingly`() {
+        // Given
+        val expectedResult = 25
+        val availableQuota = 5L
+        val remainingQuota = 20L
+
+        // When
+        val actual = viewModel.getPercentage(availableQuota, remainingQuota)
+        val actualZeroResult = viewModel.getPercentage(availableQuota, 0)
+
+        // Then
+        assertEquals(expectedResult, actual)
+        assertEquals(0, actualZeroResult)
+    }
+
+    @Test
+    fun `when getThreeDotsBottomSheetType() is called, should return the cirrect voucher status data`() {
+        // Given
+        val expected = VoucherStatus.ONGOING
+        val voucherDetailData = VoucherDetailData(voucherStatus = VoucherStatus.ONGOING)
+
+        // When
+        val actual = viewModel.getThreeDotsBottomSheetType(voucherDetailData)
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when generateVoucherImage() is called, should set the voucher image data accordingly`() {
+        runBlocking {
+            // Given
+            val voucherId = 10L
+            val voucherDetail = VoucherDetailData(voucherId)
+            val shopData = shopBasicDataMapper.map(ShopBasicDataResponse())
+            val products = productListMapper.map(ProductListResponse())
+            val topSellingProductImageUrls = products.products
+                .sortedByDescending { it.txStats.sold }
+                .take(3)
+                .map { it.picture }
+
+            mockGetVoucherDetailByIDGQLCall(voucherId)
+            mockGetInitiateVoucherPageGqlCall()
+            mockShopBasicDataGQLCall()
+            mockGetProductGQLCall()
+
+            val expectedResult = Success(
+                GenerateVoucherImageMetadata(
+                    voucherDetail = voucherDetail,
+                    shopData = shopData,
+                    topSellingProductImageUrls
+                )
+            )
+
+            viewModel.getVoucherDetail(voucherId)
+
+            // When
+            viewModel.generateVoucherImage()
+
+            // Then
+            val actual = viewModel.generateVoucherImageMetadata.getOrAwaitValue()
+            assertEquals(expectedResult, actual)
+        }
+    }
+
+    @Test
+    fun `when onTapDownloadVoucherImage() is called, should set _openDownloadVoucherImageBottomSheet value accordingly`() {
+        runBlockingTest {
+            // Given
+            val voucherId = 10L
+            mockGetVoucherDetailByIDGQLCall(voucherId)
+            mockGetInitiateVoucherPageGqlCall()
+
+            val expectedResult = VoucherDetailData(voucherId = 10)
+
+            viewModel.getVoucherDetail(voucherId)
+
+            // When
+            viewModel.onTapDownloadVoucherImage()
+
+            // Then
+            val actual = viewModel.openDownloadVoucherImageBottomSheet.getOrAwaitValue()
+            assertEquals(expectedResult, actual)
+        }
+    }
+
+    @Test
+    fun `when onTapViewAllProductCta is called, should set _redirectToProductListPage value accordingly`() {
+        runBlockingTest {
+            // Given
+            val voucherId = 10L
+            mockGetVoucherDetailByIDGQLCall(voucherId)
+            mockGetInitiateVoucherPageGqlCall()
+
+            val expectedResult = VoucherDetailData(voucherId = 10)
+
+            viewModel.getVoucherDetail(voucherId)
+
+            // When
+            viewModel.onTapViewAllProductCta()
+
+            // Then
+            val actual = viewModel.redirectToProductListPage.getOrAwaitValue()
+            assertEquals(expectedResult, actual)
+        }
+    }
+
     private fun mockGetInitiateVoucherPageGqlCall() {
         val result = mapper.map(GetInitiateVoucherPageResponse())
         coEvery { getInitiateVoucherPageUseCase.execute() } returns result
@@ -154,5 +364,24 @@ class VoucherDetailViewModelTest {
     private fun mockGetVoucherDetailByIDGQLCall(voucherId: Long) {
         val result = VoucherDetailData(voucherId = voucherId)
         coEvery { merchantPromotionGetMVDataByIDUseCase.execute(any()) } returns result
+    }
+
+    private fun mockUpdateVoucherStatusGQLCall() {
+        val voucherId = 10
+        val result = UpdateStatusVoucherDataModel()
+
+        mockGetInitiateVoucherPageGqlCall()
+
+        coEvery { cancelVoucherUseCase.execute(voucherId, any(), any()) } returns result
+    }
+
+    private fun mockShopBasicDataGQLCall() {
+        val result = shopBasicDataMapper.map(ShopBasicDataResponse())
+        coEvery { shopBasicDataUseCase.execute() } returns result
+    }
+
+    private fun mockGetProductGQLCall() {
+        val result = productListMapper.map(ProductListResponse())
+        coEvery { getProductsUseCase.execute(any()) } returns result
     }
 }
