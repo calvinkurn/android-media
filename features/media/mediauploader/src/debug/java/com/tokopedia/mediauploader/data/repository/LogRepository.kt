@@ -1,5 +1,9 @@
 package com.tokopedia.mediauploader.data.repository
 
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.FileProvider
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
@@ -19,6 +23,7 @@ interface LogRepository {
 }
 
 class LogRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val trackerCacheStore: AnalyticsCacheDataStore,
     private val videoMetaDataExtractor: VideoMetaDataExtractor
 ) : LogRepository {
@@ -92,10 +97,24 @@ class LogRepositoryImpl @Inject constructor(
      */
     override fun fileInfo(path: String): List<Logs> {
         val isVideo = path.asPickerFile().isVideo()
+        val fileSize = File(path).length().formattedToMB()
+
+        val file = FileProvider.getUriForFile(
+            context,
+            context.packageName + ".provider",
+            File(path)
+        )
+
+        val ctaButton = Pair(
+            "Browse",
+            Intent(Intent.ACTION_VIEW, file).also {
+                it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+        )
 
         return mutableListOf(
-            Logs("Path", path),
-            Logs("Size", "${File(path).length().formattedToMB()} MB"),
+            Logs("Path", path, ctaButton),
+            Logs("Size", "$fileSize MB"),
         ).also {
             if (isVideo) {
                 val metadata = videoMetaDataExtractor.extract(path)
@@ -103,7 +122,9 @@ class LogRepositoryImpl @Inject constructor(
                 val width = metadata?.width.orZero()
                 val height = metadata?.height.orZero()
 
-                it.add(Logs("Bitrate", "${metadata?.bitrate.orZero() / 1024} kbps"))
+                val bitrate = metadata?.bitrate.orZero() / 1024 // bps -> kbps
+
+                it.add(Logs("Bitrate", "$bitrate kbps"))
                 it.add(Logs("Resolution", "$width x $height px"))
             }
         }

@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.ui.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,9 +14,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +29,9 @@ import com.tokopedia.mediauploader.data.entity.Logs
 
 @Composable
 fun LogSubItem(log: Logs, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val (ctaText, intent) = log.cta
+
     Row(
         modifier = modifier
             .border(
@@ -47,7 +53,13 @@ fun LogSubItem(log: Logs, modifier: Modifier = Modifier) {
         )
 
         NestTypography(
-            modifier = Modifier.weight(2.5f),
+            modifier = Modifier
+                .weight(2.5f)
+                .clickable {
+                    if (intent != null) {
+                        context.startActivity(intent)
+                    }
+                },
             text = buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
@@ -55,7 +67,19 @@ fun LogSubItem(log: Logs, modifier: Modifier = Modifier) {
                         color = NestTheme.colors.NN._800
                     )
                 ) {
-                    append(log.value)
+                    append("${log.value} ")
+                }
+
+                if (ctaText.isNotEmpty()) {
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            color = NestTheme.colors.GN._500,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    ) {
+                        append(ctaText)
+                    }
                 }
             }
         )
@@ -107,7 +131,11 @@ fun LogItemPreview() {
         type = LogType.map(LogType.CompressInfo),
         logs = listOf(
             Logs("Upload ID", "foo-bar"),
-            Logs("Path", "/DCIM/Camera/Test/sample.jpg")
+            Logs(
+                title = "Path",
+                value = "/DCIM/Camera/Test/sample.jpg",
+                cta = Pair("Browse", null)
+            )
         )
     )
 }

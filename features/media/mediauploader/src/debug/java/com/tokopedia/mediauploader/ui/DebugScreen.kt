@@ -181,7 +181,15 @@ fun DebugScreenPreview() {
 val debugViewModel = object : DebugMediaUploaderViewModelContract {
     override val state: StateFlow<DebugMediaLoaderState> =
         MutableStateFlow(DebugMediaLoaderState().also {
-            it.log(LogType.Welcome, listOf(Logs("Foo", "Bar")))
+            it.log(
+                LogType.Welcome, listOf(
+                    Logs(
+                        title = "Foo",
+                        value = "Bar",
+                        cta = Pair("Browse", null)
+                    )
+                )
+            )
         })
 
     override val config: StateFlow<DebugUploaderParam>

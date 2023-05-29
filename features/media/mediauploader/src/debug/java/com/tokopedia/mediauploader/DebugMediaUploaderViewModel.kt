@@ -42,8 +42,6 @@ class DebugMediaUploaderViewModel @Inject constructor(
 
     override val config = MutableStateFlow(DebugUploaderParam.default())
 
-    private var isCompressionLogExist = false
-
     init {
         viewModelScope.launch {
             _event
@@ -54,7 +52,7 @@ class DebugMediaUploaderViewModel @Inject constructor(
                             _state.value = state.value.copy(
                                 filePath = event.filePath
                             ).also {
-                                it.clear()
+                                it.reset()
                                 it.log(
                                     LogType.FileInfo, logRepository.fileInfo(
                                     event.filePath
@@ -109,9 +107,8 @@ class DebugMediaUploaderViewModel @Inject constructor(
                     cached.compressedVideoPath.isNotEmpty() &&
                     type == ProgressType.Upload &&
                     config.value.shouldCompress &&
-                    isCompressionLogExist.not()
+                    state.value.isCompressed().not()
                 ) {
-                    isCompressionLogExist = true
 
                     _state.value = state.value.copy()
                         .also {

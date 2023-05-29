@@ -12,7 +12,7 @@ data class DebugMediaLoaderState(
     val logs: SnapshotStateList<Pair<LogType, List<Logs>>> = mutableStateListOf(),
 ) {
 
-    fun clear() {
+    fun reset() {
         logs.clear()
     }
 
@@ -22,5 +22,9 @@ data class DebugMediaLoaderState(
 
     fun log(type: LogType, mLogs: List<Logs>) {
         logs.add(Pair(type, mLogs))
+    }
+
+    fun isCompressed(): Boolean {
+        return logs.any { it.first == LogType.CompressInfo }
     }
 }
