@@ -10,8 +10,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
@@ -42,7 +40,7 @@ import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewMo
 import com.tokopedia.troubleshooter.notification.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
-import com.tokopedia.troubleshooter.notification.util.combineFourth
+import com.tokopedia.troubleshooter.notification.util.combineFifth
 import com.tokopedia.troubleshooter.notification.util.isNotNull
 import com.tokopedia.troubleshooter.notification.util.isTrue
 import com.tokopedia.troubleshooter.notification.util.prefixToken
@@ -136,11 +134,14 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
 
         viewModel.deviceSetting.observe(viewLifecycleOwner, {
             deviceSetting(it)
-            playServicesSetting()
         })
 
         viewModel.notificationRingtoneUri.observe(viewLifecycleOwner, {
             ringtoneSetting(it)
+        })
+
+        viewModel.playServicesSetting.observe(viewLifecycleOwner, {
+            playServicesSetting(it)
         })
 
         viewModel.troubleshootSuccess.observe(viewLifecycleOwner, {
@@ -159,16 +160,18 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun troubleshooterStatus() {
-        combineFourth(
+        combineFifth(
                 viewModel.token,
                 viewModel.notificationSetting,
                 viewModel.deviceSetting,
-                viewModel.notificationRingtoneUri
+                viewModel.notificationRingtoneUri,
+                viewModel.playServicesSetting
         ).observe(viewLifecycleOwner, Observer {
             val token = it.first
             val notification = it.second
             val device = it.third
             val ringtone = it.fourth?.second
+            val playServices = it.fifth
 
             if (viewModel.tickerItems.isNotEmpty()) {
                 adapter.addWarningTicker(TickerUIView(viewModel.tickerItems))
@@ -180,7 +183,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
                 TroubleshooterTimber.combine(token, notification, device)
 
                 if (notification.isTrue() && device.isTrue() && !isSilent(ringtone)
-                    && token.isTrue() && isGooglePlayServicesAvailable()) {
+                    && token.isTrue() && playServices.isTrue()) {
                     adapter.status(StatusState.Success)
                 } else {
                     adapter.status(StatusState.Warning)
@@ -266,11 +269,16 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         }
     }
 
-    private fun playServicesSetting() {
-        if (isGooglePlayServicesAvailable()) {
-            adapter.updateStatus(GooglePlayServices, StatusState.Success)
-        } else {
-            adapter.updateStatus(GooglePlayServices, StatusState.Error)
+    private fun playServicesSetting(result: Result<PlayServicesState>) {
+        when (result) {
+            is Fail -> {
+                adapter.updateStatus(GooglePlayServices, StatusState.Error)
+            }
+            is Success -> {
+                if (result.data == PlayServicesState.Present) {
+                    adapter.updateStatus(GooglePlayServices, StatusState.Success)
+                }
+            }
         }
 
     }
@@ -338,17 +346,6 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
             it as? TroubleshootActivity?
         }.also {
             it?.supportActionBar?.title = screenName
-        }
-    }
-
-    private fun isGooglePlayServicesAvailable(): Boolean {
-        try {
-            val googleApiAvailability: GoogleApiAvailability = GoogleApiAvailability.getInstance()
-            val resultCode: Int =
-                googleApiAvailability.isGooglePlayServicesAvailable(requireContext())
-            return resultCode == ConnectionResult.SUCCESS
-        } catch (_: Exception) {
-            return false
         }
     }
 
