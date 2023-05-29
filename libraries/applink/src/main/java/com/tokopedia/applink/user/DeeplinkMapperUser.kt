@@ -13,6 +13,7 @@ import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
+    const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
     fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
@@ -30,9 +31,23 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
-            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) -> ApplinkConstInternalUserPlatform.GOTO_KYC
+            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) -> getApplinkGotoKyc()
             else -> deeplink
         }
+    }
+
+    private fun getApplinkGotoKyc(): String {
+        return if (isRollenceGotoKycActivated()) {
+            ApplinkConstInternalUserPlatform.GOTO_KYC
+        } else {
+            ApplinkConstInternalUserPlatform.KYC_INFO_BASE
+        }
+    }
+
+    private fun isRollenceGotoKycActivated(): Boolean {
+        return getAbTestPlatform()
+            .getString(ROLLENCE_GOTO_KYC)
+            .isNotEmpty()
     }
 
     private fun getApplinkPrivacyCenter(): String {
