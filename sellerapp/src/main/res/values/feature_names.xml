@@ -83,4 +83,7 @@
     <!-- Shop Settings -->
     <string name="title_module_shop_settings_sellerapp">Shop Settings</string>
 
+    <!--Kyc-->
+    <string name="title_module_kyc_sellerapp">KYC</string>
+
 </resources>
