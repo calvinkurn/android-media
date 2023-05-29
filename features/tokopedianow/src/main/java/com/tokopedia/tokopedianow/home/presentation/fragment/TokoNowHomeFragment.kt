@@ -204,6 +204,8 @@ class TokoNowHomeFragment :
         private const val WHILE_SCROLLING_VERTICALLY = 1
         private const val PARAM_AFFILIATE_UUID = "aff_unique_id"
         private const val PARAM_AFFILIATE_CHANNEL = "channel"
+        private const val REPURCHASE_EXPERIMENT_ENABLED = "experiment_variant"
+        private const val REPURCHASE_EXPERIMENT_DISABLED = "control_variant"
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -1611,7 +1613,7 @@ class TokoNowHomeFragment :
         addHomeComponentScrollListener()
     }
 
-    private fun onScrollTokoMartHome() {
+    private fun onScroll() {
         localCacheModel?.let {
             val layoutManager = rvHome?.layoutManager as? LinearLayoutManager
             val lastVisibleItemIndex = layoutManager?.findLastVisibleItemPosition().orZero()
@@ -1634,9 +1636,9 @@ class TokoNowHomeFragment :
     }
 
     private fun isEnableNewRepurchase(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform
-            .getString(RollenceKey.TOKOPEDIA_NOW_REPURCHASE, "")
-            .isNotEmpty()
+        val rollence = RemoteConfigInstance.getInstance().abTestPlatform
+            .getString(RollenceKey.TOKOPEDIA_NOW_REPURCHASE, REPURCHASE_EXPERIMENT_DISABLED)
+        return rollence == REPURCHASE_EXPERIMENT_ENABLED
     }
 
     private fun getMiniCart() {
@@ -1789,7 +1791,7 @@ class TokoNowHomeFragment :
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                onScrollTokoMartHome()
+                onScroll()
             }
         }
     }
