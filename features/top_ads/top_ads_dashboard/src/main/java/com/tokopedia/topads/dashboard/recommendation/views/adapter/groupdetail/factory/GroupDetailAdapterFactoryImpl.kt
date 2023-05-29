@@ -53,6 +53,10 @@ class GroupDetailAdapterFactoryImpl(
         return GroupDetailInsightListViewHolder.LAYOUT
     }
 
+    override fun type(accordianDailyBudgetUiModel: AccordianDailyBudgetUiModel): Int {
+        return AccordianDailyBudgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view)
@@ -65,6 +69,7 @@ class GroupDetailAdapterFactoryImpl(
             AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view)
             GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view, onInsightItemClick)
             GroupDetailEmptyStateViewHolder.LAYOUT -> GroupDetailEmptyStateViewHolder(view)
+            AccordianDailyBudgetViewHolder.LAYOUT -> AccordianDailyBudgetViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
