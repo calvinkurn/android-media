@@ -33,7 +33,7 @@ inline fun BrowseFileButton(
             onClick(MediaPicker.intentWithGalleryFirst(context) {
                 singleSelectionMode()
                 maxVideoFileSize(262144000)
-                maxVideoDuration(60000)
+                maxVideoDuration(180000)
                 minVideoDuration(1000)
             })
         }

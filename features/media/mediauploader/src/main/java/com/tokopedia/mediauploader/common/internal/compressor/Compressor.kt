@@ -69,7 +69,7 @@ object Compressor {
         val duration = durationData.toLong() * 1000
 
         // Handle new bitrate value
-        val newBitrate = configuration.videoBitrateInMbps!! * 1000000
+        val newBitrate = configuration.videoBitrate ?: 1_000_000
 
         // Handle new width and height values
         var (newWidth, newHeight) = Pair(

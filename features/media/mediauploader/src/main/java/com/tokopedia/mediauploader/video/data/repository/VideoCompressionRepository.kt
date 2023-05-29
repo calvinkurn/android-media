@@ -4,12 +4,12 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.common.internal.compressor.CompressionProgressListener
-import com.tokopedia.mediauploader.common.internal.compressor.Compressor
-import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.internal.compressor.CompressionProgressListener
+import com.tokopedia.mediauploader.common.internal.compressor.Compressor
+import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
 import com.tokopedia.utils.file.FileUtil
@@ -42,7 +42,15 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         val key = cacheData.key(sourceId, originalPath)
         val cache = cacheData.getData(key)
 
-        if (cache != null && cache.isCompressedFileExist()) return cache.compressedVideoPath
+        // return the compressed file path if user has compressed before and file is exist
+        if (cache != null &&
+            cache.isCompressedFileExist() &&
+            File(cache.compressedVideoPath).exists() &&
+
+            // this validation is necessary due the compression there's a
+            // edge case compressing the file is successful but the file is broken
+            File(cache.compressedVideoPath).length() > 0
+        ) return cache.compressedVideoPath
 
         // get the video info of originalVideoPath, return the originalPath if couldn't get the video info
         val videoOriginalInfo = metadata.extract(originalPath) ?: return originalPath
@@ -61,12 +69,12 @@ class VideoCompressionRepositoryImpl @Inject constructor(
             val cacheFile = compressedVideoPath(originalPath)
 
             // get minimum bitrate and convert it from Bps into Mbps
-            val mBitrate = min(param.bitrate, videoOriginalInfo.bitrate) / 1_000_000
+            val mBitrate = min(param.bitrate, videoOriginalInfo.bitrate)
 
             val config = Configuration(
-                videoBitrateInMbps = mBitrate,
-                videoHeight = generateVideoSize.height.toDouble(),
-                videoWidth = generateVideoSize.width.toDouble()
+                videoBitrate = mBitrate,
+                videoHeight = (generateVideoSize.height.toDouble() * 2) / 2,
+                videoWidth = (generateVideoSize.width.toDouble() * 2) / 2
             )
 
             val compression = Compressor.compressVideo(
@@ -99,6 +107,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
                 return compressedPath
             } else {
+                println("VOD-COMPRESS: ${compression.failureMessage}")
                 // failed to compress, return the originalPath
                 return originalPath
             }
@@ -133,10 +142,17 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
         return if (minVideoRes > thresholdRes) {
             val scale = thresholdRes / minVideoRes
+            var width = round(info.width * scale).toInt()
+            var height = round(info.height * scale).toInt()
+
+            // since the MediaCodec android doesn't support an odd number,
+            // we have to force the size into even number.
+            if (width % 2 == 1) width--
+            if (height % 2 == 1) height--
 
             VideoInfo(
-                width = round(info.width * scale).toInt(),
-                height = round(info.height * scale).toInt(),
+                width = width,
+                height = height,
                 bitrate = info.bitrate
             )
         } else {
