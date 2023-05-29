@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
@@ -53,7 +52,6 @@ import javax.inject.Inject
 class TokofoodSearchResultPageViewModel @Inject constructor(
     private val tokofoodSearchMerchantUseCase: TokofoodSearchMerchantUseCase,
     private val tokofoodFilterSortUseCase: TokofoodFilterSortUseCase,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val tokofoodMerchantSearchResultMapper: TokofoodMerchantSearchResultMapper,
     private val tokofoodFilterSortMapper: TokofoodFilterSortMapper,

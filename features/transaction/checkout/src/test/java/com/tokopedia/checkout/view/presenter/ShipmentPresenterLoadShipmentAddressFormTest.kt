@@ -25,9 +25,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -120,9 +118,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK(relaxed = true)
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
@@ -165,7 +160,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase
         )
@@ -734,13 +728,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData()
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -791,11 +778,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
         }
 
         // When
@@ -1792,7 +1774,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         verify {
             getShipmentAddressFormV3UseCase.cancelJobs()
-            eligibleForAddressUseCase.cancelJobs()
             epharmacyUseCase.cancelJobs()
         }
     }

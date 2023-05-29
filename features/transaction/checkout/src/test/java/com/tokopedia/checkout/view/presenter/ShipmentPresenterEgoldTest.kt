@@ -15,7 +15,6 @@ import com.tokopedia.checkout.view.uimodel.EgoldTieringModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -95,9 +94,6 @@ class ShipmentPresenterEgoldTest {
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
     @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
@@ -138,7 +134,6 @@ class ShipmentPresenterEgoldTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase
         )

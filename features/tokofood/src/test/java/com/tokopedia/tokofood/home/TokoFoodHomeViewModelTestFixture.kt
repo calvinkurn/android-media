@@ -5,9 +5,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressQglResponse
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.response.KeroEditAddressResponse
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
@@ -58,9 +55,6 @@ abstract class TokoFoodHomeViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase
-
-    @RelaxedMockK
-    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @RelaxedMockK
     lateinit var tokofoodHomeSharedPref: TokofoodHomeSharedPref

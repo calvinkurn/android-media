@@ -96,7 +96,6 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase;
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
@@ -216,7 +215,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final GetPrescriptionIdsUseCase prescriptionIdsUseCase;
     private final EPharmacyPrepareProductsGroupUseCase epharmacyUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
-    private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
@@ -290,7 +288,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
-                             EligibleForAddressUseCase eligibleForAddressUseCase,
                              GetRatesWithScheduleUseCase ratesWithScheduleUseCase,
                              UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase) {
         this.compositeSubscription = compositeSubscription;
@@ -316,7 +313,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
-        this.eligibleForAddressUseCase = eligibleForAddressUseCase;
         this.updateDynamicDataPassingUseCase = updateDynamicDataPassingUseCase;
     }
 
@@ -334,9 +330,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (getShipmentAddressFormV3UseCase != null) {
             getShipmentAddressFormV3UseCase.cancelJobs();
         }
-        if (eligibleForAddressUseCase != null) {
-            eligibleForAddressUseCase.cancelJobs();
-        }
+
         if (epharmacyUseCase != null) {
             epharmacyUseCase.cancelJobs();
         }
@@ -711,7 +705,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             boolean isReloadAfterPriceChangeHigher,
                                             boolean isOneClickShipment) {
         if (cartShipmentAddressFormData.getErrorCode() == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS) {
-            checkIsUserEligibleForRevampAna(cartShipmentAddressFormData);
+            getView().renderCheckoutPageNoAddress(cartShipmentAddressFormData);
+
         } else if (cartShipmentAddressFormData.getErrorCode() == CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADDRESS_LIST) {
             getView().renderCheckoutPageNoMatchedAddress(cartShipmentAddressFormData, userAddress != null ? userAddress.getState() : 0);
         } else if (cartShipmentAddressFormData.getErrorCode() == CartShipmentAddressFormData.NO_ERROR) {
@@ -736,24 +731,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp();
         dynamicData = cartShipmentAddressFormData.getDynamicData();
-    }
-
-    private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
-        eligibleForAddressUseCase.eligibleForAddressFeature(keroAddrIsEligibleForAddressFeature -> {
-            if (getView() != null) {
-                getView().renderCheckoutPageNoAddress(cartShipmentAddressFormData, keroAddrIsEligibleForAddressFeature.getEligibleForRevampAna().getEligible());
-            }
-            return Unit.INSTANCE;
-        }, throwable -> {
-            if (getView() != null) {
-                String errorMessage = throwable.getMessage();
-                if (errorMessage == null) {
-                    errorMessage = getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short);
-                }
-                getView().showToastError(errorMessage);
-            }
-            return Unit.INSTANCE;
-        }, AddressConstant.ANA_REVAMP_FEATURE_ID);
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {

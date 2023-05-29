@@ -16,7 +16,6 @@ import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDat
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.RefreshTokonowDataUsecase
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewModel
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -39,7 +38,6 @@ class ChooseAddressViewModelTest {
 
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper = ChooseAddressMapper()
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
     private val refreshTokonowDataUseCase: RefreshTokonowDataUsecase = mockk(relaxed = true)
 
     private lateinit var chooseAddressViewModel: ChooseAddressViewModel

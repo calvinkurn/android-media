@@ -23,7 +23,6 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
@@ -116,7 +115,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
         gson: Gson,
         executorSchedulers: ExecutorSchedulers,
-        eligibleForAddressUseCase: EligibleForAddressUseCase,
         updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
     ): ShipmentContract.Presenter {
         return ShipmentPresenter(
@@ -130,7 +128,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase, updateDynamicDataPassingUseCase
+            executorSchedulers, ratesWithScheduleUseCase, updateDynamicDataPassingUseCase
         )
     }
 
