@@ -163,7 +163,7 @@ class CatalogLibraryHomePageVMTest {
     }
 
     @Test
-    fun `Get Popular Brands fetch failed throws exception`() {
+    fun `Get Popular Brands fetch failed and throws exception`() {
         coEvery {
             catalogBrandsPopularUseCase.getBrandPopular(any(), any())
         } coAnswers {
