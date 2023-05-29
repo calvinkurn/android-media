@@ -14,7 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.content.common.comment.uimodel.CommentType
 import com.tokopedia.content.common.comment.uimodel.CommentUiModel
 import com.tokopedia.content.common.comment.uimodel.UserType
-import com.tokopedia.feedcomponent.util.buildSpannedString
+import com.tokopedia.content.common.util.buildSpannedString
 
 /**
  * @author by astidhiyaa on 23/02/23

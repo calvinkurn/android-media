@@ -209,6 +209,8 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
@@ -221,19 +223,12 @@ class FeedPostImageViewHolder(
                             data.author.id,
                             absoluteAdapterPosition
                         ),
-                        trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data)
+                        trackerData
 
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
-                    )
+                    listener.onSharePostClicked(getShareModel(data), trackerData)
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -538,6 +533,27 @@ class FeedPostImageViewHolder(
                     binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
                 }
             }
+        }
+    }
+
+    private fun getShareModel(data: FeedCardImageContentModel): FeedShareModel {
+        return if (data.isTopAds) {
+            val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
+            // intentionally, get data from 'products' instead of 'medias'
+            // as long as products value === medias value (please check the MapperTopAdsFeed.kt)
+            // todo: differentiate TopAds model with the rest
+            val productLink = if (data.products.size > selectedImagePosition) {
+                val productItem = data.products[selectedImagePosition]
+                Pair(productItem.applink, productItem.weblink)
+            } else {
+                Pair(data.share.appLink, data.share.webLink)
+            }
+            return data.share.copy(
+                appLink = productLink.first,
+                webLink = productLink.second
+            )
+        } else {
+            data.share
         }
     }
 

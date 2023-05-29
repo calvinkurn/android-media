@@ -103,8 +103,9 @@ class FeedPostVideoViewHolder(
             )
         }
 
-        val postGestureDetector = GestureDetector(
-            binding.root.context,
+
+                val postGestureDetector = GestureDetector(
+                    binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
@@ -167,6 +168,8 @@ class FeedPostVideoViewHolder(
                 bindComments(data)
                 bindVideoPlayer(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
@@ -179,19 +182,11 @@ class FeedPostVideoViewHolder(
                             data.author.id,
                             absoluteAdapterPosition
                         ),
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        )
+                        trackerData
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
-                    )
+                    listener.onSharePostClicked(data.share, trackerData)
                 }
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
