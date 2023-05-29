@@ -85,10 +85,10 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
 
     private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition,
             customIdPrefix = "P",
-            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
+            packageName = BuildConfig.APPLICATION_ID)
     private val vhViewPrinter = ViewHierarchyPrinter(printConditions,
             customIdPrefix = "P",
-            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
+            packageName = BuildConfig.APPLICATION_ID)
 
     @Test
     fun captureParentFragmentId() {

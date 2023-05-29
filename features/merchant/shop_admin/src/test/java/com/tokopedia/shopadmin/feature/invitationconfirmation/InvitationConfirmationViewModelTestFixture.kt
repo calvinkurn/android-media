@@ -14,6 +14,7 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimod
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.uimodel.UserProfileUpdateUiModel
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.InvitationConfirmationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
@@ -34,6 +35,9 @@ abstract class InvitationConfirmationViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getAdminTypeUseCaseCase: Lazy<GetAdminTypeUseCaseCase>

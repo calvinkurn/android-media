@@ -38,7 +38,7 @@ class PersonaSharedViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when fetch persona status then return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val pageName = "seller-home"
             val shopId = anyString()
             val personaStatus = PersonaStatusModel()
@@ -59,7 +59,7 @@ class PersonaSharedViewModelTest : BaseViewModelTest() {
 
     @Test
     fun `when fetch persona status then return fail result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val pageName = "seller-home"
             val shopId = anyString()
             val throwable = Throwable()

@@ -12,6 +12,8 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
@@ -22,7 +24,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `when getAllSettingShopInfo type transition period success should set live data success`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             val shopScoreResponse = ShopScoreLevelResponse.ShopScoreLevel.Result(shopScore = 70)
             val shopSettingsResponse = createShopSettingsResponse()
 
@@ -40,7 +42,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `when getShopAccountTickerPeriod success should set live data success`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             val shopInfoPeriodResponse = ShopInfoPeriodUiModel()
 
             onGetShopInfoPeriodUseCase_thenReturn(shopInfoPeriodResponse)
@@ -190,7 +192,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `given isToasterRetry true when getAllSettingShopInfo should set isToasterAlreadyShown true`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             val isToasterRetry = true
 
             viewModel.setIsToasterAlreadyShown(false)
@@ -205,7 +207,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `given isToasterRetry false when getAllSettingShopInfo should set isToasterAlreadyShown false`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             val isToasterRetry = false
 
             viewModel.setIsToasterAlreadyShown(false)
@@ -220,7 +222,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
 
     @Test
     fun `given isToasterRetry true when getAllSettingShopInfo should not set isToasterAlreadyShown value`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             val isToasterRetry = true
 
             viewModel.setIsToasterAlreadyShown(true)
@@ -236,7 +238,7 @@ class SellerMenuViewModelTest : SellerMenuViewModelTestFixture() {
     
     @Test
     fun `given isToasterRetry null when getAllSettingShopInfo should not set isToasterAlreadyShown value`() {
-        coroutineTestRule.runBlockingTest {
+        runBlockingTest {
             viewModel.getAllSettingShopInfo(true, shopAge = 65)
 
             assertEquals(viewModel.isToasterAlreadyShown.value, null)

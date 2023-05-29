@@ -91,7 +91,9 @@ class RechargeCCFragment :
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
     RechargeCCClientNumberWidget.CreditCardActionListener,
-    RechargeCCBankListWidget.RechargeCCBankListListener {
+    RechargeCCBankListWidget.RechargeCCBankListListener,
+    TopupBillsRecentNumberListener,
+    RechargeCCPromoFragment.RechargeCCPromoItemListener {
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
     private lateinit var saveInstanceManager: SaveInstanceCacheManager
@@ -189,6 +191,14 @@ class RechargeCCFragment :
         creditCardAnalytics.impressionInitialPage(userSession.userId)
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is RechargeCCRecommendationFragment) {
+            childFragment.setListener(this)
+        } else if(childFragment is RechargeCCPromoFragment) {
+            childFragment.setListener(this)
+        }
+    }
+
     private fun setupKeyboardWatcher() {
         binding?.ccWidgetClientNumber?.rootView?.let {
             keyboardWatcher.listen(
@@ -244,6 +254,9 @@ class RechargeCCFragment :
                     is RechargeNetworkResult.Fail -> {
                         // TODO: show global error
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )
@@ -279,6 +292,9 @@ class RechargeCCFragment :
                     }
                     is RechargeNetworkResult.Fail -> {
                         showErrorToaster(it.error)
+                    }
+                    else -> {
+                        // no-op
                     }
                 }
             }
@@ -350,18 +366,27 @@ class RechargeCCFragment :
                 is RechargeNetworkResult.Loading -> {
                     binding?.ccWidgetClientNumber?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
 
         rechargeCCViewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    // no-op
+                }
             }
         }
 
         rechargeCCViewModel.prefillData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -403,18 +428,16 @@ class RechargeCCFragment :
         val menuTab = mutableListOf<TopupBillsTabItem>()
         val isShowTitle = false
 
-        RechargeCCRecommendationFragment(
+        RechargeCCRecommendationFragment.newInstance(
             RechargeCCMapper.mapRechargeCCRecomToTopupRecom(recommendations),
-            isShowTitle,
-            getRechargeCCRecentNumberListener()
+            isShowTitle
         ).also {
             menuTab.add(TopupBillsTabItem(it, RECENT_TRANSACTION_LABEL))
         }
 
         RechargeCCPromoFragment.newInstance(
             RechargeCCMapper.mapRechargeCCPromoToTopupPromo(promos),
-            isShowTitle,
-            getRechargeCCPromoItemListener()
+            isShowTitle
         ).also {
             menuTab.add(TopupBillsTabItem(it, PROMO_LIST_LABEL))
         }
@@ -488,41 +511,37 @@ class RechargeCCFragment :
         }
     }
 
-    private fun getRechargeCCRecentNumberListener() = object : TopupBillsRecentNumberListener {
-        override fun onClickRecentNumber(
-            topupBillsRecommendation: TopupBillsRecommendation,
-            categoryId: String,
-            position: Int
-        ) {
-            topupBillsRecommendation.position = position
-            binding?.ccWidgetClientNumber?.run {
-                setInputNumber(topupBillsRecommendation.clientNumber)
-                operatorIdSelected = topupBillsRecommendation.operatorId
-                productIdSelected = topupBillsRecommendation.productId
-                token = topupBillsRecommendation.token
-                dialogConfirmation()
-            }
-            creditCardAnalytics.sendClickLastTransactionListEvent(
-                rechargeCCViewModel.categoryName,
-                rechargeCCViewModel.loyaltyStatus,
-                position
-            )
+    override fun onClickRecentNumber(
+        topupBillsRecommendation: TopupBillsRecommendation,
+        categoryId: String,
+        position: Int
+    ) {
+        topupBillsRecommendation.position = position
+        binding?.ccWidgetClientNumber?.run {
+            setInputNumber(topupBillsRecommendation.clientNumber)
+            operatorIdSelected = topupBillsRecommendation.operatorId
+            productIdSelected = topupBillsRecommendation.productId
+            token = topupBillsRecommendation.token
+            dialogConfirmation()
         }
-
-        override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
-            // do nothing
-        }
+        creditCardAnalytics.sendClickLastTransactionListEvent(
+            rechargeCCViewModel.categoryName,
+            rechargeCCViewModel.loyaltyStatus,
+            position
+        )
     }
 
-    private fun getRechargeCCPromoItemListener() = object : RechargeCCPromoFragment.RechargeCCPromoItemListener {
-        override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
-            creditCardAnalytics.sendClickSalinPromoDigitalEvent(
-                rechargeCCViewModel.categoryName,
-                rechargeCCViewModel.loyaltyStatus,
-                voucherCode,
-                position
-            )
-        }
+    override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
+        // do nothing
+    }
+
+    override fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int) {
+        creditCardAnalytics.sendClickSalinPromoDigitalEvent(
+            rechargeCCViewModel.categoryName,
+            rechargeCCViewModel.loyaltyStatus,
+            voucherCode,
+            position
+        )
     }
 
     private fun checkPrefixCreditCardNumber(clientNumber: String) {
@@ -735,7 +754,7 @@ class RechargeCCFragment :
     //region RechargeCCBankListListener
     override fun onClickBankList() {
         activity?.let {
-            val bottomSheetBankList = CCBankListBottomSheet(categoryId)
+            val bottomSheetBankList = CCBankListBottomSheet.newBottomSheet(categoryId)
             bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
         }
     }

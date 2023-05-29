@@ -112,7 +112,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.manageaddress)
 
     //Merchant
-    implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.talk)
     implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
@@ -133,11 +132,6 @@ dependencies {
 
     //Promo
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
-
-    //Salam
-
-    //Travel
-    implementation projectOrAar(rootProject.ext.features.travelHomepage)
 
     //User
     implementation projectOrAar(rootProject.ext.features.settingnotif)
