@@ -83,11 +83,11 @@ class CarouselPlayWidgetCallback(
                 )
             )
         ).appendUserId(userId)
-            .appendBusinessUnit("play")
-            .appendCurrentSite("tokopediamarketplace")
-            .appendCustomKeyValue("trackerId", "43568")
-            .appendCustomKeyValue("sessionIris", irisSessionId)
-            .appendCustomKeyValue("channelId", mHomeChannelId)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
+            .appendCustomKeyValue(KEY_TRACKER_ID, "43568")
+            .appendCustomKeyValue(KEY_SESSION_IRIS, irisSessionId)
+            .appendCustomKeyValue(KEY_CHANNEL_ID, mHomeChannelId)
             .build()
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -134,11 +134,11 @@ class CarouselPlayWidgetCallback(
                 )
             )
         ).appendUserId(userId)
-            .appendBusinessUnit("play")
-            .appendCurrentSite("tokopediamarketplace")
-            .appendCustomKeyValue("trackerId", "43569")
-            .appendCustomKeyValue("sessionIris", irisSessionId)
-            .appendCustomKeyValue("channelId", mHomeChannelId)
+            .appendBusinessUnit(VAL_BUSINESS_UNIT)
+            .appendCurrentSite(VAL_CURRENT_SITE)
+            .appendCustomKeyValue(KEY_TRACKER_ID, "43569")
+            .appendCustomKeyValue(KEY_SESSION_IRIS, irisSessionId)
+            .appendCustomKeyValue(KEY_CHANNEL_ID, mHomeChannelId)
             .build()
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -156,7 +156,7 @@ class CarouselPlayWidgetCallback(
         val channelPosition = channelPositionInList + 1
 
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction("click - creator name")
             .setEventCategory(model.category)
             .setEventLabel(
@@ -172,10 +172,10 @@ class CarouselPlayWidgetCallback(
                     mHomeChannelId,
                 )
             )
-            .setCustomProperty("trackerId", "43572")
-            .setBusinessUnit("play")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("sessionIris", irisSessionId)
+            .setCustomProperty(KEY_TRACKER_ID, "43572")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -193,7 +193,7 @@ class CarouselPlayWidgetCallback(
         val channelPosition = channelPositionInList + 1
 
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction("click - content mute button")
             .setEventCategory("homepage-cmp")
             .setEventLabel(
@@ -209,10 +209,10 @@ class CarouselPlayWidgetCallback(
                     mHomeChannelId,
                 )
             )
-            .setCustomProperty("trackerId", "43574")
-            .setBusinessUnit("play")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("sessionIris", irisSessionId)
+            .setCustomProperty(KEY_TRACKER_ID, "43574")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -231,9 +231,9 @@ class CarouselPlayWidgetCallback(
         val channelPosition = channelPositionInList + 1
 
         Tracker.Builder()
-            .setEvent("clickContent")
+            .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction("click - upcoming content bell")
-            .setEventCategory("homepage-cmp")
+            .setEventCategory(model.category)
             .setEventLabel(
                 trackerMultiFields(
                     model.prefix, /** prefix **/
@@ -247,10 +247,10 @@ class CarouselPlayWidgetCallback(
                     mHomeChannelId,
                 )
             )
-            .setCustomProperty("trackerId", "43576")
-            .setBusinessUnit("play")
-            .setCurrentSite("tokopediamarketplace")
-            .setCustomProperty("sessionIris", irisSessionId)
+            .setCustomProperty(KEY_TRACKER_ID, "43576")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
             .setUserId(userId)
             .build()
             .send()
@@ -278,12 +278,12 @@ class CarouselPlayWidgetCallback(
             "carousel",
             item.recommendationType,
             "",
-            "play",
+            VAL_BUSINESS_UNIT,
             mHeaderTitle,
         )
 
         val trackerMap = mapOf(
-            Event.KEY to "productView",
+            Event.KEY to EVENT_PRODUCT_VIEW,
             Category.KEY to model.category,
             Action.KEY to "view - product card video widget",
             Label.KEY to trackerMultiFields(
@@ -314,11 +314,11 @@ class CarouselPlayWidgetCallback(
                     )
                 )
             ),
-            "userId" to userId,
-            "businessUnit" to "play",
-            "currentSite" to "tokopediamarketplace",
-            "sessionIris" to irisSessionId,
-            "trackerId" to "43577"
+            KEY_USER_ID to userId,
+            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            KEY_SESSION_IRIS to irisSessionId,
+            KEY_TRACKER_ID to "43577"
         )
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -346,12 +346,12 @@ class CarouselPlayWidgetCallback(
             "carousel",
             item.recommendationType,
             "",
-            "play",
+            VAL_BUSINESS_UNIT,
             mHeaderTitle,
         )
 
         val trackerMap = mapOf(
-            Event.KEY to "productClick",
+            Event.KEY to EVENT_PRODUCT_CLICK,
             Category.KEY to model.category,
             Action.KEY to "click - product card video widget",
             Label.KEY to trackerMultiFields(
@@ -384,13 +384,29 @@ class CarouselPlayWidgetCallback(
                     )
                 )
             ),
-            "userId" to userId,
-            "businessUnit" to "play",
-            "currentSite" to "tokopediamarketplace",
-            "sessionIris" to irisSessionId,
-            "trackerId" to "43578"
+            KEY_USER_ID to userId,
+            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
+            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            KEY_SESSION_IRIS to irisSessionId,
+            KEY_TRACKER_ID to "43578"
         )
 
         trackingQueue.putEETracking(HashMap(trackerMap))
+    }
+
+    companion object {
+        private const val EVENT_CLICK_CONTENT = "clickContent"
+        private const val EVENT_PRODUCT_VIEW = "productView"
+        private const val EVENT_PRODUCT_CLICK = "productClick"
+
+        private const val KEY_USER_ID = "userId"
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+        private const val KEY_SESSION_IRIS = "sessionIris"
+        private const val KEY_TRACKER_ID = "trackerId"
+        private const val KEY_CHANNEL_ID = "channelId"
+
+        private const val VAL_BUSINESS_UNIT = "play"
+        private const val VAL_CURRENT_SITE = "tokopediamarketplace"
     }
 }
