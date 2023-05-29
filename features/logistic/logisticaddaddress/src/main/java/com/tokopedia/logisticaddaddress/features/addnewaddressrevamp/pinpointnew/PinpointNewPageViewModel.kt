@@ -10,12 +10,12 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticaddaddress.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
+import com.tokopedia.logisticaddaddress.common.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeParam
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageFragment.Companion.LOCATION_NOT_FOUND_MESSAGE
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.uimodel.MapsGeocodeState
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
@@ -29,7 +29,7 @@ class PinpointNewPageViewModel @Inject constructor(
     private val repo: KeroRepository,
     private val getDistrictMapper: GetDistrictMapper,
     private val districtBoundaryMapper: DistrictBoundaryMapper,
-    private val mapsGeocodeUseCase: MapsGeocodeUseCase,
+    private val mapsGeocodeUseCase: MapsGeocodeUseCase
 ) : ViewModel() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
@@ -84,7 +84,7 @@ class PinpointNewPageViewModel @Inject constructor(
         source: String,
         isGetPinPointOnly: Boolean,
         districtName: String?,
-        cityName: String?,
+        cityName: String?
     ) {
         this.currentPlaceId = currentPlaceId
         setLatLong(latitude, longitude)
@@ -209,7 +209,8 @@ class PinpointNewPageViewModel @Inject constructor(
                 } ?: kotlin.run {
                     _mapsGeocodeState.value = MapsGeocodeState.Fail(LOCATION_NOT_FOUND_MESSAGE)
                 }
-            }, onError = {
+            },
+            onError = {
                 _mapsGeocodeState.value = MapsGeocodeState.Fail(it.message.orEmpty())
             }
         )

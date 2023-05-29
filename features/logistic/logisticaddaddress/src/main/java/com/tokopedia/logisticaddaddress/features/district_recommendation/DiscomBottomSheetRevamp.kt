@@ -37,12 +37,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
+import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.common.adapter.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
@@ -71,7 +71,7 @@ class DiscomBottomSheetRevamp :
 
     private var viewBinding by autoClearedNullable<BottomsheetDistcrictReccomendationRevampBinding>()
 
-    private val zipCodeChipsAdapter by lazy { ZipCodeChipsAdapter(context, this) }
+    private val zipCodeChipsAdapter by lazy { ZipCodeChipsAdapter(this) }
     private val popularCityAdapter by lazy { PopularCityAdapter(context, this) }
     private val listDistrictAdapter by lazy { DiscomAdapterRevamp(this) }
     private var discomRevampListener: DiscomRevampListener? = null
@@ -502,7 +502,10 @@ class DiscomBottomSheetRevamp :
 
     private fun openSoftKeyboard() {
         viewBinding?.etKodepos?.textFieldInput.let {
-            (it?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
+            (it?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(
+                it,
+                InputMethodManager.SHOW_IMPLICIT
+            )
         }
     }
 
@@ -650,7 +653,8 @@ class DiscomBottomSheetRevamp :
                                 }
 
                             LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
-                                val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                                val errorMessage =
+                                    "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
                                 Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
                             }
                         }

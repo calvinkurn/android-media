@@ -11,7 +11,6 @@ public class AddressConstants {
 
     public static final String KERO_TOKEN = "token";
 
-
     public static final int INSTANCE_TYPE_DEFAULT = 0;
 
     public static final int INSTANCE_TYPE_ADD_ADDRESS_FROM_MANAGE_ADDRESS_EMPTY_DEFAULT_ADDRESS = 3;
@@ -81,7 +80,7 @@ public class AddressConstants {
     public static final String PARAM_TRACKER_LABEL = "label";
     public static final String PARAM_DISTRICT_ID = "districtId";
     public static final String PARAM_CURRENT_LOC = "currentLoc";
-    public static final String PARAM_SOURCE = "source" ;
+    public static final String PARAM_SOURCE = "source";
 
     // User Consent
     public static final String ADD_ADDRESS_COLLECTION_ID_STAGING = "01203d44-15c8-46f5-aed2-77e92dd4e625";

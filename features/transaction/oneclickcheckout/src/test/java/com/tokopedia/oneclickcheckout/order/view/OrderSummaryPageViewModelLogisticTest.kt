@@ -12,12 +12,10 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
-import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
-import com.tokopedia.oneclickcheckout.order.view.model.OrderEnableAddressFeature
 import com.tokopedia.oneclickcheckout.order.view.model.OrderInsurance
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileAddress
@@ -27,7 +25,6 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
-import com.tokopedia.oneclickcheckout.utils.callOnCleared
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -2361,34 +2358,6 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
-    fun `Get Eligible For Revamp Ana Success`() {
-        // Given
-        val response = KeroAddrIsEligibleForAddressFeatureData()
-        onCheckEligibility_thenReturn(response)
-
-        // When
-        orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
-
-        // Then
-        val expected = OrderEnableAddressFeature(response)
-        assertEquals(OccState.Success(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
-    }
-
-    @Test
-    fun `Get Eligible For Revamp Ana Fail`() {
-        // Given
-        val error = Throwable()
-        onCheckEligibility_thenThrow(error)
-
-        // When
-        orderSummaryPageViewModel.checkUserEligibilityForAnaRevamp()
-
-        // Then
-        val expected = Failure(error)
-        assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
-    }
-
-    @Test
     fun `Get normal shipping duration param`() {
         // Given
         orderSummaryPageViewModel.orderProfile.value = helper.preference
@@ -2433,32 +2402,5 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
 
         // Then
         assert((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success<OrderShippingDuration>).data.pslCode == helper.logisticPromo.promoCode)
-    }
-
-    private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureData) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(keroAddrIsEligibleForAddressFeatureResponse)
-        }
-    }
-
-    private fun onCheckEligibility_thenThrow(error: Throwable) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(error)
-        }
-    }
-
-    @Test
-    fun `verify eligible for address cancel jobs when viewmodel call on cleared`() {
-        // When
-        orderSummaryPageViewModel.callOnCleared()
-
-        // Then
-        verify(exactly = 1) {
-            eligibleForAddressUseCase.cancelJobs()
-        }
     }
 }

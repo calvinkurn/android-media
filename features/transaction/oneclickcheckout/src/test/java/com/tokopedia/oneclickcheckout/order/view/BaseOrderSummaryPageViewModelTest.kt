@@ -6,7 +6,6 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiExtern
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
@@ -52,9 +51,6 @@ open class BaseOrderSummaryPageViewModelTest {
 
     @MockK(relaxed = true)
     lateinit var updateCartOccUseCase: UpdateCartOccUseCase
-
-    @MockK(relaxed = true)
-    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK(relaxed = true)
     lateinit var getPrescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine
@@ -146,7 +142,7 @@ open class BaseOrderSummaryPageViewModelTest {
                 )
             },
             OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
-            userSessionInterface, orderSummaryAnalytics, eligibleForAddressUseCase
+            userSessionInterface, orderSummaryAnalytics
         )
 
         coEvery { dynamicPaymentFeeUseCase.invoke(any()) } returns emptyList()

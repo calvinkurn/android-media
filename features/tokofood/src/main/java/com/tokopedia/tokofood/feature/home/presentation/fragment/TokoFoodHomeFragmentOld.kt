@@ -322,7 +322,7 @@ class TokoFoodHomeFragmentOld :
 
     override fun onClickSetAddress(errorState: String, title: String, desc: String) {
         onShowEmptyState(errorState, title, desc)
-        checkUserEligibilityForAnaRevamp()
+        navigateAddAddress()
     }
 
     override fun onClickSetAddressInCoverage(errorState: String, title: String, desc: String) {
@@ -459,10 +459,6 @@ class TokoFoodHomeFragmentOld :
 
     private fun getChooseAddress() {
         viewModel.getChooseAddress(SOURCE)
-    }
-
-    private fun checkUserEligibilityForAnaRevamp() {
-        viewModel.checkUserEligibilityForAnaRevamp()
     }
 
     private fun setupUi() {
@@ -606,54 +602,25 @@ class TokoFoodHomeFragmentOld :
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            viewModel.flowEligibleForAnaRevamp.collect {
-                when (it) {
-                    is Success -> {
-                        if (it.data.eligible) {
-                            val intent = RouteManager.getIntent(
-                                context,
-                                ApplinkConstInternalLogistic.ADD_ADDRESS_V3
-                            )
-                            intent.putExtra(
-                                ChooseAddressBottomSheet.EXTRA_REF,
-                                SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
-                            )
-                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-                            intent.putExtra(PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
-                            startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
-                        } else {
-                            val intent = RouteManager.getIntent(
-                                context,
-                                ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-                            )
-                            intent.putExtra(
-                                ChooseAddressBottomSheet.EXTRA_REF,
-                                SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
-                            )
-                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-                            intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-                            startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
-                        }
-                    }
-
-                    is Fail -> {
-                        logExceptionTokoFoodHome(
-                            it.throwable,
-                            TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_SET_ADDRESS,
-                            TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_SET_ADDRESS
-                        )
-                        showToaster(it.throwable.message)
-                    }
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowShouldShowSearchCoachMark.collect { shouldShow ->
                 updateSearchCoachMark(shouldShow)
             }
         }
+    }
+
+    private fun navigateAddAddress() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalLogistic.ADD_ADDRESS_V3
+        )
+        intent.putExtra(
+            ChooseAddressBottomSheet.EXTRA_REF,
+            SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
+        )
+        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
+        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
+        intent.putExtra(PARAM_SOURCE, AddEditAddressSource.TOKOFOOD.source)
+        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
     }
 
     private fun collectValue() {

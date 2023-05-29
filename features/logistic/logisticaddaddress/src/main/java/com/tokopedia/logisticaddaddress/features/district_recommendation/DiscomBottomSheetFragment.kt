@@ -17,11 +17,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.*
+import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
+import com.tokopedia.logisticaddaddress.common.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistrictRecommendationBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomNewAdapter
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
 import com.tokopedia.network.utils.ErrorHandler
@@ -34,17 +34,17 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-05-29.
  */
-class DiscomBottomSheetFragment : BottomSheetUnify(),
-        PopularCityAdapter.ActionListener,
-        DiscomContract.View,
-        DiscomNewAdapter.ActionListener {
+class DiscomBottomSheetFragment :
+    BottomSheetUnify(),
+    PopularCityAdapter.ActionListener,
+    DiscomContract.View,
+    DiscomNewAdapter.ActionListener {
 
     private lateinit var popularCityAdapter: PopularCityAdapter
     private lateinit var listDistrictAdapter: DiscomNewAdapter
@@ -116,14 +116,14 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
 
         val cityList = resources.getStringArray(R.array.cityList)
         val chipsLayoutManager = ChipsLayoutManager.newBuilder(binding.root.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+            .setOrientation(ChipsLayoutManager.HORIZONTAL)
+            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+            .build()
 
         chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(binding.root.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
+            .setOrientation(ChipsLayoutManager.HORIZONTAL)
+            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+            .build()
 
         ViewCompat.setLayoutDirection(binding.rvChips, ViewCompat.LAYOUT_DIRECTION_LTR)
         popularCityAdapter = PopularCityAdapter(context, this)
@@ -175,7 +175,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
     }
 
     override fun setLoadingState(active: Boolean) {
-        //no-op
+        // no-op
     }
 
     override fun showEmpty() {
@@ -205,8 +205,8 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
 
     private fun initInjector() {
         DaggerDistrictRecommendationComponent.builder()
-                .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+            .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
         presenter.attach(this)
     }
 
@@ -228,9 +228,7 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
             }.toCompositeSubs()
 
         binding.rvListDistrict.addOnScrollListener(mEndlessListener)
-
     }
-
 
     private fun watchTextRx(view: EditText): Observable<String> {
         return Observable
@@ -295,5 +293,4 @@ class DiscomBottomSheetFragment : BottomSheetUnify(),
             }
         }
     }
-
 }

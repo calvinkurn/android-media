@@ -9,8 +9,6 @@ object ApplinkConstInternalLogistic {
 
     const val ADD_ADDRESS_V1 = "$INTERNAL_LOGISTIC/addaddress/v1/{ref}/"
 
-    const val ADD_ADDRESS_V2 = "$INTERNAL_LOGISTIC/addaddress/v2/"
-
     const val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
 
     const val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"

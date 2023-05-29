@@ -312,9 +312,6 @@ class SearchResultFragment :
 
     override fun onOOCActionButtonClicked(type: Int) {
         when (type) {
-            MerchantSearchOOCUiModel.NO_ADDRESS -> {
-                navigateToAddAddress()
-            }
             MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP -> {
                 navigateToAddAddressRevamp()
             }
@@ -755,20 +752,6 @@ class SearchResultFragment :
             )
         }
         refreshAddressData()
-    }
-
-    private fun navigateToAddAddress() {
-        val intent = RouteManager.getIntent(
-            context,
-            ApplinkConstInternalLogistic.ADD_ADDRESS_V2
-        )
-        intent.putExtra(
-            ChooseAddressBottomSheet.EXTRA_REF,
-            ChooseAddressBottomSheet.SCREEN_NAME_CHOOSE_ADDRESS_NEW_USER
-        )
-        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_FULL_FLOW, true)
-        intent.putExtra(ChooseAddressBottomSheet.EXTRA_IS_LOGISTIC_LABEL, false)
-        startActivityForResult(intent, REQUEST_CODE_ADD_ADDRESS)
     }
 
     private fun navigateToAddAddressRevamp() {

@@ -8,7 +8,6 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.user.session.UserSession
@@ -24,8 +23,8 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,5 +64,4 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
     companion object {
         private const val EXTRA_REF = "EXTRA_REF"
     }
-
 }

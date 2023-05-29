@@ -9,8 +9,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.logisticCommon.data.constant.AddressConstant
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
@@ -90,7 +88,6 @@ class TokoFoodHomeViewModelOld @Inject constructor(
     private val _inputPinPointState = MutableSharedFlow<TokoFoodInputPinPoint>(Int.ONE)
 
     private val _flowChooseAddress = MutableSharedFlow<Result<GetStateChosenAddressResponse>>(Int.ONE)
-    private val _flowEligibleForAnaRevamp = MutableSharedFlow<Result<EligibleForAddressFeature>>(Int.ONE)
     private val _flowShouldShowSearchCoachMark = MutableSharedFlow<Boolean>(Int.ONE)
 
     init {
@@ -100,8 +97,9 @@ class TokoFoodHomeViewModelOld @Inject constructor(
     val flowLayoutList: SharedFlow<Result<TokoFoodListUiModel>> =
         _inputState.flatMapConcat { inputState ->
             getFlowHome(inputState).catch {
-                if (inputState.uiState == STATE_FETCH_DYNAMIC_CHANNEL_DATA)  emit(Fail(it))
-                else {
+                if (inputState.uiState == STATE_FETCH_DYNAMIC_CHANNEL_DATA) {
+                    emit(Fail(it))
+                } else {
                     removeMerchantMainTitle()
                     emit(getRemovalProgressBar())
                 }
@@ -125,7 +123,6 @@ class TokoFoodHomeViewModelOld @Inject constructor(
             replay = Int.ONE
         )
 
-    val flowEligibleForAnaRevamp: SharedFlow<Result<EligibleForAddressFeature>> = _flowEligibleForAnaRevamp
     val flowChooseAddress: SharedFlow<Result<GetStateChosenAddressResponse>> = _flowChooseAddress
     val flowShouldShowSearchCoachMark: SharedFlow<Boolean> = _flowShouldShowSearchCoachMark
 
@@ -148,14 +145,14 @@ class TokoFoodHomeViewModelOld @Inject constructor(
                     emit(getLoadingState())
                     when {
                         hasNoAddress(inputState.isLoggedIn, inputState.localCacheModel) -> {
-                            if (isAddressManuallyUpdate()){
+                            if (isAddressManuallyUpdate()) {
                                 emit(getNoAddressState())
                             } else {
                                 getChooseAddress(SOURCE)
                             }
                         }
                         hasNoPinPoin(inputState.isLoggedIn, inputState.localCacheModel) -> {
-                            if (isAddressManuallyUpdate()){
+                            if (isAddressManuallyUpdate()) {
                                 emit(getNoPinPointState())
                             } else {
                                 getChooseAddress(SOURCE)
@@ -230,18 +227,6 @@ class TokoFoodHomeViewModelOld @Inject constructor(
                 )
             )
         }
-    }
-
-    fun checkUserEligibilityForAnaRevamp() {
-        eligibleForAddressUseCase.eligibleForAddressFeature(
-            {
-                setEligibleForAnaRevamp(it.eligibleForRevampAna)
-            },
-            {
-                setEligibleForAnaRevamp(it)
-            },
-            AddressConstant.ANA_REVAMP_FEATURE_ID
-        )
     }
 
     fun getChooseAddress(source: String) {
@@ -355,7 +340,6 @@ class TokoFoodHomeViewModelOld @Inject constructor(
         uiModel: TokoFoodItemUiModel,
         localCacheModel: LocalCacheModel?
     ): Result<TokoFoodListUiModel> {
-
         homeLayoutItemList.setStateToLoading(uiModel)
 
         if (uiModel.layout is TokoFoodHomeLayoutUiModel) {
@@ -494,8 +478,10 @@ class TokoFoodHomeViewModelOld @Inject constructor(
 
     private fun shouldLoadMore(containsLastItemIndex: Int, itemCount: Int): Boolean {
         val lastItemIndex = itemCount - Int.ONE
-        val scrolledToLastItem = (containsLastItemIndex == lastItemIndex
-            && containsLastItemIndex.isMoreThanZero())
+        val scrolledToLastItem = (
+            containsLastItemIndex == lastItemIndex &&
+                containsLastItemIndex.isMoreThanZero()
+            )
         val hasNextPage = pageKey.isNotEmpty()
         val layoutList = homeLayoutItemList.toMutableList()
         val isLoading = layoutList.firstOrNull { it.layout is TokoFoodProgressBarUiModel } != null
@@ -518,30 +504,22 @@ class TokoFoodHomeViewModelOld @Inject constructor(
         }
     }
 
-    private fun setEligibleForAnaRevamp(response: EligibleForAddressFeature) {
-        launch {
-            _flowEligibleForAnaRevamp.emit(Success(response))
-        }
-    }
-
-    private fun setEligibleForAnaRevamp(throwable: Throwable) {
-        launch {
-            _flowEligibleForAnaRevamp.emit(Fail(throwable))
-        }
-    }
-
     private fun hasNoAddress(isLoggedIn: Boolean, localCacheModel: LocalCacheModel): Boolean {
         return isLoggedIn &&
-            (localCacheModel.address_id.isEmpty() ||
-                localCacheModel.address_id == "0")
+            (
+                localCacheModel.address_id.isEmpty() ||
+                    localCacheModel.address_id == "0"
+                )
     }
 
     private fun hasNoPinPoin(isLoggedIn: Boolean, localCacheModel: LocalCacheModel): Boolean {
         return isLoggedIn &&
-            (localCacheModel.lat.isEmpty() ||
-                localCacheModel.long.isEmpty() ||
-                localCacheModel.lat.equals(EMPTY_LOCATION) ||
-                localCacheModel.long.equals(EMPTY_LOCATION))
+            (
+                localCacheModel.lat.isEmpty() ||
+                    localCacheModel.long.isEmpty() ||
+                    localCacheModel.lat.equals(EMPTY_LOCATION) ||
+                    localCacheModel.long.equals(EMPTY_LOCATION)
+                )
     }
 
     private fun isAddressManuallyUpdate(): Boolean = isAddressManuallyUpdated

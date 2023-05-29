@@ -242,28 +242,6 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         } returns uiModels
     }
 
-    protected fun onGetEligibleForAnaRevamp_thenReturn(isEligible: Boolean) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData(
-                    eligibleForRevampAna = EligibleForAddressFeature(
-                        eligible = isEligible
-                    )
-                )
-            )
-        }
-    }
-
-    protected fun onGetEligibleForAnaRevamp_thenReturn(errorThrowable: Throwable) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable)-> Unit>().invoke(errorThrowable)
-        }
-    }
-
     protected fun onEditAddress_shouldReturn(addressId: String,
                                              lat: String,
                                              long: String,
