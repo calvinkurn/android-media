@@ -1,14 +1,18 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 
+import android.content.Context
 import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.core.analytics.IKycSdkEventTrackingProvider
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
+import com.tokopedia.kyc_centralized.ui.gotoKyc.worker.GotoKycCleanupStorageWorker
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import javax.inject.Inject
 
 class GotoKycEventTrackingProvider @Inject constructor(
     private val kycSdkAnalyticsConfig: KycSdkAnalyticsConfig,
-    private val kycSharedPreference: KycSharedPreference
+    private val kycSharedPreference: KycSharedPreference,
+    @ApplicationContext private val context: Context
 ) : IKycSdkEventTrackingProvider {
     override fun getAnalyticsConfigForClickStream(): KycSdkAnalyticsConfig {
         return kycSdkAnalyticsConfig
@@ -267,6 +271,9 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     }
                 }
             }
+            IMAGE_CAPTURED -> {
+                GotoKycCleanupStorageWorker.scheduleWorker(context)
+            }
         }
     }
 
@@ -306,5 +313,6 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val VALUE_IMAGE_DETECTED_GOOD = "good image detected"
         private const val VALUE_IMAGE_DETECTED_ERROR = "error image detected"
         private const val VALUE_IMAGE_CAPTURED = "image captured"
+        private const val IMAGE_CAPTURED = "GP KYC Image Captured"
     }
 }

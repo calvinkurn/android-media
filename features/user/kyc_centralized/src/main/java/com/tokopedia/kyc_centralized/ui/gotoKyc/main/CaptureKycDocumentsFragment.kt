@@ -23,6 +23,7 @@ import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBindi
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.isConnectionAvailable
+import com.tokopedia.kyc_centralized.ui.gotoKyc.worker.GotoKycCleanupStorageWorker
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -79,6 +80,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                         onFailedUploadDocuments()
                     }
                     UnifiedKycFlowResult.SUCCESS -> {
+                        GotoKycCleanupStorageWorker.cancelWorker(requireContext())
                         // go to success page
                         gotoFinalLoader()
                     }
