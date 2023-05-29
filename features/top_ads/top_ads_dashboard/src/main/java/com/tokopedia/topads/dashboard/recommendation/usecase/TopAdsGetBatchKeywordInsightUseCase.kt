@@ -21,19 +21,19 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
         TopAdsListAllInsightState<TopAdsBatchGroupInsightResponse> {
         setRequestParams(createRequestParam(groupId).parameters)
         val data = executeOnBackground()
-
-        return when {
-            data.error.title.isNullOrEmpty() -> {
-                TopAdsListAllInsightState.Success(data)
-            }
-            else -> TopAdsListAllInsightState.Fail(Throwable(data.error.title))
-        }
+        return TopAdsListAllInsightState.Success(data)
+//        return when {
+//            data.error.title.isNullOrEmpty() -> {
+//                TopAdsListAllInsightState.Success(data)
+//            }
+//            else -> TopAdsListAllInsightState.Fail(Throwable(data.error.title))
+//        }
     }
 
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString("insightType", "all")
-        requestParams.putString("source", "keywordinsight.test")
+        requestParams.putString("source", "adsmgmt.keywordinsight.test")
         requestParams.putObject(
             "groupIDs",
             listOf(groupId)

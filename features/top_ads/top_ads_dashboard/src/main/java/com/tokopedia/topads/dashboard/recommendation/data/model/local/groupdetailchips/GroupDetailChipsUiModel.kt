@@ -3,10 +3,14 @@ package com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdeta
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
-class GroupDetailChipsUiModel() :
+class GroupDetailChipsUiModel(var isChipsAvailable:Boolean = true) :
     GroupDetailDataModel {
+
+    override fun isAvailable(): Boolean {
+        return isChipsAvailable
+    }
     override fun type(): String {
-        return ""
+        return "3"
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {

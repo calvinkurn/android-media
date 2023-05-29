@@ -1,5 +1,8 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 interface InsightListUiModel {
     fun id(): String
     fun equalsWith(newItem: InsightListUiModel): Boolean
@@ -11,13 +14,14 @@ data class InsightUiModel(
     var insightType: Int = 0
 )
 
+@Parcelize
 data class AdGroupUiModel(
     val adGroupID: String = "",
     val adGroupName: String = "",
     val adGroupType: String = "",
     val count: Int = 0,
     val showGroupType: Boolean = false
-) : InsightListUiModel {
+) : InsightListUiModel, Parcelable {
     override fun id(): String {
         return adGroupID
     }

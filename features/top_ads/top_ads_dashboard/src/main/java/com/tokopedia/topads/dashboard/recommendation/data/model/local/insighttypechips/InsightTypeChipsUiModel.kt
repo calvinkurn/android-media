@@ -1,17 +1,17 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips
 
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 data class InsightTypeChipsUiModel(
     val chipsList: List<String> = mutableListOf(),
-    val adGroupList: MutableList<TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup> = mutableListOf()
+    val adGroupList: MutableList<InsightListUiModel> = mutableListOf()
 ) :
     GroupDetailDataModel {
 
     override fun type(): String {
-        return ""
+        return "1"
     }
 
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {

@@ -19,6 +19,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
@@ -203,13 +204,14 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         }
     }
 
-    private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit =
-        { nameList, name, adGroupID ->
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
+        { adGroupList, item ->
             val bundle = Bundle()
-            bundle.putInt("adType", tabType)
-            bundle.putStringArrayList("insightTypeList", nameList)
-            bundle.putString("adGroupName", name)
-            bundle.putString("groupId", adGroupID)
+            bundle.putString("adType", item.adGroupType)
+            bundle.putString("adGroupName", item.adGroupName)
+            bundle.putString("groupId", item.adGroupID)
+            bundle.putInt("count", item.count)
+            bundle.putParcelableArrayList("insightTypeList", adGroupList)
             Intent(context, GroupDetailActivity::class.java).apply {
                 this.putExtra("groupDetailBundle", bundle)
                 startActivity(this)

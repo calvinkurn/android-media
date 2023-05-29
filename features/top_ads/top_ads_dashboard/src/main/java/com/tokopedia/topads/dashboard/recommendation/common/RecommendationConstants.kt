@@ -9,4 +9,6 @@ object RecommendationConstants {
     const val TYPE_GROUP_BID = 5
     const val TYPE_DAILY_BUDGET = 6
     const val TYPE_NEGATIVE_KEYWORD_BID = 7
+    const val TYPE_EMPTY_STATE = 8
+    const val TYPE_UN_OPTIMIZED_GROUP = 9
 }

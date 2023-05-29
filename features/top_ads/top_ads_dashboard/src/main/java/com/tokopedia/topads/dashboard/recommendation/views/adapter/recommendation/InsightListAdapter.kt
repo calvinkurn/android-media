@@ -26,7 +26,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 
-class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit) :
+class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit) :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
 
     inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
@@ -40,8 +40,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
 
         fun bind(
             item: AdGroupUiModel,
-            onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit,
-            currentList: MutableList<InsightListUiModel>
+            onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit,
         ) {
             groupCardTitle.text = item.adGroupName
             groupCardSubTitle.showWithCondition(item.showGroupType)
@@ -61,23 +60,20 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
             groupCardCountWarning.hide()
             setProgressBar(item.count)
             view.setOnClickListener {
-                val list = ArrayList<String>()
-                currentList.map {
-                    (it as? AdGroupUiModel)?.adGroupName?.let { adGroupName ->
-                        list.add(
-                            adGroupName
-                        )
+                val list = ArrayList<AdGroupUiModel>()
+                this@InsightListAdapter.currentList.map {
+                    (it as? AdGroupUiModel)?.let {  adGroupUiModel ->
+                        list.add(adGroupUiModel)
                     }
                 }
-
-                onInsightItemClick(list, item.adGroupName, item.adGroupID)
+                onInsightItemClick(list, item)
             }
         }
 
         private fun setProgressBar(count: Int) {
             when (count) {
                 5 -> {
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(5))
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(5), false)
                     groupCardCountWarning.show()
                 }
                 4 -> {
@@ -92,7 +88,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
                         )
 
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(4))
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(4), false)
                 }
                 3 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
@@ -105,7 +101,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
                             com.tokopedia.unifycomponents.R.color.Unify_YN300
                         )
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(3))
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(3), false)
                 }
                 2 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
@@ -118,7 +114,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
                             com.tokopedia.unifycomponents.R.color.Unify_GN200
                         )
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(2))
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(2), false)
                 }
                 1 -> {
                     groupCardProgressBar.progressBarColor = intArrayOf(
@@ -131,7 +127,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
                             com.tokopedia.unifycomponents.R.color.Unify_GN200
                         )
                     )
-                    groupCardProgressBar.setValue(Utils().toProgressPercent(1))
+                    groupCardProgressBar.setValue(Utils().toProgressPercent(1), false)
                 }
             }
         }
@@ -216,8 +212,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<String
             is AdGroupUiModel -> {
                 (holder as? InsightListItemViewHolder)?.bind(
                     item,
-                    onInsightItemClick,
-                    this.currentList
+                    onInsightItemClick
                 )
             }
             is LoadingUiModel -> {
