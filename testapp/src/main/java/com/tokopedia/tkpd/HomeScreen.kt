@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.constrain
 import androidx.compose.ui.unit.dp
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
-import com.tokopedia.nest.ui.NestTheme
+import com.tokopedia.nest.principles.ui.NestTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("UnsupportedDarkModeColor")

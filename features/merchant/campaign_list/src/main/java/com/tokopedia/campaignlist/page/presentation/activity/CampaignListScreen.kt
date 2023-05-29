@@ -48,9 +48,9 @@ import com.tokopedia.nest.components.NestSearchBar
 import com.tokopedia.nest.components.ticker.NestTicker
 import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
-import com.tokopedia.nest.ui.NestNN
-import com.tokopedia.nest.ui.NestTheme
-import com.tokopedia.nest.utils.tag
+import com.tokopedia.nest.principles.ui.NestNN
+import com.tokopedia.nest.principles.ui.NestTheme
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.sortfilter.compose.NestSortFilter
 import com.tokopedia.sortfilter.compose.SortFilter
 

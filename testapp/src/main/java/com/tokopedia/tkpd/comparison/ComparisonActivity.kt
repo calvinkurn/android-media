@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.principles.NestTypography
-import com.tokopedia.nest.ui.NestTheme
+import com.tokopedia.nest.principles.ui.NestTheme
 
 class ComparisonActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
