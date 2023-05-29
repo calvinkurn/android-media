@@ -1865,7 +1865,6 @@ open class HomeAccountUserFragment :
         private const val ACC_SETTING_POS = 1
 
         private const val COACHMARK_DELAY_MS = 1000L
-        private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
 
         fun newInstance(bundle: Bundle?): Fragment {
