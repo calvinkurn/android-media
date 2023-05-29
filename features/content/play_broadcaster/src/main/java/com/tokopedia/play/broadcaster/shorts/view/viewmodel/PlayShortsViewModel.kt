@@ -495,7 +495,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun checkIsUserAffiliate() {
-        if (!selectedAccount.isUser) {
+        if (selectedAccount.isShop) {
             _isAffiliate.update { false }
             return
         }

@@ -407,7 +407,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
                 renderBannerPreparationPage(it.prevValue?.bannerPreparation, it.value.bannerPreparation)
-                renderCheckIsUserAffiliate(it.prevValue?.isAffiliate, it.value.isAffiliate)
+                renderCoachMarkProductCommission(it.prevValue?.isAffiliate, it.value.isAffiliate)
             }
         }
 
@@ -481,16 +481,22 @@ class PlayShortsPreparationFragment @Inject constructor(
         else binding.pcBannerPreparation.setIndicator(0)
     }
 
-    private fun renderCheckIsUserAffiliate(prev: Boolean?, curr: Boolean) {
+    private fun renderCoachMarkProductCommission(prev: Boolean?, curr: Boolean) {
         if (prev == curr || !curr || coachMarkSharedPref.hasBeenShown(Key.ProductCommission)) return
 
         analytic.sendImpressionCekProductCommissionEvent(viewModel.selectedAccount.id)
-        binding.preparationMenu.showCoachMark(
+        binding.preparationMenu.getMenuView(
             menu = DynamicPreparationMenu.Menu.Product,
-            title = getString(R.string.play_shorts_affiliate_coach_mark_product_commission_title),
-            subtitle = getString(R.string.play_shorts_affiliate_coach_mark_product_commission_subtitle),
-            onClickClose = {
-                return@showCoachMark
+            menuView = { menuView ->
+                if (menuView == null) return@getMenuView
+                setupCoachMark(
+                    CoachMark2Item(
+                        menuView,
+                        getString(R.string.play_shorts_affiliate_coach_mark_product_commission_title),
+                        getString(R.string.play_shorts_affiliate_coach_mark_product_commission_subtitle),
+                        CoachMark2.POSITION_TOP,
+                    )
+                )
             }
         )
         coachMarkSharedPref.setHasBeenShown(Key.ProductCommission)
@@ -507,7 +513,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         coachMarkItems.add(coachMarkItem)
 
         if (coachMark == null) coachMark = CoachMark2(requireContext())
-        coachMark?.showCoachMark(java.util.ArrayList(coachMarkItems))
+        coachMark?.showCoachMark(ArrayList(coachMarkItems))
 
         if (coachMarkItems.size == 1) {
             coachMark?.simpleCloseIcon?.setOnClickListener { onDismissCoachMark() }
