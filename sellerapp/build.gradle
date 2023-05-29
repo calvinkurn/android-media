@@ -278,7 +278,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.fcm_common)
     implementation projectOrAar(rootProject.ext.features.profileCompletion)
     implementation projectOrAar(rootProject.ext.features.agerestriction)
-    implementation projectOrAar(rootProject.ext.features.kyccentralized)
 
     implementation projectOrAar(rootProject.ext.features.attachinvoice)
     implementation projectOrAar(rootProject.ext.features.attachvoucher)
@@ -290,6 +289,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
 
+    implementation rootProject.ext.gotoOneKyc.resource
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
