@@ -4,17 +4,17 @@ import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.getPastDaysPenaltyTimeStamp
-import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
+import com.tokopedia.shop.score.penalty.domain.old.mapper.PenaltyMapperOld
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltyDetailMergeResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
-import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
+import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailMergeUseCaseOld
+import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyDataWrapperOld
 import com.tokopedia.shop.score.stub.common.graphql.repository.GraphqlRepositoryStub
 
-class GetShopPenaltyDetailMergeUseCaseStub(
+class GetShopPenaltyDetailMergeUseCaseOldStub(
     private val graphqlRepositoryStub: GraphqlRepositoryStub,
-    private val penaltyMapperStub: PenaltyMapper
-) : GetShopPenaltyDetailMergeUseCase(graphqlRepositoryStub, penaltyMapperStub) {
+    private val penaltyMapperOldStub: PenaltyMapperOld
+) : GetShopPenaltyDetailMergeUseCaseOld(graphqlRepositoryStub, penaltyMapperOldStub) {
 
     var responseStub = ShopPenaltyDetailMergeResponse()
         set(value) {
@@ -22,7 +22,7 @@ class GetShopPenaltyDetailMergeUseCaseStub(
             field = value
         }
 
-    override suspend fun executeOnBackground(): PenaltyDataWrapper {
+    override suspend fun executeOnBackground(): PenaltyDataWrapperOld {
         val penaltySummaryResponse = responseStub.shopScorePenaltySummary
         val penaltyTypesResponse = responseStub.shopScorePenaltyTypes
         val shopScorePenaltySummaryWrapper = ShopPenaltySummaryTypeWrapper(
@@ -36,7 +36,7 @@ class GetShopPenaltyDetailMergeUseCaseStub(
         val sortBy = 0
         val typeId = 0
 
-        return penaltyMapperStub.mapToPenaltyData(
+        return penaltyMapperOldStub.mapToPenaltyData(
             shopScorePenaltySummaryWrapper,
             penaltyDetailResponse,
             sortBy,

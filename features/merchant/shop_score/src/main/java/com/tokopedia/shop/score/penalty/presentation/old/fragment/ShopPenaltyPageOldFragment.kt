@@ -36,14 +36,15 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenal
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
-import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyDetailFragment
-import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
+import com.tokopedia.shop.score.penalty.presentation.old.bottomsheet.PenaltyFilterBottomSheetOld
+import com.tokopedia.shop.score.penalty.presentation.old.model.FilterTypePenaltyUiModelWrapperOld
+import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyFilterUiModelOld
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.old.ShopPenaltyViewModelOld
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,7 +54,7 @@ import javax.inject.Inject
 open class ShopPenaltyPageOldFragment :
     BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
-    PenaltyFilterBottomSheet.PenaltyFilterFinishListener,
+    PenaltyFilterBottomSheetOld.PenaltyFilterFinishListener,
     ItemDetailPenaltyListener,
     ItemHeaderCardPenaltyListener,
     ItemPeriodDateFilterListener,
@@ -65,7 +66,7 @@ open class ShopPenaltyPageOldFragment :
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     @Inject
-    lateinit var viewModelShopPenalty: ShopPenaltyViewModel
+    lateinit var viewModelShopPenalty: ShopPenaltyViewModelOld
 
     private val penaltyPageAdapterFactory by lazy {
         PenaltyPageAdapterFactory(
@@ -155,13 +156,13 @@ open class ShopPenaltyPageOldFragment :
         viewModelShopPenalty.getPenaltyDetailListNext(page)
     }
 
-    override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
+    override fun onClickFilterApplied(penaltyFilterUiModelOldList: List<PenaltyFilterUiModelOld>) {
         val typePenaltyList =
-            penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList
+            penaltyFilterUiModelOldList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList
         val chipsPenaltyMap = typePenaltyList.chipsPenaltyMapToItemSortFilter()
 
         viewModelShopPenalty.setItemSortFilterWrapperList(
-            penaltyFilterUiModelList,
+            penaltyFilterUiModelOldList,
             chipsPenaltyMap
         )
 
@@ -169,7 +170,7 @@ open class ShopPenaltyPageOldFragment :
 
         val typeId = typePenaltyList?.find { it.isSelected }?.value ?: ZERO_NUMBER
         val sortBy =
-            penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
+            penaltyFilterUiModelOldList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
                 ?: ZERO_NUMBER
         penaltyPageAdapter.run {
             removePenaltyListData()
@@ -206,7 +207,7 @@ open class ShopPenaltyPageOldFragment :
         }
     }
 
-    private fun List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
+    private fun List<ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val itemSortFilterWrapperList =
             mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
         this?.map {
@@ -379,14 +380,14 @@ open class ShopPenaltyPageOldFragment :
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val filterPenalty = viewModelShopPenalty.getPenaltyFilterUiModelList()
         cacheManager?.put(
-            PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY,
-            FilterTypePenaltyUiModelWrapper(
+            PenaltyFilterBottomSheetOld.KEY_FILTER_TYPE_PENALTY,
+            FilterTypePenaltyUiModelWrapperOld(
                 filterPenalty
             )
         )
 
         val bottomSheetFilterPenalty =
-            PenaltyFilterBottomSheet.newInstance(cacheManager?.id.orEmpty())
+            PenaltyFilterBottomSheetOld.newInstance(cacheManager?.id.orEmpty())
         bottomSheetFilterPenalty.setPenaltyFilterFinishListener(this)
         bottomSheetFilterPenalty.show(childFragmentManager)
     }

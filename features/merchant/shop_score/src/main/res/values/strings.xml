@@ -78,6 +78,7 @@
     <string name="select_date">Pilih Tanggal</string>
     <string name="end_date">Sampai dengan</string>
     <string name="btn_show_penalty">Tampilkan Pelanggaran</string>
+    <string name="btn_save">Simpan</string>
     <string name="ss_not_active">Tidak Aktif</string>
 
     <string name="btn_call_help_center">Hubungi Pusat Bantuan</string>
@@ -358,5 +359,7 @@
     <string name="title_penalty_tab_latest">Penalti Terbaru</string>
     <string name="title_penalty_tab_history">Riwayat Penalti</string>
     <string name="title_penalty_info_notification">Belum Berlangsung (%s)</string>
+    <string name="title_penalty_filter_see_all">Lihat Semua</string>
+    <string name="title_penalty_types">Jenis Pelanggaran</string>
 
 </resources>

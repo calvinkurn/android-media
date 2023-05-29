@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.sortfilter.SortFilterItem
 
 interface ItemDetailPenaltyListener {
@@ -14,6 +15,23 @@ interface FilterPenaltyBottomSheetListener {
         chipTitle: String,
         position: Int
     )
+
+    fun onSeeAllButtonClicked(
+        uiModel: PenaltyFilterUiModel
+    )
+}
+
+interface FilterPenaltyDateListener {
+    fun onDatePicked(
+        startDate: String,
+        defaultStartDate: String,
+        endDate: String,
+        defaultEndDate: String
+    )
+}
+
+interface FilterPenaltyTypesBottomSheetListener {
+    fun onFilterSaved(filterList: List<Int>)
 }
 
 interface ItemHeaderCardPenaltyListener {

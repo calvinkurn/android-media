@@ -13,9 +13,9 @@ import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
 import javax.inject.Inject
 
-open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
+class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
-    private val penaltyMapper: PenaltyMapper
+    private val penaltyMapperOld: PenaltyMapper
 ) : UseCase<PenaltyDataWrapper>() {
 
     override suspend fun executeOnBackground(): PenaltyDataWrapper {
@@ -41,7 +41,7 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                 shopScorePenaltyTypesResponse = penaltyTypesResponse
             )
             val penaltyDetailResponse = penaltyDetailMergeResponse.shopScorePenaltyDetail
-            return penaltyMapper.mapToPenaltyData(
+            return penaltyMapperOld.mapToPenaltyData(
                 shopScorePenaltySummaryWrapper,
                 penaltyDetailResponse,
                 sortBy,

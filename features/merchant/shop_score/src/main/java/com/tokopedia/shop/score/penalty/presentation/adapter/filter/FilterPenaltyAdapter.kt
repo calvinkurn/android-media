@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.filter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 
 class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
@@ -28,7 +29,7 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
     }
 
     fun updateFilterSelected(
-        chipFilterList: List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>,
+        chipFilterList: List<ChipsFilterPenaltyUiModel>,
         title: String
     ) {
         val updateIndex =
@@ -40,4 +41,5 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
             notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
         }
     }
+
 }

@@ -6,15 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.score.common.*
-import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
-import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
-import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
+import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getNowTimeStamp
+import com.tokopedia.shop.score.common.getPastDaysPenaltyTimeStamp
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
+import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailUseCaseOld
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
-import com.tokopedia.shop.score.penalty.presentation.model.*
+import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-open class ShopPenaltyViewModel @Inject constructor(
+class ShopPenaltyViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>,
     private val getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>,
@@ -53,8 +58,8 @@ open class ShopPenaltyViewModel @Inject constructor(
     val resetFilterResult: LiveData<Result<List<PenaltyFilterUiModel>>> = _resetFilterResult
 
     private val _updateFilterSelected =
-        MutableLiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>>()
-    val updateFilterSelected: LiveData<Result<Pair<List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>, String>>> =
+        MutableLiveData<Result<Pair<List<ChipsFilterPenaltyUiModel>, String>>>()
+    val updateFilterSelected: LiveData<Result<Pair<List<ChipsFilterPenaltyUiModel>, String>>> =
         _updateFilterSelected
 
     private var penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
@@ -148,7 +153,7 @@ open class ShopPenaltyViewModel @Inject constructor(
     fun getPenaltyDetailListNext(page: Int = 1) {
         launchCatchError(block = {
             val penaltyDetail = withContext(dispatchers.io) {
-                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCase.crateParams(
+                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCaseOld.crateParams(
                     ShopScorePenaltyDetailParam(
                         page = page,
                         startDate = startDate,
@@ -213,7 +218,7 @@ open class ShopPenaltyViewModel @Inject constructor(
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
                 if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
                     penaltyFilterUiModel.chipsFilterList.map {
-                        it.isSelected = it.title == SORT_LATEST
+                        it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
                     }
                 } else {
                     penaltyFilterUiModel.chipsFilterList.map {
@@ -225,3 +230,4 @@ open class ShopPenaltyViewModel @Inject constructor(
         }
     }
 }
+

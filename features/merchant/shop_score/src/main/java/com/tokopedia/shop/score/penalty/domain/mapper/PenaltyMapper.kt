@@ -6,28 +6,13 @@ import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreConstant.ACTIVE_PENALTY_DETAIL
-import com.tokopedia.shop.score.common.ShopScoreConstant.FINISHED_IN
-import com.tokopedia.shop.score.common.ShopScoreConstant.ON_GOING
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM
-import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT
-import com.tokopedia.shop.score.common.ShopScoreConstant.PENALTY_DONE
-import com.tokopedia.shop.score.common.ShopScoreConstant.POINTS_NOT_YET_DEDUCTED
-import com.tokopedia.shop.score.common.ShopScoreConstant.SINCE
-import com.tokopedia.shop.score.common.ShopScoreConstant.SINCE_FINISH_PENALTY_DETAIL
-import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST
-import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_LATEST_VALUE
-import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST
-import com.tokopedia.shop.score.common.ShopScoreConstant.SORT_OLDEST_VALUE
-import com.tokopedia.shop.score.common.ShopScoreConstant.START
-import com.tokopedia.shop.score.common.ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL
-import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
-import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
+import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummary
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyTypes
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
+import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
@@ -38,7 +23,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiMo
 import javax.inject.Inject
 import kotlin.math.abs
 
-open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
+class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
 
     fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel): ShopPenaltyDetailUiModel {
         return ShopPenaltyDetailUiModel(
@@ -56,7 +41,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
     private fun mapToStepperPenaltyDetail(statusPenalty: String): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
         return mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>().apply {
             when (statusPenalty) {
-                POINTS_NOT_YET_DEDUCTED -> {
+                ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
@@ -85,7 +70,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                         )
                     )
                 }
-                ON_GOING -> {
+                ShopScoreConstant.ON_GOING -> {
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
@@ -114,7 +99,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                         )
                     )
                 }
-                PENALTY_DONE -> {
+                ShopScoreConstant.PENALTY_DONE -> {
                     add(
                         ShopPenaltyDetailUiModel.StepperPenaltyDetail(
                             colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
@@ -175,13 +160,13 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
 
     private fun mapToDetailPenaltyFilter(dateFilter: Pair<String, String>): ItemPeriodDetailPenaltyUiModel {
         val startDate = DateFormatUtils.formatDate(
-            PATTERN_PENALTY_DATE_PARAM,
-            PATTERN_PENALTY_DATE_TEXT,
+            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
             dateFilter.first
         )
         val endDate = DateFormatUtils.formatDate(
-            PATTERN_PENALTY_DATE_PARAM,
-            PATTERN_PENALTY_DATE_TEXT,
+            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
             dateFilter.second
         )
         return ItemPeriodDetailPenaltyUiModel(periodDetail = "$startDate - $endDate")
@@ -205,15 +190,15 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
     }
 
     fun mapToItemPenaltyList(shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail):
-            Triple<List<ItemPenaltyUiModel>, Boolean, Boolean> {
+        Triple<List<ItemPenaltyUiModel>, Boolean, Boolean> {
 
         val itemPenaltyList = mutableListOf<ItemPenaltyUiModel>().apply {
             shopScorePenaltyDetailResponse.result.forEach {
                 val colorTypePenalty = when (it.status) {
-                    POINTS_NOT_YET_DEDUCTED, PENALTY_DONE -> {
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED, ShopScoreConstant.PENALTY_DONE -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     }
-                    ON_GOING -> {
+                    ShopScoreConstant.ON_GOING -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_RN600
                     }
                     else -> {
@@ -222,37 +207,37 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                 }
 
                 val (prefixDatePenaltyDetail, endDateText) = when (it.status) {
-                    ON_GOING -> {
+                    ShopScoreConstant.ON_GOING -> {
                         Pair(
-                            ACTIVE_PENALTY_DETAIL,
-                            "$FINISHED_IN ${
+                            ShopScoreConstant.ACTIVE_PENALTY_DETAIL,
+                            "${ShopScoreConstant.FINISHED_IN} ${
                                 DateFormatUtils.formatDate(
-                                    PATTERN_PENALTY_DATE_PARAM,
-                                    PATTERN_PENALTY_DATE_TEXT,
+                                    ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+                                    ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                                     it.penaltyExpirationDate
                                 )
                             }"
                         )
                     }
-                    PENALTY_DONE -> {
+                    ShopScoreConstant.PENALTY_DONE -> {
                         Pair(
-                            SINCE_FINISH_PENALTY_DETAIL,
-                            "$SINCE ${
+                            ShopScoreConstant.SINCE_FINISH_PENALTY_DETAIL,
+                            "${ShopScoreConstant.SINCE} ${
                                 DateFormatUtils.formatDate(
-                                    PATTERN_PENALTY_DATE_PARAM,
-                                    PATTERN_PENALTY_DATE_TEXT,
+                                    ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+                                    ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                                     it.penaltyExpirationDate
                                 )
                             }"
                         )
                     }
-                    POINTS_NOT_YET_DEDUCTED -> {
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
                         Pair(
-                            START_ACTIVE_PENALTY_DETAIL,
-                            "$START ${
+                            ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL,
+                            "${ShopScoreConstant.START} ${
                                 DateFormatUtils.formatDate(
-                                    PATTERN_PENALTY_DATE_PARAM,
-                                    PATTERN_PENALTY_DATE_TEXT,
+                                    ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+                                    ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                                     it.penaltyStartDate
                                 )
                             }"
@@ -262,17 +247,17 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                 }
 
                 val endDateDetail = when (it.status) {
-                    ON_GOING, PENALTY_DONE -> {
+                    ShopScoreConstant.ON_GOING, ShopScoreConstant.PENALTY_DONE -> {
                         DateFormatUtils.formatDate(
-                            PATTERN_PENALTY_DATE_PARAM,
-                            PATTERN_PENALTY_DATE_TEXT,
+                            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+                            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                             it.penaltyExpirationDate
                         )
                     }
-                    POINTS_NOT_YET_DEDUCTED -> {
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
                         DateFormatUtils.formatDate(
-                            PATTERN_PENALTY_DATE_PARAM,
-                            PATTERN_PENALTY_DATE_TEXT,
+                            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+                            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                             it.penaltyStartDate
                         )
                     }
@@ -280,9 +265,9 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                 }
 
                 val descStatusPenaltyDetail = when (it.status) {
-                    POINTS_NOT_YET_DEDUCTED -> R.string.desc_point_have_not_been_deducted
-                    ON_GOING -> R.string.desc_on_going_status_penalty
-                    PENALTY_DONE -> R.string.desc_done_status_penalty
+                    ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> R.string.desc_point_have_not_been_deducted
+                    ShopScoreConstant.ON_GOING -> R.string.desc_on_going_status_penalty
+                    ShopScoreConstant.PENALTY_DONE -> R.string.desc_done_status_penalty
                     else -> null
                 }
 
@@ -293,8 +278,8 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                         statusPenalty = it.status,
                         deductionPoint = scoreAbs,
                         startDate = DateFormatUtils.formatDate(
-                            PATTERN_PENALTY_DATE_PARAM,
-                            PATTERN_PENALTY_DATE_TEXT,
+                            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
+                            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
                             it.createTime
                         ),
                         endDate = endDateText,
@@ -361,34 +346,34 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
         return mutableListOf<PenaltyFilterUiModel>().apply {
             add(
                 PenaltyFilterUiModel(
-                    title = TITLE_SORT,
+                    title = ShopScoreConstant.TITLE_SORT,
                     isDividerVisible = true,
                     chipsFilterList = mapToChipsSortFilter(sortBy)
                 )
             )
             add(
                 PenaltyFilterUiModel(
-                    title = TITLE_TYPE_PENALTY,
+                    title = ShopScoreConstant.TITLE_TYPE_PENALTY,
                     chipsFilterList = mapToChipsTypePenaltyFilter(penaltyTypes, typeId)
                 )
             )
         }
     }
 
-    fun mapToChipsSortFilter(sortBy: Int): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
-        return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
+    fun mapToChipsSortFilter(sortBy: Int): List<ChipsFilterPenaltyUiModel> {
+        return mutableListOf<ChipsFilterPenaltyUiModel>().apply {
             add(
-                PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(
-                    title = SORT_LATEST,
-                    isSelected = sortBy == SORT_LATEST_VALUE,
-                    value = SORT_LATEST_VALUE
+                ChipsFilterPenaltyUiModel(
+                    title = ShopScoreConstant.SORT_LATEST,
+                    isSelected = sortBy == ShopScoreConstant.SORT_LATEST_VALUE,
+                    value = ShopScoreConstant.SORT_LATEST_VALUE
                 )
             )
             add(
-                PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(
-                    title = SORT_OLDEST,
-                    isSelected = sortBy == SORT_OLDEST_VALUE,
-                    value = SORT_OLDEST_VALUE
+                ChipsFilterPenaltyUiModel(
+                    title = ShopScoreConstant.SORT_OLDEST,
+                    isSelected = sortBy == ShopScoreConstant.SORT_OLDEST_VALUE,
+                    value = ShopScoreConstant.SORT_OLDEST_VALUE
                 )
             )
         }
@@ -397,11 +382,11 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
     private fun mapToChipsTypePenaltyFilter(
         penaltyTypes: List<ShopScorePenaltyTypes.Result>,
         typeId: Int
-    ): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
-        return mutableListOf<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel>().apply {
+    ): List<ChipsFilterPenaltyUiModel> {
+        return mutableListOf<ChipsFilterPenaltyUiModel>().apply {
             penaltyTypes.map {
                 add(
-                    PenaltyFilterUiModel.ChipsFilterPenaltyUiModel(
+                    ChipsFilterPenaltyUiModel(
                         it.name,
                         isSelected = it.id == typeId.toString(),
                         value = it.id.toIntOrZero()
@@ -414,7 +399,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
     fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val mapItemSortFilterWrapper =
             mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
-        penaltyFilterList.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilterList?.map {
+        penaltyFilterList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.map {
             mapItemSortFilterWrapper.add(
                 ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
                     title = it.title,
@@ -451,7 +436,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
         titleFilter: String,
         updateChipsSelected: Boolean
     ): Pair<MutableList<PenaltyFilterUiModel>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
-        penaltyFilterUiModel.find { it.title == TITLE_TYPE_PENALTY }?.chipsFilterList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
+        penaltyFilterUiModel.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.mapIndexed { index, chipsFilterPenaltyUiModel ->
             if (chipsFilterPenaltyUiModel.title == titleFilter) {
                 chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
                 itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
@@ -466,7 +451,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
     fun getChipsFilterList(
         titleFilter: String,
         penaltyFilterUiModel: MutableList<PenaltyFilterUiModel>,
-    ): List<PenaltyFilterUiModel.ChipsFilterPenaltyUiModel> {
+    ): List<ChipsFilterPenaltyUiModel> {
         return penaltyFilterUiModel.find { it.title == titleFilter }?.chipsFilterList ?: emptyList()
     }
 }

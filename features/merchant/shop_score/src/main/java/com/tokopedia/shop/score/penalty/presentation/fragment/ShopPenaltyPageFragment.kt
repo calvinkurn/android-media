@@ -27,14 +27,18 @@ import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyCalculat
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
+import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyPointCardUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyTickerUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.utils.view.binding.viewBinding
+import javax.inject.Inject
 
 class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapterFactory>(),
     PenaltyDateFilterBottomSheet.CalenderListener,
@@ -45,6 +49,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     ItemPenaltyErrorListener,
     ItemSortFilterPenaltyListener,
     ItemPenaltySubsectionListener {
+
+    @Inject
+    lateinit var viewModelShopPenalty: ShopPenaltyViewModel
 
     private val penaltyPageAdapterFactory by lazy {
         PenaltyPageAdapterFactory(
@@ -116,6 +123,41 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             ItemPenaltyTickerUiModel,
             ItemPenaltyInfoNotificationUiModel(5, true),
             ItemPenaltySubsectionUiModel("Sedang Berlangsung", "10-10-2020"),
+            ItemSortFilterPenaltyUiModel(
+                itemSortFilterWrapperList =
+                    listOf(
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = "Test",
+                            isSelected = false,
+                            idFilter = 5
+                        ),
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = "Test",
+                            isSelected = false,
+                            idFilter = 5
+                        ),
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = "Test",
+                            isSelected = false,
+                            idFilter = 5
+                        ),
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = "Test",
+                            isSelected = false,
+                            idFilter = 5
+                        ),
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = "Test",
+                            isSelected = false,
+                            idFilter = 5
+                        ),
+                        ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper(
+                            title = "Test",
+                            isSelected = false,
+                            idFilter = 5
+                        )
+                    )
+            ),
             ItemPenaltyPointCardUiModel(-5, "10 - 10 -2020")
         )
     }
@@ -137,7 +179,19 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onParentSortFilterClicked() {
-//        TODO("Not yet implemented")
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        val filterPenalty = viewModelShopPenalty.getPenaltyFilterUiModelList()
+        cacheManager?.put(
+            PenaltyFilterBottomSheet.KEY_FILTER_TYPE_PENALTY,
+            FilterTypePenaltyUiModelWrapper(
+                filterPenalty
+            )
+        )
+
+        val bottomSheetFilterPenalty =
+            PenaltyFilterBottomSheet.newInstance(cacheManager?.id.orEmpty())
+        bottomSheetFilterPenalty.setPenaltyFilterFinishListener(this)
+        bottomSheetFilterPenalty.show(childFragmentManager)
     }
 
     override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem) {

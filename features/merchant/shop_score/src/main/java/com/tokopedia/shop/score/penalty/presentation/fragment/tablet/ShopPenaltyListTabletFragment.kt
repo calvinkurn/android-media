@@ -2,7 +2,7 @@ package com.tokopedia.shop.score.penalty.presentation.fragment.tablet
 
 import com.tokopedia.shop.score.penalty.presentation.old.fragment.ShopPenaltyPageOldFragment
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
+import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyFilterUiModelOld
 import com.tokopedia.sortfilter.SortFilterItem
 
 class ShopPenaltyListTabletFragment : ShopPenaltyPageOldFragment() {
@@ -27,9 +27,9 @@ class ShopPenaltyListTabletFragment : ShopPenaltyPageOldFragment() {
         super.onSaveCalendarClicked(startDate, endDate)
     }
 
-    override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
+    override fun onClickFilterApplied(penaltyFilterUiModelOldList: List<PenaltyFilterUiModelOld>) {
         penaltyListListener?.closePenaltyDetail()
-        super.onClickFilterApplied(penaltyFilterUiModelList)
+        super.onClickFilterApplied(penaltyFilterUiModelOldList)
     }
 
     override fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem) {
