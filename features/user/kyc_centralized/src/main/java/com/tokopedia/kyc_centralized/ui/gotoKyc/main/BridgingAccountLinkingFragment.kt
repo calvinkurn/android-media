@@ -137,7 +137,8 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.AwaitingApprovalGopay -> {
-
+                    activity?.setResult(KYCConstant.ActivityResult.AWAITING_APPROVAL_GOPAY)
+                    activity?.finish()
                 }
                 is CheckEligibilityResult.Failed -> {
                     showToaster(it.throwable)
@@ -167,7 +168,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                         sourcePage = args.parameter.source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        listReason = listOf(it.rejectionReason)
+                        rejectionReason = it.rejectionReason
                     )
                     gotoStatusSubmissionPending(parameter)
                 }

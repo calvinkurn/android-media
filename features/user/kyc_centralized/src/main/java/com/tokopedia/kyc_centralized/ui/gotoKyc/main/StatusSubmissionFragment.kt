@@ -44,7 +44,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var kycFlowType: String = ""
     private var sourcePage: String = ""
     private var status: String = ""
-    private var listReason: List<String> = emptyList()
+    private var rejectionReason: String = ""
     private var isAccountPage: Boolean = false
     //TODO: check are this code unused
     private var waitTimeInSeconds: Int = 0
@@ -68,7 +68,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         kycFlowType = args.parameter.gotoKycType
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
-        listReason = args.parameter.listReason
+        rejectionReason = args.parameter.rejectionReason
         isAccountPage = args.parameter.projectId == KYCConstant.PROJECT_ID_ACCOUNT
         waitMessage = args.parameter.waitMessage
         projectId = args.parameter.projectId
@@ -175,32 +175,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             btnPrimary.text = getString(R.string.goto_kyc_status_rejected_button_primary)
             btnSecondary.text = getString(R.string.goto_kyc_status_rejected_button_secondary)
             tvTimer.hide()
-            cardReason.showWithCondition(listReason.isNotEmpty())
-
-            listReason.forEachIndexed { index, reason ->
-                when(index) {
-                    0 -> {
-                        icReason1.show()
-                        tvReason1.text = reason
-                        tvReason1.show()
-                    }
-                    1 -> {
-                        icReason2.show()
-                        tvReason2.text = reason
-                        tvReason2.show()
-                    }
-                    2 -> {
-                        icReason3.show()
-                        tvReason3.text = reason
-                        tvReason3.show()
-                    }
-                    3 -> {
-                        icReason4.show()
-                        tvReason4.text = reason
-                        tvReason4.show()
-                    }
-                }
-            }
+            cardReason.show()
+            tvReason.text = rejectionReason
         }
     }
 
@@ -373,9 +349,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     }
 
     private fun goToTransparentActivityToReVerify() {
-        //need hide all layout because when user back from transparent activity, user will not see the rejected page
-        binding?.scrollView?.hide()
-        binding?.unifyToolbar?.hide()
 
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
             putExtra(GotoKycTransparentFragment.IS_RE_VERIFY, true)

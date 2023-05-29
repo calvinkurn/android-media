@@ -168,7 +168,7 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                         sourcePage = source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        listReason = listOf(it.rejectionReason)
+                        rejectionReason = it.rejectionReason
                     )
                     gotoStatusSubmissionPending(parameter)
                 }

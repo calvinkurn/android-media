@@ -23,10 +23,10 @@ data class StatusSubmissionParam(
     val sourcePage: String = "",
 
     /*
-    * listReason is list reason why status rejected
+    * rejectionReason is list reason why status rejected
     * This list only show when status was rejected (status = -1)
     * */
-    val listReason: List<String> = emptyList(),
+    val rejectionReason: String = "",
 
     /*
     * The purpose of this field is to know user get progressive or non progressive

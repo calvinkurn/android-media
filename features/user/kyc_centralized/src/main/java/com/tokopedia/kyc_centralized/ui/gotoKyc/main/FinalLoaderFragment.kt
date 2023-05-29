@@ -99,7 +99,7 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
                         sourcePage = args.parameter.source,
-                        listReason = listOf(it.rejectionReason)
+                        rejectionReason = it.rejectionReason
                     )
                     gotoStatusSubmission(parameter)
                 }
@@ -118,7 +118,7 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                         gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                         status = it.status,
                         sourcePage = args.parameter.source,
-                        listReason = it.listReason
+                        rejectionReason = it.rejectionReason
                     )
                     gotoStatusSubmission(parameter)
                 }

@@ -110,7 +110,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         projectId = viewModel.projectId,
                         sourcePage = viewModel.source,
                         status = it.status,
-                        listReason = it.listReason,
+                        rejectionReason = it.rejectionReason,
                         waitMessage = it.waitMessage
                     )
                     gotoStatusSubmission(parameter)
@@ -140,7 +140,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.AwaitingApprovalGopay -> {
-                    showAwaitingApprovalBottomSheet()
+                    handleAwaitingApprovalGopayFlow()
                 }
                 is CheckEligibilityResult.Failed -> {
                     showToaster(it.throwable)
@@ -185,6 +185,19 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 source = viewModel.source,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true
             )
+        }
+    }
+
+    private fun handleAwaitingApprovalGopayFlow() {
+        if (viewModel.projectId == KYCConstant.PROJECT_ID_ACCOUNT) {
+            val parameter = GotoKycMainParam(
+                projectId = viewModel.projectId,
+                gotoKycType = KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY,
+                sourcePage = viewModel.source
+            )
+            gotoOnboardBenefit(parameter)
+        } else {
+            showAwaitingApprovalBottomSheet()
         }
     }
 
@@ -242,10 +255,14 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
-        onBoardNonProgressiveBottomSheet.setOnDismissListener {
-            kycSharedPreference.removeProjectId()
-            activity?.setResult(Activity.RESULT_CANCELED)
-            activity?.finish()
+        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isAwaitingApprovalGopay ->
+            if (isAwaitingApprovalGopay) {
+                showAwaitingApprovalBottomSheet()
+            } else {
+                kycSharedPreference.removeProjectId()
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
         }
     }
 

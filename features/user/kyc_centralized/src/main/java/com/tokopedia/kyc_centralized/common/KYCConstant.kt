@@ -76,11 +76,12 @@ object KYCConstant {
     object GotoKycFlow {
         const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
         const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
-        const val AWAITING_APPROVAL = "AWAITING_APPROVAL"
+        const val AWAITING_APPROVAL_GOPAY = "AWAITING_APPROVAL"
     }
 
     object ActivityResult {
         const val RESULT_FINISH = 99
         const val ACCOUNT_NOT_LINKED = 98
+        const val AWAITING_APPROVAL_GOPAY = 97
     }
 }
