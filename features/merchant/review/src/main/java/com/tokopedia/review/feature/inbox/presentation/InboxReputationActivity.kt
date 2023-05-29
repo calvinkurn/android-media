@@ -1,12 +1,13 @@
 package com.tokopedia.review.feature.inbox.presentation
 
 import android.app.NotificationManager
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.WindowManager.LayoutParams
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.PagerAdapter
@@ -46,6 +47,7 @@ import com.tokopedia.review.feature.reputationhistory.view.fragment.SellerReputa
 import com.tokopedia.review.feature.reviewlist.view.fragment.RatingProductFragment
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 /**
@@ -352,15 +354,16 @@ open class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputatio
     }
 
     private fun setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            if (!this.isDarkMode()) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor =
-                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-        }
+        window.clearFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor =
+            ContextCompat.getColor(this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background)
     }
 
     private fun clearCacheIfFromNotification() {

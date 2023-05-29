@@ -2,8 +2,8 @@ package com.tokopedia.tokopedia.feedplus.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
-import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
-import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
+import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
+import com.tokopedia.feedplus.oldFeed.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk

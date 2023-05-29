@@ -6,16 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoNavigator
 import com.tokopedia.product.detail.databinding.BsItemProductDetailAnnotationBinding
 import com.tokopedia.product.detail.databinding.ItemInfoProductDetailBinding
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.models.ProductDetailInfoAnnotationDataModel
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 /**
  * Created by yovi.putra on 20/09/22"
@@ -52,7 +51,7 @@ class ProductDetailInfoAnnotationViewHolder(
     private fun onInfoCreateView(
         data: ProductDetailInfoContent,
         layoutInflater: LayoutInflater
-    ) : View {
+    ): View {
         val infoBinding = ItemInfoProductDetailBinding.inflate(
             layoutInflater,
             binding.root,
@@ -69,7 +68,7 @@ class ProductDetailInfoAnnotationViewHolder(
         infoDetailTitle.text = data.title
         infoDetailValue.text = data.subtitle
 
-        if (data.applink.isNotEmpty()) {
+        if (data.isClickable) {
             setAppLink(data = data)
         }
 
@@ -87,20 +86,31 @@ class ProductDetailInfoAnnotationViewHolder(
         }
 
         infoDetailClickArea.setOnClickListener {
-            when (data.title.lowercase(Locale.getDefault())) {
-                ProductDetailCommonConstant.KEY_CATEGORY -> {
+            data.routeOnClick(object : ProductDetailInfoNavigator {
+                override fun toCategory(appLink: String) {
                     listener.goToCategory(data.applink)
                 }
-                ProductDetailCommonConstant.KEY_ETALASE -> {
+
+                override fun toEtalase(appLink: String) {
                     listener.goToEtalase(data.applink)
                 }
-                ProductDetailCommonConstant.KEY_CATALOG -> {
+
+                override fun toCatalog(appLink: String, subTitle: String) {
                     listener.goToCatalog(data.applink, data.subtitle)
                 }
-                else -> {
+
+                override fun toAppLink(appLink: String) {
                     listener.goToApplink(data.applink)
                 }
-            }
+
+                override fun toWebView(infoLink: String) {
+                    listener.goToWebView(url = infoLink)
+                }
+
+                override fun toProductDetailInfo(key: String, extParam: String) {
+                    // no-ops, on pdp only
+                }
+            })
         }
     }
 
