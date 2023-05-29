@@ -2434,7 +2434,7 @@ class AddEditProductDetailFragment :
         val result = MediaPicker.result(data)
         val newUpdatedPhotos = viewModel.updateProductPhotos(
             result.editedImages.toMutableList(),
-            result.originalPaths.toMutableList()
+            result.selectedIncludeMedia.toMutableList()
         )
         productPictureList = newUpdatedPhotos.pictureList
         productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
