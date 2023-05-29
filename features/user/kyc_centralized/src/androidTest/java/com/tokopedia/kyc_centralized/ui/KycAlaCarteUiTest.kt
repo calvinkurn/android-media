@@ -9,9 +9,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_ALA_C
 import com.tokopedia.kyc_centralized.*
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
+import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
 import com.tokopedia.kyc_centralized.util.MockTimber
+import com.tokopedia.kyc_centralized.util.hasKycFaceMode
 import com.tokopedia.kyc_centralized.util.hasProjectIdOf
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Assert.*
@@ -42,7 +44,7 @@ class KycAlaCarteUiTest {
     }
 
     @Test
-    fun whenAlaCarte_happyFlow() {
+    fun whenAlaCarteUseLiveness_happyFlow() {
         val projectId = "18"
         kycApi.case = FakeKycUploadApi.Case.Success
         val url = "https://tokopedia.com"
@@ -57,9 +59,33 @@ class KycAlaCarteUiTest {
         kycRobot {
             atKtpIntroClickNext()
             atFaceIntroClickNext()
-        } upload {
-            hasRedirectUrl(activityTestRule, url)
+        } validate {
+            hasRedirectUrl(timber, url)
             assertThat(timber, hasProjectIdOf(projectId))
+            assertThat(timber, hasKycFaceMode(KycUploadUseCase.LIVENESS))
+        }
+    }
+
+    @Test
+    fun whenAlaCarteUseSelfie_happyFlow() {
+        val projectId = "21"
+        kycApi.case = FakeKycUploadApi.Case.Success
+        val url = "https://tokopedia.com"
+        val i = Intent().apply {
+            data = Uri.parse(
+                UriUtil.buildUri(KYC_ALA_CARTE, projectId, "false", url, "ktpWithSelfie")
+            )
+        }
+        activityTestRule.launchActivity(i)
+        stubKtpCamera()
+        stubLiveness(projectId)
+        kycRobot {
+            atKtpIntroClickNext()
+            atFaceIntroClickNext()
+        } validate {
+            hasRedirectUrl(timber, url)
+            assertThat(timber, hasProjectIdOf(projectId))
+            assertThat(timber, hasKycFaceMode(KycUploadUseCase.SELFIE))
         }
     }
 
@@ -81,7 +107,7 @@ class KycAlaCarteUiTest {
             atFaceIntroClickNext()
             stubLiveness(projectId)
             atFaceIntroClickNext()
-        } upload {
+        } validate {
             assertThat(timber, hasProjectIdOf(projectId))
         }
     }

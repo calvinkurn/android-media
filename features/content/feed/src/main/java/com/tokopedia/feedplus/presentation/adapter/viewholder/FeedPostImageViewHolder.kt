@@ -21,6 +21,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -258,6 +259,10 @@ class FeedPostImageViewHolder(
                 bindComments(it)
             }
 
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 campaignView.startAnimation()
                 sendImpressionTracker(it)
@@ -402,7 +407,6 @@ class FeedPostImageViewHolder(
             postType = model.typename,
             isFollowing = model.followers.isFollowed,
             campaign = model.campaign,
-            hasVoucher = model.hasVoucher,
             products = products,
             totalProducts = model.totalProducts,
             trackerData = trackerDataModel,
@@ -452,6 +456,7 @@ class FeedPostImageViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
             trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(model),
