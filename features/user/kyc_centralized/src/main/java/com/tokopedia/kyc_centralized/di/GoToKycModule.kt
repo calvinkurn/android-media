@@ -172,9 +172,11 @@ open class GoToKycModule {
 
     @Provides
     @ActivityScope
-    fun provideKycSdkAnalyticsConfig() = KycSdkAnalyticsConfig(
-        apiKey = "a1b3f286-bb73-4f02-b2bb-34781cceab6d",
-        url = "https://toko-raccoon-integration.gojekapi.com/api/v1/events",
+    fun provideKycSdkAnalyticsConfig(
+        @ApplicationContext context: Context
+    ) = KycSdkAnalyticsConfig(
+        apiKey = context.getString(com.tokopedia.keys.R.string.one_kyc_click_stream_api_key),
+        url = context.getString(com.tokopedia.keys.R.string.one_kyc_click_stream_url),
         enableDebugLogs = GlobalConfig.isAllowDebuggingTools()
     )
 

@@ -29,13 +29,13 @@ android {
     }
 }
 dependencies {
-    implementation("com.gojek.android:OneKycSdk:0.1.38Pre3@aar")
-    implementation("com.gojek.android:OneKycResources:0.1.38Pre3@aar")
-    implementation("com.gojek.android:clickstream:2.0.1-alpha"){
+    implementation rootProject.ext.gotoOneKyc.resource
+    implementation rootProject.ext.gotoOneKyc.oneKycSdk
+    implementation rootProject.ext.gotoOneKyc.protoToko
+    implementation rootProject.ext.gotoOneKyc.protoSdk
+    implementation (rootProject.ext.gotoOneKyc.clickStream) {
         exclude(group:"com.google.protobuf")
     }
-    implementation("com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1")
-    implementation("com.gojek.clickstream:proto-sdk:1.18.2")
 
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.imageAssets)
@@ -55,6 +55,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
