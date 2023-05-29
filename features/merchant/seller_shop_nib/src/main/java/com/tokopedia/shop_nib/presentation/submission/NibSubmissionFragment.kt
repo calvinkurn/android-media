@@ -47,6 +47,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
     companion object {
         private const val REQUEST_CODE_SELECT_FILE = 100
         private const val DATE_FORMAT = "dd/MM/yyyy"
+        private const val IMAGE_URL_PDF_FILE_THUMBNAIL = "https://images.tokopedia.net/img/android/campaign/ssn_ic_pdf_thumbnail.png"
 
         @JvmStatic
         fun newInstance(): NibSubmissionFragment {
@@ -155,8 +156,16 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             UiEffect.RedirectToSubmissionSuccess -> redirectToSubmissionSuccessPage()
             is UiEffect.ShowDatePicker -> showDatePickerBottomSheet(effect.previouslySelectedDate)
             UiEffect.ShowFilePicker -> showFilePicker()
-            is UiEffect.ShowError -> view?.showToasterError(effect.error)
-            is UiEffect.ShowUploadError -> view?.showToasterError(effect.errorMessage)
+            is UiEffect.ShowError -> {
+                context?.let { context ->
+                    view?.showToasterError(effect.error, context.getString(R.string.ssn_ok))
+                }
+            }
+            is UiEffect.ShowUploadError -> {
+                context?.let { context ->
+                    view?.showToasterError(effect.errorMessage, context.getString(R.string.ssn_ok))
+                }
+            }
         }
     }
 
@@ -244,8 +253,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
 
         binding?.run {
             if (isPdf) {
-                val bitmap = fileHelper.generatePdfThumbnail(fileUri)
-                imgFile.loadImage(bitmap)
+                imgFile.loadImage(IMAGE_URL_PDF_FILE_THUMBNAIL)
             } else {
                 imgFile.loadImage(fileUri)
             }
