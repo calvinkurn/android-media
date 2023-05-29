@@ -114,7 +114,8 @@
                     android:layout_height="20dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:src="@drawable/ssn_ic_close"
+                    android:contentDescription="@string/ssn_cd_close"
+                    app:srcCompat="@drawable/ssn_ic_close"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

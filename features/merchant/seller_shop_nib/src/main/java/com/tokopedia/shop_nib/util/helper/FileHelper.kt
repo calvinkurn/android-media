@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import java.io.File
 import java.io.FileOutputStream
@@ -26,6 +27,7 @@ class FileHelper @Inject constructor(@ApplicationContext private val context: Co
                 0
             }
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             0
         } finally {
             cursor?.close()
@@ -51,14 +53,12 @@ class FileHelper @Inject constructor(@ApplicationContext private val context: Co
                     outputStream.write(buffer, 0, bytesRead)
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
         } finally {
             try {
                 inputStream?.close()
                 outputStream?.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (_: Exception) {
             }
         }
         return file
@@ -78,6 +78,7 @@ class FileHelper @Inject constructor(@ApplicationContext private val context: Co
                 ""
             }
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             ""
         } finally {
             cursor?.close()

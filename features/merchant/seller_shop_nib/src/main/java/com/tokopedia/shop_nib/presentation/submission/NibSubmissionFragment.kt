@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.setHyperlinkText
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -261,7 +262,7 @@ class NibSubmissionFragment : BaseDaggerFragment() {
             tpgFileName.text = fileName
 
             val fileSizeInMb = fileSizeInKb.toMb()
-            val roundedFileSizeInMb = String.format("%.2f", fileSizeInMb)
+            val roundedFileSizeInMb = String.format(LocaleConstant.INDONESIA,"%.2f", fileSizeInMb)
             tpgFileSize.text =
                 context?.getString(R.string.ssn_placeholder_file_size, roundedFileSizeInMb)
         }
