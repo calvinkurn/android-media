@@ -9,6 +9,11 @@
             android:label="scp"
             android:screenOrientation="portrait"
             />
+        <activity android:name=".detail.presentation.ui.MedalDetailActivity"
+            android:exported="true"
+            android:label="scp"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

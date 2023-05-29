@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:scaleType="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0"
+        app:unify_image_type="rect" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view_sparks"
+        android:layout_width="250dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="@dimen/dp_39"
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_loop="true" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_view"
+        android:layout_width="156dp"
+        android:layout_height="174dp"
+        android:layout_gravity="center"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@id/lottie_view_sparks"
+        app:layout_constraintEnd_toEndOf="@id/lottie_view_sparks"
+        app:layout_constraintStart_toStartOf="@id/lottie_view_sparks"
+        app:layout_constraintTop_toTopOf="@id/lottie_view_sparks" />
+
+    <View
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_20"
+        android:background="@drawable/scp_medal_detail_rounded_bg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</merge>
