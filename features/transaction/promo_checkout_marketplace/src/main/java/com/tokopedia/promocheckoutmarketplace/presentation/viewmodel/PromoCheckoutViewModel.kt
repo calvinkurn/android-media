@@ -1841,8 +1841,11 @@ class PromoCheckoutViewModel @Inject constructor(
                     errorMessageBuilder.append(secondaryClashingInfo.message)
                     promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                     fragmentUiModel.value?.let {
-                        it.uiData.benefitAdjustmentMessage = promoListItemUiModel.uiData.benefitAdjustmentMessage
-                        _fragmentUiModel.value = it
+                        if (!it.uiState.hasSeenBenefitAdjustmentMessage) {
+                            it.uiData.benefitAdjustmentMessage =
+                                promoListItemUiModel.uiData.benefitAdjustmentMessage
+                            _fragmentUiModel.value = it
+                        }
                     }
                     clashResult = true
                 }
