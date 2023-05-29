@@ -25,6 +25,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckou
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.LoaderUnify
 
 class PromoListItemViewHolder(
     private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
@@ -34,6 +35,7 @@ class PromoListItemViewHolder(
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_card
 
+        const val STATE_LOADING = 0
         const val STATE_SELECTED = 1
         const val STATE_ENABLED = 2
         const val STATE_DISABLED = 3
@@ -99,7 +101,9 @@ class PromoListItemViewHolder(
     ) {
         viewBinding.cardPromoItem.setOnClickListener {
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
-                if (element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
+                if (element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled &&
+                    !element.uiState.isDisabled && !element.uiState.isLoading
+                ) {
                     listener.onClickPromoListItem(element, adapterPosition)
                 }
             }
@@ -107,18 +111,22 @@ class PromoListItemViewHolder(
     }
 
     private fun getState(element: PromoListItemUiModel): Int {
-        return if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
-            if (element.uiState.isDisabled) {
-                STATE_DISABLED
-            } else {
-                if (element.uiState.isSelected) {
-                    STATE_SELECTED
-                } else {
-                    STATE_ENABLED
-                }
-            }
+        return if (element.uiState.isLoading) {
+            STATE_LOADING
         } else {
-            STATE_DISABLED
+            if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
+                if (element.uiState.isDisabled) {
+                    STATE_DISABLED
+                } else {
+                    if (element.uiState.isSelected) {
+                        STATE_SELECTED
+                    } else {
+                        STATE_ENABLED
+                    }
+                }
+            } else {
+                STATE_DISABLED
+            }
         }
     }
 
@@ -127,6 +135,9 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         when {
+            getState(element) == STATE_LOADING -> {
+                renderPromoLoading(viewBinding)
+            }
             getState(element) == STATE_SELECTED -> {
                 renderPromoSelected(viewBinding, element)
             }
@@ -139,12 +150,31 @@ class PromoListItemViewHolder(
         }
     }
 
+    private fun renderPromoLoading(
+        viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding
+    ) {
+        with(viewBinding) {
+            containerPromoLoading.show()
+            containerConstraintPromoCheckout.gone()
+            promoLoader1.type = LoaderUnify.TYPE_LINE
+            promoLoader2.type = LoaderUnify.TYPE_LINE
+            cardPromoItem.cardType = CardUnify.TYPE_BORDER
+            cardPromoItem.setCardBackgroundColor(colorBackgroundEnabled)
+            cardPromoItem.setOnClickListener(null)
+            promoQuantityIdentifierTop.gone()
+            promoQuantityIdentifierBottom.gone()
+            textPromoQuantity.gone()
+        }
+    }
+
     private fun renderPromoSelected(
         viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
         element: PromoListItemUiModel
     ) {
         renderPromoEnabled(viewBinding, element)
         with(viewBinding) {
+            containerConstraintPromoCheckout.show()
+            containerPromoLoading.gone()
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_selected)
             containerUserValidity.setBackgroundColor(
                 ContextCompat.getColor(
@@ -182,6 +212,8 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
+            containerConstraintPromoCheckout.show()
+            containerPromoLoading.gone()
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_enabled)
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
@@ -215,6 +247,8 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
+            containerConstraintPromoCheckout.show()
+            containerPromoLoading.gone()
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_disabled)
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_disabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_disabled)

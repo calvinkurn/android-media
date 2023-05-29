@@ -806,6 +806,18 @@ class PromoCheckoutFragment :
         } else {
             renderLoadPromoFailed(fragmentUiModel)
         }
+
+        if (!fragmentUiModel.uiState.hasSeenBenefitAdjustmentMessage && fragmentUiModel.uiData.benefitAdjustmentMessage.isNotBlank()) {
+            view?.let {
+                Toaster.build(
+                    it,
+                    fragmentUiModel.uiData.benefitAdjustmentMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+                ).show()
+                viewModel.setHasSeenBenefitAdjustment()
+            }
+        }
     }
 
     private fun renderLoadPromoSuccess(fragmentUiModel: FragmentUiModel) {
