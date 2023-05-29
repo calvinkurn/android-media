@@ -65,7 +65,6 @@ class SwitchAccountAnalyticTest {
         repo = mockRepo,
         channelUseCase = mockGetChannelUseCase,
         addedChannelTagsUseCase = mockGetAddedTagUseCase,
-        sharedPreferences = mockk(relaxed = true),
         playShortsEntryPointRemoteConfig = mockk(relaxed = true),
         sharedPreferences = mockHydraSharedPreferences,
     )

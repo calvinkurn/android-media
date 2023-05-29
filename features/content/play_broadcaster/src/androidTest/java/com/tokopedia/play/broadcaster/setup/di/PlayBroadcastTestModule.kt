@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.byteplus.effect.util.asset.checker.AssetChecker
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
@@ -141,6 +142,7 @@ class PlayBroadcastTestModule(
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+        performanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
         beautificationAnalytic: PlayBroadcastBeautificationAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
@@ -155,6 +157,7 @@ class PlayBroadcastTestModule(
             pinProductAnalytic,
             accountAnalytic,
             shortsEntryPointAnalytic,
+            performanceDashboardEntryPointAnalytic,
             beautificationAnalytic,
         )
     }

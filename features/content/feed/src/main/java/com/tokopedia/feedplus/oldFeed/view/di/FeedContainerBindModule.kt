@@ -2,8 +2,6 @@ package com.tokopedia.feedplus.oldFeed.view.di
 
 import com.tokopedia.feedplus.oldFeed.data.repository.FeedPlusRepositoryImpl
 import com.tokopedia.feedplus.oldFeed.domain.repository.FeedPlusRepository
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
-import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPrefImpl
 import dagger.Binds
 import dagger.Module
 
@@ -17,7 +15,4 @@ abstract class FeedContainerBindModule {
     @FeedContainerScope
     abstract fun bindFeedPlusRepository(feedPlusRepository: FeedPlusRepositoryImpl): FeedPlusRepository
 
-    @Binds
-    @FeedContainerScope
-    abstract fun bindContentCoachMarkSharedPref(contentCoachMarkSharedPref: ContentCoachMarkSharedPrefImpl): ContentCoachMarkSharedPref
 }
