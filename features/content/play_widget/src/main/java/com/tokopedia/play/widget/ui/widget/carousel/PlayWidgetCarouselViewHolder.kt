@@ -91,6 +91,10 @@ class PlayWidgetCarouselViewHolder private constructor() {
             }
         }
 
+        internal fun onRecycled() {
+            channelView.setPlayer(null)
+        }
+
         companion object {
             fun create(
                 parent: ViewGroup,

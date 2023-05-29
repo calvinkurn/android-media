@@ -93,6 +93,11 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
+            TransitionManager.beginDelayedTransition(
+                binding.root,
+                AutoTransition()
+                    .addTarget(binding.playerView)
+            )
             binding.playerView.showWithCondition(isPlaying)
         }
     }

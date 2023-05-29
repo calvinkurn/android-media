@@ -169,6 +169,11 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = "HOME"
         }
 
+        object HomeV2 : WidgetType() {
+            override val typeKey: String
+                get() = "HOME_V2"
+        }
+
         object Feeds : WidgetType() {
             override val typeKey: String
                 get() = "FEEDS"

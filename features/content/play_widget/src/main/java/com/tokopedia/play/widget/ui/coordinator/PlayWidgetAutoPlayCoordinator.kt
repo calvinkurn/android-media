@@ -36,7 +36,10 @@ class PlayWidgetAutoPlayCoordinator(
     private lateinit var mConfig: PlayWidgetConfigUiModel
 
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
-        startAutoPlay(widgetCardsContainer)
+        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
+        startAutoPlay(visibleCards.map {
+            WidgetInList(it.card, it.position)
+        })
     }
 
     override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
@@ -109,36 +112,6 @@ class PlayWidgetAutoPlayCoordinator(
         setupAutoplay(widget.context, config, type)
     }
 
-    private fun startAutoPlay(widgetCardsContainer: RecyclerView) {
-        val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
-        if (visibleCards.isEmpty()) return
-
-        autoPlayJob?.cancel()
-        autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-            delay(MAX_DELAY)
-            val autoPlayEligibleReceivers = autoPlayReceiverDecider.getEligibleAutoPlayReceivers(
-                visibleCards = visibleCards,
-                itemCount = widgetCardsContainer.layoutManager?.itemCount ?: 0,
-                maxAutoPlay = getMaxAutoPlayCard()
-            )
-
-            videoPlayerMap.entries.forEach {
-                if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
-            }
-
-            autoPlayEligibleReceivers
-                .filter { it.getPlayer() == null }
-                .forEach {
-                    val nextIdlePlayer = getNextIdlePlayer()
-
-                    if (nextIdlePlayer != null) {
-                        it.setPlayer(nextIdlePlayer)
-                        videoPlayerMap[nextIdlePlayer] = it
-                    }
-                }
-        }
-    }
-
     private fun startAutoPlay(focusedWidgets: List<WidgetInList>) {
         autoPlayJob?.cancel()
 
@@ -150,13 +123,13 @@ class PlayWidgetAutoPlayCoordinator(
             maxAutoPlay = getMaxAutoPlayCard()
         )
 
-        videoPlayerMap.entries.forEach {
-            if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
-        }
-
         autoPlayJob = scope.launch(mainCoroutineDispatcher) {
-            delay(MAX_DELAY)
+            delay(DELAY_BEFORE_PAUSE)
+            videoPlayerMap.entries.forEach {
+                if (it.value !in autoPlayEligibleReceivers) clearPlayerEntry(it)
+            }
 
+            delay(DELAY_BEFORE_PLAY)
             autoPlayEligibleReceivers
                 .filter { it.getPlayer() == null }
                 .forEach {
@@ -211,6 +184,7 @@ class PlayWidgetAutoPlayCoordinator(
     }
 
     companion object {
-        private const val MAX_DELAY = 500L // set delay before play to 2s
+        private const val DELAY_BEFORE_PAUSE = 200L
+        private const val DELAY_BEFORE_PLAY = 1500L
     }
 }
