@@ -217,6 +217,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         val lottieUrl = context.getString(R.string.lottie_sound_on_off)
 
         val fallbackToImage = {
+            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
             binding.viewPlayWidgetActionButton.lottieAction.hide()
             binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_MUTE)
             binding.viewPlayWidgetActionButton.iconActionFallback.show()
@@ -247,6 +248,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         val lottieUrl = context.getString(R.string.lottie_sound_off_on)
 
         val fallbackToImage = {
+            binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
             binding.viewPlayWidgetActionButton.lottieAction.hide()
             binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_UP)
             binding.viewPlayWidgetActionButton.iconActionFallback.show()
@@ -297,6 +299,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         LottieCompositionFactory.fromUrl(context, lottieUrl)
             .addFailureListener {
+                binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
                 binding.viewPlayWidgetActionButton.lottieAction.hide()
                 binding.viewPlayWidgetActionButton.iconActionFallback.setImage(IconUnify.VOLUME_UP)
                 binding.viewPlayWidgetActionButton.iconActionFallback.show()
