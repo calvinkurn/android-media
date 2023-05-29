@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.affiliate.AFFILIATE_NC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.CLICK_TYPE
 import com.tokopedia.affiliate.COACHMARK_TAG
@@ -73,6 +74,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -114,6 +116,12 @@ class AffiliateHomeFragment :
     private var swipeRefresh: SwipeToRefresh? = null
     private var navToolbar: NavToolbar? = null
     private var loader: LoaderUnify? = null
+    private fun isAffiliateNCEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_NC,
+            ""
+        ) == AFFILIATE_NC
+
     private val loginRequest = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             setUserDetails()
@@ -216,21 +224,21 @@ class AffiliateHomeFragment :
         productRV?.adapter = adapter
         loadMoreTriggerListener?.let { productRV?.addOnScrollListener(it) }
         navToolbar?.run {
-            setIcon(
-                IconBuilder()
-                    .addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                        affiliateHomeViewModel.resetNotificationCount()
-                        sendNotificationClickEvent()
-                        RouteManager.route(
-                            context,
-                            ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
-                        )
-                    }
-                    .addIcon(IconList.ID_BILL) {
-                        openHistoryActivity()
-                    }
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            val iconBuilder = IconBuilder()
+            if (isAffiliateNCEnabled()) {
+                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                    affiliateHomeViewModel.resetNotificationCount()
+                    sendNotificationClickEvent()
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
+                    )
+                }
+            }
+            iconBuilder
+                .addIcon(IconList.ID_BILL) { openHistoryActivity() }
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
+            setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.label_affiliate)
             setOnBackButtonClickListener {
@@ -414,9 +422,11 @@ class AffiliateHomeFragment :
                 is UnknownHostException, is SocketTimeoutException -> {
                     setType(GlobalError.NO_CONNECTION)
                 }
+
                 is IllegalStateException -> {
                     setType(GlobalError.PAGE_FULL)
                 }
+
                 else -> {
                     setType(GlobalError.SERVER_ERROR)
                 }

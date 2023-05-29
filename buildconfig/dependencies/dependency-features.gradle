@@ -208,8 +208,6 @@ ext {
             goPayKyc                        : ":features:payment:gopay.kyc",
             withdraw                        : ":features:payment:withdraw",
 
-            gallery                         : ":features:merchant:gallery",
-
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
             additional_check                : ":features:user:additional_check",
