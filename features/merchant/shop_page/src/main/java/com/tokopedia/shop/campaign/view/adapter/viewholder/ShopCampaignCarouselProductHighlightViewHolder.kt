@@ -71,7 +71,8 @@ class ShopCampaignCarouselProductHighlightViewHolder(
                 isHasAddToCartButton = false,
                 hasThreeDots = false,
                 shopHomeProductViewModel = it,
-                isWideContent = false
+                isWideContent = false,
+                productRating = if (it.rating != 0.0) it.rating.toString() else ""
             )
         }
         if (isProductCardSingleOrDouble(uiModel.productList)) {

@@ -167,6 +167,7 @@ import com.tokopedia.shop.home.view.bottomsheet.ShopHomeNplCampaignTncBottomShee
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
 import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
@@ -187,6 +188,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageHeaderActivity
@@ -241,7 +243,7 @@ open class ShopPageHomeFragment :
     SingleProductBundleListener,
     ShopHomeProductListSellerEmptyListener,
     ShopHomeListener,
-    ShopHomeDisplayBannerTimerWidgetListener{
+    ShopHomeDisplayBannerTimerWidgetListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
@@ -667,7 +669,7 @@ open class ShopPageHomeFragment :
     }
 
     private fun setFestivityRvDecoration() {
-        val anyFestivityWidget = shopHomeAdapter.getShopHomeWidgetData().any {
+        val anyFestivityWidget = shopHomeAdapter?.getShopHomeWidgetData().orEmpty().any {
             it.isFestivity
         }
         if (anyFestivityWidget) {
@@ -4269,7 +4271,7 @@ open class ShopPageHomeFragment :
         if (isShownAlready) return
         val recyclerView = getRecyclerView(view)
         recyclerView?.addOneTimeGlobalLayoutListener {
-            val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
+            val widgetPosition = shopHomeAdapter?.list.orEmpty().indexOfFirst { it is CarouselPlayWidgetUiModel }
             val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
             val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
             if (ivAction?.isVisible == true) {
