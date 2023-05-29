@@ -26,7 +26,7 @@ class CheckEligibilityUseCase @Inject constructor(
                     KYCConstant.GotoKycFlow.NON_PROGRESSIVE -> {
                         CheckEligibilityResult.NonProgressive()
                     }
-                    KYCConstant.GotoKycFlow.AWAITING_APPROVAL -> {
+                    KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY -> {
                         CheckEligibilityResult.AwaitingApprovalGopay()
                     }
                     else -> {
