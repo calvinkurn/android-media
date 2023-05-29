@@ -2,6 +2,7 @@ package com.tokopedia.addon.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
@@ -21,6 +22,10 @@ class AddOnViewModel @Inject constructor(
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
+
+    val isAddonDataEmpty = Transformations.map(getAddOnResult) {
+        it.isEmpty()
+    }
 
     fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean) {
         launchCatchError(block = {

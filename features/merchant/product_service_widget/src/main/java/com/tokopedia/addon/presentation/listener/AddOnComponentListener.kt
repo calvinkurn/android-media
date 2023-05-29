@@ -11,4 +11,6 @@ interface AddOnComponentListener {
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     )
+
+    fun onDataEmpty()
 }

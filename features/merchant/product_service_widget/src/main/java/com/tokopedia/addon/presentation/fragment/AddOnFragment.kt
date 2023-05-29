@@ -72,4 +72,8 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
         println("" + index + "---" + indexChild)
     }
+
+    override fun onDataEmpty() {
+        println("empty")
+    }
 }

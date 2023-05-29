@@ -12,6 +12,7 @@ import com.tokopedia.addon.presentation.adapter.AddOnAdapter
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -47,6 +48,10 @@ class AddOnWidgetView : BaseCustomView {
             }
             viewModel.getAddOnResult.observe(this) {
                 addonAdapter.setItems(it)
+            }
+            viewModel.isAddonDataEmpty.observe(this) {
+                if (it) listener?.onDataEmpty()
+                this@AddOnWidgetView.isVisible = !it
             }
         }
     }
