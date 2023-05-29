@@ -98,10 +98,12 @@ object ProductMapper {
         val activeProductFilter = filterTabs.firstOrNull { it.id == FilterId.ACTIVE.name }
         val inActiveProductFilter = filterTabs.firstOrNull { it.id == FilterId.INACTIVE.name }
         val violationProductFilter = filterTabs.firstOrNull { it.id == FilterId.VIOLATION.name }
+        val archivalProductFilter = filterTabs.firstOrNull { it.id == FilterId.isProductArchival.name }
 
         val activeFilterCount = activeProductFilter?.value.toIntOrZero()
         val inActiveFilterCount = inActiveProductFilter?.value.toIntOrZero()
         val violationFilterCount = violationProductFilter?.value.toIntOrZero()
+        val archivalFilterCount = archivalProductFilter?.value.toIntOrZero()
 
         if (activeFilterCount > 0) {
             val activeFilter = Active(activeFilterCount)
@@ -118,6 +120,10 @@ object ProductMapper {
             productFilters.add(violationFilter)
         }
 
+        if (archivalFilterCount > 0) {
+            val archivalFilter = Archival(archivalFilterCount)
+            productFilters.add(archivalFilter)
+        }
         return if (this?.value == null) {
             ShowFilterTab(productFilters)
         } else {

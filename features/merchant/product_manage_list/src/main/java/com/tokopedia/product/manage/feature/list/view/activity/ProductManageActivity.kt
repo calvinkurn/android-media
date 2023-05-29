@@ -74,7 +74,7 @@ open class ProductManageActivity : BaseSimpleActivity(), HasComponent<ProductMan
     }
 
     private fun goToSellerAppDashboard() {
-        if (GlobalConfig.isSellerApp()) {
+        if (true) {
             RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD)
         }
     }

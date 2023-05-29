@@ -1456,7 +1456,11 @@ open class ProductManageFragment :
         val sortOption = selectedFilter?.sortOption
 
         filterTab?.getSelectedFilter()?.let {
-            filterOptions.add(FilterByStatus(it))
+            if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
+                filterOptions.add(FilterByCondition.ProductArchival)
+            }else{
+                filterOptions.add(FilterByStatus(it))
+            }
         }
         if (isRefreshFromSortFilter) {
             tabSortFilter?.show()
@@ -2060,7 +2064,7 @@ open class ProductManageFragment :
                 showSuspendReasonBottomSheet(product.id)
             }
             product.isArchived || product.isInGracePeriod  -> {
-                showSuspendReasonBottomSheet(product.id)
+                showProductArchivalBottomSheet(product.id)
             }
         }
         ProductManageTracking.eventContactCs(product.id)
@@ -3217,6 +3221,12 @@ open class ProductManageFragment :
 
     open fun showSuspendReasonBottomSheet(productId: String) {
         SuspendReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
+    }
+
+    private fun showProductArchivalBottomSheet(productId: String) {
+        ProductArchivalBottomSheet.createInstance(productId) {
+            showErrorToast(it)
+        }.show(childFragmentManager)
     }
 
     private fun showToaster(message: String) {

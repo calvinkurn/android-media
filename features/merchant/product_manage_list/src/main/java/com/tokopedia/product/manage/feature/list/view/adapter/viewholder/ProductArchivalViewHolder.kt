@@ -64,13 +64,14 @@ class ProductArchivalViewHolder(
         binding?.tickerProductManageViolation?.showWithCondition(product.isInGracePeriod)
         if (product.isInGracePeriod) {
             binding?.tickerProductManageViolation?.setTextDescription(
-                getString(R.string.product_manage_text_potential_product_to_archived))
+                getString(R.string.product_manage_text_potential_product_to_archived)
+            )
         }
         binding?.tvInfoProductArchival?.showWithCondition(product.isArchived)
     }
 
     private fun showProductCheckBox(product: ProductUiModel) {
-        if (product.isInGracePeriod){
+        if (product.isInGracePeriod) {
             binding?.checkBoxSelect?.isChecked = product.isChecked
             binding?.checkBoxSelect?.showWithCondition(product.multiSelectActive)
         }

@@ -34,8 +34,10 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.feature.list.data.model.ProductArchivalInfo
 import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
 import com.tokopedia.product.manage.feature.list.domain.GetTickerUseCase
+import com.tokopedia.product.manage.feature.list.domain.ProductArchivalInfoUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.datasource.TickerStaticDataProvider
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
@@ -85,7 +87,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -113,6 +114,7 @@ class ProductManageViewModel @Inject constructor(
     private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val getStatusShop: GetStatusShopUseCase,
     private val getTickerUseCase: GetTickerUseCase,
+    private val getProductArchival: ProductArchivalInfoUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -175,6 +177,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _uploadStatus
     val shopStatus: MutableLiveData<StatusInfo>
         get() = _shopStatus
+    val productArchivalInfo: MutableLiveData<Result<ProductArchivalInfo>>
+        get() = _productArchivalInfo
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _showTicker = MutableLiveData<Boolean>()
@@ -202,6 +206,7 @@ class ProductManageViewModel @Inject constructor(
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
     private val _shopStatus = MutableLiveData<StatusInfo>()
+    private val _productArchivalInfo = MutableLiveData<Result<ProductArchivalInfo>>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
@@ -334,7 +339,7 @@ class ProductManageViewModel @Inject constructor(
                 }
                 val getProductList = async {
                     val warehouseId = getWarehouseId(shopId)
-                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
+                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC, ExtraInfo.ARCHIVAL)
                     val requestParams = GQLGetProductListUseCase.createRequestParams(
                         shopId,
                         warehouseId,
@@ -538,6 +543,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -550,6 +556,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _editPriceResult.postValue(
                         Fail(
@@ -689,6 +696,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 result.productUpdateV3Data.header.errorMessage.isNotEmpty() -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -700,6 +708,7 @@ class ProductManageViewModel @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     _deleteProductResult.postValue(
                         Fail(
@@ -844,10 +853,12 @@ class ProductManageViewModel @Inject constructor(
                 productUpdateV3Data.isSuccess -> {
                     Success(EditStockResult(productName, productId, stock, status))
                 }
+
                 errorMessage.isNotEmpty() -> {
                     val error = Throwable(message = errorMessage.last())
                     Fail(EditStockResult(productName, productId, stock, status, error))
                 }
+
                 else -> {
                     val message =
                         com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()
@@ -895,6 +906,7 @@ class ProductManageViewModel @Inject constructor(
                     val message = response.header.errorMessage.last()
                     Fail(MessageErrorException(message))
                 }
+
                 else -> {
                     val message = com.tokopedia.product.manage.common.R.string
                         .product_stock_reminder_toaster_failed_desc.toString()
@@ -902,6 +914,21 @@ class ProductManageViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun getProductArchivalInfo(productId: String) {
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                val requestParam = ProductArchivalInfoUseCase.createRequestParams(
+                    userSessionInterface.shopId,
+                    productId
+                )
+                getProductArchival.execute(requestParam)
+            }
+            _productArchivalInfo.value = Success(result)
+        }, onError = {
+            _productArchivalInfo.value = Fail(it)
+        })
     }
 
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
