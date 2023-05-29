@@ -77,6 +77,10 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
+
         arguments?.let {
             isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
             isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
