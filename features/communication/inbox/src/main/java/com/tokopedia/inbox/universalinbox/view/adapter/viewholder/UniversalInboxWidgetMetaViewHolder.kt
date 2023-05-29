@@ -10,6 +10,8 @@ import com.tokopedia.inbox.universalinbox.view.adapter.UniversalInboxWidgetAdapt
 import com.tokopedia.inbox.universalinbox.view.customview.UniversalInboxWidgetLayoutManager
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.binding.viewBinding
 
 class UniversalInboxWidgetMetaViewHolder(
@@ -23,15 +25,39 @@ class UniversalInboxWidgetMetaViewHolder(
 
     fun bind(uiModel: UniversalInboxWidgetMetaUiModel) {
         if (uiModel.widgetList.isNotEmpty()) {
-            adapter = UniversalInboxWidgetAdapter(uiModel.widgetList, listener)
-            binding?.inboxRvWidgetMeta?.layoutManager = UniversalInboxWidgetLayoutManager(
-                context = context,
-                orientation = LinearLayoutManager.HORIZONTAL,
-                reverseLayout = false,
-                uiModel = uiModel
-            )
-            binding?.inboxRvWidgetMeta?.adapter = adapter
-            binding?.inboxRvWidgetMeta?.setHasFixedSize(true)
+            bindWidgetList(uiModel)
+        } else {
+            if (uiModel.isError) {
+                bindWidgetLocalLoad()
+            } else {
+                binding?.inboxLocalLoadWidgetMeta?.hide()
+            }
+            binding?.inboxRvWidgetMeta?.hide()
+        }
+    }
+
+    private fun bindWidgetList(uiModel: UniversalInboxWidgetMetaUiModel) {
+        adapter = UniversalInboxWidgetAdapter(uiModel.widgetList, listener)
+        binding?.inboxRvWidgetMeta?.layoutManager = UniversalInboxWidgetLayoutManager(
+            context = context,
+            orientation = LinearLayoutManager.HORIZONTAL,
+            reverseLayout = false,
+            uiModel = uiModel
+        )
+        binding?.inboxRvWidgetMeta?.adapter = adapter
+        binding?.inboxRvWidgetMeta?.setHasFixedSize(true)
+        binding?.inboxRvWidgetMeta?.show()
+        binding?.inboxLocalLoadWidgetMeta?.hide()
+    }
+
+    private fun bindWidgetLocalLoad() {
+        binding?.inboxLocalLoadWidgetMeta?.apply {
+            progressState = false
+            refreshBtn?.setOnClickListener {
+                progressState = true
+                listener.onRefreshWidgetMeta()
+            }
+            show()
         }
     }
 

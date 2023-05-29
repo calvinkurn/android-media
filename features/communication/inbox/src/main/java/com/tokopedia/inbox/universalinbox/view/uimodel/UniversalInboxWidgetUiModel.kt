@@ -8,5 +8,6 @@ data class UniversalInboxWidgetUiModel (
     val subtext: String = "",
     val applink: String = "",
     val counter: Int = Int.ZERO,
-    val type: Int = Int.ZERO
+    val type: Int = Int.ZERO,
+    val isError: Boolean = false
 )

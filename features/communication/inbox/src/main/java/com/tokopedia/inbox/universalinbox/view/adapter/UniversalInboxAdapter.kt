@@ -18,6 +18,7 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparat
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
@@ -115,5 +116,9 @@ class UniversalInboxAdapter(
             }
         }
         return listIndex
+    }
+
+    fun isWidgetMetaAdded(): Boolean {
+        return itemList.firstOrNull() is UniversalInboxWidgetMetaUiModel
     }
 }

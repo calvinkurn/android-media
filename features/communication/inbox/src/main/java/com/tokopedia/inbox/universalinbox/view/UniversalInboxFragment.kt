@@ -19,8 +19,10 @@ import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
@@ -209,7 +211,13 @@ class UniversalInboxFragment :
         }
 
         viewModel.widget.observe(viewLifecycleOwner) {
-            adapter.addItem(Int.ZERO, it)
+            if (adapter.isWidgetMetaAdded()) {
+                adapter.removeItemAt(Int.ZERO)
+            }
+            // If not empty (if empty then should hide) or Error, show the widget meta
+            if (it.widgetList.isNotEmpty() || it.isError) {
+                adapter.addItem(Int.ZERO, it)
+            }
             binding?.inboxRv?.post {
                 adapter.notifyItemChanged(Int.ZERO)
             }
@@ -413,6 +421,21 @@ class UniversalInboxFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, item.applink)
             inboxMenuResultLauncher.launch(intent)
+        }
+    }
+
+    override fun onRefreshWidgetMeta() {
+        loadWidgetMeta()
+    }
+
+    override fun onRefreshWidgetCard(item: UniversalInboxWidgetUiModel) {
+        when (item.type) {
+            CHATBOT_TYPE -> {
+                loadWidgetMeta()
+            }
+            GOJEK_TYPE -> {
+                //TODO SDK
+            }
         }
     }
 

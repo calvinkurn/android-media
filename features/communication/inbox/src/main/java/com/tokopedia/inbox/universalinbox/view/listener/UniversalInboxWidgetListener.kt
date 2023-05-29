@@ -5,4 +5,8 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiMod
 interface UniversalInboxWidgetListener {
 
     fun onClickWidget(item: UniversalInboxWidgetUiModel)
+
+    fun onRefreshWidgetMeta()
+
+    fun onRefreshWidgetCard(item: UniversalInboxWidgetUiModel)
 }

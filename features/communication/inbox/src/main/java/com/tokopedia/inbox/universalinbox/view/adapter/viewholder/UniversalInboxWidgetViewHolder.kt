@@ -19,10 +19,14 @@ class UniversalInboxWidgetViewHolder(
     private val binding: UniversalInboxWidgetItemBinding? by viewBinding()
 
     fun bind(uiModel: UniversalInboxWidgetUiModel) {
-        bindIcon(uiModel)
-        bindText(uiModel)
-        bindCounter(uiModel)
-        bindListener(uiModel)
+        if (uiModel.isError) {
+            bindLocalLoad(uiModel)
+        } else {
+            bindIcon(uiModel)
+            bindText(uiModel)
+            bindCounter(uiModel)
+            bindListener(uiModel)
+        }
     }
 
     private fun bindIcon(uiModel: UniversalInboxWidgetUiModel) {
@@ -55,6 +59,19 @@ class UniversalInboxWidgetViewHolder(
     private fun bindListener(uiModel: UniversalInboxWidgetUiModel) {
         binding?.inboxLayoutWidget?.setOnClickListener {
             listener.onClickWidget(uiModel)
+        }
+    }
+
+    private fun bindLocalLoad(uiModel: UniversalInboxWidgetUiModel) {
+        binding?.inboxCardWidget?.hide()
+        binding?.inboxLocalLoadWidget?.apply {
+            progressState = false
+            description?.hide()
+            refreshBtn?.setOnClickListener {
+                progressState = true
+                listener.onRefreshWidgetCard(uiModel)
+            }
+            show()
         }
     }
 }
