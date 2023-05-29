@@ -127,7 +127,7 @@ class ProductCarouselViewHolder private constructor() {
             }
 
             binding.root.setOnClickListener {
-                listener.onClicked(this, item, adapterPosition)
+                listener.onClicked(this, item, absoluteAdapterPosition)
             }
             binding.lblProductNumber.showWithCondition(item.isNumerationShown)
             binding.lblProductNumber.text = item.number
