@@ -80,7 +80,6 @@ dependencies {
     /**
      * COMPOSE
      */
-//    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
     implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.composeDependencies.composeConstraint
     implementation rootProject.ext.composeDependencies.composeLiveData
