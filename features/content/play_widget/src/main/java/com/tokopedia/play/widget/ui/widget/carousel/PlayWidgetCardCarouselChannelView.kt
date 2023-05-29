@@ -235,6 +235,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 binding.viewPlayWidgetActionButton.iconActionFallback.hide()
                 binding.viewPlayWidgetActionButton.lottieAction.show()
                 binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
+                binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
                 binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
                 binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
 
@@ -283,6 +284,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                         }
                     }
                 )
+                binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
                 binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
                 binding.viewPlayWidgetActionButton.lottieAction.repeatCount = 0
 
@@ -303,6 +305,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 binding.viewPlayWidgetActionButton.iconActionFallback.hide()
                 binding.viewPlayWidgetActionButton.lottieAction.show()
                 binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
+                binding.viewPlayWidgetActionButton.lottieAction.cancelAnimation()
                 binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
                 binding.viewPlayWidgetActionButton.lottieAction.repeatCount = LottieDrawable.INFINITE
 

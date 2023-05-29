@@ -65,6 +65,19 @@ class PlayWidgetAutoPlayCoordinator(
         videoPlayerMap.keys.forEach { it.restart() }
     }
 
+    fun onVisible() {
+        videoPlayerMap.keys.forEach {
+            if (it.getPlayer().isPlaying) return@forEach
+            it.start()
+        }
+    }
+
+    fun onNotVisible() {
+        videoPlayerMap.keys.forEach {
+            it.stop()
+        }
+    }
+
     private fun setupAutoplay(context: Context, config: PlayWidgetConfigUiModel, type: PlayWidgetType) {
         mConfig = config
 

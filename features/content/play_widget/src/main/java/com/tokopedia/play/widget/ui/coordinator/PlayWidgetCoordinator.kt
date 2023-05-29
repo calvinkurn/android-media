@@ -124,6 +124,14 @@ class PlayWidgetCoordinator constructor(
         scope.coroutineContext.cancelChildren()
     }
 
+    fun onNotVisible() {
+        autoPlayCoordinator.onNotVisible()
+    }
+
+    fun onVisible() {
+        autoPlayCoordinator.onVisible()
+    }
+
     override fun onWidgetShouldRefresh() {
         mWidget?.let { mListener?.onWidgetShouldRefresh(it) }
     }
