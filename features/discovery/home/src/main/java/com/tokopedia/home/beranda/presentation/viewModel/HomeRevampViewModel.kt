@@ -65,7 +65,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -594,7 +593,13 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(
+                    playWidget.copy(
+                        widgetState = homePlayUseCase.get()
+                            .onGetPlayWidgetWhenShouldRefresh(playWidget.homeChannel.layout)
+                    ),
+                    index
+                )
             }) {
                 deleteWidget(playWidget, index)
             }

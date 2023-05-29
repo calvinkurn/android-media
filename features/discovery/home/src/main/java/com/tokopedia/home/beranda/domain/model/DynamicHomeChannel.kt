@@ -280,6 +280,8 @@ data class DynamicHomeChannel(
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"
+            const val LAYOUT_PLAY_CAROUSEL_NEW_VAR_1: String = "play_widget_v2"
+            const val LAYOUT_PLAY_CAROUSEL_NEW_VAR_2: String = "play_widget_v2_2" //todo("change to correct layout")
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"

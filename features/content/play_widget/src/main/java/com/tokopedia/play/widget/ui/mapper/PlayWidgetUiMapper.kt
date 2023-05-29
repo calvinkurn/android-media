@@ -25,9 +25,11 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
 import com.tokopedia.play.widget.ui.model.PlayWidgetType
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
+import com.tokopedia.play.widget.ui.model.ext.setWithProductNoCaptionVariant
 import com.tokopedia.play.widget.ui.model.getReminderType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.user.session.UserSessionInterface
@@ -41,7 +43,6 @@ import javax.inject.Inject
 /**
  * Created by kenny.hadisaputra on 21/01/22
  */
-
 class PlayWidgetUiMapper @Inject constructor(
     private val userSession: UserSessionInterface,
     private val playWidgetPreference: PlayWidgetPreference,
@@ -51,7 +52,11 @@ class PlayWidgetUiMapper @Inject constructor(
 
     fun mapWidgetToggleReminder(data: PlayWidgetReminder) = data.playToggleChannelReminder.header.status == PlayWidgetReminderUseCase.RESPONSE_STATUS_SUCCESS
 
-    fun mapWidget(data: PlayWidget, prevState: PlayWidgetState? = null): PlayWidgetUiModel {
+    fun mapWidget(
+        data: PlayWidget,
+        prevState: PlayWidgetState? = null,
+        extraInfo: ExtraInfo = ExtraInfo(),
+    ): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
         val widgetType = PlayWidgetType.getByTypeString(data.meta.template)
 
@@ -66,6 +71,7 @@ class PlayWidgetUiMapper @Inject constructor(
                 prevState?.model?.items,
                 data.data,
                 widgetType,
+                extraInfo,
             ),
         )
     }
@@ -92,6 +98,7 @@ class PlayWidgetUiMapper @Inject constructor(
         prevItems: List<PlayWidgetItemUiModel>?,
         items: List<PlayWidgetItem>,
         widgetType: PlayWidgetType,
+        extraInfo: ExtraInfo,
     ): List<PlayWidgetItemUiModel> = items.mapNotNull {
         when (it.typename) {
             "PlayWidgetBanner" -> mapWidgetItemBanner(it)
@@ -99,6 +106,7 @@ class PlayWidgetUiMapper @Inject constructor(
                 prevItems?.find { prevItem -> prevItem is PlayWidgetChannelUiModel && prevItem.channelId == it.id } as? PlayWidgetChannelUiModel,
                 it,
                 widgetType,
+                extraInfo,
             )
             else -> null
         }
@@ -113,6 +121,7 @@ class PlayWidgetUiMapper @Inject constructor(
         prevItem: PlayWidgetChannelUiModel?,
         item: PlayWidgetItem,
         widgetType: PlayWidgetType,
+        extraInfo: ExtraInfo,
     ): PlayWidgetChannelUiModel {
         val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
         return PlayWidgetChannelUiModel(
@@ -138,6 +147,8 @@ class PlayWidgetUiMapper @Inject constructor(
             ),
             channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
             products = mapProducts(item.products),
+        ).setWithProductNoCaptionVariant(
+            isVariantWithProduct = extraInfo.showProduct,
         )
     }
 
@@ -226,4 +237,8 @@ class PlayWidgetUiMapper @Inject constructor(
     companion object {
         private const val GIVEAWAY = "GIVEAWAY"
     }
+
+    data class ExtraInfo(
+        val showProduct: Boolean = false,
+    )
 }

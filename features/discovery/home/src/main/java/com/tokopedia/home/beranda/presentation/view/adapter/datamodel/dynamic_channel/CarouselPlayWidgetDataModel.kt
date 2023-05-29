@@ -6,7 +6,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.widget.ui.PlayWidgetState
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 
 /**
  * Created by mzennis on 14/10/20.
