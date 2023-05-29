@@ -318,13 +318,13 @@ class BranchHelperValidation {
     }
 
     companion object {
-        private val BRANCH_SUCCESS_DATA = "branch_success_data"
-        private val BRANCH_ERROR_DATA_MESSAGE = "branch_error_message"
-        private val BRANCH_ERROR_DATA_CODE = "branch_error_code"
-        private val BRANCH_URL = "branch_url"
-        private val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
-        private val BRANCH_LOG_TYPE = "branch_log_type"
-        private val BRANCH_GENERATE_LINK = "branch_generate_link"
-        private val DESKTOP_CLEAN_URL = "desktop_clean_url"
+        private const val BRANCH_SUCCESS_DATA = "branch_success_data"
+        private const val BRANCH_ERROR_DATA_MESSAGE = "branch_error_message"
+        private const val BRANCH_ERROR_DATA_CODE = "branch_error_code"
+        private const val BRANCH_URL = "branch_url"
+        private const val BRANCH_FLOW_ON_CLICK_LINK = "on_click_link"
+        private const val BRANCH_LOG_TYPE = "branch_log_type"
+        private const val BRANCH_GENERATE_LINK = "branch_generate_link"
+        private const val DESKTOP_CLEAN_URL = "desktop_clean_url"
     }
 }
