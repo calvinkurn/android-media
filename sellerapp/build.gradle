@@ -347,6 +347,8 @@ dependencies {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
 
+    implementation rootProject.ext.gotoOneKyc.resource
+
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.maps
