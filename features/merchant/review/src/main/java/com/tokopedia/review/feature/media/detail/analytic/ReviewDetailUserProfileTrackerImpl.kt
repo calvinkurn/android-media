@@ -5,7 +5,7 @@ import android.util.Log
 /**
  * Created By : Jonathan Darwin on May 26, 2023
  */
-class ReviewDetailUserProfileTracker : ReviewDetailTracker {
+class ReviewDetailUserProfileTrackerImpl : ReviewDetailTracker {
 
     override fun trackOnLikeReviewClicked(
         feedbackId: String,

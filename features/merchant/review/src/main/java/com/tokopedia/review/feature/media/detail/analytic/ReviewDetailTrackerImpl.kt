@@ -13,7 +13,7 @@ import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 /**
  * Created By : Jonathan Darwin on May 26, 2023
  */
-class ReviewDetailPdpTracker : ReviewDetailTracker {
+class ReviewDetailTrackerImpl : ReviewDetailTracker {
 
     override fun trackOnLikeReviewClicked(
         feedbackId: String,

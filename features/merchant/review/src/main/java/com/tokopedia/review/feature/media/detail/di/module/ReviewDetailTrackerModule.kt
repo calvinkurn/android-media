@@ -1,8 +1,8 @@
 package com.tokopedia.review.feature.media.detail.di.module
 
-import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailPdpTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerImpl
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
-import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailUserProfileTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailUserProfileTrackerImpl
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import dagger.Module
 import dagger.Provides
@@ -18,9 +18,9 @@ class ReviewDetailTrackerModule(
     @Provides
     fun provideReviewDetailTracker(): ReviewDetailTracker {
         return if (pageSource == ReviewMediaGalleryRouter.PageSource.USER_PROFILE) {
-            ReviewDetailUserProfileTracker()
+            ReviewDetailUserProfileTrackerImpl()
         } else {
-            ReviewDetailPdpTracker()
+            ReviewDetailTrackerImpl()
         }
     }
 }
