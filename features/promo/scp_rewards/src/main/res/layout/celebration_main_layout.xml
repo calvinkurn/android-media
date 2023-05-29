@@ -82,7 +82,7 @@
                 android:id="@+id/badge_image"
                 android:layout_width="216dp"
                 android:layout_height="216dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="36dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/celebration_heading"
@@ -93,7 +93,7 @@
                 android:id="@+id/sponsor_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="24dp"
                 app:cardCornerRadius="20dp"
                 app:contentPaddingBottom="4dp"
                 app:contentPaddingLeft="8dp"
@@ -134,7 +134,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/badge_name"
-                app:typographyType="body_1"
+                app:typographyType="paragraph_1"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

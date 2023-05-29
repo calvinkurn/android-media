@@ -2,12 +2,16 @@ package com.tokopedia.scp_rewards.common.constants
 
 object TrackerConstants {
     object Business {
-        const val BUSINESS_UNIT = "tokopediamarketplace"
-        const val CURRENT_SITE = "gotorewards"
+        const val BUSINESS_UNIT =  "gotorewards"
+        const val CURRENT_SITE = "tokopediamarketplace"
     }
 
     object Event {
         const val VIEW_EVENT = "viewLGIris"
         const val CLICK_EVENT = "clickLG"
+    }
+
+    object General{
+        const val VIEW_PAGE_EVENT = "view page"
     }
 }

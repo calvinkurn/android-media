@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -128,6 +127,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         initStatusBarSetup()
         setupViewModelObservers()
         medalCelebrationViewModel.getRewards(medaliSlug,"homepage")
+        CelebrationAnalytics.sendImpressionCelebrationLoading(medaliSlug)
     }
 
     private fun setupViewModelObservers() {
@@ -139,6 +139,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                     downloadAssets()
                 }
                 is Error -> {
+                    CelebrationAnalytics.sendImpressionCelebrationError(medaliSlug)
                     showErrorView()
                 }
                 is Loading -> {
@@ -318,8 +319,8 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             lottieStars.setImageDrawable(null)
             setAllText()
             setupSponsorCard()
-            val headingSize = resources.getDimension(R.dimen.heading_2_large)
-            celebrationHeading.setTextSize(TypedValue.COMPLEX_UNIT_PX,headingSize)
+//            val headingSize = resources.getDimension(R.dimen.heading_2_large)
+//            celebrationHeading.setTextSize(TypedValue.COMPLEX_UNIT_PX,headingSize)
         }
     }
 
@@ -503,6 +504,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun animateBadge() {
         val badgeDrawable = if(isFallbackCase){
+            CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
             ResourcesCompat.getDrawable(resources,R.drawable.fallback_badge,null)
         } else badgeImage
@@ -655,8 +657,14 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             errorSecondaryAction.setTextColor(ContextCompat.getColor(context, R.color.dark_grey_nav_color))
             val buttonColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             errorSecondaryAction.setBackgroundColor(buttonColor)
-            setActionClickListener { resetPage() }
-            setSecondaryActionClickListener { activity?.finish() }
+            setActionClickListener {
+                CelebrationAnalytics.sendClickRetryCelebration(medaliSlug)
+                resetPage()
+            }
+            setSecondaryActionClickListener {
+                CelebrationAnalytics.sendClickGoBackCelebration(medaliSlug)
+                activity?.finish()
+            }
         }
     }
 
