@@ -125,7 +125,11 @@ class PickerViewModel @Inject constructor(
             .onCompletion { _isLoading.value = false }
             .map {
                 val pickerFile = it.asPickerFile()
-                val uiModels = pickerFile.toRemovableUiModel()
+                val uiModels = pickerFile.toRemovableUiModel().onEach { mediaUiModel ->
+
+                    // set loaded url image to skip save gallery process
+                    mediaUiModel?.isCacheFile = false
+                }
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)

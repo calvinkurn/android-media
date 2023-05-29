@@ -18,8 +18,7 @@ import javax.inject.Inject
 class PreviewViewModel @Inject constructor(
     private val imageCompressor: ImageCompressionRepository,
     private val mediaSaver: SaveToGalleryRepository,
-    dispatchers: CoroutineDispatchers,
-    private val paramCache: PickerCacheManager
+    dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
