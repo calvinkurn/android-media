@@ -52,13 +52,14 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -582,7 +583,16 @@ open class DynamicPostViewHolder(
     private fun bindLike(like: Like) {
         when {
             like.isChecked -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
+                itemView.likeIcon.setImageDrawable(
+                    getIconUnifyDrawable(
+                        itemView.context,
+                        IconUnify.THUMB_FILLED,
+                        MethodChecker.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.light_G500,
+                        )
+                    )
+                )
                 val likeCount = if (like.fmt.isEmpty()) like.value.toString() else like.fmt
                 itemView.likeText.text = likeCount
                 itemView.likeText.setTextColor(
@@ -593,7 +603,16 @@ open class DynamicPostViewHolder(
                 )
             }
             like.value > 0 -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
+                itemView.likeIcon.setImageDrawable(
+                    getIconUnifyDrawable(
+                        itemView.context,
+                        IconUnify.THUMB_FILLED,
+                        MethodChecker.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.light_N150,
+                        )
+                    )
+                )
                 itemView.likeText.text = like.fmt
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
@@ -603,7 +622,16 @@ open class DynamicPostViewHolder(
                 )
             }
             else -> {
-                itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
+                itemView.likeIcon.setImageDrawable(
+                    getIconUnifyDrawable(
+                        itemView.context,
+                        IconUnify.THUMB_FILLED,
+                        MethodChecker.getColor(
+                            itemView.context,
+                            com.tokopedia.unifyprinciples.R.color.light_N150,
+                        )
+                    )
+                )
                 val text: String =
                     if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
                 itemView.likeText.text = text

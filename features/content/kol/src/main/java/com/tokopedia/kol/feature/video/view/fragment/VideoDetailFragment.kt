@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.common.util.resize
@@ -487,7 +488,16 @@ class VideoDetailFragment :
     private fun bindLike(like: FeedXLike) {
         when {
             like.isLiked -> {
-                likeIcon.loadImageWithoutPlaceholder(com.tokopedia.feedcomponent.R.drawable.ic_thumb_green)
+                likeIcon.setImageDrawable(
+                    getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.THUMB_FILLED,
+                        MethodChecker.getColor(
+                            requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.light_G500,
+                        )
+                    )
+                )
                 likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
