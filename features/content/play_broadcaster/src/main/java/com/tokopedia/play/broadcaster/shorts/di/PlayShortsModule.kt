@@ -1,16 +1,14 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import android.content.Context
-import androidx.work.WorkManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.BaseMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -33,6 +31,7 @@ import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -98,6 +97,7 @@ class PlayShortsModule(
         pinProductAnalytic: PlayBroadcastPinProductAnalytic,
         accountAnalytic: PlayBroadcastAccountAnalytic,
         shortsEntryPointAnalytic: PlayShortsEntryPointAnalytic,
+        playBroadcastPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -111,6 +111,7 @@ class PlayShortsModule(
             pinProductAnalytic,
             accountAnalytic,
             shortsEntryPointAnalytic,
+            playBroadcastPerformanceDashboardEntryPointAnalytic,
         )
     }
 
@@ -147,4 +148,8 @@ class PlayShortsModule(
     fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
         return UpdateChannelUseCase(graphqlRepository)
     }
+
+    @Provides
+    @PlayShortsScope
+    fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }

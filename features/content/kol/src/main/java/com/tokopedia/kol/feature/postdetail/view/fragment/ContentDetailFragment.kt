@@ -2000,7 +2000,7 @@ class ContentDetailFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2050,7 +2050,7 @@ class ContentDetailFragment :
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2445,7 +2445,7 @@ class ContentDetailFragment :
                     onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2466,7 +2466,7 @@ class ContentDetailFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2481,7 +2481,7 @@ class ContentDetailFragment :
                     onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }

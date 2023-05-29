@@ -47,6 +47,7 @@ class KycUploadViewModelTest {
 
     private val ktpPath = "test ktp path"
     private val facePath = "test face path"
+    private val isLiveness = true
     private val projectId = "1"
     private val originalImagePath = "OriginalPath"
     private val encryptedImagePath = "SuccessPath"
@@ -67,7 +68,7 @@ class KycUploadViewModelTest {
 
     private fun provideEveryUseCase(kycResponse: KycResponse) {
         coEvery {
-            useCase.uploadImages(any(), any(), any())
+            useCase.uploadImages(any(), any(), any(), any())
         } answers {
             kycResponse
         }
@@ -97,7 +98,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = true,
-            isFaceFileUsingEncryption = true
+            isFaceFileUsingEncryption = true,
+            isLiveness
         )
     }
 
@@ -129,7 +131,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = false,
-            isFaceFileUsingEncryption = false
+            isFaceFileUsingEncryption = false,
+            isLiveness
         )
         val result = viewModel.kycResponseLiveData.value
         assertResult(result, kycResponse.data)
@@ -167,7 +170,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = false,
-            isFaceFileUsingEncryption = false
+            isFaceFileUsingEncryption = false,
+            isLiveness
         )
         val result = viewModel.kycResponseLiveData.value
         assertResultFail(result, kycResponse.data)
@@ -223,7 +227,7 @@ class KycUploadViewModelTest {
         val exceptionMock = Exception("Oops!")
 
         coEvery {
-            viewModel.uploadImages(any(), any(), any(), any(), any())
+            viewModel.uploadImages(any(), any(), any(), any(), any(), any())
         } throws exceptionMock
 
         assertFailsWith<Exception> {
@@ -232,14 +236,15 @@ class KycUploadViewModelTest {
                 facePath,
                 projectId,
                 isKtpFileUsingEncryption = true,
-                isFaceFileUsingEncryption = true
+                isFaceFileUsingEncryption = true,
+                isLiveness
             )
         }
     }
 
     private fun provideEveryUseCaseThrow(ex: Exception) {
         coEvery {
-            useCase.uploadImages(any(), any(), any())
+            useCase.uploadImages(any(), any(), any(), any())
         } throws ex
     }
 
@@ -261,7 +266,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = false,
-            isFaceFileUsingEncryption = false
+            isFaceFileUsingEncryption = false,
+            isLiveness
         )
 
         val result = viewModel.kycResponseLiveData.value
@@ -279,7 +285,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = true,
-            isFaceFileUsingEncryption = true
+            isFaceFileUsingEncryption = true,
+            isLiveness
         )
 
         val result = viewModel.kycResponseLiveData.value
@@ -399,7 +406,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = true,
-            isFaceFileUsingEncryption = true
+            isFaceFileUsingEncryption = true,
+            isLiveness
         )
 
         val result = viewModel.kycResponseLiveData.value
@@ -443,7 +451,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = true,
-            isFaceFileUsingEncryption = true
+            isFaceFileUsingEncryption = true,
+            isLiveness
         )
 
         assert(viewModel.kycResponseLiveData.value is Fail)
@@ -462,7 +471,8 @@ class KycUploadViewModelTest {
             facePath,
             projectId,
             isKtpFileUsingEncryption = false,
-            isFaceFileUsingEncryption = true
+            isFaceFileUsingEncryption = true,
+            isLiveness
         )
 
         assert(viewModel.kycResponseLiveData.value is Fail)
