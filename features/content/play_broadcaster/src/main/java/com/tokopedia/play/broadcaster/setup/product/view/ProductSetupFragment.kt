@@ -75,6 +75,10 @@ class ProductSetupFragment @Inject constructor(
             bottomSheet.dismiss()
             removeFragment()
         }
+
+        override fun onProductSummaryCommissionShown() {
+            mListener?.onProductSummaryCommissionShown()
+        }
     }
 
     private val productPickerUGCListener = object : ProductPickerUGCBottomSheet.Listener {
@@ -236,5 +240,7 @@ class ProductSetupFragment @Inject constructor(
     interface Listener {
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
         fun onProductSetupDismissed() {}
+
+        fun onProductSummaryCommissionShown() {}
     }
 }

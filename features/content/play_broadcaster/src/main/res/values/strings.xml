@@ -345,4 +345,6 @@
     <string name="play_shorts_affiliate_success_learn_more_web_link">https://affiliate.tokopedia.com</string>
     <string name="play_shorts_affiliate_coach_mark_product_commission_title">Cek produk bertanda komisi di sini, ya</string>
     <string name="play_shorts_affiliate_coach_mark_product_commission_subtitle">Tag produk di videonya biar bisa kamu promosikan supaya dapat komisi kalau ada yang beli.</string>
+    <string name="play_shorts_affiliate_coach_mark_product_summary_commission_title">Nge-tag produk bisa dapat komisi, lho</string>
+    <string name="play_shorts_affiliate_coach_mark_product_summary_commission_subtitle">Sekalian promosikan produknya di videomu, &amp; kamu akan dapat komisi kalau ada yang beli!</string>
 </resources>

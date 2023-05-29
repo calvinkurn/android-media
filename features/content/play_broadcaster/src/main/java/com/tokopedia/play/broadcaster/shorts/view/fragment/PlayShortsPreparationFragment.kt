@@ -210,6 +210,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                         toaster.showToaster(productSetupPendingToaster.orEmpty())
                         productSetupPendingToaster = null
                     }
+
+                    override fun onProductSummaryCommissionShown() {
+                        analytic.sendImpressionProductCommissionEvent(viewModel.selectedAccount.id)
+                    }
                 })
             }
             is PlayBroadcastSetupTitleBottomSheet -> {
