@@ -90,4 +90,7 @@ object RollenceKey {
 
     // TokopediaNOW
     const val TOKOPEDIA_NOW_AFFILIATE = "aff_now_att"
+
+    //Feed
+    const val AB_TEST_IMMERSIVE_FEED = "immersive_feed"
 }

@@ -6,7 +6,6 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -74,6 +73,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
@@ -514,7 +514,7 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    fun generateImageReview(reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewImage {
+    fun generateImageReview(reviewImage: ProductReviewImageListQuery): ReviewImage {
         return ReviewImage(
             buyerMediaCount = reviewImage.detail?.mediaCount.toIntOrZero(),
             reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
@@ -522,7 +522,7 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
+    private fun generateReviewMediaThumbnails(data: ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
         val totalVideoToShow = data.detail?.videos?.size.orZero()
         val totalImageToShow = data.detail?.images?.size.orZero()
         val totalMediaToShow = totalVideoToShow + totalImageToShow

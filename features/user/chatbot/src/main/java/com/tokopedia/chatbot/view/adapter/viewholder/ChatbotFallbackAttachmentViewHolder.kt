@@ -8,10 +8,12 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
-class ChatbotFallbackAttachmentViewHolder(itemView: View,
-                                          private val chatLinkHandlerListener: ChatLinkHandlerListener,
-                                          chatbotAdapterListener: ChatbotAdapterListener)
-    : BaseChatBotViewHolder<FallbackAttachmentUiModel>(itemView, chatbotAdapterListener) {
+class ChatbotFallbackAttachmentViewHolder(
+    itemView: View,
+    private val chatLinkHandlerListener: ChatLinkHandlerListener,
+    chatbotAdapterListener: ChatbotAdapterListener
+) :
+    BaseChatBotViewHolder<FallbackAttachmentUiModel>(itemView, chatbotAdapterListener) {
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
@@ -20,12 +22,12 @@ class ChatbotFallbackAttachmentViewHolder(itemView: View,
         ChatbotMessageViewHolderBinder.bindChatMessage(uiModel.message, customChatLayout, movementMethod)
     }
 
-    override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout
+    override fun getCustomChatLayoutId(): Int = com.tokopedia.chatbot.R.id.customChatLayout
     override fun getSenderAvatarId(): Int = R.id.senderAvatar
     override fun getSenderNameId(): Int = R.id.senderName
     override fun getDateContainerId(): Int = R.id.dateContainer
 
     companion object {
-        val LAYOUT = R.layout.chatbot_fallback_attachment_layout
+        val LAYOUT = R.layout.item_chatbot_fallback_attachment
     }
 }
