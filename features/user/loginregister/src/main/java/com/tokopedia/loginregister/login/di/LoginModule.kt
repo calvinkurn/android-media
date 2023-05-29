@@ -72,7 +72,7 @@ open class LoginModule {
 
     @Provides
     @ActivityScope
-    fun provideOclUtils(): OclUtils {
-        return OclUtils()
+    fun provideOclUtils(abTestPlatform: AbTestPlatform): OclUtils {
+        return OclUtils(abTestPlatform)
     }
 }
