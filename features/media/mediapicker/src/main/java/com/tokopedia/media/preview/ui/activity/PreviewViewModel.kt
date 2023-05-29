@@ -71,13 +71,11 @@ class PreviewViewModel @Inject constructor(
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        if (!paramCache.get().isEditorEnabled()) {
-            imageCameraFiles
-                .plus(videoCameraFiles)
-                .forEach {
-                    mediaSaver.dispatch(it)
-                }
-        }
+        imageCameraFiles
+            .plus(videoCameraFiles)
+            .forEach {
+                mediaSaver.dispatch(it)
+            }
 
         PickerResult(
             originalPaths = originalFiles,
