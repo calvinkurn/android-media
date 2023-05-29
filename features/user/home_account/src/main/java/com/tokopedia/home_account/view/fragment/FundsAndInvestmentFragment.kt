@@ -95,7 +95,11 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         )
         if (walletUiModel.isFailed) {
             adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
-            viewModel.getBalanceAndPoint(walletUiModel.id, walletUiModel.hideTitle, walletUiModel.title)
+            viewModel.getBalanceAndPoint(
+                walletUiModel.id,
+                walletUiModel.hideTitle,
+                walletUiModel.title
+            )
         } else if (!walletUiModel.applink.isEmpty()) {
             goToApplink(walletUiModel.applink)
         }
@@ -112,6 +116,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 is Success -> {
                     onSuccessGetCentralizedAssetConfig(it.data)
                 }
+
                 is Fail -> {
                     onFailedGetCentralizedAssetConfig()
                 }
@@ -123,6 +128,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
                 is ResultBalanceAndPoint.Success -> {
                     onSuccessGetBalanceAndPoint(it.data)
                 }
+
                 is ResultBalanceAndPoint.Fail -> {
                     onFailedGetBalanceAndPoint(it.walletId)
                 }
@@ -153,7 +159,8 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         }
 
         if (adapter?.isWalletExistById(AccountConstants.WALLET.GOPAY).orFalse() ||
-                adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()) {
+            adapter?.isWalletExistById(AccountConstants.WALLET.GOPAYLATER).orFalse()
+        ) {
             adapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
         }
     }
@@ -164,32 +171,8 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
-        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC && balanceAndPoint.isActive) {
-            val wallet = UiModelMapper.getWalletUiModel(
-                    balanceAndPoint
-            ).apply {
-                this.isVertical = false
-            }
-
-            if (balanceAndPoint.isActive) {
-                adapter?.moveWalletAboveSubtitle(wallet)
-                if (adapter?.getSubtitleIndex() == adapter?.lastIndex) {
-                    adapter?.removeSubtitle()
-                }
-            } else {
-                adapter?.changeItemToSuccessBySameId(wallet)
-            }
-        } else {
-            val wallet = UiModelMapper.getWalletUiModel(
-                balanceAndPoint
-            ).apply {
-                if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
-                    this.isActive = true
-                }
-                this.isVertical = true
-            }
-            adapter?.changeItemToSuccessBySameId(wallet)
-        }
+        val wallet = UiModelMapper.getWalletUiModel(balanceAndPoint)
+        adapter?.changeItemToSuccessBySameId(wallet)
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
