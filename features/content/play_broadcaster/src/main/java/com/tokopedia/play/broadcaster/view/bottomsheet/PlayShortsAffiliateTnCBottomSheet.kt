@@ -33,7 +33,8 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayShortsXAffiliateTncBinding
         get() = _binding!!
 
-    private val boldSpan = StyleSpan(Typeface.BOLD)
+    private val boldSpanPrivacyPolicy = StyleSpan(Typeface.BOLD)
+    private val boldSpanTerms = StyleSpan(Typeface.BOLD)
     private val colorSpan: ForegroundColorSpan
         get() = ForegroundColorSpan(MethodChecker.getColor(requireContext(), unifyPrinciplesR.color.Unify_GN500))
 
@@ -151,8 +152,8 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
         val terms = getString(contentCommonR.string.ugc_onboarding_accept_tnc_terms)
 
         result.append(mainText)
-        result.setSpanOnText(privacyPolicy, clickablePolicy, boldSpan, colorSpan)
-        result.setSpanOnText(terms, clickableTnc, boldSpan, colorSpan)
+        result.setSpanOnText(privacyPolicy, clickablePolicy, boldSpanPrivacyPolicy, colorSpan)
+        result.setSpanOnText(terms, clickableTnc, boldSpanTerms, colorSpan)
 
         return result
     }
