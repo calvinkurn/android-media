@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,14 +32,21 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
     companion object {
         private val TAG: String = ProductArchivalBottomSheet::class.java.simpleName
         private const val PRODUCT_ID_KEY = "product_id"
+        private const val IS_ARCHIVED_KEY = "is_archived"
+        private const val IS_GRACE_PERIOD_KEY = "is_grace_period"
 
         fun createInstance(
             productId: String,
+            isArchived: Boolean,
+            isGracePeriod: Boolean,
             listener: ((String) -> Unit)?
         ): ProductArchivalBottomSheet {
             return ProductArchivalBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PRODUCT_ID_KEY, productId)
+                    putBoolean(IS_ARCHIVED_KEY, isArchived)
+                    putBoolean(IS_GRACE_PERIOD_KEY, isGracePeriod)
+
                 }
                 onErrorArchivalInfoListener = listener
             }
@@ -52,6 +60,13 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
         arguments?.getString(PRODUCT_ID_KEY).orEmpty()
     }
 
+    private val isArchived by lazy {
+        arguments?.getBoolean(IS_ARCHIVED_KEY).orFalse()
+    }
+
+    private val isGracePeriod by lazy {
+        arguments?.getBoolean(IS_GRACE_PERIOD_KEY).orFalse()
+    }
     private var binding by autoClearedNullable<BottomSheetProductArchivalBinding>()
 
     override fun onCreateView(
@@ -131,8 +146,11 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
         binding?.apply {
             shimmerGroup.gone()
             productArchivalGroup.show()
-            tvProductArchivalTime.text =
-                getString(R.string.product_archival_info_time, content.archiveTime).parseAsHtml()
+            tvProductArchivalTime.text = if (isGracePeriod){
+                getString(R.string.product_archival_info_time_grace_period, content.archiveTime).parseAsHtml()
+            }else{
+                getString(R.string.product_archival_info_time_archived, content.archiveTime).parseAsHtml()
+            }
             tvProductArchivalReason.text = content.reason
             tvProductArchivalSellerEdu.text =
                 getString(R.string.product_archival_edu, content.sellerEduArticleURL).parseAsHtml()

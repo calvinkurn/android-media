@@ -2064,7 +2064,7 @@ open class ProductManageFragment :
                 showSuspendReasonBottomSheet(product.id)
             }
             product.isArchived || product.isInGracePeriod  -> {
-                showProductArchivalBottomSheet(product.id)
+                showProductArchivalBottomSheet(product.id, product.isInGracePeriod, product.isArchived)
             }
         }
         ProductManageTracking.eventContactCs(product.id)
@@ -3223,8 +3223,12 @@ open class ProductManageFragment :
         SuspendReasonBottomSheet.createInstance(productId, this).show(childFragmentManager)
     }
 
-    private fun showProductArchivalBottomSheet(productId: String) {
-        ProductArchivalBottomSheet.createInstance(productId) {
+    private fun showProductArchivalBottomSheet(
+        productId: String,
+        inGracePeriod: Boolean,
+        archived: Boolean
+    ) {
+        ProductArchivalBottomSheet.createInstance(productId,archived, inGracePeriod) {
             showErrorToast(it)
         }.show(childFragmentManager)
     }
