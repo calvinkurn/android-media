@@ -57,7 +57,6 @@ class MedalRewardsView @JvmOverloads constructor(
             layoutManager = LinearLayoutManager(context)
             addItemDecoration(VerticalSpacing(ITEM_VERTICAL_SPACING))
         }
-        setupDummyList()
     }
 
     private fun setupDummyList(){
