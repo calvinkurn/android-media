@@ -266,6 +266,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
 
     fun getMCCMProducts(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         mccmProductsJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
             val mccmProducts = repo.getMCCMProducts(
                 clientNumbers,
                 dgCategoryIds,
