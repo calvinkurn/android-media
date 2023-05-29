@@ -289,7 +289,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.reviewCommon)
     implementation projectOrAar(rootProject.ext.features.campaignCommon)
 
-    implementation rootProject.ext.gotoOneKyc.resource
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
