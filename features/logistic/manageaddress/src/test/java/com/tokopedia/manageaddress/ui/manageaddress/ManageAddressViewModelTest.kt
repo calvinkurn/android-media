@@ -13,16 +13,18 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.mapper.TargetedTickerMapper
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.manageaddress.TickerDataProvider
-import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.domain.response.*
+import com.tokopedia.manageaddress.domain.response.DefaultPeopleAddressData
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressData
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressGqlResponse
+import com.tokopedia.manageaddress.domain.response.DeletePeopleAddressResponse
+import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressGqlResponse
+import com.tokopedia.manageaddress.domain.response.SetDefaultPeopleAddressResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsReceiverResponse
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsSenderResponse
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
@@ -40,13 +42,20 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,13 +71,10 @@ class ManageAddressViewModelTest {
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
     private val setDefaultPeopleAddressUseCase =
         mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
     private val remoteConfigInstance: RemoteConfig = mockk()
-    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> =
-        mockk(relaxed = true)
     private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
         mockk(relaxed = true)
     private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase =
@@ -291,24 +297,6 @@ class ManageAddressViewModelTest {
         coEvery { chooseAddressRepo.setStateChosenAddressFromAddress(any()) } throws Throwable("test error")
         manageAddressViewModel.setStateChosenAddress(model)
         verify { chosenAddressObserver.onChanged(match { it is Fail }) }
-    }
-
-    private fun onCheckEligibility_thenReturn(featureId: Int) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData()
-            )
-        }
-    }
-
-    private fun onCheckEligibility_thenThrow(featureId: Int) {
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
     }
 
     @Test

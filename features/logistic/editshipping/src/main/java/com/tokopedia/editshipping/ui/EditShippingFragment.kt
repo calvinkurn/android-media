@@ -50,11 +50,9 @@ import com.tokopedia.editshipping.ui.customview.ShippingInfoBottomSheet
 import com.tokopedia.editshipping.util.EditShippingConstant.ARGUMENT_DATA_TOKEN
 import com.tokopedia.editshipping.util.EditShippingConstant.LABEL_VALIDATION_BO
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
-import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -674,29 +672,17 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         activity: Activity,
         locationPass: LocationPass
     ): Intent? {
-        activity.let {
-            if (PinpointRolloutHelper.eligibleForRevamp(it, true)) {
-                // go to pinpoint
-                val bundle = Bundle().apply {
-                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                    if (!locationPass.latitude.isNullOrEmpty() && !locationPass.longitude.isNullOrEmpty()) {
-                        putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
-                        putDouble(AddressConstant.EXTRA_LONG, locationPass.longitude.toDouble())
-                    }
-                    putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
-                    putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
-                }
-                return RouteManager.getIntent(it, ApplinkConstInternalLogistic.PINPOINT).apply {
-                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                }
-            } else {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                intent.apply {
-                    putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    putExtra(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, false)
-                }
-                return intent
+        val bundle = Bundle().apply {
+            putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+            if (!locationPass.latitude.isNullOrEmpty() && !locationPass.longitude.isNullOrEmpty()) {
+                putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                putDouble(AddressConstant.EXTRA_LONG, locationPass.longitude.toDouble())
             }
+            putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
+            putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
+        }
+        return RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+            putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
         }
     }
 

@@ -1778,12 +1778,7 @@
           "destination_activity": "com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerActivity", 
           "deeplink": "tokopedia-android-internal://logistic/dropoff/", 
           "deeplink_variable": "ApplinkConstInternalLogistic.DROPOFF_PICKER"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity", 
-          "deeplink": "tokopedia-android-internal://logistic/addaddress/v1/.*\\/", 
-          "deeplink_variable": "ApplinkConstInternalLogistic.ADD_ADDRESS_V1"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity", 
           "deeplink": "tokopedia-android-internal://logistic/addaddress/v2/", 
@@ -1793,12 +1788,7 @@
           "destination_activity": "com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity", 
           "deeplink": "tokopedia-android-internal://marketplace/district-recommendation-shop-settings", 
           "deeplink_variable": "ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity", 
-          "deeplink": "tokopedia-android-internal://marketplace/geolocation", 
-          "deeplink_variable": "ApplinkConstInternalMarketplace.GEOLOCATION"
-     }, 
+     },
      {
           "destination_activity": "com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity", 
           "deeplink": "tokopedia-android-internal://logistic/addaddress/v3/", 

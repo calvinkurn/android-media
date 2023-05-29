@@ -38,7 +38,6 @@ import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentMainAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressFragment
 import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressItemAdapter
@@ -47,7 +46,6 @@ import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressBott
 import com.tokopedia.manageaddress.ui.shareaddress.bottomsheets.ShareAddressConfirmationBottomSheet
 import com.tokopedia.manageaddress.util.ManageAddressConstant
 import com.tokopedia.manageaddress.util.ManageAddressConstant.DEFAULT_ERROR_MESSAGE
-import com.tokopedia.manageaddress.util.ManageAddressConstant.EDIT_PARAM
 import com.tokopedia.manageaddress.util.ManageAddressConstant.EXTRA_REF
 import com.tokopedia.manageaddress.util.ManageAddressConstant.KERO_TOKEN
 import com.tokopedia.manageaddress.util.ManageAddressConstant.LABEL_LAINNYA
@@ -485,23 +483,13 @@ class MainAddressFragment :
         startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
     }
 
-    private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
-        if (eligibleForEditRevamp) {
-            val intent = RouteManager.getIntent(
-                context,
-                "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
-            )
-            intent.putExtra(PARAM_SOURCE, viewModel.source)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        } else {
-            val token = viewModel.token
-            val intent =
-                RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
-            val mapper = AddressModelMapper()
-            intent.putExtra(EDIT_PARAM, mapper.transform(data))
-            intent.putExtra(KERO_TOKEN, token)
-            startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
-        }
+    private fun goToEditAddress(data: RecipientAddressModel) {
+        val intent = RouteManager.getIntent(
+            context,
+            "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}"
+        )
+        intent.putExtra(PARAM_SOURCE, viewModel.source)
+        startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
     }
 
     private fun initScrollListener() {
@@ -609,7 +597,7 @@ class MainAddressFragment :
             goToAddAddress()
         } else {
             ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-            goToEditAddress(true, data)
+            goToEditAddress(data)
         }
     }
 

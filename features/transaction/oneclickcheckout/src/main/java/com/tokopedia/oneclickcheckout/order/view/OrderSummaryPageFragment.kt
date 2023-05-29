@@ -59,7 +59,6 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetTargetedTickerUseCase
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
@@ -989,30 +988,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun goToPinpoint(address: OrderProfileAddress?, shouldUpdatePinpointFlag: Boolean = true) {
+    private fun goToPinpoint(
+        address: OrderProfileAddress?,
+        shouldUpdatePinpointFlag: Boolean = true
+    ) {
         address?.let {
             val locationPass = LocationPass()
             locationPass.cityName = it.cityName
             locationPass.districtName = it.districtName
             activity?.let { activity ->
-                if (PinpointRolloutHelper.eligibleForRevamp(activity, true)) {
-                    val bundle = Bundle().apply {
-                        putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
-                        putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
-                        putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
-                    }
-                    RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
-                        putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
-                        startActivityForResult(this, REQUEST_CODE_COURIER_PINPOINT)
-                    }
-                } else {
-                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-                    val bundle = Bundle()
-                    bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-                    bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-                    intent.putExtras(bundle)
-                    startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                    putString(AddressConstant.EXTRA_CITY_NAME, locationPass.cityName)
+                    putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.districtName)
                 }
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_COURIER_PINPOINT)
+                }
+
                 if (shouldUpdatePinpointFlag) {
                     viewModel.changePinpoint()
                 }

@@ -7,8 +7,6 @@ object ApplinkConstInternalLogistic {
     const val HOST_LOGISTIC = "logistic"
     const val INTERNAL_LOGISTIC = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_LOGISTIC"
 
-    const val ADD_ADDRESS_V1 = "$INTERNAL_LOGISTIC/addaddress/v1/{ref}/"
-
     const val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
 
     const val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"

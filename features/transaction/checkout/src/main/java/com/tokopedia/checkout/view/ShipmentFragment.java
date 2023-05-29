@@ -136,7 +136,6 @@ import com.tokopedia.logisticCommon.data.entity.address.UserAddress;
 import com.tokopedia.logisticCommon.data.entity.address.UserAddressTokoNow;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
-import com.tokopedia.logisticCommon.util.PinpointRolloutHelper;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
@@ -2547,29 +2546,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void navigateToPinpointActivity(LocationPass locationPass) {
         Activity activity = getActivity();
         if (activity != null) {
-            if (PinpointRolloutHelper.INSTANCE.eligibleForRevamp(activity, true)) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true);
-                if (locationPass.getLatitude() != null &&
-                        !locationPass.getLatitude().isEmpty() &&
-                        locationPass.getLongitude() != null &&
-                        !locationPass.getLongitude().isEmpty()) {
-                    bundle.putDouble(AddressConstant.EXTRA_LAT, Double.parseDouble(locationPass.getLatitude()));
-                    bundle.putDouble(AddressConstant.EXTRA_LONG, Double.parseDouble(locationPass.getLongitude()));
-                }
-                bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass.getCityName());
-                bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.getDistrictName());
-                Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT);
-                intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle);
-                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
-            } else {
-                Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true);
+            if (locationPass.getLatitude() != null &&
+                    !locationPass.getLatitude().isEmpty() &&
+                    locationPass.getLongitude() != null &&
+                    !locationPass.getLongitude().isEmpty()) {
+                bundle.putDouble(AddressConstant.EXTRA_LAT, Double.parseDouble(locationPass.getLatitude()));
+                bundle.putDouble(AddressConstant.EXTRA_LONG, Double.parseDouble(locationPass.getLongitude()));
             }
+            bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass.getCityName());
+            bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass.getDistrictName());
+            Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT);
+            intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle);
+            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
         }
     }
 

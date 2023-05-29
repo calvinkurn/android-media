@@ -1,47 +1,12 @@
 <resources>
     <string name="app_name">logisticaddaddress</string>
-    <string name="minimal_karakter">Minimal 5 karakter</string>
-    <string name="address_type_default">Rumah</string>
-    <string name="title_update_address">Ubah Alamat</string>
-    <string name="error_field_required">Harus diisi</string>
-    <string name="desc_delivery_location">Pastikan lokasi yang Anda tandai di peta sesuai dengan alamat yang Anda isi di atas</string>
-    <string name="title_delivery_location_pickup">Lokasi Pickup (Opsional)</string>
-    <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
     <string name="choose_this_location">Pilih lokasi ini</string>
     <string name="choose_this_incomplete_location">Lengkapi Alamat</string>
-    <string name="error_min_phone_numer">Nomor telepon minimal 6 angka</string>
-    <string name="error_max_phone_numer">Nomor telepon maksimum 20 angka</string>
-    <string name="error_min_5_address">Alamat minimum 5 karakter</string>
-    <string name="error_max_128_character">Maksimal 128 karakter.</string>
-    <string name="error_min_5_character">Minimal 5 karakter</string>
-    <string name="error_max_post_code">Kode Pos maksimum 10 angka</string>
-    <string name="title_activity_add_address">Tambah Alamat</string>
-    <string name="title_receiver_name">Nama Penerima</string>
-    <string name="title_save_address_as_layout">Simpan Alamat sebagai (Contoh: Alamat rumah, Alamat kantor, Alamat pacar)</string>
-    <string name="title_address_add_address">Alamat</string>
     <string name="choose_location">Pilih Lokasi</string>
     <string name="title_post_code">Kode Pos</string>
-    <string name="title_receiver_phone_no">Nomor Telepon Penerima</string>
-    <string name="title_save">Simpan</string>
-    <string name="title_province">Provinsi</string>
-    <string name="title_regency">Kabupaten</string>
-    <string name="title_sub_district">Kecamatan</string>
-    <string name="error_province">Provinsi harus dipilih</string>
-    <string name="error_regency">Kabupaten harus dipilih</string>
-    <string name="error_sub_district">Kecamatan harus dipilih</string>
     <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
     <string name="hint_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
     <string name="hint_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
-    <string name="logistic_district_recommendation_label">Kota atau Kecamatan</string>
-    <string name="logistic_zip_code_label">Kode Pos</string>
-
-    <string name="title_shipping_dest">Tujuan Pengiriman</string>
-    <string name="text_information_google_map">* Pastikan lokasi google map anda sesuai dengan alamat yang anda masukan</string>
-    <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
-    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
-    <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
-    <string name="wait_generate_address">Harap Tunggu . . .</string>
-    <string name="hint_gojek_pick_address">Cari Lokasi</string>
 
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
