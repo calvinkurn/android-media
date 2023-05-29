@@ -53,6 +53,8 @@ class IssueRegistry : IssueRegistry() {
             ResourceFragmentDetector.ISSUE,
             DimenUsageDetector.XML_ISSUE,
             UnsafeFragmentConstructorDetector.ISSUE,
+            UnsupportedNestColorDetector.JAVA_ISSUE,
+            UnsupportedNestColorDetector.XML_ISSUE,
             ImageUrlDeclarationDetector.JAVA_ISSUE,
             HANSEL_REQUIRED
         )
