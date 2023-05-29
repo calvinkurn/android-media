@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
-            android:textColor="#31353B"
+            android:textColor="@color/Unify_NN500"
             app:layout_constraintBottom_toBottomOf="@id/view_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/view_status"
