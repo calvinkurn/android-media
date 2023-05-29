@@ -1,24 +1,24 @@
-package com.tokopedia.power_merchant.subscribe.common.utils
+package com.tokopedia.gm.common.utils
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
-import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import com.tokopedia.power_merchant.subscribe.common.constant.Constant
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
-import timber.log.Timber
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
-object PowerMerchantSpannableUtil {
+/**
+ * Created by @ilhamsuaib on 10/05/23.
+ */
+
+object SpannableUtil {
+
+    private const val START_INDEX_HEX_STRING = 2
 
     /**
      * this is mandatory if u want to use this method
@@ -44,24 +44,22 @@ object PowerMerchantSpannableUtil {
 
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
+                ds.color = colorId
                 ds.isUnderlineText = false
             }
         }
-
-        val colorSpan = ForegroundColorSpan(colorId)
-        try {
-            spannableString.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(colorSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } catch (e: IndexOutOfBoundsException) {
-            Timber.e(e)
+        runCatching {
+            spannableString.setSpan(
+                clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
 
-        if(isBold) {
+        if (isBold) {
             val styleSpan = StyleSpan(Typeface.BOLD)
-            try {
-                spannableString.setSpan(styleSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            } catch (e: IndexOutOfBoundsException) {
-                Timber.e(e)
+            runCatching {
+                spannableString.setSpan(
+                    styleSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
 
@@ -70,38 +68,24 @@ object PowerMerchantSpannableUtil {
             val boldEndIndex = boldStartIndex + it.length
 
             val styleSpan = StyleSpan(Typeface.BOLD)
-            try {
-                spannableString.setSpan(styleSpan, boldStartIndex, boldEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            } catch (e: IndexOutOfBoundsException) {
-                Timber.e(e)
+            runCatching {
+                spannableString.setSpan(
+                    styleSpan, boldStartIndex, boldEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
 
         return spannableString
     }
 
-    fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
-        val htmlString = HtmlLinkHelper(context, text)
-        this.movementMethod = LinkMovementMethod.getInstance()
-        this.highlightColor = Color.TRANSPARENT
-        this.text = htmlString.spannedString
-        htmlString.urlList.getOrNull(0)?.setOnClickListener {
-            onClick()
-        }
-    }
-
     fun getColorHexString(context: Context?, idColor: Int): String {
-        return try {
+        runCatching {
             val colorHexInt = context?.let { ContextCompat.getColor(it, idColor) }
             val colorToHexString = colorHexInt?.let {
                 Integer.toHexString(it).uppercase().substring(START_INDEX_HEX_STRING)
             }
             return "#$colorToHexString"
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ""
         }
+        return String.EMPTY
     }
-
-    private const val START_INDEX_HEX_STRING = 2
 }
