@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,7 +35,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import timber.log.Timber
 import javax.inject.Inject
 
 open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
@@ -107,35 +105,29 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun setupObserver() {
-        viewModel.centralizedUserAssetConfig.observe(
-            viewLifecycleOwner,
-            Observer {
-                Timber.d("funds $it")
-                when (it) {
-                    is Success -> {
-                        onSuccessGetCentralizedAssetConfig(it.data)
-                    }
-                    is Fail -> {
-                        onFailedGetCentralizedAssetConfig()
-                    }
+        viewModel.centralizedUserAssetConfig.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetCentralizedAssetConfig(it.data)
                 }
-            }
-        )
 
-        viewModel.balanceAndPoint.observe(
-            viewLifecycleOwner,
-            Observer {
-                Timber.d("funds $it")
-                when (it) {
-                    is ResultBalanceAndPoint.Success -> {
-                        onSuccessGetBalanceAndPoint(it.data)
-                    }
-                    is ResultBalanceAndPoint.Fail -> {
-                        onFailedGetBalanceAndPoint(it.walletId)
-                    }
+                is Fail -> {
+                    onFailedGetCentralizedAssetConfig()
                 }
             }
-        )
+        }
+
+        viewModel.balanceAndPoint.observe(viewLifecycleOwner) {
+            when (it) {
+                is ResultBalanceAndPoint.Success -> {
+                    onSuccessGetBalanceAndPoint(it.data)
+                }
+
+                is ResultBalanceAndPoint.Fail -> {
+                    onFailedGetBalanceAndPoint(it.walletId)
+                }
+            }
+        }
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
