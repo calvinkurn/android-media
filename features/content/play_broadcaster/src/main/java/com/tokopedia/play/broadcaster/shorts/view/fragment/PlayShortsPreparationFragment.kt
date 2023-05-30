@@ -42,6 +42,7 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
@@ -288,7 +289,10 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
-        openShortsAffiliateTncBottomSheet()
+        when (data.type) {
+            TYPE_SHORTS_AFFILIATE -> openShortsAffiliateTncBottomSheet()
+            else -> return
+        }
     }
 
     private fun setupView() {
