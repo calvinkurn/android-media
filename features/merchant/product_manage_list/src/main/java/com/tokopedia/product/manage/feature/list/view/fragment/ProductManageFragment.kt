@@ -1460,11 +1460,6 @@ open class ProductManageFragment :
         filterTab?.getSelectedFilter()?.let {
             if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
                 filterOptions.add(FilterByCondition.ProductArchival)
-                if (sortOption?.option == null){
-                    sortOption = SortOption.SortByArchival(SortOrderOption.DESC)
-                } else {
-                    sortOption = selectedFilter?.sortOption
-                }
             }else{
                 filterOptions.add(FilterByStatus(it))
             }
