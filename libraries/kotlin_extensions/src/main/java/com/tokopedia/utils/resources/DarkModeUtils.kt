@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.unifyprinciples.R as UnifyRoot
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import java.lang.reflect.Field
 import java.util.regex.Pattern
@@ -79,7 +79,7 @@ object DarkModeUtils {
 
     private fun getDmsColorByName(context: Context, colorName: String?): Int? {
         runCatching {
-            val res = R.color::class.java
+            val res = UnifyRoot.color::class.java
             val field: Field = res.getField(colorName ?: return@runCatching)
             val color: Int = field.getInt(null)
             return ContextCompat.getColor(context, color)
