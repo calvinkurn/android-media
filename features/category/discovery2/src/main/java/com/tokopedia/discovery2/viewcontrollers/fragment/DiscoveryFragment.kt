@@ -1062,7 +1062,7 @@ class DiscoveryFragment :
             handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
         }
 
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             sendUnifyShareGTM()
             showUniversalShareBottomSheet(data)
         } else {
@@ -1146,7 +1146,7 @@ class DiscoveryFragment :
                 setOgImageUrl(pageInfo.share?.image ?: "")
 
                 if (this@DiscoveryFragment.isAffiliateInitialized) {
-                    val inputShare = AffiliatePDPInput().apply {
+                    val inputShare = AffiliateInput().apply {
                         pageDetail = PageDetail(
                             pageId = "0",
                             pageType = "campaign",
