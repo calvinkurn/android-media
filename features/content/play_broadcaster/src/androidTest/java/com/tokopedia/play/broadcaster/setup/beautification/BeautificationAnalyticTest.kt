@@ -103,6 +103,7 @@ class BeautificationAnalyticTest {
 
         beautificationRobot
             .launch()
+            .performDelay(1000L)
             .clickBeautificationMenu()
             .clickBeautificationPresetTab()
             .mock {
@@ -221,8 +222,9 @@ class BeautificationAnalyticTest {
         coEvery { beautificationRobot.mockValueWrapper.rebindEffectToasterDuration } returns Toaster.LENGTH_INDEFINITE
         coEvery { beautificationRobot.mockBroadcaster.setFaceFilter(any(), any()) } returns false
 
-        beautificationRobot.launch()
-            .performDelay(1000)
+        beautificationRobot
+            .launch()
+            .performDelay(3000)
             .clickToasterCTA()
             .verifyEventAction("view - reapply beauty filter")
             .verifyEventAction("click - reapply beauty filter")
