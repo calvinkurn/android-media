@@ -212,7 +212,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
 
         context?.let {
-            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,

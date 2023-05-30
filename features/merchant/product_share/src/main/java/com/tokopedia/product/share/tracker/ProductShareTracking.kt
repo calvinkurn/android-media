@@ -19,7 +19,7 @@ import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_BUSINE
 import com.tokopedia.product.share.ekstensions.ProductShareConstant.VALUE_CURRENT_SITE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.CUSTOM_SHARE_SHEET
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet.Companion.SCREENSHOT_SHARE_SHEET
 
@@ -107,7 +107,7 @@ object ProductShareTracking {
             EVENT_CATEGORY_PDP_SHARING,
             EVENT_ACTION_CLICK_CHANNEL_SHARE_BOTTOMSHEET,
             channel + " - " + userType + " - " + productId + " - " + campaignId + " - " +
-                bundleId + " - " + UniversalShareBottomSheet.Companion.KEY_IMAGE_DEFAULT
+                bundleId + " - " + UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT
         )
         mapEvent.appendDefaultTracker(userId, productId)
         mapEvent[ProductShareConstant.TRACKER_ID] = ProductShareConstant.TRACKER_ID_CLICK_SHARING_CHANNEL
