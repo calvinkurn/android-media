@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InboxContactUsViewModel @Inject constructor(
@@ -75,8 +76,8 @@ class InboxContactUsViewModel @Inject constructor(
     }
 
     fun getTopBotStatus() {
-        launchCatchError(
-            block = {
+        launch {
+            try {
                 val topBotStatusResponse = topBotStatusUseCase(Unit)
                 val topBotStatusInbox = topBotStatusResponse.getTopBotStatusInbox()
                 if (topBotStatusInbox.getTopBotStatusData().isActive &&
@@ -107,13 +108,12 @@ class InboxContactUsViewModel @Inject constructor(
                         errorMessageChatBotWidget = topBotStatusResponse.getErrorMessage()
                     )
                 }
-            },
-            onError = {
+            } catch (e: Exception) {
                 _uiState.value = InboxUiState(
                     showChatBotWidget = false
                 )
             }
-        )
+        }
     }
 
     fun restartPageOfList() {
