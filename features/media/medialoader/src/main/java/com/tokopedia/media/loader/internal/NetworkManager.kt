@@ -39,7 +39,7 @@ object NetworkManager {
         }
     }
 
-    fun isHighQualitySettings(context: Context): Boolean {
+    fun isHighQualitySettings(context: Context?): Boolean {
         return state(context) == HIGH_QUALITY
     }
 
