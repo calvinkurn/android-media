@@ -43,7 +43,8 @@ buildscript {
 }
 
 android {
-
+    namespace 'com.tokopedia.sellerapp'
+    testNamespace 'com.tokopedia.sellerapp.test'
     project.ext {
         defaultVersionCode = 220412500;
         defaultVersionName = "2.125-test";

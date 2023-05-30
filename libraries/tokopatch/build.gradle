@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    namespace 'com.tokopedia.tokopatch'
+    testNamespace 'com.tokopedia.tokopatch.test'
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 

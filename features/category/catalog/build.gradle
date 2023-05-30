@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.catalog'
+    testNamespace 'com.tokopedia.catalog.test'
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }

@@ -12,6 +12,8 @@ kapt {
 }
 
 android {
+    namespace 'com.tokopedia.recommendation_widget_common'
+    testNamespace 'com.tokopedia.recommendation_widget_common.test'
     buildFeatures {
         viewBinding true
     }

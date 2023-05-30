@@ -15,6 +15,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.dynamicbanner'
+    testNamespace 'com.tokopedia.dynamicbanner.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

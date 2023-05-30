@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.homecredit'
+    testNamespace 'com.tokopedia.homecredit.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)

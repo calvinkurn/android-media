@@ -5,6 +5,8 @@ apply from: "../../../compile-instrument-test.gradle"
 
 
 android {
+    namespace 'com.tokopedia.thankyou_native'
+    testNamespace 'com.tokopedia.thankyou_native.test'
     defaultConfig {
         multiDexEnabled true
     }
@@ -24,6 +26,8 @@ buildscript {
     }
 }
 android {
+    namespace 'com.tokopedia.thankyou_native'
+    testNamespace 'com.tokopedia.thankyou_native.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

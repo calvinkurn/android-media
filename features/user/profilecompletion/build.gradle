@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.profilecompletion'
+    testNamespace 'com.tokopedia.profilecompletion.test'
     buildFeatures {
         viewBinding true
     }

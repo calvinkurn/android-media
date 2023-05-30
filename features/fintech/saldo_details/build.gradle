@@ -14,9 +14,16 @@ buildscript {
 }
 
 android{
+    namespace 'com.tokopedia.saldodetails'
+    testNamespace 'com.tokopedia.saldodetails.test'
     buildFeatures {
         viewBinding true
     }
+}
+
+android {
+    namespace 'com.tokopedia.saldodetails'
+    testNamespace 'com.tokopedia.saldodetails.test'
 }
 
 dependencies {

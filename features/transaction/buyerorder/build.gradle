@@ -17,6 +17,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.buyerorder'
+    testNamespace 'com.tokopedia.buyerorder.test'
     packagingOptions {
         exclude 'META-INF/**'
     }

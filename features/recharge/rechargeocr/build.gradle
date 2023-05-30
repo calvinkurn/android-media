@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.rechargeocr'
+    testNamespace 'com.tokopedia.rechargeocr.test'
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

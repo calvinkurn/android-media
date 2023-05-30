@@ -13,6 +13,11 @@ buildscript {
     }
 }
 
+android {
+    namespace 'com.tokopedia.app.common'
+    testNamespace 'com.tokopedia.app.common.test'
+}
+
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.analytics)

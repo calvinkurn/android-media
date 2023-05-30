@@ -4,6 +4,8 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.checkout'
+    testNamespace 'com.tokopedia.checkout.test'
 
     packagingOptions {
         exclude 'META-INF/**'

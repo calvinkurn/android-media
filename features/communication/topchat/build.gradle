@@ -3,6 +3,8 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 android {
+    namespace 'com.tokopedia.topchat'
+    testNamespace 'com.tokopedia.topchat.test'
     buildFeatures {
         viewBinding true
     }
@@ -20,6 +22,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.topchat'
+    testNamespace 'com.tokopedia.topchat.test'
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"

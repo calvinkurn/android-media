@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.tokochat_common'
+    testNamespace 'com.tokopedia.tokochat_common.test'
     buildFeatures {
         viewBinding true
     }

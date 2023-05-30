@@ -18,6 +18,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.gopay.kyc'
+    testNamespace 'com.tokopedia.gopay.kyc.test'
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11

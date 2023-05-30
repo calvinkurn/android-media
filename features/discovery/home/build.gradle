@@ -20,6 +20,8 @@ buildscript {
 }
 
 android {
+    namespace 'com.tokopedia.home'
+    testNamespace 'com.tokopedia.home.test'
     buildFeatures {
         buildConfig true
         viewBinding true
