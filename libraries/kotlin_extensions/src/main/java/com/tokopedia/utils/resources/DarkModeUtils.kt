@@ -2,12 +2,11 @@ package com.tokopedia.utils.resources
 
 import android.content.Context
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import com.tokopedia.unifyprinciples.R as UnifyRoot
 import com.tokopedia.unifyprinciples.stringToUnifyColor
 import java.lang.reflect.Field
 import java.util.regex.Pattern
+import com.tokopedia.unifyprinciples.R as UnifyRoot
 
 fun Context.isDarkMode(): Boolean {
     return try {
@@ -23,18 +22,13 @@ fun Context.isDarkMode(): Boolean {
     }
 }
 
-fun isDarkModeApp(): Boolean {
-    val currentNightMode = AppCompatDelegate.getDefaultNightMode()
-    return currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
-}
-
 object DarkModeUtils {
 
     const val HEX_COLOR_REGEX = "#([a-fA-F0-9]{8}|[a-fA-F0-9]{6}|[a-fA-F0-9]{3})"
     private const val HEX_COLOR_FORMAT = "#%06X"
 
     fun getHtmlTextDarkModeSupport(context: Context, text: String): String {
-        if (text.isBlank() || !isDarkModeApp()) {
+        if (text.isBlank() || !context.isDarkMode()) {
             return text
         }
 
