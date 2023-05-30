@@ -95,16 +95,9 @@ class HomeAccountUserModules(val context: Context) {
         return FingerprintPreferenceManager(context)
     }
 
-    @ActivityScope
-    @Provides
-    open fun provideAbTestPlatform(): AbTestPlatform {
-        return RemoteConfigInstance.getInstance().abTestPlatform
-    }
-
     @Provides
     @ActivityScope
     fun provideOclUtils(abTestPlatform: AbTestPlatform): OclUtils {
         return OclUtils(abTestPlatform)
     }
-
 }
