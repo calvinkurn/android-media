@@ -89,6 +89,10 @@ internal open class SearchBarViewModelTestFixtures {
         every { mpsLocalCache.shouldAnimatePlusIcon() } returns false
     }
 
+    protected fun `Given active keyword updated`(query: String) {
+        viewModel.onQueryUpdated(query)
+    }
+
     protected fun `Then verify SearchBarKeyword list`(expectedKeywords: List<SearchBarKeyword>) {
         viewModel.searchBarKeywords.value shouldBe expectedKeywords
     }
