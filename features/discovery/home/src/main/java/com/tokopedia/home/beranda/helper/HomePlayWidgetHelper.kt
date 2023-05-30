@@ -14,12 +14,12 @@ class HomePlayWidgetHelper @Inject constructor() {
     )
 
     fun isCarousel(layout: String): Boolean {
-//        return layout in carouselLayoutType
-        return true //todo("uncomment above logic")
+        return layout in carouselLayoutType
+//        return true //todo("uncomment above logic")
     }
 
     fun isCarouselVariantWithProduct(layout: String): Boolean {
-//        return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2
-        return true
+        return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2
+//        return true
     }
 }
