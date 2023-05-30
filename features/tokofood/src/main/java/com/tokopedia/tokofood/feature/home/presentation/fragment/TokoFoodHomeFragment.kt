@@ -1021,7 +1021,7 @@ class TokoFoodHomeFragment :
     }
 
     private fun shareClicked() {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             context?.let {
                 SharingUtil.saveImageFromURLToStorage(
                     it,
