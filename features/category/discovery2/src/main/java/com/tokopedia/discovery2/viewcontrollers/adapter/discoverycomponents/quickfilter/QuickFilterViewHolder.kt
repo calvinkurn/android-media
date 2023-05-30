@@ -118,6 +118,12 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         if (quickFilterViewModel.components.data?.isEmpty() == true) return
         val sortFilterItems: ArrayList<SortFilterItem> = ArrayList()
         componentName = quickFilterViewModel.getTargetComponent()?.name
+        val prop = quickFilterViewModel.components.properties
+        if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
+            dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
+                sortFilterItems.add(createSemuaKategoriFilterItem(filter))
+            }
+        }
         for (filter in filters) {
             if(filter.options.size == 1)
                 sortFilterItems.add(createSortFilterItem(filter.options.first()))
@@ -126,9 +132,9 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             }
         }
         quickSortFilter.let {
-            val prop = quickFilterViewModel.components.properties
             it.filterType = prop?.let { properties ->
-                if (properties.filter || properties.sort) SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
+                if ((properties.fullFilterType != Constant.FullFilterType.CATEGORY) && (properties.filter || properties.sort))
+                    SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
             } ?: SortFilter.TYPE_ADVANCED
             it.sortFilterItems.removeAllViews()
             it.addItem(sortFilterItems)
@@ -200,6 +206,14 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 item.type = ChipsUnify.TYPE_SELECTED
                 item.typeUpdated = false
             }
+        }
+        return item
+    }
+
+    private fun createSemuaKategoriFilterItem(filter: Filter):SortFilterItem {
+        val item = SortFilterItem(fragment.getString(R.string.semua_kategori))
+        item.listener = {
+            openGeneralFilterForCategory(filter)
         }
         return item
     }

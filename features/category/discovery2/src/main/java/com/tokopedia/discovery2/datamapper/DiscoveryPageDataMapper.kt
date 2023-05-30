@@ -13,8 +13,11 @@ import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.analytics.EMPTY_STRING
-import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.data.AdditionalInfo
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
+import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
@@ -26,10 +29,12 @@ import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.minicart.common.domain.data.*
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
+import com.tokopedia.minicart.common.domain.data.MiniCartItemType
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import kotlin.collections.set
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -596,9 +601,7 @@ class DiscoveryPageDataMapper(
     }
 
     private fun handleQuickFilter(component: ComponentsItem){
-        if (component.properties?.chipSize == Constant.ChipSize.LARGE) {
-            component.isSticky = true
-        }
+        component.isSticky = component.properties?.chipSize == Constant.ChipSize.LARGE
         if (!component.isSelectedFiltersFromQueryApplied && !queryParameterMapWithRpc.isNullOrEmpty()) {
             component.isSelectedFiltersFromQueryApplied = true
             getFiltersFromQuery(
