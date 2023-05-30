@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
@@ -37,7 +38,7 @@ object DeeplinkMapperUser {
     }
 
     private fun getApplinkGotoKyc(): String {
-        return if (isRollenceGotoKycActivated()) {
+        return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
             ApplinkConstInternalUserPlatform.GOTO_KYC
         } else {
             ApplinkConstInternalUserPlatform.KYC_INFO_BASE
