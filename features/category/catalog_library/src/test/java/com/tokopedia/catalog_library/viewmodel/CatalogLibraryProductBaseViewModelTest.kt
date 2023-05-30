@@ -6,7 +6,6 @@ import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
 import com.tokopedia.catalog_library.usecase.CatalogProductsUseCase
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_CATALOG
-import com.tokopedia.catalog_library.viewmodels.CatalogProductsBaseVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

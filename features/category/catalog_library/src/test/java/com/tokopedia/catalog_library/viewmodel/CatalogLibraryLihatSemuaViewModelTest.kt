@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.catalog_library.model.raw.CatalogLibraryResponse
 import com.tokopedia.catalog_library.usecase.CatalogLibraryBrandCategoryUseCase
 import com.tokopedia.catalog_library.usecase.CatalogLibraryUseCase
-import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

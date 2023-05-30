@@ -25,7 +25,7 @@ import com.tokopedia.catalog_library.util.CatalogAnalyticsBrandLandingPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_CATEGORY_HEADER
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
-import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
+import com.tokopedia.catalog_library.viewmodel.CatalogLihatSemuaPageVM
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -171,8 +171,8 @@ class CatalogBrandLandingPageFragment : CatalogProductsBaseFragment(), CatalogLi
             }
         }
 
-        brandLandingPageViewModel?.brandNameLiveData?.observe(viewLifecycleOwner){ brandName ->
-            if(!brandName.isNullOrBlank()){
+        brandLandingPageViewModel?.brandNameLiveData?.observe(viewLifecycleOwner) { brandName ->
+            if (!brandName.isNullOrBlank()) {
                 header?.headerTitle = brandName
                 brandNameStr = brandName
             }

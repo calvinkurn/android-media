@@ -8,7 +8,6 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.CATALOG_CONTAINER_TYPE_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryResponseException
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

@@ -3,7 +3,6 @@ package com.tokopedia.catalog_library.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.catalog_library.model.raw.CatalogBrandsPopularResponse
 import com.tokopedia.catalog_library.usecase.CatalogBrandsPopularWithCatalogsUseCase
-import com.tokopedia.catalog_library.viewmodels.CatalogPopularBrandsVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery

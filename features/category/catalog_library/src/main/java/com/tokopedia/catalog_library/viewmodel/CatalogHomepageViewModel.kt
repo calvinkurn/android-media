@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.viewmodels
+package com.tokopedia.catalog_library.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,12 +18,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogHomepageVM @Inject constructor(
+class CatalogHomepageViewModel @Inject constructor(
     private val catalogSpecialUseCase: CatalogSpecialUseCase,
     private val catalogRelevantUseCase: CatalogRelevantUseCase,
     private val catalogBrandsPopularUseCase: CatalogBrandsPopularUseCase
 ) : ViewModel() {
-    private var test: Int = 0
+    private var test = 0
     private val _catalogHomeLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
     val catalogLibraryLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogHomeLiveData

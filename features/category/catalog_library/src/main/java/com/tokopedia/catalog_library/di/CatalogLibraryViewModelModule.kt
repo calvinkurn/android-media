@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.catalog_library.viewmodels.*
+import com.tokopedia.catalog_library.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,8 +19,8 @@ abstract class CatalogLibraryViewModelModule {
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogHomepageVM::class)
-    internal abstract fun catalogHomepageViewModel(viewModel: CatalogHomepageVM): ViewModel
+    @ViewModelKey(CatalogHomepageViewModel::class)
+    internal abstract fun catalogHomepageViewModel(viewModel: CatalogHomepageViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -45,5 +45,4 @@ abstract class CatalogLibraryViewModelModule {
     @CatalogLibraryScope
     @ViewModelKey(CatalogPopularBrandsVM::class)
     internal abstract fun popularBrandsViewModel(viewModel: CatalogPopularBrandsVM): ViewModel
-
 }

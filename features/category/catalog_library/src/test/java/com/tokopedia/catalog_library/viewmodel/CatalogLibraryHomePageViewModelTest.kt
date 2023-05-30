@@ -7,7 +7,6 @@ import com.tokopedia.catalog_library.model.raw.CatalogSpecialResponse
 import com.tokopedia.catalog_library.usecase.CatalogBrandsPopularUseCase
 import com.tokopedia.catalog_library.usecase.CatalogRelevantUseCase
 import com.tokopedia.catalog_library.usecase.CatalogSpecialUseCase
-import com.tokopedia.catalog_library.viewmodels.CatalogHomepageVM
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -28,13 +27,13 @@ class CatalogLibraryHomePageViewModelTest {
     private val catalogRelevantUseCase = mockk<CatalogRelevantUseCase>(relaxed = true)
     private val catalogBrandsPopularUseCase = mockk<CatalogBrandsPopularUseCase>(relaxed = true)
 
-    private lateinit var viewModel: CatalogHomepageVM
+    private lateinit var viewModel: CatalogHomepageViewModel
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     @Before
     fun setUp() {
-        viewModel = CatalogHomepageVM(
+        viewModel = CatalogHomepageViewModel(
             catalogSpecialUseCase,
             catalogRelevantUseCase,
             catalogBrandsPopularUseCase
