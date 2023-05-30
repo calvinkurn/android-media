@@ -25,24 +25,24 @@ abstract class CatalogLibraryViewModelModule {
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogLihatSemuaPageVM::class)
-    internal abstract fun catalogLihatSemuaPageViewModel(viewModel: CatalogLihatSemuaPageVM): ViewModel
+    @ViewModelKey(CatalogLihatSemuaPageViewModel::class)
+    internal abstract fun catalogLihatSemuaPageViewModel(viewModel: CatalogLihatSemuaPageViewModel): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogLandingPageVM::class)
-    internal abstract fun catalogLandingPageViewModel(viewModel: CatalogLandingPageVM): ViewModel
+    @ViewModelKey(CatalogLandingPageViewModel::class)
+    internal abstract fun catalogLandingPageViewModel(viewModel: CatalogLandingPageViewModel): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogProductsBaseVM::class)
-    internal abstract fun productsBaseViewModel(viewModel: CatalogProductsBaseVM): ViewModel
+    @ViewModelKey(CatalogProductsBaseViewModel::class)
+    internal abstract fun productsBaseViewModel(viewModel: CatalogProductsBaseViewModel): ViewModel
 
     @Binds
     @IntoMap
     @CatalogLibraryScope
-    @ViewModelKey(CatalogPopularBrandsVM::class)
-    internal abstract fun popularBrandsViewModel(viewModel: CatalogPopularBrandsVM): ViewModel
+    @ViewModelKey(CatalogPopularBrandsViewModel::class)
+    internal abstract fun popularBrandsViewModel(viewModel: CatalogPopularBrandsViewModel): ViewModel
 }

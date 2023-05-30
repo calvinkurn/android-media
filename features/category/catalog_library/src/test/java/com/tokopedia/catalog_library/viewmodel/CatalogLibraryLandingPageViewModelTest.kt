@@ -27,14 +27,14 @@ class CatalogLibraryLandingPageViewModelTest {
     private val catalogTopFiveUseCase = mockk<CatalogProductsUseCase>(relaxed = true)
     private val catalogMostViralUseCase = mockk<CatalogProductsUseCase>(relaxed = true)
 
-    private lateinit var viewModel: CatalogLandingPageVM
+    private lateinit var viewModel: CatalogLandingPageViewModel
 
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = CatalogLibraryResponseException(fetchFailedErrorMessage, CATALOG_CONTAINER_TYPE_TOP_FIVE)
 
     @Before
     fun setUp() {
-        viewModel = CatalogLandingPageVM(
+        viewModel = CatalogLandingPageViewModel(
             catalogTopFiveUseCase,
             catalogMostViralUseCase
         )

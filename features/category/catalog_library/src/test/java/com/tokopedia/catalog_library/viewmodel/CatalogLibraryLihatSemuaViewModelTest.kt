@@ -23,14 +23,14 @@ class CatalogLibraryLihatSemuaViewModelTest {
     private val catalogLibraryUseCase = mockk<CatalogLibraryUseCase>(relaxed = true)
     private val catalogLibraryBrandCategoryUseCase = mockk<CatalogLibraryBrandCategoryUseCase>(relaxed = true)
 
-    private lateinit var viewModel: CatalogLihatSemuaPageVM
+    private lateinit var viewModel: CatalogLihatSemuaPageViewModel
 
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     @Before
     fun setUp() {
-        viewModel = CatalogLihatSemuaPageVM(
+        viewModel = CatalogLihatSemuaPageViewModel(
             catalogLibraryUseCase,
             catalogLibraryBrandCategoryUseCase
         )
