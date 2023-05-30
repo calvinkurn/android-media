@@ -14,6 +14,7 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
     private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsListAllInsightCountsResponse>(graphqlRepository) {
 
+
     init {
         setGraphqlQuery(GqlQuery)
         setTypeClass(TopAdsListAllInsightCountsResponse::class.java)

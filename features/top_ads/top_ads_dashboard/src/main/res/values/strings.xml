@@ -530,6 +530,8 @@
     <string name="topads_group_card_insight_count_format"><![CDATA["<b>%s</b> ]]> saran untukmu</string>
     <string name="topads_beranda_saran">Saran Topads</string>
     <string name="topads_beranda_saran_see_full">Lihat Selengkapnya</string>
+    <string name="iklan_produk_subtitle">Iklan Produk</string>
+    <string name="iklan_toko_subtitle">Iklan Toko</string>
 
 
 </resources>

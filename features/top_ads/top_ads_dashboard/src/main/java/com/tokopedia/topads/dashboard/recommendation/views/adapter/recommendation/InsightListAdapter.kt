@@ -29,6 +29,11 @@ import timber.log.Timber
 class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit) :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
 
+    companion object {
+        const val PRODUCT_TYPE = "product"
+        const val SHOP_TYPE = "headline"
+    }
+
     inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val groupCardTitle: Typography = view.findViewById(R.id.groupCardTitle)
         private val groupCardSubTitle: Typography = view.findViewById(R.id.groupCardSubTitle)
@@ -45,8 +50,9 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             groupCardTitle.text = item.adGroupName
             groupCardSubTitle.showWithCondition(item.showGroupType)
             groupCardSubTitle.text = when (item.adGroupType) {
-                "product" -> "Iklan Produk"
-                else -> "Iklan Toko"
+                PRODUCT_TYPE -> view.context.getString(R.string.iklan_produk_subtitle)
+                SHOP_TYPE -> view.context.getString(R.string.iklan_toko_subtitle)
+                else -> ""
             }
 
             groupCardInsightCount.show()
