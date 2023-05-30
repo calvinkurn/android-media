@@ -226,7 +226,7 @@
     <string name="campaign_rule_unique_account_tips_point_2">Pembeli hanya dapat menggunakan <b>satu kali transaksi</b> dengan campaign ini.</string>
     <string name="campaign_rule_campaign_relation">Apakah pembeli dari campaign sebelumnya dapat mengikuti campaign ini?</string>
     <string name="campaign_rule_fs_out_of_stock_title">Pembeli dapat membeli produk dengan harga normal meskipun stok campaign habis.</string>
-    <string name="campaign_rule_fs_out_of_stock_subtitle">Misalnya stok campaign produk habis, produk masih bisa dibeli selama ada stok normal. <![CDATA[<font color=#00AA5B><b>Lihat ilustrasi</b></font>]]></string>
+    <string name="campaign_rule_fs_out_of_stock_subtitle">Misalnya stok campaign produk habis, produk masih bisa dibeli selama ada stok normal. <b>Lihat ilustrasi</b></string>
     <string name="campaign_rule_choose_previous_campaign_title">Pilih Campaign Sebelumnya</string>
     <string name="campaign_rule_choose_previous_campaign_subtitle">(Maks. 10 campaign)</string>
     <string name="campaign_rule_choose_previous_campaign_button">+ Campaign</string>
