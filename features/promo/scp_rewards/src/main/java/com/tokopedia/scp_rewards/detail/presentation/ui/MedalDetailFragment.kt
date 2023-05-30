@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.data.Error
@@ -15,12 +16,14 @@ import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
+import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
 import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
+import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import javax.inject.Inject
@@ -92,6 +95,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         loadHeader(data.detail?.medaliDetailPage)
                         loadMedalDetails(data.detail?.medaliDetailPage)
                         loadTaskProgress(data.detail?.medaliDetailPage?.mission)
+                        loadFooter(data.detail?.medaliDetailPage?.benefitButton)
                     }
 
                     is Error -> {
@@ -102,6 +106,21 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         // TODO
                     }
                 }
+            }
+        }
+    }
+
+    private fun loadFooter(listOfButtons: List<BenefitButton>?) {
+        listOfButtons?.let { buttons ->
+            binding.layoutDetailContent.viewMedalFooter.bindData(buttons.map {
+                FooterData(
+                    text = it.text,
+                    url = it.url,
+                    appLink = it.appLink,
+                    style = it.unifiedStyle,
+                )
+            }) { link ->
+                RouteManager.route(requireContext(), link)
             }
         }
     }

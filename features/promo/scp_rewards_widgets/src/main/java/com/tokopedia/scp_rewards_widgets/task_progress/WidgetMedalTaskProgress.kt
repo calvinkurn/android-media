@@ -11,7 +11,7 @@ import com.tokopedia.scp_rewards_common.R
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetMedalTaskProgressBinding
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
-class MedalTaskProgressView(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+class WidgetMedalTaskProgress(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 
     private val binding = WidgetMedalTaskProgressBinding.inflate(LayoutInflater.from(context), this)
 

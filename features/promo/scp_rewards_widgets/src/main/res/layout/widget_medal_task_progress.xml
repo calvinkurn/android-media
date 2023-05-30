@@ -20,7 +20,7 @@
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Powered by L'Oreal Paris" />
 
