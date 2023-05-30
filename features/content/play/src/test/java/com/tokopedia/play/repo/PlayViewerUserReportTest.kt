@@ -7,9 +7,9 @@ import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.PostUserReportUseCase
 import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -17,7 +17,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -58,7 +58,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `when submit report return success`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportSubmissionResponse(
                 submissionReport = UserReportSubmissionResponse.Result(
                     "success"
@@ -82,7 +82,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `when submit report return failed`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportSubmissionResponse(
                 submissionReport = UserReportSubmissionResponse.Result(
                     "failed"
@@ -107,7 +107,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `when submit report return success - kol`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportSubmissionResponse(
                 submissionReport = UserReportSubmissionResponse.Result(
                     "success"
@@ -131,7 +131,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `when submit report return failed - kol`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportSubmissionResponse(
                 submissionReport = UserReportSubmissionResponse.Result(
                     "failed"
@@ -156,7 +156,7 @@ class PlayViewerUserReportTest {
 
     @Test
     fun `get reasoning list is success`(){
-        runBlockingTest {
+        runTest {
             val response = UserReportOptions.Response(
                 data = listOf(UserReportOptions(
                     id = 1,

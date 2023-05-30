@@ -7,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import java.lang.reflect.Type
 
-class FakeRecommendationGraphqlUseCase: GraphqlUseCase() {
+class FakeRecommendationGraphqlUseCase : GraphqlUseCase() {
 
     var response: RecommendationEntity = RecommendationEntity()
 
@@ -17,8 +17,12 @@ class FakeRecommendationGraphqlUseCase: GraphqlUseCase() {
         val map = mutableMapOf<Type, Any>(
             RecommendationEntity::class.java to response
         )
-        return Observable.just(GraphqlResponse(
-            map, mutableMapOf(), false
-        ))
+        return Observable.just(
+            GraphqlResponse(
+                map,
+                mutableMapOf(),
+                false
+            )
+        )
     }
 }

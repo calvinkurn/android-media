@@ -90,6 +90,10 @@ class PlayGameViewHolder {
         private val binding: ItemPlayInteractiveLeaderboardWinnerBinding,
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
+
+        init {
+            binding.imgCrown.setImageResource(R.drawable.ic_play_interactive_crown_yellow)
+        }
         fun bind(winner: LeaderboardGameUiModel.Winner) {
             with(binding) {
                 tvWinnerNumber.text = winner.rank.toString()

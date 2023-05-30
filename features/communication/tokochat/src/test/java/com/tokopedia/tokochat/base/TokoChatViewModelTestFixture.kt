@@ -8,6 +8,7 @@ import com.tokopedia.tokochat.view.chatroom.uimodel.TokoChatImageAttachmentExten
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usercomponents.userconsent.domain.collection.GetNeedConsentUseCase
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
@@ -24,6 +25,9 @@ abstract class TokoChatViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     protected lateinit var getChannelUseCase: TokoChatChannelUseCase

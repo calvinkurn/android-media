@@ -1,18 +1,14 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.LabelGroup
-import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
-import com.tokopedia.productcard.ProductCardModel.NonVariant
+import com.tokopedia.tokopedianow.common.constant.ConstantKey.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -36,75 +32,65 @@ object HomeRepurchaseMapper {
     ): TokoNowRepurchaseUiModel {
         val state = TokoNowLayoutState.SHOW
         val productList = mapToProductCardUiModel(item.id, response, miniCartData)
-        return item.copy(title = response.title, productList = productList, state = state)
+        val sortedProductList = sortRepurchaseProduct(productList)
+        return item.copy(
+            title = response.title,
+            subtitle = response.subtitle,
+            subtitleColor = response.subtitleColor,
+            productList = sortedProductList,
+            state = state
+        )
+    }
+
+    fun sortRepurchaseProduct(productList: List<TokoNowRepurchaseProductUiModel>): List<TokoNowRepurchaseProductUiModel> {
+        val productsInCart = productList.filter { it.orderQuantity != DEFAULT_QUANTITY }
+            .sortedBy { it.originalPosition }
+
+        val productsNotInCart = productList.filter { it.orderQuantity == DEFAULT_QUANTITY }
+            .sortedBy { it.originalPosition }
+
+        val sortedProductList = (productsNotInCart + productsInCart).mapIndexed { index, item ->
+            item.copy(position = index + ADDITIONAL_POSITION)
+        }
+
+        return sortedProductList
     }
 
     private fun mapToProductCardUiModel(
         channelId: String,
         response: RepurchaseData,
         miniCartData: MiniCartSimplifiedData? = null
-    ): List<TokoNowProductCardUiModel> {
-        return response.products.mapIndexed { index, repurchaseProduct ->
-            TokoNowProductCardUiModel(
-                channelId,
-                repurchaseProduct.id,
-                repurchaseProduct.shop.id,
-                repurchaseProduct.maxOrder,
-                repurchaseProduct.parentProductId,
-                createProductCardModel(repurchaseProduct, miniCartData),
-                TokoNowLayoutType.REPURCHASE_PRODUCT,
-                index + ADDITIONAL_POSITION,
-                response.title
-            )
-        }
-    }
-    
-    private fun createProductCardModel(
-        product: RepurchaseProduct,
-        miniCartData: MiniCartSimplifiedData? = null
-    ): ProductCardModel {
-        val quantity = getAddToCartQuantity(product.id, miniCartData)
+    ): List<TokoNowRepurchaseProductUiModel> {
+        return response.products.mapIndexed { index, product ->
+            val quantity = getAddToCartQuantity(product.id, miniCartData)
 
-        return if(product.isVariant()) {
-            ProductCardModel(
-                productImageUrl = product.imageUrl,
-                productName = product.name,
-                discountPercentage = product.getDiscount(),
-                slashedPrice = product.slashedPrice,
+            TokoNowRepurchaseProductUiModel(
+                channelId = channelId,
+                productId = product.id,
+                parentId = product.parentProductId,
+                shopId = product.shop.id,
+                imageUrl = product.imageUrl,
+                name = product.name,
+                availableStock = product.stock,
+                minOrder = product.minOrder,
+                maxOrder = product.maxOrder,
+                orderQuantity = quantity,
+                discount = product.getDiscount(),
+                slashPrice = product.slashedPrice,
                 formattedPrice = product.price,
-                hasAddToCartButton = false,
                 labelGroupList = mapLabelGroup(product),
-                labelGroupVariantList = mapLabelGroupVariant(product),
-                variant = ProductCardModel.Variant(quantity)
-            )
-        } else {
-            ProductCardModel(
-                productImageUrl = product.imageUrl,
-                productName = product.name,
-                discountPercentage = product.getDiscount(),
-                slashedPrice = product.slashedPrice,
-                formattedPrice = product.price,
-                hasAddToCartButton = quantity == DEFAULT_QUANTITY,
-                labelGroupList = mapLabelGroup(product),
-                labelGroupVariantList = mapLabelGroupVariant(product),
-                nonVariant = NonVariant(
-                    quantity = quantity,
-                    minQuantity = product.minOrder,
-                    maxQuantity = product.maxOrder
-                )
+                isVariant = product.isVariant(),
+                position = index + ADDITIONAL_POSITION,
+                originalPosition = index + ADDITIONAL_POSITION,
+                headerName = response.title,
+                needToShowQuantityEditor = true
             )
         }
     }
-    
+
     private fun mapLabelGroup(response: RepurchaseProduct): List<LabelGroup> {
         return response.labelGroup.map {
             LabelGroup(it.position, it.title, it.type, it.url)
-        }
-    }
-
-    private fun mapLabelGroupVariant(response: RepurchaseProduct): List<LabelGroupVariant> {
-        return response.labelGroupVariant.map {
-            LabelGroupVariant(it.typeVariant, it.title, it.type, it.hexColor)
         }
     }
 }

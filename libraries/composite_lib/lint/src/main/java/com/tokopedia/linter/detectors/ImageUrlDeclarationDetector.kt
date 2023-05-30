@@ -9,27 +9,28 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.SourceCodeScanner
+import com.intellij.psi.PsiModifier
+import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UField
 import org.jetbrains.uast.ULocalVariable
 
 /**
- * Created by @ilhamsuaib on 25/05/23.
+ * Created by @ilhamsuaib on 28/05/23.
  */
 
-@Suppress("UnstableApiUsage")
-class ImageUrlDeclarationDetector : Detector(), SourceCodeScanner {
+@Suppress("UnstableAPIUsage")
+class ImageUrlDeclarationDetector : Detector(), Detector.UastScanner {
 
     companion object {
-
-        @JvmField
         val JAVA_ISSUE = Issue.create(
             id = "ImageUrlDeclarationDetector",
-            briefDescription = "Image resource declaration disallowed here.",
-            explanation = "Please create a variable in common module instead.",
+            briefDescription = "Image URL declaration outside of `libraries/images_assets` module is not allowed",
+            explanation = "In order to make a centralized remote resources. So, you have to create the constant variable " +
+                    "for this in `libraries/images_assets` module instead.",
             category = Category.CORRECTNESS,
-            priority = 10,
-            severity = Severity.FATAL,
+            priority = 5,
+            severity = Severity.WARNING,
             implementation = Implementation(
                 ImageUrlDeclarationDetector::class.java,
                 Scope.JAVA_FILE_SCOPE
@@ -37,37 +38,67 @@ class ImageUrlDeclarationDetector : Detector(), SourceCodeScanner {
         )
 
         private const val ERROR_MESSAGE =
-            "You can't put image url in this class. Please put in common module instead"
+            "You are not allowed to create image url declaration here. " +
+                    "Should be moved to `libraries/images_assets` module."
+        private const val EXCLUDED_DIR = "src/main/java/com/tokopedia/imageassets"
+        private const val IMAGE_URL_PATTERN = "(http.*?(gif|jpeg|png|jpg|bmp))"
+        private val VARIABLES_MODIFIER = arrayOf("constval", "val", "constvar", "var")
     }
 
-    override fun getApplicableUastTypes(): List<Class<out UElement>> {
-        return listOf(
-            UField::class.java,
-            ULocalVariable::class.java
-        )
-    }
+    override fun getApplicableUastTypes() = listOf<Class<out UElement>>(
+        UField::class.java,
+        ULocalVariable::class.java
+    )
 
     override fun createUastHandler(context: JavaContext): UElementHandler {
-        return object : UElementHandler() {
-            override fun visitField(node: UField) {
-                val variableValue = node.text.substringAfter("=")
-                reportIssue(context, node, variableValue)
-            }
-
-            override fun visitLocalVariable(node: ULocalVariable) {
-                val variableValue = node.text.substringAfter("=")
-                reportIssue(context, node, variableValue)
-            }
-        }
+        return ElementHandler(context)
     }
 
-    private fun reportIssue(context: JavaContext, node: UElement, variableValue: String) {
-        val shouldReport = variableValue.endsWith(".png")
-        if (shouldReport) {
+    inner class ElementHandler(private val context: JavaContext) : UElementHandler() {
+
+        override fun visitField(node: UField) {
+            if (isVariable(node.text)) {
+                checkImageUrl(context, node)
+            }
+        }
+
+        override fun visitLocalVariable(node: ULocalVariable) {
+            checkImageUrl(context, node)
+        }
+
+        private fun isVariable(text: String?): Boolean {
+            if (text.isNullOrBlank()) return false
+            var textFmt = text.replace(" ", "")
+            PsiModifier.MODIFIERS.forEach {
+                textFmt = textFmt.replace(it, "")
+            }
+            return VARIABLES_MODIFIER.any { textFmt.startsWith(it) }
+        }
+
+        private fun checkImageUrl(
+            context: JavaContext,
+            element: PsiNamedElement
+        ) {
+            val variableValue = element.text
+            val isImageUrl = getIsImageUrl(variableValue)
+            val filePath = context.getNameLocation(element).file.path
+            val isExcludedDir = filePath.contains(EXCLUDED_DIR)
+            val shouldReportIssue = isImageUrl && !isExcludedDir
+            if (shouldReportIssue) {
+                reportIssue(context, element)
+            }
+        }
+
+        private fun getIsImageUrl(variableValue: String): Boolean {
+            val regex = IMAGE_URL_PATTERN.toRegex()
+            return variableValue.contains(regex)
+        }
+
+        private fun reportIssue(context: JavaContext, element: PsiNamedElement) {
             context.report(
-                ResourcePackageDetector.JAVA_ISSUE,
-                node,
-                context.getLocation(node),
+                JAVA_ISSUE,
+                element,
+                context.getLocation(element),
                 ERROR_MESSAGE
             )
         }
