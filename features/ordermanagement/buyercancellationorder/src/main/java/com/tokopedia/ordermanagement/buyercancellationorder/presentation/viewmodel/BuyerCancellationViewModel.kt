@@ -3,10 +3,8 @@ package com.tokopedia.ordermanagement.buyercancellationorder.presentation.viewmo
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.ordermanagement.buyercancellationorder.common.utils.ResourceProvider
-import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonParam
 import com.tokopedia.ordermanagement.buyercancellationorder.data.instantcancellation.BuyerInstantCancelData
 import com.tokopedia.ordermanagement.buyercancellationorder.data.instantcancellation.BuyerInstantCancelParam
@@ -17,7 +15,6 @@ import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerInstantC
 import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerRequestCancelUseCase
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationOrderWrapperUiModel
 import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -87,17 +84,6 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
                             BuyerCancelRequestReasonValidationResult(message, isError, isButtonEnable)
                         )
                     }
-        }
-    }
-
-    private fun List<BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation>.mapToNormalProductList(): List<BuyerNormalProductUiModel> {
-        return map { bundleProduct ->
-            BuyerNormalProductUiModel(
-                    productId = bundleProduct.productId,
-                    productThumbnailUrl = bundleProduct.picture,
-                    productName = bundleProduct.productName,
-                    productPrice = bundleProduct.productPrice
-            )
         }
     }
 

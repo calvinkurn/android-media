@@ -63,6 +63,8 @@ data class BuyerGetCancellationReasonData(
                 val title: String = ""
             ) {
                 data class OrderDetail(
+                    @SerializedName("label")
+                    val label: String = "",
                     @SerializedName("invoice_ref_num")
                     val invoiceRefNum: String = "",
                     @SerializedName("product_image")

@@ -4,10 +4,10 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 
 class BuyerCancellationProductUiModel(
     val shopName: String,
+    val orderNumberLabel: String = String.EMPTY,
     val shopIcon: String,
     val invoiceNumber: String,
     val productName: String,
     val productThumbnailUrl: String,
-    val productInfo: String,
-    val orderInfo: String = String.EMPTY
+    val moreProductInfo: String = String.EMPTY
 )

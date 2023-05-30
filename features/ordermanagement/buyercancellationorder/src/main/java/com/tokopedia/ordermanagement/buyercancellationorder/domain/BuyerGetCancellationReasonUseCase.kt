@@ -72,6 +72,7 @@ const val GET_CANCELLATION_REASON_QUERY = """
                 grouped_orders {
                   title
                   group_order_details {
+                    label
                     invoice_ref_num
                     shop_name
                     shop_icon

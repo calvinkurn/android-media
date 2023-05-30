@@ -2,6 +2,7 @@ package com.tokopedia.ordermanagement.buyercancellationorder
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.ordermanagement.buyercancellationorder.common.utils.ResourceProvider
 import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.ordermanagement.buyercancellationorder.data.instantcancellation.BuyerInstantCancelData
@@ -9,7 +10,7 @@ import com.tokopedia.ordermanagement.buyercancellationorder.data.requestcancel.B
 import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerInstantCancelUseCase
 import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerRequestCancelUseCase
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerNormalProductUiModel
+import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationOrderWrapperUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -56,16 +57,11 @@ class BuyerCancellationViewModelTest {
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
 
-    @RelaxedMockK
-    lateinit var buyerNormalProductObserver: Observer<in List<BuyerNormalProductUiModel>?>
-
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         buyerCancellationViewModel = BuyerCancellationViewModel(dispatcher, resourceProvider, getCancellationUseCase,
-                buyerInstantCancelUseCase, buyerRequestCancelUseCase).also {
-                    it.buyerNormalProductUiModelListLiveData.observeForever(buyerNormalProductObserver)
-        }
+                buyerInstantCancelUseCase, buyerRequestCancelUseCase)
 
         listReason.add(BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem(title = "test1"))
         listReason.add(BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem(title = "test2"))
@@ -79,25 +75,27 @@ class BuyerCancellationViewModelTest {
         } returns "Hindari penggunaan karakter spesial (@#\$%^*)"
     }
 
-    @After
-    fun cleanUp() {
-        buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.removeObserver(buyerNormalProductObserver)
-    }
-
     // get cancel reason data
     @Test
     fun getCancelReasonData_shouldReturnSuccess() {
         //given
+        val getCancellationReasonData = BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason))
         coEvery {
             getCancellationUseCase.execute(any())
-        } returns Success(BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason)))
+        } returns Success(BuyerCancellationOrderWrapperUiModel(
+            getCancellationReason = getCancellationReasonData.getCancellationReason,
+            groupedOrderTitle = "",
+            groupType = Int.ONE,
+            tickerInfo = getCancellationReasonData.getCancellationReason.tickerInfo,
+            groupedOrders = emptyList()
+        ))
 
         //when
         buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
-        assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
-        assert((buyerCancellationViewModel.cancelReasonResult.value as Success<BuyerGetCancellationReasonData.Data>).data.getCancellationReason.reasons == listReason)
+        assert(buyerCancellationViewModel.buyerCancellationOrderResult.value is Success)
+        assert((buyerCancellationViewModel.buyerCancellationOrderResult.value as Success<BuyerGetCancellationReasonData.Data>).data.getCancellationReason.reasons == listReason)
     }
 
     @Test
@@ -111,22 +109,29 @@ class BuyerCancellationViewModelTest {
         buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
-        assert(buyerCancellationViewModel.cancelReasonResult.value is Fail)
+        assert(buyerCancellationViewModel.buyerCancellationOrderResult.value is Fail)
     }
 
     @Test
     fun getCancelReasonData_shouldNotReturnEmpty() {
         //given
+        val getCancellationReasonData = BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason))
         coEvery {
             getCancellationUseCase.execute(any())
-        } returns Success(BuyerGetCancellationReasonData.Data(BuyerGetCancellationReasonData.Data.GetCancellationReason(reasons = listReason)))
+        } returns Success(BuyerCancellationOrderWrapperUiModel(
+            getCancellationReason = getCancellationReasonData.getCancellationReason,
+            groupedOrderTitle = "",
+            groupType = Int.ONE,
+            tickerInfo = getCancellationReasonData.getCancellationReason.tickerInfo,
+            groupedOrders = emptyList()
+        ))
 
         //when
         buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
-        assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
-        assert((buyerCancellationViewModel.cancelReasonResult.value as Success<BuyerGetCancellationReasonData.Data>).data.getCancellationReason.reasons.isNotEmpty())
+        assert(buyerCancellationViewModel.buyerCancellationOrderResult.value is Success)
+        assert((buyerCancellationViewModel.buyerCancellationOrderResult.value as Success<BuyerCancellationOrderWrapperUiModel>).data.getCancellationReason.reasons.isNotEmpty())
     }
 
     // instant cancel
@@ -273,112 +278,4 @@ class BuyerCancellationViewModelTest {
         val result = buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.value
         assert(expectedResult == result)
     }
-
-    @Test
-    fun validateBuyerNormalProductList_shouldReturnNullWhenGivenHaveProductBundleFalse() {
-        //given
-        val cancellationReason =
-            BuyerGetCancellationReasonData.Data(
-                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
-                    haveProductBundle = false
-                ))
-        coEvery {
-            getCancellationUseCase.execute(any())
-        } returns Success(cancellationReason)
-
-        //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
-
-        //then
-        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(result == null)
-    }
-
-    @Test
-    fun validateBuyerNormalProductList_shouldReturnMappedListGivenHaveProductBundleTrue() {
-        //given
-        val cancellationReason =
-            BuyerGetCancellationReasonData.Data(
-                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
-                    haveProductBundle = true,
-                    bundleDetail = BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail(
-                        nonBundleList = listOf(
-                            BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation(
-                                productId = "123",
-                                productName = "satuduatiga",
-                                productPrice = "Rp123",
-                                picture = "www.123.com/123.jpg"
-                            )
-                        ),
-                        bundleList = listOf(
-                            BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail.Bundle()
-                        )
-                    )
-                ))
-        coEvery {
-            getCancellationUseCase.execute(any())
-        } returns Success(cancellationReason)
-
-        //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
-
-        //then
-        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(result != null)
-    }
-
-    @Test
-    fun validateBuyerNormalProductList_shouldReturnEmptyMappedListGivenNoBundleDetail() {
-        //given
-        val cancellationReason =
-            BuyerGetCancellationReasonData.Data(
-                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
-                    haveProductBundle = true,
-                    bundleDetail = null
-                ))
-        coEvery {
-            getCancellationUseCase.execute(any())
-        } returns Success(cancellationReason)
-
-        //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
-
-        //then
-        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(result != null)
-        assert(result.isNullOrEmpty())
-
-    }
-
-    @Test
-    fun validateBuyerNormalProductList_shouldReturnMappedListGivenBundleDetailWithNonBundleListAndEmptybundleList() {
-        //given
-        val cancellationReason =
-            BuyerGetCancellationReasonData.Data(
-                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
-                    haveProductBundle = true,
-                    bundleDetail = BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail(
-                        nonBundleList = listOf(
-                            BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation(
-                                productId = "123",
-                                productName = "satuduatiga",
-                                productPrice = "Rp123",
-                                picture = "www.123.com/123.jpg"
-                            )
-                        ),
-                        bundleList = listOf()
-                    )
-                ))
-        coEvery {
-            getCancellationUseCase.execute(any())
-        } returns Success(cancellationReason)
-
-        //when
-        buyerCancellationViewModel.getCancelReasons("", "", "")
-
-        //then
-        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
-        assert(!result.isNullOrEmpty())
-    }
-
 }

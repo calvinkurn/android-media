@@ -24,9 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.empty_state.EmptyStateUnify
-                android:id="@+id/empty_state_cancellation"
-                android:layout_width="match_parent"
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/global_error_cancellation"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

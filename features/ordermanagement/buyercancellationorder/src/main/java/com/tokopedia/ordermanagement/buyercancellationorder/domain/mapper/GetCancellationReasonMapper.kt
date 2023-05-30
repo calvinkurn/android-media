@@ -1,6 +1,5 @@
 package com.tokopedia.ordermanagement.buyercancellationorder.domain.mapper
 
-import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationOrderWrapperUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationProductUiModel
@@ -31,9 +30,8 @@ class GetCancellationReasonMapper @Inject constructor() {
                 invoiceNumber = it.invoiceRefNum,
                 productName = it.productName,
                 productThumbnailUrl = it.productImage,
-                productInfo = it.productInfo,
-                //todo will updated later
-                orderInfo = String.EMPTY
+                moreProductInfo = it.productInfo,
+                orderNumberLabel = it.label
             )
         }
     }

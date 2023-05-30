@@ -15,7 +15,6 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,22 +40,18 @@ import com.tokopedia.ordermanagement.buyercancellationorder.common.constants.Buy
 import com.tokopedia.ordermanagement.buyercancellationorder.common.constants.BuyerConsts.TICKER_URL
 import com.tokopedia.ordermanagement.buyercancellationorder.common.constants.BuyerOrderIntentCode
 import com.tokopedia.ordermanagement.buyercancellationorder.common.utils.BuyerUtils
+import com.tokopedia.ordermanagement.buyercancellationorder.common.utils.BuyerUtils.getGlobalErrorType
 import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.ordermanagement.buyercancellationorder.data.instantcancellation.BuyerInstantCancelData
 import com.tokopedia.ordermanagement.buyercancellationorder.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.ordermanagement.buyercancellationorder.databinding.FragmentBuyerRequestCancelBinding
 import com.tokopedia.ordermanagement.buyercancellationorder.di.component.BuyerCancellationOrderComponent
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.activity.BuyerRequestCancelActivity
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.BuyerListOfProductsBottomSheetAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.BuyerNewCancellationOrderAdapter
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.BuyerProductBundlingBottomSheetAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.GetCancelReasonBottomSheetAdapter
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.GetCancelSubReasonBottomSheetAdapter
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.divider.BuyerBundlingProductItemDivider
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.typefactory.BuyerProductBundlingAdapterFactory
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationOrderWrapperUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationProductUiModel
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -78,7 +73,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
     private lateinit var reasonBottomSheetAdapter: GetCancelReasonBottomSheetAdapter
     private lateinit var subReasonBottomSheetAdapter: GetCancelSubReasonBottomSheetAdapter
-    private lateinit var buyerListOfProductsBottomSheetAdapter: BuyerListOfProductsBottomSheetAdapter
     private var shopName = ""
     private var invoiceNum = ""
     private var orderId = ""
@@ -108,16 +102,11 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private var listOfSubReason = listOf<BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem.SubReasonsItem>()
     private var currentReasonStr = ""
     private var userSession: UserSession? = null
-    private var isBundlingProduct: Boolean = false
 
     private var binding by autoClearedNullable<FragmentBuyerRequestCancelBinding>()
 
     private val buyerCancellationViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[BuyerCancellationViewModel::class.java]
-    }
-
-    private val buyerProductBundlingAdapterFactory by lazy {
-        BuyerProductBundlingAdapterFactory()
     }
 
     companion object {
@@ -141,6 +130,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putString(BuyerConsts.PARAM_WAIT_MSG, bundle.getString(BuyerConsts.PARAM_WAIT_MSG))
                     putBoolean(BuyerConsts.PARAM_SOURCE_UOH, bundle.getBoolean(BuyerConsts.PARAM_SOURCE_UOH))
                     putString(BuyerConsts.PARAM_HELP_LINK_URL, bundle.getString(BuyerConsts.PARAM_HELP_LINK_URL))
+                    putString(BuyerConsts.PARAM_TX_ID, bundle.getString(BuyerConsts.PARAM_TX_ID))
                 }
             }
         }
@@ -389,56 +379,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         bottomSheet.show(childFragmentManager, getString(R.string.show_bottomsheet))
     }
 
-    private fun showProductsBottomSheet() {
-        buyerListOfProductsBottomSheetAdapter = BuyerListOfProductsBottomSheetAdapter().apply {
-            listProducts = this@BuyerRequestCancelFragment.listProduct
-            notifyDataSetChanged()
-        }
-
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null)
-        val rvCancel = viewBottomSheet.findViewById<RecyclerView>(R.id.rv_cancel)
-        rvCancel?.apply {
-            layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
-            adapter = buyerListOfProductsBottomSheetAdapter
-        }
-
-        val bottomSheet = BottomSheetUnify().apply {
-            setChild(viewBottomSheet)
-            setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
-            showCloseIcon = true
-            setCloseClickListener { dismiss() }
-        }
-
-        bottomSheet.show(childFragmentManager, getString(R.string.show_bottomsheet))
-    }
-
-    private fun showProductBundleBottomSheet(normalProductList: List<BuyerNormalProductUiModel>) {
-        val buyerProductBundlingAdapter = BuyerProductBundlingBottomSheetAdapter(
-                normalProductItems = normalProductList,
-                adapterTypeFactory = buyerProductBundlingAdapterFactory
-        )
-        val viewBottomSheet = View.inflate(context, R.layout.bottomsheet_buyer_request_cancel, null)
-
-        val rvCancel = viewBottomSheet.findViewById<RecyclerView>(R.id.rv_cancel)
-        rvCancel?.run {
-            context?.let {
-                layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
-                adapter = buyerProductBundlingAdapter
-                addItemDecoration(BuyerBundlingProductItemDivider(it))
-            }
-        }
-
-        val bottomSheet = BottomSheetUnify().apply {
-            clearContentPadding = true
-            setChild(viewBottomSheet)
-            setTitle(BuyerConsts.TITLE_LIST_OF_PRODUCT_BOTTOMSHEET)
-            showCloseIcon = true
-            setCloseClickListener { dismiss() }
-        }
-
-        bottomSheet.show(childFragmentManager, getString(R.string.show_bottomsheet))
-    }
-
     private fun getCancelReasons() {
         userSession = UserSession(context)
         userSession?.let {
@@ -451,7 +391,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     binding?.run {
-                        emptyStateCancellation.gone()
+                        globalErrorCancellation.gone()
                         clCancellationContent.visible()
                     }
                     cancelReasonResponse = it.data.getCancellationReason
@@ -461,16 +401,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 is Fail -> {
                     binding?.run {
                         clCancellationContent.gone()
-                        emptyStateCancellation.visible()
-                        emptyStateCancellation.apply {
-                            ContextCompat.getDrawable(
-                                context,
-                                R.drawable.buyer_cancellation_no_connection
-                            )?.let { it1 -> setImageDrawable(it1) }
-                            setTitle(getString(R.string.cancellation_no_connection_title))
-                            setDescription(getString(R.string.cancellation_no_connection_desc))
-                            setPrimaryCTAText(getString(R.string.cancellation_no_connection_btn))
-                            setPrimaryCTAClickListener {
+                        globalErrorCancellation.visible()
+                        globalErrorCancellation.run {
+                            setType(it.throwable.getGlobalErrorType())
+                            setActionClickListener {
                                 getCancelReasons()
                             }
                         }

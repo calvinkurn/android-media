@@ -17,14 +17,13 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="12dp">
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/icShopGrade"
             android:layout_width="16dp"
             android:layout_height="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvShopName"
-            app:layout_constraintBottom_toBottomOf="@id/tvShopName"
-            tools:icon_name="BADGE_OS_FILLED"/>
+            app:layout_constraintBottom_toBottomOf="@id/tvShopName" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvShopName"
