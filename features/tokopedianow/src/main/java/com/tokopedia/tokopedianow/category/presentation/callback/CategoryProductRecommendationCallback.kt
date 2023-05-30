@@ -22,10 +22,11 @@ class CategoryProductRecommendationCallback(
     private val activity: FragmentActivity?,
     private val productRecommendationViewModel: TokoNowProductRecommendationViewModel?,
     private val onHideProductRecommendationWidget: () -> Unit,
-    private val onClickProductCard: (appLink: String) -> Unit,
+    private val onClickProductCard: (appLink: String, headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
+    private val onImpressProductCard: (headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
     private val onOpenLoginPage: () -> Unit,
-    private val startActivityResult: (Intent, Int) -> Unit,
+    private val startActivityResult: (Intent, Int) -> Unit
 ): TokoNowProductRecommendationView.TokoNowProductRecommendationListener {
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecommendationViewModel
 
@@ -55,14 +56,29 @@ class CategoryProductRecommendationCallback(
         product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
-    ) = onClickProductCard(product.appLink)
+    ) = onClickProductCard(
+        product.appLink,
+        product.headerName,
+        position,
+        product.productCardModel.productId,
+        product.productCardModel.name,
+        product.productCardModel.price,
+        product.productCardModel.isOos()
+    )
 
     override fun productCardImpressed(
         position: Int,
         product: ProductCardCompactCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
-    ) { /* waiting for the tracker */ }
+    ) = onImpressProductCard(
+        product.headerName,
+        position,
+        product.productCardModel.productId,
+        product.productCardModel.name,
+        product.productCardModel.price,
+        product.productCardModel.isOos()
+    )
 
     override fun seeMoreClicked(
         seeMoreUiModel: ProductCardCompactCarouselSeeMoreUiModel

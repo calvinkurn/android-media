@@ -68,7 +68,49 @@ data class CategoryDetailResponse(
 
             @SerializedName("recommendation")
             @Expose
-            val recommendation: List<RecommendationItem> = listOf()
+            val recommendation: List<RecommendationItem> = listOf(),
+
+            @SerializedName("child")
+            @Expose
+            val child: List<ChildItem> = listOf()
+    )
+
+    data class ChildItem(
+        @SerializedName("id")
+        @Expose
+        val id: String = "",
+
+        @SerializedName("name")
+        @Expose
+        val name: String = "",
+
+        @SerializedName("url")
+        @Expose
+        val url: String = "",
+
+        @SerializedName("applinks")
+        @Expose
+        val applinks: String = "",
+
+        @SerializedName("imageUrl")
+        @Expose
+        val imageUrl: String = "",
+
+        @SerializedName("isKyc")
+        @Expose
+        val isKyc: Boolean = false,
+
+        @SerializedName("isAdult")
+        @Expose
+        val isAdult: Int = 0,
+
+        @SerializedName("minAge")
+        @Expose
+        val minAge: Int = 0,
+
+        @SerializedName("color")
+        @Expose
+        val color: String = ""
     )
 
     data class RecommendationItem(

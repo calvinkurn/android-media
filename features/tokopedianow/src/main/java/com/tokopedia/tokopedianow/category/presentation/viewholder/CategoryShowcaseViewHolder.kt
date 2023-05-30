@@ -71,7 +71,8 @@ class CategoryShowcaseViewHolder(
             TokoNowDynamicHeaderUiModel(
                 title = element.title,
                 ctaTextLink = element.seeAllAppLink,
-                circleSeeAll = true
+                circleSeeAll = true,
+                widgetId = element.id
             )
         )
         dhvHeader.setListener(

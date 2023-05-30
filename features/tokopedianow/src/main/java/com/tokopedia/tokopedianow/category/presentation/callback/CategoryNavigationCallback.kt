@@ -4,18 +4,21 @@ import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigati
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryNavigationViewHolder
 
-class CategoryNavigationCallback : CategoryNavigationViewHolder.CategoryNavigationListener {
-    override fun onCategoryNavigationWidgetRetried() { /* nothing to do */ }
-
+class CategoryNavigationCallback(
+    private val onClickCategoryNavigation: (categoryIdL2: String) -> Unit,
+    private val onImpressCategoryNavigation: (categoryIdL2: String) -> Unit
+) : CategoryNavigationViewHolder.CategoryNavigationListener {
     override fun onCategoryNavigationItemClicked(
         data: CategoryNavigationItemUiModel,
         itemPosition: Int
-    ) { /* nothing to do temp */ }
+    ) = onClickCategoryNavigation(data.id)
 
     override fun onCategoryNavigationItemImpressed(
         data: CategoryNavigationItemUiModel,
         itemPosition: Int
-    ) { /* nothing to do temp */ }
+    ) = onImpressCategoryNavigation(data.id)
+
+    override fun onCategoryNavigationWidgetRetried() { /* nothing to do */ }
 
     override fun onCategoryNavigationWidgetImpression(data: CategoryNavigationUiModel) { /* nothing to do temp */ }
 }

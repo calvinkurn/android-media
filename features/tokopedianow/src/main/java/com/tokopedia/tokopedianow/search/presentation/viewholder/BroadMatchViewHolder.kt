@@ -129,7 +129,12 @@ class BroadMatchViewHolder(
 
     override fun onProductCardAddToCartBlocked() = listener.onBroadMatchAddToCartBlocked()
 
-    override fun onSeeAllClicked(context: Context, headerName: String, appLink: String) {
+    override fun onSeeAllClicked(
+        context: Context,
+        headerName: String,
+        appLink: String,
+        widgetId: String
+    ) {
         listener.onBroadMatchSeeAllClicked(
             title = headerName,
             appLink = appLink

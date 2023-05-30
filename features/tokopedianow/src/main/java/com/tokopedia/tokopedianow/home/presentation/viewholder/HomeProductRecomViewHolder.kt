@@ -75,7 +75,8 @@ class HomeProductRecomViewHolder(
     override fun onSeeAllClicked(
         context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         listener?.onSeeAllClicked(
             channelId = channelId,

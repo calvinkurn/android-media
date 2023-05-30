@@ -65,7 +65,8 @@ class TokoNowCategoryMenuViewHolder(
     override fun onSeeAllClicked(
         context: Context,
         headerName: String,
-        appLink: String
+        appLink: String,
+        widgetId: String
     ) {
         onClickSeeAll(appLink)
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.common.analytics
 
 import android.os.Bundle
+import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_CHANGE_ADDRESS_ON_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_SHOP_ON_TOKOPEDIA
@@ -149,5 +150,9 @@ object TokoNowCommonAnalytics {
                 KEY_TRACKER_ID, trackerId
             )
         }
+    }
+
+    fun joinDash(vararg s: String?): String {
+        return TextUtils.join(" - ", s)
     }
 }

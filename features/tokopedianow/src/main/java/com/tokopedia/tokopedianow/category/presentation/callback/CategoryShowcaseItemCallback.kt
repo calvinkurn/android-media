@@ -13,7 +13,8 @@ import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 class CategoryShowcaseItemCallback(
     private val shopId: String,
     private val categoryIdL1: String,
-    private val onClickProductCard: (appLink: String) -> Unit,
+    private val onClickProductCard: (appLink: String, headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
+    private val onImpressProductCard: (headerName: String, index: Int, productId: String, productName: String, productPrice: String, isOos: Boolean) -> Unit,
     private val onAddToCartBlocked: () -> Unit,
     private val onProductCartQuantityChanged: (position: Int, product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
@@ -55,13 +56,28 @@ class CategoryShowcaseItemCallback(
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
             product.parentProductId
         )
-        onClickProductCard(appLink)
+        onClickProductCard(
+            appLink,
+            product.headerName,
+            position,
+            product.productCardModel.productId,
+            product.productCardModel.name,
+            product.productCardModel.price,
+            product.productCardModel.isOos()
+        )
     }
 
     override fun onProductCardImpressed(
         position: Int,
         product: CategoryShowcaseItemUiModel
-    ) { /* waiting for trackers */ }
+    ) = onImpressProductCard(
+            product.headerName,
+            position,
+            product.productCardModel.productId,
+            product.productCardModel.name,
+            product.productCardModel.price,
+            product.productCardModel.isOos()
+    )
 
     override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
 }

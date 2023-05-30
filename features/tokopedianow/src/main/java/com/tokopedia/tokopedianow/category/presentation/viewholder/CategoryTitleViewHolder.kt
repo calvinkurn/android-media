@@ -6,7 +6,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiModel
-import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryTitleBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,12 +35,12 @@ class CategoryTitleViewHolder(
             )
 
             tpAnotherCategory.setOnClickListener {
-                listener?.onClickAnotherCategory()
+                listener?.onClickMoreCategories()
             }
         }
     }
 
     interface CategoryTitleListener {
-        fun onClickAnotherCategory()
+        fun onClickMoreCategories()
     }
 }

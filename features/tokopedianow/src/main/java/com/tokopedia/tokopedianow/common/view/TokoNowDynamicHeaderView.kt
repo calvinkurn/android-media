@@ -44,7 +44,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         setupUi()
         handleTitle(model.title)
         handleSubtitle(model.subTitle, model.expiredTime)
-        handleSeeAllAppLink(model.title, model.ctaText, model.ctaTextLink, model.circleSeeAll)
+        handleSeeAllAppLink(model.title, model.ctaText, model.ctaTextLink, model.circleSeeAll, model.widgetId)
         handleHeaderExpiredTime(model.expiredTime, model.serverTimeOffset, model.backColor)
     }
 
@@ -79,7 +79,7 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         }
     }
 
-    private fun handleSeeAllAppLink(title: String, ctaText: String, ctaTextLink: String, circleSeeAll: Boolean) {
+    private fun handleSeeAllAppLink(title: String, ctaText: String, ctaTextLink: String, circleSeeAll: Boolean, widgetId: String) {
         if (ctaTextLink.isNotBlank()) {
             if (circleSeeAll) {
                 sivCircleSeeAll?.show()
@@ -87,7 +87,8 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                     listener?.onSeeAllClicked(
                         context = context,
                         headerName = title,
-                        appLink =  ctaTextLink
+                        appLink =  ctaTextLink,
+                        widgetId = widgetId
                     )
                 }
                 tpSeeAll?.hide()
@@ -102,7 +103,8 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
                     listener?.onSeeAllClicked(
                         context = context,
                         headerName = title,
-                        appLink =  ctaTextLink
+                        appLink =  ctaTextLink,
+                        widgetId = widgetId
                     )
                 }
                 tpSeeAll?.show()
@@ -165,7 +167,8 @@ class TokoNowDynamicHeaderView @JvmOverloads constructor(context: Context, attrs
         fun onSeeAllClicked(
             context: Context,
             headerName: String,
-            appLink: String
+            appLink: String,
+            widgetId: String
         )
         fun onChannelExpired()
     }

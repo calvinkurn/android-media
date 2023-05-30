@@ -26,6 +26,17 @@ internal object CategoryDetail: GqlQueryInterface {
                   applinks
                   imageUrl
                   color
+                  child {
+                    id
+                    name
+                    url
+                    applinks
+                    imageUrl
+                    isKyc
+                    isAdult
+                    minAge
+                    color
+                  }
                   recommendation {
                     id
                     name

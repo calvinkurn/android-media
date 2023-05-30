@@ -4,7 +4,10 @@ import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuI
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.viewholder.categorymenu.TokoNowCategoryMenuViewHolder
 
-class TokoNowCategoryMenuCallback: TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener {
+class TokoNowCategoryMenuCallback(
+    private val onClickCategoryMenu: (categoryRecomIdL1: String) -> Unit,
+    private val onImpressCategoryMenu: (categoryIdL1: String) -> Unit
+): TokoNowCategoryMenuViewHolder.TokoNowCategoryMenuListener {
     override fun onCategoryMenuWidgetRetried() { /* nothing to do */ }
 
     override fun onSeeAllCategoryClicked() { /* nothing to do */ }
@@ -12,12 +15,12 @@ class TokoNowCategoryMenuCallback: TokoNowCategoryMenuViewHolder.TokoNowCategory
     override fun onCategoryMenuItemClicked(
         data: TokoNowCategoryMenuItemUiModel,
         itemPosition: Int
-    ) { /* nothing to do */ }
+    ) = onClickCategoryMenu(data.id)
 
     override fun onCategoryMenuItemImpressed(
         data: TokoNowCategoryMenuItemUiModel,
         itemPosition: Int
-    ) { /* nothing to do */ }
+    ) = onImpressCategoryMenu(data.id)
 
     override fun onCategoryMenuWidgetImpression(data: TokoNowCategoryMenuUiModel) { /* nothing to do */ }
 }

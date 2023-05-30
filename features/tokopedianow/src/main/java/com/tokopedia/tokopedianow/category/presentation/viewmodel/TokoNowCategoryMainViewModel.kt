@@ -32,7 +32,6 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -51,7 +50,6 @@ import javax.inject.Named
 class TokoNowCategoryMainViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
-    private val getCategoryNavigationUseCase: GetCategoryListUseCase,
     @Named(NOW_CATEGORY_L1)
     val categoryIdL1: String,
     addressData: TokoNowLocalAddress,
@@ -226,17 +224,12 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                     categoryIdL1 = categoryIdL1
                 )
 
-                val categoryNavigationResponse = getCategoryNavigationUseCase.execute(
-                    warehouseId = getWarehouseId(),
-                    depth = 2
-                )
-
                 val tickerData = getTickerDataAsync(
                     warehouseId = getWarehouseId(),
                     page = CATEGORY_PAGE
                 ).await()
 
-                val categoryNavigationUiModel = categoryNavigationResponse.mapToCategoryNavigation(categoryIdL1)
+                val categoryNavigationUiModel = detailResponse.mapToCategoryNavigation()
                 categoryRecommendation = detailResponse.mapToCategoryRecommendation()
 
                 layout.clear()

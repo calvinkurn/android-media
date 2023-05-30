@@ -62,7 +62,8 @@ internal object CategoryPageMapper {
                     miniCartData = miniCartData,
                     hasBlockedAddToCart = hasBlockedAddToCart
                 ),
-                parentProductId = product.parentId
+                parentProductId = product.parentId,
+                headerName = title
             )
         },
         title = title,

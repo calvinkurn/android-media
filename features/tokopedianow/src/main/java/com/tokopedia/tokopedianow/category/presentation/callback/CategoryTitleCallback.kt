@@ -7,13 +7,16 @@ import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryTitle
 
 class CategoryTitleCallback(
     private val context: Context?,
-    private val warehouseId: String
+    private val warehouseId: String,
+    private val onClickMoreCategories: () -> Unit,
 ): CategoryTitleViewHolder.CategoryTitleListener {
-    override fun onClickAnotherCategory() {
+    override fun onClickMoreCategories() {
         RouteManager.route(
             context,
             ApplinkConstInternalTokopediaNow.CATEGORY_LIST,
             warehouseId
         )
+
+        onClickMoreCategories.invoke()
     }
 }
