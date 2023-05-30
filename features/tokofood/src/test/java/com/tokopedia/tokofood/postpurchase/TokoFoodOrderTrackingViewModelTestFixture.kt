@@ -7,6 +7,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderS
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.MockKAnnotations
@@ -25,6 +26,9 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = UnconfinedTestRule()
 
     @RelaxedMockK
     protected lateinit var savedStateHandle: SavedStateHandle

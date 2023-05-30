@@ -81,6 +81,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      linkType
                     }
                     ... on EtalaseWidget {
                       imageUrl
@@ -221,7 +222,17 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
             }
 
     """.trimIndent()
-
+    // need to add this field to request when BE is ready
+//                      campaignID
+    //                      timeInfo{
+//                        timeDescription
+//                        timeCounter
+//                        startDate
+//                        endDate
+//                        bgColor
+//                        textColor
+//                        status
+//                      }
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ShopLayoutWidgetV2 {

@@ -1,11 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.pushnotif">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+        <activity
+            android:name=".receiver.NotifierReceiverActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Transparent"
+            />
         <receiver android:name=".services.DismissBroadcastReceiver" />
         <receiver android:name=".services.ReviewNotificationBroadcastReceiver" />
+        <receiver android:name=".services.ClickedBroadcastReceiver" />
     </application>
 </manifest>

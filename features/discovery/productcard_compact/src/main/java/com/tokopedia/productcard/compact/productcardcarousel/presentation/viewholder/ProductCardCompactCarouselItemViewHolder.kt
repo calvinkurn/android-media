@@ -50,6 +50,9 @@ class ProductCardCompactCarouselItemViewHolder(
                     product = element
                 )
             }
+            setOnBlockAddToCartListener {
+                listener?.onProductCardAddToCartBlocked()
+            }
             addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
@@ -85,5 +88,6 @@ class ProductCardCompactCarouselItemViewHolder(
             position: Int,
             product: ProductCardCompactCarouselItemUiModel
         )
+        fun onProductCardAddToCartBlocked()
     }
 }
