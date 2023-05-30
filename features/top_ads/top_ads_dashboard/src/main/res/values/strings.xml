@@ -546,5 +546,12 @@
     <string name="topads_insight_ad_type_shop">Iklan Toko</string>
     <string name="topads_insight_ad_type">Tipe Iklan</string>
     <string name="topads_insight_ad_group">Grup iklan</string>
+    <string name="topads_insight_performance_appears">Performa tampil</string>
+    <string name="topads_insight_top_frequently">Sering Teratas</string>
+    <string name="topads_insight_top_rarity">Jarang Teratas</string>
+    <string name="topads_insight_lose_competition">Kalah Saing</string>
+    <string name="topads_insight_not_rated">Belum Dinilai</string>
+    <string name="topads_insight_performance_count">%sx teratas dari %s total tampil</string>
+    <string name="topads_insight_performance_not_rated_desc">Data sedang diproses. Cek lagi nanti, ya.</string>
 </resources>
 

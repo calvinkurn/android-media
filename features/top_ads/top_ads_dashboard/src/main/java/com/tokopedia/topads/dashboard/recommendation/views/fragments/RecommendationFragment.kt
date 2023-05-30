@@ -23,8 +23,8 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -296,10 +296,10 @@ class RecommendationFragment : BaseDaggerFragment() {
             saranAdsTypeTab?.hide()
         }
         if (data.isProduct) {
-            list.add(FragmentTabItem("Iklan Produk", SaranTabsFragment(TYPE_PRODUCT)))
+            list.add(FragmentTabItem("Iklan Produk", SaranTabsFragment(TYPE_PRODUCT_VALUE)))
         }
         if (data.isHeadline) {
-            list.add(FragmentTabItem("Iklan Toko", SaranTabsFragment(TYPE_SHOP)))
+            list.add(FragmentTabItem("Iklan Toko", SaranTabsFragment(TYPE_SHOP_VALUE)))
         }
     }
 

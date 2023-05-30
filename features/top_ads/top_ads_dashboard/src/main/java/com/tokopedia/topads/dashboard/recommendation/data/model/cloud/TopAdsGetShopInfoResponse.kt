@@ -3,6 +3,8 @@ package com.tokopedia.topads.dashboard.recommendation.data.model.cloud
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.topads.common.data.response.Error
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 
 data class TopAdsGetShopInfoResponse(
@@ -33,8 +35,8 @@ data class TopAdsGetShopInfoResponse(
     fun toTopAdsGetShopInfoModel(): TopAdsGetShopInfoUiModel {
         val topAdsGetShopInfoModel = TopAdsGetShopInfoUiModel()
         topAdsGetShopInfoV21.topAdsGetShopInfo.ads.forEach {
-            if (it.type == "product" && it.isUsed) topAdsGetShopInfoModel.isProduct = true
-            if (it.type == "headline" && it.isUsed) topAdsGetShopInfoModel.isHeadline = true
+            if (it.type == PRODUCT_KEY && it.isUsed) topAdsGetShopInfoModel.isProduct = true
+            if (it.type == HEADLINE_KEY && it.isUsed) topAdsGetShopInfoModel.isHeadline = true
         }
         return topAdsGetShopInfoModel
     }

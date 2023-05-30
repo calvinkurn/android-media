@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
@@ -36,7 +37,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
         mapper: InsightDataMapper?
     ) {
         launchCatchError(dispatcher.main, block = {
-            if (adGroupType == "product") {
+            if (adGroupType == RecommendationConstants.PRODUCT_KEY) {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
                 val data = topAdsListAllInsightCountsUseCase.invoke(
                     source = "gql.list_all_insight_counts.test",
@@ -70,7 +71,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
         mapper: InsightDataMapper
     ) {
         launchCatchError(dispatcher.main, block = {
-            if (adGroupType == "product") {
+            if (adGroupType == RecommendationConstants.PRODUCT_KEY) {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
                 val data = topAdsListAllInsightCountsUseCase(
                     source = "gql.list_all_insight_counts.test",

@@ -32,7 +32,7 @@ class ItemListViewHolder(
 
         viewBinding.container.setOnClickListener {
             if(!element.isSelected) {
-                listener.onClickItemListener(element.adType, element.groupId)
+                listener.onClickItemListener(element.adType, element.groupId, element.title)
                 viewBinding.radioButton.isChecked = true
             }
         }

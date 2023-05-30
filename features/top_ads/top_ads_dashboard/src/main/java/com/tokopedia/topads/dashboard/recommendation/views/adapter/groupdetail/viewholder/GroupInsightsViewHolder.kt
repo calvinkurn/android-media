@@ -10,11 +10,12 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.unifycomponents.toPx
 
-class GroupInsightsViewHolder(private val view: View, private val onChipClick: (Int) -> Unit, private val onInsightTypeChipClick: ((MutableList<AdGroup>?) -> Unit)? = null) :
+class GroupInsightsViewHolder(private val view: View, private val onChipClick: (Int) -> Unit, private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)? = null) :
     AbstractViewHolder<GroupInsightsUiModel>(view) {
 
     private val accordionUnify: AccordionUnify = itemView.findViewById(R.id.accordionUnify)

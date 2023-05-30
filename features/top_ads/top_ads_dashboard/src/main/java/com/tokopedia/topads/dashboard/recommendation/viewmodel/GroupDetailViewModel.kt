@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
@@ -61,19 +63,19 @@ class GroupDetailViewModel @Inject constructor(
     ) {
         val list =
             mutableListOf(
-                if ("product" == adType) "Iklan Produk" else "Iklan Toko",
+                if (PRODUCT_KEY == adType) "Iklan Produk" else "Iklan Toko",
                 adGroupName ?: ""
             )
         groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
             InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
-    fun loadDetailPageOnAction(adType: Int, adgroupID: String, isSwitchAdType: Boolean = false) {
+    fun loadDetailPageOnAction(adType: Int, adgroupID: String, isSwitchAdType: Boolean = false, groupName: String="") {
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
                 val data = topAdsListAllInsightCountsUseCase(
                     source = "gql.list_all_insight_counts.test",
-                    adGroupType = if (adType == TYPE_PRODUCT) "product" else "headline",
+                    adGroupType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY,
                     insightType = 0
                 )
                 loadDetailPage(
@@ -81,20 +83,30 @@ class GroupDetailViewModel @Inject constructor(
                     data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupID ?: ""
                 )
                 val list = mutableListOf(
-                    if (adType == TYPE_PRODUCT) "Iklan Produk" else "Iklan Toko",
+                    if (adType == TYPE_PRODUCT_VALUE) "Iklan Produk" else "Iklan Toko",
                     data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
                 )
-                TopAdsListAllInsightState.Success(
+                groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
                     InsightTypeChipsUiModel(
                         list,
                         groupDetailMapper.toAdGroupUiModelList(data.topAdsListAllInsightCounts.adGroups.toMutableList())
                     )
-                )
+
             } else {
                 loadDetailPage(
                     adType,
                     adgroupID
                 )
+
+                val list = mutableListOf(
+                    if (adType == TYPE_PRODUCT_VALUE) "Iklan Produk" else "Iklan Toko",
+                    groupName
+                )
+                groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
+                    InsightTypeChipsUiModel(
+                        list,
+                        (groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] as InsightTypeChipsUiModel).adGroupList
+                    )
             }
         }, onError = {
                 _detailPageLiveData.value = TopAdsListAllInsightState.Fail(it)

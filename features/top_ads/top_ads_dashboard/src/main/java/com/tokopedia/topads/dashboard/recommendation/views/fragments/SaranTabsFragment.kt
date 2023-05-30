@@ -17,7 +17,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -106,7 +107,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     }
 
     private fun setPageState(tabType: Int) {
-        chipsRecyclerView?.showWithCondition(tabType == TYPE_PRODUCT)
+        chipsRecyclerView?.showWithCondition(tabType == TYPE_PRODUCT_VALUE)
     }
 
     private fun onClick(): (List<SaranTopAdsChipsUiModel>, Int) -> Unit = { list, position ->
@@ -129,7 +130,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
 
         if (mapper.insightDataMap[position]?.adGroups?.isEmpty() == true) {
             viewModel.getFirstPageData(
-                adGroupType = "product",
+                adGroupType = RecommendationConstants.PRODUCT_KEY,
                 insightType = position,
                 mapper = mapper
             )
@@ -193,7 +194,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
                 val nextCursor = mapper.insightDataMap[selected]?.nextCursor
                 if (nextCursor?.isNotEmpty() == true) {
                     viewModel.getNextPageData(
-                        adGroupType = "product",
+                        adGroupType = RecommendationConstants.PRODUCT_KEY,
                         insightType = selected ?: 0,
                         startCursor = nextCursor,
                         mapper = mapper
@@ -219,8 +220,8 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
 
     private fun getFirstPageData() {
         viewModel.getFirstPageData(
-            adGroupType = if (tabType == TYPE_PRODUCT) "product" else "headline",
-            insightType = if (tabType == TYPE_PRODUCT) 0 else 5,
+            adGroupType = if (tabType == TYPE_PRODUCT_VALUE) RecommendationConstants.PRODUCT_KEY else RecommendationConstants.HEADLINE_KEY,
+            insightType = if (tabType == TYPE_PRODUCT_VALUE) 0 else 5,
             mapper = mapper
         )
     }

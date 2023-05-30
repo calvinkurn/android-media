@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:text="Performa Tampil"
+            android:text="@string/topads_insight_performance_appears"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -24,6 +25,7 @@
             app:typographyWeight="bold" />
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/performanceWidgetInfoBtn"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="2dp"
@@ -37,19 +39,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Jarang Teratas"
+            tools:text="Jarang Teratas"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="@id/performanceWidgetTitle"
             app:layout_constraintTop_toBottomOf="@id/performanceWidgetTitle"
             app:typographyType="heading_2" />
 
+        <include
+            android:id="@+id/adsPerformanceIndicator"
+            layout="@layout/top_ads_performance_widget_indicator"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/performanceWidgetStatus"
+            app:layout_constraintBottom_toBottomOf="@id/performanceWidgetStatus"
+            app:layout_constraintStart_toEndOf="@id/performanceWidgetStatus"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/performanceWidgetDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="16dp"
-            android:text="19.683x teratas dari 53.000 total tampil"
+            tools:text="19.683x teratas dari 53.000 total tampil"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/performanceWidgetStatus"

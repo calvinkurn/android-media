@@ -27,6 +27,7 @@ class ListBottomSheet:
     private var currentGroupId : String? = ""
     private var newAdType : Int? = null
     private var newGroupId : String? = ""
+    private var selectedGroupName: String? = ""
 
     private val adapterItemList: ItemListAdapter by lazy {
         ItemListAdapter(ItemListTypeFactory(this))
@@ -65,7 +66,7 @@ class ListBottomSheet:
             }
 
             saveCtaButton.setOnClickListener{
-                newAdType?.let { itemChangeListener?.onClickItemListener(it, newGroupId ?: "") }
+                newAdType?.let { itemChangeListener?.onClickItemListener(it, newGroupId ?: "", selectedGroupName ?: "") }
                 dismiss()
             }
 
@@ -102,12 +103,13 @@ class ListBottomSheet:
         val CHOOSE_AD_GROUP_BOTTOMSHEET = 2
     }
 
-    override fun onClickItemListener(adType: Int, groupId: String) {
+    override fun onClickItemListener(adType: Int, groupId: String, groupName: String) {
         itemList.forEach{
             it.isSelected = it.adType == adType && it.groupId == groupId
         }
         newAdType = adType
         newGroupId = groupId
+        selectedGroupName = groupName
         adapterItemList.setData(itemList)
         showCtaButton()
     }

@@ -12,6 +12,11 @@ object RecommendationConstants {
     const val TYPE_EMPTY_STATE = 8
     const val TYPE_UN_OPTIMIZED_GROUP = 9
 
-    const val TYPE_PRODUCT = 1
-    const val TYPE_SHOP = 3
+    const val TYPE_PRODUCT_VALUE = 1
+    const val TYPE_SHOP_VALUE = 3
+    const val PRODUCT_KEY = "product"
+    const val HEADLINE_KEY = "headline"
+    const val PERFORMANCE_FREQUENTLY_THRESHOLD = 20
+    const val PERFORMANCE_RARITY_THRESHOLD = 5
+    const val PERFORMANCE_NOT_RATED_THRESHOLD = 0
 }

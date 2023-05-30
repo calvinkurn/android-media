@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -39,7 +40,7 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
         requestParams.putString("source", "gql.get_total_ad_groups_with_insight_by_shop_id.test")
         requestParams.putObject(
             "filter", mapOf(
-                "adGroupTypes" to listOf("product")
+                "adGroupTypes" to listOf(RecommendationConstants.PRODUCT_KEY)
             )
         )
         return requestParams

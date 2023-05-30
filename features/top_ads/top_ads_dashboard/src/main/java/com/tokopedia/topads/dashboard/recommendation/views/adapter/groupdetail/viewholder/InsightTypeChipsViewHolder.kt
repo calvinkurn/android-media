@@ -8,17 +8,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
 
-class InsightTypeChipsViewHolder(val itemView: View, private val onInsightTypeChipClick: ((MutableList<AdGroup>?) -> Unit)?) :
+class InsightTypeChipsViewHolder(val itemView: View, private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?) :
     AbstractViewHolder<InsightTypeChipsUiModel>(itemView) {
 
     inner class InsightTypeChipsAdapter :
         RecyclerView.Adapter<InsightTypeChipsAdapter.InsightChipsViewHolder>() {
         var insightChipsList: List<String> = mutableListOf()
-        var adGroupList: MutableList<AdGroup> = mutableListOf()
+        var adGroupList: MutableList<InsightListUiModel> = mutableListOf()
 
         inner class InsightChipsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
             private val chips: ChipsUnify = itemView.findViewById(R.id.groupInsightChips)
@@ -68,7 +68,7 @@ class InsightTypeChipsViewHolder(val itemView: View, private val onInsightTypeCh
         insightTypeChipsRv.adapter = adapter
         element?.let {
             adapter.insightChipsList = element.chipsList
-//            adapter.adGroupList = element.adGroupList
+            adapter.adGroupList = element.adGroupList
         }
     }
 
