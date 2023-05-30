@@ -23,7 +23,7 @@ class CatalogHomepageVM @Inject constructor(
     private val catalogRelevantUseCase: CatalogRelevantUseCase,
     private val catalogBrandsPopularUseCase: CatalogBrandsPopularUseCase
 ) : ViewModel() {
-
+    private var test: Int = 0
     private val _catalogHomeLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
     val catalogLibraryLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogHomeLiveData
