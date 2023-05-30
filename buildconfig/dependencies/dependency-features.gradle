@@ -104,7 +104,6 @@ ext {
             videoWidget                     : ":features:discovery:video_widget",
 
             homecredit                      : ":features:fintech:home_credit",
-            merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
