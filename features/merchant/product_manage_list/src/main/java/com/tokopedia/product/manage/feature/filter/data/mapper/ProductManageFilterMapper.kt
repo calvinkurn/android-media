@@ -165,6 +165,7 @@ class ProductManageFilterMapper {
                 SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
                 SortOption.SortId.DEFAULT.name -> SortOption.SortByDefault(sortOrderOption)
                 SortOption.SortId.STOCK.name -> SortOption.SortByStock(sortOrderOption)
+                SortOption.SortId.ARCHIVAL.name -> SortOption.SortByArchival(sortOrderOption)
                 else -> null
             }
         }
