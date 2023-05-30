@@ -111,4 +111,8 @@ class AddOnWidgetView : BaseCustomView {
     fun getAddonData(productId: String, warehouseId: String, isTokocabang: Boolean) {
         viewModel.getAddOn(productId, warehouseId, isTokocabang)
     }
+
+    fun setSelectedAddons(selectedAddonIds: List<String>) {
+        viewModel.setSelectedAddOn(selectedAddonIds)
+    }
 }

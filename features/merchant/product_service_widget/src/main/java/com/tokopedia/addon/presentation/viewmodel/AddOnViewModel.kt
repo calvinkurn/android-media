@@ -18,7 +18,9 @@ class AddOnViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
-    val getAddOnResult: LiveData<List<AddOnGroupUIModel>> get() = mGetAddOnResult
+    val getAddOnResult = Transformations.map(mGetAddOnResult) {
+        AddOnMapper.mapAddOnWithSelectedIds(it, selectedAddonIds)
+    }
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
@@ -26,6 +28,8 @@ class AddOnViewModel @Inject constructor(
     val isAddonDataEmpty = Transformations.map(getAddOnResult) {
         it.isEmpty()
     }
+
+    var selectedAddonIds: List<String> = emptyList()
 
     fun getAddOn(productId: String, warehouseId: String, isTokocabang: Boolean) {
         launchCatchError(block = {
@@ -37,5 +41,9 @@ class AddOnViewModel @Inject constructor(
         }, onError = {
             mErrorThrowable.value = it
         })
+    }
+
+    fun setSelectedAddOn(selectedAddonIds: List<String>) {
+        this.selectedAddonIds = selectedAddonIds
     }
 }

@@ -61,6 +61,7 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
         super.onViewCreated(view, savedInstanceState)
         binding?.addonWidget?.apply {
             setListener(this@AddOnFragment)
+            setSelectedAddons(selectedAddonIds.orEmpty())
             getAddonData(productId.toString(), warehouseId.toString(), isTokocabang)
         }
     }

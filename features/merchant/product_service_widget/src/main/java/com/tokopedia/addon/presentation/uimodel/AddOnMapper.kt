@@ -15,6 +15,7 @@ object AddOnMapper {
             val infoUrl = it.value.firstOrNull()?.basic?.metadata?.infoURL
             val addonsUi = it.value.map {
                 AddOnUIModel(
+                    id = it.basic.basicId,
                     name = it.basic.name,
                     priceFormatted = it.inventory.price.getCurrencyFormatted(),
                     isSelected = it.basic.rules.autoSelect
@@ -27,5 +28,17 @@ object AddOnMapper {
                 addon = addonsUi
             )
         }.orEmpty()
+    }
+
+    fun mapAddOnWithSelectedIds(
+        addonGroupList: List<AddOnGroupUIModel>,
+        selectedAddonIds: List<String>
+    ): List<AddOnGroupUIModel> {
+        addonGroupList.forEach {
+            it.addon.forEach { addon ->
+                if (addon.id in selectedAddonIds) addon.isSelected = true
+            }
+        }
+        return addonGroupList
     }
 }
