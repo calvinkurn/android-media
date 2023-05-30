@@ -39,11 +39,15 @@ import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedScoreModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
  */
-object MapperFeedHome {
+class MapperFeedHome @Inject constructor(
+    private val userSession: UserSessionInterface
+) {
     fun transform(data: FeedXHomeEntity): FeedModel =
         FeedModel(
             items = data.items.filter { shouldShow(it) }.map { card ->
@@ -117,8 +121,8 @@ object MapperFeedHome {
                 imageUrl = medias.firstOrNull()?.mediaUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            reportable = card.reportable,
-            editable = card.editable,
+            reportable = isReportable(card),
+            editable = false,
             deletable = card.deletable,
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
@@ -126,6 +130,14 @@ object MapperFeedHome {
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
             topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
+    }
+    
+    private fun isReportable(card: FeedXCard): Boolean {
+        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
+            return card.author.id != userSession.shopId
+        } else {
+            card.reportable
+        }
     }
 
     private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel {
@@ -180,7 +192,7 @@ object MapperFeedHome {
             ),
             followers = transformFollow(card.followers),
             reportable = card.reportable,
-            editable = card.editable,
+            editable = false,
             deletable = card.deletable,
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,

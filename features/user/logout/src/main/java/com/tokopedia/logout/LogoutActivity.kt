@@ -33,6 +33,7 @@ import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
+import com.tokopedia.logout.domain.usecase.LogoutUseCase
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -74,6 +75,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private var isReturnToHome = true
     private var isClearDataOnly = false
+    private var isSaveSession = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -104,7 +106,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         if (isClearDataOnly) {
             clearData()
         } else {
-            logoutViewModel.doLogout()
+            if(isSaveSession) {
+                logoutViewModel.doLogout(LogoutUseCase.PARAM_SAVE_SESSION)
+            } else {
+                logoutViewModel.doLogout()
+            }
         }
     }
 
@@ -112,6 +118,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true) as Boolean
             isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
+            isSaveSession = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_SAVE_SESSION, false) as Boolean
         }
     }
 

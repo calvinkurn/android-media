@@ -34,6 +34,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
@@ -52,6 +53,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
@@ -100,6 +102,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
+    private val getRichListDataUseCase: Lazy<GetRichListDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
@@ -152,6 +155,7 @@ class SellerHomeViewModel @Inject constructor(
     private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
     private val _calendarWidgetData = MutableLiveData<Result<List<CalendarDataUiModel>>>()
     private val _unificationWidgetData = MutableLiveData<Result<List<UnificationDataUiModel>>>()
+    private val _richListWidgetData = MutableLiveData<Result<List<RichListDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
     private val _submitWidgetDismissal = MutableLiveData<Result<WidgetDismissalResultUiModel>>()
@@ -195,6 +199,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _calendarWidgetData
     val unificationWidgetData: LiveData<Result<List<UnificationDataUiModel>>>
         get() = _unificationWidgetData
+    val richListWidgetData: LiveData<Result<List<RichListDataUiModel>>>
+        get() = _richListWidgetData
     val shopShareData: LiveData<Result<ShopShareDataUiModel>>
         get() = _shopShareData
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
@@ -288,8 +294,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetLineGraphDataUseCase.getRequestParams(
-                dataKey = dataKeys,
-                dynamicParam = dynamicParameter
+                dataKey = dataKeys, dynamicParam = dynamicParameter
             )
             val useCase = getLineGraphDataUseCase.get()
             useCase.params = params
@@ -378,8 +383,7 @@ class SellerHomeViewModel @Inject constructor(
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetMultiLineGraphUseCase.getRequestParams(
-                dataKey = dataKeys,
-                dynamicParam = dynamicParameter
+                dataKey = dataKeys, dynamicParam = dynamicParameter
             )
             val useCase = getMultiLineGraphUseCase.get()
             useCase.params = params
@@ -441,6 +445,17 @@ class SellerHomeViewModel @Inject constructor(
             getLayoutWithLazyLoad(useCase, _unificationWidgetData)
         }, onError = {
             _unificationWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getRichListWidgetData(dataKeys: List<String>) {
+        launchCatchError(block = {
+            val useCase = getRichListDataUseCase.get()
+            val param = GetRichListDataUseCase.createParam(dataKeys, shopId, SELLER_HOME_PAGE_NAME)
+            useCase.params = param
+            getLayoutWithLazyLoad(useCase, _richListWidgetData)
+        }, onError = {
+            _richListWidgetData.value = Fail(it)
         })
     }
 
