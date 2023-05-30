@@ -176,7 +176,7 @@ class OtherMenuFragment :
 
     private val isSharingEnabled by lazy {
         context?.let {
-            UniversalShareBottomSheet.isCustomSharingEnabled(it)
+            SharingUtil.isCustomSharingEnabled(it)
         } == true
     }
 
@@ -467,7 +467,8 @@ class OtherMenuFragment :
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         checkUsingCustomBranchLinkDomain(linkerShareData)
