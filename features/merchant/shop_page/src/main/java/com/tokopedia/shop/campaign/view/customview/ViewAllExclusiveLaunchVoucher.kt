@@ -16,7 +16,6 @@ class ViewAllExclusiveLaunchVoucher @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     private var binding: CustomViewViewAllVoucherBinding? = null
-    private var onCardClick : () -> Unit = {}
 
     init {
         binding = CustomViewViewAllVoucherBinding.inflate(
@@ -24,16 +23,12 @@ class ViewAllExclusiveLaunchVoucher @JvmOverloads constructor(
             this,
             true
         )
-        binding?.rootLayout?.setOnClickListener { onCardClick() }
     }
 
     fun setDescription(text: String) {
         binding?.tpgText?.text = MethodChecker.fromHtml(text)
     }
 
-    fun setOnCardClick(onCardClick: () -> Unit) {
-        this.onCardClick = onCardClick
-    }
 
     fun useDarkBackground() {
         binding?.run {
