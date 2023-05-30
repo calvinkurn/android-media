@@ -124,7 +124,6 @@ class PickerViewModel @Inject constructor(
             .onCompletion { _isLoading.value = false }
             .map {
                 val uiModels = setIncludedUrls(it)
-
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)
@@ -137,6 +136,9 @@ class PickerViewModel @Inject constructor(
                 ?.toUiModel()
                 ?.also { model ->
                     model.sourcePath = it.second
+
+                    // set loaded url image to skip save gallery process
+                    model.isCacheFile = false
                 }
         }
     }

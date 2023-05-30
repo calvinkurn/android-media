@@ -18,8 +18,7 @@ import javax.inject.Inject
 class PreviewViewModel @Inject constructor(
     private val imageCompressor: ImageCompressionRepository,
     private val mediaSaver: SaveToGalleryRepository,
-    dispatchers: CoroutineDispatchers,
-    private val paramCache: PickerCacheManager
+    dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
@@ -77,13 +76,11 @@ class PreviewViewModel @Inject constructor(
         * dispatch to local device gallery
         * for video and image comes from camera picker
         * */
-        if (!paramCache.get().isEditorEnabled()) {
-            imageCameraFiles
-                .plus(videoCameraFiles)
-                .forEach {
-                    mediaSaver.dispatch(it)
-                }
-        }
+        imageCameraFiles
+            .plus(videoCameraFiles)
+            .forEach {
+                mediaSaver.dispatch(it)
+            }
 
         PickerResult(
             originalPaths = originalFiles,
