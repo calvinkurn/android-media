@@ -21,9 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -53,8 +53,8 @@ data class ColorType<T>(
 )
 
 data class NestTickerData(
-    val tickerTitle: CharSequence,
-    val tickerDescription: CharSequence,
+    val tickerTitle: CharSequence = "",
+    val tickerDescription: CharSequence = "",
     val tickerVariant: TickerVariant = TickerVariant.LOOSE,
     val tickerType: TickerType = TickerType.ANNOUNCEMENT,
 )
@@ -136,7 +136,8 @@ private fun LargestTickerComponent(
     ticker: List<NestTickerData>,
     tickerHeightState: MutableState<Dp>,
     modifier: Modifier
-    ) {
+) {
+    val title = findLongestTickerTitle(ticker)
     val desc = findLongestTickerDescription(ticker)
     val density = LocalDensity.current
     NestTickerCard(
@@ -147,7 +148,7 @@ private fun LargestTickerComponent(
             .wrapContentHeight()
             .fillMaxWidth()
             .alpha(0f),
-        tickerTitle = "Test Ticker",
+        tickerTitle = title,
         tickerDescription = desc,
         isCarousel = ticker.size > 1,
         onDismissed = {},
@@ -155,6 +156,18 @@ private fun LargestTickerComponent(
     )
 }
 
+@Composable
+private fun findLongestTickerTitle(
+    ticker: List<NestTickerData>
+): String {
+    var title = ""
+    ticker.forEach {
+        if (it.tickerTitle.length > title.length) {
+            title = it.tickerDescription.toString()
+        }
+    }
+    return title
+}
 @Composable
 private fun findLongestTickerDescription(
     ticker: List<NestTickerData>
@@ -363,7 +376,7 @@ private fun getIcon(tickerType: TickerType) =
 private fun getSurfaceShape(tickerVariant: TickerVariant) =
     when (tickerVariant) {
         TickerVariant.LOOSE -> {
-            RoundedCornerShape(6.dp)
+            RoundedCornerShape(8.dp)
         }
         TickerVariant.FULL -> {
             RoundedCornerShape(0.dp)
@@ -415,26 +428,29 @@ private fun getBackgroundColor(tickerType: TickerType) =
 @Preview(name = "All ticker")
 @Composable
 fun NestAllTickerSample() {
-    Column {
-        NestTickerLoosePreview()
-        NestTickerFullPreview()
-        NestSingleTickerLoosePreview()
-        NestSingleTickerFullPreview()
-    }
+    CombinedTickerPreview(false)
 }
 
 @Preview(name = "All ticker dark")
 @Composable
 fun NestAllTickerDarkSample() {
-    NestTheme(darkTheme = true) {
+    CombinedTickerPreview(true)
+}
+
+@Composable
+private fun CombinedTickerPreview(darkTheme: Boolean = false) {
+    NestTheme(darkTheme) {
         Column {
             NestTickerLoosePreview()
             NestTickerFullPreview()
             NestSingleTickerLoosePreview()
             NestSingleTickerFullPreview()
+            NestSingleTickerLooseWithoutTitlePreview()
+            NestSingleTickerFullWithoutTitlePreview()
         }
     }
 }
+
 @Preview(name = "Ticker")
 @Composable
 fun NestTickerLoosePreview() {
@@ -519,6 +535,42 @@ fun NestSingleTickerLoosePreview() {
     val ticker = listOf<NestTickerData>(
         NestTickerData(
             tickerTitle = "Maaf ada gangguan",
+            tickerType = TickerType.ERROR,
+            tickerVariant = TickerVariant.LOOSE,
+            tickerDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
+        )
+    )
+    NestTicker(
+        modifier = Modifier.padding(8.dp),
+        ticker = ticker,
+        onDismissed = {},
+        closeButtonVisibility = true
+    )
+}
+
+@Preview(name = "Ticker")
+@Composable
+fun NestSingleTickerFullWithoutTitlePreview() {
+    val ticker = listOf<NestTickerData>(
+        NestTickerData(
+            tickerType = TickerType.WARNING,
+            tickerVariant = TickerVariant.FULL,
+            tickerDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
+        )
+    )
+    NestTicker(
+        modifier = Modifier.padding(8.dp),
+        ticker = ticker,
+        onDismissed = {},
+        closeButtonVisibility = true
+    )
+}
+
+@Preview(name = "Ticker")
+@Composable
+fun NestSingleTickerLooseWithoutTitlePreview() {
+    val ticker = listOf<NestTickerData>(
+        NestTickerData(
             tickerType = TickerType.ERROR,
             tickerVariant = TickerVariant.LOOSE,
             tickerDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit,",
