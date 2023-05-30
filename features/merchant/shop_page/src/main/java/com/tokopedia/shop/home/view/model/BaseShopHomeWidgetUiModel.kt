@@ -1,10 +1,10 @@
 package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop_widget.common.util.WidgetState
 
-abstract class BaseShopHomeWidgetUiModel : Visitable<ShopHomeAdapterTypeFactory> {
+abstract class BaseShopHomeWidgetUiModel : Visitable<ShopWidgetTypeFactory> {
     abstract val widgetId: String
     abstract val layoutOrder: Int
     abstract val name: String

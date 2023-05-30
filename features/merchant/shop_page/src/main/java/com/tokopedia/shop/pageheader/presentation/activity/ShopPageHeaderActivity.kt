@@ -24,9 +24,9 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_MIDDLE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PREPARE
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_RENDER
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_V2_TRACE
-import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HEADER_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_HOME_TAB_TRACE_V3
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.SHOP_PRODUCT_TAB_TRACE_V3
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -119,9 +119,9 @@ class ShopPageHeaderActivity :
         performanceMonitoringShop?.startPreparePagePerformanceMonitoring()
         performanceMonitoringShop?.startCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
 
-        performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE)
-        performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE)
-        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_V2_TRACE)
+        performanceMonitoringShopHeader = PerformanceMonitoring.start(SHOP_HEADER_TRACE_V3)
+        performanceMonitoringShopProductTab = PerformanceMonitoring.start(SHOP_PRODUCT_TAB_TRACE_V3)
+        performanceMonitoringShopHomeTab = PerformanceMonitoring.start(SHOP_HOME_TAB_TRACE_V3)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

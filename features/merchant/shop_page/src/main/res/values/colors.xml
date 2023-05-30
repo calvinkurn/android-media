@@ -15,5 +15,9 @@
     <color name="clr_dms_voucher_claim">#F5F6FF</color>
     <color name="clr_dms_voucher_title">#212121</color>
     <color name="clr_dms_voucher_min_purchase">#212121</color>
+    <color name="dms_color_525A67">#525A67</color>
+    <color name="dms_static_Unify_NN950_dark">#F5F6FF</color>
+    <color name="dms_static_Unify_NN950_light">#212121</color>
+
 
 </resources>

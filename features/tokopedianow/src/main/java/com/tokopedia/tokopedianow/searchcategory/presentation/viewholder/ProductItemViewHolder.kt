@@ -57,6 +57,9 @@ class ProductItemViewHolder(
             setListener(
                 productCardCompactListener = productCardCompactListener
             )
+            setOnBlockAddToCartListener {
+                listener.onProductCardAddToCartBlocked()
+            }
             addOnImpressionListener(element) {
                 listener.onProductImpressed(
                     productItemDataView = element

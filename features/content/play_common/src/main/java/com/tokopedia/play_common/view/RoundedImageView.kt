@@ -1,15 +1,12 @@
 package com.tokopedia.play_common.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Outline
 import android.graphics.Path
-import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewOutlineProvider
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.play_common.R
 
@@ -25,7 +22,12 @@ class RoundedImageView : AppCompatImageView {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initAttrs(context, attrs)
     }
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initAttrs(context, attrs)
     }
 
@@ -33,23 +35,15 @@ class RoundedImageView : AppCompatImageView {
         if (attrs != null) {
             val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView)
 
-            cornerRadius = attributeArray.getDimension(R.styleable.RoundedImageView_rImg_cornerRadius, 0f)
+            cornerRadius =
+                attributeArray.getDimension(R.styleable.RoundedImageView_rImg_cornerRadius, 0f)
             attributeArray.recycle()
         }
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     override fun dispatchDraw(canvas: Canvas) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            val save = canvas.save()
-            canvas.clipPath(cornerPath)
-            super.dispatchDraw(canvas)
-            canvas.restoreToCount(save)
-
-        } else {
-            setRoundedOutlineProvider(cornerRadius)
-            super.dispatchDraw(canvas)
-        }
+        setRoundedOutlineProvider(cornerRadius)
+        super.dispatchDraw(canvas)
     }
 
     fun setCornerRadius(cornerRadius: Float) {
@@ -59,14 +53,13 @@ class RoundedImageView : AppCompatImageView {
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setRoundedOutlineProvider(cornerRadius: Float) {
         outlineProvider = RoundedViewOutlineProvider(cornerRadius)
         clipToOutline = true
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    inner class RoundedViewOutlineProvider(private val cornerRadius: Float) : ViewOutlineProvider() {
+    inner class RoundedViewOutlineProvider(private val cornerRadius: Float) :
+        ViewOutlineProvider() {
 
         override fun getOutline(view: View, outline: Outline) {
             outline.setRoundRect(0, 0, view.width, view.height, cornerRadius)

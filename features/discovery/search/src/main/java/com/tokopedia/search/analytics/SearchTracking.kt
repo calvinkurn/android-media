@@ -116,22 +116,6 @@ object SearchTracking {
         )
     }
 
-    fun eventSearchResultShopProductPreviewClick(shopItemProduct: Any?, keyword: String?) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT_SHOP_TAB,
-                        SearchTrackingConstant.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                        "click", DataLayer.mapOf(
-                        "actionField", DataLayer.mapOf("list", "/searchproduct - shop productlist"),
-                        "products", DataLayer.listOf(shopItemProduct)
-                )
-                )
-                )
-        )
-    }
-
     fun eventSearchResultShopItemClosedClick(shopItemClosed: Any?, shopId: String, keyword: String) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PROMO_CLICK,
@@ -325,22 +309,6 @@ object SearchTracking {
         )
     }
 
-    fun trackEventClickShopRecommendationProductPreview(shopItemProduct: Any?, keyword: String?) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT_SHOP_TAB_ALTERNATIVE,
-                        SearchTrackingConstant.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                        "click", DataLayer.mapOf(
-                        "actionField", DataLayer.mapOf("list", "/notifcenter"),
-                        "products", DataLayer.listOf(shopItemProduct)
-                )
-                )
-                )
-        )
-    }
-
     @JvmStatic
     fun trackEventGeneralSearchShop(generalSearchTrackingShop: GeneralSearchTrackingShop) {
         val generalSearchShopDataLayer = DataLayer.mapOf(
@@ -356,18 +324,5 @@ object SearchTracking {
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(generalSearchShopDataLayer)
-    }
-
-    fun trackEventClickDropdownQuickFilter(filterTitle: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.CLICK_SEARCH,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT_PAGE,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_DROPDOWN_QUICK_FILTER,
-                SearchTrackingConstant.EVENT_LABEL, "$filterTitle",
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            )
-        )
     }
 }

@@ -133,6 +133,6 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     }
 
     companion object {
-        val LAYOUT = R.layout.compose_message_area
+        val LAYOUT = R.layout.customview_chatbot_small_reply_box
     }
 }

@@ -65,6 +65,7 @@ class WishlistCollectionTopAdsVerificationTest {
     @Test
     fun testWishlistCollectionTopAds() {
         runWishlistCollectionBot {
+            loading()
             val wishlistCollectionRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection)
             val itemCount = wishlistCollectionRecyclerView.adapter?.itemCount ?: 0

@@ -93,6 +93,8 @@ class FeedVODViewHolder @JvmOverloads constructor(
         vodFrozenView = findViewById(R.id.vod_frozen_view)
         vodLoader = findViewById(R.id.vod_loader)
         vodTimerView = findViewById(R.id.vod_timer_view)
+
+        vodPlayIcon.setImageResource(R.drawable.bg_circle_play_button)
     }
 
     fun setData(
@@ -298,7 +300,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     vodLihatProdukBtn.showWithCondition(mProducts.isNotEmpty())
 
                 }
-                override fun onVideoReadyToPlay() {
+                override fun onVideoReadyToPlay(isPlaying: Boolean) {
                     hideVODLoading()
 
                     if (!isPaused) {

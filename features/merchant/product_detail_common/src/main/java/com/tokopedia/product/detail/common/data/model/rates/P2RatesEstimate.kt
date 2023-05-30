@@ -30,7 +30,11 @@ data class P2RatesEstimate(
 
     @SerializedName("productMetadata")
     @Expose
-    val productMetadata: List<ProductMetadata> = emptyList()
+    val productMetadata: List<ProductMetadata> = emptyList(),
+
+    @SerializedName("shipmentPlus")
+    @Expose
+    val shipmentPlus: ShipmentPlus? = null
 )
 
 data class P2RatesEstimateData(
@@ -193,4 +197,31 @@ data class BoBadge(
     @SerializedName("imageHeight")
     @Expose
     val imageHeight: Int = 0
+)
+
+data class ShipmentPlus(
+    @SerializedName("isShow")
+    @Expose
+    val isShow: Boolean = false,
+    @SerializedName("logoUrl")
+    @Expose
+    val logoUrl: String = "",
+    @SerializedName("logoUrlDark")
+    @Expose
+    val logoUrlDark: String = "",
+    @SerializedName("bgUrl")
+    @Expose
+    val bgUrl: String = "",
+    @SerializedName("bgUrlDark")
+    @Expose
+    val bgUrlDark: String = "",
+    @SerializedName("text")
+    @Expose
+    val text: String = "",
+    @SerializedName("action")
+    @Expose
+    val action: String = "",
+    @SerializedName("actionLink")
+    @Expose
+    val actionLink: String = ""
 )

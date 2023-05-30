@@ -89,8 +89,10 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.RE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.listener.TokoNowRepurchaseProductListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.util.CustomLinearLayoutManager
 import com.tokopedia.tokopedianow.common.util.SharedPreferencesUtil
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -108,7 +110,7 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowHomeBinding
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
@@ -158,7 +160,6 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCal
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingWidgetViewHolder.HomeSharingListener
-import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetItemViewHolder.Companion.COUPON_STATUS_LOGIN
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -185,9 +186,7 @@ class TokoNowHomeFragment :
     Fragment(),
     TokoNowView,
     TokoNowChooseAddressWidgetListener,
-    HomeTickerViewHolder.HomeTickerListener,
     MiniCartWidgetListener,
-    TokoNowProductCardListener,
     ShareBottomsheetListener,
     ScreenShotListener,
     HomeSharingListener,
@@ -250,13 +249,12 @@ class TokoNowHomeFragment :
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
                 tokoNowView = this,
-                homeTickerListener = this,
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowCategoryMenuListener = createCategoryMenuCallback(),
                 bannerComponentListener = createSlideBannerCallback(),
                 homeProductRecomOocListener = createProductRecomOocCallback(),
                 homeProductRecomListener = createProductRecomCallback(),
-                tokoNowProductCardListener = this,
+                tokoNowProductCardListener = createRepurchaseProductListener(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
@@ -407,10 +405,6 @@ class TokoNowHomeFragment :
         }
     }
 
-    override fun onTickerDismissed(id: String) {
-        viewModelTokoNow.removeTickerWidget(id)
-    }
-
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
@@ -455,49 +449,6 @@ class TokoNowHomeFragment :
 
     override fun getScrollState(adapterPosition: Int): Parcelable? {
         return carouselScrollState[adapterPosition]
-    }
-
-    override fun onCartQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
-        if (userSession.isLoggedIn) {
-            viewModelTokoNow.onCartQuantityChanged(
-                channelId = data.channelId,
-                productId = data.productId,
-                quantity = quantity,
-                shopId = data.shopId,
-                stock = data.stock,
-                isVariant = data.isVariant(),
-                type = data.type
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
-        when (data.type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseImpression(position, data)
-        }
-    }
-
-    override fun onProductCardClicked(position: Int, data: TokoNowProductCardUiModel) {
-        when (data.type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseClick(position, data)
-        }
-    }
-
-    override fun createAffiliateLink(url: String): String {
-        return viewModelTokoNow.createAffiliateLink(url)
-    }
-
-    override fun onAddVariantClicked(data: TokoNowProductCardUiModel) {
-        AtcVariantHelper.goToAtcVariant(
-            context = requireContext(),
-            productId = data.productId,
-            pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-            isTokoNow = true,
-            shopId = data.shopId,
-            startActivitResult = this::startActivityForResult
-        )
     }
 
     override fun onMoreReferralClicked(referral: HomeSharingReferralWidgetUiModel, linkUrl: String) {
@@ -1004,7 +955,8 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.addItemToCart) {
             when (it) {
                 is Success -> {
-                    getMiniCart()
+                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+                    miniCartWidget?.updateData(shopIds)
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
                         actionText = getString(R.string.tokopedianow_toaster_see),
@@ -1041,7 +993,8 @@ class TokoNowHomeFragment :
         observe(viewModelTokoNow.removeCartItem) {
             when (it) {
                 is Success -> {
-                    getMiniCart()
+                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+                    miniCartWidget?.updateData(shopIds)
                     showToaster(
                         message = it.data.second,
                         actionText = getString(R.string.tokopedianow_toaster_ok),
@@ -1057,7 +1010,7 @@ class TokoNowHomeFragment :
 
         observe(viewModelTokoNow.homeAddToCartTracker) {
             when (it.data) {
-                is TokoNowProductCardUiModel -> trackRepurchaseAddToCart(
+                is TokoNowRepurchaseProductUiModel -> trackRepurchaseAddToCart(
                     it.quantity,
                     it.data
                 )
@@ -1343,15 +1296,7 @@ class TokoNowHomeFragment :
         }
     }
 
-    private fun trackRepurchaseImpression(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onImpressRepurchase(position, data)
-    }
-
-    private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
-        analytics.onClickRepurchase(position, data)
-    }
-
-    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+    private fun trackRepurchaseAddToCart(quantity: Int, data: TokoNowRepurchaseProductUiModel) {
         analytics.onRepurchaseAddToCart(quantity, data)
     }
 
@@ -1946,6 +1891,7 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
             startActivityForResult = this::startActivityForResult
         )
     }
@@ -1956,6 +1902,7 @@ class TokoNowHomeFragment :
             userSession = userSession,
             viewModel = viewModelTokoNow,
             analytics = analytics,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked,
             startActivityForResult = this::startActivityForResult
         )
     }
@@ -1975,7 +1922,12 @@ class TokoNowHomeFragment :
     }
 
     private fun createRealTimeRecommendationListener(): RealTimeRecommendationListener {
-        return HomeRealTimeRecommendationListener(this, viewModelTokoNow, userSession)
+        return HomeRealTimeRecommendationListener(
+            tokoNowView = this,
+            viewModel = viewModelTokoNow,
+            userSession = userSession,
+            onAddToCartBlocked = this::showToasterWhenAddToCartBlocked
+        )
     }
 
     private fun createRealTimeRecomAnalytics(): RealTimeRecommendationAnalytics {
@@ -2007,7 +1959,17 @@ class TokoNowHomeFragment :
         return HomeCategoryMenuCallback(
             analytics = analytics,
             warehouseId = localCacheModel?.warehouse_id.orEmpty(),
-            viewModel = viewModelTokoNow
+            viewModel = viewModelTokoNow,
+        )
+    }
+
+    private fun createRepurchaseProductListener(): TokoNowRepurchaseProductListener {
+        return TokoNowRepurchaseProductListener(
+            context = context,
+            userSession = userSession,
+            viewModel = viewModelTokoNow,
+            analytics = analytics,
+            startActivityForResult = this::startActivityForResult
         )
     }
 
@@ -2076,5 +2038,12 @@ class TokoNowHomeFragment :
 
     private fun openWebView(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?titlebar=false&url=$linkUrl")
+    }
+
+    private fun showToasterWhenAddToCartBlocked() {
+        showToaster(
+            message = getString(R.string.tokopedianow_home_toaster_description_you_are_not_be_able_to_shop),
+            type = TYPE_ERROR
+        )
     }
 }
