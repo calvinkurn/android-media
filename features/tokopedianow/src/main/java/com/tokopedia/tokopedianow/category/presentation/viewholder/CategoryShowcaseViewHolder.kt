@@ -34,11 +34,18 @@ class CategoryShowcaseViewHolder(
 
     private var binding: ItemTokopedianowCategoryShowcaseBinding? by viewBinding()
 
+    private val adapter: CategoryShowcaseAdapter by lazy {
+        CategoryShowcaseAdapter(
+            typeFactory = CategoryShowcaseAdapterTypeFactory(
+                categoryShowcaseItemListener = categoryShowcaseItemListener
+            ),
+            differ = CategoryDiffer()
+        )
+    }
+
     init {
         binding?.initRecyclerView()
     }
-
-    private var adapter: CategoryShowcaseAdapter? = null
 
     override fun bind(element: CategoryShowcaseUiModel) {
         binding?.apply {
@@ -87,18 +94,11 @@ class CategoryShowcaseViewHolder(
         rvCategory.show()
         divider.show()
         showcaseShimmering.categoryShimmeringLayout.hide()
-        adapter?.submitList(element.productListUiModels.orEmpty())
+        adapter.submitList(element.productListUiModels.orEmpty())
     }
 
     private fun ItemTokopedianowCategoryShowcaseBinding.initRecyclerView() {
-        adapter = CategoryShowcaseAdapter(
-            typeFactory = CategoryShowcaseAdapterTypeFactory(
-                categoryShowcaseItemListener = categoryShowcaseItemListener
-            ),
-            differ = CategoryDiffer()
-        )
-
-        rvCategory.run {
+        rvCategory.apply {
             addProductItemDecoration()
             adapter = this@CategoryShowcaseViewHolder.adapter
             layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {

@@ -114,7 +114,9 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
      */
 
     private fun getCategoryHeader() {
-        viewModel.getCategoryHeader(navToolbarHeight)
+        binding?.navToolbar?.post {
+            viewModel.getCategoryHeader(navToolbarHeight)
+        }
     }
 
     private fun initAffiliateCookie() = viewModel.initAffiliateCookie()

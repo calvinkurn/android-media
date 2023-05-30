@@ -40,6 +40,10 @@ class CategoryNavigationViewHolder(
         )
     }
 
+    init {
+        binding?.initRecyclerView()
+    }
+
     override fun bind(data: CategoryNavigationUiModel) {
         binding?.apply {
             when(data.state) {
@@ -78,20 +82,18 @@ class CategoryNavigationViewHolder(
         data: CategoryNavigationUiModel
     ) {
         binding.apply {
-            setCategoryList(data)
+            adapter.submitList(data.categoryListUiModel)
             root.addOnImpressionListener(data) {
                 listener?.onCategoryNavigationWidgetImpression(data)
             }
         }
     }
 
-    private fun ItemTokopedianowCategoryNavigationBinding.setCategoryList(data: CategoryNavigationUiModel) {
+    private fun ItemTokopedianowCategoryNavigationBinding.initRecyclerView() {
         rvCategory.run {
             adapter = this@CategoryNavigationViewHolder.adapter
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
         }
-
-        adapter.submitList(data.categoryListUiModel)
     }
 
     interface CategoryNavigationListener {
