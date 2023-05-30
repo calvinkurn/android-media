@@ -34,24 +34,6 @@ class PinpointNewPageViewModel @Inject constructor(
 
     private var saveAddressDataModel = SaveAddressDataModel()
 
-    var isGmsAvailable: Boolean = true
-    var currentPlaceId: String? = ""
-
-    /*to differentiate positive flow or negative flow*/
-    var isPositiveFlow: Boolean = true
-    var showIllustrationMap: Boolean = false
-    var isFromAddressForm: Boolean = false
-    var isEdit: Boolean = false
-    var isPolygon: Boolean = false
-    var source: String? = ""
-    var isGetPinPointOnly: Boolean = false
-
-    val isEditOrGetPinPointOnly: Boolean
-        get() = isEdit || isGetPinPointOnly
-
-    val hasDistrictAndCityName: Boolean
-        get() = saveAddressDataModel.districtName.isNotBlank() && saveAddressDataModel.cityName.isNotBlank()
-
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
         get() = _autofillDistrictData
@@ -72,35 +54,7 @@ class PinpointNewPageViewModel @Inject constructor(
     val mapsGeocodeState: LiveData<MapsGeocodeState>
         get() = _mapsGeocodeState
 
-    fun setDataFromArguments(
-        currentPlaceId: String?,
-        latitude: Double,
-        longitude: Double,
-        addressData: SaveAddressDataModel?,
-        isPositiveFlow: Boolean,
-        isPolygon: Boolean,
-        isFromAddressForm: Boolean,
-        isEdit: Boolean,
-        source: String,
-        isGetPinPointOnly: Boolean,
-        districtName: String?,
-        cityName: String?
-    ) {
-        this.currentPlaceId = currentPlaceId
-        setLatLong(latitude, longitude)
-        addressData?.apply {
-            setAddress(this)
-        }
-        this.isPositiveFlow = isPositiveFlow
-        this.isPolygon = isPolygon
-        this.isFromAddressForm = isFromAddressForm
-        this.isEdit = isEdit
-        this.source = source
-        this.isGetPinPointOnly = isGetPinPointOnly
-        setDistrictAndCityName(districtName, cityName)
-    }
-
-    private fun setDistrictAndCityName(
+    fun setDistrictAndCityName(
         districtName: String?,
         cityName: String?
     ) {
