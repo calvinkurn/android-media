@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannedString
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
@@ -286,9 +287,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                showOutOfStockBottomsheet()
+            }
+        }
         styledSpans.forEach { span ->
+            spannableString.setSpan(ForegroundColorSpan(color), oosSubtitleText.getSpanStart(span), oosSubtitleText.getSpanEnd(span), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             spannableString.setSpan(
-                ForegroundColorSpan(color),
+                clickableSpan,
                 oosSubtitleText.getSpanStart(span),
                 oosSubtitleText.getSpanEnd(span),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
