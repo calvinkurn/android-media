@@ -54,6 +54,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.OnRemoveR
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignItemDecoration
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.BuyerSettingBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.CampaignSettingOutOfStockBottomsheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.ChoosePaymentMethodBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.PaymentMethodBottomSheet
@@ -509,6 +510,10 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             tncRequest = request
         )
             .show(childFragmentManager)
+    }
+
+    private fun showOutOfStockBottomsheet() {
+        CampaignSettingOutOfStockBottomsheet.createInstance().show(childFragmentManager)
     }
 
     override fun onTNCConfirmationClicked() {
