@@ -11,8 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -25,7 +23,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.common.data.model.ticker.TickerInfo
 import com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_TOP_UP_CREDIT
@@ -40,10 +37,11 @@ import com.tokopedia.topads.dashboard.databinding.FragmentTopadsDashboardBeranda
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity.Companion.INSIGHT_PAGE
@@ -57,7 +55,6 @@ import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivit
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsCreditTopUpActivity
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.topads.tracker.topup.TopadsTopupTracker.sendClickBalanceEvent
-import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -67,13 +64,13 @@ import kotlinx.android.synthetic.main.fragment_topads_dashboard_beranda_base.*
 import kotlinx.android.synthetic.main.layout_insight_center_beranda.*
 import kotlinx.android.synthetic.main.shimmer_layout_bottom_level_recommendation_at_home.*
 import kotlinx.android.synthetic.main.topads_dash_saran_topads_top_widget_layout.*
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
  * Created by Ankit
  */
 open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
+
 
     private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
@@ -107,10 +104,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     */
     private val insightListAdapter by lazy { InsightListAdapter(onInsightItemClick) }
 
-    private val onInsightItemClick: (list: ArrayList<String>, adGroupName: String, adGroupID: String) -> Unit =
-        { _, _, _ ->
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
+        { adGroupList, item ->
             moveToInsightPage()
         }
+
     private var needToHitInsight = true
     /*
         End
@@ -220,7 +218,10 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 recommendationInfoBottomSheet.show(childFragmentManager, "")
             }
             layoutProdukBerpostensi.button.setOnClickListener {
-                RouteManager.route(activity,"tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product")
+                RouteManager.route(
+                    activity,
+                    "tokopedia://webview?url=https://ta.tokopedia.com/v2/manage/recommendation/eligible-product"
+                )
             }
         }
     }
@@ -327,7 +328,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
 
-
     private fun observeLiveData() {
         topAdsDashboardViewModel.shopDepositLiveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -394,6 +394,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 is TopAdsListAllInsightState.Success -> {
                     onSuccessFetchProductInsight(it)
                 }
+
                 is TopAdsListAllInsightState.Fail -> {
 
                 }
@@ -448,11 +449,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessFetchProductInsight(it: TopAdsListAllInsightState.Success<MutableList<InsightListUiModel>>) {
-        val temp = arrayListOf(EmptyStateUiListModel("0",topAdsDashboardViewModel.emptyStateData))
-        if(it.data.size.isZero()){
+        val temp = arrayListOf(EmptyStateUiListModel("0", topAdsDashboardViewModel.emptyStateData))
+        if (it.data.size.isZero()) {
             insightListAdapter.submitList(temp as List<InsightListUiModel>?)
             insight_widget_see_more?.hide()
-        }else {
+        } else {
             insightListAdapter.submitList(it.data.take(5))
             insight_widget_see_more?.show()
         }
@@ -622,7 +623,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun moveToInsightPage() {
         activity?.let {
-            if(activity is TopAdsDashboardActivity){
+            if (activity is TopAdsDashboardActivity) {
                 (it as TopAdsDashboardActivity).switchTab(INSIGHT_PAGE)
             }
         }
@@ -641,7 +642,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
             override fun onScrollChanged() {
                 val newScrollY = scroll_view.scrollY
                 if (newScrollY != scrollY && needToHitInsight) {
-                    needToHitInsight= false
+                    needToHitInsight = false
                     fetchInsight()
                 }
                 scrollY = newScrollY
