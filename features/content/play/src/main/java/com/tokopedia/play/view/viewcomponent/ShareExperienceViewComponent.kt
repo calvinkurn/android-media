@@ -17,6 +17,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -162,7 +163,7 @@ class ShareExperienceViewComponent(
      */
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+        screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
             context,
             object : ScreenShotListener {
                 override fun screenShotTaken(path: String) {
@@ -181,7 +182,7 @@ class ShareExperienceViewComponent(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         screenshotDetector = null
     }
 
