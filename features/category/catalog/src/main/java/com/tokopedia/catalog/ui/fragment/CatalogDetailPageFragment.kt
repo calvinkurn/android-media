@@ -259,7 +259,7 @@ class CatalogDetailPageFragment :
 
     private fun setUpUniversalShare() {
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
