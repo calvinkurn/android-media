@@ -9,11 +9,11 @@ import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
 import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
 import com.tokopedia.home_account.data.model.SafeModeParam
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.ShortcutResponse
-import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase

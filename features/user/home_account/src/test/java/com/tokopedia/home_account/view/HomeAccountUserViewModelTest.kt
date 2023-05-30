@@ -12,6 +12,7 @@ import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
 import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
 import com.tokopedia.home_account.data.model.CoBrandCCBalanceDataModel
 import com.tokopedia.home_account.data.model.OfferInterruptResponse
+import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
 import com.tokopedia.home_account.data.model.SafeModeParam
 import com.tokopedia.home_account.data.model.SaldoBalanceDataModel
