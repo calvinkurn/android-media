@@ -294,13 +294,13 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
         styledSpans.forEach { span ->
             spannableString.setSpan(ForegroundColorSpan(color), oosSubtitleText.getSpanStart(span), oosSubtitleText.getSpanEnd(span), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            spannableString.setSpan(
-                clickableSpan,
-                oosSubtitleText.getSpanStart(span),
-                oosSubtitleText.getSpanEnd(span),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
         }
+        spannableString.setSpan(
+            clickableSpan,
+            oosSubtitleText.getSpanStart(76),
+            oosSubtitleText.getSpanEnd(96),
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return spannableString
     }
 
