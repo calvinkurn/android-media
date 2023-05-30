@@ -542,6 +542,36 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     @Test
+    fun `get mps suggestion test`() {
+        val suggestionUniverse = suggestionCommonResponse.jsonToObject<SuggestionUniverse>()
+        `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse, requestParamsSlot)
+
+        `when presenter get suggestion data`(
+            searchParameter = mapOf(
+                SearchApiConst.ACTIVE_TAB to SearchApiConst.ACTIVE_TAB_MPS,
+                SearchApiConst.Q1 to "apple",
+                SearchApiConst.Q2 to "samsung",
+            ),
+            activeKeyword = SearchBarKeyword(
+                position = 2,
+                keyword = keyword,
+            )
+        )
+
+        `then verify suggestion API is called`()
+        `then verify suggestion view will call hideExceedKeywordLimit`()
+        `Then verify search parameter is mps suggestion`(keyword)
+    }
+
+    private fun `Then verify search parameter is mps suggestion`(
+        expectedQuery : String
+    ) {
+        val suggestionParams = requestParams.parameters
+        suggestionParams[SearchApiConst.ACTIVE_TAB] shouldBe SearchApiConst.ACTIVE_TAB_MPS
+        suggestionParams[SearchApiConst.Q] shouldBe expectedQuery
+    }
+
+    @Test
     fun `mps exceed keyword limit`() {
         `when presenter get suggestion data`(
             activeKeyword = SearchBarKeyword(
