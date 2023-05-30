@@ -13,6 +13,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.withItemCount
 import com.tokopedia.topchat.chatlist.activity.base.ChatListTest
+import com.tokopedia.topchat.chatlist.activity.robot.broadcast.BroadcastResult
 import com.tokopedia.topchat.chatlist.domain.pojo.whitelist.ChatWhitelistFeatureResponse
 import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -141,5 +142,50 @@ class ChatListActivityTest : ChatListTest() {
 
         // Then
         onView(withId(R.id.rvMenu)).check(withItemCount(equalTo(2)))
+    }
+
+    @Test
+    fun should_show_mvc_icon_when_user_on_buyer_tab_and_rollence_active() {
+        // Given
+        chatListUseCase.response = exBroadcastChatListPojo
+        userSession.setIsShopOwner(true)
+        setRollenceMVCIcon(isActive = true)
+
+        // When
+        startChatListActivity()
+        onView(withText("Rifqi MF .. (45)")).perform(click())
+
+        // Then
+        BroadcastResult.assertMVCVoucherVisible(isVisible = true)
+    }
+
+    @Test
+    fun should_not_show_icon_when_user_on_buyer_tab_and_rollence_inactive() {
+        // Given
+        chatListUseCase.response = exBroadcastChatListPojo
+        userSession.setIsShopOwner(true)
+        setRollenceMVCIcon(isActive = false)
+
+        // When
+        startChatListActivity()
+        onView(withText("Rifqi MF .. (45)")).perform(click())
+
+        // Then
+        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
+    }
+
+    @Test
+    fun should_not_show_icon_when_user_on_seller_tab() {
+        // Given
+        chatListUseCase.response = exBroadcastChatListPojo
+        userSession.setIsShopOwner(true)
+        setRollenceMVCIcon(isActive = true)
+
+        // When
+        startChatListActivity()
+        onView(withText("Toko Rifq.. (19)")).perform(click())
+
+        // Then
+        BroadcastResult.assertMVCVoucherVisible(isVisible = false)
     }
 }

@@ -5,10 +5,12 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
+import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.ROLLENCE_MVC_ICON
 import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.FakeActivityComponentFactory
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
@@ -44,6 +46,9 @@ abstract class ChatListTest {
     @Inject
     protected lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
     protected lateinit var activity: ChatListActivity
 
     protected val exEmptyChatListPojo = ChatListPojo()
@@ -53,6 +58,10 @@ abstract class ChatListTest {
     )
     protected var exSize5ChatListPojo: ChatListPojo = AndroidFileUtil.parse(
         "success_get_chat_list_size_5.json",
+        ChatListPojo::class.java
+    )
+    protected var exBroadcastChatListPojo: ChatListPojo = AndroidFileUtil.parse(
+        "broadcast/success_get_chat_list_broadcast.json",
         ChatListPojo::class.java
     )
 
@@ -80,6 +89,10 @@ abstract class ChatListTest {
         intentModifier(intent)
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
+    }
+
+    protected fun setRollenceMVCIcon(isActive: Boolean) {
+        abTestPlatform.setString(ROLLENCE_MVC_ICON, if (isActive) ROLLENCE_MVC_ICON else "")
     }
 
     companion object {
