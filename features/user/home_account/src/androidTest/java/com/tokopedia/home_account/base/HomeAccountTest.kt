@@ -7,6 +7,8 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.di.ActivityComponentFactory
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
@@ -38,6 +40,9 @@ abstract class HomeAccountTest {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var accountPreference: AccountPreference
+
     protected open lateinit var activity: HomeAccountUserActivity
     protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -47,6 +52,9 @@ abstract class HomeAccountTest {
         ActivityComponentFactory.instance = stub
         stub.component.inject(this)
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
+
+        // disable coachmark
+        accountPreference.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
     }
 
     @After

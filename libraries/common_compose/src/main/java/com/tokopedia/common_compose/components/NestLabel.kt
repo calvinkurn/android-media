@@ -3,16 +3,7 @@ package com.tokopedia.common_compose.components
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -30,9 +21,9 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestLabel(
-    modifier: Modifier = Modifier,
     labelText: String,
-    labelType: NestLabelType
+    labelType: NestLabelType,
+    modifier: Modifier = Modifier
 ) {
     val backgroundColor = labelType.toBackgroundColor()
     val textColor = labelType.toTextColor()
@@ -313,9 +304,9 @@ private fun NestLabelList() {
                     NestTypography(text = "Sample image", textStyle = NestTheme.typography.heading5.copy(color = NestTheme.colors.NN._800))
                 }
                 NestLabel(
-                    modifier = Modifier.offset(y = (-8).dp, x = (-8).dp),
                     labelText = "Dark - Label on Image",
-                    labelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL
+                    labelType = NestLabelType.HIGHLIGHT_DARK_IMAGE_LABEL,
+                    modifier = Modifier.offset(y = (-8).dp, x = (-8).dp)
                 )
             }
         }
