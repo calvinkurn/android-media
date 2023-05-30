@@ -512,7 +512,6 @@ object SharingUtil {
 
     // Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
     // This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
-
     fun clearState(screenshotDetector: ScreenshotDetector?) {
         screenshotDetector?.stop()
     }
