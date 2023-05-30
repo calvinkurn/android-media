@@ -112,14 +112,16 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadFooter(listOfButtons: List<BenefitButton>?) {
         listOfButtons?.let { buttons ->
-            binding.layoutDetailContent.viewMedalFooter.bindData(buttons.map {
-                FooterData(
-                    text = it.text,
-                    url = it.url,
-                    appLink = it.appLink,
-                    style = it.unifiedStyle,
-                )
-            }) { link ->
+            binding.layoutDetailContent.viewMedalFooter.bindData(
+                buttons.map {
+                    FooterData(
+                        text = it.text,
+                        url = it.url,
+                        appLink = it.appLink,
+                        style = it.unifiedStyle
+                    )
+                }
+            ) { link ->
                 RouteManager.route(requireContext(), link)
             }
         }
@@ -157,6 +159,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadTaskProgress(mission: Mission?) {
         mission?.let { safeMission ->
+            if (safeMission.task?.isEmpty() == true) {
+                binding.layoutDetailContent.viewTasksProgress.gone()
+                return
+            }
             val taskProgress = TaskProgress(
                 title = safeMission.title,
                 progress = safeMission.progress,

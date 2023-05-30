@@ -3,7 +3,7 @@ package com.tokopedia.scp_rewards.detail.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class MedalDetailResponseModel(
-    @SerializedName("scpRewardsGetMedaliDetailPage") val detail: RewardsGetMedaliDetail? = null
+    @SerializedName("scpRewardsMedaliDetailPage") val detail: RewardsGetMedaliDetail? = null
 )
 
 data class RewardsGetMedaliDetail(
@@ -32,36 +32,36 @@ data class MedaliDetailPage(
     @SerializedName("sourceText") val sourceText: String? = null,
     @SerializedName("sourceFontColor") val sourceFontColor: String? = null,
     @SerializedName("sourceBackgroundColor") val sourceBackgroundColor: String? = null,
-    @SerializedName("medaliName") val medaliName: String? = null,
-    @SerializedName("medaliDescription") val medaliDescription: String? = null,
+    @SerializedName("name") val medaliName: String? = null,
+    @SerializedName("description") val medaliDescription: String? = null,
     @SerializedName("coachMark") val coachMark: CoachMark? = null,
     @SerializedName("mission") val mission: Mission? = null,
     @SerializedName("benefit") val benefit: List<Benefit>? = null,
-    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null,
+    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null
 )
 
 data class CoachMark(
     @SerializedName("text") val text: String? = null,
     @SerializedName("showNumberOfTimes") val showNumberOfTimes: Int? = null,
-    @SerializedName("timeOut") val timeOut: Long? = null,
+    @SerializedName("timeOut") val timeOut: Long? = null
 )
 
 data class Mission(
     @SerializedName("title") val title: String? = null,
     @SerializedName("progress") val progress: Int? = null,
-    @SerializedName("task") val task: List<Task>? = null,
+    @SerializedName("task") val task: List<Task>? = null
 )
 
 data class Task(
     @SerializedName("isCompleted") val isCompleted: Boolean = false,
-    @SerializedName("title") val title: String? = null,
+    @SerializedName("title") val title: String? = null
 )
 
 data class Benefit(
     @SerializedName("imageUrl") val imageUrl: String? = null,
     @SerializedName("isActive") val isActive: Boolean = false,
     @SerializedName("status") val status: String? = null,
-    @SerializedName("statusDescription") val statusDescription: String? = null,
+    @SerializedName("statusDescription") val statusDescription: String? = null
 )
 
 data class BenefitButton(
@@ -70,6 +70,5 @@ data class BenefitButton(
     @SerializedName("url") val url: String? = null,
     @SerializedName("appLink") val appLink: String? = null,
     @SerializedName("isAutoApply") val isAutoApply: Boolean = false,
-    @SerializedName("couponCode") val couponCode: String? = null,
+    @SerializedName("couponCode") val couponCode: String? = null
 )
-

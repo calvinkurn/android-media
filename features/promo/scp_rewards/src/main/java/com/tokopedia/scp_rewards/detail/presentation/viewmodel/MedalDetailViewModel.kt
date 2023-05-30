@@ -23,9 +23,9 @@ class MedalDetailViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val response = medalDetailUseCase.getMedalDetail(
-                    medaliSlug = "MEDALI_TESTING",
+                    medaliSlug = "INJECT_BADGE_1",
                     sourceName = "celebration_page",
-                    pageName = "medali_detail_page"
+                    pageName = ""
                 )
                 if (response.detail != null) {
                     _badgeLiveData.postValue(Success(response))
