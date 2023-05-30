@@ -45,7 +45,7 @@ class ViewAllExclusiveLaunchVoucher @JvmOverloads constructor(
     fun useLightBackground() {
         binding?.run {
             rootLayout.setBackgroundResource(R.drawable.bg_view_all_voucher_light)
-            tpgText.setTextColorCompat(R.color.Unify_NN950)
+            tpgText.setTextColorCompat(R.color.clr_dms_voucher_title)
         }
     }
 }
