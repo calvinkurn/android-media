@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.recommendation.views.adapter
+package com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation
 
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +20,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.LoadingUiModel
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.EmptyStatePagerAdapter
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -30,8 +29,14 @@ import timber.log.Timber
 class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit) :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
 
+    companion object {
+        const val PRODUCT_TYPE = "product"
+        const val SHOP_TYPE = "headline"
+    }
+
     inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val groupCardTitle: Typography = view.findViewById(R.id.groupCardTitle)
+        private val groupCardSubTitle: Typography = view.findViewById(R.id.groupCardSubTitle)
         private val groupCardCountWarning: IconUnify = view.findViewById(R.id.groupCardCountWarning)
         private val groupCardInsightCount: Typography =
             view.findViewById(R.id.groupCardInsightCount)
@@ -43,6 +48,13 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit,
         ) {
             groupCardTitle.text = item.adGroupName
+            groupCardSubTitle.showWithCondition(item.showGroupType)
+            groupCardSubTitle.text = when (item.adGroupType) {
+                PRODUCT_TYPE -> view.context.getString(R.string.iklan_produk_subtitle)
+                SHOP_TYPE -> view.context.getString(R.string.iklan_toko_subtitle)
+                else -> ""
+            }
+
             groupCardInsightCount.show()
             groupCardInsightCount.text = HtmlCompat.fromHtml(
                 String.format(

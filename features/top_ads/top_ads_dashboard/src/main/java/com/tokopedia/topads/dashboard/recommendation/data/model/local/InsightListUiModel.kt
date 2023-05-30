@@ -19,7 +19,8 @@ data class AdGroupUiModel(
     val adGroupID: String = "",
     val adGroupName: String = "",
     val adGroupType: String = "",
-    val count: Int = 0
+    val count: Int = 0,
+    val showGroupType: Boolean = false
 ) : InsightListUiModel, Parcelable {
     override fun id(): String {
         return adGroupID

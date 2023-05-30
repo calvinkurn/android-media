@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class TopAdsListAllInsightViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase
+    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
 ) : BaseViewModel(dispatcher.main) {
 
     private val _productInsights =
