@@ -68,7 +68,7 @@
             app:layout_constraintStart_toEndOf="@id/iv_product_summary_image"
             app:layout_constraintTop_toBottomOf="@+id/tv_pinned_product_carousel_info"
             app:layout_goneMarginTop="0dp"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP 2 Lines Product Name on List View on SRP" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -80,7 +80,7 @@
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toStartOf="@id/tv_product_summary_name"
             app:layout_constraintTop_toBottomOf="@id/tv_product_summary_name"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Komisi Rp100.000" />
 
@@ -95,7 +95,7 @@
             android:textColor="@color/Unify_GN500"
             app:layout_constraintStart_toEndOf="@id/tv_commission_fmt"
             app:layout_constraintTop_toTopOf="@id/tv_commission_fmt"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             android:text="@string/play_shorts_affiliate_commission_extra" />
 
@@ -108,7 +108,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toStartOf="@id/tv_commission_fmt"
             app:layout_constraintTop_toBottomOf="@id/tv_commission_fmt"
-            app:typographyType="body_1"
+            app:typographyType="display_1"
             app:typographyWeight="bold"
             tools:text="Rp 370.000" />
 
