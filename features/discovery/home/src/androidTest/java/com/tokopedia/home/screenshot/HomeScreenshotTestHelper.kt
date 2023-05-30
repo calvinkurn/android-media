@@ -62,7 +62,8 @@ object HomeScreenshotTestHelper {
             ScreenshotModel(name = "Lego6ImagePadding"),
             ScreenshotModel(name = "Lego4AutoPadding"),
             ScreenshotModel(name = "TodoWidget"),
-            ScreenshotModel(name = "DealsWidget")
+            ScreenshotModel(name = "DealsWidget"),
+            ScreenshotModel(name = "FlashSaleWidget")
         )
     }
 
