@@ -516,7 +516,7 @@ class FeedFragment :
 
         val action: () -> Unit = {
             trackerModel?.let {
-                feedAnalytics.eventClickProductLabel(it)
+                feedAnalytics.eventClickProductLabel(it, products)
                 feedAnalytics.eventClickContentProductLabel(it)
             }
             if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
@@ -849,6 +849,9 @@ class FeedFragment :
                     message = getString(feedR.string.feeds_add_to_cart_success_text),
                     actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
                     actionClickListener = {
+                        currentTrackerData?.let { trackerData ->
+                            feedAnalytics.eventClickViewCart(trackerData)
+                        }
                         goToCartPage()
                     }
                 )
@@ -880,6 +883,13 @@ class FeedFragment :
                 (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (result) {
                 is Success -> {
+                    if (!result.data.animatedInfoList.isNullOrEmpty() && currentTrackerData != null) {
+                        feedAnalytics.eventMvcWidgetImpression(
+                            currentTrackerData!!,
+                            result.data.animatedInfoList!!
+                        )
+                        feedMvcAnalytics.voucherList = result.data.animatedInfoList!!
+                    }
                     productBottomSheet?.showMerchantVoucherWidget(
                         result.data,
                         feedMvcAnalytics
@@ -1109,10 +1119,11 @@ class FeedFragment :
         isExclusiveForMember: Boolean,
         onDismiss: () -> Unit
     ): Boolean {
-        if (isExclusiveForMember && !feedPostViewModel.isFollowing(id)) {
+        val shouldShowFollowBottomSheet = isExclusiveForMember && !feedPostViewModel.isFollowing(id)
+        if (shouldShowFollowBottomSheet) {
             showFollowerBottomSheet(positionInFeed, campaignStatus, onDismiss)
         }
-        return isExclusiveForMember && !feedPostViewModel.isFollowing(id)
+        return shouldShowFollowBottomSheet
     }
 
     private fun showFollowerBottomSheet(
@@ -1321,7 +1332,7 @@ class FeedFragment :
                             onSuccessCopyLink = {
                                 showToast(
                                     message = getString(feedR.string.feed_copy_link_success_message),
-                                    actionText = getString(com.tokopedia.feedcomponent.R.string.feed_ok),
+                                    actionText = getString(com.tokopedia.content.common.R.string.feed_ok),
                                     actionClickListener = {
                                         feedAnalytics.sendClickOkeShareToasterEvent(trackerModel)
                                     }

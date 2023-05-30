@@ -16,6 +16,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -196,6 +197,10 @@ class FeedPostVideoViewHolder(
                 bindComments(it)
             }
 
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 listener.onPostImpression(
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
@@ -284,7 +289,6 @@ class FeedPostVideoViewHolder(
             postType = data.typename,
             isFollowing = data.followers.isFollowed,
             campaign = data.campaign,
-            hasVoucher = data.hasVoucher,
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
@@ -314,11 +318,11 @@ class FeedPostVideoViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
-            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                model
-            ),
+            trackerDataModel ?: trackerMapper
+                .transformVideoContentToTrackerModel(model),
             model.id,
             model.author,
             model.typename,
