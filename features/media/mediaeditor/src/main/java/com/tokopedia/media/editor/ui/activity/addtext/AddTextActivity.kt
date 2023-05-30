@@ -90,7 +90,7 @@ class AddTextActivity : BaseEditorActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!viewModel.textInput.value.isNullOrEmpty()) {
+        if (!viewModel.textInput.value.isNullOrEmpty() && viewModel.pageMode.value == TEXT_MODE) {
             showHeaderAction()
         }
     }
