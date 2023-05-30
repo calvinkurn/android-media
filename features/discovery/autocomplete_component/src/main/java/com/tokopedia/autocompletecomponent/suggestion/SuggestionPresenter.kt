@@ -22,6 +22,7 @@ import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopC
 import com.tokopedia.autocompletecomponent.suggestion.topshop.convertToTopShopWidgetVisitableList
 import com.tokopedia.autocompletecomponent.util.CoachMarkLocalCache
 import com.tokopedia.autocompletecomponent.util.HeadlineAdsIdList
+import com.tokopedia.autocompletecomponent.util.SchedulersProvider
 import com.tokopedia.autocompletecomponent.util.SuggestionItemIdList
 import com.tokopedia.autocompletecomponent.util.getProfileIdFromApplink
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
@@ -39,7 +40,6 @@ import dagger.Lazy
 import rx.Observer
 import rx.Subscriber
 import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 import rx.subjects.BehaviorSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -55,6 +55,7 @@ class SuggestionPresenter @Inject constructor(
     private val topAdsUrlHitter: Lazy<TopAdsUrlHitter>,
     private val userSession: UserSessionInterface,
     private val coachMarkLocalCache: CoachMarkLocalCache,
+    private val schedulersProvider: SchedulersProvider,
 ) : BaseDaggerPresenter<SuggestionContract.View>(), SuggestionContract.Presenter {
 
     private val listVisitable = mutableListOf<Visitable<*>>()
@@ -75,11 +76,11 @@ class SuggestionPresenter @Inject constructor(
     private fun initSuggestionCoachMarkObservation() {
         suggestionSubscription = resultSubject.asObservable()
             .filter { it.isNotEmpty() && it.any { element -> element is SuggestionSingleLineDataDataView && element.data.type == TYPE_KEYWORD } }
-            .debounce(1000L, TimeUnit.MILLISECONDS)
+            .debounce(1000L, TimeUnit.MILLISECONDS, schedulersProvider.computation())
             .map {
                 coachMarkLocalCache.shouldShowSuggestionCoachMark()
             }
-            .observeOn(AndroidSchedulers.mainThread())
+            .observeOn(schedulersProvider.ui())
             .subscribe(object : Observer<Boolean> {
                 override fun onCompleted() {
                     // do nothing

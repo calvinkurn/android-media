@@ -7,12 +7,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import io.mockk.every
 import io.mockk.verify
 import org.junit.Test
-import rx.Scheduler
-import rx.android.plugins.RxAndroidPlugins
-import rx.android.plugins.RxAndroidSchedulersHook
-import rx.internal.schedulers.TrampolineScheduler
-import rx.plugins.RxJavaPlugins
-import rx.plugins.RxJavaSchedulersHook
 
 private const val suggestionCommonResponse =
     "autocomplete/suggestion/suggestion-common-response.json"
@@ -20,37 +14,6 @@ private const val suggestionCommonResponse =
 internal class SuggestionPresenterCoachMarkTest : SuggestionPresenterTestFixtures() {
 
     private val keyword: String = "asus"
-
-    init {
-        setUpTestSchedulers()
-        setUpAndroidTestSchedulers()
-    }
-
-    private fun setUpAndroidTestSchedulers() {
-        RxAndroidPlugins.getInstance().reset()
-        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-            override fun getMainThreadScheduler(): Scheduler {
-                return TrampolineScheduler.INSTANCE
-            }
-        })
-    }
-
-    private fun setUpTestSchedulers() {
-        RxJavaPlugins.getInstance().reset()
-        RxJavaPlugins.getInstance().registerSchedulersHook(object : RxJavaSchedulersHook() {
-            override fun getComputationScheduler(): Scheduler {
-                return TrampolineScheduler.INSTANCE
-            }
-
-            override fun getIOScheduler(): Scheduler {
-                return TrampolineScheduler.INSTANCE
-            }
-
-            override fun getNewThreadScheduler(): Scheduler {
-                return TrampolineScheduler.INSTANCE
-            }
-        })
-    }
 
     @Test
     fun `show suggestion CoachMark if local cache return true`() {

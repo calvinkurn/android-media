@@ -1,6 +1,7 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocompletecomponent.TestSchedulersProvider
 import com.tokopedia.autocompletecomponent.initialstate.TestException
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
@@ -42,13 +43,14 @@ internal open class SuggestionPresenterTestFixtures {
     protected val testException = TestException("Error")
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         suggestionPresenter = SuggestionPresenter(
             getSuggestionUseCase,
             suggestionTrackerUseCase,
             { topAdsUrlHitter },
             userSession,
             coachMarkLocalCache,
+            TestSchedulersProvider,
         )
 
         suggestionPresenter.attachView(suggestionView)
