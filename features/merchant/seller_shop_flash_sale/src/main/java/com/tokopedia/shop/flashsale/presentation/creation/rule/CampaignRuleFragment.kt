@@ -2,10 +2,13 @@ package com.tokopedia.shop.flashsale.presentation.creation.rule
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannedString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -24,6 +27,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -281,32 +285,37 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     private fun getOutOfStockSubtitleText(): SpannableString? {
         val context = context ?: return null
         val oosSubtitleText = SpannedString(getText(R.string.campaign_rule_fs_out_of_stock_subtitle))
-        val styledSpans = oosSubtitleText.getSpans(0, oosSubtitleText.length, StyleSpan::class.java)
         val spannableString = SpannableString(oosSubtitleText)
-        val color = ContextCompat.getColor(
-            context,
-            com.tokopedia.unifyprinciples.R.color.Unify_GN500
-        )
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {
                 showOutOfStockBottomsheet()
             }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.color = MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+                ds.typeface = Typeface.DEFAULT_BOLD
+                ds.isUnderlineText = false
+            }
         }
-        styledSpans.forEach { span ->
-            spannableString.setSpan(ForegroundColorSpan(color), oosSubtitleText.getSpanStart(span), oosSubtitleText.getSpanEnd(span), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
+
         spannableString.setSpan(
             clickableSpan,
             oosSubtitleText.getSpanStart(76),
             oosSubtitleText.getSpanEnd(96),
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
+        
         return spannableString
     }
 
     private fun setUpOosSubtitleText() {
         val binding = binding ?: return
         binding.tgCampaignFsOosSubtitle.text = getOutOfStockSubtitleText()
+        binding.tgCampaignFsOosSubtitle.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun observeSelectedPaymentMethod() {
