@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dms_new_seller_gradient_bg_end_color">#2020CE7D</color>
+    <color name="sah_dms_new_seller_gradient_bg_end_color">#2020CE7D</color>
+    <color name="sah_dms_bottom_nav_shadow">#3331353B</color>
 </resources>
