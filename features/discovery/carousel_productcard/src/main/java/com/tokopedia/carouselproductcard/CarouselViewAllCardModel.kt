@@ -1,6 +1,7 @@
 package com.tokopedia.carouselproductcard
 
 import com.tokopedia.carouselproductcard.typeFactory.CarouselProductCardTypeFactory
+import com.tokopedia.viewallcard.ViewAllCard
 
 internal data class CarouselViewAllCardModel(
     val data: CarouselViewAllCardData = CarouselViewAllCardData(),
@@ -22,4 +23,10 @@ internal data class CarouselViewAllCardModel(
     fun getOnViewAllCardClickListener() = carouselProductCardListenerInfo.onViewAllCardClickListener
 }
 
-data class CarouselViewAllCardData(val title: String = "")
+data class CarouselViewAllCardData(
+    val title: String = "",
+    val description: String = "",
+    val titleIsInteger: Boolean = false,
+    val viewAllCardMode: Int = ViewAllCard.MODE_NORMAL,
+    val ctaText: String = ""
+)

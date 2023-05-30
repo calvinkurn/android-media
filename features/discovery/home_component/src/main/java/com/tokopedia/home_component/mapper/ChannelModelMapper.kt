@@ -4,7 +4,11 @@ import com.tokopedia.home_component.model.*
 import com.tokopedia.productcard.ProductCardModel
 
 object ChannelModelMapper {
-    fun mapToProductCardModel(channelGrid: ChannelGrid, cardInteration: Boolean = false): ProductCardModel {
+    fun mapToProductCardModel(
+        channelGrid: ChannelGrid,
+        cardInteration: Boolean = false,
+        isTopStockbar: Boolean = false
+    ): ProductCardModel {
         return ProductCardModel(
                 slashedPrice = channelGrid.slashedPrice,
                 productName = channelGrid.name,
@@ -36,6 +40,7 @@ object ChannelModelMapper {
                 countSoldRating = channelGrid.ratingFloat,
                 reviewCount = channelGrid.countReview,
                 cardInteraction = cardInteration,
+                isTopStockBar = isTopStockbar
         )
     }
 }
