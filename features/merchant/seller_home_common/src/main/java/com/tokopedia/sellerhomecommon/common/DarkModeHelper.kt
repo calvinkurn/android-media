@@ -2,7 +2,7 @@ package com.tokopedia.sellerhomecommon.common
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.utils.resources.DarkModeUtils
+import com.tokopedia.utils.view.DarkModeUtil
 import javax.inject.Inject
 
 /**
@@ -14,10 +14,10 @@ class DarkModeHelper @Inject constructor(
 ) {
 
     fun getUnifyHexColor(hexColor: String): String {
-        return DarkModeUtils.getUnifyHexColor(context, hexColor)
+        return DarkModeUtil.getUnifyHexColor(context, hexColor)
     }
 
     fun makeHtmlDarkModeSupport(text: String): String {
-        return DarkModeUtils.getHtmlTextDarkModeSupport(context, text)
+        return DarkModeUtil.getHtmlTextDarkModeSupport(context, text)
     }
 }

@@ -47,7 +47,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.resources.isDarkMode
-import com.tokopedia.utils.resources.isDarkModeApp
 import javax.inject.Inject
 
 /**

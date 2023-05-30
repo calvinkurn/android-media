@@ -17,7 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
-import com.tokopedia.utils.resources.DarkModeUtils
+import com.tokopedia.utils.view.DarkModeUtil
 import javax.inject.Inject
 
 /**
@@ -170,7 +170,7 @@ class TableMapper @Inject constructor(
      */
     private fun getColorFromHtml(htmlString: String): Int? {
         runCatching {
-            val regex = DarkModeUtils.HEX_COLOR_REGEX.toRegex()
+            val regex = DarkModeUtil.HEX_COLOR_REGEX.toRegex()
             val result = regex.find(htmlString)
             val hexColor = result?.groupValues?.getOrNull(Int.ONE)
             hexColor?.let {
