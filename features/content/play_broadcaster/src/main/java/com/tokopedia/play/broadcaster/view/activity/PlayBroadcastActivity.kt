@@ -430,7 +430,10 @@ class PlayBroadcastActivity : BaseActivity(),
             if (faceFilter.isRemoveEffect) {
                 broadcaster.removeFaceFilter()
             } else {
-                val isSuccess = broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
+                val isSuccess = broadcaster.setFaceFilter(
+                    faceFilter.id,
+                    if (faceFilter.active) faceFilter.value.toFloat() else 0f
+                )
 
                 if (isSuccess) return@forEach
 

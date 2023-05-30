@@ -215,13 +215,15 @@ class PlayBroadcastUiMapper @Inject constructor(
                     FaceFilterUiModel(
                         id = menu.id,
                         name = menu.name,
-                        active = menu.active,
+                        active = when {
+                            isRemoveEffectActive -> false
+                            else -> menu.active
+                        },
                         minValue = menu.minValue,
                         maxValue = menu.maxValue,
                         defaultValue = menu.defaultValue,
                         value = menu.value,
-                        isChecked = if (isRemoveEffectActive) false else menu.value > 0.0,
-                        isSelected = menu.active,
+                        isSelected = isRemoveEffectActive && menu.id == FaceFilterUiModel.Type.None.id,
                     )
                 },
                 presets = config.beautificationConfig.presets.map { preset ->

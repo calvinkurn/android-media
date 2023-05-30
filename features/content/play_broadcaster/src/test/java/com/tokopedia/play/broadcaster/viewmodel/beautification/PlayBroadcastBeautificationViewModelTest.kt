@@ -362,7 +362,7 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             postState.beautificationConfig.faceFilters[2].value.assertEqualTo(postState.beautificationConfig.faceFilters[2].defaultValue)
-            postState.beautificationConfig.faceFilters[2].isChecked.assertTrue()
+            postState.beautificationConfig.faceFilters[2].active.assertTrue()
 
             postState.beautificationConfig.presets[2].isSelected.assertFalse()
             postState.beautificationConfig.presets[2].value.assertEqualTo(postState.beautificationConfig.presets[2].defaultValue)
@@ -387,8 +387,11 @@ class PlayBroadcastBeautificationViewModelTest {
         )
 
         robot.use {
-            val state = it.recordState {
+            val prevState = it.recordState {
                 getAccountConfiguration()
+            }
+
+            val state = it.recordState {
                 it.getViewModel().submitAction(PlayBroadcastAction.SelectFaceFilterOption(mockBeautificationConfigAvailable.faceFilters[mockSelectedFaceFilterPosition]))
             }
 
@@ -398,7 +401,7 @@ class PlayBroadcastBeautificationViewModelTest {
                     e.isSelected.assertTrue()
                 }
                 else {
-                    e.active.assertFalse()
+                    e.active.assertEqualTo(prevState.beautificationConfig.faceFilters[idx].active)
                     e.isSelected.assertFalse()
                 }
             }
@@ -434,7 +437,6 @@ class PlayBroadcastBeautificationViewModelTest {
                 else {
                     e.active.assertFalse()
                     e.isSelected.assertFalse()
-                    e.isChecked.assertFalse()
                     e.value.assertEqualTo(e.defaultValue)
                 }
             }

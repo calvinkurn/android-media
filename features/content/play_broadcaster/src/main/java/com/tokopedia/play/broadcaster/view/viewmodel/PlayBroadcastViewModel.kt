@@ -1789,7 +1789,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     faceFilter.copy(
                         value = faceFilter.defaultValue,
                         isSelected = false,
-                        isChecked = faceFilter.defaultValue > 0
+                        active = faceFilter.defaultValue > 0
                     )
                 },
                 presets = it.presets.map { preset ->
@@ -1814,12 +1814,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 it.copy(
                     faceFilters = it.faceFilters.map { item ->
                         item.copy(
-                            active = item.id == faceFilter.id,
-                            isChecked = when {
-                                 faceFilter.isRemoveEffect -> false
-                                 item.id == faceFilter.id -> item.value > 0.0
-                                 else -> item.isChecked
-                             },
+                            active = when {
+                                item.id == faceFilter.id -> item.value > 0.0 || faceFilter.isRemoveEffect
+                                faceFilter.isRemoveEffect || item.isRemoveEffect -> false
+                                else -> item.active
+                            },
                             isSelected = item.id == faceFilter.id,
                         )
                     }
