@@ -15,10 +15,8 @@ data class LiveStats(
         val addToCart: String = "",
         @SerializedName("add_to_cart_fmt")
         val addToCartFmt: String = "",
-        @SerializedName("payment_verified")
-        val paymentVerified: String = "",
-        @SerializedName("payment_verified_fmt")
-        val paymentVerifiedFmt: String = "",
+        @SerializedName("productSoldQty")
+        val productSlotQuantity: String = "",
         @SerializedName("follow_shop")
         val followShop: String = "",
         @SerializedName("follow_shop_fmt")

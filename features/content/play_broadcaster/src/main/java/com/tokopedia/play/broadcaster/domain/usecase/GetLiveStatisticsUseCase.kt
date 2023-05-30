@@ -25,8 +25,7 @@ class GetLiveStatisticsUseCase @Inject constructor(
                   metrics {
                     add_to_cart: addToCart
                     add_to_cart_fmt: addToCartFmt
-                    payment_verified: paymentVerified
-                    payment_verified_fmt: paymentVerifiedFmt
+                    product_sold_qty: productSoldQty
                     follow_shop: followShop
                     follow_shop_fmt: followShopFmt
                     like_channel: likeChannel
