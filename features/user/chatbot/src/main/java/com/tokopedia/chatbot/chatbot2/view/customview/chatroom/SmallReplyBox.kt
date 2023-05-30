@@ -15,6 +15,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
+import com.tokopedia.unifycomponents.TextAreaUnify2
 
 class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -22,7 +23,7 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
     private var replyBox: ConstraintLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var commentContainer: LinearLayout? = null
-    var commentEditText: EditText? = null
+    var commentEditText: TextAreaUnify2? = null
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
     var sendButton: ImageView? = null
@@ -52,50 +53,17 @@ class SmallReplyBox(context: Context, attributeSet: AttributeSet) :
         with(view) {
             replyBox = findViewById(R.id.reply_box)
             replyBubbleContainer = findViewById(R.id.reply_bubble_container)
-            commentContainer = findViewById(R.id.new_comment_container)
-            commentEditText = findViewById(R.id.new_comment)
+            commentContainer = findViewById(R.id.new_comment)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
         }
     }
 
-    fun clearChatText() {
-        commentEditText?.setText("")
-    }
-
-    fun addTextChangedListener() {
-        commentEditText?.addTextChangedListener(textWatcher)
-    }
-
-    fun removeTextChangedListener() {
-        commentEditText?.removeTextChangedListener(textWatcher)
-    }
-
-    fun bindCommentTextBackground() {
-        val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
-            commentContainer,
-            R.color.chatbot_dms_left_message_bg,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
-        )
-        val paddingStart = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)?.toInt() ?: 16
-        val paddingEnd = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)?.toInt() ?: 48
-        val paddingTop = context?.resources?.getDimension(R.dimen.dp_chatbot_11)?.toInt() ?: 11
-        val paddingBottom = context?.resources?.getDimension(R.dimen.dp_chatbot_10)?.toInt() ?: 10
-        commentContainer?.background = replyEditTextBg
-        commentContainer?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
-    }
-
     fun getMessage(): String {
-        return commentEditText?.text.toString()
+        return commentEditText?.editText?.text.toString() ?: ""
     }
+
 
     private fun getTextWatcherForMessage(): TextWatcher {
         return object : TextWatcher {

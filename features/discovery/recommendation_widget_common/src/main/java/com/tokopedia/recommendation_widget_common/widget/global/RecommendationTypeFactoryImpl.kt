@@ -6,6 +6,8 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.global.Recomme
 import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.ComparisonBpcWidgetView
 import com.tokopedia.recommendation_widget_common.widget.comparison_bpc.RecommendationComparisonBpcModel
+import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringModel
+import com.tokopedia.recommendation_widget_common.widget.loading.RecommendationCarouselShimmeringView
 
 /**
  * Created by frenzel on 11/03/23
@@ -19,10 +21,15 @@ class RecommendationTypeFactoryImpl : RecommendationTypeFactory {
         return RecommendationCarouselWidgetView.LAYOUT
     }
 
+    override fun type(model: RecommendationCarouselShimmeringModel): Int {
+        return RecommendationCarouselShimmeringView.LAYOUT
+    }
+
     override fun createView(context: Context, model: RecommendationVisitable): ViewGroup {
         return when (model.type(this)) {
             ComparisonBpcWidgetView.LAYOUT -> ComparisonBpcWidgetView(context)
             RecommendationCarouselWidgetView.LAYOUT -> RecommendationCarouselWidgetView(context)
+            RecommendationCarouselShimmeringView.LAYOUT -> RecommendationCarouselShimmeringView(context)
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
