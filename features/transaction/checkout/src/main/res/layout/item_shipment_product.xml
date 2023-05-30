@@ -387,12 +387,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
+
+            <include
+                android:id="@+id/item_shipment_addon_product_level"
+                layout="@layout/item_shipment_addon_product"
+                tools:visibility="visible"/>
 
             <include
                 android:id="@+id/item_shipment_gifting_addon_product_level"
                 layout="@layout/item_shipment_gifting_addon_product_level"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
         </LinearLayout>
 

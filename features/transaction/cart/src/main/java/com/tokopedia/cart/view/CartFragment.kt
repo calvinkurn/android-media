@@ -4562,4 +4562,22 @@ class CartFragment :
             dPresenter.checkCartShopGroupTicker(cartGroupHolderData)
         }
     }
+
+    override fun onProductAddOnClicked(cartItemData: CartItemHolderData) {
+        // tokopedia://addon/2148784281/?cartId=123123&selectedAddonIds=111,222,333&source=cart&warehouseId=789789&isTokocabang=false
+        val productId = cartItemData.productId
+        val cartId = cartItemData.cartId
+        val addOnIds = arrayListOf<Long>()
+        cartItemData.addOnProductList.forEach {
+            addOnIds.add(it.addonId)
+        }
+        val warehouseId = cartItemData.warehouseId
+        val isTokoCabang = cartItemData.isFulfillment // need to confirm
+        val applink = "tokopedia://addon/"+productId+"/?cartId="+cartId+
+                "&selectedAddonIds="+addOnIds.toString()+"&source=cart&warehouseId="+warehouseId+"&isTokocabang="+isTokoCabang
+        println("++ applink = "+applink)
+        activity?.let {
+            RouteManager.route(it, applink)
+        }
+    }
 }

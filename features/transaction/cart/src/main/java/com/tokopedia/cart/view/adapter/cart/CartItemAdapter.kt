@@ -89,5 +89,7 @@ class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerVi
         fun onFollowShopClicked(shopId: String, errorType: String)
         fun onVerificationClicked(applink: String)
         fun onCartShopNameClicked(shopId: String?, shopName: String?, isTokoNow: Boolean)
+
+        fun onProductAddOnClicked(addOnId: CartItemHolderData)
     }
 }

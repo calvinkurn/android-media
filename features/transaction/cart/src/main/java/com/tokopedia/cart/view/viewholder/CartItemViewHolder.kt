@@ -373,6 +373,7 @@ class CartItemViewHolder constructor(
         renderProductProperties(data)
         renderProductPropertyIncidentLabel(data)
         renderProductActionSection(data)
+        renderProductAddOns(data)
         sendAnalyticsInformationLabel(data)
     }
 
@@ -486,6 +487,20 @@ class CartItemViewHolder constructor(
                 data
             )
         )
+    }
+
+    private fun renderProductAddOns(data: CartItemHolderData) {
+        if (data.addOnProductList.isNotEmpty() && data.addOnProductWidget.wording.isNotEmpty()) {
+            binding.itemAddonCart.apply {
+                root.show()
+                this.descAddon.text = data.addOnProductWidget.wording
+                root.setOnClickListener {
+                    actionListener?.onProductAddOnClicked(data)
+                }
+            }
+        } else {
+            binding.itemAddonCart.root.gone()
+        }
     }
 
     private fun sendAnalyticsInformationLabel(data: CartItemHolderData) {

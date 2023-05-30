@@ -622,6 +622,8 @@ object CartUiModelMapper {
             campaignId = product.campaignId
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
+            addOnProductList = product.listAddOnsData
+            addOnProductWidget = product.listAddOnsWidget
         }
     }
 
