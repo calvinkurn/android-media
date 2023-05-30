@@ -11,6 +11,7 @@ sealed class SortOption(open val id: SortId, open val option: SortOrderOption) {
     data class SortByPrice(override val option: SortOrderOption): SortOption(PRICE, option)
     data class SortByName(override val option: SortOrderOption): SortOption(NAME, option)
     data class SortByStock(override val option: SortOrderOption): SortOption(STOCK, option)
+    data class SortByArchival(override val option: SortOrderOption): SortOption(ARCHIVAL, option)
 
     @Keep
     enum class SortId {
@@ -19,6 +20,7 @@ sealed class SortOption(open val id: SortId, open val option: SortOrderOption) {
         SOLD,
         PRICE,
         NAME,
-        STOCK
+        STOCK,
+        ARCHIVAL
     }
 }

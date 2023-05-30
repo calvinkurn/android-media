@@ -173,6 +173,8 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterId.NOTIFY_ME_ONLY
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -1453,11 +1455,12 @@ open class ProductManageFragment :
         val keyword = searchBar?.searchBarTextField?.text?.toString().orEmpty()
         val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
-        val sortOption = selectedFilter?.sortOption
+        var sortOption = selectedFilter?.sortOption
 
         filterTab?.getSelectedFilter()?.let {
             if (it.name == FilterTabUiModel.FilterId.isProductArchival.name){
                 filterOptions.add(FilterByCondition.ProductArchival)
+                sortOption = SortOption.SortByArchival(SortOrderOption.DESC)
             }else{
                 filterOptions.add(FilterByStatus(it))
             }
