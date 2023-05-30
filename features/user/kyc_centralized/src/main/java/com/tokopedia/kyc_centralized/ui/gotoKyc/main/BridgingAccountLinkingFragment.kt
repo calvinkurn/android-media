@@ -205,7 +205,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 getString(R.string.img_url_goto_kyc_bridging_account_linking)
             )
 
-            tvSubtitle.text = getString(R.string.goto_kyc_bridging_done_gopay_subtitle)
+            tvSubtitle.text = getString(R.string.goto_kyc_progressive_description)
             tvTitle.show()
             tvSubtitle.show()
             ivBridgingAccountLinking.show()

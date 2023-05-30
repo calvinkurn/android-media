@@ -36,7 +36,7 @@ class SubmitChallengeUseCase @Inject constructor(
             .submitKYCChallenge
 
         return if (response.errorMessages.isNotEmpty()) {
-            SubmitChallengeResult.Failed(Throwable(message = response.errorMessages.first()))
+            SubmitChallengeResult.Failed(Throwable(message = response.errorMessages.joinToString()))
         } else {
             when (response.message) {
                 KEY_WRONG_ANSWER -> {

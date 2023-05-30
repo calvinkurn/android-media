@@ -257,7 +257,7 @@
     <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken">Kamu udah ambil selfie, lanjutin yuk!</string>
     <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
     <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
-    <string name="goto_kyc_onboard_progressive_subtitle">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
+    <string name="goto_kyc_progressive_description">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai e-KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_onboard_progressive_item_title">KTP di GoPay</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
     <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
@@ -269,7 +269,6 @@
     <string name="goto_kyc_bridging_not_done_gopay_item_ktp_number">1</string>
     <string name="goto_kyc_bridging_not_done_gopay_item_selfie_number">2</string>
     <string name="goto_kyc_continue_verification">Lanjut Verifikasi</string>
-    <string name="goto_kyc_bridging_done_gopay_subtitle">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_confirm_KTP_name">Oke, Pakai KTP Ini</string>
     <string name="goto_kyc_question_ktp_issue">Bukan KTP kamu? Hubungi Tokopedia Care</string>
     <string name="goto_kyc_contact_tokopedia_care">Hubungi Tokopedia Care</string>
