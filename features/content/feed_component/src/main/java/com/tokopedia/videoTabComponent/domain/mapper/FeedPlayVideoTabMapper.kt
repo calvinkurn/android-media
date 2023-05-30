@@ -237,6 +237,7 @@ object FeedPlayVideoTabMapper {
             imageUrl = it.imageUrl,
             appLink = it.appLink,
             priceFmt = it.priceFmt,
+            price = it.price,
         )
     }
 
