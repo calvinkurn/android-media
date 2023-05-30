@@ -11,7 +11,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManager
 import com.tokopedia.troubleshooter.notification.data.service.fcm.FirebaseInstanceManagerImpl
-import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesImpl
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManager
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationChannelManagerImpl
 import com.tokopedia.troubleshooter.notification.data.service.notification.NotificationCompatManager
@@ -99,10 +99,11 @@ import javax.inject.Named
     }
 
     @Provides
+    @TroubleshootScope
     fun providePlayServices(
         @TroubleshootContext context: Context
     ): PlayServicesManager {
-        return PlayServicesImpl(context)
+        return PlayServicesManagerImpl(context)
     }
 
     @Provides

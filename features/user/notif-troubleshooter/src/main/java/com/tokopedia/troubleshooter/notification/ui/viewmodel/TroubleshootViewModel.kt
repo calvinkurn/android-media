@@ -21,7 +21,6 @@ import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule.Co
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule.Companion.KEY_USER_SETTING
 import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.troubleshooter.notification.ui.state.DeviceSettingState
-import com.tokopedia.troubleshooter.notification.ui.state.PlayServicesState
 import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
@@ -75,8 +74,8 @@ class TroubleshootViewModel @Inject constructor(
     private val _notificationRingtoneUri = MutableLiveData<Pair<Uri?, RingtoneState>>()
     val notificationRingtoneUri: LiveData<Pair<Uri?, RingtoneState>> get() = _notificationRingtoneUri
 
-    private val _playServicesSetting = MutableLiveData<Result<PlayServicesState>>()
-    val playServicesSetting: LiveData<Result<PlayServicesState>> get() = _playServicesSetting
+    private val _playServicesSetting = MutableLiveData<Result<Boolean>>()
+    val playServicesSetting: LiveData<Result<Boolean>> get() = _playServicesSetting
 
     private val _troubleshoot = MutableLiveData<NotificationSendTroubleshoot>()
     val troubleshootSuccess: LiveData<NotificationSendTroubleshoot> get() = _troubleshoot
@@ -194,9 +193,8 @@ class TroubleshootViewModel @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     override fun playServicesSetting() {
-        if (playServicesManager.isPlayServiceExist())
-        {
-            _playServicesSetting.value = Success(PlayServicesState.Present)
+        if (playServicesManager.isPlayServiceExist()) {
+            _playServicesSetting.value = Success(true)
         } else {
             _playServicesSetting.value = Fail(Throwable(""))
         }

@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 
-class PlayServicesImpl(private val context: Context): PlayServicesManager {
+class PlayServicesManagerImpl(private val context: Context): PlayServicesManager {
 
     override fun isPlayServiceExist(): Boolean {
         try {

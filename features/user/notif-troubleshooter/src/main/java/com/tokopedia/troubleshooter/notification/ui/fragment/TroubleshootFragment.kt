@@ -21,7 +21,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
-import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesImpl
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesManager
 import com.tokopedia.troubleshooter.notification.databinding.FragmentNotifTroubleshooterBinding
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
@@ -58,13 +58,10 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var fcmManager: FirebaseMessagingManager
     @Inject lateinit var userSession: UserSessionInterface
+    @Inject lateinit var playServicesManager: PlayServicesManager
 
     private lateinit var viewModel: TroubleshootViewModel
     private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
-
-    private val playServicesManager by lazy(LazyThreadSafetyMode.NONE) {
-        PlayServicesImpl(requireContext())
-    }
 
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         TroubleshooterAdapter(TroubleshooterItemFactory(this, this, playServicesManager))
@@ -274,13 +271,13 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
         }
     }
 
-    private fun playServicesSetting(result: Result<PlayServicesState>) {
+    private fun playServicesSetting(result: Result<Boolean>) {
         when (result) {
             is Fail -> {
                 adapter.updateStatus(GooglePlayServices, StatusState.Error)
             }
             is Success -> {
-                if (result.data == PlayServicesState.Present) {
+                if (result.data) {
                     adapter.updateStatus(GooglePlayServices, StatusState.Success)
                 }
             }
