@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
@@ -99,5 +100,9 @@ class GroupDetailViewModel @Inject constructor(
         }, onError = {
                 _detailPageLiveData.value = TopAdsListAllInsightState.Fail(it)
             })
+    }
+
+    fun checkIfGroupChipsAvailable(): Boolean {
+        return groupDetailMapper.detailPageDataMap[TYPE_CHIPS] != null
     }
 }

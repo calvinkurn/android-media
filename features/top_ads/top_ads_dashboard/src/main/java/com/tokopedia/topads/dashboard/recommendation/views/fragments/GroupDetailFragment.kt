@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -149,13 +151,15 @@ class GroupDetailFragment : BaseDaggerFragment() {
 
                 if (dy > 0) {
                     if (position > 1) {
-                        groupChipsLayout?.visibility = View.VISIBLE
-                        groupDetailsChipsAdapter?.notifyDataSetChanged()
-                        groupDetailChipsRv?.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
+                        if (viewModel.checkIfGroupChipsAvailable()){
+                            groupChipsLayout?.show()
+                            groupDetailsChipsAdapter?.notifyDataSetChanged()
+                            groupDetailChipsRv?.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
+                        }
                     }
                 } else {
                     if (position <= 1) {
-                        groupChipsLayout?.visibility = View.GONE
+                        groupChipsLayout?.hide()
                     }
                 }
             }
