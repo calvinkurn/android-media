@@ -148,7 +148,6 @@ import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
-import com.tokopedia.product.detail.common.mapper.AtcVariantMapper
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -295,9 +294,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -310,7 +310,6 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
-import kotlinx.coroutines.flow.collect
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import java.util.*
@@ -517,7 +516,7 @@ open class DynamicProductDetailFragment :
             playWidgetCoordinator = PlayWidgetCoordinator(this).apply {
                 setListener(this@DynamicProductDetailFragment)
             },
-            affiliateCookieHelper.get(),
+            affiliateCookieHelper.get()
         )
     }
     private val adapter by lazy {
@@ -942,7 +941,7 @@ open class DynamicProductDetailFragment :
                         is DynamicProductDetailTalkGoToWriteDiscussion -> goToWriteActivity()
                         is DynamicProductDetailTalkGoToReplyDiscussion -> goToReplyActivity((viewModel.talkLastAction as DynamicProductDetailTalkGoToReplyDiscussion).questionId)
                         else -> {
-                            //no-op
+                            // no-op
                         }
                     }
                 }
@@ -1640,8 +1639,8 @@ open class DynamicProductDetailFragment :
             RecommendationNowAffiliateData(
                 affiliateUniqueId,
                 affiliateChannel,
-                recommendationWidget.affiliateTrackerId,
-            ),
+                recommendationWidget.affiliateTrackerId
+            )
         )
     }
 
@@ -3796,7 +3795,7 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null) {
+    private fun shareProduct(dynamicProductInfoP1: DynamicProductInfoP1? = null, path: String? = null) {
         val productInfo = dynamicProductInfoP1 ?: viewModel.getDynamicProductInfoP1
         if (productInfo != null) {
             val productData = generateProductShareData(
@@ -3818,8 +3817,9 @@ open class DynamicProductDetailFragment :
 
     private fun checkAndExecuteReferralAction(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val fireBaseRemoteMsgGuest =
             remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
@@ -3841,13 +3841,13 @@ open class DynamicProductDetailFragment :
                 return
             }
         }
-        executeProductShare(productData, affiliateData, imageGeneratorData)
+        executeProductShare(productData, affiliateData, imageGeneratorData, path)
     }
 
     private fun doReferralShareAction(
         productData: ProductData,
         fireBaseRemoteMsg: String,
-        affiliateData: AffiliatePDPInput,
+        affiliateData: AffiliateInput,
         imageGeneratorData: PdpParamModel
     ) {
         val actionCreator = object : ActionCreator<String, Int> {
@@ -3887,19 +3887,20 @@ open class DynamicProductDetailFragment :
 
     private fun executeProductShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
         )
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
+        if (SharingUtil.isCustomSharingEnabled(context) && enablePdpCustomSharing) {
             val description = pdpUiUpdater?.productDetailInfoData?.getDescription()?.take(100)
                 ?.replace("(\r\n|\n)".toRegex(), " ")
                 ?: ""
             productData.productShareDescription = "$description..."
-            executeUniversalShare(productData, affiliateData, imageGeneratorData)
+            executeUniversalShare(productData, affiliateData, imageGeneratorData, path)
         } else {
             executeNativeShare(productData)
         }
@@ -3917,8 +3918,9 @@ open class DynamicProductDetailFragment :
 
     private fun executeUniversalShare(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput,
-        imageGeneratorData: PdpParamModel
+        affiliateData: AffiliateInput,
+        imageGeneratorData: PdpParamModel,
+        path: String? = null
     ) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
@@ -3946,7 +3948,8 @@ open class DynamicProductDetailFragment :
                 postBuildImg = { hideProgressDialog() },
                 screenshotDetector,
                 imageGeneratorData,
-                personalizedCampaignModel
+                personalizedCampaignModel,
+                screenshotPath = path
             )
         }
     }
@@ -4435,7 +4438,7 @@ open class DynamicProductDetailFragment :
             viewModel.getDynamicProductInfoP1
         )
         if (GlobalConfig.isSellerApp()) {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE, productId, TOPADS_PERFORMANCE_CURRENT_SITE)
         } else {
             goToPdpSellerApp()
         }
@@ -5559,8 +5562,8 @@ open class DynamicProductDetailFragment :
         }
     }
 
-    override fun screenShotTaken() {
-        shareProduct()
+    override fun screenShotTaken(path: String) {
+        shareProduct(path = path)
     }
 
     override fun onWidgetShouldRefresh(view: PlayWidgetView) {
