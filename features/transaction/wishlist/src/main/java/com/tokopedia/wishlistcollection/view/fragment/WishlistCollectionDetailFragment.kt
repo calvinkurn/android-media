@@ -152,7 +152,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.UUID
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.coroutines.CoroutineContext
@@ -232,7 +231,6 @@ class WishlistCollectionDetailFragment :
     private var _bulkModeIsAlreadyTurnedOff = false
     private var affiliateUniqueId = ""
     private var affiliateChannel = ""
-    private var affiliateTrackerId = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -290,7 +288,7 @@ class WishlistCollectionDetailFragment :
                     putString(
                         ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
                         this.getString(
-                            ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID,
+                            ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID
                         )
                     )
                     putString(
@@ -750,7 +748,6 @@ class WishlistCollectionDetailFragment :
                         WishlistCollectionAnalytics.sendClickAddToCartOnWishlistPageEvent(collectionId, wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
                         wishlistCollectionDetailViewModel.checkShouldCreateAffiliateCookieAtcProduct(
                             affiliateUniqueId,
-                            affiliateTrackerId,
                             affiliateChannel,
                             wishlistItemOnAtc
                         )
@@ -1159,7 +1156,6 @@ class WishlistCollectionDetailFragment :
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         affiliateUniqueId = arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_AFFILIATE_UNIQUE_ID) ?: ""
         affiliateChannel = arguments?.getString(EXTRA_CHANNEL) ?: ""
-        affiliateTrackerId = UUID.randomUUID().toString()
         paramGetCollectionItems.collectionId = collectionId
 
         var titleToolbar = ""
@@ -1233,8 +1229,7 @@ class WishlistCollectionDetailFragment :
     private fun hitWishlistAffiliateCookie() {
         wishlistCollectionDetailViewModel.hitAffiliateCookie(
             affiliateUniqueId,
-            affiliateTrackerId,
-            affiliateChannel,
+            affiliateChannel
         )
     }
 
@@ -2507,9 +2502,9 @@ class WishlistCollectionDetailFragment :
 
         activity?.let {
             val uri = UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
-            val appLink = wishlistCollectionDetailViewModel.createAffiliateLink(uri, affiliateTrackerId)
+            val appLink = wishlistCollectionDetailViewModel.createAffiliateLink(uri)
             val intent = RouteManager.getIntent(context, appLink)
-            if (wishlistItem.url.isNotEmpty()) { 
+            if (wishlistItem.url.isNotEmpty()) {
                 intent.data = Uri.parse(wishlistItem.url)
             }
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)

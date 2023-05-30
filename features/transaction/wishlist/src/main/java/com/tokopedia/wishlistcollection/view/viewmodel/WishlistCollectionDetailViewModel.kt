@@ -163,9 +163,9 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             )
             WishlistIdlingResource.decrement()
         }, onError = {
-            _collectionItems.value = Fail(it)
-            WishlistIdlingResource.decrement()
-        })
+                _collectionItems.value = Fail(it)
+                WishlistIdlingResource.decrement()
+            })
     }
 
     fun loadRecommendation(page: Int) {
@@ -266,8 +266,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _deleteCollectionItemsResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionItemsResult.value = Fail(it)
-        })
+                _deleteCollectionItemsResult.value = Fail(it)
+            })
     }
 
     fun deleteWishlistCollection(collectionId: String) {
@@ -279,8 +279,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _deleteCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteCollectionResult.value = Fail(it)
-        })
+                _deleteCollectionResult.value = Fail(it)
+            })
     }
 
     fun getDeleteWishlistProgress() {
@@ -292,8 +292,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _deleteWishlistProgressResult.value = Fail(Throwable())
             }
         }, onError = {
-            _deleteWishlistProgressResult.value = Fail(it)
-        })
+                _deleteWishlistProgressResult.value = Fail(it)
+            })
     }
 
     fun doAtc(atcParams: AddToCartRequestParams) {
@@ -318,8 +318,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _addWishlistCollectionItem.value = Fail(Throwable())
             }
         }, onError = {
-            _addWishlistCollectionItem.value = Fail(it)
-        })
+                _addWishlistCollectionItem.value = Fail(it)
+            })
     }
 
     fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
@@ -331,8 +331,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _updateWishlistCollectionResult.value = Fail(Throwable())
             }
         }, onError = {
-            _updateWishlistCollectionResult.value = Fail(it)
-        })
+                _updateWishlistCollectionResult.value = Fail(it)
+            })
     }
 
     fun getWishlistCollectionSharingData(collectionId: Long) {
@@ -345,8 +345,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
             }
         }, onError = {
-            _getWishlistCollectionSharingDataResult.value = Fail(it)
-        })
+                _getWishlistCollectionSharingDataResult.value = Fail(it)
+            })
     }
 
     fun getWishlistCollectionType(collectionId: String) {
@@ -354,8 +354,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             val result = getWishlistCollectionTypeUseCase(collectionId)
             _collectionType.value = Success(result.getWishlistCollectionItems)
         }, onError = {
-            _collectionType.value = Fail(it)
-        })
+                _collectionType.value = Fail(it)
+            })
     }
 
     fun addWishlistBulk(params: AddWishlistBulkParams) {
@@ -363,8 +363,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             val result = addWishlistBulkUseCase(params)
             _addWishlistBulkResult.value = Success(result.addWishlistBulk)
         }, onError = {
-            _addWishlistBulkResult.value = Fail(it)
-        })
+                _addWishlistBulkResult.value = Fail(it)
+            })
     }
 
     fun addWishListV2(
@@ -387,7 +387,6 @@ class WishlistCollectionDetailViewModel @Inject constructor(
 
     fun hitAffiliateCookie(
         affiliateUuid: String,
-        affiliateTrackerId: String,
         affiliateChannel: String
     ) {
         launchCatchError(block = {
@@ -398,17 +397,15 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 affiliatePageDetail = AffiliatePageDetail(
                     "",
                     source = AffiliateSdkPageSource.Shop("")
-                ),
-                uuid = affiliateTrackerId
+                )
             )
         }, onError = {
-            // no op, expect to be handled by Affiliate SDK
-        })
+                // no op, expect to be handled by Affiliate SDK
+            })
     }
 
     fun checkShouldCreateAffiliateCookieAtcProduct(
         affiliateUUID: String,
-        affiliateTrackerId: String,
         affiliateChannel: String,
         wishlistItemOnAtc: WishlistV2UiModel.Item
     ) {
@@ -431,17 +428,16 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     affiliatePageDetail = AffiliatePageDetail(
                         pageId = wishlistItemOnAtc.wishlistId,
                         source = affiliateSource
-                    ),
-                    uuid = affiliateTrackerId
+                    )
                 )
             }, onError = {
-                // no op, expect to be handled by Affiliate SDK
-            })
+                    // no op, expect to be handled by Affiliate SDK
+                })
         }
     }
-    
-    fun createAffiliateLink(url: String, trackerId: String): String {
-        return affiliateCookieHelper.get().createAffiliateLink(url, trackerId)
+
+    fun createAffiliateLink(url: String): String {
+        return affiliateCookieHelper.get().createAffiliateLink(url)
     }
 
     companion object {
