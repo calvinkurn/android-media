@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.OwocProductListDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
-import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 
@@ -25,15 +24,6 @@ class OwocProductListAdapter(private val typeFactory: OwocProductListTypeFactory
         visitables.clear()
         visitables.addAll(newList)
     }
-
-    fun getItemPosition(uiModel: Visitable<OwocProductListTypeFactoryImpl>?): Int {
-        return visitables.indexOf(uiModel)
-    }
-
-    fun getBaseVisitableUiModels(): List<Visitable<OwocSectionGroupTypeFactoryImpl>> {
-        return visitables.filterIsInstance<Visitable<OwocSectionGroupTypeFactoryImpl>>()
-    }
-
     fun collapseOwocProduct(expandProducts: List<BaseOwocVisitableUiModel>, isExpanded: Boolean) {
 
         val collapseItems = list.toMutableList()

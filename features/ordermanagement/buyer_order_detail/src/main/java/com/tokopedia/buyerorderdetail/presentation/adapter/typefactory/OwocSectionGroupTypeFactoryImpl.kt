@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocSectionGroupListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocErrorStateViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OwocSectionGroupViewHolder
@@ -18,7 +19,8 @@ import com.tokopedia.buyerorderdetail.presentation.model.OwocTickerUiModel
 
 class OwocSectionGroupTypeFactoryImpl(
     private val navigator: BuyerOrderDetailNavigator?,
-    private val owocSectionGroupListener: OwocSectionGroupListener
+    private val owocSectionGroupListener: OwocSectionGroupListener,
+    private val owocProductListHeaderListener: OwocProductListHeaderListener
 ): BaseAdapterTypeFactory(), OwocSectionGroupTypeFactory {
 
     override fun type(owocTickerUiModel: OwocTickerUiModel): Int {
@@ -39,7 +41,7 @@ class OwocSectionGroupTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            OwocSectionGroupViewHolder.LAYOUT -> OwocSectionGroupViewHolder(parent, navigator)
+            OwocSectionGroupViewHolder.LAYOUT -> OwocSectionGroupViewHolder(parent, navigator, owocProductListHeaderListener)
             OwocErrorStateViewHolder.LAYOUT -> OwocErrorStateViewHolder(parent, owocSectionGroupListener)
             OwocShimmerViewHolder.LAYOUT -> OwocShimmerViewHolder(parent)
             OwocTickerViewHolder.LAYOUT -> OwocTickerViewHolder(parent, navigator)

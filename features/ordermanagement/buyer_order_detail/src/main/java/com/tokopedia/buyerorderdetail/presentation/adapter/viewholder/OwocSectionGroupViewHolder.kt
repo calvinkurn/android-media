@@ -7,14 +7,18 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocSectionGroupBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocProductListAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 
-class OwocSectionGroupViewHolder(view: View?,
-                                 navigator: BuyerOrderDetailNavigator?
-): AbstractViewHolder<OwocSectionGroupUiModel>(view), OwocProductListListener {
+class OwocSectionGroupViewHolder(
+    view: View?,
+    navigator: BuyerOrderDetailNavigator?,
+    private val owocProductListHeaderListener: OwocProductListHeaderListener
+) : AbstractViewHolder<OwocSectionGroupUiModel>(view), OwocProductListListener {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_section_group
@@ -23,10 +27,10 @@ class OwocSectionGroupViewHolder(view: View?,
     private val binding = ItemOwocSectionGroupBinding.bind(itemView)
 
     private val typeFactory: OwocProductListTypeFactoryImpl by lazy(LazyThreadSafetyMode.NONE) {
-        OwocProductListTypeFactoryImpl(navigator, this)
+        OwocProductListTypeFactoryImpl(navigator, this, owocProductListHeaderListener)
     }
 
-    private val owocSectionGroupAdapter: OwocProductListAdapter by lazy(LazyThreadSafetyMode.NONE) {
+    private val owocSectionGroupAdapter: OwocProductListAdapter by lazy {
         OwocProductListAdapter(typeFactory)
     }
 
@@ -36,15 +40,32 @@ class OwocSectionGroupViewHolder(view: View?,
         }
     }
 
+    override fun bind(element: OwocSectionGroupUiModel?, payloads: MutableList<Any>) {
+        payloads.firstOrNull()?.let {
+            if (it is Pair<*, *>) {
+                val (oldItem, newItem) = it
+                if (oldItem is OwocSectionGroupUiModel && newItem is OwocSectionGroupUiModel) {
+                    if (oldItem.baseOwocProductListUiModel != newItem.baseOwocProductListUiModel) {
+                        setupOwocProductList(newItem.baseOwocProductListUiModel)
+                    }
+                    return
+                }
+            }
+        }
+    }
+
     private fun ItemOwocSectionGroupBinding.setupRecyclerView(item: OwocSectionGroupUiModel) {
         with(rvOwocProductList) {
             if (adapter != owocSectionGroupAdapter) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = owocSectionGroupAdapter
-                isNestedScrollingEnabled = false
             }
-            owocSectionGroupAdapter.updateItems(item.baseOwocProductListUiModel)
+            setupOwocProductList(item.baseOwocProductListUiModel)
         }
+    }
+
+    private fun setupOwocProductList(newItems: List<BaseOwocVisitableUiModel>) {
+        owocSectionGroupAdapter.updateItems(newItems)
     }
 
     override fun onCollapseProductList(

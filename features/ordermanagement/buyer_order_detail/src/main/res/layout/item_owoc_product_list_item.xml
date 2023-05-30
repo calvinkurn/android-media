@@ -35,7 +35,7 @@
             android:id="@+id/itemOwocAddonsViewStub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inflatedId="@+id/itemBomDetailAddonsViewStub"
+            android:inflatedId="@+id/itemOwocAddonsViewStub"
             android:layout="@layout/partial_item_owoc_addons"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.OwocBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocSectionGroupAdapter
+import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListHeaderListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocSectionGroupListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocSectionGroupTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.OwocErrorUiModel
@@ -24,7 +25,8 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class OwocBottomSheet: BottomSheetUnify(), OwocSectionGroupListener {
+class OwocBottomSheet : BottomSheetUnify(), OwocSectionGroupListener,
+    OwocProductListHeaderListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -48,7 +50,7 @@ class OwocBottomSheet: BottomSheetUnify(), OwocSectionGroupListener {
     }
 
     private val typeFactory: OwocSectionGroupTypeFactoryImpl by lazy(LazyThreadSafetyMode.NONE) {
-        OwocSectionGroupTypeFactoryImpl(navigator, this)
+        OwocSectionGroupTypeFactoryImpl(navigator, this, this)
     }
 
     private val owocSectionGroupAdapter: OwocSectionGroupAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -81,6 +83,11 @@ class OwocBottomSheet: BottomSheetUnify(), OwocSectionGroupListener {
     override fun onErrorActionClicked() {
         owocSectionGroupAdapter.hideError()
         fetchBomGroupedOrder()
+    }
+
+    override fun goToOtherBomDetail(orderId: String) {
+        navigator?.goToBomDetailPage(orderId)
+        dismiss()
     }
 
     fun show(fm: FragmentManager) {

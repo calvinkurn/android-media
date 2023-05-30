@@ -156,8 +156,7 @@ object ShipmentInfoUiStateMapper {
     ): OwocBomDetailSectionUiModel? {
         return owocSection?.let {
             OwocBomDetailSectionUiModel(
-                //todo will replace later
-                txId = "863584921682019224",
+                txId = owocSection.txId,
                 sectionTitle = owocSection.title,
                 sectionDesc = owocSection.description,
                 imageUrl = owocSection.iconUrl

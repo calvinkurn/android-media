@@ -45,13 +45,18 @@ class BuyerOrderDetailNavigator(
         )
     }
 
-     fun goToBomDetailPage(orderId: String) {
-        val appLink = Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL).buildUpon()
-            .appendQueryParameter(DeeplinkMapperUoh.PATH_ORDER_ID, orderId)
-            .build()
-            .toString()
-        val intent = RouteManager.getIntent(activity, appLink)
+    fun goToBomDetailPage(orderId: String) {
+        val appLink =
+            Uri.parse(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL).buildUpon()
+                .appendQueryParameter(DeeplinkMapperUoh.PATH_ORDER_ID, orderId)
+                .build()
+                .toString()
+        val intent = RouteManager.getIntent(activity, appLink).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
+        applyTransition()
     }
 
     fun goToPrintInvoicePage(url: String, invoiceNum: String) {

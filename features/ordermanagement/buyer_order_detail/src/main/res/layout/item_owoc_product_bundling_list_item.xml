@@ -16,7 +16,8 @@
         android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
         android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_item_owoc_bundling_product_name"
@@ -31,7 +32,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_item_owoc_bundling_thumbnail"
         app:layout_constraintTop_toTopOf="@id/iv_item_owoc_bundling_thumbnail"
-        app:layout_constraintVertical_chainStyle="packed"
         app:typographyType="paragraph_3"
         app:typographyWeight="bold" />
 

@@ -4,6 +4,7 @@ import com.tokopedia.imageassets.TokopediaImageUrl
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -26,13 +27,14 @@ class OwocProductBundlingViewHolder(
     OwocProductBundlingItemAdapter.ViewHolder.Listener {
 
     companion object {
-        val LAYOUT = R.layout.item_buyer_order_detail_product_bundling
+        val LAYOUT = R.layout.item_owoc_product_bundling
 
         private const val PRODUCT_BUNDLING_IMAGE_ICON_URL =
             TokopediaImageUrl.PRODUCT_BUNDLING_IMAGE_ICON_URL
     }
 
-    private val bundleItemAdapter: OwocProductBundlingItemAdapter = OwocProductBundlingItemAdapter(this)
+    private val bundleItemAdapter: OwocProductBundlingItemAdapter =
+        OwocProductBundlingItemAdapter(this)
 
     private val bundleItemDecoration = itemView?.context?.let {
         ProductBundlingItemDecoration(it)
@@ -83,10 +85,10 @@ class OwocProductBundlingViewHolder(
 
     private fun bindViews() {
         itemView.run {
-            containerLayout = findViewById(R.id.container_bom_detail_bundling)
-            bundlingNameText = findViewById(R.id.tv_bom_detail_bundling_name)
-            bundlingIconImage = findViewById(R.id.iv_bom_detail_bundling_icon)
-            bundlingItemRecyclerView = findViewById(R.id.rv_bom_detail_bundling)
+            containerLayout = findViewById(R.id.container_owoc_bundling)
+            bundlingNameText = findViewById(R.id.tv_owoc_bundling_name)
+            bundlingIconImage = findViewById(R.id.iv_owoc_bundling_icon)
+            bundlingItemRecyclerView = findViewById(R.id.rv_owoc_bundling)
         }
     }
 
@@ -94,7 +96,6 @@ class OwocProductBundlingViewHolder(
         bundlingItemRecyclerView?.run {
             if (adapter != bundleItemAdapter) {
                 layoutManager = LinearLayoutManager(context)
-                isNestedScrollingEnabled = false
                 adapter = bundleItemAdapter
             }
             if (itemDecorationCount.isZero()) {
@@ -106,8 +107,8 @@ class OwocProductBundlingViewHolder(
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
         bundlingNameText?.text = bundleName
         val iconUrl = bundleIconUrl.ifEmpty {
-                PRODUCT_BUNDLING_IMAGE_ICON_URL
-            }
+            PRODUCT_BUNDLING_IMAGE_ICON_URL
+        }
         bundlingIconImage?.loadImage(iconUrl)
     }
 

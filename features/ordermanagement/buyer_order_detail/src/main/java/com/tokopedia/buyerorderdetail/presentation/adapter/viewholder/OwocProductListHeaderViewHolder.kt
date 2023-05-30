@@ -17,7 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class OwocProductListHeaderViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator?
+    private val listener: Listener
 ) : AbstractViewHolder<OwocProductListUiModel.ProductListHeaderUiModel>(itemView),
     View.OnClickListener {
 
@@ -87,12 +87,13 @@ class OwocProductListHeaderViewHolder(
 
     private fun goToOtherBomDetail() {
         element?.let {
-            navigator?.goToBomDetailPage(it.orderId)
+            listener.goToOtherBomDetail(it.orderId)
         }
     }
 
     private fun setupClickListener() {
         labelOwoc?.setOnClickListener(this@OwocProductListHeaderViewHolder)
+        btnOwocMoreDetail?.setOnClickListener(this@OwocProductListHeaderViewHolder)
     }
 
     private fun setupButtonOrLabel(
@@ -153,5 +154,9 @@ class OwocProductListHeaderViewHolder(
                 setErrorDrawable(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
             }
         }
+    }
+
+    interface Listener {
+        fun goToOtherBomDetail(orderId: String)
     }
 }

@@ -24,14 +24,6 @@ class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFacto
         visitables.addAll(newOwocSectionGroupList)
     }
 
-    fun getItemPosition(uiModel: Visitable<OwocSectionGroupTypeFactoryImpl>?): Int {
-        return visitables.indexOf(uiModel)
-    }
-
-    fun getBaseVisitableUiModels(): List<Visitable<OwocSectionGroupTypeFactoryImpl>> {
-        return visitables.filterIsInstance<Visitable<OwocSectionGroupTypeFactoryImpl>>()
-    }
-
     fun showLoadingShimmer() {
         if (visitables.getOrNull(Int.ZERO) !is OwocShimmerUiModel) {
             visitables.add(OwocShimmerUiModel())
