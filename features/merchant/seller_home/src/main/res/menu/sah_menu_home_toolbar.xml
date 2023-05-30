@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_sah_search"
+        android:id="@+id/sah_search_action_menu"
         android:title="@string/sah_search"
-        app:showAsAction="always"
-        app:actionLayout="@layout/layout_sah_search_menu" />
+        app:actionLayout="@layout/sah_search_action_menu"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/menu_sah_notification"
-        android:icon="@drawable/ic_sah_notif_actionbar_group"
+        android:id="@+id/sah_notification_action_menu"
         android:title="@string/sah_notification"
+        app:actionLayout="@layout/sah_notif_action_menu"
         app:showAsAction="ifRoom" />
 </menu>
