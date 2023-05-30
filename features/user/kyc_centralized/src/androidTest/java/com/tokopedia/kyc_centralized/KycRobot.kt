@@ -6,18 +6,19 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.VerificationModes.times
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
-import com.tokopedia.kyc_centralized.util.waitOnView
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraActivity
-import com.tokopedia.kyc_centralized.ui.tokoKyc.alacarte.UserIdentificationInfoSimpleActivity
+import com.tokopedia.kyc_centralized.util.MockTimber
+import com.tokopedia.kyc_centralized.util.hasRedirectUrlFinal
+import com.tokopedia.kyc_centralized.util.waitOnView
 
 class KycRobot {
 
     fun checkTermsAndCondition() {
-        onView(withId(R.id.checkboxPurposes)).perform(click())
+        // waiting for user consent
+        Thread.sleep(500)
+        onView(withId(com.tokopedia.usercomponents.R.id.checkboxPurposes)).perform(click())
     }
 
     fun atInfoClickNext() {
@@ -39,12 +40,12 @@ class KycRobot {
     }
 
     fun atFaceIntroClickNext() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_000)
         onView(withId(R.id.button)).perform(click())
     }
 
     fun atFinalPressCta() {
-        Thread.sleep(3_000)
+        Thread.sleep(2_000)
         onView(withId(R.id.upload_button)).perform(click())
     }
 
@@ -52,7 +53,6 @@ class KycRobot {
         Thread.sleep(2_000)
         onView(withId(R.id.kyc_upload_error_button)).perform(click())
     }
-
 }
 
 class KycResultRobot {
@@ -69,18 +69,21 @@ class KycResultRobot {
         intended(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", projectId)), times(count))
     }
 
-    fun hasRedirectUrl(rule: IntentsTestRule<UserIdentificationInfoSimpleActivity>, url: String) {
-        assertThat(rule.activityResult.resultData, hasExtra(PARAM_REDIRECT_URL, url))
+    fun hasRedirectUrl(timber: MockTimber, url: String) {
+        assertThat(timber, hasRedirectUrlFinal(url))
     }
 
+    fun shouldShowErrorSnackbar(textError: Int) {
+        onView(withText(textError)).check(matches(isDisplayed()))
+    }
 }
 
 fun kycRobot(func: KycRobot.() -> Unit): KycRobot {
     return KycRobot().apply(func)
 }
 
-infix fun KycRobot.upload(func: KycResultRobot.() -> Unit): KycResultRobot {
+infix fun KycRobot.validate(func: KycResultRobot.() -> Unit): KycResultRobot {
     // in KYC, there is no manual CTA Button to upload, so we just wait
-    Thread.sleep(2500)
+    Thread.sleep(2000)
     return KycResultRobot().apply(func)
 }

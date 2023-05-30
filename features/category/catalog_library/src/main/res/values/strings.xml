@@ -1,0 +1,13 @@
+<resources>
+    <string name="catalog_lihat_semua">Lihat Semua</string>
+    <string name="kategori_Special_Buatmu">Kategori Spesial Buatmu</string>
+    <string name="catalog_homepage_title">Katalog Tokopedia</string>
+    <string name="most_viral_lagi_viral_nih">Lagi Viral, nih!</string>
+    <string name="brand_terpopuler">Brand Terpopuler</string>
+    <string name="top_five_rank">#%s</string>
+    <string name="brand_name">Samsung</string>
+    <string name="lihat">Lihat</string>
+    <string name="product_price">%s - %s</string>
+    <string name="most_viral_subtitle_common">%s yang lagi ramai dilihat</string>
+    <string name="catalog_library_kategori">Kategori</string>
+</resources>

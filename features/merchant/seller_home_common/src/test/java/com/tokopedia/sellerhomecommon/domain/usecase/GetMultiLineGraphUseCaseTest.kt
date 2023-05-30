@@ -2,7 +2,7 @@ package com.tokopedia.sellerhomecommon.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerhomecommon.domain.mapper.MultiLineGraphMapper
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.GetMultiLineGraphResponse
 import com.tokopedia.sellerhomecommon.utils.TestHelper
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -48,8 +48,8 @@ class GetMultiLineGraphUseCaseTest {
         MockKAnnotations.init(this)
 
         params = GetMultiLineGraphUseCase.getRequestParams(
-                dataKey = ArgumentMatchers.anyList(),
-                dynamicParameter = DynamicParameterModel()
+            dataKey = ArgumentMatchers.anyList(),
+            dynamicParam = ParamCommonWidgetModel()
         )
         getMultiLineGraphUseCase = GetMultiLineGraphUseCase(gqlRepository, mapper, CoroutineTestDispatchersProvider)
     }

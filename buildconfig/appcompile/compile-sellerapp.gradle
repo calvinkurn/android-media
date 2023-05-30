@@ -119,6 +119,7 @@ includeIfEnabled("features:merchant:seller_feedback")
 includeIfEnabled("features:merchant:campaign_list")
 includeIfEnabled("features:merchant:campaign_common")
 includeIfEnabled("features:merchant:seller_persona")
+includeIfEnabled("features:merchant:centralized_promo")
 
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")
@@ -127,8 +128,6 @@ includeIfEnabled("features:payment:common_payment")
 includeIfEnabled("features:payment:payment")
 includeIfEnabled("features:payment:withdraw")
 includeIfEnabled("features:payment:payment_setting")
-
-includeIfEnabled("features:merchant:gallery")
 
 includeIfEnabled("features:promo:loyalty")
 includeIfEnabled("features:promo:loyalty_common")

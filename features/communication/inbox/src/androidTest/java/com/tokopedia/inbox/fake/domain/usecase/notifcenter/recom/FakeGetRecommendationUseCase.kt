@@ -13,7 +13,10 @@ class FakeGetRecommendationUseCase(
     private val graphqlUseCase: FakeRecommendationGraphqlUseCase,
     userSession: UserSessionInterface
 ) : GetRecommendationUseCase(
-    context, recomRawString, graphqlUseCase, userSession
+    context,
+    recomRawString,
+    graphqlUseCase,
+    userSession
 ) {
 
     var response = RecommendationEntity()
@@ -24,7 +27,8 @@ class FakeGetRecommendationUseCase(
 
     val defaultResponse: RecommendationEntity
         get() = AndroidFileUtil.parseRaw(
-            R.raw.notifcenter_recom, RecommendationEntity::class.java
+            R.raw.notifcenter_recom,
+            RecommendationEntity::class.java
         )
 
     init {
@@ -34,5 +38,4 @@ class FakeGetRecommendationUseCase(
     fun initialize() {
         this.response = defaultResponse
     }
-
 }

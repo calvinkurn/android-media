@@ -100,9 +100,29 @@ data class AffiliateUserPerformaListItemData(
                                           var isLastItem: Boolean = false
                                     ){
                                           data class SubTooltip(
-                                                @SerializedName("Description")
-                                                var description: String?
-                                          )
+                                              @SerializedName("Metrics")
+                                              var metrics: List<SubSubMetrics?>,
+
+                                              @SerializedName("Description")
+                                              var description: String?
+                                          ){
+                                              data class SubSubMetrics(
+                                                  @SerializedName("MetricType")
+                                                  var metricType: String?,
+                                                  @SerializedName("MetricTitle")
+                                                  var metricTitle: String,
+                                                  @SerializedName("MetricValue")
+                                                  var metricValue: String?,
+                                                  @SerializedName("MetricValueFmt")
+                                                  var metricValueFmt: String?,
+                                                  @SerializedName("MetricDifferenceValue")
+                                                  var metricDifferenceValue: String? = "0",
+                                                  @SerializedName("MetricDifferenceValueFmt")
+                                                  var metricDifferenceValueFmt: String?,
+                                                  @SerializedName("Order")
+                                                  var order: Int?,
+                                              )
+                                          }
                                     }
                               }
                         }

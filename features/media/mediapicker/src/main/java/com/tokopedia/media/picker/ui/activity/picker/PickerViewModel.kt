@@ -18,7 +18,6 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toRemovableUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.isUrl
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
@@ -73,10 +72,10 @@ class PickerViewModel @Inject constructor(
         }
 
     fun navigateToEditorPage(result: PickerResult) {
-        viewModelScope.launch {
-            val data = Pair(result, param.get().getEditorParam() ?: EditorParam())
-            _editorParam.value = data
-        }
+        val editorParam = param.get().getEditorParam() ?: EditorParam()
+        val data = Pair(result, editorParam)
+
+        _editorParam.value = data
     }
 
     fun setPickerParam(pickerParam: PickerParam?) {
@@ -124,11 +123,22 @@ class PickerViewModel @Inject constructor(
             .onStart { _isLoading.value = true }
             .onCompletion { _isLoading.value = false }
             .map {
-                val pickerFile = it.asPickerFile()
-                val uiModels = pickerFile.toRemovableUiModel()
+                val uiModels = setIncludedUrls(it)
+
                 _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun setIncludedUrls(result: List<Pair<String, String>?>): List<MediaUiModel?> {
+        return result.map {
+            it?.first
+                ?.asPickerFile()
+                ?.toUiModel()
+                ?.also { model ->
+                    model.sourcePath = it.second
+                }
+        }
     }
 
     fun loadMedia(bucketId: Long, start: Int = 0) {

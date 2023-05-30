@@ -22,11 +22,11 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class RechargeCCPromoFragment(
-    private val listener: RechargeCCPromoItemListener
-) : BaseDaggerFragment(), TopupBillsPromoListWidget.ActionListener {
+class RechargeCCPromoFragment() : BaseDaggerFragment(), TopupBillsPromoListWidget.ActionListener {
 
     private var binding by autoClearedNullable<FragmentRechargeCcPromoBinding>()
+
+    private var listener: RechargeCCPromoItemListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -96,7 +96,7 @@ class RechargeCCPromoFragment(
                     Snackbar.LENGTH_LONG
                 ).show()
             }
-            listener.onCopiedPromoCode(promoId, voucherCode, position)
+            listener?.onCopiedPromoCode(promoId, voucherCode, position)
         }
     }
 
@@ -108,6 +108,10 @@ class RechargeCCPromoFragment(
         fun onCopiedPromoCode(promoId: String, voucherCode: String, position: Int)
     }
 
+    fun setListener(listener: RechargeCCPromoItemListener) {
+        this.listener = listener
+    }
+
     companion object {
 
         private const val EXTRA_PARAM_PROMO = "EXTRA_PARAM_PROMO"
@@ -117,10 +121,9 @@ class RechargeCCPromoFragment(
 
         fun newInstance(
             promos: List<TopupBillsPromo>,
-            showTitle: Boolean = true,
-            listener: RechargeCCPromoItemListener
+            showTitle: Boolean = true
         ): RechargeCCPromoFragment {
-            val fragment = RechargeCCPromoFragment(listener)
+            val fragment = RechargeCCPromoFragment()
             val bundle = Bundle().apply {
                 putParcelableArrayList(EXTRA_PARAM_PROMO, ArrayList(promos))
                 putBoolean(EXTRA_PARAM_SHOW_TITLE, showTitle)
