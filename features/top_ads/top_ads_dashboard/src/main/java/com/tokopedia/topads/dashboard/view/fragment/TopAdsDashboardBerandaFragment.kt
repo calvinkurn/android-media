@@ -105,7 +105,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private val insightListAdapter by lazy { InsightListAdapter(onInsightItemClick) }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
-        { adGroupList, item ->
+        { _, _ ->
             moveToInsightPage()
         }
 

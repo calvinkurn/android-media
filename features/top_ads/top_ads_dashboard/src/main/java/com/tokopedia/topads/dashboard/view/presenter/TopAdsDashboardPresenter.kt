@@ -4,7 +4,6 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
@@ -33,14 +32,6 @@ import com.tokopedia.topads.dashboard.data.raw.BUDGET_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.SHOP_AD_INFO
 import com.tokopedia.topads.dashboard.domain.interactor.*
-import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.SaranTopAdsChipsUiModel
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.EmptyStateData
-import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.usecase.RequestParams
@@ -85,8 +76,6 @@ class TopAdsDashboardPresenter @Inject constructor(
     private val whiteListedUserUseCase: GetWhiteListedUserUseCase,
     private val topAdsGetDeletedAdsUseCase: TopAdsGetDeletedAdsUseCase,
     private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers,
-    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase
 ) : BaseDaggerPresenter<TopAdsDashboardView>(), CoroutineScope {
 
     private val job = SupervisorJob()
@@ -453,54 +442,6 @@ class TopAdsDashboardPresenter @Inject constructor(
     ) {
         topAdsGetDeletedAdsUseCase.setParams(page, type, startDate, endDate)
         topAdsGetDeletedAdsUseCase.execute(onSuccess, onEmptyResult)
-    }
-
-
-    private val _productInsights =
-        MutableLiveData<TopAdsListAllInsightState<InsightUiModel>>()
-    val productInsights: LiveData<TopAdsListAllInsightState<InsightUiModel>>
-        get() = _productInsights
-
-    private val _headlineInsights =
-        MutableLiveData<TopAdsListAllInsightState<InsightUiModel>>()
-    val headlineInsights: LiveData<TopAdsListAllInsightState<InsightUiModel>>
-        get() = _headlineInsights
-
-
-
-
-    fun getChipsData(): MutableList<SaranTopAdsChipsUiModel> {
-        return mutableListOf(
-            SaranTopAdsChipsUiModel("Semua", true),
-            SaranTopAdsChipsUiModel("Kata Kunci"),
-            SaranTopAdsChipsUiModel("Biaya Kata Kunci"),
-            SaranTopAdsChipsUiModel("Biaya Iklan"),
-            SaranTopAdsChipsUiModel("Anggaran Harian"),
-            SaranTopAdsChipsUiModel("Kata Kunci Negatif")
-        )
-    }
-
-    fun getEmptyStateData(type: Int): InsightListUiModel {
-        return when (type) {
-            1, 2, 5 -> {
-                EmptyStateUiListModel(
-                    getChipsData()[type].name,
-                    listOf(EmptyStateData.getData()[1])
-                )
-            }
-            3 -> {
-                EmptyStateUiListModel(
-                    getChipsData()[type].name,
-                    listOf(EmptyStateData.getData()[2], EmptyStateData.getData()[3])
-                )
-            }
-            else -> {
-                EmptyStateUiListModel(
-                    getChipsData()[type].name,
-                    listOf(EmptyStateData.getData()[4])
-                )
-            }
-        }
     }
 
     override val coroutineContext: CoroutineContext
