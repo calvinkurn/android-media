@@ -488,7 +488,7 @@ class VideoDetailFragment :
                         IconUnify.THUMB_FILLED,
                         MethodChecker.getColor(
                             requireContext(),
-                            com.tokopedia.unifyprinciples.R.color.light_G500,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500,
                         )
                     )
                 )
@@ -496,7 +496,7 @@ class VideoDetailFragment :
                 likeText.setTextColor(
                     MethodChecker.getColor(
                         likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
             }

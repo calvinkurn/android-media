@@ -328,7 +328,7 @@
                         android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_share"
                         android:scaleType="fitCenter"
-                        app:tint="@color/light_N200"
+                        app:tint="@color/Unify_N200"
                         app:layout_constraintBottom_toBottomOf="@id/commentText"
                         app:layout_constraintStart_toEndOf="@id/commentText"
                         app:layout_constraintTop_toTopOf="@id/commentText"

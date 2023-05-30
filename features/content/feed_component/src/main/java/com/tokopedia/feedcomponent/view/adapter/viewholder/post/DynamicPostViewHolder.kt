@@ -590,7 +590,7 @@ open class DynamicPostViewHolder(
                         IconUnify.THUMB_FILLED,
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.light_G500,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500,
                         )
                     )
                 )
@@ -599,7 +599,7 @@ open class DynamicPostViewHolder(
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
                         itemView.likeText.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G400
+                        com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
             }
@@ -610,7 +610,7 @@ open class DynamicPostViewHolder(
                         IconUnify.THUMB_FILLED,
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.light_N150,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N200,
                         )
                     )
                 )
@@ -629,7 +629,7 @@ open class DynamicPostViewHolder(
                         IconUnify.THUMB_FILLED,
                         MethodChecker.getColor(
                             itemView.context,
-                            com.tokopedia.unifyprinciples.R.color.light_N150,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N150,
                         )
                     )
                 )

@@ -62,7 +62,7 @@
             app:layout_constraintBottom_toBottomOf="@id/iv_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/iv_search"
-            app:tint="@color/light_N400"
+            app:tint="@color/Unify_N400"
             app:srcCompat="@drawable/iconunify_clear"
             />
 

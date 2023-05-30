@@ -11,7 +11,7 @@
         android:background="@drawable/bg_play_chat_scroll_down"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/light_N400"
+        app:tint="@color/Unify_N400"
         app:srcCompat="@drawable/iconunify_chevron_down"
         />
 
