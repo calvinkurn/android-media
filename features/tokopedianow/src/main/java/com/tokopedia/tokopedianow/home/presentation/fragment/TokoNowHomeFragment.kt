@@ -165,6 +165,7 @@ import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -377,12 +378,12 @@ class TokoNowHomeFragment :
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onStop()
     }
 
     override fun onDestroy() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onDestroy()
     }
 
@@ -603,7 +604,7 @@ class TokoNowHomeFragment :
 
     private fun initScreenShotDetector() {
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 context = it,
                 screenShotListener = this,
                 fragment = this,
@@ -1831,7 +1832,7 @@ class TokoNowHomeFragment :
     }
 
     private fun shareClicked(shareHomeTokonow: ShareTokonow?) {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(shareHomeTokonow)
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokonow))

@@ -51,6 +51,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemD
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -113,19 +114,19 @@ class TokoNowCategoryFragment :
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onStop()
     }
 
     override fun onDestroy() {
-        UniversalShareBottomSheet.clearState(screenshotDetector)
+        SharingUtil.clearState(screenshotDetector)
         super.onDestroy()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 context = it,
                 screenShotListener = this,
                 fragment = this,
@@ -363,7 +364,7 @@ class TokoNowCategoryFragment :
     }
 
     private fun shareClicked(shareHomeTokonow: ShareTokonow?) {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(shareHomeTokonow)
         } else {
             LinkerManager.getInstance().executeShareRequest(shareRequest(context, shareHomeTokonow))
