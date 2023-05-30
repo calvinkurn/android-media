@@ -1,6 +1,9 @@
 package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,6 +23,7 @@ import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -151,9 +156,23 @@ class ProductArchivalBottomSheet : BottomSheetUnify(), HasComponent<ProductManag
             }else{
                 getString(R.string.product_archival_info_time_archived, content.archiveTime).parseAsHtml()
             }
+
+
             tvProductArchivalReason.text = content.reason
-            tvProductArchivalSellerEdu.text =
-                getString(R.string.product_archival_edu, content.sellerEduArticleURL).parseAsHtml()
+            tvProductArchivalSellerEdu.apply{
+                val htmlText = context?.let {
+                    HtmlLinkHelper(
+                        it,
+                        getString(R.string.product_archival_edu, content.sellerEduArticleURL)
+                    )
+                }
+                this.movementMethod = LinkMovementMethod.getInstance()
+                this.highlightColor = Color.TRANSPARENT
+                htmlText?.urlList?.getOrNull(Int.ZERO)?.setOnClickListener {
+                    RouteManager.route(requireContext(),content.sellerEduArticleURL)
+                }
+                this.text = htmlText?.spannedString
+            }
 
             btnProductArchivalHelp.setOnClickListener {
                 RouteManager.route(requireContext(), content.helpPageURL)
