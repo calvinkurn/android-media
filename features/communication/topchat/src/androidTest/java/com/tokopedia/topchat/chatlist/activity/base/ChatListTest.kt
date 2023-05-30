@@ -5,12 +5,15 @@ import android.content.Intent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.chatlist.di.ActivityComponentFactory
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.view.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder.Companion.ROLLENCE_MVC_ICON
+import com.tokopedia.topchat.chatlist.view.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.stub.chatlist.di.ChatListComponentStub
 import com.tokopedia.topchat.stub.chatlist.di.FakeActivityComponentFactory
 import com.tokopedia.topchat.stub.chatlist.usecase.GetChatListMessageUseCaseStub
@@ -84,6 +87,8 @@ abstract class ChatListTest {
     ) {
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
+        } else {
+            GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         }
         val intent = Intent()
         intentModifier(intent)
@@ -93,6 +98,21 @@ abstract class ChatListTest {
 
     protected fun setRollenceMVCIcon(isActive: Boolean) {
         abTestPlatform.setString(ROLLENCE_MVC_ICON, if (isActive) ROLLENCE_MVC_ICON else "")
+    }
+
+    protected fun setLastSeenTab(isSellerTab: Boolean) {
+        context.getSharedPreferences(
+            ChatTabCounterViewModel.PREF_CHAT_LIST_TAB,
+            Context.MODE_PRIVATE
+        )
+            .edit()
+            .apply {
+                putInt(
+                    ChatTabCounterViewModel.KEY_LAST_POSITION,
+                    if (isSellerTab) Int.ZERO else Int.ONE
+                )
+                apply()
+            }
     }
 
     companion object {
