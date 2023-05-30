@@ -57,7 +57,9 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:srcCompat="@drawable/ic_play_action_add" />
+            app:tint="@color/light_N400"
+            android:padding="4dp"
+            app:srcCompat="@drawable/iconunify_add" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
