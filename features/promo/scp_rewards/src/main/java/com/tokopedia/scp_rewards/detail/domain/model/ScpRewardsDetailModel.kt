@@ -3,7 +3,7 @@ package com.tokopedia.scp_rewards.detail.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class MedalDetailResponseModel(
-    @SerializedName("scpRewardsGetMedaliDetailPage") val detail: RewardsGetMedaliDetail? = null
+    @SerializedName("scpRewardsMedaliDetailPage") val detail: RewardsGetMedaliDetail? = null
 )
 
 data class RewardsGetMedaliDetail(
@@ -21,38 +21,56 @@ data class MedaliDetailPage(
     @SerializedName("backgroundImageColor") val backgroundImageColor: String? = null,
     @SerializedName("frameImageURL") val frameImageURL: String? = null,
     @SerializedName("innerIconImageURL") val innerIconImageURL: String? = null,
+    @SerializedName("iconImageURL") val iconImageURL: String? = null,
     @SerializedName("maskingImageURL") val maskingImageURL: String? = null,
+    @SerializedName("frameMaskingImageURL") val frameMaskingImageURL: String? = null,
     @SerializedName("shutterImageURL") val shutterImageURL: String? = null,
     @SerializedName("shutterText") val shutterText: String? = null,
-    @SerializedName("shimmerImageURL") val shimmerImageURL: String? = null,
+    @SerializedName("shimmerAltImageURL") val shimmerImageURL: String? = null,
     @SerializedName("shimmerShutterLottieURL") val shimmerShutterLottieURL: String? = null,
     @SerializedName("outerBlinkingLottieURL") val outerBlinkingLottieURL: String? = null,
     @SerializedName("baseImageURL") val baseImageURL: String? = null,
     @SerializedName("sourceText") val sourceText: String? = null,
     @SerializedName("sourceFontColor") val sourceFontColor: String? = null,
     @SerializedName("sourceBackgroundColor") val sourceBackgroundColor: String? = null,
-    @SerializedName("medaliName") val medaliName: String? = null,
-    @SerializedName("medaliDescription") val medaliDescription: String? = null,
+    @SerializedName("name") val name: String? = null,
+    @SerializedName("description") val description: String? = null,
+    @SerializedName("isMedaliGrayScale") val isMedaliGrayScale: String? = null,
+    @SerializedName("tncButton") val tncButton: TncButton? = null,
+    @SerializedName("coachMark") val coachMark: CoachMark? = null,
+    @SerializedName("mission") val mission: Mission? = null,
+    @SerializedName("benefit") val benefit: List<Benefit>? = null,
+    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null
+)
+
+data class TncButton(
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("url") val url: String? = null,
+    @SerializedName("appLink") val appLink: String? = null
+)
+
+data class CoachMark(
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("showNumberOfTimes") val showNumberOfTimes: Int? = null,
+    @SerializedName("timeOut") val timeOut: Long? = null
 )
 
 data class Mission(
     @SerializedName("title") val title: String? = null,
     @SerializedName("progress") val progress: Int? = null,
-    @SerializedName("task") val task: List<Task>? = null,
-    @SerializedName("benefit") val benefit: List<Benefit>? = null,
-    @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null,
+    @SerializedName("task") val task: List<Task>? = null
 )
 
 data class Task(
     @SerializedName("isCompleted") val isCompleted: Boolean = false,
-    @SerializedName("title") val title: String? = null,
+    @SerializedName("title") val title: String? = null
 )
 
 data class Benefit(
     @SerializedName("imageUrl") val imageUrl: String? = null,
     @SerializedName("isActive") val isActive: Boolean = false,
     @SerializedName("status") val status: String? = null,
-    @SerializedName("statusDescription") val statusDescription: String? = null,
+    @SerializedName("statusDescription") val statusDescription: String? = null
 )
 
 data class BenefitButton(
@@ -61,6 +79,5 @@ data class BenefitButton(
     @SerializedName("url") val url: String? = null,
     @SerializedName("appLink") val appLink: String? = null,
     @SerializedName("isAutoApply") val isAutoApply: Boolean = false,
-    @SerializedName("couponCode") val couponCode: String? = null,
+    @SerializedName("couponCode") val couponCode: String? = null
 )
-
