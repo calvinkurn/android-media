@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment.beautification
 
+import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -352,6 +354,16 @@ class BeautificationSetupFragment @Inject constructor(
 
         binding.sliderBeautification.y = targetY
         binding.sliderBeautification.show()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val rect = Rect(
+                binding.sliderBeautification.left,
+                binding.sliderBeautification.top,
+                binding.sliderBeautification.right,
+                binding.sliderBeautification.bottom,
+            )
+            binding.sliderBeautification.systemGestureExclusionRects = listOf(rect)
+        }
     }
 
     private fun hideSlider() {
