@@ -19,7 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class CatalogLibraryHomePageVMTest {
+class CatalogLibraryHomePageViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()

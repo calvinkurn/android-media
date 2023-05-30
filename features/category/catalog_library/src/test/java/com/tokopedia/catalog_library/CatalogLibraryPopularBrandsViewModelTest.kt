@@ -15,7 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class CatalogLibraryPopularBrandsVMTest {
+class CatalogLibraryPopularBrandsViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()

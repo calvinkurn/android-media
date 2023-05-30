@@ -10,10 +10,10 @@ import org.robolectric.annotation.Config
 @Config(sdk = [Build.VERSION_CODES.P])
 @ExperimentalCoroutinesApi
 @Suite.SuiteClasses(
-    CatalogLibraryHomePageVMTest::class,
-    CatalogLibraryLandingPageVMTest::class,
-    CatalogLibraryLihatSemuaVMTest::class,
-    CatalogLibraryPopularBrandsVMTest::class,
-    CatalogLibraryProductBaseVMTest::class
+    CatalogLibraryHomePageViewModelTest::class,
+    CatalogLibraryLandingPageViewModelTest::class,
+    CatalogLibraryLihatSemuaViewModelTest::class,
+    CatalogLibraryPopularBrandsViewModelTest::class,
+    CatalogLibraryProductBaseViewModelTest::class
 )
 class CatalogLibraryTestSuite
