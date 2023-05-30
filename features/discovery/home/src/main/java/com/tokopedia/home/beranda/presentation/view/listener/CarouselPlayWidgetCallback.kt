@@ -1,5 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.listener
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.home.analytics.HomePageTracking.PROMO_CLICK
 import com.tokopedia.home.analytics.HomePageTracking.PROMO_VIEW
 import com.tokopedia.play.widget.analytic.const.irisSessionId
@@ -16,7 +19,6 @@ import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import kotlin.collections.HashMap
 
 /**
  * Created by kenny.hadisaputra on 25/05/23
@@ -24,6 +26,7 @@ import kotlin.collections.HashMap
 class CarouselPlayWidgetCallback(
     private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface,
+    lifecycleOwner: LifecycleOwner,
 ) : PlayWidgetInListAnalyticListener, BaseTrackerConst() {
 
     private val userId: String
@@ -31,6 +34,18 @@ class CarouselPlayWidgetCallback(
 
     private var mHomeChannelId = ""
     private var mHeaderTitle = ""
+
+    private val channelImpressions = mutableListOf<String>()
+    private val productImpressions = mutableListOf<ProductInChannelKey>()
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(object : LifecycleEventObserver {
+            override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+                channelImpressions.clear()
+                productImpressions.clear()
+            }
+        })
+    }
 
     fun setHomeChannelId(channelId: String) {
         mHomeChannelId = channelId
@@ -50,10 +65,10 @@ class CarouselPlayWidgetCallback(
         config: PlayWidgetConfigUiModel,
         channelPositionInList: Int,
         verticalWidgetPosition: Int
-    ) {
+    ) = impressChannel(item.channelId) {
         val channelPosition = channelPositionInList + 1
 
-        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
+        BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventCategory = model.category,
             eventAction = "view - video widget",
@@ -89,8 +104,6 @@ class CarouselPlayWidgetCallback(
             .appendCustomKeyValue(KEY_SESSION_IRIS, irisSessionId)
             .appendCustomKeyValue(KEY_CHANNEL_ID, mHomeChannelId)
             .build()
-
-        trackingQueue.putEETracking(HashMap(trackerMap))
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3947
@@ -266,7 +279,7 @@ class CarouselPlayWidgetCallback(
         productPosition: Int,
         channelPositionInList: Int,
         verticalWidgetPosition: Int
-    ) {
+    ) = impressProductInChannel(product.id, item.channelId) {
         val channelPosition = channelPositionInList + 1
 
         val itemList = trackerMultiFields(
@@ -282,7 +295,7 @@ class CarouselPlayWidgetCallback(
             mHeaderTitle,
         )
 
-        val trackerMap = mapOf(
+        mapOf(
             Event.KEY to EVENT_PRODUCT_VIEW,
             Category.KEY to model.category,
             Action.KEY to "view - product card video widget",
@@ -320,8 +333,6 @@ class CarouselPlayWidgetCallback(
             KEY_SESSION_IRIS to irisSessionId,
             KEY_TRACKER_ID to "43577"
         )
-
-        trackingQueue.putEETracking(HashMap(trackerMap))
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3947
@@ -394,6 +405,23 @@ class CarouselPlayWidgetCallback(
         trackingQueue.putEETracking(HashMap(trackerMap))
     }
 
+    private fun impressChannel(channelId: String, onNotImpressed: () -> Map<String, Any>) {
+        if (channelImpressions.contains(channelId)) return
+        channelImpressions.add(channelId)
+        trackingQueue.putEETracking(HashMap(onNotImpressed()))
+    }
+
+    private fun impressProductInChannel(
+        productId: String,
+        channelId: String,
+        onNotImpressed: () -> Map<String, Any>,
+    ) {
+        val key = ProductInChannelKey(productId, channelId)
+        if (productImpressions.contains(key)) return
+        productImpressions.add(key)
+        trackingQueue.putEETracking(HashMap(onNotImpressed()))
+    }
+
     companion object {
         private const val EVENT_CLICK_CONTENT = "clickContent"
         private const val EVENT_PRODUCT_VIEW = "productView"
@@ -409,4 +437,9 @@ class CarouselPlayWidgetCallback(
         private const val VAL_BUSINESS_UNIT = "play"
         private const val VAL_CURRENT_SITE = "tokopediamarketplace"
     }
+
+    private data class ProductInChannelKey(
+        val channelId: String,
+        val productId: String,
+    )
 }

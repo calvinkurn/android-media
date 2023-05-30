@@ -78,6 +78,11 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     it,
                 )
             }
+
+            mWidgetListener?.onWidgetOpenAppLink(
+                this@PlayWidgetCarouselView,
+                item.appLink,
+            )
         }
 
         override fun onMuteButtonClicked(
@@ -106,14 +111,16 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             productPosition: Int,
             position: Int
         ) {
-            mAnalyticListener?.onImpressProductCard(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                product,
-                productPosition,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onImpressProductCard(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    product,
+                    productPosition,
+                    it,
+                )
+            }
         }
 
         override fun onProductClicked(
@@ -123,14 +130,16 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             productPosition: Int,
             position: Int
         ) {
-            mAnalyticListener?.onClickProductCard(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                product,
-                productPosition,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onClickProductCard(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    product,
+                    productPosition,
+                    it,
+                )
+            }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
@@ -143,12 +152,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            mAnalyticListener?.onClickPartnerName(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onClickPartnerName(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
@@ -163,12 +174,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            mAnalyticListener?.onImpressChannelCard(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onImpressChannelCard(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
         }
 
         override fun onChannelClicked(
@@ -176,11 +189,18 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            mAnalyticListener?.onImpressChannelCard(
+            isPositionValid(position) {
+                mAnalyticListener?.onImpressChannelCard(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
+
+            mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
+                item.appLink,
             )
         }
 
@@ -190,20 +210,22 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             reminderType: PlayWidgetReminderType,
             position: Int
         ) {
-            mAnalyticListener?.onClickToggleReminderChannel(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-                reminderType.reminded,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onClickToggleReminderChannel(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                    reminderType.reminded,
+                )
 
-            mWidgetListener?.onReminderClicked(
-                this@PlayWidgetCarouselView,
-                item.channelId,
-                reminderType,
-                position,
-            )
+                mWidgetListener?.onReminderClicked(
+                    this@PlayWidgetCarouselView,
+                    item.channelId,
+                    reminderType,
+                    it,
+                )
+            }
         }
 
         override fun onPartnerClicked(
@@ -211,12 +233,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             item: PlayWidgetChannelUiModel,
             position: Int
         ) {
-            mAnalyticListener?.onClickPartnerName(
-                this@PlayWidgetCarouselView,
-                item,
-                mModel.config,
-                position,
-            )
+            isPositionValid(position) {
+                mAnalyticListener?.onClickPartnerName(
+                    this@PlayWidgetCarouselView,
+                    item,
+                    mModel.config,
+                    it,
+                )
+            }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
