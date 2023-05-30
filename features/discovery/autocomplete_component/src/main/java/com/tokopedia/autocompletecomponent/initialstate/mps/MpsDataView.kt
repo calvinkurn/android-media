@@ -4,8 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocompletecomponent.initialstate.InitialStateTypeFactory
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
-import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
-import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.convertToSearchBarEducationDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
 
 data class MpsDataView(
@@ -24,7 +22,7 @@ data class MpsDataView(
             keyword: String,
             searchParameter: Map<String, String>,
         ) : MpsDataView? {
-            val items = data.items.map { item ->
+            val items = data.items.mapIndexed { index, item ->
                 BaseItemInitialStateSearch(
                     itemId = item.itemId,
                     template = item.template,
@@ -41,7 +39,7 @@ data class MpsDataView(
                     productId = item.itemId,
                     dimension90 = dimension90,
                     type = item.type,
-                    position = 1,
+                    position = index + 1,
                     componentId = item.componentId,
                     trackingOption = data.trackingOption,
                     keyword = keyword,
