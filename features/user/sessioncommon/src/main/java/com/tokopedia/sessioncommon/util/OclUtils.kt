@@ -6,8 +6,11 @@ import javax.inject.Inject
 
 @ActivityScope
 class OclUtils @Inject constructor(val abTestPlatform: AbTestPlatform) {
-    private val OCL_ROLLENCE = "ocl_an"
     fun isOclEnabled(): Boolean {
         return abTestPlatform.getString(OCL_ROLLENCE, "").isNotEmpty()
+    }
+
+    companion object {
+        const val OCL_ROLLENCE = "ocl_an"
     }
 }

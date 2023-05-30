@@ -23,6 +23,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.SETTING_SHOW_SCREEN_RECORDER
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
+import com.tokopedia.sessioncommon.util.OclUtils.Companion.OCL_ROLLENCE
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.utils.permission.PermissionCheckerHelper
@@ -111,6 +112,7 @@ class FakeHomeAccountUserModules(val context: Context) {
     fun provideAbTestPlatform(): AbTestPlatform {
         return mockk() {
             every { getString(ROLLENCE_PRIVACY_CENTER) } returns ""
+            every { getString(OCL_ROLLENCE, any()) } returns ""
         }
     }
 
