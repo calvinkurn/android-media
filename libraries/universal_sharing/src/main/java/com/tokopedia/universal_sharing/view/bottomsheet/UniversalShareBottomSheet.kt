@@ -380,7 +380,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
             thumbNailImageUrlFallback = tnImage
-            thumbNailTitle = SCREENSHOT_TITLE
+            thumbNailTitle = getString(com.tokopedia.universal_sharing.R.string.screenshoot_success_title)
             imageOptionsList = null
         } else {
             thumbNailTitle = tnTitle
@@ -1459,9 +1459,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         private val LAYOUT = R.layout.universal_share_bottomsheet
         private val TAG = UniversalShareBottomSheet::class.java.simpleName
 
+        // Delay time for timeout
         private const val DELAY_TIME_MILLISECOND = 500L
         private const val DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK = 5000L
-        private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
+
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
 
