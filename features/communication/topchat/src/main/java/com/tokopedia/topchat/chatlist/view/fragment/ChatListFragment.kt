@@ -233,7 +233,7 @@ class ChatListFragment constructor() :
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1004,6 +1004,7 @@ class ChatListFragment constructor() :
         return try {
             abTestPlatform.getString(key, "").isNotEmpty()
         } catch (t: Throwable) {
+            Timber.d(t)
             false
         }
     }
