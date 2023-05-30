@@ -238,8 +238,8 @@
                 android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_share"
                 android:scaleType="fitCenter"
-                android:tint="@color/Unify_N0"
-                app:srcCompat="@drawable/ic_share_grey_profile"
+                app:tint="@color/Unify_NN0"
+                app:srcCompat="@drawable/iconunify_share_mobile"
                 android:visibility="visible"
                 tools:visibility="visible" />
 

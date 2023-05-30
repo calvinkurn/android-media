@@ -328,10 +328,11 @@
                         android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_share"
                         android:scaleType="fitCenter"
+                        app:tint="@color/light_N200"
                         app:layout_constraintBottom_toBottomOf="@id/commentText"
                         app:layout_constraintStart_toEndOf="@id/commentText"
                         app:layout_constraintTop_toTopOf="@id/commentText"
-                        app:srcCompat="@drawable/ic_share_grey_profile" />
+                        app:srcCompat="@drawable/iconunify_share_mobile" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/shareText"
