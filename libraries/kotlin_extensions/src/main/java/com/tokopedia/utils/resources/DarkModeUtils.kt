@@ -69,9 +69,17 @@ object DarkModeUtils {
         return hexColor
     }
 
-    /**The ContextCompat.getColor() method retrieves the color value as an integer.
+    /**
+     * The ContextCompat.getColor() method retrieves the color value as an integer.
      * We then convert this integer to a hex color string using String.format() and
      * the "%06X" format specifier.
+     *
+     * In the context of the expression (0xFFFFFF & colorValue), 0xFFFFFF is
+     * a hexadecimal representation of the number 16,777,215 in base 10.
+     * It is often used in bitwise operations to extract specific bits or perform bitwise masking.
+     *
+     * By performing (0xFFFFFF & colorValue), you obtain a value that
+     * represents the RGB color without any additional bits.
      * */
     private fun getHexColorByColorInt(color: Int): String {
         return String.format(HEX_COLOR_FORMAT, 0xFFFFFF and color)
