@@ -43,10 +43,11 @@ fun HomeScreen(
                 .onMeasureConstraints { constraints.value = it }
                 .verticalScroll(scrollState)
         ) {
-//            NestHeader(
-//                type = NestHeaderType.SingleLine(title = "Tokopedia Test App", showBackButton = false)
-//            )
-            NestTypography(text = "Tokopedia Test App", textStyle = NestTheme.typography.heading3)
+            NestTypography(
+                "Tokopedia Test App",
+                modifier = Modifier.padding(8.dp),
+                textStyle = NestTheme.typography.heading3
+            )
             val urlBgColor = if (model.urlState.contains("live", true)) {
                 NestTheme.colors.GN._600
             } else {
@@ -130,6 +131,7 @@ fun HomeScreen(
         }
     }
 }
+
 private fun Modifier.onMeasureConstraints(
     block: (Constraints) -> Unit
 ) = layout { measurable, constraints ->
