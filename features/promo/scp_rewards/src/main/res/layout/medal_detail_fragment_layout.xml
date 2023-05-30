@@ -44,7 +44,19 @@
                 app:layout_collapseMode="pin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:popupTheme="@style/AppTheme" />
+                app:popupTheme="?toolbarTheme">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tv_terms_conditions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:text="@string/tnc_text"
+                    android:textColor="@color/Unify_N0"
+                    app:typographyType="display_2"
+                    app:typographyWeight="bold" />
+            </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>

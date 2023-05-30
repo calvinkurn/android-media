@@ -79,6 +79,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
+                binding.tvTermsConditions.setOnClickListener {
+                    // open tnc page
+                }
                 elevation = 0f
                 // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
 
