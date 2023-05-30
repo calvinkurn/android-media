@@ -49,13 +49,6 @@ object UniversalShareConst {
         const val KEY_CONTEXTUAL_IMAGE = "contextual_image"
     }
 
-    // Mime Type for the intent
-    object MimeType {
-        const val TYPE_TEXT = "text/plain"
-        const val TYPE_IMAGE = "image/*"
-        const val TYPE_ALL = "*/*"
-    }
-
     object SizeScreenShoot {
         const val PREVIEW_IMG_SCREENSHOT_HEIGHT = 600
         const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080

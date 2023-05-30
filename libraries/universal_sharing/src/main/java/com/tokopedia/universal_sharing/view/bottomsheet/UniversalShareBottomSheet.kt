@@ -66,10 +66,8 @@ import com.tokopedia.universal_sharing.util.UniversalShareConst
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.TickerListAdapter
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -98,109 +96,13 @@ import com.tokopedia.iconunify.R as unifyIconR
  */
 open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<UniversalShareComponent> {
 
-    companion object {
-        @LayoutRes
-        private val LAYOUT = R.layout.universal_share_bottomsheet
-        private val TAG = UniversalShareBottomSheet::class.java.simpleName
+    @Inject lateinit var userSession: UserSessionInterface
 
-        private const val DELAY_TIME_MILLISECOND = 500L
-        private const val DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK = 5000L
-        private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
-        const val CUSTOM_SHARE_SHEET = 1
-        const val SCREENSHOT_SHARE_SHEET = 2
+    @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
 
-        // for affiliate and general user distinction
-        private const val KEY_GENERAL_USER = "general"
-        private const val KEY_AFFILIATE_USER = "affiliate"
-        const val KEY_PRODUCT_ID = "productId"
+    @Inject lateinit var affiliateUsecase: AffiliateEligibilityCheckUseCase
 
-        fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
-
-        /**
-         * if you're using [enableDefaultShareIntent] please create the instance using this function,
-         * otherwise the toaster after clicking `salin link` won't show
-         */
-        fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
-            this.fragmentView = fragmentView
-        }
-
-        fun isCustomSharingEnabled(context: Context?, remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_CUSTOM_SHARING_FEATURE_FLAG): Boolean {
-            val isEnabled: Boolean
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            isEnabled = remoteConfig.getBoolean(remoteConfigKey)
-            return isEnabled
-        }
-
-        fun createAndStartScreenShotDetector(
-            context: Context,
-            screenShotListener: ScreenShotListener,
-            fragment: Fragment,
-            remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG,
-            addFragmentLifecycleObserver: Boolean = false,
-            permissionListener: PermissionListener? = null
-        ): ScreenshotDetector? {
-            val isEnabled: Boolean
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            isEnabled = remoteConfig.getBoolean(remoteConfigKey)
-            var screenshotDetector: ScreenshotDetector? = null
-            if (isEnabled) {
-                screenshotDetector = ScreenshotDetector(context.applicationContext, screenShotListener, permissionListener)
-                if (addFragmentLifecycleObserver) {
-                    setFragmentLifecycleObserverForScreenShot(fragment, screenshotDetector)
-                }
-                screenshotDetector.detectScreenshots(fragment)
-            }
-            return screenshotDetector
-        }
-
-        private fun setFragmentLifecycleObserverForScreenShot(fragment: Fragment, screenshotDetector: ScreenshotDetector?) {
-            fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                override fun onResume(owner: LifecycleOwner) {
-                    super.onResume(owner)
-                    screenshotDetector?.start()
-                }
-
-                override fun onStop(owner: LifecycleOwner) {
-                    super.onStop(owner)
-                    clearState(screenshotDetector)
-                }
-
-                override fun onDestroy(owner: LifecycleOwner) {
-                    fragment.lifecycle.removeObserver(this)
-                    clearState(screenshotDetector)
-                    super.onDestroy(owner)
-                }
-            })
-        }
-
-        // Use this method to get type of the Share Bottom Sheet inside the onShareOptionClicked and onCloseOptionClicked methods
-        // This method can be used to get the bottomsheet type after show() method is called to send required GTM events based on bottomsheet type
-
-        fun clearState(screenshotDetector: ScreenshotDetector?) {
-            screenshotDetector?.stop()
-        }
-
-        fun removePreviousSavedImage(previousSavedImagePath: String, newSavedImagePath: String) {
-            if (!TextUtils.isEmpty(previousSavedImagePath) &&
-                !TextUtils.isEmpty(newSavedImagePath) &&
-                previousSavedImagePath != newSavedImagePath
-            ) {
-                removeFile(previousSavedImagePath)
-            }
-        }
-
-        private fun removeFile(filePath: String) {
-            if (!TextUtils.isEmpty(filePath) &&
-                !filePath.contains(ScreenshotDetector.screenShotRegex, true)
-            ) {
-                File(filePath).apply {
-                    if (exists()) {
-                        delete()
-                    }
-                }
-            }
-        }
-    }
+    @Inject lateinit var tracker: UniversalSharebottomSheetTracker
 
     // View
     private var fragmentView: View? = null
@@ -255,10 +157,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private var linkProperties: LinkProperties? = null
 
-    private var affiliatePDPQueryData: AffiliatePDPInput? = null
-    private var affiliatePDPInputTemp: AffiliatePDPInput? = null
-
-    private var isAffiliateUser: String = KEY_GENERAL_USER
+    private var affiliatePDPQueryData: AffiliateInput? = null
+    private var affiliateInputTemp: AffiliateInput? = null
+    private var userType: String = KEY_GENERAL_USER
 
     /**
      * if this flag is enabled, the bottomsheet will
@@ -307,25 +208,29 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private val parentFragmentLifecycleObserver by lazy {
         object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
-                removeFile(savedImagePath)
+                SharingUtil.removeFile(savedImagePath)
                 super.onDestroy(owner)
             }
         }
     }
-
-    @Inject lateinit var userSession: UserSessionInterface
-
-    @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
-
-    @Inject lateinit var affiliateUsecase: AffiliateEligibilityCheckUseCase
-
-    @Inject lateinit var tracker: UniversalSharebottomSheetTracker
 
     /* boolean flag to show ticker list */
     private var isShowTickerList = false
 
     private val tickerListAdapter by lazy {
         TickerListAdapter(::onClickTicker)
+    }
+
+    override fun getComponent(): UniversalShareComponent? {
+        activity?.let {
+            return DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                .universalShareModule(UniversalShareModule()).build()
+        } ?: return null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.clear()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -345,10 +250,63 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         initAffiliate()
     }
 
-    private fun inject() {
-        component?.inject(this)
+    override fun onDestroy() {
+        parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        parentFragmentContainer = null
+        super.onDestroy()
     }
 
+    override fun show(manager: FragmentManager, tag: String?) {
+        var customBottomSheetEnabled = true
+        if (!TextUtils.isEmpty(featureFlagRemoteConfigKey)) {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            customBottomSheetEnabled = remoteConfig.getBoolean(featureFlagRemoteConfigKey)
+        }
+        if (customBottomSheetEnabled) { // enabled
+            super.show(manager, tag)
+        } else {
+            // call the native bottom sheet share
+            val shareModel = getNativeShareIntent()
+            if (isDefaultShareIntent) {
+                shareChannelClicked(shareModel)
+            }
+            bottomSheetListener?.onShareOptionClicked(shareModel)
+        }
+    }
+
+    override fun dismiss() {
+        try {
+            affiliateListener = null
+            imageThumbnailListener = null
+            removeLifecycleObserverAndSavedImage()
+            if (gqlCallJob?.isActive == true) {
+                gqlCallJob?.cancel()
+            }
+            if (gqlJob?.isActive == true) {
+                gqlJob?.cancel()
+            }
+            super.dismiss()
+        } catch (ex: Exception) {
+            logExceptionToRemote(ex)
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        try {
+            affiliateListener = null
+            imageThumbnailListener = null
+            removeLifecycleObserverAndSavedImage()
+            if (gqlCallJob?.isActive == true) {
+                gqlCallJob?.cancel()
+            }
+            if (gqlJob?.isActive == true) {
+                gqlJob?.cancel()
+            }
+            super.onDismiss(dialog)
+        } catch (ex: Exception) {
+            logExceptionToRemote(ex)
+        }
+    }
     fun init(bottomSheetListener: ShareBottomsheetListener) {
         clearContentPadding = true
         this.bottomSheetListener = bottomSheetListener
@@ -406,224 +364,285 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         isDefaultShareIntent = true
     }
 
-    private fun shareChannelClicked(shareModel: ShareModel) {
-        if (linkProperties == null) throw Exception("Please set link properties")
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                0,
-                createLinkerData(shareModel),
-                object : ShareCallback {
-                    override fun urlCreated(linkerShareResult: LinkerShareResult) {
-                        shareModel.subjectName = subjectShare
-                        SharingUtil.executeShareIntent(
-                            shareModel,
-                            linkerShareResult,
-                            activity,
-                            fragmentView,
-                            String.format(
-                                shareText,
-                                linkerShareResult.url
-                            )
-                        )
+    fun setOnGetAffiliateData(callback: (userType: String) -> Unit) {
+        affiliateListener = callback
+    }
 
-                        dismiss()
-                    }
-
-                    override fun onError(linkerError: LinkerError) {
-                        dismiss()
-                    }
+    fun setMetaData(
+        tnTitle: String,
+        tnImage: String,
+        previewImgUrl: String = "",
+        imageList: ArrayList<String>? = null,
+        takeSS: ((view: View, imageSaved: ((String) -> Unit)) -> Unit)? = null
+    ) {
+        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+            previewImageUrl = screenShotImagePath
+            savedImagePath = screenShotImagePath
+            thumbNailImageUrl = screenShotImagePath
+            thumbNailImageUrlFallback = tnImage
+            thumbNailTitle = SCREENSHOT_TITLE
+            imageOptionsList = null
+        } else {
+            thumbNailTitle = tnTitle
+            thumbNailImageUrl = tnImage
+            previewImageUrl = previewImgUrl
+            imageOptionsList = imageList
+            imageOptionsList?.let {
+                if (it.size > 0) {
+                    imageSaved(it[0])
                 }
+            }
+        }
+        if (takeSS == null) {
+            takeViewSS = (SharingUtil)::triggerSS
+        } else {
+            takeViewSS = takeSS
+        }
+    }
+
+    fun setRequestData(requestPayLoad: Map<String, Any>?) {
+        requestDataMap = requestPayLoad
+    }
+
+    /**
+     * to enable affiliate commission
+     * @see [https://tokopedia.atlassian.net/wiki/spaces/AF/pages/1693717743/Validate+Affiliate+Link+Generation+Eligibility]
+     */
+    fun enableAffiliateCommission(affiliateInput: AffiliateInput) {
+        isAffiliateCommissionEnabled = true
+        affiliateInputTemp = affiliateInput
+    }
+
+    fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
+
+    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
+    fun setAffiliateRequestHolder(affiliateInput: AffiliateInput) {
+        if (userSession.isLoggedIn) {
+            this.affiliatePDPQueryData = affiliateInput
+        }
+    }
+
+    fun getAffiliateRequestHolder(): AffiliateInput? {
+        return affiliatePDPQueryData
+    }
+
+    fun setBottomSheetTitle(title: String) {
+        bottomSheetTitleStr = title
+    }
+
+    fun setBottomSheetTitleRemoteConfKey(key: String) {
+        bottomSheetTitleRemoteConfKey = key
+    }
+
+    fun setFeatureFlagRemoteConfigKey(remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_CUSTOM_SHARING_FEATURE_FLAG) {
+        featureFlagRemoteConfigKey = remoteConfigKey
+    }
+
+    fun updateThumbnailImage(imgUrl: String) {
+        if (!isInitialClickThumbnail) {
+            imageThumbnailListener?.invoke(imgUrl)
+        }
+        thumbNailImage?.setImageUrl(imgUrl)
+        ogImageUrl = imgUrl
+    }
+
+    /* this func is used to set subject on email */
+    fun setSubject(subject: String) {
+        subjectShare = subject
+    }
+
+    /**
+     *  this func is used to set text on textfield channel,
+     *  @param text please put string as String.format and insert `%s` to insert link into the text
+     *  @param text e.g: Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. %s
+     *  the [text] will be transformed to `Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. https://tokopedia.link/owQLAVeA3wb`
+     */
+    fun setShareText(text: String) {
+        shareText = text
+    }
+
+    fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
+        imageThumbnailListener = listener
+    }
+
+    fun setUtmCampaignData(pageName: String, userId: String, pageId: String, feature: String) {
+        val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
+            Date()
+        )
+        var tempUsr = userId
+        if (TextUtils.isEmpty(tempUsr)) {
+            tempUsr = "0"
+        }
+        val imageType = getImageTypeForUTM()
+        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate-$imageType"
+        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+            channelStr = "screenshot-share"
+        } else {
+            channelStr = feature
+        }
+    }
+
+    /**
+     * can be called like this  setUtmCampaignData(listOf("a", "b"), "c", "d", "e")
+     * seller specific example  setUtmCampaignData(listOf("ShopRS", "$[User ID]", "$[Shop ID]", "$[Campaign Type ID]"), "$userId", "$pageId", "$feature")
+     */
+    fun setUtmCampaignData(pageName: String, userId: String, pageIdConstituents: List<String>, feature: String) {
+        val pageIdCombined = TextUtils.join("-", pageIdConstituents)
+        setUtmCampaignData(pageName, userId, pageIdCombined, feature)
+    }
+
+    /**
+     * this function is deprecated and replaced with [setLinkProperties]
+     */
+    @Deprecated("please use setLinkProperties to set ogImage")
+    fun setOgImageUrl(imgUrl: String) {
+        ogImageUrl = imgUrl
+    }
+
+    /**
+     * this function to set properties that commonly used in [LinkerData]
+     * @see LinkerData is object that is used to create Branch link.
+     * @param linkProperties
+     */
+    fun setLinkProperties(linkProperties: LinkProperties) {
+        this.linkProperties = linkProperties
+        ogImageUrl = linkProperties.ogImageUrl
+    }
+
+    fun imageSaved(imgPath: String) {
+        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+            savedImagePath = screenShotImagePath
+        } else {
+            SharingUtil.removePreviousSavedImage(savedImagePath, imgPath)
+            savedImagePath = imgPath
+        }
+    }
+
+    /**
+     * this function is used to set personalized campaign message and output
+     */
+    fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
+        val context = LinkerManager.getInstance().context
+        when (model.getCampaignStatus()) {
+            CampaignStatus.UPCOMING -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_upcoming_discount,
+                        model.getStartDateCampaign(),
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_upcoming_without_discount,
+                        model.getStartDateCampaign()
+                    )
+                }
+            }
+            CampaignStatus.ON_GOING -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_discount,
+                        model.getDiscountString(),
+                        model.price,
+                        model.getEndDateCampaign()
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_ongoing_without_disc,
+                        model.price,
+                        model.getEndDateCampaign()
+                    )
+                }
+            }
+            CampaignStatus.END_SOON -> {
+                if (model.discountPercentage != 0F) {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endsoon_discount,
+                        model.getMinuteLeft().toString(),
+                        model.getDiscountString(),
+                        model.price
+                    )
+                } else {
+                    personalizedMessage = context.getString(
+                        R.string.personalized_campaign_message_endsoon_without_disc,
+                        model.getMinuteLeft().toString(),
+                        model.getDiscountString()
+                    )
+                }
+            }
+            CampaignStatus.NO_CAMPAIGN -> {
+                /* no-op */
+            }
+        }
+    }
+
+    fun addImageGeneratorData(key: String, value: String) {
+        if (imageGeneratorDataArray == null) {
+            imageGeneratorDataArray = ArrayList()
+        }
+        imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
+    }
+
+    fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
+        getImageFromMedia = getImageFromMediaFlag
+        savedImagePath = "{media_image}"
+    }
+
+    fun setImageGeneratorParam(param: ImageGeneratorParamModel) {
+        imageGeneratorParam = param
+    }
+
+    /* set page source id */
+    fun setMediaPageSourceId(pageSourceId: String) {
+        sourceId = pageSourceId
+    }
+
+    fun setBroadcastChannel(context: Context, type: BroadcastChannelType, id: String, callback: () -> Unit = {}) {
+        isShowTickerList = true
+        tickerListAdapter.addItem(
+            BroadcastChannelModel(
+                id = id,
+                type = type,
+                title = context.getString(com.tokopedia.universal_sharing.R.string.title_broadcast),
+                description = context.getString(com.tokopedia.universal_sharing.R.string.description_broadcast),
+                imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast,
+                callback = callback
             )
         )
     }
 
-    private fun createLinkerData(shareModel: ShareModel): LinkerShareData {
-        val linkerData = LinkerData()
-        linkerData.apply {
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            feature = shareModel.feature
-            type = linkProperties?.linkerType ?: ""
-            isAffiliate = shareModel.isAffiliate
-            ogImageUrl = shareModel.ogImgUrl
-            ogTitle = linkProperties?.ogTitle
-            ogDescription = linkProperties?.ogDescription
-            uri = linkProperties?.desktopUrl
-            deepLink = linkProperties?.deeplink
-            id = linkProperties?.id
-            linkAffiliateType = affiliatePDPQueryData?.affiliateLinkType?.value
+    /**
+     * check whether user is affiliate or general
+     */
+    fun getUserType(): String {
+        return userType
+    }
+
+    fun setImageOnlySharingOption(imageOnly: Boolean) {
+        isImageOnlySharing = imageOnly
+    }
+
+    fun setScreenShotImagePath(imgPath: String) {
+        screenShotImagePath = imgPath
+    }
+
+    fun getShareBottomSheetType(): Int {
+        var shareSheetType = CUSTOM_SHARE_SHEET
+        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
+            shareSheetType = SCREENSHOT_SHARE_SHEET
         }
-        return LinkerShareData().apply {
-            this.linkerData = linkerData
-        }
+        return shareSheetType
     }
 
-    private fun isAffiliateEnabled(): Boolean {
-        if (LinkerManager.getInstance().context != null) {
-            val remoteConfig = FirebaseRemoteConfigImpl(LinkerManager.getInstance().context)
-            return remoteConfig.getBoolean(UniversalShareConst.RemoteConfigKey.GLOBAL_AFFILIATE_FEATURE_FLAG, true)
-        } else {
-            return false
-        }
-    }
-
-    private fun clearLoader() {
-        showLoader = false
-        loaderUnify?.visibility = View.GONE
-    }
-
-    private fun removeHandlerTimeout() {
-        if (handler != null) {
-            handler?.removeCallbacksAndMessages(null)
-        }
-    }
-
-    private fun executeAffiliateEligibilityUseCase() {
-        removeHandlerTimeout()
-        gqlCallJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
-            withContext(Dispatchers.IO) {
-                val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
-                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPQueryData!!)
-                }.executeOnBackground()
-                var deeplink = ""
-                if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
-                    deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
-                }
-                withContext(Dispatchers.Main) {
-                    showAffiliateTicker(generateAffiliateLinkEligibility, deeplink)
-                }
-            }
-        }, onError = {
-                clearLoader()
-                removeHandlerTimeout()
-                it.printStackTrace()
-            })
-        handler = Handler(Looper.getMainLooper())
-        handler?.postDelayed({
-            clearLoader()
-            if (gqlCallJob?.isActive == true) {
-                gqlCallJob?.cancel()
-            }
-            if (affiliateCommissionTextView?.visibility != View.VISIBLE) {
-                affiliatePDPQueryData = null
-            }
-        }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
-    }
-
-    private suspend fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
-        return try {
-            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
-        } catch (e: Exception) {
-            ""
-        }
-    }
-
-    private fun isExecuteExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
-        return generateAffiliateLinkEligibility.banner?.ctaLink?.isNotEmpty() == true && isShowAffiliateRegister(generateAffiliateLinkEligibility)
-    }
-
-    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String = "") {
-        clearLoader()
-        removeHandlerTimeout()
-
-        if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
-            showAffiliateCommission(generateAffiliateLinkEligibility)
-        } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
-            showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
-        }
-        affiliateListener?.invoke(isAffiliateUser)
-
-        if (generateAffiliateLinkEligibility.eligibleCommission?.ssaStatus == true) {
-            showCommissionExtra(generateAffiliateLinkEligibility)
-        }
-    }
-
-    private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
-        return generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true &&
-            generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true &&
-            generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true
-    }
-
-    private fun isShowAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
-        return (
-            generateAffiliateLinkEligibility.banner != null &&
-                generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
-            ) && userSession.isLoggedIn &&
-            userSession.shopId != affiliatePDPQueryData?.shop?.shopID
-    }
-
-    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
-        val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
-        if (!TextUtils.isEmpty(commissionMessage)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                affiliateCommissionTextView?.text = Html.fromHtml(
-                    commissionMessage,
-                    Html.FROM_HTML_MODE_LEGACY
-                )
-            } else {
-                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
-            }
-            affiliateCommissionTextView?.visibility = View.VISIBLE
-            tracker.viewOnAffiliateRegisterTicker(true, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
-            isAffiliateUser = KEY_AFFILIATE_USER
-            return
-        }
-        affiliatePDPQueryData = null
-    }
-
-    private fun showCommissionExtra(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
-        layoutCommisionExtra?.let { layoutCommisionExtra ->
-            layoutCommisionExtra.visibility = View.VISIBLE
-            val badgeView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_commision_extra)
-            val expiredDateView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_expired_date)
-            badgeView?.text = generateAffiliateLinkEligibility.eligibleCommission?.badge ?: ""
-            expiredDateView?.text = generateAffiliateLinkEligibility.eligibleCommission?.expiredDateFormatted
-                ?: ""
-        }
-    }
-
-    private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
-        generateAffiliateLinkEligibility.banner?.let { banner ->
-            if (banner.title.isBlank() && banner.message.isBlank()) return
-
-            affiliateRegisterContainer?.visible()
-            tracker.viewOnAffiliateRegisterTicker(false, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
-
-            val id = affiliatePDPQueryData?.getIdFactory() ?: ""
-            val page = affiliatePDPQueryData?.pageType ?: ""
-            affiliateRegisterContainer?.setOnClickListener { _ ->
-                tracker.onClickRegisterTicker(false, id, page)
-                dismiss()
-                RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString())
-            }
-            affiliateRegisterIcon?.loadImage(banner.icon)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                affiliateRegisterTitle?.text = Html.fromHtml(banner.title, Html.FROM_HTML_MODE_LEGACY)
-                affiliateRegisterMsg?.text = Html.fromHtml(banner.message, Html.FROM_HTML_MODE_LEGACY)
-            } else {
-                affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
-                affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
-            }
-
-            isAffiliateUser = KEY_GENERAL_USER
-        }
-        affiliatePDPQueryData = null
-    }
-
-    fun setOnGetAffiliateData(callback: (userType: String) -> Unit) {
-        affiliateListener = callback
+    fun clearData() {
+        isImageOnlySharing = false
+        screenShotImagePath = ""
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
         parentFragmentContainer = fragment
         parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
-    }
-
-    override fun onDestroy() {
-        parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
-        parentFragmentContainer = null
-        super.onDestroy()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -702,11 +721,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     private fun initAffiliate() {
         if (isAffiliateCommissionEnabled) {
-            affiliatePDPInputTemp?.let { affiliateInput ->
+            affiliateInputTemp?.let { affiliateInput ->
                 setAffiliateRequestHolder(affiliateInput)
             }
             affiliateRequestDataReceived(true)
-            affiliatePDPInputTemp = null
+            affiliateInputTemp = null
         }
     }
 
@@ -879,279 +898,181 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         }
     }
 
-    private fun setFixedOptionsClickListeners() {
-        val copyLinkShareModel = ShareModel.CopyLink().apply {
-            socialMediaName = context?.resources?.getString(R.string.label_copy_link)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelSalinLink
-            shareOnlyLink = isImageOnlySharing
+    private fun createLinkerData(shareModel: ShareModel): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.apply {
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            feature = shareModel.feature
+            type = linkProperties?.linkerType ?: ""
+            isAffiliate = shareModel.isAffiliate
+            ogImageUrl = shareModel.ogImgUrl
+            ogTitle = linkProperties?.ogTitle
+            ogDescription = linkProperties?.ogDescription
+            uri = linkProperties?.desktopUrl
+            deepLink = linkProperties?.deeplink
+            id = linkProperties?.id
+            linkAffiliateType = affiliatePDPQueryData?.affiliateLinkType?.value
         }
-        copyLinkImage?.setOnClickListener {
-            executeShareOptionClick(copyLinkShareModel)
-        }
-
-        val otherOptionsShareModel = ShareModel.Others().apply {
-            socialMediaName = context?.resources?.getString(R.string.label_action_more)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelOthers
-            shareOnlyLink = isImageOnlySharing
-        }
-        otherOptionsImage?.setOnClickListener {
-            executeShareOptionClick(otherOptionsShareModel)
-        }
-
-        if (!isImageOnlySharing) {
-            smsImage?.visibility = View.VISIBLE
-            smsTxtv?.visibility = View.VISIBLE
-            val smsShareModel = ShareModel.SMS().apply {
-                packageName = Telephony.Sms.getDefaultSmsPackage(context)
-                socialMediaName = context?.resources?.getString(R.string.label_chat)
-                feature = channelStr
-                campaign = campaignStr
-                channel = SharingUtil.labelSms
-                shareOnlyLink = isImageOnlySharing
-                appIntent = getAppIntent(MimeType.TEXT, packageName)
-            }
-
-            smsImage?.setOnClickListener {
-                executeShareOptionClick(smsShareModel)
-            }
-        }
-
-        val emailShareModel = ShareModel.Email().apply {
-            packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_GMAIL
-            socialMediaName = context?.resources?.getString(R.string.share_email)
-            feature = channelStr
-            campaign = campaignStr
-            channel = SharingUtil.labelEmail
-            shareOnlyLink = isImageOnlySharing
-            appIntent = getAppIntent(MimeType.IMAGE, packageName)
-        }
-
-        emailImage?.setOnClickListener {
-            executeShareOptionClick(emailShareModel)
+        return LinkerShareData().apply {
+            this.linkerData = linkerData
         }
     }
 
-    fun setMetaData(
-        tnTitle: String,
-        tnImage: String,
-        previewImgUrl: String = "",
-        imageList: ArrayList<String>? = null,
-        takeSS: ((view: View, imageSaved: ((String) -> Unit)) -> Unit)? = null
-    ) {
-        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
-            previewImageUrl = screenShotImagePath
-            savedImagePath = screenShotImagePath
-            thumbNailImageUrl = screenShotImagePath
-            thumbNailImageUrlFallback = tnImage
-            thumbNailTitle = SCREENSHOT_TITLE
-            imageOptionsList = null
+    private fun isAffiliateEnabled(): Boolean {
+        if (LinkerManager.getInstance().context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(LinkerManager.getInstance().context)
+            return remoteConfig.getBoolean(UniversalShareConst.RemoteConfigKey.GLOBAL_AFFILIATE_FEATURE_FLAG, true)
         } else {
-            thumbNailTitle = tnTitle
-            thumbNailImageUrl = tnImage
-            previewImageUrl = previewImgUrl
-            imageOptionsList = imageList
-            imageOptionsList?.let {
-                if (it.size > 0) {
-                    imageSaved(it[0])
+            return false
+        }
+    }
+
+    private fun clearLoader() {
+        showLoader = false
+        loaderUnify?.visibility = View.GONE
+    }
+
+    private fun removeHandlerTimeout() {
+        if (handler != null) {
+            handler?.removeCallbacksAndMessages(null)
+        }
+    }
+
+    private fun executeAffiliateEligibilityUseCase() {
+        removeHandlerTimeout()
+        gqlCallJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPQueryData!!)
+                }.executeOnBackground()
+                var deeplink = ""
+                if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
+                    deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
+                }
+                withContext(Dispatchers.Main) {
+                    showAffiliateTicker(generateAffiliateLinkEligibility, deeplink)
                 }
             }
-        }
-        if (takeSS == null) {
-            takeViewSS = (SharingUtil)::triggerSS
-        } else {
-            takeViewSS = takeSS
-        }
-    }
-
-    fun setRequestData(requestPayLoad: Map<String, Any>?) {
-        requestDataMap = requestPayLoad
-    }
-
-    /**
-     * to enable affiliate commission
-     * @see [https://tokopedia.atlassian.net/wiki/spaces/AF/pages/1693717743/Validate+Affiliate+Link+Generation+Eligibility]
-     */
-    fun enableAffiliateCommission(affiliatePDPInput: AffiliatePDPInput) {
-        isAffiliateCommissionEnabled = true
-        affiliatePDPInputTemp = affiliatePDPInput
-    }
-
-    fun isAffiliateCommissionEnabled() = isAffiliateCommissionEnabled
-
-    @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
-    fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput) {
-        if (userSession.isLoggedIn) {
-            this.affiliatePDPQueryData = affiliatePDPInput
-        }
-    }
-
-    fun getAffiliateRequestHolder(): AffiliatePDPInput? {
-        return affiliatePDPQueryData
-    }
-
-    fun setBottomSheetTitle(title: String) {
-        bottomSheetTitleStr = title
-    }
-
-    fun setBottomSheetTitleRemoteConfKey(key: String) {
-        bottomSheetTitleRemoteConfKey = key
-    }
-
-    fun setFeatureFlagRemoteConfigKey(remoteConfigKey: String = UniversalShareConst.RemoteConfigKey.GLOBAL_CUSTOM_SHARING_FEATURE_FLAG) {
-        featureFlagRemoteConfigKey = remoteConfigKey
-    }
-
-    private fun setUserVisualData() {
-        thumbNailTitleTxTv?.text = thumbNailTitle
-        if (isImageOnlySharing) {
-            try {
-                context?.let {
-                    thumbNailImage?.let { imgView ->
-                        Glide.with(it)
-                            .load(thumbNailImageUrl)
-                            .override(
-                                UniversalShareConst
-                                    .SizeScreenShoot
-                                    .THUMBNAIL_IMG_SCREENSHOT_WIDTH,
-                                UniversalShareConst.SizeScreenShoot.THUMBNAIL_IMG_SCREENSHOT_HEIGHT
-                            )
-                            .into(
-                                imgView
-                            )
-                    }
-                }
-            } catch (ex: Exception) {
-                thumbNailImage?.setImageUrl(thumbNailImageUrlFallback)
-                logExceptionToRemote(ex)
+        }, onError = {
+                clearLoader()
+                removeHandlerTimeout()
+                it.printStackTrace()
+            })
+        handler = Handler(Looper.getMainLooper())
+        handler?.postDelayed({
+            clearLoader()
+            if (gqlCallJob?.isActive == true) {
+                gqlCallJob?.cancel()
             }
-        } else {
-            thumbNailImage?.setImageUrl(thumbNailImageUrl)
+            if (affiliateCommissionTextView?.visibility != View.VISIBLE) {
+                affiliatePDPQueryData = null
+            }
+        }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
+    }
+
+    private suspend fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
+        return try {
+            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
+        } catch (e: Exception) {
+            ""
         }
-        if (previewImageUrl.isNullOrEmpty()) {
-            previewImage?.visibility = View.GONE
-        } else {
-            previewImage?.visibility = View.VISIBLE
-            if (isImageOnlySharing) {
-                try {
-                    context?.let {
-                        previewImage?.let { imgView ->
-                            Glide.with(it).load(previewImageUrl).override(UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_WIDTH, UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
-                                imgView
-                            )
-                        }
-                    }
-                } catch (ex: Exception) {
-                    previewImage?.visibility = View.GONE
-                    logExceptionToRemote(ex)
-                }
+    }
+
+    private fun isExecuteExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return generateAffiliateLinkEligibility.banner?.ctaLink?.isNotEmpty() == true && isShowAffiliateRegister(generateAffiliateLinkEligibility)
+    }
+
+    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String = "") {
+        clearLoader()
+        removeHandlerTimeout()
+
+        if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
+            showAffiliateCommission(generateAffiliateLinkEligibility)
+        } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
+            showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
+        }
+        affiliateListener?.invoke(userType)
+
+        if (generateAffiliateLinkEligibility.eligibleCommission?.ssaStatus == true) {
+            showCommissionExtra(generateAffiliateLinkEligibility)
+        }
+    }
+
+    private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true &&
+            generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true &&
+            generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true
+    }
+
+    private fun isShowAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return (
+            generateAffiliateLinkEligibility.banner != null &&
+                generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
+            ) && userSession.isLoggedIn &&
+            userSession.shopId != affiliatePDPQueryData?.shop?.shopID
+    }
+
+    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
+        if (!TextUtils.isEmpty(commissionMessage)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                affiliateCommissionTextView?.text = Html.fromHtml(
+                    commissionMessage,
+                    Html.FROM_HTML_MODE_LEGACY
+                )
             } else {
-                previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+                affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
+            affiliateCommissionTextView?.visibility = View.VISIBLE
+            tracker.viewOnAffiliateRegisterTicker(true, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
+            userType = KEY_AFFILIATE_USER
+            return
         }
-        if (imageOptionsList != null) {
-            imageListViewGroup?.visibility = View.VISIBLE
-        } else {
-            imageListViewGroup?.visibility = View.GONE
-        }
-//        previewImage?.setImageUrl(previewImageUrl)
-        if (showLoader) {
-            loaderUnify?.visibility = View.VISIBLE
-        }
+        affiliatePDPQueryData = null
     }
 
-    fun updateThumbnailImage(imgUrl: String) {
-        if (!isInitialClickThumbnail) {
-            imageThumbnailListener?.invoke(imgUrl)
-        }
-        thumbNailImage?.setImageUrl(imgUrl)
-        ogImageUrl = imgUrl
-    }
-
-    /* this func is used to set subject on email */
-    fun setSubject(subject: String) {
-        subjectShare = subject
-    }
-
-    /**
-     *  this func is used to set text on textfield channel,
-     *  @param text please put string as String.format and insert `%s` to insert link into the text
-     *  @param text e.g: Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. %s
-     *  the [text] will be transformed to `Hai kamu! Belanja produk dari Oreo,Kraft & Cadbury Official Store jadi makin mudah di Tokopedia! Cek barang-barang yang kamu suka, yuk. https://tokopedia.link/owQLAVeA3wb`
-     */
-    fun setShareText(text: String) {
-        shareText = text
-    }
-
-    fun setSelectThumbnailImageListener(listener: (imgUrl: String) -> Unit) {
-        imageThumbnailListener = listener
-    }
-
-    fun setUtmCampaignData(pageName: String, userId: String, pageId: String, feature: String) {
-        val sharingDate: String = SimpleDateFormat("ddMMyy", Locale.getDefault()).format(
-            Date()
-        )
-        var tempUsr = userId
-        if (TextUtils.isEmpty(tempUsr)) {
-            tempUsr = "0"
-        }
-        val imageType = getImageTypeForUTM()
-        campaignStr = "$pageName-$tempUsr-$pageId-$sharingDate-$imageType"
-        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
-            channelStr = "screenshot-share"
-        } else {
-            channelStr = feature
+    private fun showCommissionExtra(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+        layoutCommisionExtra?.let { layoutCommisionExtra ->
+            layoutCommisionExtra.visibility = View.VISIBLE
+            val badgeView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_commision_extra)
+            val expiredDateView = layoutCommisionExtra.findViewById<Typography>(R.id.tg_expired_date)
+            badgeView?.text = generateAffiliateLinkEligibility.eligibleCommission?.badge ?: ""
+            expiredDateView?.text = generateAffiliateLinkEligibility.eligibleCommission?.expiredDateFormatted
+                ?: ""
         }
     }
 
-    private fun getImageTypeForUTM(): String {
-        return if (getImageFromMedia) {
-            UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE
-        } else if (!TextUtils.isEmpty(savedImagePath) && TextUtils.isEmpty(screenShotImagePath)) {
-            UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT
-        } else {
-            UniversalShareConst.ImageType.KEY_NO_IMAGE
+    private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
+        generateAffiliateLinkEligibility.banner?.let { banner ->
+            if (banner.title.isBlank() && banner.message.isBlank()) return
+
+            affiliateRegisterContainer?.visible()
+            tracker.viewOnAffiliateRegisterTicker(false, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
+
+            val id = affiliatePDPQueryData?.getIdFactory() ?: ""
+            val page = affiliatePDPQueryData?.pageType ?: ""
+            affiliateRegisterContainer?.setOnClickListener { _ ->
+                tracker.onClickRegisterTicker(false, id, page)
+                dismiss()
+                RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString())
+            }
+            affiliateRegisterIcon?.loadImage(banner.icon)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                affiliateRegisterTitle?.text = Html.fromHtml(banner.title, Html.FROM_HTML_MODE_LEGACY)
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message, Html.FROM_HTML_MODE_LEGACY)
+            } else {
+                affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
+                affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
+            }
+
+            userType = KEY_GENERAL_USER
         }
+        affiliatePDPQueryData = null
     }
 
-    //  can be called like this  setUtmCampaignData(listOf("a", "b"), "c", "d", "e")
-//  seller specific example  setUtmCampaignData(listOf("ShopRS", "$[User ID]", "$[Shop ID]", "$[Campaign Type ID]"), "$userId", "$pageId", "$feature")
-    fun setUtmCampaignData(pageName: String, userId: String, pageIdConstituents: List<String>, feature: String) {
-        val pageIdCombined = TextUtils.join("-", pageIdConstituents)
-        setUtmCampaignData(pageName, userId, pageIdCombined, feature)
-    }
-
-    /**
-     * this function is deprecated and replaced with [setLinkProperties]
-     */
-    @Deprecated("please use setLinkProperties to set ogImage")
-    fun setOgImageUrl(imgUrl: String) {
-        ogImageUrl = imgUrl
-    }
-
-    /**
-     * this function to set properties that commonly used in [LinkerData]
-     * @see LinkerData is object that is used to create Branch link.
-     * @param linkProperties
-     */
-    fun setLinkProperties(linkProperties: LinkProperties) {
-        this.linkProperties = linkProperties
-        ogImageUrl = linkProperties.ogImageUrl
-    }
-
-    fun imageSaved(imgPath: String) {
-        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
-            savedImagePath = screenShotImagePath
-        } else {
-            removePreviousSavedImage(savedImagePath, imgPath)
-            savedImagePath = imgPath
-        }
-    }
-
-    fun executeShareOptionClick(shareModel: ShareModel) {
+    private fun executeShareOptionClick(shareModel: ShareModel) {
         setIfAffiliate(shareModel)
         if (getImageFromMedia) {
             when (sourceId) {
@@ -1172,65 +1093,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             }
         } else {
             executeSharingFlow(shareModel)
-        }
-    }
-
-    /**
-     * this function is used to set personalized campaign message and output
-     */
-    fun setPersonalizedCampaign(model: PersonalizedCampaignModel) {
-        val context = LinkerManager.getInstance().context
-        when (model.getCampaignStatus()) {
-            CampaignStatus.UPCOMING -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_upcoming_discount,
-                        model.getStartDateCampaign(),
-                        model.getDiscountString(),
-                        model.price
-                    )
-                } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_upcoming_without_discount,
-                        model.getStartDateCampaign()
-                    )
-                }
-            }
-            CampaignStatus.ON_GOING -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_ongoing_discount,
-                        model.getDiscountString(),
-                        model.price,
-                        model.getEndDateCampaign()
-                    )
-                } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_ongoing_without_disc,
-                        model.price,
-                        model.getEndDateCampaign()
-                    )
-                }
-            }
-            CampaignStatus.END_SOON -> {
-                if (model.discountPercentage != 0F) {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_endsoon_discount,
-                        model.getMinuteLeft().toString(),
-                        model.getDiscountString(),
-                        model.price
-                    )
-                } else {
-                    personalizedMessage = context.getString(
-                        R.string.personalized_campaign_message_endsoon_without_disc,
-                        model.getMinuteLeft().toString(),
-                        model.getDiscountString()
-                    )
-                }
-            }
-            CampaignStatus.NO_CAMPAIGN -> {
-                /* no-op */
-            }
         }
     }
 
@@ -1334,91 +1196,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         return imageURL
     }
 
-    override fun show(manager: FragmentManager, tag: String?) {
-        var customBottomSheetEnabled = true
-        if (!TextUtils.isEmpty(featureFlagRemoteConfigKey)) {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            customBottomSheetEnabled = remoteConfig.getBoolean(featureFlagRemoteConfigKey)
-        }
-        if (customBottomSheetEnabled) { // enabled
-            super.show(manager, tag)
-        } else {
-            // call the native bottom sheet share
-            val shareModel = getNaviteShareIntent()
-            if (isDefaultShareIntent) {
-                shareChannelClicked(shareModel)
-            }
-            bottomSheetListener?.onShareOptionClicked(shareModel)
-        }
-    }
-
-    fun getNaviteShareIntent(): ShareModel {
-        val otherOptionsShareModel = ShareModel.Others().apply {
-            socialMediaName = context?.resources?.getString(R.string.label_action_more)
-            feature = socialMediaName
-            campaign = campaignStr
-            channel = channelStr
-            shareOnlyLink = isImageOnlySharing
-            ogImgUrl = ogImageUrl
-        }
-        return otherOptionsShareModel
-    }
-
-    private fun removeLifecycleObserverAndSavedImage() {
-        if (!preserveImage) {
-            removeFile(savedImagePath)
-            parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
-        }
-    }
-
-    override fun dismiss() {
-        try {
-            affiliateListener = null
-            imageThumbnailListener = null
-            removeLifecycleObserverAndSavedImage()
-            if (gqlCallJob?.isActive == true) {
-                gqlCallJob?.cancel()
-            }
-            if (gqlJob?.isActive == true) {
-                gqlJob?.cancel()
-            }
-            super.dismiss()
-        } catch (ex: Exception) {
-            logExceptionToRemote(ex)
-        }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        try {
-            affiliateListener = null
-            imageThumbnailListener = null
-            removeLifecycleObserverAndSavedImage()
-            if (gqlCallJob?.isActive == true) {
-                gqlCallJob?.cancel()
-            }
-            if (gqlJob?.isActive == true) {
-                gqlJob?.cancel()
-            }
-            super.onDismiss(dialog)
-        } catch (ex: Exception) {
-            logExceptionToRemote(ex)
-        }
-    }
-
-    private fun logExceptionToRemote(ex: Exception) {
-        if (ex.localizedMessage != null) {
-            val errorMap = mapOf("type" to "crashLog", "reason" to (ex.localizedMessage))
-            SharingUtil.logError(errorMap)
-        }
-    }
-
-    fun addImageGeneratorData(key: String, value: String) {
-        if (imageGeneratorDataArray == null) {
-            imageGeneratorDataArray = ArrayList()
-        }
-        imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
-    }
-
     private fun executeImageGeneratorUseCase(
         args: ArrayList<ImageGeneratorRequestData>,
         shareModel: ShareModel
@@ -1445,73 +1222,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 it.printStackTrace()
                 executeSharingFlow(shareModel)
             })
-    }
-
-    /***
-     * @param sourceId is from result of [ImageGeneratorUseCase]
-     */
-    private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
-        if (getImageFromMedia) {
-            shareModel.campaign = shareModel.campaign?.replace(UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE, sourceId)
-        }
-    }
-
-    fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
-        getImageFromMedia = getImageFromMediaFlag
-        savedImagePath = "{media_image}"
-    }
-
-    fun setImageGeneratorParam(param: ImageGeneratorParamModel) {
-        imageGeneratorParam = param
-    }
-
-    /* set page source id */
-    fun setMediaPageSourceId(pageSourceId: String) {
-        sourceId = pageSourceId
-    }
-
-    fun setBroadcastChannel(context: Context, type: BroadcastChannelType, id: String, callback: () -> Unit = {}) {
-        isShowTickerList = true
-        tickerListAdapter.addItem(
-            BroadcastChannelModel(
-                id = id,
-                type = type,
-                title = context.getString(com.tokopedia.universal_sharing.R.string.title_broadcast),
-                description = context.getString(com.tokopedia.universal_sharing.R.string.description_broadcast),
-                imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast,
-                callback = callback
-            )
-        )
-    }
-
-    fun getUserType(): String {
-        return isAffiliateUser
-    }
-
-    fun setImageOnlySharingOption(imageOnly: Boolean) {
-        isImageOnlySharing = imageOnly
-    }
-
-    fun setScreenShotImagePath(imgPath: String) {
-        screenShotImagePath = imgPath
-    }
-
-    fun getShareBottomSheetType(): Int {
-        var shareSheetType = CUSTOM_SHARE_SHEET
-        if (isImageOnlySharing && !TextUtils.isEmpty(screenShotImagePath)) {
-            shareSheetType = SCREENSHOT_SHARE_SHEET
-        }
-        return shareSheetType
-    }
-
-    fun clearData() {
-        isImageOnlySharing = false
-        screenShotImagePath = ""
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.clear()
     }
 
     private fun generateRemoteConfigSocialMediaOrdering() {
@@ -1551,10 +1261,223 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         )
     }
 
-    override fun getComponent(): UniversalShareComponent? {
-        activity?.let {
-            return DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                .universalShareModule(UniversalShareModule()).build()
-        } ?: return null
+    /***
+     * @param sourceId is from result of [ImageGeneratorUseCase]
+     */
+    private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
+        if (getImageFromMedia) {
+            shareModel.campaign = shareModel.campaign?.replace(UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE, sourceId)
+        }
+    }
+
+    private fun setUserVisualData() {
+        thumbNailTitleTxTv?.text = thumbNailTitle
+        if (isImageOnlySharing) {
+            try {
+                context?.let {
+                    thumbNailImage?.let { imgView ->
+                        Glide.with(it)
+                            .load(thumbNailImageUrl)
+                            .override(
+                                UniversalShareConst
+                                    .SizeScreenShoot
+                                    .THUMBNAIL_IMG_SCREENSHOT_WIDTH,
+                                UniversalShareConst.SizeScreenShoot.THUMBNAIL_IMG_SCREENSHOT_HEIGHT
+                            )
+                            .into(
+                                imgView
+                            )
+                    }
+                }
+            } catch (ex: Exception) {
+                thumbNailImage?.setImageUrl(thumbNailImageUrlFallback)
+                logExceptionToRemote(ex)
+            }
+        } else {
+            thumbNailImage?.setImageUrl(thumbNailImageUrl)
+        }
+        if (previewImageUrl.isNullOrEmpty()) {
+            previewImage?.visibility = View.GONE
+        } else {
+            previewImage?.visibility = View.VISIBLE
+            if (isImageOnlySharing) {
+                try {
+                    context?.let {
+                        previewImage?.let { imgView ->
+                            Glide.with(it).load(previewImageUrl).override(UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_WIDTH, UniversalShareConst.SizeScreenShoot.PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
+                                imgView
+                            )
+                        }
+                    }
+                } catch (ex: Exception) {
+                    previewImage?.visibility = View.GONE
+                    logExceptionToRemote(ex)
+                }
+            } else {
+                previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            }
+        }
+        if (imageOptionsList != null) {
+            imageListViewGroup?.visibility = View.VISIBLE
+        } else {
+            imageListViewGroup?.visibility = View.GONE
+        }
+        if (showLoader) {
+            loaderUnify?.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setFixedOptionsClickListeners() {
+        val copyLinkShareModel = ShareModel.CopyLink().apply {
+            socialMediaName = context?.resources?.getString(R.string.label_copy_link)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelSalinLink
+            shareOnlyLink = isImageOnlySharing
+        }
+        copyLinkImage?.setOnClickListener {
+            executeShareOptionClick(copyLinkShareModel)
+        }
+
+        val otherOptionsShareModel = ShareModel.Others().apply {
+            socialMediaName = context?.resources?.getString(R.string.label_action_more)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelOthers
+            shareOnlyLink = isImageOnlySharing
+        }
+        otherOptionsImage?.setOnClickListener {
+            executeShareOptionClick(otherOptionsShareModel)
+        }
+
+        if (!isImageOnlySharing) {
+            smsImage?.visibility = View.VISIBLE
+            smsTxtv?.visibility = View.VISIBLE
+            val smsShareModel = ShareModel.SMS().apply {
+                packageName = Telephony.Sms.getDefaultSmsPackage(context)
+                socialMediaName = context?.resources?.getString(R.string.label_chat)
+                feature = channelStr
+                campaign = campaignStr
+                channel = SharingUtil.labelSms
+                shareOnlyLink = isImageOnlySharing
+                appIntent = getAppIntent(MimeType.TEXT, packageName)
+            }
+
+            smsImage?.setOnClickListener {
+                executeShareOptionClick(smsShareModel)
+            }
+        }
+
+        val emailShareModel = ShareModel.Email().apply {
+            packageName = UniversalShareConst.PackageChannel.PACKAGE_NAME_GMAIL
+            socialMediaName = context?.resources?.getString(R.string.share_email)
+            feature = channelStr
+            campaign = campaignStr
+            channel = SharingUtil.labelEmail
+            shareOnlyLink = isImageOnlySharing
+            appIntent = getAppIntent(MimeType.IMAGE, packageName)
+        }
+
+        emailImage?.setOnClickListener {
+            executeShareOptionClick(emailShareModel)
+        }
+    }
+
+    private fun shareChannelClicked(shareModel: ShareModel) {
+        if (linkProperties == null) throw Exception("Please set link properties")
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0,
+                createLinkerData(shareModel),
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareResult: LinkerShareResult) {
+                        shareModel.subjectName = subjectShare
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareResult,
+                            activity,
+                            fragmentView,
+                            String.format(
+                                shareText,
+                                linkerShareResult.url
+                            )
+                        )
+
+                        dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError) {
+                        dismiss()
+                    }
+                }
+            )
+        )
+    }
+
+    private fun removeLifecycleObserverAndSavedImage() {
+        if (!preserveImage) {
+            SharingUtil.removeFile(savedImagePath)
+            parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        }
+    }
+
+    private fun getImageTypeForUTM(): String {
+        return if (getImageFromMedia) {
+            UniversalShareConst.ImageType.KEY_CONTEXTUAL_IMAGE
+        } else if (!TextUtils.isEmpty(savedImagePath) && TextUtils.isEmpty(screenShotImagePath)) {
+            UniversalShareConst.ImageType.KEY_IMAGE_DEFAULT
+        } else {
+            UniversalShareConst.ImageType.KEY_NO_IMAGE
+        }
+    }
+
+    private fun getNativeShareIntent(): ShareModel {
+        val otherOptionsShareModel = ShareModel.Others().apply {
+            socialMediaName = context?.resources?.getString(R.string.label_action_more)
+            feature = socialMediaName
+            campaign = campaignStr
+            channel = channelStr
+            shareOnlyLink = isImageOnlySharing
+            ogImgUrl = ogImageUrl
+        }
+        return otherOptionsShareModel
+    }
+
+    private fun inject() {
+        component?.inject(this)
+    }
+
+    private fun logExceptionToRemote(ex: Exception) {
+        if (ex.localizedMessage != null) {
+            val errorMap = mapOf("type" to "crashLog", "reason" to (ex.localizedMessage))
+            SharingUtil.logError(errorMap)
+        }
+    }
+
+    companion object {
+        @LayoutRes
+        private val LAYOUT = R.layout.universal_share_bottomsheet
+        private val TAG = UniversalShareBottomSheet::class.java.simpleName
+
+        private const val DELAY_TIME_MILLISECOND = 500L
+        private const val DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK = 5000L
+        private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
+        const val CUSTOM_SHARE_SHEET = 1
+        const val SCREENSHOT_SHARE_SHEET = 2
+
+        // for affiliate and general user distinction
+        private const val KEY_GENERAL_USER = "general"
+        private const val KEY_AFFILIATE_USER = "affiliate"
+        const val KEY_PRODUCT_ID = "productId"
+
+        fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
+
+        /**
+         * if you're using [enableDefaultShareIntent] please create the instance using this function,
+         * otherwise the toaster after clicking `salin link` won't show
+         */
+        fun createInstance(fragmentView: View?) = UniversalShareBottomSheet().apply {
+            this.fragmentView = fragmentView
+        }
     }
 }

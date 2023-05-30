@@ -1,12 +1,9 @@
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-
 import com.tokopedia.common.UniversalShareFragmentTest
-import com.tokopedia.product.share.ProductShare
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.product.share.ProductData
-import com.tokopedia.universal_sharing.model.PdpParamModel
-import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
+import com.tokopedia.product.share.ProductShare
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 
 class PdpShareTest : UniversalShareFragmentTest() {
     private val productShare = ProductShare(requireActivity())
@@ -16,19 +13,16 @@ class PdpShareTest : UniversalShareFragmentTest() {
         productName = "PDP Product"
     )
 
-    private val affiliateInput = AffiliatePDPInput(
+    private val affiliateInput = AffiliateInput()
 
-    )
-
-    override fun showUniversalShare(affiliatePDPInput: AffiliatePDPInput) {
+    override fun showUniversalShare(affiliateInput: AffiliateInput) {
         bottomSheet = UniversalShareBottomSheet().apply {
-            enableAffiliateCommission(AffiliatePDPInput())
+            enableAffiliateCommission(AffiliateInput())
         }
     }
 
-    override fun getAffiliateInput(): AffiliatePDPInput {
-        AffiliatePDPInput().apply {
-
+    override fun getAffiliateInput(): AffiliateInput {
+        AffiliateInput().apply {
         }
     }
 }
