@@ -54,7 +54,18 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
@@ -125,7 +136,12 @@ class FeedFragment :
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    private val feedMainViewModel: FeedMainViewModel by viewModels(ownerProducer = { requireParentFragment() })
+    private val feedMainViewModel: FeedMainViewModel by viewModels(
+        ownerProducer = {
+            parentFragment ?: this
+        }, factoryProducer = {
+            viewModelFactory
+        })
     private val feedPostViewModel: FeedPostViewModel by viewModels { viewModelFactory }
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
