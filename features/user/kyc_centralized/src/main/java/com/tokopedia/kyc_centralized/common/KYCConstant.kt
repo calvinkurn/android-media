@@ -76,7 +76,8 @@ object KYCConstant {
     object GotoKycFlow {
         const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
         const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
-        const val AWAITING_APPROVAL_GOPAY = "AWAITING_APPROVAL"
+        const val AWAITING_APPROVAL_GOPAY = "KYC_AWAITING_APPROVAL"
+        const val ONEKYC_BLOCKED = "ONEKYC_BLOCKED"
     }
 
     object ActivityResult {
