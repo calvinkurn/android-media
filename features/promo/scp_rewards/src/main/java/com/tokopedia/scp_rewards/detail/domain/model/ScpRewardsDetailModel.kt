@@ -21,6 +21,7 @@ data class MedaliDetailPage(
     @SerializedName("backgroundImageColor") val backgroundImageColor: String? = null,
     @SerializedName("frameImageURL") val frameImageURL: String? = null,
     @SerializedName("innerIconImageURL") val innerIconImageURL: String? = null,
+    @SerializedName("iconImageURL") val iconImageURL: String? = null,
     @SerializedName("maskingImageURL") val maskingImageURL: String? = null,
     @SerializedName("frameMaskingImageURL") val frameMaskingImageURL: String? = null,
     @SerializedName("shutterImageURL") val shutterImageURL: String? = null,
@@ -32,12 +33,20 @@ data class MedaliDetailPage(
     @SerializedName("sourceText") val sourceText: String? = null,
     @SerializedName("sourceFontColor") val sourceFontColor: String? = null,
     @SerializedName("sourceBackgroundColor") val sourceBackgroundColor: String? = null,
-    @SerializedName("name") val medaliName: String? = null,
-    @SerializedName("description") val medaliDescription: String? = null,
+    @SerializedName("name") val name: String? = null,
+    @SerializedName("description") val description: String? = null,
+    @SerializedName("isMedaliGrayScale") val isMedaliGrayScale: String? = null,
+    @SerializedName("tncButton") val tncButton: TncButton? = null,
     @SerializedName("coachMark") val coachMark: CoachMark? = null,
     @SerializedName("mission") val mission: Mission? = null,
     @SerializedName("benefit") val benefit: List<Benefit>? = null,
     @SerializedName("benefitButton") val benefitButton: List<BenefitButton>? = null
+)
+
+data class TncButton(
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("url") val url: String? = null,
+    @SerializedName("appLink") val appLink: String? = null
 )
 
 data class CoachMark(

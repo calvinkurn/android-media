@@ -17,7 +17,7 @@ class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : Co
         private const val STYLE_SECONDARY = "secondary"
     }
 
-    fun bindData(list: List<FooterData>, onButtonClick: (String?) -> Unit) {
+    fun bindData(list: List<FooterData>, onButtonClick: (String?, String?) -> Unit) {
         list.forEach { footer ->
             val button = UnifyButton(context)
             button.apply {
@@ -30,7 +30,7 @@ class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : Co
                 applyStyle(footer)
                 setOnClickListener {
                     isLoading = true
-                    onButtonClick(footer.appLink)
+                    onButtonClick(footer.appLink, footer.url)
                     isLoading = false
                 }
             }
@@ -41,7 +41,6 @@ class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : Co
 
     private fun UnifyButton.applyStyle(footer: FooterData) {
         when (footer.style) {
-
             STYLE_PRIMARY -> {
                 this.buttonType = UnifyButton.Type.MAIN
                 this.buttonVariant = UnifyButton.Variant.FILLED

@@ -38,10 +38,13 @@ private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
           backgroundImageURL
           backgroundImageColor
           frameImageURL
+          frameMaskingImageURL
           innerIconImageURL
+          iconImageURL
           maskingImageURL
           shutterImageURL
           shutterText
+          shimmerAltImageURL
           shimmerShutterLottieURL
           outerBlinkingImageURL
           outerBlinkingLottieURL
@@ -51,6 +54,16 @@ private const val SCP_REWARDS_MEDAL_DETAIL_QUERY = """
           sourceBackgroundColor
           name
           description
+          isMedaliGrayScale
+          tncButton {
+            text
+            url
+            appLink
+          }
+          coachmark {
+            text
+            showNumberOfTimes
+          }
           mission {
             title
             progress

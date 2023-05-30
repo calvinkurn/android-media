@@ -1,6 +1,8 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
+import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -26,6 +29,7 @@ import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
+import java.util.*
 import javax.inject.Inject
 
 const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg_base.png"
@@ -121,8 +125,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         style = it.unifiedStyle
                     )
                 }
-            ) { link ->
-                RouteManager.route(requireContext(), link)
+            ) { appLink, webLink ->
+                if (TextUtils.isEmpty(appLink)) {
+                    RouteManager.route(requireContext(), String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(webLink)))
+                } else {
+                    RouteManager.route(requireContext(), appLink)
+                }
             }
         }
     }
@@ -131,8 +139,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding.layoutDetailContent.viewMedalDetail.bindData(
             MedalDetail(
                 sponsorInformation = medaliDetailPage?.sourceText,
-                medalTitle = medaliDetailPage?.medaliName,
-                medalDescription = medaliDetailPage?.medaliDescription
+                medalTitle = medaliDetailPage?.name,
+                medalDescription = medaliDetailPage?.description
             )
         )
     }
