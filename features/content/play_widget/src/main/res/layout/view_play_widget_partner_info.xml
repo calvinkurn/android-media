@@ -9,12 +9,12 @@
     android:orientation="horizontal"
     tools:background="@color/Unify_Static_Black"
     >
-    
-    <com.tokopedia.unifycomponents.ImageUnify
+
+    <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/img_avatar"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:unify_image_type="circle"
+        app:rImg_cornerRadius="12dp"
         />
 
     <com.tokopedia.unifycomponents.ImageUnify

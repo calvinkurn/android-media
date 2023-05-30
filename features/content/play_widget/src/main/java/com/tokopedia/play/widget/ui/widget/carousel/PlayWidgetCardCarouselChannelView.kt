@@ -107,6 +107,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setMuted(true)
 
         binding.rvProducts.adapter = adapter
+        binding.rvProducts.itemAnimator = null
         binding.rvProducts.addItemDecoration(
             PlayWidgetCarouselProductItemDecoration(binding.rvProducts.context)
         )
@@ -150,7 +151,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.imgCover.loadImage(model.video.coverUrl)
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
-        binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)
+        binding.viewPlayWidgetPartnerInfo.imgAvatar.loadImage(model.partner.avatarUrl)
         if (model.partner.badgeUrl.isBlank()) {
             binding.viewPlayWidgetPartnerInfo.imgBadge.hide()
         } else {
@@ -176,6 +177,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     fun resetProductPosition() {
         binding.rvProducts.scrollToPosition(0)
+    }
+
+    fun hideProduct() {
+        binding.rvProducts.hide()
     }
 
     fun updateTotalView(totalView: String) {

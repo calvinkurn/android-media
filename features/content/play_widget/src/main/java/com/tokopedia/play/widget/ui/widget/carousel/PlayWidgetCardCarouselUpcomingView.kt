@@ -65,7 +65,7 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         binding.imgCover.loadImage(model.video.coverUrl)
 
         binding.viewPlayWidgetPartnerInfo.tvName.text = model.partner.name
-        binding.viewPlayWidgetPartnerInfo.imgAvatar.setImageUrl(model.partner.avatarUrl)
+        binding.viewPlayWidgetPartnerInfo.imgAvatar.loadImage(model.partner.avatarUrl)
         if (model.partner.badgeUrl.isBlank()) {
             binding.viewPlayWidgetPartnerInfo.imgBadge.hide()
         } else {
