@@ -203,11 +203,12 @@ import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.ShopPageParamModel
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.LinkProperties
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
@@ -454,7 +455,7 @@ class ShopPageHeaderFragment :
     }
 
     override fun onStop() {
-        UniversalShareBottomSheet.clearState(screenShotDetector)
+        SharingUtil.clearState(screenShotDetector)
         super.onStop()
     }
 
@@ -476,7 +477,7 @@ class ShopPageHeaderFragment :
         shopPageMiniCartSharedViewModel?.miniCartSimplifiedData?.removeObservers(this)
         shopHeaderViewModel?.flush()
         removeTemporaryShopImage(shopImageFilePath)
-        UniversalShareBottomSheet.clearState(screenShotDetector)
+        SharingUtil.clearState(screenShotDetector)
         super.onDestroy()
     }
 
@@ -1110,7 +1111,7 @@ class ShopPageHeaderFragment :
             }
         }
         context?.let {
-            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenShotDetector = SharingUtil.createAndStartScreenShotDetector(
                 it,
                 this,
                 this,
@@ -3214,7 +3215,7 @@ class ShopPageHeaderFragment :
         universalShareBottomSheet?.setImageGeneratorParam(shopPageParamModel)
         universalShareBottomSheet?.getImageFromMedia(shopPageParamModel.shopProfileImgUrl.isNotEmpty())
         universalShareBottomSheet?.setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE)
-        val inputShare = AffiliatePDPInput().apply {
+        val inputShare = AffiliateInput().apply {
             pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
             pageType = PageType.SHOP.value
             product = Product()
