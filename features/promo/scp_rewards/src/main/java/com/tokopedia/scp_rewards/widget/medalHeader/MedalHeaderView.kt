@@ -91,8 +91,8 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) : Cons
             arrayListOf(
                 CoachMark2Item(
                     this.lottieView,
-                    coachMarkInformation.orEmpty(),
                     String.EMPTY,
+                    coachMarkInformation.orEmpty(),
                     CoachMark2.POSITION_TOP
                 )
             )

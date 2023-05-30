@@ -8,16 +8,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
+import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
+import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
+import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
+import com.tokopedia.scp_rewards_widgets.task_progress.Task
+import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import javax.inject.Inject
-
 
 const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg_base.png"
 const val IMG_DETAIL_BG = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg.png"
@@ -55,7 +61,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
         return binding.root
     }
 
-
     private fun initToolbar() {
         (activity as AppCompatActivity).let {
             it.setSupportActionBar(binding.toolbar)
@@ -63,9 +68,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
                 elevation = 0f
-                //setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
+                // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
 
-                //it.setTransparentSystemBar()
+                // it.setTransparentSystemBar()
             }
         }
     }
@@ -76,49 +81,73 @@ class MedalDetailFragment : BaseDaggerFragment() {
         initToolbar()
         setupViewModelObservers()
         medalDetailViewModel.getMedalDetail()
-
-        loadData()
-    }
-
-    private fun loadData() {
-        binding.viewMedalHeader.bindData(
-            MedalHeader(
-                lottieUrl = LOTTIE_BADGE,
-                lottieSparklesUrl = LOTTIE_SPARKS,
-                podiumUrl = IMG_DETAIL_BASE,
-                background = IMG_DETAIL_BG,
-                medalUrl = CONTENT,
-                frameUrl = FRAME,
-                shimmerUrl = SHIMMER,
-                maskUrl = MASK,
-                maskingShapeUrl = MASKING_SHAPE,
-                shutterUrl = SHUTTER
-            )
-        )
-
-        binding.layoutDetailContent.viewMedalDetail.bindData(
-            MedalDetail()
-        )
-
-        binding.ivBadgeBase.setImageUrl(IMG_DETAIL_BASE)
     }
 
     private fun setupViewModelObservers() {
         medalDetailViewModel.badgeLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success<*> -> {
-                    // TODO
-                }
+            it?.let { safeResult ->
+                when (safeResult) {
+                    is Success<*> -> {
+                        val data = safeResult.data as MedalDetailResponseModel
+                        loadHeader(data.detail?.medaliDetailPage)
+                        loadMedalDetails(data.detail?.medaliDetailPage)
+                        loadTaskProgress(data.detail?.medaliDetailPage?.mission)
+                    }
 
-                is Error -> {
-                    // TODO
-                }
+                    is Error -> {
+                        // TODO
+                    }
 
-                is Loading -> {
-                    // TODO
+                    is Loading -> {
+                        // TODO
+                    }
                 }
             }
         }
+    }
+
+    private fun loadMedalDetails(medaliDetailPage: MedaliDetailPage?) {
+        binding.layoutDetailContent.viewMedalDetail.bindData(
+            MedalDetail(
+                sponsorInformation = medaliDetailPage?.sourceText,
+                medalTitle = medaliDetailPage?.medaliName,
+                medalDescription = medaliDetailPage?.medaliDescription
+            )
+        )
+    }
+
+    private fun loadHeader(medaliDetailPage: MedaliDetailPage?) {
+        binding.viewMedalHeader.bindData(
+            MedalHeader(
+                lottieUrl = medaliDetailPage?.shimmerShutterLottieURL ?: LOTTIE_BADGE,
+                lottieSparklesUrl = medaliDetailPage?.outerBlinkingLottieURL ?: LOTTIE_SPARKS,
+                background = medaliDetailPage?.backgroundImageURL ?: IMG_DETAIL_BG,
+                backgroundColor = medaliDetailPage?.backgroundImageColor,
+                medalUrl = medaliDetailPage?.innerIconImageURL ?: CONTENT,
+                frameUrl = medaliDetailPage?.frameImageURL ?: FRAME,
+                shimmerUrl = medaliDetailPage?.shimmerImageURL ?: SHIMMER,
+                maskUrl = medaliDetailPage?.maskingImageURL ?: MASK,
+                maskingShapeUrl = medaliDetailPage?.frameMaskingImageURL ?: MASKING_SHAPE,
+                shutterUrl = medaliDetailPage?.shutterImageURL ?: SHUTTER,
+                coachMarkInformation = medaliDetailPage?.coachMark?.text
+            )
+        )
+
+        binding.ivBadgeBase.setImageUrl(medaliDetailPage?.baseImageURL ?: IMG_DETAIL_BASE)
+    }
+
+    private fun loadTaskProgress(mission: Mission?) {
+        mission?.let { safeMission ->
+            val taskProgress = TaskProgress(
+                title = safeMission.title,
+                progress = safeMission.progress,
+                tasks = safeMission.task?.map { Task(title = it.title, isCompleted = it.isCompleted) }
+            )
+            binding.layoutDetailContent.viewTasksProgress.apply {
+                bindData(taskProgress)
+                visible()
+            }
+        } ?: run { binding.layoutDetailContent.viewTasksProgress.gone() }
     }
 
     override fun getScreenName() = ""
