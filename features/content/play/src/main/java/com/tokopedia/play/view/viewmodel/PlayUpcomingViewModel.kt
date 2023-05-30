@@ -34,6 +34,7 @@ import com.tokopedia.play_common.sse.PlayChannelSSEPageSource
 import com.tokopedia.play_common.sse.model.SSEAction
 import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -52,8 +53,8 @@ class PlayUpcomingViewModel @Inject constructor(
     private val playUiModelMapper: PlayUiModelMapper,
     private val playChannelSSE: PlayChannelSSE,
     private val repo: PlayViewerRepository,
-    private val playShareExperience: PlayShareExperience,
-): ViewModel() {
+    private val playShareExperience: PlayShareExperience
+) : ViewModel() {
 
     private var mChannelId: String = ""
 
@@ -79,7 +80,8 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _observableKolId = MutableLiveData<String>()
 
     private val _upcomingInfoUiState = combine(
-        _upcomingInfo, _upcomingState
+        _upcomingInfo,
+        _upcomingState
     ) { info, state ->
         PlayUpcomingInfoUiState(
             info = info,
@@ -90,13 +92,14 @@ class PlayUpcomingViewModel @Inject constructor(
     val uiState: Flow<PlayUpcomingUiState> = combine(
         _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _channelDetail, _widgetState,
+        _channelDetail,
+        _widgetState
     ) { partner, upcomingInfo, channelDetail, widgetState ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
             channel = channelDetail,
-            description = widgetState,
+            description = widgetState
         )
     }.flowOn(dispatchers.computation)
 
@@ -118,7 +121,7 @@ class PlayUpcomingViewModel @Inject constructor(
         }
 
     val isExpanded: Boolean
-            get() = _widgetState.value.isExpand
+        get() = _widgetState.value.isExpand
 
     val isWidgetShown: Boolean
         get() = _widgetState.value.isShown
@@ -129,8 +132,8 @@ class PlayUpcomingViewModel @Inject constructor(
     val isCustomSharingAllowed: Boolean
         get() = playShareExperience.isCustomSharingAllow()
 
-    val isSharingBottomSheet: Boolean
-        get() = playShareExperience.isScreenshotBottomSheet()
+    fun isSharingBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet): Boolean =
+        playShareExperience.isScreenshotBottomSheet(universalShareBottomSheet)
 
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
@@ -146,7 +149,7 @@ class PlayUpcomingViewModel @Inject constructor(
         handleWidgetState(channelData.upcomingInfo.description.isNotBlank())
     }
 
-    private fun handleWidgetState(isShown: Boolean){
+    private fun handleWidgetState(isShown: Boolean) {
         _widgetState.update { it.copy(isShown = isShown) }
     }
 
@@ -157,7 +160,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun updateUpcomingState(upcomingInfo: PlayUpcomingUiModel) {
         viewModelScope.launch {
-            if(_upcomingState.value == PlayUpcomingState.Unknown) {
+            if (_upcomingState.value == PlayUpcomingState.Unknown) {
                 _upcomingState.emit(
                     when {
                         upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
@@ -173,41 +176,40 @@ class PlayUpcomingViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val channelStatus = getChannelStatus(channelId)
 
-            if(withAction) {
-                if(playUiModelMapper.mapStatus(channelStatus).isActive) {
+            if (withAction) {
+                if (playUiModelMapper.mapStatus(channelStatus).isActive) {
                     _upcomingState.emit(PlayUpcomingState.WatchNow)
-                }
-                else {
+                } else {
                     performRefreshWaitingDuration()
                 }
             }
 
             _upcomingInfo.setValue { copy(refreshWaitingDuration = playUiModelMapper.mapWaitingDuration(channelStatus)) }
         }, onError = {
-            if(withAction) _upcomingState.emit(PlayUpcomingState.Refresh)
+                if (withAction) _upcomingState.emit(PlayUpcomingState.Refresh)
 
-            _upcomingInfo.setValue { copy(refreshWaitingDuration = PlayUpcomingUiModel.REFRESH_WAITING_DURATION) }
+                _upcomingInfo.setValue { copy(refreshWaitingDuration = PlayUpcomingUiModel.REFRESH_WAITING_DURATION) }
 
-            _uiEvent.emit(PlayUpcomingUiEvent.ShowInfoWithActionEvent(UiString.Resource(R.string.play_upcoming_channel_not_started)){})
-        })
+                _uiEvent.emit(PlayUpcomingUiEvent.ShowInfoWithActionEvent(UiString.Resource(R.string.play_upcoming_channel_not_started)) {})
+            })
     }
 
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        val isNeedToBeShown = if(userSession.isLoggedIn) partnerInfo.id.toString() != userSession.shopId && partnerInfo.id.toString() != userSession.userId else true
+        val isNeedToBeShown = if (userSession.isLoggedIn) partnerInfo.id.toString() != userSession.shopId && partnerInfo.id.toString() != userSession.userId else true
         if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && isNeedToBeShown) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = getFollowingStatus(partnerInfo)
-                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                val result = if (isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
             }, onError = {})
-        } else  {
+        } else {
             _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.NotFollowable) }
         }
     }
 
-    private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo) : Boolean {
+    private suspend fun getFollowingStatus(partnerInfo: PlayPartnerInfo): Boolean {
         return if (userSession.isLoggedIn) {
-            when(partnerInfo.type){
+            when (partnerInfo.type) {
                 PartnerType.Shop -> repo.getIsFollowingPartner(partnerId = partnerInfo.id)
                 PartnerType.Buyer -> {
                     val data = repo.getFollowingKOL(partnerInfo.id.toString())
@@ -216,7 +218,9 @@ class PlayUpcomingViewModel @Inject constructor(
                 }
                 else -> false
             }
-        } else false
+        } else {
+            false
+        }
     }
 
     private suspend fun getChannelStatus(channelId: String) = withContext(dispatchers.io) {
@@ -226,7 +230,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     fun submitAction(action: PlayUpcomingAction) {
-        when(action) {
+        when (action) {
             ClickUpcomingButton -> handleClickUpcomingButton()
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
@@ -242,20 +246,23 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun handleExpandText(){
+    private fun handleExpandText() {
         _widgetState.update { it.copy(isExpand = !it.isExpand) }
     }
 
-    private fun handleTapCover(){
-        if (_upcomingInfo.value.description.isNotBlank() && isExpanded) handleExpandText()
-        else _widgetState.update { it.copy(isShown = !it.isShown) }
+    private fun handleTapCover() {
+        if (_upcomingInfo.value.description.isNotBlank() && isExpanded) {
+            handleExpandText()
+        } else {
+            _widgetState.update { it.copy(isShown = !it.isShown) }
+        }
     }
 
     private fun handleClickUpcomingButton() {
         val currState = _upcomingState.value
         _upcomingState.value = PlayUpcomingState.Loading
 
-        when(currState) {
+        when (currState) {
             PlayUpcomingState.WatchNow -> handleWatchNowUpcomingChannel()
             is PlayUpcomingState.ReminderStatus -> handleRemindMeUpcomingChannel()
             PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
@@ -271,7 +278,6 @@ class PlayUpcomingViewModel @Inject constructor(
 
         needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
             viewModelScope.launchCatchError(block = {
-
                 mChannelData?.let {
                     val status: Boolean
 
@@ -281,22 +287,26 @@ class PlayUpcomingViewModel @Inject constructor(
                         status = PlayChannelReminderUseCase.checkRequestSuccess(response)
                     }
 
-                    if(!status) failedRemindMe()
-                    else {
+                    if (!status) {
+                        failedRemindMe()
+                    } else {
                         _upcomingInfo.setValue { copy(isReminderSet = !isReminderSet) }
                         _upcomingState.emit(PlayUpcomingState.ReminderStatus(isReminded = isReminderSet))
 
-                        _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(
-                            if (!isReminderSet) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success),
-                            isSuccess = status))
+                        _uiEvent.emit(
+                            PlayUpcomingUiEvent.RemindMeEvent(
+                                message = UiString.Resource(
+                                    if (!isReminderSet) R.string.play_cancel_remind_me_success else R.string.play_remind_me_success
+                                ),
+                                isSuccess = status
+                            )
+                        )
                     }
                 } ?: failedRemindMe()
             }) {
                 failedRemindMe()
             }
         }
-
-
     }
 
     private fun handleWatchNowUpcomingChannel() {
@@ -327,18 +337,17 @@ class PlayUpcomingViewModel @Inject constructor(
             delay(_upcomingInfo.value.refreshWaitingDuration.toLong())
 
             val isAlreadyLive = _upcomingState.value == PlayUpcomingState.WatchNow
-            if(!isAlreadyLive) {
+            if (!isAlreadyLive) {
                 _upcomingState.emit(PlayUpcomingState.Refresh)
             }
         }) {
-
         }
     }
 
     private fun handleClickFollow(isFromLogin: Boolean) = needLogin(REQUEST_CODE_LOGIN_FOLLOW) {
-        if(isFromLogin) updatePartnerInfo(_partnerInfo.value)
+        if (isFromLogin) updatePartnerInfo(_partnerInfo.value)
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
-           doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
+            doFollowUnfollow(shouldForceFollow = isFromLogin) ?: return@needLogin
         }
     }
 
@@ -359,17 +368,17 @@ class PlayUpcomingViewModel @Inject constructor(
         _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
-            val isFollowing: Boolean = if(channelData.partnerInfo.type == PartnerType.Shop){
+            val isFollowing: Boolean = if (channelData.partnerInfo.type == PartnerType.Shop) {
                 repo.postFollowStatus(
                     shopId = shopId.toString(),
-                    followAction = followAction,
+                    followAction = followAction
                 )
             } else {
                 val data = repo.postFollowKol(followedKol = _observableKolId.value.toString(), followAction = followAction)
-                if(data) followAction == PartnerFollowAction.Follow else false
+                if (data) followAction == PartnerFollowAction.Follow else false
             }
             _partnerInfo.setValue {
-                val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
+                val result = if (isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
         }) {
@@ -408,15 +417,16 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
-            if(playShareExperience.isCustomSharingAllow()) {
-                _uiEvent.emit(PlayUpcomingUiEvent.OpenSharingOptionEvent(
-                    title = _channelDetail.value.channelInfo.title,
-                    coverUrl = _channelDetail.value.channelInfo.coverUrl,
-                    userId = userSession.userId,
-                    channelId = mChannelId
-                ))
-            }
-            else if(!isScreenshot) {
+            if (playShareExperience.isCustomSharingAllow()) {
+                _uiEvent.emit(
+                    PlayUpcomingUiEvent.OpenSharingOptionEvent(
+                        title = _channelDetail.value.channelInfo.title,
+                        coverUrl = _channelDetail.value.channelInfo.coverUrl,
+                        userId = userSession.userId,
+                        channelId = mChannelId
+                    )
+                )
+            } else if (!isScreenshot) {
                 copyLink()
             }
         }
@@ -429,32 +439,33 @@ class PlayUpcomingViewModel @Inject constructor(
             playShareExperience
                 .setShareModel(shareModel)
                 .setData(playShareExperienceData)
-                .createUrl(object: PlayShareExperience.Listener {
-                    override fun onUrlCreated(
-                        linkerShareData: LinkerShareResult?,
-                        shareModel: ShareModel,
-                        shareString: String
-                    ) {
-                        viewModelScope.launch {
-                            _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
-                            _uiEvent.emit(
-                                PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent(
-                                    linkerShareData,
-                                    shareModel,
-                                    shareString
+                .createUrl(
+                    object : PlayShareExperience.Listener {
+                        override fun onUrlCreated(
+                            linkerShareData: LinkerShareResult?,
+                            shareModel: ShareModel,
+                            shareString: String
+                        ) {
+                            viewModelScope.launch {
+                                _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
+                                _uiEvent.emit(
+                                    PlayUpcomingUiEvent.OpenSelectedSharingOptionEvent(
+                                        linkerShareData,
+                                        shareModel,
+                                        shareString
+                                    )
                                 )
-                            )
+                            }
                         }
-                    }
 
-                    override fun onError(e: Exception) {
-                        viewModelScope.launch {
-                            _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
-                            _uiEvent.emit(PlayUpcomingUiEvent.ErrorGenerateShareLink)
+                        override fun onError(e: Exception) {
+                            viewModelScope.launch {
+                                _uiEvent.emit(PlayUpcomingUiEvent.CloseShareExperienceBottomSheet)
+                                _uiEvent.emit(PlayUpcomingUiEvent.ErrorGenerateShareLink)
+                            }
                         }
                     }
-                }
-            )
+                )
         }
     }
 
@@ -470,8 +481,9 @@ class PlayUpcomingViewModel @Inject constructor(
                 when (it) {
                     is SSEAction.Message -> handleSSEMessage(it.message, channelId)
                     is SSEAction.Close -> {
-                        if (it.reason == SSECloseReason.ERROR)
+                        if (it.reason == SSECloseReason.ERROR) {
                             connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
+                        }
                     }
                 }
             }
@@ -493,14 +505,14 @@ class PlayUpcomingViewModel @Inject constructor(
             sseMapper.mapping()
         }
 
-        when(result) {
+        when (result) {
             is UpcomingChannelUpdateLive -> handleUpdateChannelStatus(result.channelId, channelId)
             is UpcomingChannelUpdateActive -> handleUpdateChannelStatus(result.channelId, channelId)
         }
     }
 
     private suspend fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
-        if(changedChannelId == currentChannelId) {
+        if (changedChannelId == currentChannelId) {
             _upcomingState.emit(PlayUpcomingState.WatchNow)
             stopSSE()
         }
@@ -518,8 +530,9 @@ class PlayUpcomingViewModel @Inject constructor(
      * Utility Function
      */
     private fun needLogin(requestCode: Int? = null, fn: () -> Unit) {
-        if (userSession.isLoggedIn) fn()
-        else {
+        if (userSession.isLoggedIn) {
+            fn()
+        } else {
             viewModelScope.launch {
                 _uiEvent.emit(
                     PlayUpcomingUiEvent.OpenPageEvent(
@@ -533,7 +546,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) {
-            if(requestCode == REQUEST_CODE_LOGIN_REMIND_ME) {
+            if (requestCode == REQUEST_CODE_LOGIN_REMIND_ME) {
                 viewModelScope.launch {
                     _upcomingState.value = PlayUpcomingState.ReminderStatus(isReminded = isReminderSet)
                 }
@@ -561,7 +574,7 @@ class PlayUpcomingViewModel @Inject constructor(
             redirectUrl = shareInfo.redirectUrl,
             textDescription = shareInfo.textDescription,
             metaTitle = shareInfo.metaTitle,
-            metaDescription = shareInfo.metaDescription,
+            metaDescription = shareInfo.metaDescription
         )
     }
 

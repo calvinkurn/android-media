@@ -13,6 +13,7 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import io.mockk.coEvery
 import io.mockk.every
@@ -53,6 +54,7 @@ class PlayViewModelShareExperienceTest {
     private val mockPlayShareExperience: PlayShareExperience = mockk(relaxed = true)
 
     private val fakePlayShareExperience = FakePlayShareExperience()
+    private val bottomSheet = UniversalShareBottomSheet()
 
     private val testDispatcher = CoroutineTestDispatchers
 
@@ -79,7 +81,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience,
+            playShareExperience = mockPlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -113,7 +115,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience,
+            playShareExperience = mockPlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -146,7 +148,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience,
+            playShareExperience = mockPlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -180,7 +182,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience,
+            playShareExperience = mockPlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -202,12 +204,12 @@ class PlayViewModelShareExperienceTest {
     fun `when user close sharing bottom sheet, it should send analytics close bottom sheet`() {
         /** Prepare */
         every { mockPlayNewAnalytic.closeShareBottomSheet(any(), any(), any(), any()) } returns Unit
-        every { mockPlayShareExperience.isScreenshotBottomSheet() } returns false
+        every { mockPlayShareExperience.isScreenshotBottomSheet(any()) } returns false
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience,
+            playShareExperience = mockPlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -216,7 +218,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             it.recordEvent {
-                submitAction(CloseSharingOptionAction)
+                submitAction(CloseSharingOptionAction(bottomSheet))
             }
 
             /** Verify */
@@ -240,7 +242,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = mockPlayShareExperience,
+            playShareExperience = mockPlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -262,7 +264,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user click share option, it should emit event to redirect to selected media`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(),any()) } returns Unit
+        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(), any()) } returns Unit
         fakePlayShareExperience.setScreenshotBottomSheet(false)
 
         val shareModel = ShareModel.Whatsapp()
@@ -278,7 +280,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = fakePlayShareExperience,
+            playShareExperience = fakePlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -287,7 +289,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ClickSharingOptionAction(shareModel))
+                submitAction(ClickSharingOptionAction(shareModel, bottomSheet))
             }
 
             /** Verify */
@@ -301,7 +303,7 @@ class PlayViewModelShareExperienceTest {
     @Test
     fun `when user click share option and error occur, it should emit event to copy link`() {
         /** Prepare */
-        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(),any()) } returns Unit
+        every { mockPlayNewAnalytic.clickSharingOption(any(), any(), any(), any(), any()) } returns Unit
         fakePlayShareExperience.setScreenshotBottomSheet(false)
         fakePlayShareExperience.setThrowException(true)
 
@@ -314,7 +316,7 @@ class PlayViewModelShareExperienceTest {
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
             playAnalytic = mockPlayNewAnalytic,
-            playShareExperience = fakePlayShareExperience,
+            playShareExperience = fakePlayShareExperience
         ) {
             createPage(channelData)
             focusPage(channelData)
@@ -323,7 +325,7 @@ class PlayViewModelShareExperienceTest {
         robot.use {
             /** Test */
             val event = it.recordEvent {
-                submitAction(ClickSharingOptionAction(shareModel))
+                submitAction(ClickSharingOptionAction(shareModel, bottomSheet))
             }
 
             /** Verify */
@@ -343,7 +345,7 @@ class PlayViewModelShareExperienceTest {
 
         val robot = createPlayViewModelRobot(
             dispatchers = testDispatcher,
-            playAnalytic = mockPlayNewAnalytic,
+            playAnalytic = mockPlayNewAnalytic
         ) {
             createPage(channelData)
             focusPage(channelData)

@@ -1,6 +1,7 @@
 package com.tokopedia.play.util.share
 
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlin.Exception
 
@@ -17,7 +18,7 @@ interface PlayShareExperience {
 
     fun createUrl(listener: Listener)
 
-    fun isScreenshotBottomSheet(): Boolean
+    fun isScreenshotBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet): Boolean
 
     interface Listener {
         fun onUrlCreated(linkerShareData: LinkerShareResult?, shareModel: ShareModel, shareString: String)

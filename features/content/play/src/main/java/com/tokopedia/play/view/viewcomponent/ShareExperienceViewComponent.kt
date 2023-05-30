@@ -46,7 +46,7 @@ class ShareExperienceViewComponent(
     private var bitmap: Bitmap? = null
     private val scope = CoroutineScope(dispatchers.computation)
 
-    private val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+    val universalShareBottomSheet: UniversalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
         init(object : ShareBottomsheetListener {
             override fun onShareOptionClicked(shareModel: ShareModel) {
                 listener.onShareOptionClick(this@ShareExperienceViewComponent, shareModel)
