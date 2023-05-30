@@ -171,7 +171,7 @@
                 android:layout_height="18dp"
                 android:contentDescription="@string/kol_action_like"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_thumb_white"
+                app:srcCompat="@drawable/iconunify_thumb_filled"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/likeText"

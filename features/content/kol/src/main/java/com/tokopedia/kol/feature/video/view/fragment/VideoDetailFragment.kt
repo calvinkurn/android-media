@@ -43,7 +43,6 @@ import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -503,7 +502,16 @@ class VideoDetailFragment :
             }
 
             like.count > 0 -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                likeIcon.setImageDrawable(
+                        getIconUnifyDrawable(
+                            requireContext(),
+                            IconUnify.THUMB_FILLED,
+                            MethodChecker.getColor(
+                                requireContext(),
+                                com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                            )
+                        )
+                    )
                 likeText.text = like.countFmt
                 likeText.setTextColor(
                     MethodChecker.getColor(
@@ -514,7 +522,16 @@ class VideoDetailFragment :
             }
 
             else -> {
-                likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_white)
+                likeIcon.setImageDrawable(
+                    getIconUnifyDrawable(
+                        requireContext(),
+                        IconUnify.THUMB_FILLED,
+                        MethodChecker.getColor(
+                            requireContext(),
+                            com.tokopedia.unifyprinciples.R.color.Unify_Static_White,
+                        )
+                    )
+                )
                 likeText.setText(com.tokopedia.feedcomponent.R.string.kol_action_like)
                 likeText.setTextColor(
                     MethodChecker.getColor(
