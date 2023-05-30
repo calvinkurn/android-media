@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.UserReportSubmissionResponse
-import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

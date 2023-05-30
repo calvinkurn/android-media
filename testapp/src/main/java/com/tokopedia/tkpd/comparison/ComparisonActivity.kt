@@ -77,7 +77,7 @@ class ComparisonActivity : AppCompatActivity() {
                                     text = "Body 1",
                                     textStyle = NestTheme.typography.body1
                                 )
-                                NestButton(text = "Click me!") { }
+                                NestButton(text = "Click me!", { })
                             }
                             ExpDivider()
                             Column(

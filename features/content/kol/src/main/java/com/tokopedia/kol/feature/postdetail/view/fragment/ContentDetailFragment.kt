@@ -2000,7 +2000,7 @@ class ContentDetailFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2017,7 +2017,7 @@ class ContentDetailFragment :
                             productTagBS.showToasterOnBottomSheetOnSuccessFollow(
                                 getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                 Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                                getString(com.tokopedia.feedcomponent.R.string.feed_ok)
                             )
                             feedFollowersOnlyBottomSheet?.dismiss()
                         }
@@ -2050,7 +2050,7 @@ class ContentDetailFragment :
                     }
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2445,7 +2445,7 @@ class ContentDetailFragment :
                     onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2466,7 +2466,7 @@ class ContentDetailFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -2481,7 +2481,7 @@ class ContentDetailFragment :
                     onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
