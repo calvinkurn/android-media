@@ -39,13 +39,13 @@ import javax.inject.Inject
 
 const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg_base.png"
 const val IMG_DETAIL_BG = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg.png"
-const val CONTENT = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png"
+const val FRAME_MASK = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/26/medali_frame_mask.png"
+const val SHIMMER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/26/shimmer_alt.png"
 const val FRAME = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_frame.png"
-const val SHIMMER = "https://user-images.githubusercontent.com/121924518/240866873-6121041d-b841-43fe-8c54-76815f095f39.png"
-const val MASK = "https://user-images.githubusercontent.com/121924518/240869225-f2a42fca-a6ad-4a27-ba1b-a04051864e34.png"
 const val MASKING_SHAPE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
 const val SHUTTER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_shutter.png"
-const val LOTTIE_BADGE = "https://gist.githubusercontent.com/rooparshgojek/8502ff5cb6f84b918141a213498f007a/raw/9e5bf0fae736334521b47a07a5d0d76346c9fc57/medali-detail.json"
+const val CONTENT = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png"
+const val LOTTIE_BADGE = "https://gist.githubusercontent.com/abhishekjain-gojek/99be6bad982dea1518f03ff1dffbf40d/raw/6cedac0248cbf1d5fc55825385034d1cdb3a5f6c/medali_detail.json"
 const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/08/medali_outer_blinking.json"
 
 class MedalDetailFragment : BaseDaggerFragment() {
@@ -202,14 +202,13 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 medalUrl = medaliDetailPage?.innerIconImageURL ?: CONTENT,
                 frameUrl = medaliDetailPage?.frameImageURL ?: FRAME,
                 shimmerUrl = medaliDetailPage?.shimmerImageURL ?: SHIMMER,
-                maskUrl = medaliDetailPage?.maskingImageURL ?: MASK,
+                frameMaskUrl = medaliDetailPage?.maskingImageURL ?: FRAME_MASK,
                 maskingShapeUrl = medaliDetailPage?.frameMaskingImageURL ?: MASKING_SHAPE,
                 shutterUrl = medaliDetailPage?.shutterImageURL ?: SHUTTER,
                 coachMarkInformation = medaliDetailPage?.coachMark?.text
             )
         )
 
-        binding.ivBadgeBase.setImageUrl(medaliDetailPage?.baseImageURL ?: IMG_DETAIL_BASE)
     }
 
     private fun loadTaskProgress(mission: Mission?) {

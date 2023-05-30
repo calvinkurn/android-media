@@ -1,8 +1,7 @@
 package com.tokopedia.scp_rewards.common.utils
 
-const val MEDAL_AUTOPLAY = "1. Medal autoplay"
-const val COACH_MARK_APPEAR = "2. Coachmark appear"
-const val MEDAL_SHUTTER_CLOSE = "3. Medal Shutter Close"
-const val MEDAL_SHUTTER_OPEN = "4. Medal Shutter Open"
-const val LAYER_DYNAMIC_TEXT = "DynamicText"
-const val FONT_PATH = "fonts/Open Sauce One.ttf"
+const val SHUTTER_AUTO_CLOSE = "shutter_auto_close"
+const val SHUTTER_AUTO_OPEN = "shutter_auto_open"
+const val COACH_MARK_APPEAR = "coachmark_appear"
+const val SHUTTER_MANUAL_CLOSE = "shutter_manual_close"
+const val SHUTTER_MANUAL_OPEN = "shutter_manual_open"

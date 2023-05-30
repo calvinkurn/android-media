@@ -10,7 +10,7 @@
         android:id="@+id/iv_background"
         android:layout_width="0dp"
         android:layout_height="300dp"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,15 +21,13 @@
         android:id="@+id/lottie_view_sparks"
         android:layout_width="250dp"
         android:layout_height="190dp"
-        android:layout_marginTop="@dimen/dp_39"
         android:translationZ="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/iv_badge_base"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:lottie_loop="true" />
 
-    <com.airbnb.lottie.LottieAnimationView
+    <com.tokopedia.scp_rewards.widget.medalHeader.MedalLottieAnimation
         android:id="@+id/lottie_view"
         android:layout_width="156dp"
         android:layout_height="174dp"
@@ -40,11 +38,21 @@
         app:layout_constraintStart_toStartOf="@id/lottie_view_sparks"
         app:layout_constraintTop_toTopOf="@id/lottie_view_sparks" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_badge_base"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <View
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_20"
         android:background="@drawable/scp_medal_detail_rounded_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </merge>

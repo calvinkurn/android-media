@@ -28,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:fitsSystemWindows="true"
             app:toolbarId="@+id/toolbar">
 
             <com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderView
@@ -36,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="1" />
+                app:layout_collapseParallaxMultiplier="0.5" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -54,14 +53,6 @@
     <include
         android:id="@+id/layout_detail_content"
         layout="@layout/medal_detail_content" />
-
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_badge_base"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:translationY="-10dp"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="center_horizontal|bottom" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </ViewFlipper>
