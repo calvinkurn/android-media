@@ -136,6 +136,9 @@ class PickerViewModel @Inject constructor(
                 ?.toUiModel()
                 ?.also { model ->
                     model.sourcePath = it.second
+
+                    // set loaded url image to skip save gallery process
+                    model.isCacheFile = false
                 }
         }
     }
