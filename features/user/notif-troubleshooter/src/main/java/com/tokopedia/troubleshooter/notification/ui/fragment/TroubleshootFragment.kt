@@ -21,6 +21,7 @@ import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackClearCacheClicked
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterAnalytics.trackImpression
 import com.tokopedia.troubleshooter.notification.analytics.TroubleshooterTimber
+import com.tokopedia.troubleshooter.notification.data.service.googleplay.PlayServicesImpl
 import com.tokopedia.troubleshooter.notification.databinding.FragmentNotifTroubleshooterBinding
 import com.tokopedia.troubleshooter.notification.di.DaggerTroubleshootComponent
 import com.tokopedia.troubleshooter.notification.di.module.TroubleshootModule
@@ -61,8 +62,12 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     private lateinit var viewModel: TroubleshootViewModel
     private val binding by viewBinding(FragmentNotifTroubleshooterBinding::bind)
 
+    private val playServicesManager by lazy(LazyThreadSafetyMode.NONE) {
+        PlayServicesImpl(requireContext())
+    }
+
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
-        TroubleshooterAdapter(TroubleshooterItemFactory(this, this))
+        TroubleshooterAdapter(TroubleshooterItemFactory(this, this, playServicesManager))
     }
 
     override fun onCreateView(
