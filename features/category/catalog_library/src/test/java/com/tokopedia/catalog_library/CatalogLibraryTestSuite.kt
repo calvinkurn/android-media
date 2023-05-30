@@ -1,6 +1,7 @@
 package com.tokopedia.catalog_library
 
 import android.os.Build
+import com.tokopedia.catalog_library.viewmodel.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.runner.RunWith
 import org.junit.runners.Suite

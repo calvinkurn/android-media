@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library
+package com.tokopedia.catalog_library.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.catalog_library.model.raw.CatalogListResponse
