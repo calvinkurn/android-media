@@ -348,7 +348,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     fun isOclEnabled(): Boolean {
         return oclPreferences.getToken().isNotEmpty() &&
-                arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
+            arguments?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_FROM_OCL_LOGIN, false) == false &&
             oclUtils.isOclEnabled()
     }
 
@@ -625,7 +625,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun hideOrShowFingerprintBtn(isRegistered: Boolean) {
         activity?.let {
             if (isRegistered) {
-                enableFingerprint(isShowDirectBiometricsPrompt)
+                enableFingerprint()
             } else {
                 disableFingerprint()
             }
@@ -831,7 +831,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         viewBinding?.fingerprintBtn?.hide()
     }
 
-    private fun enableFingerprint(isShowDirectBiometricsPrompt: Boolean) {
+    private fun enableFingerprint() {
         viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
