@@ -70,6 +70,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
 import java.net.URLEncoder
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * @author by milhamj on 28/11/18.
@@ -234,17 +235,17 @@ open class DynamicPostViewHolder(
                 itemView.authorBadge.show()
                 itemView.authorBadge.loadImage(header.avatarBadgeImage)
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4),
+                    itemView.getDimens(contentCommonR.dimen.content_common_dp_4),
                     0,
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
                     0
                 )
             } else {
                 itemView.authorBadge.hide()
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
                     0,
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
                     0
                 )
             }
@@ -365,7 +366,7 @@ open class DynamicPostViewHolder(
     private fun animateFooter() {
         Handler().postDelayed({
             itemView.footerBackground.animation =
-                AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
+                AnimationUtils.loadAnimation(itemView.context, contentCommonR.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }
@@ -653,6 +654,7 @@ open class DynamicPostViewHolder(
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun bindPostTag(
         postId: String,
         postTag: PostTag,

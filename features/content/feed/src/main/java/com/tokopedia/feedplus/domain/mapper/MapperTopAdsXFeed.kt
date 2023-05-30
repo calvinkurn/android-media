@@ -75,7 +75,14 @@ object MapperTopAdsXFeed {
             followers = followers,
             reportable = false,
             adViewUri = data?.cpm?.uri.orEmpty(),
-            adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty()
+            adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty(),
+            share = currentModel.share.copy(
+                contentId = data?.id.orEmpty(),
+                author = feedAuthor,
+                appLink = data?.applinks.orEmpty(),
+                webLink = redirectLinkShop,
+                mediaUrl = mediaList?.firstOrNull()?.mediaUrl.orEmpty()
+            )
         )
     }
 
@@ -87,7 +94,7 @@ object MapperTopAdsXFeed {
         id = product.id,
         coverUrl = "",
         mediaUrl = product.image.m_url,
-        applink = product.applinks,
+        appLink = product.applinks,
         tagging = listOf(FeedMediaTagging(index))
     )
 

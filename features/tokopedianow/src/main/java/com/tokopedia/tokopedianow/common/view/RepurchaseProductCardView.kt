@@ -3,17 +3,17 @@ package com.tokopedia.tokopedianow.common.view
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import androidx.cardview.widget.CardView
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.databinding.LayoutRepurchaseProductCardBinding
+import com.tokopedia.unifycomponents.BaseCustomView
 
 class RepurchaseProductCardView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : CardView(context, attrs) {
+) : BaseCustomView(context, attrs) {
 
     private val view by lazy {
         LayoutRepurchaseProductCardBinding.inflate(LayoutInflater.from(context), this, true)

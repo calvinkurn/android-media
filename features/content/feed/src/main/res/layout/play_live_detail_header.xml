@@ -10,7 +10,6 @@
     android:layout_marginBottom="@dimen/unify_space_12"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    tools:targetApi="lollipop"
     tools:visibility="visible">
 
     <androidx.appcompat.widget.AppCompatImageView
