@@ -30,7 +30,7 @@ fun isDarkModeApp(): Boolean {
 
 object DarkModeUtils {
 
-    private const val HEX_COLOR_REGEX = "#([a-fA-F0-9]{8}|[a-fA-F0-9]{6}|[a-fA-F0-9]{3})"
+    const val HEX_COLOR_REGEX = "#([a-fA-F0-9]{8}|[a-fA-F0-9]{6}|[a-fA-F0-9]{3})"
     private const val HEX_COLOR_FORMAT = "#%06X"
 
     fun getHtmlTextDarkModeSupport(context: Context, text: String): String {
