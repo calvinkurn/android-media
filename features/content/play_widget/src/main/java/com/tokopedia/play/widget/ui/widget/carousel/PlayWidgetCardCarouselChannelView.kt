@@ -107,7 +107,6 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setMuted(true)
 
         binding.rvProducts.adapter = adapter
-        binding.rvProducts.itemAnimator = null
         binding.rvProducts.addItemDecoration(
             PlayWidgetCarouselProductItemDecoration(binding.rvProducts.context)
         )
@@ -166,7 +165,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.viewPlayWidgetCaption.root.showWithCondition(!model.isWithProductNoCaptionVariant)
 
         binding.rvProducts.showWithCondition(model.isWithProductNoCaptionVariant)
-        adapter.submitList(model.products)
+        adapter.setNewItems(model.products)
 
         setMuted(model.isMuted)
     }
@@ -177,10 +176,6 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
     fun resetProductPosition() {
         binding.rvProducts.scrollToPosition(0)
-    }
-
-    fun hideProduct() {
-        binding.rvProducts.hide()
     }
 
     fun updateTotalView(totalView: String) {

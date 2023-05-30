@@ -19,6 +19,7 @@ class HomePlayWidgetHelper @Inject constructor() {
     }
 
     fun isCarouselVariantWithProduct(layout: String): Boolean {
-        return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2
+//        return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2
+        return true
     }
 }
