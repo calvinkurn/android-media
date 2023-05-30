@@ -24,7 +24,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
     private val topAdsGroupPerformanceUseCase: TopAdsGroupPerformanceUseCase,
     private val topAdsGetAdGroupBidInsightUseCase: TopAdsGetAdGroupBidInsightUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
-    private val topAdsGetSellerInsightDataUseCase: TopAdsGetSellerInsightDataUseCase,
+    private val topAdsGetSellerInsightDataUseCase: TopAdsGetSellerInsightDataUseCase
 ) {
 
     suspend fun executeOnBackground(
@@ -79,8 +79,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         GroupInsightsUiModel(
                             "Kata Kunci",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
-//                            !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
-                            false,
+                            !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
+//                            false,
                             AccordianKataKunciUiModel(
                                 "Kata Kunci",
                                 groupData?.existingKeywordsBidRecom
@@ -89,8 +89,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     groupDetailMapper.detailPageDataMap[TYPE_KEYWORD_BID] = GroupInsightsUiModel(
                         "Biaya Kata Kunci",
                         "Kunjungan pembeli menurun. Pakai kata kunci...",
-//                        !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
-                        false,
+                        !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
+//                        false,
                         AccordianKeywordBidUiModel(
                             "Biaya Kata Kunci",
                             groupData?.newPositiveKeywordsRecom
@@ -100,8 +100,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         GroupInsightsUiModel(
                             "Kata Kunci Negatif",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
-//                            !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
-                            false,
+                            !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
+//                            false,
                             AccordianNegativeKeywordUiModel(
                                 "Kata Kunci Negatif",
                                 groupData?.newNegativeKeywordsRecom
@@ -121,8 +121,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         GroupInsightsUiModel(
                             "Biaya Iklan",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
-//                            !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
-                            false,
+                            !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
+//                            false,
                             AccordianGroupBidUiModel(
                                 text = "Biaya Iklan",
                                 groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
@@ -140,8 +140,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
                         "Anggaran harian",
                         "Kunjungan embellish menurun. Pakai kata kunci...",
-//                        data.dailyBudgetData.isNotEmpty(),
-                            false,
+                        data.dailyBudgetData.isNotEmpty(),
+//                            false,
                         AccordianDailyBudgetUiModel(
                             text = "Biaya Iklan",
                             data
@@ -153,8 +153,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
                         "Anggaran harian",
                         "Kunjungan embellish menurun. Pakai kata kunci...",
-//                        true,
-                            false,
+                        true,
+//                            false,
                         AccordianDailyBudgetUiModel(
                             text = "Biaya Iklan",
                             TopAdsGetSellerInsightDataResponse.GetSellerInsightData.SellerInsightData()
@@ -173,7 +173,6 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }
-
     }
 
     private suspend fun getGroupWithInsight(): TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {

@@ -100,19 +100,22 @@ class GroupDetailMapper @Inject constructor() {
         }
     }
 
-    fun toAdGroupUiModelList(adGroupList: MutableList<TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup>): MutableList<InsightListUiModel> {
+    fun toAdGroupUiModelList(
+        adGroupList: MutableList<TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup>,
+        insightType: Int
+    ): MutableList<InsightListUiModel> {
         val list = mutableListOf<InsightListUiModel>()
         for (adGroup in adGroupList) {
             list.add(
                 AdGroupUiModel(
-                    adGroupName =adGroup.adGroupName,
+                    adGroupName = adGroup.adGroupName,
                     count = adGroup.count,
                     adGroupID = adGroup.adGroupID,
-                    adGroupType = adGroup.adGroupType
+                    adGroupType = adGroup.adGroupType,
+                    insightType = insightType
                 )
             )
         }
         return list
     }
 }
-

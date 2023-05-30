@@ -79,6 +79,8 @@ class GroupDetailFragment : BaseDaggerFragment() {
         val insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
         val adGroupName = arguments?.getString("adGroupName")
         val adGroupId = arguments?.getString("groupId") ?: ""
+        val insightType = arguments?.getInt("insightType") ?: 0
+        viewModel.selectDefaultChips(insightType)
         viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
         if (adType != null && adGroupId != null) {
             loadData(if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP, adGroupId)
@@ -135,7 +137,8 @@ class GroupDetailFragment : BaseDaggerFragment() {
         { _, item ->
             viewModel.loadDetailPageOnAction(
                 if (item.adGroupType == "product") TYPE_PRODUCT else TYPE_SHOP,
-                item.adGroupID
+                item.adGroupID,
+                item.insightType
             )
         }
 
@@ -151,7 +154,7 @@ class GroupDetailFragment : BaseDaggerFragment() {
 
                 if (dy > 0) {
                     if (position > 1) {
-                        if (viewModel.checkIfGroupChipsAvailable()){
+                        if (viewModel.checkIfGroupChipsAvailable()) {
                             groupChipsLayout?.show()
                             groupDetailsChipsAdapter?.notifyDataSetChanged()
                             groupDetailChipsRv?.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
@@ -181,7 +184,7 @@ class GroupDetailFragment : BaseDaggerFragment() {
         val adType = arguments?.getInt("adType")
         val adGroupId = arguments?.getString("groupId")
         if (adType != null && adGroupId != null) {
-            viewModel.loadDetailPageOnAction(adType, "23132035", true)
+//            viewModel.loadDetailPageOnAction(adType, "23132035", true)
         }
     }
 

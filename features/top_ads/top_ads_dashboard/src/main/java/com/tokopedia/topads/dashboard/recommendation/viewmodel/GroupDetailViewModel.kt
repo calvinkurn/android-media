@@ -12,6 +12,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapp
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
@@ -58,7 +59,7 @@ class GroupDetailViewModel @Inject constructor(
     fun loadInsightTypeChips(
         adType: String?,
         insightList: ArrayList<AdGroupUiModel>,
-        adGroupName: String?,
+        adGroupName: String?
     ) {
         val list =
             mutableListOf(
@@ -69,7 +70,12 @@ class GroupDetailViewModel @Inject constructor(
             InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
-    fun loadDetailPageOnAction(adType: Int, adgroupID: String, isSwitchAdType: Boolean = false) {
+    fun loadDetailPageOnAction(
+        adType: Int,
+        adgroupID: String,
+        insightType: Int,
+        isSwitchAdType: Boolean = false
+    ) {
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
                 val data = topAdsListAllInsightCountsUseCase(
@@ -88,7 +94,10 @@ class GroupDetailViewModel @Inject constructor(
                 TopAdsListAllInsightState.Success(
                     InsightTypeChipsUiModel(
                         list,
-                        groupDetailMapper.toAdGroupUiModelList(data.topAdsListAllInsightCounts.adGroups.toMutableList())
+                        groupDetailMapper.toAdGroupUiModelList(
+                            data.topAdsListAllInsightCounts.adGroups.toMutableList(),
+                            insightType
+                        )
                     )
                 )
             } else {
@@ -104,5 +113,11 @@ class GroupDetailViewModel @Inject constructor(
 
     fun checkIfGroupChipsAvailable(): Boolean {
         return groupDetailMapper.detailPageDataMap[TYPE_CHIPS] != null
+    }
+
+    fun selectDefaultChips(insightType: Int) {
+        chipsList.forEachIndexed { index, groupDetailChipsItemUiModel ->
+            groupDetailChipsItemUiModel.isSelected = (index == insightType)
+        }
     }
 }

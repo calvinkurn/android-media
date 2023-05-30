@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class TopAdsListAllInsightViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
+    private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _productInsights =
@@ -45,7 +45,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                     startCursor = "",
                     mapper = mapper
                 )
-                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel(insightType))
                 _productInsights.value = state
             } else {
                 val data = topAdsListAllInsightCountsUseCase(
@@ -55,7 +55,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                     startCursor = "",
                     mapper = mapper
                 )
-                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel(insightType))
                 _headlineInsights.value = state
             }
         }, onError = {
@@ -79,7 +79,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                     startCursor = startCursor,
                     mapper = mapper
                 )
-                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel(insightType))
                 _productInsights.value = state
             } else {
                 val data = topAdsListAllInsightCountsUseCase(
@@ -89,7 +89,7 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                     startCursor = startCursor,
                     mapper = mapper
                 )
-                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel().also { it.insightType = insightType })
+                val state = TopAdsListAllInsightState.Success(data.toInsightUiModel(insightType))
                 _headlineInsights.value = state
             }
         }, onError = {

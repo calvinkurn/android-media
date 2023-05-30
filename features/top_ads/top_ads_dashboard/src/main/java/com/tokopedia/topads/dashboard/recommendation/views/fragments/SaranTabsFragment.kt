@@ -59,7 +59,6 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)[TopAdsListAllInsightViewModel::class.java]
     }
 
-
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
@@ -211,6 +210,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
             bundle.putString("adGroupName", item.adGroupName)
             bundle.putString("groupId", item.adGroupID)
             bundle.putInt("count", item.count)
+            bundle.putInt("insightType", item.insightType)
             bundle.putParcelableArrayList("insightTypeList", adGroupList)
             Intent(context, GroupDetailActivity::class.java).apply {
                 this.putExtra("groupDetailBundle", bundle)

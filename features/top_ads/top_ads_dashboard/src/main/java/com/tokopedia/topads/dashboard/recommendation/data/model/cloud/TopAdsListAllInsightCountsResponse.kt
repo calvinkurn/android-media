@@ -16,7 +16,7 @@ data class TopAdsListAllInsightCountsResponse(
         @SerializedName("error")
         val error: Error = Error(),
         @SerializedName("nextCursor")
-        val nextCursor: String = "",
+        val nextCursor: String = ""
     ) {
         data class AdGroup(
             @SerializedName("adGroupID")
@@ -30,35 +30,37 @@ data class TopAdsListAllInsightCountsResponse(
         )
     }
 
-    fun toInsightUiModel(): InsightUiModel {
+    fun toInsightUiModel(insightType: Int): InsightUiModel {
         return InsightUiModel(
-            adGroups = toInsightListUiModel(this.topAdsListAllInsightCounts.adGroups).toMutableList(),
-            insightType = 0,
+            adGroups = toInsightListUiModel(this.topAdsListAllInsightCounts.adGroups, insightType).toMutableList(),
+            insightType = insightType,
             nextCursor = this.topAdsListAllInsightCounts.nextCursor
         )
     }
 
-    fun toInsightUiAtHomeModel(): List<InsightListUiModel> {
+    fun toInsightUiAtHomeModel(insightType: Int): List<InsightListUiModel> {
         return topAdsListAllInsightCounts.adGroups.map {
             AdGroupUiModel(
                 it.adGroupID,
                 it.adGroupName,
                 it.adGroupType,
                 it.count,
+                insightType = insightType,
                 showGroupType = true
             )
         }
     }
 
-    private fun toInsightListUiModel(adGroups: List<TopAdsListAllInsightCounts.AdGroup>): List<InsightListUiModel> {
+    private fun toInsightListUiModel(adGroups: List<TopAdsListAllInsightCounts.AdGroup>, insightType: Int): List<InsightListUiModel> {
         return adGroups.map {
             AdGroupUiModel(
                 it.adGroupID,
                 it.adGroupName,
                 it.adGroupType,
-                it.count
+                it.count,
+                insightType = insightType
+
             )
         }
-
     }
 }
