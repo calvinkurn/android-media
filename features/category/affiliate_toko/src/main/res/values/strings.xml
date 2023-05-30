@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">affiliate_toko</string>
-    <string name="label_affiliate">Affiliate</string>
 
     <string name="affiliate_home">Home</string>
     <string name="affiliate_promo">Promosikan</string>
