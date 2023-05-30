@@ -424,7 +424,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
             add(
                 ShareType.ActionShare(
                     KEY_COPY,
-                    getString(R.string.copy),
+                    getString(com.tokopedia.content.common.R.string.copy),
                     MimeType.TEXT,
                     MethodChecker.getDrawable(context, R.drawable.ic_copy_clipboard),
                     ::actionCopy
@@ -433,12 +433,12 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
             add(
                 ShareType.ActionShare(
                     KEY_OTHER,
-                    getString(R.string.other),
+                    getString(com.tokopedia.content.common.R.string.other),
                     MimeType.TEXT,
                     getIconUnifyDrawable(
                         requireContext(),
                         IconUnify.MENU_KEBAB_HORIZONTAL,
-                        MethodChecker.getColor(context, R.color.Unify_N700)
+                        MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
                     ),
                     ::actionMore
                 )

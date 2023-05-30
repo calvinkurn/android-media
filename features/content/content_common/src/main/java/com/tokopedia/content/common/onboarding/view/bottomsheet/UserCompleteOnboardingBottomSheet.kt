@@ -31,14 +31,13 @@ import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */
 class UserCompleteOnboardingBottomSheet @Inject constructor(
     private val viewModelFactoryCreator: UGCOnboardingViewModelFactory.Creator,
     private val strategyFactory: UGCOnboardingStrategyFactory,
-): BaseUserOnboardingBottomSheet() {
+) : BaseUserOnboardingBottomSheet() {
 
     private var _binding: BottomsheetUserCompleteOnboardingBinding? = null
     private val binding: BottomsheetUserCompleteOnboardingBinding
@@ -80,14 +79,16 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.textFieldUsername.isClearable = false
-        binding.textFieldUsername.icon1.setImageDrawable(getIconUnifyDrawable(
-            requireContext(),
-            IconUnify.CHECK,
-            MethodChecker.getColor(
+        binding.textFieldUsername.icon1.setImageDrawable(
+            getIconUnifyDrawable(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+                IconUnify.CHECK,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500,
+                )
             )
-        ))
+        )
         binding.layoutTnc.tvAcceptTnc.text = getTncText()
         binding.layoutTnc.tvAcceptTnc.movementMethod = LinkMovementMethod.getInstance()
         setTitle(getString(R.string.ugc_complete_onboarding_title))
@@ -141,7 +142,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(event) {
+                when (event) {
                     is UGCOnboardingUiEvent.ShowError -> {
                         Toaster.toasterCustomBottomHeight = binding.btnContinue.height + offset16
                         Toaster.build(
@@ -161,27 +162,28 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         prev: UGCOnboardingUiState?,
         curr: UGCOnboardingUiState,
     ) {
-        if(prev == curr) return
+        if (prev == curr) return
 
         with(curr) {
             binding.layoutTnc.cbxTnc.isChecked = isCheckTnc
 
-            binding.btnContinue.isEnabled = isCheckTnc && !isSubmit && usernameState is UsernameState.Valid
+            binding.btnContinue.isEnabled =
+                isCheckTnc && !isSubmit && usernameState is UsernameState.Valid
             binding.btnContinue.isLoading = isSubmit
 
             binding.textFieldUsername.isEnabled = !isSubmit
             binding.textFieldUsername.isLoading = usernameState is UsernameState.Loading
             binding.textFieldUsername.isInputError = usernameState is UsernameState.Invalid
             binding.textFieldUsername.setMessage(
-                if(usernameState is UsernameState.Invalid) {
-                    if(usernameState.message.isNotEmpty()) usernameState.message
+                if (usernameState is UsernameState.Invalid) {
+                    if (usernameState.message.isNotEmpty()) usernameState.message
                     else getDefaultErrorMessage()
-                }
-                else getString(R.string.up_input_username_info)
+                } else getString(R.string.up_input_username_info)
             )
-            binding.textFieldUsername.icon1.visibility = if(usernameState is UsernameState.Valid) View.VISIBLE else View.GONE
+            binding.textFieldUsername.icon1.visibility =
+                if (usernameState is UsernameState.Valid) View.VISIBLE else View.GONE
 
-            if(curr.hasAcceptTnc) {
+            if (curr.hasAcceptTnc) {
                 mListener?.onSuccess()
                 dismiss()
             }
@@ -191,7 +193,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     private fun getDefaultErrorMessage() = getString(R.string.ugc_onboarding_unknown_error)
 
     fun showNow(fragmentManager: FragmentManager) {
-        if(!isAdded) showNow(fragmentManager, TAG)
+        if (!isAdded) showNow(fragmentManager, TAG)
     }
 
     companion object {
@@ -201,7 +203,8 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): UserCompleteOnboardingBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserCompleteOnboardingBottomSheet
+            val oldInstance =
+                fragmentManager.findFragmentByTag(TAG) as? UserCompleteOnboardingBottomSheet
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 UserCompleteOnboardingBottomSheet::class.java.name
