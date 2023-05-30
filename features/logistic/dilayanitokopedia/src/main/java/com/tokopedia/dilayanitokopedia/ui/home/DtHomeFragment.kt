@@ -80,6 +80,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -221,7 +222,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
 
     private fun initScreenSootListener() {
         context?.let {
-            screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+            screenshotDetector = SharingUtil.createAndStartScreenShotDetector(
                 context = it,
                 screenShotListener = this,
                 fragment = this,
@@ -381,7 +382,7 @@ class DtHomeFragment : Fragment(), ShareBottomsheetListener, ScreenShotListener,
     }
 
     private fun shareClicked(shareDt: DtShareUniversalUiModel?) {
-        if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+        if (SharingUtil.isCustomSharingEnabled(context)) {
             showUniversalShareBottomSheet(shareDt)
         } else {
             LinkerManager.getInstance().apply {
