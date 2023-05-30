@@ -7,6 +7,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
+import com.tokopedia.play.broadcaster.helper.PlayBroadcastCassavaValidator
 import com.tokopedia.play.broadcaster.shorts.builder.ShortsUiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsTestComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsTestModule
@@ -31,7 +32,7 @@ class PlayShortsSwitchAccountAnalyticTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
-    private val cassavaValidator = PlayShortsCassavaValidator(cassavaTestRule)
+    private val cassavaValidator = PlayBroadcastCassavaValidator.buildForShorts(cassavaTestRule)
 
     private val launcher = PlayShortsLauncher(targetContext)
 

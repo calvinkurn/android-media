@@ -41,7 +41,7 @@ fun parentBroViewModel(
     dispatcher: CoroutineDispatchers = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser(), mockk(relaxed = true)),
     productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
     interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(DefaultHtmlTextTransformer()),
     repo: PlayBroadcastRepository = mockk(relaxed = true),
@@ -78,7 +78,7 @@ fun preparationBroViewModel(
     channelConfigStore: ChannelConfigStore = mockk(relaxed = true),
     dispatcher: CoroutineDispatchers = mockk(relaxed = true),
     createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser()),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser(), mockk(relaxed = true)),
 ): PlayBroadcastPrepareViewModel {
     return PlayBroadcastPrepareViewModel(
         mDataStore = mDataStore,

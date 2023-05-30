@@ -1787,6 +1787,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     faceFilter.copy(
                         value = faceFilter.defaultValue,
                         isSelected = false,
+                        isChecked = faceFilter.defaultValue > 0
                     )
                 },
                 presets = it.presets.map { preset ->

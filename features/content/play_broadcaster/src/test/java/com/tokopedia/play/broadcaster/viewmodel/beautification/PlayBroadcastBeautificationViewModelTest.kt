@@ -18,7 +18,6 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.beautification.PresetFilterUiModel
 import com.tokopedia.play.broadcaster.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -326,6 +325,7 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             postState.beautificationConfig.faceFilters[2].value.assertEqualTo(postState.beautificationConfig.faceFilters[2].defaultValue)
+            postState.beautificationConfig.faceFilters[2].isChecked.assertTrue()
 
             postState.beautificationConfig.presets[2].isSelected.assertFalse()
             postState.beautificationConfig.presets[2].value.assertEqualTo(postState.beautificationConfig.presets[2].defaultValue)

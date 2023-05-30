@@ -1,6 +1,7 @@
 package com.tokopedia.people.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.di.ContentCoachMarkSharedPrefModule
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
 import com.tokopedia.feedcomponent.di.FeedFragmentFactoryModule
@@ -22,6 +23,7 @@ import dagger.Component
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
+        ContentCoachMarkSharedPrefModule::class,
     ],
     dependencies = [BaseAppComponent::class],
 )

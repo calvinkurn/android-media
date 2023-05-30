@@ -56,6 +56,7 @@ class ProductSummaryRobot(
                         accountAnalytic = mockk(relaxed = true),
                         shortsEntryPointAnalytic = mockk(relaxed = true),
                         playPerformanceDashboardEntryPointAnalytic = mockk(relaxed = true),
+                        beautificationAnalytic = mockk(relaxed = true),
                     )
                 )
             }
