@@ -443,8 +443,7 @@ private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, ite
     try {
         Espresso.onView(
             allOf(
-                ViewMatchers.withId(R.id.cta_button_revamp),
-                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu"))
+                ViewMatchers.withId(R.id.cta_button_revamp)
             )
         ).perform(ViewActions.click())
     } catch (e: PerformException) {
