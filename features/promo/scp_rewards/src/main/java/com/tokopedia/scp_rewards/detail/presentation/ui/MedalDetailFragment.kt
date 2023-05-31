@@ -11,12 +11,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.scp_rewards.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
@@ -29,11 +29,11 @@ import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -98,16 +98,16 @@ class MedalDetailFragment : BaseDaggerFragment() {
         loadData()
     }
 
-    private fun setupToolbar(toolbar:androidx.appcompat.widget.Toolbar){
+    private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
         (activity as AppCompatActivity).let {
             it.setSupportActionBar(toolbar)
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
                 elevation = 0f
-                //setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
+                // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
 
-                //it.setTransparentSystemBar()
+                // it.setTransparentSystemBar()
             }
         }
     }
@@ -140,6 +140,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it?.let { safeResult ->
                 when (safeResult) {
                     is Success<*> -> {
+                        setupToolbar(binding.toolbar)
                         binding.mainFlipper.displayedChild = 1
                         val data = safeResult.data as MedalDetailResponseModel
                         loadHeader(data.detail?.medaliDetailPage)
@@ -148,9 +149,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         loadFooter(data.detail?.medaliDetailPage?.benefitButton)
                     }
 
-                is Error -> {
-                    handleError(safeResult.error)
-                }
+                    is Error -> {
+                        handleError(safeResult.error)
+                    }
 
                     is Loading -> {
                         // TODO
@@ -229,13 +230,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
         } ?: run { binding.layoutDetailContent.viewTasksProgress.gone() }
     }
 
-    private fun handleError(error:Throwable){
+    private fun handleError(error: Throwable) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
         setLoadToolBarBackButtonTint(R.color.Unify_NN900)
-        if(error is UnknownHostException || error is SocketTimeoutException){
+        if (error is UnknownHostException || error is SocketTimeoutException) {
             binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
-        }
-        else{
+        } else {
             binding.loadContainer.mdpError.apply {
                 setType(GlobalError.SERVER_ERROR)
                 errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
@@ -243,11 +243,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     resetPage()
                 }
             }
-
         }
     }
 
-    private fun resetPage(){
+    private fun resetPage() {
         binding.mainFlipper.displayedChild = 0
         binding.loadContainer.loaderFlipper.displayedChild = 0
         medalDetailViewModel.getMedalDetail()
@@ -255,10 +254,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
         setLoadToolBarBackButtonTint(R.color.Unify_NN0)
     }
 
-    private fun setLoadToolBarBackButtonTint(color:Int){
+    private fun setLoadToolBarBackButtonTint(color: Int) {
         context?.let {
             binding.loadContainer.loadToolbar.navigationIcon?.setTint(
-                ContextCompat.getColor(it,color)
+                ContextCompat.getColor(it, color)
             )
         }
     }
