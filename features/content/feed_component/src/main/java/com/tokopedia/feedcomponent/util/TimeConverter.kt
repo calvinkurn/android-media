@@ -226,7 +226,7 @@ object TimeConverter {
 
         } else if (calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
             sdfDay.format(postDate)
-                .plus(context.getString(R.string.post_time_hour))
+                .plus(context.getString(com.tokopedia.content.common.R.string.post_time_hour))
                 .plus(sdfHour.format(postDate))
         else {
             sdfYear.format(postDate)
