@@ -9,11 +9,12 @@
     >
  <com.tokopedia.scp_rewards_widgets.views.CouponImageView
      android:id="@+id/coupon_view"
-     android:layout_width="@dimen/coupon_image_default_width"
+     android:layout_width="match_parent"
      android:layout_height="@dimen/coupon_image_default_height"
      app:layout_constraintStart_toStartOf="parent"
      app:layout_constraintEnd_toEndOf="parent"
      app:layout_constraintTop_toTopOf="parent"
+     android:scaleType="centerCrop"
      />
 
     <com.tokopedia.unifyprinciples.Typography
