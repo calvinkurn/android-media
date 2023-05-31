@@ -51,7 +51,6 @@ import com.tokopedia.review.feature.createreputation.presentation.viewmodel.Subm
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymous
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewMediaPicker
-import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewRating
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewSubmitButton
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
@@ -115,7 +114,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
     private val createReviewAnonymousInfoBottomSheetListener = CreateReviewAnonymousInfoBottomSheetListener()
     private val incentiveOvoBottomSheetListener = IncentiveOvoBottomSheetListener()
     private val mediaPickerListener = MediaPickerListener()
-    private val ratingListener = RatingListener()
     private val submitButtonListener = SubmitButtonListener()
     private val textAreaListener = TextAreaListener()
     private val templateListener = TemplateListener()
@@ -183,7 +181,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
         }
         setupInsetListener()
         baseCreateReviewCustomViewListener.attachListener()
-        ratingListener.attachListener()
         tickerListener.attachListener()
         badRatingCategoryListener.attachListener()
         textAreaListener.attachListener()
@@ -1041,16 +1038,6 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
 
         fun attachListener() {
             binding?.reviewFormMediaPicker?.setListener(this)
-        }
-    }
-
-    private inner class RatingListener : CreateReviewRating.Listener {
-        override fun onRatingChanged(rating: Int) {
-            viewModel.setRating(rating)
-        }
-
-        fun attachListener() {
-            binding?.reviewFormRating?.setListener(this)
         }
     }
 

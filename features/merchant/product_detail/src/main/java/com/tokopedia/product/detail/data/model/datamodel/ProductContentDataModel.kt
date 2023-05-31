@@ -13,17 +13,18 @@ import com.tokopedia.product.detail.view.widget.CampaignRibbon
  * Created by Yehezkiel on 06/05/20
  */
 data class ProductContentDataModel(
-        val type: String = "",
-        val name: String = "",
-        var data: ProductContentMainData? = null,
-        var isWishlisted: Boolean = false,
-        var freeOngkirImgUrl: String = "",
+    val type: String = "",
+    val name: String = "",
+    var data: ProductContentMainData? = null,
+    var isWishlisted: Boolean = false,
+    var freeOngkirImgUrl: String = "",
 
-        //Ribbon Data
-        var shouldShowTradein: Boolean = false,
+    // Ribbon Data
+    var shouldShowTradein: Boolean = false,
 
-        //Upcoming Data
-        var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel()
+    // Upcoming Data
+    var upcomingNplData: UpcomingNplDataModel = UpcomingNplDataModel(),
+    var shouldShowCampaign: Boolean = false
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -55,12 +56,12 @@ data class ProductContentDataModel(
 
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductContentDataModel) {
-            data?.hashCode() == newData.data?.hashCode()
-                    && shouldShowTradein == newData.shouldShowTradein
-                    && upcomingNplData.hashCode() == newData.upcomingNplData.hashCode()
-                    && isWishlisted == newData.isWishlisted
-                    && freeOngkirImgUrl == newData.freeOngkirImgUrl
-                    && data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
+            data?.hashCode() == newData.data?.hashCode() &&
+                shouldShowTradein == newData.shouldShowTradein &&
+                upcomingNplData.hashCode() == newData.upcomingNplData.hashCode() &&
+                isWishlisted == newData.isWishlisted &&
+                freeOngkirImgUrl == newData.freeOngkirImgUrl &&
+                data?.thematicCampaign?.campaignName == newData.data?.thematicCampaign?.campaignName
         } else {
             false
         }
@@ -73,9 +74,10 @@ data class ProductContentDataModel(
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         val bundle = Bundle()
         return if (newData is ProductContentDataModel) {
-            if (data?.hashCode() != newData.data?.hashCode()
-                    || upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()) {
-                //Update the whole component
+            if (data?.hashCode() != newData.data?.hashCode() ||
+                upcomingNplData.hashCode() != newData.upcomingNplData.hashCode()
+            ) {
+                // Update the whole component
                 return null
             }
 
@@ -96,12 +98,12 @@ data class ProductContentDataModel(
 }
 
 data class ProductContentMainData(
-        var campaign: CampaignModular = CampaignModular(),
-        var thematicCampaign: ThematicCampaign = ThematicCampaign(),
-        var cashbackPercentage: Int = 0,
-        var price: Price = Price(),
-        var stockWording: String = "",
-        var isVariant: Boolean = false,
-        var productName: String = "",
-        var isProductActive: Boolean = false
+    var campaign: CampaignModular = CampaignModular(),
+    var thematicCampaign: ThematicCampaign = ThematicCampaign(),
+    var cashbackPercentage: Int = 0,
+    var price: Price = Price(),
+    var stockWording: String = "",
+    var isVariant: Boolean = false,
+    var productName: String = "",
+    var isProductActive: Boolean = false
 )

@@ -219,26 +219,6 @@ class DiscoveryDataMapper {
         return list
     }
 
-
-    fun mapListToComponentList(child: List<ChildItem?>?): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        child?.forEachIndexed { index, it ->
-            val componentsItem = ComponentsItem()
-            componentsItem.position = index
-            componentsItem.name = ComponentNames.HorizontalCategoryNavigationIem.componentName
-            val dataItemlist = mutableListOf<DataItem>()
-            val dataItem = DataItem()
-            dataItem.imageUrlMobile = it?.thumbnailImage
-            dataItem.name = it?.name
-            dataItem.id = it?.id
-            dataItem.applinks = it?.applinks
-            dataItemlist.add(dataItem)
-            componentsItem.data = dataItemlist
-            list.add(componentsItem)
-        }
-        return list
-    }
-
     fun mapAnchorListToComponentList(itemList: List<DataItem>, subComponentName: String = "",
                                parentComponentName: String?,
                                position: Int, design: String = "", compId : String = "",anchorMap: MutableMap<String,Int>): ArrayList<ComponentsItem> {

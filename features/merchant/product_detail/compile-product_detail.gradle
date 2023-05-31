@@ -27,7 +27,6 @@ include "libraries:analytics"
 include "libraries:image_preview"
 include 'libraries:permissionchecker'
 include "features:content:affiliate_common"
-include "features:merchant:gallery"
 include "features:merchant:gold_merchant_common"
 include "features:promo:merchant_voucher"
 include "features:merchant:product_share"

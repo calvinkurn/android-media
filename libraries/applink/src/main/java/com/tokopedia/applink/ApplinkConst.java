@@ -87,7 +87,7 @@ public interface ApplinkConst {
     String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
 
-    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create/";
+    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String REVIEW_REMINDER_PREVIOUS = "tokopedia://review-reminder";
@@ -349,6 +349,7 @@ public interface ApplinkConst {
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
+    String INTERNAL_CONTENT_DETAIL = "tokopedia-android-internal://content/post-detail/{post_id}";
 
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
