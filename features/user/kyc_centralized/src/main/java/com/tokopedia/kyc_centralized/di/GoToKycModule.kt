@@ -28,6 +28,7 @@ import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -167,6 +168,14 @@ open class GoToKycModule {
     @Provides
     @ActivityScope
     fun provideKycPlusDefaultCard() = GotoKycDefaultCard()
+
+    @Provides
+    @ActivityScope
+    fun provideRemoteConfig(
+        @ApplicationContext context: Context
+    ): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(context)
+    }
 
     @Provides
     @ActivityScope
