@@ -8,7 +8,6 @@ import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
-import com.android.tools.lint.detector.api.SourceCodeScanner
 import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiNamedElement
 import org.jetbrains.uast.UElement
