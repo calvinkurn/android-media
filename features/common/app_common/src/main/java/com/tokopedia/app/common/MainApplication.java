@@ -10,7 +10,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core2.BuildConfig;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
@@ -62,10 +61,6 @@ public abstract class MainApplication extends CoreNetworkApplication {
         }
     }
 
-    public static boolean isDebug() {
-        return BuildConfig.DEBUG;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -111,9 +106,8 @@ public abstract class MainApplication extends CoreNetworkApplication {
         }
     }
 
-
     public void initCrashlytics() {
-        if (!BuildConfig.DEBUG) {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
             WeaveInterface crashlyticsUserInfoWeave = new WeaveInterface() {
                 @NotNull
                 @Override
