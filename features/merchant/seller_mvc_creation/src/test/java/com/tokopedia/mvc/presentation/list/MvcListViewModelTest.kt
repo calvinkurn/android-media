@@ -2,6 +2,7 @@ package com.tokopedia.mvc.presentation.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.data.mapper.GetInitiateVoucherPageMapper
 import com.tokopedia.mvc.data.mapper.GetTargetedTickerMapper
 import com.tokopedia.mvc.data.mapper.ProductListMapper
@@ -200,6 +201,81 @@ class MvcListViewModelTest {
         // Then
         val actual = viewModel.filter.voucherType
         assertEquals(expectedType, actual)
+    }
+
+    @Test
+    fun `when voucher status is set to NOT_STARTED then getSelectedStatusText() is called, should return the correct string res id`() {
+        // Given
+        val voucherNotStarted = listOf(VoucherStatus.NOT_STARTED)
+        val expectedVoucherNotStarted = R.string.smvc_bottomsheet_filter_voucher_notstarted
+
+        viewModel.setFilterStatus(voucherNotStarted)
+
+        // When
+        val actual = viewModel.getSelectedStatusText()
+
+        // Then
+        assertEquals(expectedVoucherNotStarted, actual)
+    }
+
+    @Test
+    fun `when voucher status is set to ONGOING then getSelectedStatusText() is called, should return the correct string res id`() {
+        // Given
+        val voucherOnGoing = listOf(VoucherStatus.ONGOING)
+        val expectedVoucherOnGoing = R.string.smvc_bottomsheet_filter_voucher_ongoing
+
+        viewModel.setFilterStatus(voucherOnGoing)
+
+        // When
+        val actual = viewModel.getSelectedStatusText()
+
+        // Then
+        assertEquals(expectedVoucherOnGoing, actual)
+    }
+
+    @Test
+    fun `when voucher status is set to NOT_STARTED & ONGOING then getSelectedStatusText() is called, should return the correct string res id`() {
+        // Given
+        val voucherActive = listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING)
+        val expectedVoucherActive = R.string.smvc_bottomsheet_filter_voucher_active
+
+        viewModel.setFilterStatus(voucherActive)
+
+        // When
+        val actual = viewModel.getSelectedStatusText()
+
+        // Then
+        assertEquals(expectedVoucherActive, actual)
+    }
+
+    @Test
+    fun `when voucher status is set to ENDED & STOPPED then getSelectedStatusText() is called, should return the correct string res id`() {
+        // Given
+        val voucherFinished = listOf(VoucherStatus.ENDED, VoucherStatus.STOPPED)
+        val expectedVoucherFinishied = R.string.smvc_bottomsheet_filter_voucher_finished
+
+        viewModel.setFilterStatus(voucherFinished)
+
+        // When
+        val actual = viewModel.getSelectedStatusText()
+
+        // Then
+        assertEquals(expectedVoucherFinishied, actual)
+    }
+
+    @Test
+    fun `when voucher status is set to all status then getSelectedStatusText() is called, should return the correct string res id`() {
+        // Given
+        val allVoucher = listOf(VoucherStatus.ONGOING, VoucherStatus.NOT_STARTED, VoucherStatus.ENDED, VoucherStatus.STOPPED)
+        val expectedAllVoucher = R.string.smvc_bottomsheet_filter_voucher_all
+
+        viewModel.setFilterStatus(allVoucher)
+
+        // When
+        val actual = viewModel.getSelectedStatusText()
+
+        // Then
+        assertEquals(expectedAllVoucher, actual)
     }
 
     @Test
