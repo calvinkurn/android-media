@@ -16,51 +16,47 @@ class ItemPenaltyCalculationTableViewHolder(view: View) :
     private val binding: ItemPenaltyCalculationTableBinding? by viewBinding()
 
     override fun bind(element: ItemPenaltyCalculationTableUiModel) {
-        setupTablePercentage(element.conversionList.map { it.first }, element.selectedIndex)
-        setupTableDeduction(element.conversionList.map { it.second }, element.selectedIndex)
+        setupTablePercentage(element.conversionList.map { it.first to it.third })
+        setupTableDeduction(element.conversionList.map { it.second to it.third })
     }
 
     private fun setupTablePercentage(
-        percentageList: List<String>,
-        selectedIndex: Int
+        percentageList: List<Pair<String, Boolean>>
     ) {
         binding?.rvPenaltyCalculationTablePercentage?.run {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = ItemPenaltyCalculationTableAdapter(getTablePercentageUiModels(percentageList, selectedIndex))
+            adapter = ItemPenaltyCalculationTableAdapter(getTablePercentageUiModels(percentageList))
         }
     }
 
     private fun setupTableDeduction(
-        pointsList: List<Int>,
-        selectedIndex: Int
+        pointsList: List<Pair<Long, Boolean>>
     ) {
         binding?.rvPenaltyCalculationTableDeduction?.run {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = ItemPenaltyCalculationTableAdapter(getTableDeductionUiModels(pointsList, selectedIndex))
+            adapter = ItemPenaltyCalculationTableAdapter(getTableDeductionUiModels(pointsList))
         }
     }
 
     private fun getTablePercentageUiModels(
-        percentageList: List<String>,
-        selectedIndex: Int
+        percentageList: List<Pair<String, Boolean>>
     ): List<ItemPenaltyCalculationTableDetailUiModel> {
-        return percentageList.mapIndexed { index, percentage ->
+        return percentageList.map { (percentage, isBold) ->
             ItemPenaltyCalculationTableDetailUiModel(
                 percentage,
-                selectedIndex == index,
+                isBold,
                 false
             )
         }
     }
 
     private fun getTableDeductionUiModels(
-        pointsList: List<Int>,
-        selectedIndex: Int
+        pointsList: List<Pair<Long, Boolean>>
     ): List<ItemPenaltyCalculationTableDetailUiModel> {
-        return pointsList.mapIndexed { index, points ->
+        return pointsList.map { (points, isBold) ->
             ItemPenaltyCalculationTableDetailUiModel(
                 points.toString(),
-                selectedIndex == index,
+                isBold,
                 true
             )
         }

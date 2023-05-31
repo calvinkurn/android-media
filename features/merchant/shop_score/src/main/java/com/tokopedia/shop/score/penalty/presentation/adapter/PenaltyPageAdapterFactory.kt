@@ -32,7 +32,9 @@ class PenaltyPageAdapterFactory(
     private val itemPenaltyErrorListener: ItemPenaltyErrorListener,
     private val itemSortFilterPenaltyListener: ItemSortFilterPenaltyListener,
     private val itemPeriodDateFilterListener: ItemPeriodDateFilterListener,
-    private val itemPenaltySubsectionListener: ItemPenaltySubsectionListener? = null
+    private val itemPenaltyPointCardListener: ItemPenaltyPointCardListener? = null,
+    private val itemPenaltySubsectionListener: ItemPenaltySubsectionListener? = null,
+    private val itemPenaltyInfoNotificationListener: ItemPenaltyInfoNotificationListener? = null
 ) : BaseAdapterTypeFactory(), PenaltyTypeFactory {
 
     override fun type(itemPenaltyUiModel: ItemPenaltyUiModel): Int {
@@ -104,9 +106,9 @@ class PenaltyPageAdapterFactory(
             )
             ItemPenaltyLoadingViewHolder.LAYOUT -> ItemPenaltyLoadingViewHolder(parent)
             ItemPenaltyTickerViewHolder.LAYOUT -> ItemPenaltyTickerViewHolder(parent)
-            ItemPenaltyInfoNotificationViewHolder.LAYOUT -> ItemPenaltyInfoNotificationViewHolder(parent)
+            ItemPenaltyInfoNotificationViewHolder.LAYOUT -> ItemPenaltyInfoNotificationViewHolder(parent, itemPenaltyInfoNotificationListener)
             ItemPenaltySubsectionViewHolder.LAYOUT -> ItemPenaltySubsectionViewHolder(parent, itemPenaltySubsectionListener)
-            ItemPenaltyPointCardViewHolder.LAYOUT -> ItemPenaltyPointCardViewHolder(parent)
+            ItemPenaltyPointCardViewHolder.LAYOUT -> ItemPenaltyPointCardViewHolder(parent, itemPenaltyPointCardListener)
             else -> super.createViewHolder(parent, type)
         }
     }

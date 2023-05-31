@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.calcula
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemPenaltyCalculationInformationBinding
 import com.tokopedia.shop.score.penalty.presentation.model.calculation.ItemPenaltyCalculationInformationUiModel
@@ -13,7 +14,7 @@ class ItemPenaltyCalculationInformationViewHolder(view: View) :
     private val binding: ItemPenaltyCalculationInformationBinding? by viewBinding()
 
     override fun bind(element: ItemPenaltyCalculationInformationUiModel) {
-        binding?.tvPenaltyCalculationInformation?.text = element.description
+        binding?.tvPenaltyCalculationInformation?.text = element.description.parseAsHtml()
     }
 
     companion object {

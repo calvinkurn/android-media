@@ -1,7 +1,9 @@
 package com.tokopedia.shop.score.penalty.presentation.bottomsheet
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -26,7 +28,7 @@ class PenaltyFilterTypesBottomSheet :
         FilterPenaltyTypesAdapterFactory(this)
     }
 
-    private val adapter by lazy {
+    private val penaltyTypesAdapter by lazy {
         FilterPenaltyTypesAdapter(adapterTypeFactory)
     }
 
@@ -40,6 +42,15 @@ class PenaltyFilterTypesBottomSheet :
 
     override fun getTitleBottomSheet(): String =
         getString(R.string.title_penalty_types)
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        clearContentPadding = true
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,7 +94,7 @@ class PenaltyFilterTypesBottomSheet :
 
     private fun setupRecyclerView() {
         binding?.rvPenaltyFilterTypes?.run {
-            adapter = adapter
+            adapter = penaltyTypesAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
     }
@@ -100,7 +111,7 @@ class PenaltyFilterTypesBottomSheet :
                 ?: PenaltyTypesUiModelWrapper()
         val penaltyTypes = mapToUiModels(cacheResult.chipsList)
 
-        adapter.updateData(penaltyTypes)
+        penaltyTypesAdapter.updateData(penaltyTypes)
     }
 
     private fun setApplyButton() {
@@ -119,6 +130,7 @@ class PenaltyFilterTypesBottomSheet :
         isAnyFilterSelected = false
         setApplyButton()
         selectedFilterList.clear()
+        penaltyTypesAdapter.resetData()
         clearAction()
     }
 

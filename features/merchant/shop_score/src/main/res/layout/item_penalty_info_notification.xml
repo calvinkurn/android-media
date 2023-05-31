@@ -8,6 +8,7 @@
     android:paddingVertical="12dp">
 
     <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_penalty_info_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"

@@ -61,6 +61,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".penalty.presentation.activity.ShopPenaltyNotYetDeductedActivity"
+            android:label="@string/title_penalty_not_yet_deducted"
+            android:theme="@style/Theme.WhiteUnify" />
+        <activity
             android:name=".penalty.presentation.activity.ShopPenaltyDetailPageActivity"
             android:label="@string/title_penalty_detail_shop_score"
             android:theme="@style/Theme.WhiteUnify"

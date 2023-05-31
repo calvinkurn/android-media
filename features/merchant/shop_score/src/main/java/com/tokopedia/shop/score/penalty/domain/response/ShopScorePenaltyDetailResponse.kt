@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.penalty.domain.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 data class ShopScorePenaltyDetailResponse(
         @Expose
@@ -21,7 +22,15 @@ data class ShopScorePenaltyDetailResponse(
             val hasPrev: Boolean = false,
             @Expose
             @SerializedName("result")
-            val result: List<Result> = listOf()
+            val result: List<Result> = listOf(),
+            @SerializedName("startDate")
+            val startDate: String = String.EMPTY,
+            @SerializedName("endDate")
+            val endDate: String = String.EMPTY,
+            @SerializedName("defaultStartDate")
+            val defaultStartDate: String = String.EMPTY,
+            @SerializedName("defaultEndData")
+            val defaultEndDate: String = String.EMPTY
     ) {
         data class Result(
                 @Expose

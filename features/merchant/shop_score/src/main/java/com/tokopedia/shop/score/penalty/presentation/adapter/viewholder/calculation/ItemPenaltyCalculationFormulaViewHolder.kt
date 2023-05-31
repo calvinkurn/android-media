@@ -16,7 +16,7 @@ class ItemPenaltyCalculationFormulaViewHolder(view: View) :
         binding?.run {
             tvPenaltyCalculationFractionNumerator.text = element.ongoingPenalty.toString()
             tvPenaltyCalculationFractionDenominator.text = element.totalOrder.toString()
-            tvPenaltyCalculationFractionResult.text = element.percentageResult.toString()
+            tvPenaltyCalculationFractionResult.text = element.percentageResult
             tvPenaltyCalculationFractionValue.text = element.pointResult.toString()
         }
     }

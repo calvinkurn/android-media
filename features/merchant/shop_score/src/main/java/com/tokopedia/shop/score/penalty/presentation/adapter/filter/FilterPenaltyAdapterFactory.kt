@@ -37,6 +37,10 @@ class FilterPenaltyAdapterFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            ItemPenaltyFilterBottomSheetViewHolder.LAYOUT -> ItemPenaltyFilterBottomSheetViewHolder(
+                parent,
+                itemBottomSheetListener
+            )
             ItemPenaltyFilterBottomSheetOldViewHolder.LAYOUT -> ItemPenaltyFilterBottomSheetOldViewHolder(
                 parent,
                 itemBottomSheetListener

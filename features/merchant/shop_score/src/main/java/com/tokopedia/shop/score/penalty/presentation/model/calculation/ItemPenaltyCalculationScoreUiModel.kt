@@ -7,7 +7,7 @@ data class ItemPenaltyCalculationScoreUiModel(
     val score: Int,
     val date: String,
     val ongoingPoints: Int,
-    val totalOrder: Int,
+    val totalOrder: Long,
     val shopLevel: Int
 ): Visitable<PenaltyCalculationTypeFactory> {
 

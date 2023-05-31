@@ -18,12 +18,14 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         notifyDataSetChanged()
     }
 
-    fun resetFilterSelected(dataList: List<PenaltyFilterUiModel>) {
-        visitables.filterIsInstance<PenaltyFilterUiModel>().mapIndexed { index, item ->
-            val chipsIndex = visitables.indexOf(item)
-            item.chipsFilterList = dataList[index].chipsFilterList
-            if (chipsIndex != RecyclerView.NO_POSITION) {
-                notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
+    fun resetFilterSelected(dataList: List<BaseFilterPenaltyPage>) {
+        visitables.mapIndexed { index, item ->
+            if (item is PenaltyFilterUiModel) {
+                val chipsIndex = visitables.indexOf(item)
+                item.chipsFilterList = (dataList[index] as? PenaltyFilterUiModel)?.chipsFilterList.orEmpty()
+                if (chipsIndex != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
+                }
             }
         }
     }
@@ -36,7 +38,9 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
             visitables.filterIsInstance<PenaltyFilterUiModel>().find { it.title == title }
         val chipsIndex = visitables.indexOf(updateIndex)
         visitables.filterIsInstance<PenaltyFilterUiModel>()
-            .find { it.title == title }?.chipsFilterList = chipFilterList
+            .find { it.title == title }?.run {
+                chipsFilterList = chipFilterList
+            }
         if (chipsIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
         }

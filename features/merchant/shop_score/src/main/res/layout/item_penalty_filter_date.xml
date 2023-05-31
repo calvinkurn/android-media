@@ -19,7 +19,7 @@
         app:typographyType="display_2"
         app:typographyWeight="bold"/>
 
-    <androidx.cardview.widget.CardView
+    <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/card_penalty_filter_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,6 +56,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.tokopedia.unifycomponents.CardUnify2>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

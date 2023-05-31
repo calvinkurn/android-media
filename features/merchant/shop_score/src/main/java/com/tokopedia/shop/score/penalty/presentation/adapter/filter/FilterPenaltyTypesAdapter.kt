@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.filter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.shop.score.penalty.presentation.model.filtertypes.ItemPenaltyFilterTypesChecklistUiModel
 
 class FilterPenaltyTypesAdapter(adapterFactory: FilterPenaltyTypesAdapterFactory) :
     BaseAdapter<FilterPenaltyTypesAdapterFactory>(adapterFactory) {
@@ -10,6 +11,15 @@ class FilterPenaltyTypesAdapter(adapterFactory: FilterPenaltyTypesAdapterFactory
         visitables.clear()
         visitables.addAll(dataList)
         notifyDataSetChanged()
+    }
+
+    fun resetData() {
+        visitables.mapIndexed { index, visitable ->
+            if (visitable is ItemPenaltyFilterTypesChecklistUiModel) {
+                visitable.isSelected = false
+                notifyItemChanged(index)
+            }
+        }
     }
 
 }

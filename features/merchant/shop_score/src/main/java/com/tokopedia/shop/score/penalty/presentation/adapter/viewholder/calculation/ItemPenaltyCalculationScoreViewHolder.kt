@@ -3,6 +3,8 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.calcula
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.databinding.ItemPenaltyCalculationScoreBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.calculation.ItemPenaltyCalculationScoreAdapter
@@ -26,13 +28,14 @@ class ItemPenaltyCalculationScoreViewHolder(
         score: Int,
         date: String
     ) {
+        binding?.ivBgPenaltyCalculationScore?.setImageUrl(TokopediaImageUrl.IMG_SHOP_SCORE_PENALTY_RED)
         binding?.tvPenaltyCalculationScoreValue?.text = score.toString()
         binding?.tvPenaltyCalculationScoreDate?.text = date
     }
 
     private fun setupDetailRecyclerView(
         ongoingPoints: Int,
-        totalOrder: Int,
+        totalOrder: Long,
         shopLevel: Int
     ) {
         val adapterItems = getDetailAdapterItems(ongoingPoints, totalOrder, shopLevel)
@@ -47,26 +50,31 @@ class ItemPenaltyCalculationScoreViewHolder(
 
     private fun getDetailAdapterItems(
         ongoingPoints: Int,
-        totalOrder: Int,
+        totalOrder: Long,
         shopLevel: Int
     ): List<ItemPenaltyCalculationScoreDetailUiModel> {
-        return listOf(
+        val list =  mutableListOf(
             ItemPenaltyCalculationScoreDetailUiModel(
                 detail = getString(R.string.title_penalty_calculation_ongoing),
-                value = ongoingPoints,
+                value = ongoingPoints.toLong(),
                 shouldShowIcon = false
             ),
             ItemPenaltyCalculationScoreDetailUiModel(
                 detail = getString(R.string.title_penalty_calculation_total_order),
                 value = totalOrder,
                 shouldShowIcon = false
-            ),
-            ItemPenaltyCalculationScoreDetailUiModel(
-                detail = getString(R.string.title_penalty_calculation_shop_level),
-                value = shopLevel,
-                shouldShowIcon = true
             )
         )
+        if (totalOrder > Int.ZERO) {
+            list.add(
+                ItemPenaltyCalculationScoreDetailUiModel(
+                    detail = getString(R.string.title_penalty_calculation_shop_level),
+                    value = shopLevel.toLong(),
+                    shouldShowIcon = true
+                )
+            )
+        }
+        return list
     }
 
     companion object {

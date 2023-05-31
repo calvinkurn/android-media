@@ -1,10 +1,11 @@
 package com.tokopedia.shop.score.penalty.presentation.model
 
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 
 data class ItemPenaltySubsectionUiModel(
-    val sectionName: String,
-    val date: String
+    val date: String,
+    @ShopPenaltyPageType val pageType: String
 ): BasePenaltyPage {
 
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {

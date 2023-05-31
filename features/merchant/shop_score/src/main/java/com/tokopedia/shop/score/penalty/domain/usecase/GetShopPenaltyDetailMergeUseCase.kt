@@ -3,27 +3,19 @@ package com.tokopedia.shop.score.penalty.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltyDetailMergeResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
-import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import java.io.IOException
 import javax.inject.Inject
 
 class GetShopPenaltyDetailMergeUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
-    private val penaltyMapperOld: PenaltyMapper
-) : UseCase<PenaltyDataWrapper>() {
+    private val graphqlRepository: GraphqlRepository
+) : UseCase<Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail>>() {
 
-    override suspend fun executeOnBackground(): PenaltyDataWrapper {
-        val startDate = params.getString(START_DATE_KEY, "")
-        val endDate = params.getString(END_DATE_KEY, "")
-        val typeId = params.getInt(TYPE_ID_KEY, 0)
-        val sortBy = params.getInt(SORT_KEY, 0)
-
+    override suspend fun executeOnBackground(): Pair<ShopPenaltySummaryTypeWrapper, ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail> {
         val shopScorePenaltyDetailRequest = GraphqlRequest(
             SHOP_SCORE_PENALTY_DETAIL_MERGE_QUERY,
             ShopPenaltyDetailMergeResponse::class.java,
@@ -41,13 +33,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                 shopScorePenaltyTypesResponse = penaltyTypesResponse
             )
             val penaltyDetailResponse = penaltyDetailMergeResponse.shopScorePenaltyDetail
-            return penaltyMapperOld.mapToPenaltyData(
-                shopScorePenaltySummaryWrapper,
-                penaltyDetailResponse,
-                sortBy,
-                typeId,
-                Pair(startDate, endDate)
-            )
+            return shopScorePenaltySummaryWrapper to penaltyDetailResponse
         } catch (e: IOException) {
             throw IOException(e.message)
         } catch (e: Exception) {
@@ -62,13 +48,15 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
         startDate: String,
         endDate: String,
         typeId: Int,
-        sort: Int
+        sort: Int,
+        status: Int
     ) {
         params = RequestParams.create().apply {
             putString(START_DATE_KEY, startDate)
             putString(END_DATE_KEY, endDate)
             putInt(TYPE_ID_KEY, typeId)
             putInt(SORT_KEY, sort)
+            putInt(STATUS_KEY, status)
         }
     }
 
@@ -78,13 +66,15 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
         private const val END_DATE_KEY = "endDate"
         private const val TYPE_ID_KEY = "typeID"
         private const val SORT_KEY = "sort"
+        private const val STATUS_KEY = "status"
 
         val SHOP_SCORE_PENALTY_DETAIL_MERGE_QUERY = """   
             query shopScorePenaltyDetail(
                 ${'$'}startDate: String!,
                 ${'$'}endDate: String!,
                 ${'$'}typeID: Int!,
-                ${'$'}sort: Int!
+                ${'$'}sort: Int!,
+                ${'$'}status: Int!
               ){
               shopScorePenaltyTypes(
                  input: {
@@ -110,6 +100,17 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                  result {
                    penalty
                    penaltyAmount
+                   penaltyDynamic
+                   orderVerified
+                   shopLevel
+                   penaltyCumulativePercentage
+                   penaltyCumulativePercentageFormatted
+                   conversionData {
+                    cumulativePercentage
+                    cumulativePercentageFormatted
+                    penaltyPoint
+                    conversionRateFlag
+                   }
                  }
                  error {
                    message
@@ -123,6 +124,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                    endDate : ${'$'}endDate
                    typeID : ${'$'}typeID
                    sort : ${'$'}sort
+                   status: ${'$'}status
                    lang : "id"
                    source: "android-shop-penalty"
                  }

@@ -5,8 +5,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.calculation.Penalty
 
 data class ItemPenaltyCalculationFormulaUiModel(
     val ongoingPenalty: Int,
-    val totalOrder: Int,
-    val percentageResult: Int,
+    val totalOrder: Long,
+    val percentageResult: String,
     val pointResult: Int
 ): Visitable<PenaltyCalculationTypeFactory> {
 

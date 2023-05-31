@@ -1,5 +1,6 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyPointCardUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.sortfilter.SortFilterItem
@@ -47,11 +48,19 @@ interface ItemPenaltyErrorListener {
     fun onRetryRefreshError()
 }
 
+interface ItemPenaltyInfoNotificationListener {
+    fun onNotYetPenaltyCardClicked()
+}
+
 interface ItemSortFilterPenaltyListener {
     fun onParentSortFilterClicked()
     fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem)
 }
 
 interface ItemPenaltySubsectionListener {
-    fun onIconClicked()
+    fun onPenaltySubsectionIconClicked()
+}
+
+interface ItemPenaltyPointCardListener {
+    fun onPenaltyPointsButtonClicked(uiModel: ItemPenaltyPointCardUiModel)
 }

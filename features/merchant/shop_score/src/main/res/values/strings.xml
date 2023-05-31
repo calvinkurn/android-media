@@ -342,7 +342,14 @@
     <string name="title_card_penalty_point">Potongan Poin Performa</string>
     <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
     <string name="title_filter_penalty_date">Tanggal</string>
+    <string name="title_penalty_ongoing">Sedang Berlangsung</string>
+    <string name="title_penalty_done">Penalti Selesai</string>
+    <string name="title_penalty_not_yet_deducted">Belum Berlangsung</string>
     <string name="title_penalty_calculation">Detail Perhitungan</string>
+    <string name="title_penalty_calculation_summary">Ringkasan Penalti Toko</string>
+    <string name="title_penalty_calculation_level">(Level %s)</string>
+    <string name="title_penalty_calculation_percentage_calculate">Perhitungan Potongan Skor Performa Toko</string>
+    <string name="title_penalty_calculation_conversion_table">Tabel Konversi</string>
     <string name="title_penalty_calculation_score">Potongan Skor Performa Toko</string>
     <string name="title_penalty_calculation_ongoing">Total Poin Penalti Sedang Berlangsung</string>
     <string name="title_penalty_calculation_total_order">Total Pesanan Minggu Ini</string>
@@ -355,7 +362,7 @@
     <string name="desc_penalty_calculation_fraction_info">(Lihat Tabel Konversi)</string>
     <string name="title_penalty_calculation_percentage">Persentase</string>
     <string name="title_penalty_calculation_score_deduction">Potongan Skor</string>
-    <string name="desc_penalty_calculation_information">Potongan skor performa dihitung secara langsung dari Total Poin Penalti Sedang Berlangsung karena total pesananmu minggu ini 0.</string>
+    <string name="desc_penalty_calculation_information">Potongan skor performa dihitung secara langsung dari <b>Total Poin Penalti Sedang Berlangsung</b> karena total pesananmu minggu ini 0.</string>
     <string name="title_penalty_tab_latest">Penalti Terbaru</string>
     <string name="title_penalty_tab_history">Riwayat Penalti</string>
     <string name="title_penalty_info_notification">Belum Berlangsung (%s)</string>

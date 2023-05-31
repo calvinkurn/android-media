@@ -127,6 +127,10 @@ object ShopScoreConstant {
     const val AND_SYMBOL = "&"
     const val AND_TEXT = "dan"
 
+    const val STATUS_NOT_YET_DEDUCTED = 1
+    const val STATUS_ONGOING = 2
+    const val STATUS_DONE = 3
+
     const val NULL_NUMBER = -1L
 
     const val ZERO_NUMBER = 0

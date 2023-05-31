@@ -11,10 +11,12 @@ import com.tokopedia.shop.score.common.format
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.getPastDaysPenaltyTimeStamp
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
-import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailUseCaseOld
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailParam
+import com.tokopedia.shop.score.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
 import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
+import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
+import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
@@ -25,6 +27,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,6 +36,7 @@ class ShopPenaltyViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>,
     private val getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>,
+    private val getNotYetDeductedPenaltyUseCase: Lazy<GetNotYetDeductedPenaltyUseCase>,
     private val penaltyMapper: PenaltyMapper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -40,8 +44,8 @@ class ShopPenaltyViewModel @Inject constructor(
     val penaltyPageData: LiveData<Result<PenaltyDataWrapper>>
         get() = _penaltyPageData
 
-    private val _filterPenaltyData = MutableLiveData<Result<List<PenaltyFilterUiModel>>>()
-    val filterPenaltyData: LiveData<Result<List<PenaltyFilterUiModel>>>
+    private val _filterPenaltyData = MutableLiveData<Result<List<BaseFilterPenaltyPage>>>()
+    val filterPenaltyData: LiveData<Result<List<BaseFilterPenaltyPage>>>
         get() = _filterPenaltyData
 
     val shopPenaltyDetailMediator =
@@ -54,15 +58,15 @@ class ShopPenaltyViewModel @Inject constructor(
     val updateSortSelectedPeriod: LiveData<Result<List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>>>
         get() = _updateSortFilterSelected
 
-    private val _resetFilterResult = MutableLiveData<Result<List<PenaltyFilterUiModel>>>()
-    val resetFilterResult: LiveData<Result<List<PenaltyFilterUiModel>>> = _resetFilterResult
+    private val _resetFilterResult = MutableLiveData<Result<List<BaseFilterPenaltyPage>>>()
+    val resetFilterResult: LiveData<Result<List<BaseFilterPenaltyPage>>> = _resetFilterResult
 
     private val _updateFilterSelected =
         MutableLiveData<Result<Pair<List<ChipsFilterPenaltyUiModel>, String>>>()
     val updateFilterSelected: LiveData<Result<Pair<List<ChipsFilterPenaltyUiModel>, String>>> =
         _updateFilterSelected
 
-    private var penaltyFilterUiModel = mutableListOf<PenaltyFilterUiModel>()
+    private var penaltyFilterUiModel = mutableListOf<BaseFilterPenaltyPage>()
     private var itemSortFilterWrapperList =
         mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
 
@@ -108,27 +112,61 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getStartDate() = startDate
     fun getEndDate() = endDate
 
-    fun getDataPenalty() {
+    fun getDataPenalty(@ShopPenaltyPageType pageType: String = ShopPenaltyPageType.ONGOING) {
         launchCatchError(block = {
-            val penaltyDetailMerge = withContext(dispatchers.io) {
-                getShopPenaltyDetailMergeUseCase.get().setParams(
-                    startDate = startDateSummary,
-                    endDate = endDateSummary,
-                    typeId = typeId,
-                    sort = sortBy
-                )
-                getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
+            val penaltyDetailMergeDeffered = async {
+                withContext(dispatchers.io) {
+                    getShopPenaltyDetailMergeUseCase.get().setParams(
+                        startDate = startDateSummary,
+                        endDate = endDateSummary,
+                        typeId = typeId,
+                        sort = sortBy,
+                        status = getStatusFromPageType(pageType)
+                    )
+                    getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
+                }
             }
 
-            penaltyFilterUiModel = penaltyDetailMerge.penaltyFilterList.toMutableList()
+            val notYetDeductedPenaltyDeferred = async {
+                if (pageType == ShopPenaltyPageType.ONGOING) {
+                    withContext(dispatchers.io) {
+                        getNotYetDeductedPenaltyUseCase.get().execute(startDate, endDate)
+                    }
+                } else {
+                    null
+                }
+            }
+
+            val penaltyDetailMerge = penaltyDetailMergeDeffered.await()
+            val notYetDeductedPenalty = notYetDeductedPenaltyDeferred.await()
+
+            val penaltyDataWrapper = penaltyMapper.mapToPenaltyData(
+                pageType,
+                penaltyDetailMerge.first,
+                penaltyDetailMerge.second,
+                notYetDeductedPenalty,
+                sortBy,
+                typeId,
+                startDate to endDate
+            )
+
+            penaltyFilterUiModel = penaltyDataWrapper.penaltyFilterList.toMutableList()
 
             itemSortFilterWrapperList =
                 penaltyMapper.mapToSortFilterItemFromPenaltyList(penaltyFilterUiModel)
                     .toMutableList()
-            _penaltyPageData.value = Success(penaltyDetailMerge)
+            _penaltyPageData.value = Success(penaltyDataWrapper)
         }, onError = {
             _penaltyPageData.value = Fail(it)
         })
+    }
+
+    private fun getStatusFromPageType(status: String): Int {
+        return when(status) {
+            ShopPenaltyPageType.NOT_YET_DEDUCTED -> ShopScoreConstant.STATUS_NOT_YET_DEDUCTED
+            ShopPenaltyPageType.HISTORY -> ShopScoreConstant.STATUS_DONE
+            else -> ShopScoreConstant.STATUS_ONGOING
+        }
     }
 
     private fun initPenaltyDetail() {
@@ -153,7 +191,7 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getPenaltyDetailListNext(page: Int = 1) {
         launchCatchError(block = {
             val penaltyDetail = withContext(dispatchers.io) {
-                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCaseOld.crateParams(
+                getShopPenaltyDetailUseCase.get().params = GetShopPenaltyDetailUseCase.crateParams(
                     ShopScorePenaltyDetailParam(
                         page = page,
                         startDate = startDate,
@@ -172,7 +210,7 @@ class ShopPenaltyViewModel @Inject constructor(
         })
     }
 
-    fun getFilterPenalty(filterPenaltyList: List<PenaltyFilterUiModel>) {
+    fun getFilterPenalty(filterPenaltyList: List<BaseFilterPenaltyPage>) {
         launch {
             penaltyFilterUiModel = filterPenaltyList.toMutableList()
             _filterPenaltyData.value = Success(penaltyFilterUiModel)
@@ -216,16 +254,19 @@ class ShopPenaltyViewModel @Inject constructor(
     fun resetFilterSelected() {
         launch {
             penaltyFilterUiModel.map { penaltyFilterUiModel ->
-                if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
-                    penaltyFilterUiModel.chipsFilterList.map {
-                        it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
-                    }
-                } else {
-                    penaltyFilterUiModel.chipsFilterList.map {
-                        it.isSelected = false
+                if (penaltyFilterUiModel is PenaltyFilterUiModel) {
+                    if (penaltyFilterUiModel.title == ShopScoreConstant.TITLE_SORT) {
+                        penaltyFilterUiModel.chipsFilterList.map {
+                            it.isSelected = it.title == ShopScoreConstant.SORT_LATEST
+                        }
+                    } else {
+                        penaltyFilterUiModel.chipsFilterList.map {
+                            it.isSelected = false
+                        }
                     }
                 }
             }
+            // TODO: Reset date filter
             _resetFilterResult.value = Success(penaltyFilterUiModel)
         }
     }

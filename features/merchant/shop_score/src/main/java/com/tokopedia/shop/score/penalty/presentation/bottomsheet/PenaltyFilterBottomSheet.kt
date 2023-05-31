@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -22,9 +23,11 @@ import com.tokopedia.shop.score.databinding.BottomsheetFilterPenaltyBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyTypesBottomSheetListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.filtertypes.PenaltyTypesUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
@@ -149,13 +152,34 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         val filterTypePenalty =
             cacheManager?.get(KEY_FILTER_TYPE_PENALTY, FilterTypePenaltyUiModelWrapper::class.java)
                 ?: FilterTypePenaltyUiModelWrapper()
-        viewModelShopPenalty.getFilterPenalty(filterTypePenalty.penaltyFilterList)
+        viewModelShopPenalty.getFilterPenalty(
+            getOrderedUiModels(filterTypePenalty.penaltyFilterList + filterTypePenalty.penaltyDateFilterList)
+        )
+    }
+
+    /**
+     * Return ordered filter ui models so the date filter is positioned on the middle index of the list
+     */
+    private fun getOrderedUiModels(filterList: List<BaseFilterPenaltyPage>): List<BaseFilterPenaltyPage> {
+        val dateFilterIndex = filterList.indexOfFirst { it is PenaltyFilterDateUiModel }
+        val dateFilter = filterList.find { it is PenaltyFilterDateUiModel }
+        val orderedList: MutableList<BaseFilterPenaltyPage> = filterList.toMutableList().apply {
+            if (dateFilterIndex > RecyclerView.NO_POSITION && dateFilter != null) {
+                removeAt(dateFilterIndex)
+                val middlePosition = size / 2
+                add(middlePosition, dateFilter)
+            }
+        }
+        return orderedList
     }
 
     private fun clickBtnApplied() {
         binding?.btnShowPenalty?.setOnClickListener {
             isApplyFilter = true
-            penaltyFilterFinishListener?.onClickFilterApplied(viewModelShopPenalty.getPenaltyFilterUiModelList())
+            penaltyFilterFinishListener?.onClickFilterApplied(
+                viewModelShopPenalty.getPenaltyFilterUiModelList()
+                    .filterIsInstance<PenaltyFilterUiModel>()
+            )
             dismiss()
         }
     }
@@ -213,7 +237,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     }
 
     private fun checkIsSelected(): Boolean {
-        viewModelShopPenalty.getPenaltyFilterUiModelList().forEach {
+        viewModelShopPenalty.getPenaltyFilterUiModelList().filterIsInstance<PenaltyFilterUiModel>().forEach {
             it.chipsFilterList.forEach { chips ->
                 if (chips.isSelected) {
                     return true
