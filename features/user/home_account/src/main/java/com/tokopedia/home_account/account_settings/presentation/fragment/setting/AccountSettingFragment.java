@@ -26,6 +26,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
+import com.tokopedia.applink.user.DeeplinkMapperUser;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.home_account.AccountConstants;
 import com.tokopedia.home_account.R;
@@ -268,7 +269,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private void goToKyc() {
         if (getActivity() != null) {
-            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.GOTO_KYC, String.valueOf(PROJECT_ID));
+            String kycApplink = DeeplinkMapperUser.INSTANCE.getApplinkGotoKyc().concat("?").concat(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).concat("={projectId}");
+            Intent intent = RouteManager.getIntent(getContext(), kycApplink, String.valueOf(PROJECT_ID));
             startActivity(intent);
         }
     }
