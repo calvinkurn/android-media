@@ -1533,9 +1533,16 @@ class DetailEditorFragment @Inject constructor(
                 }
 
                 setPrimaryCTAClickListener {
-                    val saveTemplate = Gson().toJson(data.addTextValue)
-                    addTextCacheManager.set(saveTemplate)
-                    addTextComponent.updateSaveToApply()
+                    try {
+                        val saveTemplate = Gson().toJson(data.addTextValue)
+                        addTextCacheManager.set(saveTemplate)
+                        addTextComponent.updateSaveToApply()
+
+                        templateToaster(isLoad = false, isError = false)
+                    } catch (_: Exception) {
+                        templateToaster(isLoad = false, isError = true)
+                    }
+
                     dismiss()
                 }
             }
@@ -1556,17 +1563,45 @@ class DetailEditorFragment @Inject constructor(
                 }
 
                 setPrimaryCTAClickListener {
-                    val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
+                    try {
+                        val savedTemplate = Gson().fromJson(addTextCacheManager.get(), EditorAddTextUiModel::class.java)
 
-                    data.addTextValue = savedTemplate.apply {
-                        textValue = data.addTextValue?.textValue ?: ""
+                        data.addTextValue = savedTemplate.apply {
+                            textValue = data.addTextValue?.textValue ?: ""
+                        }
+
+                        implementAddTextData()
+                        isEdited = true
+                        templateToaster(isLoad = true, isError = false)
+                    } catch (_: Exception) {
+                        templateToaster(isLoad = true, isError = true)
                     }
 
-                    implementAddTextData()
-                    isEdited = true
                     dismiss()
                 }
             }
+        }
+    }
+
+    private fun templateToaster(isLoad: Boolean, isError: Boolean) {
+        val toasterType = if (isError) Toaster.TYPE_ERROR else Toaster.TYPE_NORMAL
+        val textRef = if (!isLoad) {
+            if (isError) {
+                editorR.string.add_text_toaster_template_save_error
+            } else {
+                editorR.string.add_text_toaster_template_save
+            }
+        } else {
+            if (isError) {
+                editorR.string.add_text_toaster_template_load_error
+            } else {
+                editorR.string.add_text_toaster_template_load
+            }
+        }
+        val text = getString(textRef)
+
+        viewBinding?.editorFragmentDetailRoot?.let {
+            Toaster.build(it, text, Toaster.LENGTH_SHORT, toasterType).show()
         }
     }
 

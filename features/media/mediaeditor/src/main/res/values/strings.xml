@@ -96,4 +96,10 @@
     <string name="add_text_dialog_load_desc">Proses edit media saat ini akan diganti pakai template yang kamu simpan, ya.</string>
     <string name="add_text_dialog_load_primary_btn">Ya, Pakai</string>
     <string name="add_text_dialog_load_secondary_btn">Tidak</string>
+
+    <!-- Add Text toaster text -->
+    <string name="add_text_toaster_template_save">Template berhasil disimpan.</string>
+    <string name="add_text_toaster_template_save_error">Oops, gagal menyimpan template.</string>
+    <string name="add_text_toaster_template_load">Template berhasil dipasang</string>
+    <string name="add_text_toaster_template_load_error">Oops, template gagal dipasang.</string>
 </resources>

@@ -15,10 +15,8 @@ import com.tokopedia.unifyprinciples.R as principleR
 
 class AddTextToolAdapter(
     private val listener: AddTextToolUiComponent.Listener,
-    private val isLocalTemplateReady: Boolean
+    private var isLocalTemplateReady: Boolean
 ): RecyclerView.Adapter<AddTextViewHolder>() {
-    private var selectedIndex = FREE_TEXT_INDEX
-
     // icon ref will be replace by unify icon later
     private val mAddTextMenu = listOf(
         AddTextAction(editorR.string.add_text_change_position, iconRef = editorR.drawable.editor_icon_expand),
@@ -72,6 +70,7 @@ class AddTextToolAdapter(
             }?.apply {
                 this.textRef = editorR.string.add_text_apply_template
                 if (needRefresh) notifyItemChanged(mAddTextMenu.indexOf(this))
+                isLocalTemplateReady = true
             }
         }
     }
