@@ -20,7 +20,8 @@
         app:contentPaddingTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/view_medal_header">
+        app:layout_constraintTop_toBottomOf="@id/view_medal_header"
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_brand"
@@ -50,7 +51,6 @@
         android:id="@+id/tv_medal_desc"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
         android:textColor="@color/Unify_NN600"
@@ -58,6 +58,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_medal_title"
         app:typographyType="paragraph_2"
-        tools:text="Kamu dapet Medali ini karena pernah belanja 1x di L'Oreal Paris bulan Januari - Agustus 2022 jhfguyghvgiuhfiuyfiufuyfiuytfiuyftuifyiufiyufiufifuyiuaytsduifyauidyfiuAYDFIUyadfi\n\n\n\n\n\n\n\n\n\n\n\n\sdfsdfasdfsfdasda\nsdfsafsdfdsf" />
+        tools:text="Hello" />
 
 </merge>

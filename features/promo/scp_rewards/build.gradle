@@ -42,7 +42,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation projectOrAar(rootProject.ext.features.scpRewardsCommon)
-    implementation project(rootProject.ext.features.scpRewardsWidgets)
+    implementation projectOrAar(rootProject.ext.features.scpRewardsWidgets)
+    implementation projectOrAar(rootProject.ext.libraries.applink)
 
     //Image Dependecies
     implementation rootProject.ext.networkDependencies.glide
