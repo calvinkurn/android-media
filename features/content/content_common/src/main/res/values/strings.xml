@@ -165,8 +165,6 @@
     <string name="kol_action_like">Like</string>
     <string name="kol_action_comment">Comment</string>
     <string name="kol_action_follow">Follow</string>
-    <string name="kol_Action_following">"following"</string>
-    <string name="kol_badge_content_desc">Kol Badge</string>
 
     <!--Post Time-->
     <string name="post_time_just_now">Baru saja</string>
