@@ -130,7 +130,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                     putString(BuyerConsts.PARAM_WAIT_MSG, bundle.getString(BuyerConsts.PARAM_WAIT_MSG))
                     putBoolean(BuyerConsts.PARAM_SOURCE_UOH, bundle.getBoolean(BuyerConsts.PARAM_SOURCE_UOH))
                     putString(BuyerConsts.PARAM_HELP_LINK_URL, bundle.getString(BuyerConsts.PARAM_HELP_LINK_URL))
-                    putString(BuyerConsts.PARAM_TX_ID, bundle.getString(BuyerConsts.PARAM_TX_ID))
+                    putString(BuyerConsts.PARAM_TX_ID, bundle.getString(BuyerConsts.PARAM_TX_ID).orEmpty())
                 }
             }
         }
@@ -549,7 +549,6 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tvSubReason.visible()
             tvSubReason.text = getString(R.string.ask_2_lainnya)
             tfChooseSubReasonEditable.visible()
-            tfChooseSubReasonEditable.requestFocus()
             context?.let { showKeyboard(it) }
             tfChooseSubReasonEditable.setCounter(COUNTER_160)
             tfChooseSubReasonEditable.editText.inputType =
@@ -557,6 +556,10 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             tfChooseSubReasonEditable.editText.isSingleLine = false
             tfChooseSubReasonEditable.editText.imeOptions =
                 EditorInfo.IME_FLAG_NO_ENTER_ACTION
+
+            tfChooseSubReasonEditable.setLabel(getString(R.string.buyer_cancellation_order_choose_reason))
+            tfChooseSubReasonEditable.setPlaceholder(getString(R.string.buyer_cancellation_order_choose_reason))
+
             tfChooseSubReasonEditable.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(
                     s: CharSequence,
@@ -589,7 +592,9 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
                 tvSubReason.text = getString(R.string.ask_2_placeholder)
 
                 tfChooseSubReasonEditable.hide()
-                cardUnifyChooseReason.show()
+                cardUnifyChooseSubReason.show()
+
+                tvChooseSubReasonLabel.text = getString(R.string.reason_placeholder)
 
                 cancelReasonResponse.reasons.forEach {
                     if (it.title.equals(reason, true)) {
@@ -799,7 +804,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         binding?.buyerTickerInfo?.apply {
             visible()
             tickerType = BuyerUtils.getTickerType(tickerInfo.type)
-            tickerShape = Ticker.SHAPE_LOOSE
+            tickerShape = Ticker.SHAPE_FULL
             setHtmlDescription(tickerInfo.text + " ${getString(R.string.buyer_ticker_info_selengkapnya)
                     .replace(TICKER_URL, tickerInfo.actionUrl)
                     .replace(TICKER_LABEL, tickerInfo.actionText)}")

@@ -14,7 +14,6 @@ class GetCancellationReasonMapper @Inject constructor() {
             getCancellationReason = getCancellationReason,
             groupedOrderTitle = getCancellationReason.groupedOrders.title,
             groupedOrders = mapToBuyerCancellationOrderList(getCancellationReason.groupedOrders.orderDetails),
-            groupType = getCancellationReason.groupType,
             tickerInfo = getCancellationReason.groupedOrders.ticker
         )
     }

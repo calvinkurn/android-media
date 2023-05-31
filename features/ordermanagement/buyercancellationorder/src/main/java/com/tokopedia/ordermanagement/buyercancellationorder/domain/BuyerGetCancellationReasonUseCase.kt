@@ -68,7 +68,6 @@ const val GET_CANCELLATION_REASON_QUERY = """
                     bundle_id,
                     bundle_variant_id
                 }
-                group_type
                 grouped_orders {
                   title
                   group_order_details {

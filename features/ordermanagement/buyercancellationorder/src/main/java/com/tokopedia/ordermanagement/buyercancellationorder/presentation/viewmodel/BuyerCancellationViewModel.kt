@@ -89,7 +89,7 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
 
     fun getCancelReasons(userId: String, orderId: String, txId: String) {
         launch {
-            _buyerCancellationOrderResult.postValue(getCancellationReasonUseCase.execute(BuyerGetCancellationReasonParam(userId = userId, orderId = orderId, txId = txId)))
+            _buyerCancellationOrderResult.postValue(getCancellationReasonUseCase.execute(BuyerGetCancellationReasonParam(orderId = orderId)))
         }
     }
 
