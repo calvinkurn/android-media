@@ -284,7 +284,6 @@ includeIfEnabled("features:user:fcm_common")
 
 includeIfEnabled("features:tokofood")
 
-includeIfEnabled("tkpdcore")
 includeIfEnabled("tkpddesign")
 includeIfEnabled("tkpdabstraction")
 
