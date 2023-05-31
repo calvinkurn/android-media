@@ -85,12 +85,12 @@ class PlayBroadcastUiMapper @Inject constructor(
 
     private fun mapToLiveTrafficUiMetricsShop(metrics: LiveStats): List<TrafficMetricUiModel> {
         return mutableListOf(
-            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannel),
+            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannel),
+            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShop),
+            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdp),
+            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShop),
+            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCart),
             TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.productSlotQuantity)
         )
     }
@@ -103,7 +103,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdp),
             TrafficMetricUiModel(TrafficMetricType.ProfileVisit, metrics.visitProfile),
             TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCart),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerified)
+            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.productSlotQuantity)
         )
     }
 

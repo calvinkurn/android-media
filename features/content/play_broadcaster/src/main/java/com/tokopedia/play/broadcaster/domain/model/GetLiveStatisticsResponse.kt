@@ -37,23 +37,17 @@ data class GetLiveStatisticsResponse(
     data class ReportUserChannelMetric(
         @SerializedName("visitChannelFmt")
         val visitChannel: String = "",
-
         @SerializedName("totalLikeFmt")
         val likeChannel: String = "",
-
         @SerializedName("followProfileFmt")
         val followProfile: String = "",
-
         @SerializedName("visitPDPFmt")
         val visitPdp: String = "",
-
         @SerializedName("visitProfileFmt")
         val visitProfile: String = "",
-
         @SerializedName("addToCartFmt")
         val addToCart: String = "",
-
-        @SerializedName("paymentVerifiedFmt")
-        val paymentVerified: String = "",
+        @SerializedName("productSoldQtyFmt")
+        val productSlotQuantity: String = "",
     )
 }
