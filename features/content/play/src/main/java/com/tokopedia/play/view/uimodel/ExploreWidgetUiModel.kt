@@ -163,6 +163,6 @@ sealed class ExploreWidgetState {
 }
 
 enum class ExploreWidgetType {
-    Explore,
+    Default,
     Category;
 }

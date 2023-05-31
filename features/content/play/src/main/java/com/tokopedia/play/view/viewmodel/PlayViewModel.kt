@@ -60,6 +60,7 @@ import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
@@ -67,6 +68,7 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -207,6 +209,7 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
     private val _exploreWidget = MutableStateFlow(ExploreWidgetUiModel.Empty)
+    private val _categoryWidget = MutableStateFlow<NetworkResult<List<PlayWidgetItemUiModel>>>(NetworkResult.Loading)
 
     private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
 
@@ -341,14 +344,14 @@ class PlayViewModel @AssistedInject constructor(
         } ?: products
     }.flowOn(dispatchers.computation)
 
-    private val _explore = combine(_status, _bottomInsets, _exploreWidget) {
-            status, bottomInsets, widgets ->
+    private val _explore = combine(_status, _bottomInsets, _exploreWidget, _categoryWidget) {
+            status, bottomInsets, widgets, category ->
         ExploreWidgetUiState(
             shouldShow = !bottomInsets.isAnyShown &&
                 status.channelStatus.statusType.isActive &&
                 !videoPlayer.isYouTube && isExploreWidget,
             data = widgets,
-            category = NetworkResult.Success(widgets.widgets.getChannelBlocks.getChannelCards) //TODO()temp data structure
+            category = category
         )
     }.flowOn(dispatchers.computation)
 
@@ -1082,9 +1085,10 @@ class PlayViewModel @AssistedInject constructor(
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
-            FetchWidgets -> {
+            is FetchWidgets -> {
                 _isBottomSheetsShown.update { true }
-                fetchWidgets()
+//                fetchWidgets()
+                getWidget(action.type)
             }
             is ClickChipWidget -> handleClickChip(action.item)
             NextPageWidgets -> onActionWidget(isNextPage = true)
@@ -1096,6 +1100,7 @@ class PlayViewModel @AssistedInject constructor(
                     it.copy(widgets = emptyList(), chips = TabMenuUiModel.Empty)
                 }
                 _channelDetail.value.exploreWidgetConfig.let {
+                    _widgetQuery.update { query -> query.copy(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType) }
                     updateWidgetParam(group = it.group, sourceId = it.sourceId, sourceType = it.sourceType)
                 }
                 _isBottomSheetsShown.update { false }
@@ -2849,9 +2854,68 @@ class PlayViewModel @AssistedInject constructor(
         playLog.sendAll(channelId, videoPlayer)
     }
 
+    /**
+     * Explore Widget
+     */
+
+    private val _widgetQuery = MutableStateFlow(WidgetParamUiModel.Empty)
+    private fun getWidget (type: ExploreWidgetType) {
+        viewModelScope.launch {
+            _widgetQuery.distinctUntilChanged { old, new ->  old == new }
+                .collectLatest {
+                    when (type) {
+                        ExploreWidgetType.Category -> updateCategoryWidget()
+                        else -> updateDefaultWidget(isRefresh = false)
+                    }
+            }
+        }
+    }
+
+    private fun updateDefaultWidget(isRefresh: Boolean) {
+        viewModelScope.launchCatchError(block = {
+            val param = _channelDetail.value.exploreWidgetConfig
+            val response = repo.getWidgets(
+                group = param.group,
+                sourceType = param.sourceType,
+                sourceId = param.sourceId,
+                cursor = _exploreWidget.value.param.cursor
+            )
+
+            if (isRefresh) {
+                val chips = response.getChips
+                if (!response.isSubSlotAvailable && chips.items.isEmpty())
+                    throw MessageErrorException()
+                _exploreWidget.update { widget -> widget.copy(chips = chips) }
+
+                _widgetQuery.update { query -> query
+                    .copy(group = chips.items.first().group, sourceType = chips.items.first().sourceType, sourceId = chips.items.first().sourceId)
+                }
+            } else {
+
+            }
+        }) {}
+    }
+
+    private fun updateCategoryWidget() {
+        viewModelScope.launchCatchError(block = {
+            _categoryWidget.value = NetworkResult.Loading
+
+            val param = _channelDetail.value.exploreWidgetConfig //TODO(): change to category
+            val response = repo.getWidgets(
+                group = param.group,
+                sourceType = param.sourceType,
+                sourceId = param.sourceId,
+                cursor = _exploreWidget.value.param.cursor
+            )
+
+            _categoryWidget.update { widget -> widget.map { response.getChannelBlocks.getChannelCards } }
+        }) {
+                exception -> _categoryWidget.value = NetworkResult.Fail(exception)
+        }
+    }
+
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            _uiEvent.emit(ExploreWidgetInitialState)
             _exploreWidget.update { it.copy(state = ExploreWidgetState.Loading, chips = it.chips.copy(state = ResultState.Loading)) }
             val data = getWidgets()
             val chips = data.getChips
@@ -2882,7 +2946,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun onActionWidget(isNextPage: Boolean = false) {
         if (!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError(block = {
-            if (!isNextPage) _uiEvent.emit(ExploreWidgetInitialState)
+//            if (!isNextPage) _uiEvent.emit(ExploreWidgetInitialState)
             _exploreWidget.update { it.copy(state = if (isNextPage) it.state else ExploreWidgetState.Loading, param = it.param.copy(cursor = if (isNextPage) it.param.cursor else "")) }
 
             val widgets = getWidgets()

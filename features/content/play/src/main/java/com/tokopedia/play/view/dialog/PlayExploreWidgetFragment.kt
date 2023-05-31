@@ -31,7 +31,6 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
-import com.tokopedia.play.view.uimodel.event.ExploreWidgetInitialState
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -213,7 +212,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         setupView()
         fetchWidget()
         observeState()
-        observeEvent()
     }
 
     private fun setupView() {
@@ -284,17 +282,6 @@ class PlayExploreWidgetFragment @Inject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.value.channel.channelInfo
                 )
-            }
-        }
-    }
-
-    private fun observeEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
-            viewModel.uiEvent.collect { event ->
-                when (event) {
-                    ExploreWidgetInitialState -> scrollListener.resetState()
-                    else -> {}
-                }
             }
         }
     }
@@ -499,7 +486,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun fetchWidget() {
-        viewModel.submitAction(FetchWidgets)
+        viewModel.submitAction(FetchWidgets(ExploreWidgetType.Default))
     }
 
     companion object {

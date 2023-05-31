@@ -131,11 +131,6 @@ data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiE
 
 object FailedFollow: PlayViewerNewUiEvent()
 
-/**
- * Explore Widget
- */
-object ExploreWidgetInitialState: PlayViewerNewUiEvent()
-
 data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
 
 

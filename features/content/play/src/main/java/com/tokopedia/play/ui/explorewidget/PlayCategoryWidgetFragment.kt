@@ -15,6 +15,7 @@ import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -70,7 +71,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
 
         //TODO() temp
         viewModel.submitAction(
-            FetchWidgets
+            FetchWidgets(ExploreWidgetType.Category)
         )
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel.action
 
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -112,7 +113,7 @@ object OpenCart: PlayViewerNewAction()
 /**
  * Explore Widget
  */
-object FetchWidgets: PlayViewerNewAction() //TODO() add param widget type
+data class FetchWidgets(val type: ExploreWidgetType): PlayViewerNewAction() //TODO() add param widget type
 data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()
 object NextPageWidgets : PlayViewerNewAction() //TODO() add param widget type
 object RefreshWidget : PlayViewerNewAction() //TODO() add param widget type
