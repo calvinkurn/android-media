@@ -872,7 +872,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 verticalPosition
             ),
             isCache = isCache,
-            cardInteraction = true
+            cardInteraction = false
         )
     }
 

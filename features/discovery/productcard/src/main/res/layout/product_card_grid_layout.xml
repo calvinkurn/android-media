@@ -95,7 +95,7 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
                 android:text="90% OFF"
-                android:textColor="@color/Unify_NN0"
+                android:textColor="@color/Unify_Static_White"
                 android:visibility="gone"
                 tools:visibility="visible"
                 app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"

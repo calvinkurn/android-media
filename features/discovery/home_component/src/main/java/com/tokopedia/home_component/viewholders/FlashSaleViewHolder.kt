@@ -23,6 +23,7 @@ import com.tokopedia.home_component.visitable.FlashSaleDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.viewallcard.ViewAllCard
 
@@ -66,7 +67,7 @@ class FlashSaleViewHolder(
 
     private fun setupCarousel(element: FlashSaleDataModel, parentRecycledViewPool: RecyclerView.RecycledViewPool?) {
         val channelGrids = element.channelModel.channelGrids
-        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, element.cardInteraction, isTopStockbar = true) }
+        val productCardList = channelGrids.map { ChannelModelMapper.mapToProductCardModel(it, element.cardInteraction, isTopStockbar = true, cardType = CardUnify2.TYPE_CLEAR) }
         binding?.run {
             carouselFlashSale.bindCarouselProductCardViewGrid(
                 productCardModelList = productCardList,
@@ -98,7 +99,7 @@ class FlashSaleViewHolder(
                 carouselViewAllCardData = CarouselViewAllCardData(
                     title = element.channelModel.channelViewAllCard.title,
                     description = element.channelModel.channelViewAllCard.description,
-                    viewAllCardMode = ViewAllCard.MODE_NORMAL,
+                    viewAllCardMode = ViewAllCard.MODE_INVERT,
                     titleIsInteger = element.channelModel.channelViewAllCard.contentType == CONTENT_TITLE_AS_INTEGER,
                     ctaText = itemView.context.getString(R.string.lihat_semua)
                 ),

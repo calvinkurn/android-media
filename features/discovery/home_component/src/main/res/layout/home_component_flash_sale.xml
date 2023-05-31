@@ -30,6 +30,19 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
+        <ImageView
+            android:id="@+id/supergraphic_flash_sale"
+            android:layout_width="328dp"
+            android:layout_height="123dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintHorizontal_bias="1"
+            android:alpha=".12"
+            android:src="@drawable/supergraphic_flash_sale_default"/>
+
         <com.tokopedia.home_component.customview.DynamicChannelHeaderView
             android:id="@+id/home_component_header_view"
             android:layout_width="0dp"
@@ -48,19 +61,6 @@
             app:layout_constraintTop_toBottomOf="@+id/home_component_header_view"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
-
-        <ImageView
-            android:id="@+id/supergraphic_flash_sale"
-            android:layout_width="328dp"
-            android:layout_height="123dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0"
-            app:layout_constraintHorizontal_bias="1"
-            android:alpha=".12"
-            android:src="@drawable/supergraphic_flash_sale_default"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
