@@ -16,7 +16,8 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/lu_coupon_large_image"
         android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,3:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -28,7 +29,8 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/lu_coupon_small_image"
         android:layout_width="0dp"
-        android:layout_height="85dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H,2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
