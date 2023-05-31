@@ -65,7 +65,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text = this@BigReplyBoxBottomSheet.labelText
-            labelText.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                ?.let { labelText.setTextColor(it) }
             setPlaceholder(hintText)
             if (messageText.isNotEmpty()) {
                 editText.setText(messageText)
@@ -145,7 +146,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 if (getWordCount() >= MINIMUM_NUMBER_OF_WORDS) {
                     enableSendButton()
                 }
-                _viewBinding?.chatText?.labelText?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+                    ?.let { _viewBinding?.chatText?.labelText?.setTextColor(it) }
             }
 
             override fun afterTextChanged(s: Editable?) {
