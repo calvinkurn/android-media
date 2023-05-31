@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
@@ -20,6 +19,7 @@ import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
+import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
 import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
@@ -128,7 +128,7 @@ data class ProductInfoP2Data(
 
     @SerializedName("reviewImage")
     @Expose
-    var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery(),
+    var reviewImage: ProductReviewImageListQuery = ProductReviewImageListQuery(),
 
     @SerializedName("bundleInfo")
     @Expose

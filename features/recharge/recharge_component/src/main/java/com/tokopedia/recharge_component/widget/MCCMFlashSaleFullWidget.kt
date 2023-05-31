@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.databinding.ViewRechargeDenomFullBinding
 import com.tokopedia.recharge_component.databinding.WidgetRechargeMccmFullBinding
@@ -27,6 +28,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.DenomFullAdapter
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomFullViewHolder
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 import org.jetbrains.annotations.NotNull
 
@@ -45,6 +47,14 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         selectedProductIndex: Int? = null
     ){
         with(widgetRechargeMCCMFlashSaleFullWidget){
+            if (context.isDarkMode() && !denomData.imageBackgroundUrlDarkMode.isNullOrEmpty()){
+                imgMccmBackground.loadImage(denomData.imageBackgroundUrlDarkMode)
+            } else if (!denomData.imageBackgroundUrl.isNullOrEmpty()){
+                imgMccmBackground.loadImage(denomData.imageBackgroundUrl)
+            } else {
+                imgMccmBackground.loadImage(context.resources.getDrawable(R.drawable.bg_mccm))
+            }
+
             if (!denomData.listDenomData.isNullOrEmpty()) {
                 headerMccmFull.setChannel(
                     DenomMCCMFlashSaleMapper.getChannelMCCM(
