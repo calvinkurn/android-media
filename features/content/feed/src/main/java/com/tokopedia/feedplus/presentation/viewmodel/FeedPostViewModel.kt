@@ -461,6 +461,19 @@ class FeedPostViewModel @Inject constructor(
                 } else {
                     throw MessageErrorException()
                 }
+
+                if (feedHome.value is Success) {
+                    val currentFeedData = (feedHome.value as Success).data
+                    _feedHome.value = Success(currentFeedData.copy(
+                        items = currentFeedData.items.filter {
+                            when (it) {
+                                is FeedCardImageContentModel -> it.id != id
+                                is FeedCardVideoContentModel -> it.id != id
+                                else -> true
+                            }
+                        }
+                    ))
+                }
             } catch (t: Throwable) {
                 _deletePostResult.value = Fail(t)
             }
