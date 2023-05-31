@@ -9,8 +9,8 @@ import javax.inject.Inject
 class HomePlayWidgetHelper @Inject constructor() {
 
     private val carouselLayoutType = listOf(
-        DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_1,
-        DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2,
+        DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT,
+        DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT,
     )
 
     fun isCarousel(layout: String): Boolean {
@@ -19,7 +19,7 @@ class HomePlayWidgetHelper @Inject constructor() {
     }
 
     fun isCarouselVariantWithProduct(layout: String): Boolean {
-        return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2
+        return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT
 //        return true
     }
 }

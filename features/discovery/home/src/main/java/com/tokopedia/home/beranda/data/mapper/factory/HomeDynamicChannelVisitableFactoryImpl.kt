@@ -190,8 +190,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createFeaturedShopComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER,
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_1,
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_VAR_2 -> {
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT,
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT -> {
                     createCarouselPlayWidget(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_ICON -> {
