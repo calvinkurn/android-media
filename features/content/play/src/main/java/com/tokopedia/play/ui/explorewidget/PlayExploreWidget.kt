@@ -9,10 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.tokopedia.play.R as playR
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.sidesheet.SideSheetBehavior
+import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
@@ -24,6 +25,7 @@ import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import com.tokopedia.play.R as playR
 
 /**
  * @author by astidhiyaa on 22/05/23
@@ -49,6 +51,17 @@ class PlayExploreWidget @Inject constructor(
 
     private val vpAdapter by lazyThreadSafetyNone {
         Adapter(childFragmentManager, lifecycle, tabs)
+    }
+
+
+    private val sheetCallback by lazyThreadSafetyNone {
+        object : SideSheetCallback() {
+            override fun onStateChanged(sheet: View, newState: Int) {
+                if (newState == SideSheetBehavior.STATE_HIDDEN) dismiss()
+            }
+
+            override fun onSlide(sheet: View, slideOffset: Float) {}
+        }
     }
 
     private var _binding: PlayDialogExploreWidgetBinding? = null
@@ -79,7 +92,6 @@ class PlayExploreWidget @Inject constructor(
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
     }
 
     private fun setupView() {
@@ -94,6 +106,9 @@ class PlayExploreWidget @Inject constructor(
         ) { tab, position ->
             tab.setCustomText(tabs.keys.elementAt(position)) //TODO(): handle null or else
         }
+        val sheetBehavior = SideSheetBehavior.from(binding.clSheetExploreWidget)
+        sheetBehavior.addCallback(sheetCallback)
+        sheetBehavior.state = SideSheetBehavior.STATE_EXPANDED
     }
 
     fun showNow(manager: FragmentManager) {
