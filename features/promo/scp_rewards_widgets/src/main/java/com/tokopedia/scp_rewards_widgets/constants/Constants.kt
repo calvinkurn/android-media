@@ -1,7 +1,7 @@
 package com.tokopedia.scp_rewards_widgets.constants
 
-object Constants {
-    object CouponState{
+sealed class Constants {
+    object CouponState {
         const val ACTIVE = "active"
         const val USED = "used"
         const val INACTIVE = "inactive"

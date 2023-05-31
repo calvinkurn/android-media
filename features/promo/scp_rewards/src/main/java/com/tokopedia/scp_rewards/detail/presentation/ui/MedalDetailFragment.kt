@@ -16,9 +16,7 @@ import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
-import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import javax.inject.Inject
-
 
 const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg_base.png"
 const val IMG_DETAIL_BG = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg.png"
@@ -30,9 +28,6 @@ const val MASKING_SHAPE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/0
 const val SHUTTER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_shutter.png"
 const val LOTTIE_BADGE = "https://gist.githubusercontent.com/rooparshgojek/8502ff5cb6f84b918141a213498f007a/raw/9e5bf0fae736334521b47a07a5d0d76346c9fc57/medali-detail.json"
 const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/08/medali_outer_blinking.json"
-
-private const val COUPON_IMG = "https://images.tokopedia.net/img/cache/576x192/uqilkZ/2023/5/16/ae716f14-f1c8-431f-bf84-03f9adf74075.png"
-private const val TEXT = "*Bisa dipakai hingga 17 Mei 2023"
 
 class MedalDetailFragment : BaseDaggerFragment() {
 
@@ -59,7 +54,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
         return binding.root
     }
 
-
     private fun initToolbar() {
         (activity as AppCompatActivity).let {
             it.setSupportActionBar(binding.toolbar)
@@ -67,9 +61,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
                 elevation = 0f
-                //setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
+                // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
 
-                //it.setTransparentSystemBar()
+                // it.setTransparentSystemBar()
             }
         }
     }
@@ -126,34 +120,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderCouponWidget(){
-        val list = listOf(
-            MedalRewardsModel(
-                isActive = true,
-                status = "active",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel(
-                isActive = false,
-                status = "inactive",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel(
-                isActive = false,
-                status = "expired",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel(
-                isActive = false,
-                status = "used",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            )
-        )
-        binding.layoutDetailContent.couponView.renderCoupons(list)
+    private fun renderCouponWidget() {
     }
 
     override fun getScreenName() = ""
