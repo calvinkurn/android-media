@@ -18,7 +18,6 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.text.set
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -59,7 +58,6 @@ import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.OnRemoveR
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignAdapter
 import com.tokopedia.shop.flashsale.presentation.creation.rule.adapter.RelatedCampaignItemDecoration
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.BuyerSettingBottomSheet
-import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.CampaignSettingOutOfStockBottomsheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.ChoosePaymentMethodBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.MerchantCampaignTNCBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.rule.bottomsheet.PaymentMethodBottomSheet
@@ -288,7 +286,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val spannableString = SpannableString(oosSubtitleText)
         val clickableSpan: ClickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                showOutOfStockBottomsheet()
+                openEduPage()
             }
 
             override fun updateDrawState(ds: TextPaint) {
@@ -308,7 +306,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             oosSubtitleText.getSpanEnd(96),
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
-        
+
         return spannableString
     }
 
@@ -528,8 +526,9 @@ class CampaignRuleFragment : BaseDaggerFragment(),
             .show(childFragmentManager)
     }
 
-    private fun showOutOfStockBottomsheet() {
-        CampaignSettingOutOfStockBottomsheet.createInstance().show(childFragmentManager)
+    private fun openEduPage() {
+        // TODO: Add web Url Edu Page & Redirect to the page
+        val webUrl = ""
     }
 
     override fun onTNCConfirmationClicked() {
