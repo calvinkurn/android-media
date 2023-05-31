@@ -17,7 +17,7 @@ class ItemPenaltyFilterDateViewHolder(
 
     override fun bind(element: PenaltyFilterDateUiModel) {
         binding?.tvPenaltyFilterDate?.text = element.completeDate
-        binding?.root?.setOnClickListener {
+        binding?.cardPenaltyFilterDate?.setOnClickListener {
             filterPenaltyDateListener?.onDatePicked(
                 element.startDate,
                 element.defaultStartDate,

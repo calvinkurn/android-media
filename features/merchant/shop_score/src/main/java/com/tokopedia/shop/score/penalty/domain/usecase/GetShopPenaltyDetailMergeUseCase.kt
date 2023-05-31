@@ -129,6 +129,10 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                    source: "android-shop-penalty"
                  }
                ) {
+                  startDate
+                  endDate
+                  defaultStartDate
+                  defaultEndDate
                   result {
                       shopPenaltyID
                       invoiceNumber

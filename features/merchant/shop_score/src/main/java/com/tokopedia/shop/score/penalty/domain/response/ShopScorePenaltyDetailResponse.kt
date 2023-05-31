@@ -29,7 +29,7 @@ data class ShopScorePenaltyDetailResponse(
             val endDate: String = String.EMPTY,
             @SerializedName("defaultStartDate")
             val defaultStartDate: String = String.EMPTY,
-            @SerializedName("defaultEndData")
+            @SerializedName("defaultEndDate")
             val defaultEndDate: String = String.EMPTY
     ) {
         data class Result(

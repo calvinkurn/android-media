@@ -22,6 +22,7 @@ import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetS
 import com.tokopedia.shop.score.databinding.BottomsheetFilterPenaltyBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyDateListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyTypesBottomSheetListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapter
@@ -37,7 +38,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenaltyBinding>(),
-    FilterPenaltyBottomSheetListener, FilterPenaltyTypesBottomSheetListener {
+    FilterPenaltyBottomSheetListener, FilterPenaltyTypesBottomSheetListener, FilterPenaltyDateListener, PenaltyDateFilterBottomSheet.CalenderListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -48,7 +49,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     private var isApplyFilter = false
 
-    private val filterPenaltyAdapterTypeFactory by lazy { FilterPenaltyAdapterFactory(this) }
+    private val filterPenaltyAdapterTypeFactory by lazy { FilterPenaltyAdapterFactory(this, this) }
     private val filterPenaltyAdapter by lazy { FilterPenaltyAdapter(filterPenaltyAdapterTypeFactory) }
 
     private var penaltyFilterFinishListener: PenaltyFilterFinishListener? = null
@@ -140,6 +141,34 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
 
     override fun onFilterSaved(filterList: List<Int>) {
 //        TODO("Not yet implemented")
+    }
+
+    override fun onDatePicked(
+        startDate: String,
+        defaultStartDate: String,
+        endDate: String,
+        defaultEndDate: String
+    ) {
+        val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
+            viewModelShopPenalty.getStartDate(),
+            viewModelShopPenalty.getEndDate()
+        )
+        bottomSheetDateFilter.setCalendarListener(this)
+        bottomSheetDateFilter.show(childFragmentManager)
+    }
+
+    override fun onSaveCalendarClicked(
+        startDate: Pair<String, String>,
+        endDate: Pair<String, String>
+    ) {
+        val date = if (startDate.second.isBlank() && endDate.second.isBlank()) {
+            ""
+        } else if (endDate.second.isBlank()) {
+            startDate.second
+        } else {
+            "${startDate.second} - ${endDate.second}"
+        }
+        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
     }
 
     private fun getDataCacheFromManager() {

@@ -362,7 +362,7 @@
     <string name="desc_penalty_calculation_fraction_info">(Lihat Tabel Konversi)</string>
     <string name="title_penalty_calculation_percentage">Persentase</string>
     <string name="title_penalty_calculation_score_deduction">Potongan Skor</string>
-    <string name="desc_penalty_calculation_information">Potongan skor performa dihitung secara langsung dari <b>Total Poin Penalti Sedang Berlangsung</b> karena total pesananmu minggu ini 0.</string>
+    <string name="desc_penalty_calculation_information"><![CDATA[Potongan skor performa dihitung secara langsung dari <b>Total Poin Penalti Sedang Berlangsung</b> karena total pesananmu minggu ini 0.]]></string>
     <string name="title_penalty_tab_latest">Penalti Terbaru</string>
     <string name="title_penalty_tab_history">Riwayat Penalti</string>
     <string name="title_penalty_info_notification">Belum Berlangsung (%s)</string>
