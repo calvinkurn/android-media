@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductBundlingListItemBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.OwocProductBundlingItemDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 
 class OwocProductBundlingItemAdapter(
@@ -85,6 +86,7 @@ class OwocProductBundlingItemAdapter(
         }
 
         private fun ItemOwocProductBundlingListItemBinding.setBundleItemProductPriceQuantity(quantity: Int, priceText: String) {
+            tvItemOwocBundlingProductPriceQuantity.show()
             tvItemOwocBundlingProductPriceQuantity.text = itemView.context.getString(
                 R.string.label_product_price_and_quantity,
                 quantity,

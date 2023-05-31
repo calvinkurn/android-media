@@ -10,7 +10,6 @@
         android:id="@+id/container_owoc_bundling"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
         android:background="?android:attr/selectableItemBackground">
 
         <com.tokopedia.unifycomponents.ImageUnify

@@ -382,7 +382,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     private fun getCancelReasons() {
         userSession = UserSession(context)
         userSession?.let {
-            buyerCancellationViewModel.getCancelReasons(it.userId, orderId, txId)
+            buyerCancellationViewModel.getCancelReasons(orderId)
         }
     }
 

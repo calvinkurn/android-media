@@ -11,7 +11,6 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductL
 import com.tokopedia.buyerorderdetail.presentation.adapter.listener.OwocProductListListener
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.OwocProductListTypeFactoryImpl
 import com.tokopedia.buyerorderdetail.presentation.model.BaseOwocVisitableUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OwocSectionGroupUiModel
 
 class OwocSectionGroupViewHolder(

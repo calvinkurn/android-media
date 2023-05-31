@@ -5,16 +5,15 @@
     android:id="@+id/owoc_container_product_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:animateLayoutChanges="true"
     android:background="?selectableItemBackground"
     android:paddingHorizontal="16dp"
     android:paddingTop="16dp"
-    android:paddingBottom="@dimen/buyer_order_detail_bundling_card_padding_bottom">
+    android:paddingBottom="14dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_item_owoc_bundling_thumbnail"
-        android:layout_width="@dimen/buyer_order_detail_product_thumbnail_size"
-        android:layout_height="@dimen/buyer_order_detail_product_thumbnail_size"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -24,7 +23,7 @@
         tools:text="iPhone XR Garansi Resmi Apple indonesia IBOX - 256 GB, Black"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/buyer_order_detail_bundling_info_margin"
+        android:layout_marginStart="10dp"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_NN950"
