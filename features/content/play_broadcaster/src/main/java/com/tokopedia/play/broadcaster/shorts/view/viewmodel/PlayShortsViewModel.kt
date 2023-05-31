@@ -500,6 +500,10 @@ class PlayShortsViewModel @Inject constructor(
             return
         }
         val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
+
+        if (checkIsAffiliate.errorMessage.isNotEmpty())
+            throw Throwable(checkIsAffiliate.errorMessage)
+
         _isAffiliate.update { checkIsAffiliate.isAffiliate }
         setupShortsAffiliateEntryPoint(!_isAffiliate.value)
     }

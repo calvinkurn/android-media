@@ -76,6 +76,7 @@ class PlayShortsUiMapper @Inject constructor(
         return BroadcasterCheckAffiliateResponseUiModel(
             affiliateName = responseData.affiliateName,
             isAffiliate = responseData.isAffiliate,
+            errorMessage = responseData.errorMessage,
         )
     }
 
