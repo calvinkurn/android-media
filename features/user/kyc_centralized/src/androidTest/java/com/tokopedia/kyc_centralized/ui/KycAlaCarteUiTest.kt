@@ -118,8 +118,8 @@ class KycAlaCarteUiTest {
             atKtpIntroClickNext()
             atFaceIntroClickNext()
             atFinalAlacarteClickOK()
-        } upload {
-            hasRedirectUrl(activityTestRule, url)
+        } validate {
+            hasRedirectUrl(timber, url)
             assertThat(timber, hasProjectIdOf(projectId))
         }
     }
