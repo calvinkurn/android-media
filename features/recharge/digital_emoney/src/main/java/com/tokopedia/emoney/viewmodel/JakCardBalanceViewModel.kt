@@ -38,7 +38,7 @@ class JakCardBalanceViewModel @Inject constructor(
     @Suppress("LateinitUsage")
     lateinit var isoDep: IsoDep
 
-    fun processJakCardTagIntent(isoDep: IsoDep) {
+    fun processJakCardTagIntent(isoDep: IsoDep, isDev: Boolean) {
         if (isoDep != null) {
             run {
                 try {
@@ -46,7 +46,7 @@ class JakCardBalanceViewModel @Inject constructor(
                     isoDep.connect()
                     isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 7 sec time out
 
-                    val selectRequest = NFCUtils.stringToByteArrayRadix(getSelectAIDCommand())
+                    val selectRequest = NFCUtils.stringToByteArrayRadix(getSelectAIDCommand(isDev))
                     val selectResponse = isoDep.transceive(selectRequest)
                     val selectResponseString = NFCUtils.toHex(selectResponse)
                     if (NFCUtils.isCommandFailed(selectResponse)) {
@@ -262,8 +262,8 @@ class JakCardBalanceViewModel @Inject constructor(
         }
     }
 
-    private fun getSelectAIDCommand(): String {
-        return if (GlobalConfig.isAllowDebuggingTools()) {
+    private fun getSelectAIDCommand(isDev: Boolean): String {
+        return if (isDev) {
             COMMAND_SELECT_JAK_CARD_STAG + COMMAND_AID_JAK_CARD_STAG
         } else {
             COMMAND_SELECT_JAK_CARD_PROD + COMMAND_AID_JAK_CARD_PROD

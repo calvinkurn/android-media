@@ -118,10 +118,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
             showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
                     DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
-        } else if(CardUtils.isJakCard(intent)) {
+        } else if(CardUtils.isJakCard(intent) ) {
             issuerActive = ISSUER_ID_JAKCARD
             showLoading(getOperatorName(issuerActive))
-            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag))
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), false)
+        } else if(CardUtils.isJakCardDev(intent)) {
+            issuerActive = ISSUER_ID_JAKCARD
+            showLoading(getOperatorName(issuerActive))
+            jakcardBalanceViewModel.processJakCardTagIntent(IsoDep.get(tag), true)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
                 issuerActive = ISSUER_ID_EMONEY

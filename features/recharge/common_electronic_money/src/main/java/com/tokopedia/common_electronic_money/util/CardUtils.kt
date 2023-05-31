@@ -103,11 +103,7 @@ class CardUtils {
                     val isoDep = IsoDep.get(tag)
                     isoDep.connect()
                     isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
-                    val selectCommand = if(GlobalConfig.isAllowDebuggingTools()) {
-                        PREFIX_SELECT_COMMAND_JAKCARD + JAKCARD_AID_STAG
-                    } else {
-                        PREFIX_SELECT_COMMAND + JAKCARD_AID_PROD
-                    }
+                    val selectCommand = PREFIX_SELECT_COMMAND + JAKCARD_AID_PROD
                     val bytes = isoDep.transceive(hexStringToByteArray(selectCommand))
                     isoDep.close()
                     return !NFCUtils.isCommandFailed(bytes)
@@ -117,6 +113,26 @@ class CardUtils {
             }
             return false
         }
+
+        @JvmStatic
+        fun isJakCardDev(intent: Intent): Boolean {
+            try {
+                val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+                if (tag != null) {
+                    val isoDep = IsoDep.get(tag)
+                    isoDep.connect()
+                    isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC
+                    val selectCommand = PREFIX_SELECT_COMMAND_JAKCARD + JAKCARD_AID_STAG
+                    val bytes = isoDep.transceive(hexStringToByteArray(selectCommand))
+                    isoDep.close()
+                    return !NFCUtils.isCommandFailed(bytes)
+                }
+            } catch (e: Exception){
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+            return false
+        }
+
 
     }
 }
