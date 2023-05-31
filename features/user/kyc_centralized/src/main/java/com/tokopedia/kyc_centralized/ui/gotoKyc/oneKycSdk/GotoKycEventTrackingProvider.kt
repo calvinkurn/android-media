@@ -7,15 +7,22 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.worker.GotoKycCleanupStorageWorker
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 class GotoKycEventTrackingProvider @Inject constructor(
     private val kycSdkAnalyticsConfig: KycSdkAnalyticsConfig,
     private val kycSharedPreference: KycSharedPreference,
+    private val remoteConfigImpl: FirebaseRemoteConfigImpl,
     @ApplicationContext private val context: Context
 ) : IKycSdkEventTrackingProvider {
-    override fun getAnalyticsConfigForClickStream(): KycSdkAnalyticsConfig {
-        return kycSdkAnalyticsConfig
+    override fun getAnalyticsConfigForClickStream(): KycSdkAnalyticsConfig? {
+        return if (remoteConfigImpl.getBoolean(RemoteConfigKey.GOTO_ONE_KYC_CLICKSTREAM)) {
+            kycSdkAnalyticsConfig
+        } else {
+            null
+        }
     }
 
     override fun sendPeopleProperty(customerId: String, propertyName: String, propertyValue: Any?): Boolean {

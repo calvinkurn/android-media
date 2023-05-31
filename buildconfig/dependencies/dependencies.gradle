@@ -108,10 +108,6 @@ ext {
     profileInstallerVersion = '1.3.0-alpha01'
     desugarJdkVersion= '1.2.2'
     laku6SdkVersion = '2.5.18'
-    gotoOneKycVersion = "0.1.38Pre3@aar"
-    clickStreamVersion = "2.0.1-alpha"
-    protoTokoVersion = "4.219.0-snapshot-toko-1"
-    protoSdkVersion = "1.18.2"
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -252,11 +248,11 @@ ext {
     ]
 
     gotoOneKyc = [
-            resource : "com.gojek.android:OneKycResources:$gotoOneKycVersion",
-            oneKycSdk : "com.gojek.android:OneKycSdk:$gotoOneKycVersion",
-            clickStream : "com.gojek.android:clickstream:$clickStreamVersion",
-            protoToko : "com.gojek.clickstream:proto-toko:$protoTokoVersion",
-            protoSdk : "com.gojek.clickstream:proto-sdk:$protoSdkVersion"
+            resource : "com.gojek.android:OneKycResources:0.1.38Pre3@aar",
+            oneKycSdk : "com.gojek.android:OneKycSdk:0.1.38Pre3@aar",
+            clickStream : "com.gojek.android:clickstream:2.0.1-alpha",
+            protoToko : "com.gojek.clickstream:proto-toko:4.219.0-snapshot-toko-1",
+            protoSdk : "com.gojek.clickstream:proto-sdk:1.18.2"
     ]
 
     miscDependencies = [
