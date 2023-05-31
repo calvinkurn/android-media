@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <dimen name="margin_small">10dp</dimen>
-    <dimen name="fonts">14sp</dimen>
-    <dimen name="margin_med">20dp</dimen>
-    <dimen name="padding_small">10dp</dimen>
-    <dimen name="padding_med">20dp</dimen>
-
     <style name="ToolbarSubtitleText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_NN0</item>
     </style>
 
     <style name="ToolbarText" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">17sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/Unify_NN0</item>
     </style>
 
     <style name="Theme.Tokopedia3.PlainGreen" parent="Theme.AppCompat.DayNight.NoActionBar">
