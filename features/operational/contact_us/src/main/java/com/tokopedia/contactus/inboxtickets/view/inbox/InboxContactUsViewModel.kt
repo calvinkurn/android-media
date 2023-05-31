@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.view.inbox
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.contactus.inboxtickets.data.model.InboxTicketListResponse
@@ -112,6 +113,7 @@ class InboxContactUsViewModel @Inject constructor(
                 _uiState.value = InboxUiState(
                     showChatBotWidget = false
                 )
+                FirebaseCrashlytics.getInstance().recordException(e)
             }
         }
     }
