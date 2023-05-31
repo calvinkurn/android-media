@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 
 class AccordianKataKunciViewHolder(private val itemView: View) :
@@ -15,16 +15,16 @@ class AccordianKataKunciViewHolder(private val itemView: View) :
 
     inner class KataKunciItemsAdapter :
         RecyclerView.Adapter<KataKunciItemsAdapter.KataKunciItemsViewHolder>() {
-        var kataKunciItemList: List<ExistingKeywordsBidRecom> = mutableListOf()
+        var kataKunciItemList: List<NewPositiveKeywordsRecom> = mutableListOf()
 
         inner class KataKunciItemsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
 
             private val title : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.title)
             private val searchesCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.searches_count_value)
             private val potentialCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.show_potential_value)
-            fun bind(element: ExistingKeywordsBidRecom) {
+            fun bind(element: NewPositiveKeywordsRecom) {
                 title.text = element.keywordTag
-                searchesCount.text = element.suggestionBid.toString()
+                searchesCount.text = element.totalSearch
                 potentialCount.text = element.predictedImpression
             }
         }
@@ -55,7 +55,7 @@ class AccordianKataKunciViewHolder(private val itemView: View) :
         kataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         kataKunciRv.adapter = adapter
-        element?.existingKeywordsBidRecom?.let {
+        element?.newPositiveKeywordsRecom?.let {
             adapter.kataKunciItemList = it
         }
     }

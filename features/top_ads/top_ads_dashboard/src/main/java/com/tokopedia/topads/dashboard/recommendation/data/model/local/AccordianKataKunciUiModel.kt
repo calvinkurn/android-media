@@ -5,7 +5,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 data class AccordianKataKunciUiModel(
     val text: String = "",
-    val existingKeywordsBidRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom>?
+    val newPositiveKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom>?
 ) : GroupDetailDataModel {
     override fun type(): String {
         return ""

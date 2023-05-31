@@ -19,4 +19,5 @@ object RecommendationConstants {
     const val PERFORMANCE_FREQUENTLY_THRESHOLD = 20
     const val PERFORMANCE_RARITY_THRESHOLD = 5
     const val PERFORMANCE_NOT_RATED_THRESHOLD = 0
+    const val DEFAULT_SELECTED_INSIGHT_TYPE = 0
 }

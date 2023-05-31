@@ -17,5 +17,6 @@ interface GroupDetailAdapterFactory {
     fun type(accordianNegativeKeywordUiModel: AccordianNegativeKeywordUiModel): Int
     fun type(groupDetailEmptyStateUiModel: GroupDetailEmptyStateUiModel): Int
     fun type(groupDetailInsightListUiModel: GroupDetailInsightListUiModel): Int
+    fun type(accordianDailyBudgetUiModel: AccordianDailyBudgetUiModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

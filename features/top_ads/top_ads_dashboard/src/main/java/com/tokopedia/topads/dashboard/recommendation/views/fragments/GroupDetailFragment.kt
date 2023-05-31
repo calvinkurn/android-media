@@ -13,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.DEFAULT_SELECTED_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -86,7 +89,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
         adType = arguments?.getString("adType")
         val adGroupName = arguments?.getString("adGroupName")
-        adGroupId = arguments?.getString("groupId")
+        val adGroupId = arguments?.getString("groupId") ?: ""
+        val insightType = arguments?.getInt("insightType") ?: 0
+        viewModel.selectDefaultChips(insightType)
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
         if (adType != null && adGroupId != null) {
             loadData(if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE, adGroupId ?: "")
@@ -149,7 +154,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         { _, item ->
             viewModel.loadDetailPageOnAction(
                 if (item.adGroupType == PRODUCT_KEY) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
-                item.adGroupID
+                item.adGroupID,
+                item.insightType
             )
         }
 
@@ -165,13 +171,15 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
                 if (dy > 0) {
                     if (position > 1) {
-                        groupChipsLayout?.visibility = View.VISIBLE
-                        groupDetailsChipsAdapter?.notifyDataSetChanged()
-                        groupDetailChipsRv?.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
+                        if (viewModel.checkIfGroupChipsAvailable()) {
+                            groupChipsLayout?.show()
+                            groupDetailsChipsAdapter?.notifyDataSetChanged()
+                            groupDetailChipsRv?.smoothSnapToPosition(chipsList.findPositionOfSelected { it.isSelected })
+                        }
                     }
                 } else {
                     if (position <= 1) {
-                        groupChipsLayout?.visibility = View.GONE
+                        groupChipsLayout?.hide()
                     }
                 }
             }
@@ -241,7 +249,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId
-        viewModel.loadDetailPageOnAction(adType, groupId, groupId.isEmpty(), groupName)
+        viewModel.loadDetailPageOnAction(adType, groupId, DEFAULT_SELECTED_INSIGHT_TYPE,  groupId.isEmpty(), groupName)
     }
 
     companion object {

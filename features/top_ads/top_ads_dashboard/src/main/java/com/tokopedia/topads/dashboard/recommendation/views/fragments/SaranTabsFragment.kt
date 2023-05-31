@@ -29,7 +29,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsList
 import com.tokopedia.topads.dashboard.recommendation.viewmodel.TopAdsListAllInsightViewModel
 import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.ChipsAdapter
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
@@ -211,6 +211,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
             bundle.putString("adGroupName", item.adGroupName)
             bundle.putString("groupId", item.adGroupID)
             bundle.putInt("count", item.count)
+            bundle.putInt("insightType", item.insightType)
             bundle.putParcelableArrayList("insightTypeList", adGroupList)
             Intent(context, GroupDetailActivity::class.java).apply {
                 this.putExtra("groupDetailBundle", bundle)

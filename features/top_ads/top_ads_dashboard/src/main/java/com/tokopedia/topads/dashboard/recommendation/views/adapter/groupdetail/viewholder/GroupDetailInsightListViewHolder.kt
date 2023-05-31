@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
-import com.tokopedia.topads.dashboard.recommendation.views.adapter.InsightListAdapter
+import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 
 class GroupDetailInsightListViewHolder(
     private val view1: View,
