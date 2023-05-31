@@ -394,6 +394,7 @@
     <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>
     <string name="title_wpv_intro_coachmark">Atur berat per varian, yuk!</string>
     <string name="message_wpv_intro_coachmark">Sekarang kamu bisa atur berat tiap varian.</string>
+    <string name="message_tips_variant_unit_cannot_changed">Tidak bisa ubah satuan varian untuk produk yang memiliki varian dan terdaftar di Dilayani Tokopedia.</string>
 
     <!-- Admin Revamp -->
     <string name="ticker_add_product_main_location_title">Tambah produk untuk di lokasi utama</string>

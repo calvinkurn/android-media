@@ -63,6 +63,7 @@ import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.RemoteConfig
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.common.util.setDefaultMaxWidth
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductVariantBinding
@@ -1289,7 +1290,10 @@ class AddEditProductVariantFragment :
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
         variantUnitPickerLayout.setSelectedVariantUnit(selectedVariantUnit)
         variantUnitPickerLayout.setOnVariantUnitPickListener(this)
-        variantUnitPickerLayout.setupVariantUnitPicker(variantData.units)
+        variantUnitPickerLayout.setupVariantUnitPicker(
+            variantData.units,
+            viewModel.hasDTStock.getValueOrDefault(false)
+        )
         variantUnitPickerLayout.setHasSelectedValues(hasSelectedValues)
         variantUnitPicker?.setCloseClickListener {
             variantUnitPicker?.dismiss()
