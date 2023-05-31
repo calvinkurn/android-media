@@ -188,8 +188,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
         if (redeemResult.redeemMessage.isNotEmpty()){
-            showToaster(binding?.root ?: return, redeemResult.redeemMessage)
-
             binding?.loader?.visible()
             viewModel.getExclusiveLaunchVouchers(shopId, voucherSlugs)
         }
