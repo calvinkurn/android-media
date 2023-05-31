@@ -22,8 +22,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wallet.R
+import com.tokopedia.wallet.databinding.FragmentInactiveOvoBinding
+import com.tokopedia.wallet.databinding.FragmentIntroOvoBinding
 import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
 import com.tokopedia.wallet.di.WalletComponentInstance
 import com.tokopedia.wallet.ovoactivation.view.model.PhoneActionModel
@@ -35,14 +39,6 @@ import javax.inject.Inject
  */
 class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
 
-    private lateinit var activationOvoBtn: UnifyButton
-    private lateinit var learnMoreOvoBtn: UnifyButton
-    private lateinit var tncOvo: Typography
-    private lateinit var titleOvo: Typography
-    private lateinit var descFirstOvo: Typography
-    private lateinit var descSecondOvo: Typography
-    private lateinit var imgIntroOvo: ImageView
-    private lateinit var progressBar: View
     private lateinit var listener: OvoFragmentListener
     private var tokocashActive: Boolean = false
 
@@ -50,6 +46,8 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
     lateinit var presenter: IntroOvoPresenter
     @Inject
     lateinit var ovoActivationAnalytics: OvoActivationAnalytics
+
+    private var binding by autoClearedNullable<FragmentIntroOvoBinding>()
 
     override fun initInjector() {
         activity?.let {
@@ -64,16 +62,8 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_intro_ovo, container, false)
-        activationOvoBtn = view.findViewById(R.id.activation_ovo_btn)
-        learnMoreOvoBtn = view.findViewById(R.id.learn_more_ovo_btn)
-        tncOvo = view.findViewById(R.id.tnc_ovo)
-        titleOvo = view.findViewById(R.id.title_intro)
-        descFirstOvo = view.findViewById(R.id.description_1)
-        descSecondOvo = view.findViewById(R.id.description_2)
-        imgIntroOvo = view.findViewById(R.id.image_ovo)
-        progressBar = view.findViewById(R.id.progress_bar)
-        return view
+        binding = FragmentIntroOvoBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,19 +76,19 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
 
         if (tokocashActive) {
             listener.setTitleHeader(getString(R.string.wallet_title_header_ovo))
-            titleOvo.text = getString(R.string.wallet_announcement_ovo_title)
-            descFirstOvo.text = getString(R.string.wallet_announcement_ovo_description)
-            descSecondOvo.text = getString(R.string.wallet_announcement_ovo_second_desc)
-            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_ovo)
+            binding?.titleIntro?.text = getString(R.string.wallet_announcement_ovo_title)
+            binding?.description1?.text = getString(R.string.wallet_announcement_ovo_description)
+            binding?.description2?.text = getString(R.string.wallet_announcement_ovo_second_desc)
+            binding?.imageOvo?.setImage(R.drawable.wallet_ic_intro_ovo, 0f)
         } else {
             listener.setTitleHeader(getString(R.string.wallet_title_header_activation_ovo))
-            titleOvo.text = getString(R.string.wallet_announcement_activation_ovo_title)
-            descFirstOvo.text = getString(R.string.wallet_announcement_activation_ovo_description)
-            descSecondOvo.text = getString(R.string.wallet_announcement_activation_ovo_second_desc)
-            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_activation)
+            binding?.titleIntro?.text = getString(R.string.wallet_announcement_activation_ovo_title)
+            binding?.description1?.text = getString(R.string.wallet_announcement_activation_ovo_description)
+            binding?.description2?.text = getString(R.string.wallet_announcement_activation_ovo_second_desc)
+            binding?.imageOvo?.setImage(R.drawable.wallet_ic_intro_activation, 0f)
         }
 
-        activationOvoBtn.setOnClickListener {
+        binding?.activationOvoBtn?.setOnClickListener {
             presenter.checkPhoneNumber()
             ovoActivationAnalytics.eventClickActivationOvoNow()
         }
@@ -122,14 +112,14 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
             ss.setSpan(ForegroundColorSpan(ContextCompat.getColor(it,
                 com.tokopedia.unifycomponents.R.color.Unify_G500)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             ss.setSpan(clickableSpan, 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tncOvo.movementMethod = LinkMovementMethod.getInstance()
-            tncOvo.text = ss
+            binding?.tncOvo?.movementMethod = LinkMovementMethod.getInstance()
+            binding?.tncOvo?.text = ss
         }
     }
 
     override fun setApplinkButton(helpAllink: String, tncApplink: String) {
         setTncOvo(tncApplink)
-        learnMoreOvoBtn.setOnClickListener {
+        binding?.learnMoreOvoBtn?.setOnClickListener {
             ovoActivationAnalytics.eventClickOvoLearnMore()
             directHelpPageWithApplink(helpAllink)
         }
@@ -190,15 +180,11 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
     }
 
     override fun showProgressBar() {
-        if (progressBar != null) {
-            progressBar.visibility = View.VISIBLE
-        }
+        binding?.progressBar?.visibility = View.VISIBLE
     }
 
     override fun hideProgressBar() {
-        if (progressBar != null) {
-            progressBar.visibility = View.GONE
-        }
+        binding?.progressBar?.visibility = View.GONE
     }
 
     override fun onAttachActivity(context: Context) {
