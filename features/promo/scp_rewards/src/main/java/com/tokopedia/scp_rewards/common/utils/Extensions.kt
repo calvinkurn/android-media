@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -22,10 +23,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 fun CoroutineScope.launchCatchError(
@@ -176,4 +180,8 @@ fun ImageView.grayscale() {
     colorMatrix.setSaturation(0F)
     val filter = ColorMatrixColorFilter(colorMatrix)
     this.colorFilter = filter
+}
+
+fun launchWeblink(context: Context, webLink: String) {
+    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(webLink)))
 }

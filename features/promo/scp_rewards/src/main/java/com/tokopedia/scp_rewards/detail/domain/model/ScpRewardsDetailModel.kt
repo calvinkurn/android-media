@@ -34,7 +34,7 @@ data class MedaliDetailPage(
     @SerializedName("sourceBackgroundColor") val sourceBackgroundColor: String? = null,
     @SerializedName("name") val name: String? = null,
     @SerializedName("description") val description: String? = null,
-    @SerializedName("isMedaliGrayScale") val isMedaliGrayScale: String? = null,
+    @SerializedName("isMedaliGrayScale") val isMedaliGrayScale: Boolean? = null,
     @SerializedName("iconImageURL") val iconImageURL: String? = null,
     @SerializedName("tncButton") val tncButton: TncButton? = null,
     @SerializedName("coachMark") val coachMark: CoachMark? = null,

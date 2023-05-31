@@ -20,6 +20,7 @@ import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
@@ -80,9 +81,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
-                binding.tvTermsConditions.setOnClickListener {
-                    // open tnc page
-                }
                 elevation = 0f
                 // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
 
@@ -189,7 +187,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
     private fun loadMedalDetails(medaliDetailPage: MedaliDetailPage?) {
         binding.layoutDetailContent.viewMedalDetail.bindData(
             MedalDetail(
-                sponsorInformation = medaliDetailPage?.sourceText,
+                sponsorText = medaliDetailPage?.sourceText,
+                sponsorTextColor = medaliDetailPage?.sourceFontColor,
+                sponsorBackgroundColor = medaliDetailPage?.sourceBackgroundColor,
                 medalTitle = medaliDetailPage?.name,
                 medalDescription = medaliDetailPage?.description
             )
@@ -199,7 +199,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     private fun loadHeader(medaliDetailPage: MedaliDetailPage?) {
         binding.viewMedalHeader.bindData(
             MedalHeader(
-                isGrayScale = medaliDetailPage?.isMedaliGrayScale ?: true,
+                isGrayScale = medaliDetailPage?.isMedaliGrayScale ?: false,
                 medalIconUrl = medaliDetailPage?.iconImageURL ?: MEDAL_ICON,
                 lottieUrl = medaliDetailPage?.shimmerShutterLottieURL ?: LOTTIE_BADGE,
                 lottieSparklesUrl = medaliDetailPage?.outerBlinkingLottieURL ?: LOTTIE_SPARKS,
@@ -215,6 +215,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 coachMarkInformation = medaliDetailPage?.coachMark?.text
             )
         )
+        medaliDetailPage?.tncButton?.apply {
+            binding.tvTermsConditions.text = text
+            binding.tvTermsConditions.setOnClickListener {
+                launchWeblink(requireContext(), url.orEmpty())
+            }
+        }
 
     }
 
