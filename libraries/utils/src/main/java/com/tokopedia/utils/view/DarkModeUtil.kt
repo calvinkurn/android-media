@@ -3,10 +3,7 @@ package com.tokopedia.utils.view
 import android.content.Context
 import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
-import com.tokopedia.unifyprinciples.R
 import com.tokopedia.unifyprinciples.stringToUnifyColor
-import java.lang.reflect.Field
 import java.util.regex.Pattern
 
 /**
@@ -45,16 +42,9 @@ object DarkModeUtil {
     fun getUnifyHexColor(context: Context, hexColor: String): String {
         runCatching {
             val unify = stringToUnifyColor(context, hexColor)
-            val unifyColorName = unify.unifyColorName
-            val dmsColor = getDmsColorByName(context, unifyColorName)
-            if (dmsColor != null) {
-                return getHexColorByColorInt(dmsColor)
-            } else {
-                val unifyColor = unify.unifyColor
-                if (unifyColor != null) {
-                    return getHexColorByColorInt(unifyColor)
-                }
-                return hexColor
+            val unifyColor = unify.unifyColor
+            if (unifyColor != null) {
+                return getHexColorByColorInt(unifyColor)
             }
         }
         return hexColor
@@ -74,16 +64,6 @@ object DarkModeUtil {
      * */
     private fun getHexColorByColorInt(color: Int): String {
         return String.format(HEX_COLOR_FORMAT, 0xFFFFFF and color)
-    }
-
-    private fun getDmsColorByName(context: Context, colorName: String?): Int? {
-        runCatching {
-            val res = R.color::class.java
-            val field: Field = res.getField(colorName ?: return@runCatching)
-            val color: Int = field.getInt(null)
-            return ContextCompat.getColor(context, color)
-        }
-        return null
     }
 
     private fun isDarkModeApp(): Boolean {
