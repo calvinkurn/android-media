@@ -26,6 +26,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_PROMO_CLICK = "promoClick"
         const val EVENT_VIEW_IRIS = "viewIris"
         const val EVENT_CLICK = "click"
+        const val EVENT_CLICK_TOP_NAV = "clickTopNav"
     }
 
     object CATEGORY{
@@ -99,6 +100,8 @@ object TokoNowCommonAnalyticConstants {
         const val DEFAULT_EMPTY_VALUE = ""
         const val DEFAULT_HEADER_CATEGORY_MENU = "Cek kategori lainnya"
         const val ITEM_LIST_SLASH_TOKONOW = "/tokonow"
+        const val ITEM_LIST_PRODUCT_CARD = "product card"
+        const val ITEM_LIST_SIMILAR_PRODUCT_RECOM = "similar product recom"
     }
 
     object ACTION{

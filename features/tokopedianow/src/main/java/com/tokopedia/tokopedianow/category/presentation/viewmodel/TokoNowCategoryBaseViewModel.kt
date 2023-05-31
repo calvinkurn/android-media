@@ -10,6 +10,8 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.authentication.AuthHelper.Companion.getMD5Hash
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -43,8 +45,15 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
         miniCartSource = MiniCartSource.TokonowCategoryPage
     }
 
-    private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+    private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
+    private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
+
     val updateToolbarNotification: LiveData<Boolean> = _updateToolbarNotification
+    val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
+
+    private fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
+    }
 
     protected open fun updateProductCartQuantity(
         productId: String,
@@ -52,11 +61,15 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
         layoutType: CategoryLayoutType
     ) { /* nothing to do */ }
 
-    private fun updateToolbarNotification() {
-        _updateToolbarNotification.postValue(true)
+    protected fun sendOpenScreenTracker(detailResponse: CategoryDetailResponse) {
+        _openScreenTracker.value = CategoryOpenScreenTrackerModel(
+            id = detailResponse.categoryDetail.data.id,
+            name = detailResponse.categoryDetail.data.name,
+            url = detailResponse.categoryDetail.data.url
+        )
     }
 
-    fun getUniqueId() = if (isLoggedIn()) getMD5Hash(getUserId()) else getMD5Hash(getDeviceId())
+    protected fun getUniqueId() = if (isLoggedIn()) getMD5Hash(getUserId()) else getMD5Hash(getDeviceId())
 
     fun onCartQuantityChanged(
         productId: String,

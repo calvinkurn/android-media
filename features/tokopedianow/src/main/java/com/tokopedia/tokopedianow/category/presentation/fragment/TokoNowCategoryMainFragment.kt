@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.presentation.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.applink.RouteManager
@@ -8,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.tokopedianow.category.analytic.CategoryMainAnalytic
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
 import com.tokopedia.tokopedianow.category.di.component.CategoryComponent
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryAdapter
 import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
@@ -45,7 +46,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
     @Inject
-    lateinit var analytic: CategoryMainAnalytic
+    override lateinit var analytic: CategoryAnalytic
 
     override val userId: String
         get() = viewModel.getUserId()
@@ -136,6 +137,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         observeProductRecommendationToolbarNotification()
         observeRefreshState()
         observeOosState()
+        observeOpenScreenTracker()
     }
 
     private fun observeCategoryHeader() {
@@ -290,6 +292,21 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     private fun observeOosState() {
         viewModel.oosState.observe(viewLifecycleOwner) {
             binding?.showOosLayout()
+            analytic.sendOocOpenScreenEvent(viewModel.isLoggedIn())
+        }
+    }
+
+    private fun observeOpenScreenTracker() {
+        viewModel.openScreenTracker.observe(viewLifecycleOwner) { model ->
+            val uri = Uri.parse(model.url)
+            uri.lastPathSegment?.let { categorySlug ->
+                analytic.sendOpenScreenEvent(
+                    slug = categorySlug,
+                    id = model.id,
+                    name = model.name,
+                    isLoggedInStatus = viewModel.isLoggedIn()
+                )
+            }
         }
     }
 

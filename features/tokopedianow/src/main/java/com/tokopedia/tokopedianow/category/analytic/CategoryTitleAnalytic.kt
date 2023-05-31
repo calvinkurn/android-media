@@ -1,8 +1,8 @@
 package com.tokopedia.tokopedianow.category.analytic
 
-import com.tokopedia.tokopedianow.category.analytic.CategoryMainAnalytic.ACTION.EVENT_ACTION_CLICK_OTHER_CATEGORIES
-import com.tokopedia.tokopedianow.category.analytic.CategoryMainAnalytic.CATEGORY.EVENT_CATEGORY_PAGE_L1
-import com.tokopedia.tokopedianow.category.analytic.CategoryMainAnalytic.TRACKER_ID.ID_CLICK_OTHER_CATEGORIES
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.ACTION.EVENT_ACTION_CLICK_OTHER_CATEGORIES
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.CATEGORY.EVENT_CATEGORY_PAGE_L1
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.TRACKER_ID.ID_CLICK_OTHER_CATEGORIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES

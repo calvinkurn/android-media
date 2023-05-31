@@ -260,6 +260,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 )
 
                 _categoryHeader.postValue(Success(layout))
+
+                sendOpenScreenTracker(detailResponse)
             },
             onError = {
                 _categoryHeader.postValue(Fail(it))
