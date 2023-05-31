@@ -37,7 +37,7 @@ object DeeplinkMapperUser {
         }
     }
 
-    private fun getApplinkGotoKyc(): String {
+    fun getApplinkGotoKyc(): String {
         return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
             ApplinkConstInternalUserPlatform.GOTO_KYC
         } else {

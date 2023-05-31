@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/feed_component_dp_50"
-    android:height="@dimen/feed_component_dp_50"
+    android:width="@dimen/content_common_dp_50"
+    android:height="@dimen/content_common_dp_50"
     android:viewportWidth="50"
     android:viewportHeight="50">
     <path
