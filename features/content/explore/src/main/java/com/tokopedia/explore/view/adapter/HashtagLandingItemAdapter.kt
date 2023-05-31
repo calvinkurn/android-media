@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.adapter
 
+import android.annotation.SuppressLint
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -118,6 +119,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(data: List<PostKolUiModel>) {
         val dataNew = data.map { Data(it) }
         list.clear()
