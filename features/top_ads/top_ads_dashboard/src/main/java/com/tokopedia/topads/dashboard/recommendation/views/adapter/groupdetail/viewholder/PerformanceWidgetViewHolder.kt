@@ -1,15 +1,20 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
 import android.content.res.ColorStateList
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.topads.common.view.getFragmentManager
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.databinding.TopAdsPerformanceWidgetInfoBottomsheetLayoutBinding
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PERFORMANCE_FREQUENTLY_THRESHOLD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PERFORMANCE_RARITY_THRESHOLD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PERFORMANCE_NOT_RATED_THRESHOLD
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerformanceWidgetUiModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -18,21 +23,26 @@ class PerformanceWidgetViewHolder(itemView: View) :
 
     private val performanceWidgetStatus : Typography = itemView.findViewById(R.id.performanceWidgetStatus)
     private val performanceWidgetDesc : Typography = itemView.findViewById(R.id.performanceWidgetDesc)
+    private val performanceWidgetInfoBtn : IconUnify = itemView.findViewById(R.id.performanceWidgetInfoBtn)
     private val block1 : ImageUnify = itemView.findViewById(R.id.block_1)
     private val block2 : ImageUnify = itemView.findViewById(R.id.block_2)
     private val block3 : ImageUnify = itemView.findViewById(R.id.block_3)
+
+    private val infoBottomSheetBinding by lazy {
+        TopAdsPerformanceWidgetInfoBottomsheetLayoutBinding.inflate(LayoutInflater.from(itemView.context))
+    }
     
     override fun bind(element: GroupPerformanceWidgetUiModel?) {
-        element?.apply {
+        element?.let {
 
-            if (topSlotImpression == PERFORMANCE_NOT_RATED_THRESHOLD) {
+            if (it.topSlotImpression == PERFORMANCE_NOT_RATED_THRESHOLD) {
                 performanceWidgetStatus.text =
                 getString(R.string.topads_insight_not_rated)
                 setGreyCondition()
 
                 performanceWidgetDesc.text = getString(R.string.topads_insight_performance_not_rated_desc)
             } else {
-                val adPerformance = 100 * topSlotImpression / impression
+                val adPerformance = 100 * it.topSlotImpression / it.impression
 
                 performanceWidgetStatus.text = when {
                     adPerformance > PERFORMANCE_FREQUENTLY_THRESHOLD -> {
@@ -49,11 +59,23 @@ class PerformanceWidgetViewHolder(itemView: View) :
                     }
                 }
 
-                performanceWidgetDesc.text = String.format(getString(R.string.topads_insight_performance_count),topSlotImpression, impression)
+                performanceWidgetDesc.text = String.format(getString(R.string.topads_insight_performance_count),it.topSlotImpression, it.impression)
             }
         }
+        val infoBottomSheetUnify = BottomSheetUnify().apply {
+            setChild(infoBottomSheetBinding.root)
+            isDragable = false
+            isHideable = true
+            showKnob = false
+            clearContentPadding = true
+            showCloseIcon = true
+            isFullpage = false
+            setTitle(this@PerformanceWidgetViewHolder.getString(R.string.topads_insight_performance_appears))
+        }
+        performanceWidgetInfoBtn.setOnClickListener {
+            getFragmentManager(itemView.context)?.let {  infoBottomSheetUnify.show( it,"something") }
+        }
     }
-
 
     private fun setGreenCondition() {
         ImageViewCompat.setImageTintList(
