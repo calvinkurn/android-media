@@ -513,8 +513,16 @@ class DynamicProductDetailViewModel @Inject constructor(
                 layoutId,
                 extParam
             ).also {
+                /**
+                 * using wishlist previous value
+                 * because when wishlist clicked, hit api addWishlist after that, hit api p1.
+                 * So that, in p1 the isWishlist doesn't updated, updated after hit p1Login
+                 */
+                val isWishlist = getDynamicProductInfoP1?.data?.isWishlist.orFalse()
                 getDynamicProductInfoP1 = it.layoutData.also {
                     listOfParentMedia = it.data.media.toMutableList()
+                }.run {
+                    copy(data = data.copy(isWishlist = isWishlist))
                 }
 
                 variantData =
@@ -730,6 +738,9 @@ class DynamicProductDetailViewModel @Inject constructor(
             val result =
                 withContext(dispatcher.io) { addToWishlistV2UseCase.get().executeOnBackground() }
             if (result is Success) {
+                getDynamicProductInfoP1?.let {
+                    getDynamicProductInfoP1 = it.copy(data = it.data.copy(isWishlist = true))
+                }
                 listener.onSuccessAddWishlist(result.data, productId)
             } else if (result is Fail) {
                 listener.onErrorAddWishList(result.throwable, productId)
