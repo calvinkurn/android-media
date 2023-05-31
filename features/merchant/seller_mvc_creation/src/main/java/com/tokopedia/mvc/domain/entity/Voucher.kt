@@ -45,7 +45,10 @@ data class Voucher(
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val discountTypeFormatted: String = "",
     val productIds: List<ProductId> = listOf(),
-    val isParent: Boolean = false
+    val isParent: Boolean = false,
+    val labelVoucher: LabelVoucher = LabelVoucher(),
+    val isEditable: Boolean = false,
+    val subsidyDetail: SubsidyDetail = SubsidyDetail()
 ) : Parcelable {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED
@@ -55,6 +58,42 @@ data class Voucher(
         val parentProductId: Long = 0,
         val childProductId: List<Long>? = listOf()
     ) : Parcelable
+
+    @Parcelize
+    data class LabelVoucher(
+        val labelQuota: Int = 0,
+        val labelQuotaFormatted: String = "",
+        val labelQuotaColorType: String = "default",
+        val labelCreator: Int = 0,
+        val labelCreatorFormatted: String = "",
+        val labelCreatorColorType: String = "default",
+        val labelSubsidyInfo: Int = 0,
+        val labelSubsidyInfoFormatted: String = "",
+        val labelSubsidyInfoColorType: String = "default",
+        val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
+    ): Parcelable {
+        @Parcelize
+        data class LabelBudgetVoucher(
+            val labelBudgetVoucher: Int = 0,
+            val labelBudgetVoucherFormatted: String = "",
+            val labelBudgetVoucherValue: Int = 0
+        ): Parcelable
+    }
+
+    @Parcelize
+    data class SubsidyDetail(
+        val programDetail: ProgramDetail = ProgramDetail()
+    ): Parcelable {
+        @Parcelize
+        data class ProgramDetail(
+            val programName: String = "",
+            val programStatus: Int = 0,
+            val programLabel: String = "",
+            val programLabelDetail: String = "",
+            val promotionStatus: Int = 0,
+            val promotionLabel: String = ""
+        ): Parcelable
+    }
 
     fun toVoucherConfiguration(): VoucherConfiguration {
         val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
