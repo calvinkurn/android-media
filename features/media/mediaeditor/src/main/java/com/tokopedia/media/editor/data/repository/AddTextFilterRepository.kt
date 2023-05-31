@@ -45,7 +45,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         var fontSize = originalImageHeight * FONT_SIZE_PERCENTAGE
 
         // base padding
-        val paddingVertical = 0.4f * fontSize
+        val paddingVertical = 0.39f * fontSize
         val paddingHorizontal = 0.8f * fontSize
         var paddingFloating = 0f
         val adjustmentPadding = 0.1f * fontSize
