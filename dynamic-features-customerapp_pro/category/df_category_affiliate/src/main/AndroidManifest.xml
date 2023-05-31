@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.category.affiliate">
-    <dist:module dist:title="@string/label_affiliate">
+    <dist:module dist:title="@string/title_category_affiliate">
         <dist:delivery>
             <dist:on-demand />
             <dist:install-time>
