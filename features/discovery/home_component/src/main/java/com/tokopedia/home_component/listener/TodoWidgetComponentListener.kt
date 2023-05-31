@@ -7,9 +7,9 @@ import com.tokopedia.home_component.visitable.TodoWidgetListDataModel
  * Created by frenzel
  */
 interface TodoWidgetComponentListener {
-    fun onTodoCardClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
-    fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
-    fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
-    fun onTodoImpressed(element: CarouselTodoWidgetDataModel, horizontalPosition: Int)
+    fun onTodoCardClicked(element: CarouselTodoWidgetDataModel)
+    fun onTodoCTAClicked(element: CarouselTodoWidgetDataModel)
+    fun onTodoCloseClicked(element: CarouselTodoWidgetDataModel)
+    fun onTodoImpressed(element: CarouselTodoWidgetDataModel)
     fun refreshTodowidget(element: TodoWidgetListDataModel)
 }

@@ -16,8 +16,6 @@ labels:
 | Module type          | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                         |
 | Module Location      | `features/logistic/logisticorder`                                                                                                                                                                                                                                                                          |
 
-## Table of Contents
-
 <!--toc-->
 
 ## Release Notes

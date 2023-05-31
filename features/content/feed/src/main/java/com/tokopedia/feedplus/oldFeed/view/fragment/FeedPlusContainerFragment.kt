@@ -300,10 +300,7 @@ class FeedPlusContainerFragment :
             Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
             else -> View.INVISIBLE
         }
-        status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
-            else -> View.INVISIBLE
-        }
+        status_bar_bg2.visibility = View.INVISIBLE
         toolbarParent.removeAllViews()
         initNewToolBar()
         toolbarParent.addView(feedToolbar)

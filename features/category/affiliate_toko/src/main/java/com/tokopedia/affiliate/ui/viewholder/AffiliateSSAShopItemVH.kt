@@ -3,8 +3,11 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.os.Build
 import android.text.Html
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
+import android.widget.Space
 import androidx.annotation.LayoutRes
+import androidx.core.view.updateLayoutParams
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.AVAILABLE
 import com.tokopedia.affiliate.AffiliateAnalytics
@@ -18,15 +21,19 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageRounded
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
+import kotlin.math.roundToInt
 
 class AffiliateSSAShopItemVH(
     itemView: View,
@@ -37,9 +44,14 @@ class AffiliateSSAShopItemVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_ssa_shop_item_layout
 
+        var SSA_SHOP_MARGIN = 24
+        var PROMO_SSA_SHOP_MARGIN = 8
+
         private const val SHOP_ID_PARAM = "{shop_id}"
     }
 
+    private val shopCard = itemView.findViewById<CardUnify2>(R.id.cardViewShopCard)
+    private val ssaPromoSpace = itemView.findViewById<Space>(R.id.ssa_promo_space)
     private val shopImage = itemView.findViewById<ImageView>(R.id.imageMain)
     private val shopName = itemView.findViewById<Typography>(R.id.textViewTitle)
     private val imageBadge = itemView.findViewById<ImageView>(R.id.imageTitleEmblem)
@@ -55,6 +67,25 @@ class AffiliateSSAShopItemVH(
 
     override fun bind(element: AffiliateSSAShopUiModel?) {
         element?.ssaShop?.let { shop ->
+            if (element.fromPromo) {
+                shopCard.updateLayoutParams {
+                    this.width = LayoutParams.WRAP_CONTENT
+                }
+                shopCard.setMargin(
+                    PROMO_SSA_SHOP_MARGIN,
+                    PROMO_SSA_SHOP_MARGIN,
+                    PROMO_SSA_SHOP_MARGIN,
+                    PROMO_SSA_SHOP_MARGIN
+                )
+                ssaPromoSpace.show()
+            } else {
+                shopCard.setMargin(
+                    SSA_SHOP_MARGIN,
+                    SSA_SHOP_MARGIN,
+                    SSA_SHOP_MARGIN,
+                    SSA_SHOP_MARGIN
+                )
+            }
             shopImage.loadImageRounded(shop.ssaShopDetail?.imageURL?.androidURL)
             shopName.text = shop.ssaShopDetail?.shopName
             if (shop.ssaShopDetail?.badgeURL?.isNotEmpty() == true) {
@@ -94,7 +125,7 @@ class AffiliateSSAShopItemVH(
             if (rating > 0) {
                 textRating.apply {
                     visible()
-                    text = item.rating.toString()
+                    text = item.rating.roundToInt().toString()
                 }
                 imageRating.visible()
             }

@@ -28,7 +28,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             tools:src="@tools:sample/avatars"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:ignore="ContentDescription" />
 
         <View
             android:layout_width="match_parent"

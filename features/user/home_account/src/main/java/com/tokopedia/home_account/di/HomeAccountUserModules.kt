@@ -13,6 +13,8 @@ import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import com.tokopedia.user.session.UserSession
@@ -79,6 +81,12 @@ class HomeAccountUserModules(val context: Context) {
     @Provides
     @ActivityScope
     fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
+
+    @Provides
+    @ActivityScope
+    fun provideAbTestPlatform(): AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
+    }
 
     @Provides
     @ActivityScope
