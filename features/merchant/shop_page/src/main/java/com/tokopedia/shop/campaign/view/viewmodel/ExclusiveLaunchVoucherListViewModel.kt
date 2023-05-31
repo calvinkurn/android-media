@@ -25,11 +25,11 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
     val vouchers: LiveData<Result<List<ExclusiveLaunchVoucher>>>
         get() = _vouchers
 
-    fun getExclusiveLaunchVouchers(voucherSlugs: List<String>) {
+    fun getExclusiveLaunchVouchers(shopId: String, voucherSlugs: List<String>) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val merchantVouchersDeferred = async { getMerchantVoucherListUseCase.execute() }
+                val merchantVouchersDeferred = async { getMerchantVoucherListUseCase.execute(shopId) }
                 val promoVouchersDeferred = async { getPromoVoucherListUseCase.execute(voucherSlugs) }
 
                 val merchantVouchers = merchantVouchersDeferred.await()
@@ -65,27 +65,6 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
         }
     }
 
-    fun updateVoucherAsClaimed(
-        allVouchers: List<ExclusiveLaunchVoucher>,
-        selectedVoucher: ExclusiveLaunchVoucher
-    ): List<ExclusiveLaunchVoucher> {
-        return allVouchers.map { voucher ->
-            if (voucher.id == selectedVoucher.id) {
-                selectedVoucher.claim()
-            } else {
-                voucher
-            }
-        }
-    }
-
-    private fun ExclusiveLaunchVoucher.claim(): ExclusiveLaunchVoucher {
-        return if (this.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
-            val newVoucherStatus = this.source.copy(isClaimed = true)
-            this.copy(remainingQuota = Int.ZERO, source = newVoucherStatus)
-        } else {
-            this
-        }
-    }
 
     private fun ExclusiveLaunchVoucher.isMerchantLockedToProductVoucher(): Boolean {
         return if (this.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated) {

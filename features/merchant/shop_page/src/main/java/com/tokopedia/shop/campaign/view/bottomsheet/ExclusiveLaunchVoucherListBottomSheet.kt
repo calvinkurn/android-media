@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
@@ -34,14 +35,17 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
         private const val BUNDLE_KEY_VOUCHER_SLUGS = "category_slugs"
+        private const val BUNDLE_KEY_SHOP_ID = "shop_id"
 
         @JvmStatic
         fun newInstance(
+            shopId: String,
             useDarkBackground: Boolean,
             slugs: List<String>
         ): ExclusiveLaunchVoucherListBottomSheet {
             return ExclusiveLaunchVoucherListBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
                     putStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS, ArrayList(slugs))
                 }
@@ -50,8 +54,11 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
+
+    private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND).orFalse() }
     private val voucherSlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS)?.toList().orEmpty() }
+
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
     private var onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
     private var onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
@@ -107,7 +114,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        viewModel.getExclusiveLaunchVouchers(voucherSlugs)
+        viewModel.getExclusiveLaunchVouchers(shopId, voucherSlugs)
     }
 
     private fun observeVouchers() {
@@ -173,33 +180,24 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             promoVoucherCode = promoVoucherCode,
             isMerchantVoucher = isMerchantVoucher
         ).apply {
-            setOnVoucherRedeemSuccess { redeemResult ->
-                handleRedeemVoucherSuccess(selectedVoucher, redeemResult)
-            }
+            setOnVoucherRedeemSuccess { redeemResult -> handleRedeemVoucherSuccess(redeemResult) }
             setOnVoucherUseSuccess { handleUseVoucherSuccess(selectedVoucher) }
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun handleRedeemVoucherSuccess(
-        selectedVoucher: ExclusiveLaunchVoucher,
-        redeemResult: RedeemPromoVoucherResult
-    ) {
+    private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
         if (redeemResult.redeemMessage.isNotEmpty()){
-            showToaster(view ?: return, redeemResult.redeemMessage)
-            refreshVoucherStatus(selectedVoucher)
+            showToaster(binding?.root ?: return, redeemResult.redeemMessage)
+
+            binding?.loader?.visible()
+            viewModel.getExclusiveLaunchVouchers(shopId, voucherSlugs)
         }
     }
 
     private fun handleUseVoucherSuccess(selectedVoucher: ExclusiveLaunchVoucher) {
         onVoucherUseSuccess(selectedVoucher)
         dismiss()
-    }
-
-    private fun refreshVoucherStatus(selectedVoucher: ExclusiveLaunchVoucher) {
-        val allVouchers = exclusiveLaunchAdapter.snapshot()
-        val updatedVouchers = viewModel.updateVoucherAsClaimed(allVouchers, selectedVoucher)
-        exclusiveLaunchAdapter.submit(updatedVouchers)
     }
 
     fun setOnVoucherUseSuccess(onVoucherUseSuccess: (ExclusiveLaunchVoucher) -> Unit) {

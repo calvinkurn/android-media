@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.campaign.data.response.GetMerchantVoucherListResponse
 import com.tokopedia.shop.campaign.data.mapper.GetMerchantVoucherListMapper
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -18,7 +17,6 @@ import javax.inject.Inject
  */
 class GetMerchantVoucherListUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val userSession: UserSessionInterface,
     private val mapper: GetMerchantVoucherListMapper
 ) : GraphqlUseCase<List<ExclusiveLaunchVoucher>>(repository) {
 
@@ -70,17 +68,17 @@ class GetMerchantVoucherListUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(): List<ExclusiveLaunchVoucher> {
-        val request = buildRequest()
+    suspend fun execute(shopId: String): List<ExclusiveLaunchVoucher> {
+        val request = buildRequest(shopId)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetMerchantVoucherListResponse>()
 
         return mapper.map(data)
     }
 
-    private fun buildRequest(): GraphqlRequest {
+    private fun buildRequest(shopId: String): GraphqlRequest {
         val params = mapOf(
-            REQUEST_PARAM_SHOP_ID to userSession.shopId,
+            REQUEST_PARAM_SHOP_ID to shopId,
             REQUEST_PARAM_SOURCE to REQUEST_PARAM_VALUE_PAGE_SOURCE
         )
 
