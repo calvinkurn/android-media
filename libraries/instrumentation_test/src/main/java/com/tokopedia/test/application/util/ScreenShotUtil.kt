@@ -7,6 +7,7 @@ import androidx.test.runner.screenshot.BasicScreenCaptureProcessor
 import androidx.test.runner.screenshot.ScreenCaptureProcessor
 import androidx.test.runner.screenshot.Screenshot
 import okio.IOException
+import timber.log.Timber
 import java.io.File
 
 fun takeScreenshot(description: String) {
@@ -19,7 +20,7 @@ fun takeScreenshot(description: String) {
     try {
         capture.process(processors)
     } catch (e: IOException) {
-        e.printStackTrace()
+        Timber.e(e)
     }
 }
 
