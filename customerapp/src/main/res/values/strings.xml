@@ -215,6 +215,7 @@
     <string name="profile_completion_title">Data Diri</string>
     <string name="title_add_name_empty"> </string>
     <string name="title_add_email">Tambah Email</string>
+    <string name="label_affiliate">Affiliate</string>
 
     <!-- Travel slice custom query -->
     <string-array name="HotelSliceCustomQuery">
