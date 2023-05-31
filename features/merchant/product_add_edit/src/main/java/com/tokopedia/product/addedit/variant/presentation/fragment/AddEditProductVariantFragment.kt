@@ -261,7 +261,6 @@ class AddEditProductVariantFragment :
         observeVariantPhotosVisibility()
         observeIsEditMode()
         observeIsRemovingVariant()
-        observeHasDTStock()
 
         // stop PLT prepare monitoring
         stopPreparePagePerformanceMonitoring()
@@ -705,7 +704,6 @@ class AddEditProductVariantFragment :
         } else {
             val variantData = viewModel.getVariantData(layoutPosition)
             val variantId = variantData.variantID
-            viewModel.productInputModel.value
             viewModel.removeSelectedVariantUnitValue(layoutPosition, removedUnitValue)
             viewModel.removeCombinations(position, layoutPosition)
 
@@ -930,6 +928,11 @@ class AddEditProductVariantFragment :
                 editVariantType(editedIndex, variantDetail)
             }
 
+            bottomSheet.setHasDTStock(viewModel.hasDTStock.value.orFalse())
+            bottomSheet.setOnHasDTStockListener {
+                showDTProductNotAllowedDeleteDialog()
+            }
+
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
                 deleteVariantType(deletedIndex, variantDetail)
                 showToaster(getString(R.string.label_cvt_message_variant_deleted))
@@ -1124,6 +1127,7 @@ class AddEditProductVariantFragment :
                     }
                 }
             }
+            observeHasDTStock()
         }
     }
 
