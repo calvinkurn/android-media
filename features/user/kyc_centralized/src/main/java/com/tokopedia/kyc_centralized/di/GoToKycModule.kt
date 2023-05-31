@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
@@ -37,9 +38,6 @@ import java.util.concurrent.TimeUnit
 
 @Module
 open class GoToKycModule {
-
-    private val NET_RETRY = 3
-    private val sharedPreferenceName = "kyc_centralized"
 
     @ActivityScope
     @Provides
@@ -176,7 +174,11 @@ open class GoToKycModule {
         @ApplicationContext context: Context
     ) = KycSdkAnalyticsConfig(
         apiKey = context.getString(com.tokopedia.keys.R.string.one_kyc_click_stream_api_key),
-        url = context.getString(com.tokopedia.keys.R.string.one_kyc_click_stream_url),
+        url = if (GlobalConfig.isAllowDebuggingTools()) {
+            KYCConstant.ONE_KYC_CLICKSTREAM_URL_STAGING
+        } else {
+            KYCConstant.ONE_KYC_CLICKSTREAM_URL_PRODUCTION
+        },
         enableDebugLogs = GlobalConfig.isAllowDebuggingTools()
     )
 
@@ -206,4 +208,8 @@ open class GoToKycModule {
         )
     }
 
+    companion object {
+        private const val NET_RETRY = 3
+        private const val sharedPreferenceName = "kyc_centralized"
+    }
 }
