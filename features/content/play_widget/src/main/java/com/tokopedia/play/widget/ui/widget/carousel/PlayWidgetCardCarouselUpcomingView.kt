@@ -103,6 +103,8 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
 
         LottieCompositionFactory.fromUrl(context, lottieUrl)
             .addFailureListener {
+                binding.viewPlayWidgetActionButton.lottieAction.hide()
+
                 binding.viewPlayWidgetActionButton.iconActionFallback.setImage(
                     if (shouldRemind) IconUnify.BELL_FILLED else IconUnify.BELL
                 )
@@ -110,7 +112,9 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
             }
             .addListener { composition ->
                 binding.viewPlayWidgetActionButton.iconActionFallback.hide()
+
                 binding.viewPlayWidgetActionButton.lottieAction.setComposition(composition)
+                binding.viewPlayWidgetActionButton.lottieAction.show()
 
                 if (animate) binding.viewPlayWidgetActionButton.lottieAction.playAnimation()
                 else binding.viewPlayWidgetActionButton.lottieAction.progress = 1f
