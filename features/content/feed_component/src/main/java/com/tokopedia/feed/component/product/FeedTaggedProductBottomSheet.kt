@@ -96,7 +96,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
     }
 
     fun showMerchantVoucherWidget(data: TokopointsCatalogMVCSummary, tracker: MvcTrackerImpl) {
-        setTitle(getString(R.string.content_product_bs_title_with_promo))
+        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title_with_promo))
         val info = data.animatedInfoList
         if (info?.isNotEmpty() == true) {
             val shopId = mTaggedProducts.first().shop.id

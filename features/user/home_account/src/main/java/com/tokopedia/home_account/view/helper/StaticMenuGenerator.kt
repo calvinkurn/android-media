@@ -16,7 +16,7 @@ import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import javax.inject.Inject
 
 /**
@@ -25,7 +25,7 @@ import javax.inject.Inject
  */
 
 @ActivityScope
-class StaticMenuGenerator @Inject constructor(val context: Context) {
+class StaticMenuGenerator @Inject constructor(val context: Context, val abTestPlatform: AbTestPlatform) {
 
     fun generateUserSettingMenu(): SettingDataView {
         return SettingDataView(
@@ -188,9 +188,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     }
 
     private fun isUsingPrivacyCenter(): Boolean {
-        return RemoteConfigInstance
-            .getInstance()
-            .abTestPlatform
+        return abTestPlatform
             .getString(DeeplinkMapperUser.ROLLENCE_PRIVACY_CENTER)
             .isNotEmpty()
     }
