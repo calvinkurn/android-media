@@ -28,6 +28,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
         initViewBindings()
         enableSendButton()
         bindClickListeners()
+        disableSendButton()
     }
 
     private fun initViewBindings() {
