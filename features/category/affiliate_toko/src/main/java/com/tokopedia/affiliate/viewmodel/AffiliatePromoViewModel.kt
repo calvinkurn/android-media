@@ -18,7 +18,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.PageDetail
 import com.tokopedia.universal_sharing.view.model.Product
@@ -119,7 +119,7 @@ class AffiliatePromoViewModel @Inject constructor(
             try {
                 tokoNowBottomSheetData.value = affiliateEligibilityCheckUseCase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(
-                        AffiliatePDPInput(
+                        AffiliateInput(
                             pageType = PageType.SHOP.value,
                             pageDetail = PageDetail(
                                 pageType = PageType.SHOP.value,
