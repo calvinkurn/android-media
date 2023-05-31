@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
@@ -167,4 +169,11 @@ fun View.show(){
 fun View.hide(){
     if(visibility == View.VISIBLE)
         visibility = View.GONE
+}
+
+fun ImageView.grayscale() {
+    val colorMatrix = ColorMatrix()
+    colorMatrix.setSaturation(0F)
+    val filter = ColorMatrixColorFilter(colorMatrix)
+    this.colorFilter = filter
 }

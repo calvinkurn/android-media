@@ -22,6 +22,7 @@
         android:layout_width="250dp"
         android:layout_height="190dp"
         android:translationZ="2dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/iv_badge_base"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,10 +34,20 @@
         android:layout_height="174dp"
         android:layout_gravity="center"
         android:elevation="1dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/lottie_view_sparks"
         app:layout_constraintEnd_toEndOf="@id/lottie_view_sparks"
         app:layout_constraintStart_toStartOf="@id/lottie_view_sparks"
         app:layout_constraintTop_toTopOf="@id/lottie_view_sparks" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_medal_icon"
+        android:layout_width="156dp"
+        android:layout_height="174dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/iv_badge_base"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_badge_base"

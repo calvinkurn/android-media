@@ -43,6 +43,7 @@ const val FRAME_MASK = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/26/m
 const val SHIMMER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/26/shimmer_alt.png"
 const val FRAME = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_frame.png"
 const val MASKING_SHAPE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
+const val MEDAL_ICON = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/01/medali_brand.png"
 const val SHUTTER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_shutter.png"
 const val CONTENT = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png"
 const val LOTTIE_BADGE = "https://gist.githubusercontent.com/abhishekjain-gojek/99be6bad982dea1518f03ff1dffbf40d/raw/6cedac0248cbf1d5fc55825385034d1cdb3a5f6c/medali_detail.json"
@@ -198,8 +199,11 @@ class MedalDetailFragment : BaseDaggerFragment() {
     private fun loadHeader(medaliDetailPage: MedaliDetailPage?) {
         binding.viewMedalHeader.bindData(
             MedalHeader(
+                isGrayScale = medaliDetailPage?.isMedaliGrayScale ?: true,
+                medalIconUrl = medaliDetailPage?.iconImageURL ?: MEDAL_ICON,
                 lottieUrl = medaliDetailPage?.shimmerShutterLottieURL ?: LOTTIE_BADGE,
                 lottieSparklesUrl = medaliDetailPage?.outerBlinkingLottieURL ?: LOTTIE_SPARKS,
+                podiumUrl = medaliDetailPage?.baseImageURL ?: IMG_DETAIL_BASE,
                 background = medaliDetailPage?.backgroundImageURL ?: IMG_DETAIL_BG,
                 backgroundColor = medaliDetailPage?.backgroundImageColor,
                 medalUrl = medaliDetailPage?.innerIconImageURL ?: CONTENT,
