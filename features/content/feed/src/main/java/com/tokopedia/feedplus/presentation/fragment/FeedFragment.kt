@@ -53,17 +53,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
-import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
-import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
-import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedDataModel
-import com.tokopedia.feedplus.presentation.model.FeedMainEvent
-import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
-import com.tokopedia.feedplus.presentation.model.FeedShareDataModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
+import com.tokopedia.feedplus.presentation.model.*
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -103,8 +93,7 @@ class FeedFragment :
     FeedListener,
     ContentThreeDotsMenuBottomSheet.Listener,
     FeedTaggedProductBottomSheet.Listener,
-    FeedFollowersOnlyBottomSheet.Listener,
-    ShareBottomsheetListener {
+    FeedFollowersOnlyBottomSheet.Listener {
 
     private var _binding: FragmentFeedImmersiveBinding? = null
     private val binding: FragmentFeedImmersiveBinding
@@ -112,8 +101,6 @@ class FeedFragment :
 
     private var data: FeedDataModel? = null
     private var adapter: FeedPostAdapter? = null
-    private var dissmisByGreyArea = true
-    private var shareData: LinkerData? = null
     private var currentTrackerData: FeedTrackerDataModel? = null
 
     private val videoPlayerManager by lazy { VideoPlayerManager(requireContext()) }
@@ -249,8 +236,8 @@ class FeedFragment :
     override fun onDestroyView() {
         _binding = null
         (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)?.dismiss()
-        (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
         (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.dismiss()
+        dismissShareBottomSheet()
         super.onDestroyView()
 
         videoPlayerManager.releaseAll()
@@ -332,6 +319,7 @@ class FeedFragment :
                                 feedMenuItem.contentData?.postId.orEmpty(),
                                 feedMenuItem.contentData?.rowNumber.orZero()
                             )
+                            dismiss()
                         }
                         setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel))
                         setSecondaryCTAClickListener {
@@ -360,41 +348,26 @@ class FeedFragment :
         // add analytics(if any)
     }
 
-    override fun onSharePostClicked(
-        id: String,
-        authorName: String,
-        applink: String,
-        weblink: String,
-        imageUrl: String
-    ) {
-        activity?.let {
-            val shareDataBuilder = LinkerData.Builder.getLinkerBuilder()
-                .setId(id)
-                .setName(
-                    String.format(
-                        getString(feedR.string.feed_share_title),
-                        authorName
-                    )
-                )
-                .setDescription(
-                    String.format(
-                        getString(feedR.string.feed_share_desc_text),
-                        authorName
-                    )
-                )
-                .setDesktopUrl(weblink)
-                .setType(LinkerData.FEED_TYPE)
-                .setImgUri(imageUrl)
-                .setDeepLink(applink)
-                .setUri(weblink)
-
-            shareData = shareDataBuilder.build()
-            showUniversalShareBottomSheet(
-                getFeedShareDataModel(
-                    id,
-                    authorName,
-                    imageUrl
-                )
+    override fun onSharePostClicked(data: FeedShareModel, trackerModel: FeedTrackerDataModel) {
+        val shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(getShareListener(data, trackerModel))
+        }
+        shareBottomSheet.setUtmCampaignData(
+            pageName = "Feed Page",
+            userId = userSession.userId,
+            pageId = data.contentId,
+            feature = "share"
+        )
+        shareBottomSheet.setMetaData(
+            tnTitle = String.format(requireContext().getString(feedR.string.feed_share_title), data.author.name),
+            tnImage = data.mediaUrl
+        )
+        if (!shareBottomSheet.isVisible) {
+            feedAnalytics.sendClickShareButtonEvent(trackerModel)
+            shareBottomSheet.show(
+                fragmentManager = childFragmentManager,
+                fragment = this,
+                screenshotDetector = null
             )
         }
     }
@@ -548,7 +521,7 @@ class FeedFragment :
 
         val action: () -> Unit = {
             trackerModel?.let {
-                feedAnalytics.eventClickProductLabel(it)
+                feedAnalytics.eventClickProductLabel(it, products)
                 feedAnalytics.eventClickContentProductLabel(it)
             }
             if (products.size == FeedProductTagView.PRODUCT_COUNT_ONE) {
@@ -595,57 +568,6 @@ class FeedFragment :
             trackerData = trackerModel,
             campaign = campaign
         )
-    }
-
-    override fun onShareOptionClicked(shareModel: ShareModel) {
-        dissmisByGreyArea = false
-        val universalShareBottomSheet =
-            (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)
-        universalShareBottomSheet?.dismiss()
-
-        val linkerShareData = DataMapper().getLinkerShareData(shareData)
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                0,
-                linkerShareData,
-                object : ShareCallback {
-                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                        context?.let {
-                            val shareString =
-                                if (shareData?.description?.contains("%s") == true) {
-                                    shareData?.description?.let { it1 ->
-                                        String.format(
-                                            it1,
-                                            linkerShareData?.shareUri ?: ""
-                                        )
-                                    }
-                                } else {
-                                    shareData?.description + "\n" + linkerShareData?.shareUri
-                                }
-
-                            if (shareString != null) {
-                                SharingUtil.executeShareIntent(
-                                    shareModel,
-                                    linkerShareData,
-                                    activity,
-                                    view,
-                                    shareString
-                                )
-                            }
-
-                            universalShareBottomSheet?.dismiss()
-                        }
-                    }
-
-                    override fun onError(linkerError: LinkerError?) {
-                    }
-                }
-            )
-        )
-    }
-
-    override fun onCloseOptionClicked() {
-        dissmisByGreyArea = false
     }
 
     override fun onReminderClicked(
@@ -926,6 +848,9 @@ class FeedFragment :
                     message = getString(feedR.string.feeds_add_to_cart_success_text),
                     actionText = getString(feedR.string.feeds_add_to_cart_toaster_action_text),
                     actionClickListener = {
+                        currentTrackerData?.let { trackerData ->
+                            feedAnalytics.eventClickViewCart(trackerData)
+                        }
                         goToCartPage()
                     }
                 )
@@ -957,6 +882,13 @@ class FeedFragment :
                 (childFragmentManager.findFragmentByTag(TAG_FEED_PRODUCT_BOTTOM_SHEET) as? FeedTaggedProductBottomSheet)
             when (result) {
                 is Success -> {
+                    if (!result.data.animatedInfoList.isNullOrEmpty() && currentTrackerData != null) {
+                        feedAnalytics.eventMvcWidgetImpression(
+                            currentTrackerData!!,
+                            result.data.animatedInfoList!!
+                        )
+                        feedMvcAnalytics.voucherList = result.data.animatedInfoList!!
+                    }
                     productBottomSheet?.showMerchantVoucherWidget(
                         result.data,
                         feedMvcAnalytics
@@ -1021,7 +953,7 @@ class FeedFragment :
 
     private fun checkResume(
         isOnResume: Boolean = lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED),
-        isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false,
+        isPageResumed: Boolean = feedMainViewModel.isPageResumed.value != false
     ): Boolean {
         return isPageResumed && isOnResume
     }
@@ -1100,45 +1032,6 @@ class FeedFragment :
         }
     }
 
-    private fun getFeedShareDataModel(
-        id: String,
-        authorName: String,
-        imageUrl: String
-    ): FeedShareDataModel = FeedShareDataModel(
-        id = id,
-        name = authorName,
-        tnTitle = (
-            String.format(
-                context?.getString(feedR.string.feed_share_title) ?: "",
-                authorName
-            )
-            ),
-        tnImage = imageUrl,
-        ogUrl = imageUrl
-    )
-
-    private fun showUniversalShareBottomSheet(shareModel: FeedShareDataModel) {
-        val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@FeedFragment)
-            setUtmCampaignData(
-                pageName = FeedShareDataModel.PAGE,
-                userId = userSession.userId,
-                pageId = shareModel.id,
-                feature = FeedShareDataModel.FEATURE
-            )
-
-            setMetaData(
-                tnTitle = shareModel.tnTitle,
-                tnImage = shareModel.tnImage
-            )
-        }
-        universalShareBottomSheet.let {
-            if (!it.isAdded) {
-                it.show(childFragmentManager, this, null)
-            }
-        }
-    }
-
     private fun getMenuItemData(
         editable: Boolean,
         deletable: Boolean,
@@ -1179,7 +1072,8 @@ class FeedFragment :
                         )
                     ),
                     name = getString(feedR.string.feed_report),
-                    type = FeedMenuIdentifier.LAPORKAN
+                    type = FeedMenuIdentifier.LAPORKAN,
+                    contentData = contentData
                 )
             )
         }
@@ -1195,7 +1089,8 @@ class FeedFragment :
                         )
                     ),
                     name = FeedMenuIdentifier.DELETE.value,
-                    type = FeedMenuIdentifier.DELETE
+                    type = FeedMenuIdentifier.DELETE,
+                    contentData = contentData
                 )
             )
         }
@@ -1289,10 +1184,11 @@ class FeedFragment :
         isExclusiveForMember: Boolean,
         onDismiss: () -> Unit
     ): Boolean {
-        if (isExclusiveForMember && !feedPostViewModel.isFollowing(id)) {
+        val shouldShowFollowBottomSheet = isExclusiveForMember && !feedPostViewModel.isFollowing(id)
+        if (shouldShowFollowBottomSheet) {
             showFollowerBottomSheet(positionInFeed, campaignStatus, onDismiss)
         }
-        return isExclusiveForMember && !feedPostViewModel.isFollowing(id)
+        return shouldShowFollowBottomSheet
     }
 
     private fun showFollowerBottomSheet(
@@ -1432,6 +1328,93 @@ class FeedFragment :
                 actionText = getString(feedR.string.feed_cta_ok_toaster)
             )
         }
+    }
+
+    /**
+     * Share
+     */
+    private fun getShareListener(
+        data: FeedShareModel,
+        trackerModel: FeedTrackerDataModel
+    ) = object : ShareBottomsheetListener {
+        override fun onShareOptionClicked(shareModel: ShareModel) {
+            dismissShareBottomSheet()
+            feedAnalytics.sendClickSharingChannelEvent(shareModel.socialMediaName.orEmpty(), trackerModel)
+            generateShareLinkUrl(data, shareModel, trackerModel)
+        }
+
+        override fun onCloseOptionClicked() {
+            feedAnalytics.sendClickCloseButtonOnShareBottomSheetEvent(trackerModel)
+        }
+    }
+
+    private fun generateShareLinkUrl(
+        data: FeedShareModel,
+        shareModel: ShareModel,
+        trackerModel: FeedTrackerDataModel
+    ) {
+        val shareData = LinkerData.Builder.getLinkerBuilder()
+            .setId(data.contentId)
+            .setName(
+                String.format(
+                    getString(feedR.string.feed_share_title),
+                    data.author.name
+                )
+            )
+            .setDescription(
+                String.format(
+                    getString(feedR.string.feed_share_desc_text),
+                    data.author.name
+                )
+            )
+            .setDesktopUrl(data.webLink)
+            .setType(LinkerData.FEED_TYPE)
+            .setImgUri(data.mediaUrl)
+            .setDeepLink(data.appLink)
+            .setUri(data.webLink)
+            .build()
+
+        val linkerShareData = DataMapper().getLinkerShareData(shareData)
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0,
+                linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        val shareString =
+                            if (shareData.description.contains("%s")) {
+                                String.format(shareData.description, linkerShareData?.shareUri.orEmpty())
+                            } else {
+                                "${shareData.description}\n${linkerShareData?.shareUri.orEmpty()}"
+                            }
+
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            activity,
+                            view,
+                            shareString,
+                            onSuccessCopyLink = {
+                                showToast(
+                                    message = getString(feedR.string.feed_copy_link_success_message),
+                                    actionText = getString(com.tokopedia.content.common.R.string.feed_ok),
+                                    actionClickListener = {
+                                        feedAnalytics.sendClickOkeShareToasterEvent(trackerModel)
+                                    }
+                                )
+                            }
+                        )
+                        dismissShareBottomSheet()
+                    }
+
+                    override fun onError(linkerError: LinkerError?) { }
+                }
+            )
+        )
+    }
+
+    private fun dismissShareBottomSheet() {
+        (childFragmentManager.findFragmentByTag(UniversalShareBottomSheet.TAG) as? UniversalShareBottomSheet)?.dismiss()
     }
 
     companion object {

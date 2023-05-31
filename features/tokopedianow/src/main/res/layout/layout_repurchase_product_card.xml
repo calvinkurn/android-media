@@ -9,7 +9,7 @@
     android:focusableInTouchMode="true"
     android:paddingBottom="8dp">
 
-    <androidx.constraintlayout.utils.widget.ImageFilterView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_product"
         android:layout_width="0dp"
         android:layout_height="77dp"
@@ -19,6 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="6"
         tools:ignore="ImageContrastCheck" />
 
     <com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactQuantityEditorView

@@ -18,7 +18,6 @@ import com.tokopedia.feedplus.data.FeedXLike
 import com.tokopedia.feedplus.data.FeedXMedia
 import com.tokopedia.feedplus.data.FeedXProduct
 import com.tokopedia.feedplus.data.FeedXScore
-import com.tokopedia.feedplus.data.FeedXShare
 import com.tokopedia.feedplus.data.FeedXView
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
@@ -40,11 +39,15 @@ import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedScoreModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
  */
-object MapperFeedHome {
+class MapperFeedHome @Inject constructor(
+    private val userSession: UserSessionInterface
+) {
     fun transform(data: FeedXHomeEntity): FeedModel =
         FeedModel(
             items = data.items.filter { shouldShow(it) }.map { card ->
@@ -65,17 +68,20 @@ object MapperFeedHome {
             )
         )
 
-    private fun transformToFeedCardImage(card: FeedXCard): FeedCardImageContentModel =
-        FeedCardImageContentModel(
+    private fun transformToFeedCardImage(card: FeedXCard): FeedCardImageContentModel {
+        val author = transformAuthor(card.author)
+        val medias = card.media.map(::transformMedia)
+        return FeedCardImageContentModel(
             id = card.id,
             typename = card.typename,
             type = card.type,
-            author = transformAuthor(card.author),
+            author = author,
             title = card.title,
             subtitle = card.subtitle,
             text = card.text,
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
+
                     texts = cta.texts,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
@@ -101,16 +107,22 @@ object MapperFeedHome {
             totalProducts = card.totalProducts,
             campaign = transformCampaign(card.campaign),
             hasVoucher = card.hasVoucher,
-            media = card.media.map { media -> transformMedia(media) },
+            media = medias,
             hashtagApplinkFmt = card.hashtagApplinkFmt,
             hashtagWeblinkFmt = card.hashtagWeblinkFmt,
             views = transformView(card.views),
             like = transformLike(card.like),
             comments = transformComment(card.comments),
-            share = transformShare(card.share),
+            share = transformShare(
+                contentId = card.id,
+                author = author,
+                appLink = card.applink,
+                webLink = card.weblink,
+                imageUrl = medias.firstOrNull()?.mediaUrl.orEmpty()
+            ),
             followers = transformFollow(card.followers),
-            reportable = card.reportable,
-            editable = card.editable,
+            reportable = isReportable(card),
+            editable = false,
             deletable = card.deletable,
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
@@ -118,18 +130,30 @@ object MapperFeedHome {
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
             topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
+    }
+    
+    private fun isReportable(card: FeedXCard): Boolean {
+        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
+            return card.author.id != userSession.shopId
+        } else {
+            card.reportable
+        }
+    }
 
-    private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel =
-        FeedCardVideoContentModel(
+    private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel {
+        val author = transformAuthor(card.author)
+        val medias = card.media.map(::transformMedia)
+        return FeedCardVideoContentModel(
             id = card.id,
             typename = card.typename,
             type = card.type,
-            author = transformAuthor(card.author),
+            author = author,
             title = card.title,
             subtitle = card.subtitle,
             text = card.text,
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
+
                     color = cta.color,
                     texts = cta.texts,
                     colorGradient = cta.colorGradient.map { color ->
@@ -153,21 +177,28 @@ object MapperFeedHome {
                 card.tags.map { product -> transformProduct(product) }
             },
             totalProducts = card.totalProducts,
-            media = card.media.map { media -> transformMedia(media) },
+            media = medias,
             hashtagApplinkFmt = card.hashtagApplinkFmt,
             hashtagWeblinkFmt = card.hashtagWeblinkFmt,
             views = transformView(card.views),
             like = transformLike(card.like),
             comments = transformComment(card.comments),
-            share = transformShare(card.share),
+            share = transformShare(
+                contentId = card.id,
+                author = author,
+                appLink = card.applink,
+                webLink = card.weblink,
+                imageUrl = medias.firstOrNull()?.coverUrl.orEmpty()
+            ),
             followers = transformFollow(card.followers),
             reportable = card.reportable,
-            editable = card.editable,
+            editable = false,
             deletable = card.deletable,
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             playChannelId = card.playChannelId
         )
+    }
 
     private fun transformToFeedCardLivePreview(card: FeedXCard): FeedCardLivePreviewContentModel =
         FeedCardLivePreviewContentModel(
@@ -246,7 +277,7 @@ object MapperFeedHome {
             id = media.id,
             coverUrl = media.coverUrl,
             mediaUrl = media.mediaUrl,
-            applink = media.applink,
+            appLink = media.applink,
             tagging = media.tagging.map { tag ->
                 FeedMediaTagging(
                     tagIndex = tag.tagIndex
@@ -310,9 +341,18 @@ object MapperFeedHome {
             }
         )
 
-    private fun transformShare(share: FeedXShare): FeedShareModel = FeedShareModel(
-        label = share.label,
-        operation = share.operation
+    private fun transformShare(
+        contentId: String,
+        author: FeedAuthorModel,
+        appLink: String,
+        webLink: String,
+        imageUrl: String
+    ) = FeedShareModel(
+        contentId,
+        author,
+        appLink,
+        webLink,
+        imageUrl
     )
 
     private fun transformFollow(follow: FeedXFollow): FeedFollowModel = FeedFollowModel(

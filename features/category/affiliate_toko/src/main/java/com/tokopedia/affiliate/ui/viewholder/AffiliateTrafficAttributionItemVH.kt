@@ -12,6 +12,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.CardUnify2
+import com.tokopedia.unifycomponents.CardUnify2.Companion.TYPE_BORDER
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -39,6 +41,33 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
         }
         itemView.findViewById<Typography>(R.id.amount)?.apply {
             text = element?.metrics?.metricDifferenceValueFmt
+        }
+        itemView.findViewById<CardUnify2>(R.id.extra_card)?.apply {
+            isVisible = element?.metrics?.tooltip?.metrics?.isNotEmpty() == true
+            cardType = TYPE_BORDER
+        }
+
+        element?.metrics?.tooltip?.metrics?.forEach { subSubMetrics ->
+            if(subSubMetrics?.metricType == "tokopediaCommission"){
+                itemView.findViewById<Typography>(R.id.extra_text_one)?.apply {
+                    isVisible = true
+                    text = subSubMetrics.metricTitle
+                }
+                itemView.findViewById<Typography>(R.id.extra_text_amount_one).apply {
+                    isVisible = true
+                    text = subSubMetrics.metricValueFmt
+                }
+            }
+            if(subSubMetrics?.metricType == "totalAmountSsa") {
+                itemView.findViewById<Typography>(R.id.extra_text_two)?.apply {
+                    isVisible = true
+                    text = subSubMetrics.metricTitle
+                }
+                itemView.findViewById<Typography>(R.id.extra_text_amount_two).apply {
+                    isVisible = true
+                    text = subSubMetrics.metricValueFmt
+                }
+            }
         }
         setDivider(element)
         setTrend(element)

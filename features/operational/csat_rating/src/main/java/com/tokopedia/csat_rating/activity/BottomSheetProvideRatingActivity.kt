@@ -92,7 +92,7 @@ open class BottomSheetProvideRatingActivity : BaseSimpleActivity() {
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
-        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0)
+        val emojiState = intent?.getLongExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0)
             ?: BaseFragmentProvideRating.NO_EMOJI
         viewModel.setSelectedEmoji(emojiState)
         viewModel.setCsatTitle(intent?.getStringExtra(BaseFragmentProvideRating.CSAT_TITLE) ?: "")
