@@ -120,6 +120,7 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickRepl
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSheet
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotRejectReasonsBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
@@ -163,6 +164,7 @@ import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotChatSeparatorS
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotDynamicAttachmentMediaButtonState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotImageUploadFailureState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotOpenCsatState
+import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotRejectReasonsState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSendChatRatingState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketErrorState
 import com.tokopedia.chatbot.chatbot2.view.viewmodel.state.ChatbotSocketReceiveEvent
@@ -985,6 +987,20 @@ class ChatbotFragment2 :
                     handleAddAttachmentButtonViewState(it.toShowAddAttachmentButton)
                     handleImageUploadButtonViewState(it.toShowImageUploadButton)
                     handleVideoUploadButtonViewState(it.toShowVideoUploadButton)
+                }
+            }
+        }
+
+        viewModel.dynamicAttachmentRejectReasonState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ChatbotRejectReasonsState.ChatbotRejectReasonData -> {
+                    // TODO add the quick reply here
+                    // On clicking that quick reply open the Bottom Sheet
+
+                    val bottomSheetUnify = ChatbotRejectReasonsBottomSheet.newInstance(
+                        it.feedbackForm
+                    )
+                    bottomSheetUnify.show(childFragmentManager, "")
                 }
             }
         }
