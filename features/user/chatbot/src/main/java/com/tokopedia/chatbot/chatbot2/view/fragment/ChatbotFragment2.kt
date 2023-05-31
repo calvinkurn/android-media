@@ -676,6 +676,7 @@ class ChatbotFragment2 :
         smallReplyBox = getBindingView().smallReplyBox
         bigReplyBox = getBindingView().bigReplyBox
         guideline = smallReplyBox?.getGuidelineForReplyBubble()
+        smallReplyBox?.replyBoxClickListener = this
 
         replyBubbleContainer = smallReplyBox?.getReplyBubbleContainer()
 
