@@ -34,6 +34,14 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViews() {
+        rejectReasonFeedbackForm?.let { data ->
+            binding?.apply {
+                setTitle(data.title)
+                senderIcon.urlSrc = data.iconTanya
+                reasonTitleText.text = data.reasonTitle
+                reasonText.setPlaceholder(data.textBoxPlaceHolder)
+            }
+        }
     }
 
     companion object {
