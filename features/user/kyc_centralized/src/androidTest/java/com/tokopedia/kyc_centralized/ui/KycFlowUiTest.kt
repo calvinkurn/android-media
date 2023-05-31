@@ -6,6 +6,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_INFO
 import com.tokopedia.kyc_centralized.*
 import com.tokopedia.kyc_centralized.common.KYCConstant
@@ -13,7 +14,6 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
-import com.tokopedia.kyc_centralized.validate
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule
