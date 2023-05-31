@@ -37,7 +37,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
     private var dynamicFilterModel: DynamicFilterModel? = null
     private var componentName: String? = null
     private var runnable = Runnable {
-        (fragment as DiscoveryFragment).mSwipeRefreshLayout.isEnabled = true
+        (fragment as DiscoveryFragment).mSwipeRefreshLayout?.isEnabled = true
     }
 
     init {
@@ -50,11 +50,11 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             quickSortFilter.sortFilterHorizontalScrollView.setOnScrollChangeListener { _, _, _, _, _ ->
                 try {
-                    if ((fragment as DiscoveryFragment).mSwipeRefreshLayout.isEnabled)
-                        fragment.mSwipeRefreshLayout.isEnabled = false
+                    if ((fragment as DiscoveryFragment).mSwipeRefreshLayout?.isEnabled == true)
+                        fragment.mSwipeRefreshLayout?.isEnabled = false
                     quickSortFilter.removeCallbacks(runnable)
                     runnable = Runnable {
-                        fragment.mSwipeRefreshLayout.isEnabled = true
+                        fragment.mSwipeRefreshLayout?.isEnabled = true
                     }
                     quickSortFilter.postDelayed(runnable, delay)
                 } catch (e: Exception) {
@@ -136,19 +136,19 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 if ((properties.fullFilterType != Constant.FullFilterType.CATEGORY) && (properties.filter || properties.sort))
                     SortFilter.TYPE_ADVANCED else SortFilter.TYPE_QUICK
             } ?: SortFilter.TYPE_ADVANCED
-            it.sortFilterItems.removeAllViews()
-            it.addItem(sortFilterItems)
+            if (prop?.chipSize == Constant.ChipSize.LARGE) {
+                it.filterSize = SortFilter.SIZE_LARGE
+                setScrollListener()
+            } else
+                it.filterSize = SortFilter.SIZE_DEFAULT
             it.prefixText =
                 when {
                     prop?.fullFilterType == Constant.FullFilterType.CATEGORY -> fragment.getString(R.string.semua_kategori)
                     prop?.chipSize == Constant.ChipSize.LARGE -> ""
                     else -> fragment.getString(com.tokopedia.filter.R.string.filter)
                 }
-            if (prop?.chipSize == Constant.ChipSize.LARGE) {
-                it.filterSize = SortFilter.SIZE_LARGE
-                setScrollListener()
-            } else
-                it.filterSize = SortFilter.SIZE_DEFAULT
+            it.sortFilterItems.removeAllViews()
+            it.addItem(sortFilterItems)
             it.parentListener = {
                 if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
                     dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
@@ -210,7 +210,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         return item
     }
 
-    private fun createSemuaKategoriFilterItem(filter: Filter):SortFilterItem {
+    private fun createSemuaKategoriFilterItem(filter: Filter): SortFilterItem {
         val item = SortFilterItem(fragment.getString(R.string.semua_kategori))
         item.listener = {
             openGeneralFilterForCategory(filter)

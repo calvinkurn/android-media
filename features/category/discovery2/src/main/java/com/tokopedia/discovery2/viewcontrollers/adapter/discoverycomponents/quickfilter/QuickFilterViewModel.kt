@@ -88,7 +88,7 @@ class QuickFilterViewModel(val application: Application, val components: Compone
         quickFiltersLiveData.value = quickFilterList
     }
 
-    private fun addSelectedSortedFilterOptions(filters: ArrayList<Filter>){
+    private fun addSelectedSortedFilterOptions(filters: ArrayList<Filter>) {
         val listSelected: ArrayList<Filter> = ArrayList()
         val listUnSelected: ArrayList<Filter> = ArrayList()
         for (item in filters) {
