@@ -16,6 +16,8 @@ import com.google.android.material.sidesheet.SideSheetBehavior
 import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.PlayDialogExploreWidgetBinding
@@ -80,6 +82,13 @@ class PlayExploreWidget @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+
+        //TODO() move to onAttached
+        setupTab()
+    }
+
+    fun setupTab() {
+        binding.tabPlayExploreWidget.showWithCondition(tabs.size.isMoreThanZero())
     }
 
     override fun onResume() {
