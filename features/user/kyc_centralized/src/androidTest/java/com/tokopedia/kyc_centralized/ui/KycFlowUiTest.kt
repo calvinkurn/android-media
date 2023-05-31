@@ -13,6 +13,7 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
+import com.tokopedia.kyc_centralized.validate
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule
@@ -39,6 +40,7 @@ class KycFlowUiTest {
     private val testComponent = FakeKycActivityComponentFactory()
     private val kycApi = testComponent.kycApi
     private val projectId = "22"
+    private var gocicilProjectId = "21"
     private val url = "https://google.com"
 
     @Before
@@ -63,7 +65,7 @@ class KycFlowUiTest {
             // KTP Camera is stubbed here
             atFaceIntroClickNext()
             // Liveness is stubbed here
-        } upload {
+        } validate {
             shouldShowPendingPage()
             hasCameraIntent()
             hasLivenessIntent(1, projectId)
@@ -87,7 +89,7 @@ class KycFlowUiTest {
             atFaceIntroClickNext()
             // Liveness is stubbed here
             atFinalPressCta()
-        } upload {
+        } validate {
             shouldShowPendingPage()
             hasCameraIntent()
             hasLivenessIntent(2, projectId)
@@ -112,7 +114,7 @@ class KycFlowUiTest {
 
             atFinalPressCta()
             // KTP Camera and Liveness is stubbed here
-        } upload {
+        } validate {
             shouldShowPendingPage()
             hasCameraIntent(2)
             hasLivenessIntent(2, projectId)
@@ -137,7 +139,7 @@ class KycFlowUiTest {
 
             atFinalPressCta()
             // KTP Camera and Liveness is stubbed here
-        } upload {
+        } validate {
             shouldShowPendingPage()
             hasCameraIntent(2)
             hasLivenessIntent(2, projectId)
@@ -161,10 +163,34 @@ class KycFlowUiTest {
             atFaceIntroClickNext()
             // Liveness is stubbed here
             atFinalPressErrorButton()
-        } upload {
+        } validate {
             shouldShowPendingPage()
             hasCameraIntent()
             hasLivenessIntent(2, projectId)
+        }
+    }
+
+    /**
+     * this function only used by gocicil project id
+     */
+    @Test
+    fun blockRedirectionSelfieKycFlowTest() {
+        kycApi.case = FakeKycUploadApi.Case.Success
+        val i = Intent().apply {
+            data = Uri.parse(UriUtil.buildUri(KYC_FORM, gocicilProjectId, url))
+        }
+        activityTestRule.launchActivity(i)
+        stubForKtpAndBlockRedirectionSelfie()
+
+        kycRobot {
+            checkTermsAndCondition()
+            atInfoClickNext()
+            atKtpIntroClickNext()
+            // KTP Camera is stubbed here
+            atFaceIntroClickNext()
+            // Liveness is stubbed here
+        } validate {
+            shouldShowErrorSnackbar(R.string.error_liveness_is_not_supported)
         }
     }
 
@@ -177,6 +203,16 @@ class KycFlowUiTest {
      * */
     private fun stubSampleForKtpAndLivenessPictures() {
         stubLiveness(projectId)
+        stubKtpCamera()
+    }
+
+    /**
+     * In this scenario, we stub liveness with result NOT_SUPPORT_LIVENESS
+     * on the activity result, and we want to block user switching the KYC to selfie
+     * if their device is not capable to do liveness
+     * */
+    private fun stubForKtpAndBlockRedirectionSelfie() {
+        stubLiveness(gocicilProjectId, KYCConstant.NOT_SUPPORT_LIVENESS)
         stubKtpCamera()
     }
 }

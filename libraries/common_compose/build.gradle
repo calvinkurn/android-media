@@ -68,6 +68,8 @@ dependencies {
     api rootProject.ext.composeDependencies.composeMaterial
     api rootProject.ext.composeDependencies.composeUiTooling
     api rootProject.ext.composeDependencies.composePreview
+    api rootProject.ext.composeDependencies.accompanistPager
+
     implementation rootProject.ext.composeDependencies.composeCoil
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
@@ -77,6 +79,7 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
+
 }
 
 project.ext {

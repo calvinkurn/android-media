@@ -311,7 +311,8 @@ class UserIdentificationFormFinalFragment :
                     it.faceFile,
                     projectId.toString(),
                     isKtpFileUsingEncryption,
-                    isFaceFileUsingEncryption
+                    isFaceFileUsingEncryption,
+                    it.isLiveness
                 )
             } else {
                 kycUploadViewModel.uploadImages(
@@ -319,7 +320,8 @@ class UserIdentificationFormFinalFragment :
                     it.faceFile,
                     projectId.toString(),
                     isKtpFileUsingEncryption = false,
-                    isFaceFileUsingEncryption = false
+                    isFaceFileUsingEncryption = false,
+                    it.isLiveness
                 )
             }
         }
@@ -467,6 +469,10 @@ class UserIdentificationFormFinalFragment :
         }
     }
 
+    /**
+     * allowSelfie is coming from KycProjectInfo API
+     * default value for remote config kyc selfie is false
+     */
     private val isKycSelfie: Boolean
         get() {
             try {

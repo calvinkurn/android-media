@@ -47,7 +47,8 @@ class KycUploadViewModel @Inject constructor(
         facePath: String,
         tkpdProjectId: String,
         isKtpFileUsingEncryption: Boolean,
-        isFaceFileUsingEncryption: Boolean
+        isFaceFileUsingEncryption: Boolean,
+        isLiveness: Boolean
     ) {
         Timber.d("projectId: $tkpdProjectId")
         val startTimeLog = System.currentTimeMillis()
@@ -103,7 +104,7 @@ class KycUploadViewModel @Inject constructor(
                     }
                     else -> {
                         val result =
-                            kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
+                            kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId, isLiveness)
                         if (result.header?.message?.size.orZero() > 0) {
                             val message = result.header?.message?.get(0).orEmpty()
                             serverLogger.kycUploadMonitoring(

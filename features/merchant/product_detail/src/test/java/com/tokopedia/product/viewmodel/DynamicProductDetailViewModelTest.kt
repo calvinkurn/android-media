@@ -40,7 +40,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -56,9 +55,6 @@ import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
@@ -924,6 +920,54 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `test recom add to cart when click atc button without quantity editor`() {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(
+                success = 1,
+                cartId = "12345",
+                message = arrayListOf("Barang berhasil ditambahkan ke keranjang belanja")
+            ),
+            status = "OK"
+        )
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.atcRecomNonVariant(recomItem, quantity, null)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+        Assert.assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
+        Assert.assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
+    }
+
+    @Test
+    fun `test recom add to cart when click atc button without quantity editor with zero minimum order`() {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 0
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(
+                success = 1,
+                cartId = "12345",
+                message = arrayListOf("Barang berhasil ditambahkan ke keranjang belanja")
+            ),
+            status = "OK"
+        )
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.atcRecomNonVariant(recomItem, quantity, null)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+        Assert.assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
+        Assert.assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
     }
     //endregion
 
@@ -2184,8 +2228,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
         Assert.assertTrue(!atcResponseSuccess.isStatusError())
-        Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
-        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTokonowSendTracker.value)
+        Assert.assertTrue(viewModel.atcRecomTracker.value is Success)
+        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTracker.value)
     }
 
     @Test
@@ -2206,7 +2250,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2222,7 +2266,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2246,7 +2290,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.atcRecom.value is Success)
     }
 
     @Test
@@ -2268,7 +2312,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2288,7 +2332,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2317,7 +2361,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.atcRecom.value is Success)
     }
 
     @Test
@@ -2340,7 +2384,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2359,7 +2403,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2511,7 +2555,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         coVerify { addToCartUseCase.createObservable(any()) }
@@ -2535,7 +2579,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         spykViewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         coVerify { updateCartUseCase.executeOnBackground() }
@@ -2559,7 +2603,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         spykViewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         coVerify { deleteCartUseCase.executeOnBackground() }
@@ -2577,7 +2621,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)

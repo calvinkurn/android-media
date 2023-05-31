@@ -118,6 +118,18 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                     .orEmpty()
             )
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
+            handleDeviceIsNotSupported(projectId)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleDeviceIsNotSupported(projectId: Int) {
+        if (projectId == GOCICIL_PROJECT_ID) {
+            NetworkErrorHelper.showRedSnackbar(
+                activity,
+                context?.resources?.getString(R.string.error_liveness_is_not_supported)
+                    .orEmpty())
+        } else {
             UserIdentificationFormActivity.isSupportedLiveness = false
             val intent = createIntent(
                 requireContext(),
@@ -126,7 +138,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             )
             startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun handleFaceImage(data: Intent) {
@@ -219,6 +230,9 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         private const val DP_4 = 4
         private const val DP_8 = 8
         private const val DP_12 = 12
+
+        private val GOCICIL_PROJECT_ID = 21
+
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"
     }
 }
