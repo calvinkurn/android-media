@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
@@ -17,14 +18,15 @@ import com.tokopedia.mvc.databinding.SmvcItemVoucherStatsBinding
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
 import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS
 
 class VouchersViewHolder(
     private val binding: SmvcItemVoucherBinding,
-    private val listener: VoucherAdapterListener,
-): RecyclerView.ViewHolder(binding.root) {
+    private val listener: VoucherAdapterListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(voucher: Voucher) {
         binding.headerContent.setupHeader(voucher)
@@ -84,12 +86,16 @@ class VouchersViewHolder(
     }
 
     private fun SmvcItemVoucherDataBinding.setupMainInfo(voucher: Voucher) {
+        tfVoucherProgramDetail.setVoucherProgram(voucher)
         tfVoucherName.text = voucher.name
-        viewVoucherType.setBackgroundResource(if (voucher.isLockToProduct) {
-            R.drawable.ic_voucher_product
-        } else {
-            R.drawable.ic_voucher_shop
-        })
+        viewVoucherType.setBackgroundResource(
+            if (voucher.isLockToProduct) {
+                R.drawable.ic_voucher_product
+            } else {
+                R.drawable.ic_voucher_shop
+            }
+        )
+        tfVoucherSubsidyInfo.setVoucherSubsidy(voucher)
         btnCodeBackground.isVisible = !voucher.isPublic
         layoutCodeBackground.isVisible = !voucher.isPublic
         layoutCodeBackground.setOnClickListener {
@@ -114,6 +120,20 @@ class VouchersViewHolder(
         }
     }
 
+    private fun Typography.setVoucherProgram(voucher: Voucher) {
+        this.apply {
+            text = voucher.labelVoucher.labelSubsidyInfoFormatted
+            showWithCondition(voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty())
+        }
+    }
+
+    private fun Typography.setVoucherSubsidy(voucher: Voucher) {
+        this.apply {
+            text = voucher.subsidyDetail.programDetail.programLabelDetail
+            showWithCondition(voucher.subsidyDetail.programDetail.programLabelDetail.isNotEmpty())
+        }
+    }
+
     private fun SmvcItemVoucherStatsBinding.setupPeriodStats(voucher: Voucher) {
         tfUsedQuota.text = listOf(voucher.confirmedQuota, voucher.quota).joinToString("/")
         tfInCartCoupon.text = voucher.bookedQuota.toString()
@@ -126,12 +146,14 @@ class VouchersViewHolder(
                 R.string.smvc_voucherlist_format_percent_desc,
                 getPromoName(context, voucher.type),
                 voucher.discountAmtFormatted,
-                voucher.discountAmtMax.getCurrencyFormatted())
+                voucher.discountAmtMax.getCurrencyFormatted()
+            )
         } else {
             context.getString(
                 R.string.smvc_voucherlist_format_desc,
                 getPromoName(context, voucher.type),
-                voucher.discountAmtMax.getCurrencyFormatted())
+                voucher.discountAmtMax.getCurrencyFormatted()
+            )
         }
     }
 
