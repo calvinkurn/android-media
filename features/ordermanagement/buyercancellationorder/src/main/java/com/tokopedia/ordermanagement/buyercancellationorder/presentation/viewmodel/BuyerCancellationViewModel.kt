@@ -3,7 +3,6 @@ package com.tokopedia.ordermanagement.buyercancellationorder.presentation.viewmo
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.ordermanagement.buyercancellationorder.presentation.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.ordermanagement.buyercancellationorder.common.utils.ResourceProvider
 import com.tokopedia.ordermanagement.buyercancellationorder.data.getcancellationreason.BuyerGetCancellationReasonParam
 import com.tokopedia.ordermanagement.buyercancellationorder.data.instantcancellation.BuyerInstantCancelData
@@ -14,6 +13,7 @@ import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerGetCance
 import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerInstantCancelUseCase
 import com.tokopedia.ordermanagement.buyercancellationorder.domain.BuyerRequestCancelUseCase
 import com.tokopedia.ordermanagement.buyercancellationorder.presentation.adapter.uimodel.BuyerCancellationOrderWrapperUiModel
+import com.tokopedia.ordermanagement.buyercancellationorder.presentation.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -22,11 +22,12 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 12/06/20.
  */
-class BuyerCancellationViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
-                                                     private val resourceProvider: ResourceProvider,
-                                                     private val getCancellationReasonUseCase: BuyerGetCancellationReasonUseCase,
-                                                     private val buyerInstantCancelUseCase: BuyerInstantCancelUseCase,
-                                                     private val buyerRequestCancelUseCase: BuyerRequestCancelUseCase
+class BuyerCancellationViewModel @Inject constructor(
+    private val dispatcher: CoroutineDispatchers,
+    private val resourceProvider: ResourceProvider,
+    private val getCancellationReasonUseCase: BuyerGetCancellationReasonUseCase,
+    private val buyerInstantCancelUseCase: BuyerInstantCancelUseCase,
+    private val buyerRequestCancelUseCase: BuyerRequestCancelUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -62,32 +63,32 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
     private fun initBuyerRequestCancelReasonValidation() {
         launch {
             buyerRequestCancelReasonValidation
-                    .asFlow()
-                    .flowOn(dispatcher.computation)
-                    .collectLatest {
-                        val message: String
-                        var isError = false
-                        var isButtonEnable = false
-                        if (it.isBlank()) {
-                            message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
-                        } else if (!buyerRequestCancelReasonValidationRegex.matches(it)) {
-                            message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
-                            isError = true
-                        } else if (it.length < BUYER_REQUEST_CANCEL_REASON_MINIMAL_CHARACTER) {
-                            message = resourceProvider.getBuyerRequestCancelReasonMinCharMessage()
-                            isError = true
-                        } else {
-                            message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
-                            isButtonEnable = true
-                        }
-                        _buyerRequestCancelReasonValidationResult.postValue(
-                            BuyerCancelRequestReasonValidationResult(message, isError, isButtonEnable)
-                        )
+                .asFlow()
+                .flowOn(dispatcher.computation)
+                .collectLatest {
+                    val message: String
+                    var isError = false
+                    var isButtonEnable = false
+                    if (it.isBlank()) {
+                        message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
+                    } else if (!buyerRequestCancelReasonValidationRegex.matches(it)) {
+                        message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
+                        isError = true
+                    } else if (it.length < BUYER_REQUEST_CANCEL_REASON_MINIMAL_CHARACTER) {
+                        message = resourceProvider.getBuyerRequestCancelReasonMinCharMessage()
+                        isError = true
+                    } else {
+                        message = resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
+                        isButtonEnable = true
                     }
+                    _buyerRequestCancelReasonValidationResult.postValue(
+                        BuyerCancelRequestReasonValidationResult(message, isError, isButtonEnable)
+                    )
+                }
         }
     }
 
-    fun getCancelReasons(userId: String, orderId: String, txId: String) {
+    fun getCancelReasons(orderId: String) {
         launch {
             _buyerCancellationOrderResult.postValue(getCancellationReasonUseCase.execute(BuyerGetCancellationReasonParam(orderId = orderId)))
         }
@@ -108,5 +109,4 @@ class BuyerCancellationViewModel @Inject constructor(private val dispatcher: Cor
     fun validateBuyerRequestCancelReason(reason: String) {
         buyerRequestCancelReasonValidation.value = reason
     }
-
 }
