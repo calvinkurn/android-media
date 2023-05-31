@@ -76,7 +76,8 @@ object KYCConstant {
     object GotoKycFlow {
         const val NON_PROGRESSIVE = "NON_PROGRESSIVE_ELIGIBLE"
         const val PROGRESSIVE = "PROGRESSIVE_ELIGIBLE"
-        const val AWAITING_APPROVAL_GOPAY = "AWAITING_APPROVAL"
+        const val AWAITING_APPROVAL_GOPAY = "KYC_AWAITING_APPROVAL"
+        const val ONEKYC_BLOCKED = "ONEKYC_BLOCKED"
     }
 
     object ActivityResult {
@@ -84,4 +85,7 @@ object KYCConstant {
         const val ACCOUNT_NOT_LINKED = 98
         const val AWAITING_APPROVAL_GOPAY = 97
     }
+
+    const val ONE_KYC_CLICKSTREAM_URL_STAGING = "https://toko-raccoon-integration.gojekapi.com/api/v1/events"
+    const val ONE_KYC_CLICKSTREAM_URL_PRODUCTION = "https://toko-raccoon.gojekapi.com/api/v1/events"
 }

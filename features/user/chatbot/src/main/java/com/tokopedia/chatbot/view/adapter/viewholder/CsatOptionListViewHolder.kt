@@ -6,7 +6,6 @@ import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
@@ -110,6 +109,6 @@ class CsatOptionListViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.chatbot_csat_option_layout
+        val LAYOUT = R.layout.item_chatbot_csat_option
     }
 }

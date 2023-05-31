@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.oldFeed.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -73,7 +74,6 @@ import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * A simple [Fragment] subclass.
@@ -223,9 +223,9 @@ class FeedPlusDetailFragment :
                             val data = it.data
                             if (data.isSuccess && data.isFollow) {
                                 showToast(
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                    getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                     Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                                    getString(com.tokopedia.content.common.R.string.feed_ok)
                                 )
                                 onResponseAfterFollowFromBottomSheet(true)
                             }
@@ -248,9 +248,9 @@ class FeedPlusDetailFragment :
                             val data = it.data
                             if (data.isSuccess) {
                                 showToast(
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
+                                    getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                     Toaster.TYPE_NORMAL,
-                                    getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                                    getString(com.tokopedia.content.common.R.string.feed_ok)
                                 )
                                 onResponseAfterFollowFromBottomSheet(true)
                                 if (feedFollowersOnlyBottomSheet?.isAdded == true && feedFollowersOnlyBottomSheet?.isVisible == true) {
@@ -523,6 +523,7 @@ class FeedPlusDetailFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessGetFeedDetail(
         data: FeedXGetActivityProductsResponse
     ) {
@@ -1138,7 +1139,7 @@ class FeedPlusDetailFragment :
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<FeedDetailProductModel> {
         var postDescription = ""
         var adClickUrl = ""
-        val desc = context?.getString(feedComponentR.string.feed_share_default_text)
+        val desc = context?.getString(com.tokopedia.content.common.R.string.feed_share_default_text)
         val itemList: MutableList<FeedDetailProductModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             if (postTagItem.isTopads) {
