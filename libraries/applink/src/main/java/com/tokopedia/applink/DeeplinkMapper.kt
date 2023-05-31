@@ -119,7 +119,6 @@ import com.tokopedia.applink.tokonow.DeeplinkMapperTokopediaNow.getRegisteredNav
 import com.tokopedia.applink.travel.DeeplinkMapperTravel
 import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.tokopedia_applink_annotation.exact.ExactMatcher
 import com.tokopedia.tokopedia_applink_annotation.host.HostMatcher
 import com.tokopedia.tokopedia_applink_annotation.match.MatchPatternMatcher
 import com.tokopedia.tokopedia_applink_annotation.start.StartMatcher
@@ -424,7 +423,7 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.OFFICIAL_STORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeOfficialStore(deeplink) },
         DLP.startWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
         DLP.startWith(ApplinkConst.SHOP_SCORE_DETAIL) { _, uri, _, _ -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri) },
-        DLP.exact(ApplinkConst.SHOP_PENALTY) { _, _, _, _ -> ShopScoreDeepLinkMapper.getInternalApplinkPenalty() },
+        DLP.exact(ApplinkConst.SHOP_PENALTY) { ctx, _, _, _ -> ShopScoreDeepLinkMapper.getInternalApplinkPenalty(ctx) },
         DLP.exact(ApplinkConst.SHOP_PENALTY_DETAIL, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL),
         DLP.exact(ApplinkConst.ADMIN_INVITATION, ApplinkConstInternalMarketplace.ADMIN_INVITATION),
         DLP.startWith(ApplinkConst.ADMIN_ACCEPTED) { _, uri, _, _ -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri) },
