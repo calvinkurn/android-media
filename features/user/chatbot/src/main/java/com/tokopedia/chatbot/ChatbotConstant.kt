@@ -69,18 +69,19 @@ object ChatbotConstant {
         const val MEDIA_BUTTON_TOGGLE = 104
         const val DYNAMIC_STICKY_BUTTON_RECEIVE = 105
         const val DYNAMIC_TEXT_SEND = 106
+        const val DYNAMIC_REJECT_REASON = 107
         val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(
             TYPE_BIG_REPLY_BOX,
             REPLY_BOX_TOGGLE_VALUE,
             DYNAMIC_STICKY_BUTTON_RECEIVE,
             DYNAMIC_TEXT_SEND,
-            MEDIA_BUTTON_TOGGLE
+            MEDIA_BUTTON_TOGGLE,
+            DYNAMIC_REJECT_REASON
         )
         val PROCESS_TO_VISITABLE_DYNAMIC_ATTACHMENT = listOf<Int>(
             DYNAMIC_STICKY_BUTTON_RECEIVE,
             DYNAMIC_TEXT_SEND
         )
-
     }
 
     object ChatbotUnification {
