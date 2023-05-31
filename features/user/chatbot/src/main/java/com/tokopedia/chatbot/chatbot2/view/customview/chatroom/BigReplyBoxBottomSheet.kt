@@ -216,7 +216,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             )
             setMessage(message)
             isInputError = true
-            labelText.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+            context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                ?.let { labelText.setTextColor(it) }
         }
     }
 
