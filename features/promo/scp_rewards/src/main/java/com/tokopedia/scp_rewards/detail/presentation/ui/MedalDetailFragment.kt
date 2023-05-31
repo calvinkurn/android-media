@@ -27,10 +27,8 @@ import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
-import com.tokopedia.scp_rewards_widgets.constants.Constants
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
-import com.tokopedia.scp_rewards_widgets.model.RewardsErrorModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import java.util.*
@@ -190,26 +188,16 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadCouponWidget(benefits:List<Benefit>?) {
         benefits?.let {
-            if(it.size==1 && it.last().status == Constants.CouponState.ERROR){
-                binding.layoutDetailContent.couponView.setErrorState(RewardsErrorModel(
-                    imageUrl = it.last().imageUrl ?: "",
-                    status = it.last().status ?: "",
-                    statusDescription = it.last().statusDescription ?: "",
-                    isActive = it.last().isActive
+            val couponList = mutableListOf<MedalRewardsModel>()
+            it.forEach { it1 ->
+                couponList.add(MedalRewardsModel(
+                    imageUrl = it1.imageUrl ?: "",
+                    status = it1.status ?: "",
+                    statusDescription = it1.statusDescription ?: "",
+                    isActive = it1.isActive
                 ))
             }
-            else{
-                val couponList = mutableListOf<MedalRewardsModel>()
-                it.forEach { it1 ->
-                    couponList.add(MedalRewardsModel(
-                        imageUrl = it1.imageUrl ?: "",
-                        status = it1.status ?: "",
-                        statusDescription = it1.statusDescription ?: "",
-                        isActive = it1.isActive
-                    ))
-                }
-                binding.layoutDetailContent.couponView.renderCoupons(couponList)
-            }
+            binding.layoutDetailContent.couponView.renderCoupons(couponList)
         }
     }
 

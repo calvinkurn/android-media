@@ -9,12 +9,11 @@
     >
  <com.tokopedia.scp_rewards_widgets.views.CouponImageView
      android:id="@+id/coupon_view"
-     android:layout_width="328dp"
-     android:layout_height="120dp"
+     android:layout_width="@dimen/coupon_image_default_width"
+     android:layout_height="@dimen/coupon_image_default_height"
      app:layout_constraintStart_toStartOf="parent"
      app:layout_constraintEnd_toEndOf="parent"
      app:layout_constraintTop_toTopOf="parent"
-     android:scaleType="fitXY"
      />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,7 +22,6 @@
         android:layout_height="wrap_content"
          app:typographyType="small"
         android:layout_marginTop="8dp"
-        android:text="*Bonus belum bisa dipakai"
         app:layout_constraintTop_toBottomOf="@+id/coupon_view"
         app:layout_constraintStart_toStartOf="@+id/coupon_view"
         />

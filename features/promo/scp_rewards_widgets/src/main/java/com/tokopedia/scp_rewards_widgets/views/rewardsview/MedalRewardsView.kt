@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.scp_rewards_widgets.common.VerticalSpacing
+import com.tokopedia.scp_rewards_widgets.constants.CouponState
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.model.RewardsErrorModel
 
@@ -17,9 +18,6 @@ class MedalRewardsView @JvmOverloads constructor(
 ): FrameLayout(context, attrs, defStyleAttr) {
 
     companion object{
-        private const val COUPON_IMG = "https://images.tokopedia.net/img/cache/576x192/uqilkZ/2023/5/16/ae716f14-f1c8-431f-bf84-03f9adf74075.png"
-        private const val TEXT = "*Bisa dipakai hingga 17 Mei 2023"
-        private const val error = "https://img.freepik.com/free-vector/glitch-error-404-page_23-2148105404.jpg"
         private const val ITEM_VERTICAL_SPACING = 16
     }
     private var rewardsRv: RecyclerView? = null
@@ -59,50 +57,27 @@ class MedalRewardsView @JvmOverloads constructor(
         }
     }
 
-    private fun setupDummyList(){
-        val list = listOf(
-            RewardsErrorModel(
-                imageUrl = error
-            ),
-            MedalRewardsModel(
-                isActive = true,
-                status = "active",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel(
-                isActive = false,
-                status = "inactive",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel(
-                isActive = false,
-                status = "expired",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel(
-                isActive = false,
-                status = "used",
-                imageUrl = COUPON_IMG,
-                statusDescription = TEXT
-            ),
-            MedalRewardsModel()
-        )
-        rewardsAdapter.setVisitables(list)
+    fun renderCoupons(data:List<MedalRewardsModel>){
+        if(data.size==1 && data.last().status == CouponState.ERROR){
+            setErrorState(RewardsErrorModel(
+                    imageUrl = data.last().imageUrl,
+                    status = data.last().status,
+                    statusDescription = data.last().statusDescription,
+                    isActive = data.last().isActive
+                )
+            )
+        }
+        else{
+            rewardsAdapter.setVisitables(data)
+        }
     }
 
-    fun setErrorState(error:RewardsErrorModel){
+    private fun setErrorState(error:RewardsErrorModel){
         rewardsAdapter.setVisitables(
             listOf(
                 error
             )
         )
-    }
-
-    fun renderCoupons(data:List<MedalRewardsModel>){
-        rewardsAdapter.setVisitables(data)
     }
 
 }
