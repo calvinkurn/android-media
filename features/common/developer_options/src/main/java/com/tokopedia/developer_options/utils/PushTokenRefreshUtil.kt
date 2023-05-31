@@ -11,7 +11,7 @@ class PushTokenRefreshUtil {
     fun scheduleWorker(appContext: Context, time: Long) {
         try {
             val periodicWorker = PeriodicWorkRequest
-                .Builder(PushRefreshWorker::class.java, time, TimeUnit.DAYS)
+                .Builder(PushRefreshWorker::class.java, time, TimeUnit.MINUTES)
                 .setConstraints(Constraints.NONE)
                 .build()
 
