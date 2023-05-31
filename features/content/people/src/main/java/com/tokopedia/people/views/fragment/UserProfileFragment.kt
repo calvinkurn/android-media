@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
@@ -59,6 +60,7 @@ import com.tokopedia.people.R
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
+import com.tokopedia.people.utils.UserProfileSharedPref
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.utils.withCache
@@ -68,11 +70,13 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_SHORTS
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
+import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -108,6 +112,7 @@ class UserProfileFragment @Inject constructor(
     private val impressionCoordinator: ShopRecomImpressCoordinator,
     private val coachMarkManager: ContentCoachMarkManager,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val userProfileSharedPref: UserProfileSharedPref,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -159,6 +164,16 @@ class UserProfileFragment @Inject constructor(
 
     private var ugcOnboardingOpenFrom: Int = 0
     private var viewPagerSelectedPage: Int = 0
+
+    private val profileSettingsForActivityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK &&
+            ProfileSettingsActivity.getIsAnySettingsChanged(result.data)
+        ) {
+            refreshLandingPageData(isRefreshPost = false)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -217,20 +232,6 @@ class UserProfileFragment @Inject constructor(
                 this,
                 permissionListener = this
             )
-        }
-
-        mainBinding.btnKebabOption.setDrawable(
-            getIconUnifyDrawable(
-                requireContext(),
-                IconUnify.MENU_KEBAB_HORIZONTAL
-            )
-        )
-
-        mainBinding.btnKebabOption.setOnClickListener {
-            UserProfileOptionBottomSheet.getOrCreate(
-                childFragmentManager,
-                requireContext().classLoader
-            ).show(childFragmentManager)
         }
 
         initFabUserProfile()
@@ -346,15 +347,24 @@ class UserProfileFragment @Inject constructor(
                     }
                 })
             }
+            is UserProfileReviewOnboardingBottomSheet -> {
+                childFragment.setListener(object : UserProfileReviewOnboardingBottomSheet.Listener {
+                    override fun onClickOpenReviewTab() {
+                        /** TODO: handle this */
+                    }
+
+                    override fun onClickOpenProfileSettingsPage() {
+                        openProfileSettingsPage()
+                    }
+                })
+            }
         }
     }
 
     private fun initListener() {
         mainBinding.apply {
-            textFollowingLabel.setOnClickListener { goToFollowingFollowerPage(false) }
-            textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
-            textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
-            textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
+            layoutUserProfileStats.llFollower.setOnClickListener { goToFollowingFollowerPage(isFollowers = true) }
+            layoutUserProfileStats.llFollowing.setOnClickListener { goToFollowingFollowerPage(isFollowers =false) }
             shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
@@ -512,6 +522,13 @@ class UserProfileFragment @Inject constructor(
                         emptyPostVisitor()
                         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
+                    is UserProfileUiEvent.ShowReviewOnboarding -> {
+                        UserProfileReviewOnboardingBottomSheet
+                            .getOrCreate(childFragmentManager, requireActivity().classLoader)
+                            .show(childFragmentManager)
+
+                        userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+                    }
                     else -> {
                         //no-op
                     }
@@ -589,9 +606,13 @@ class UserProfileFragment @Inject constructor(
                 textUserName.text = getString(R.string.up_username_template, curr.username)
             }
             textDisplayName.text = curr.name
-            textContentCount.text = curr.stats.totalPostFmt
-            textFollowerCount.text = curr.stats.totalFollowerFmt
-            textFollowingCount.text = curr.stats.totalFollowingFmt
+            layoutUserProfileStats.textContentCount.text = curr.stats.totalPostFmt
+            layoutUserProfileStats.textReviewCount.text = curr.stats.totalReviewFmt
+            layoutUserProfileStats.textFollowerCount.text = curr.stats.totalFollowerFmt
+            layoutUserProfileStats.textFollowingCount.text = curr.stats.totalFollowingFmt
+
+            layoutUserProfileStats.llReview.showWithCondition(curr.stats.totalReviewFmt.isNotEmpty())
+            layoutUserProfileStats.viewReviewDivider.showWithCondition(curr.stats.totalReviewFmt.isNotEmpty())
 
             /** Setup Bio */
             val displayBioText = HtmlLinkHelper(requireContext(), curr.biography).spannedString
@@ -646,17 +667,6 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.btnAction.hide()
             }
         }
-
-        (mainBinding.btnAction.layoutParams as MarginLayoutParams)
-            .updateMarginsRelative(
-                end = if (value.profileType == ProfileType.OtherUser ||
-                    value.profileType == ProfileType.NotLoggedIn
-                ) {
-                    dp8
-                } else {
-                    0
-                }
-            )
     }
 
     private fun renderButtonOption(
@@ -665,10 +675,27 @@ class UserProfileFragment @Inject constructor(
     ) {
         if (prev?.profileType == value.profileType) return
 
-        mainBinding.btnKebabOption.showWithCondition(
-            shouldShow = value.profileType == ProfileType.OtherUser ||
-                value.profileType == ProfileType.NotLoggedIn
+        mainBinding.btnOption.setDrawable(
+            getIconUnifyDrawable(
+                requireContext(),
+                if (viewModel.isSelfProfile) {
+                    IconUnify.SETTING
+                } else {
+                    IconUnify.MENU_KEBAB_HORIZONTAL
+                }
+            )
         )
+
+        mainBinding.btnOption.setOnClickListener {
+            if (viewModel.isSelfProfile) {
+                openProfileSettingsPage()
+            } else {
+                UserProfileOptionBottomSheet.getOrCreate(
+                    childFragmentManager,
+                    requireContext().classLoader
+                ).show(childFragmentManager)
+            }
+        }
     }
 
     private fun renderCreateContentButton(
@@ -1034,6 +1061,11 @@ class UserProfileFragment @Inject constructor(
         childFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
             .commit()
+    }
+
+    private fun openProfileSettingsPage() {
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PROFILE_SETTINGS, viewModel.profileUserID)
+        profileSettingsForActivityResult.launch(intent)
     }
 
     private fun getFollowersBundle(isFollowers: Boolean): Bundle {

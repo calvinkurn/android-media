@@ -2,6 +2,7 @@ package com.tokopedia.people.views.uimodel.state
 
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -24,4 +25,5 @@ data class UserProfileUiState(
     val videoPostsContent: UserPlayVideoUiModel,
     val isLoading: Boolean,
     val error: Throwable?,
+    val reviewSettings: ProfileSettingsUiModel,
 )

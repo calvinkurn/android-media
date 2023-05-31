@@ -9,6 +9,7 @@ import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.content.*
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,6 +35,7 @@ class UserProfileUiMapperImpl @Inject constructor(
                 totalPostFmt = response.profileHeader.stats.totalPostFmt,
                 totalFollowerFmt = response.profileHeader.stats.totalFollowerFmt,
                 totalFollowingFmt = response.profileHeader.stats.totalFollowingFmt,
+                totalReviewFmt = getReviewStats(response.profileHeader.stats.extraStats),
             ),
             shareLink = LinkUiModel(
                 webLink = response.profileHeader.profile.sharelink.weblink,
@@ -144,10 +146,25 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
+    override fun mapProfileSettings(response: GetProfileSettingsResponse): List<ProfileSettingsUiModel> {
+        return response.data.settingsProfile.map {
+            ProfileSettingsUiModel(
+                settingID = it.settingID,
+                title = it.title,
+                isEnabled = it.enabled,
+            )
+        }
+    }
+
+    private fun getReviewStats(extraStats: List<ExtraStats>): String {
+        return extraStats.firstOrNull { it.field == EXTRA_STATS_REVIEWS }?.countFmt.orEmpty()
+    }
+
     companion object {
         private const val TAB_KEY_FEEDS = "feeds"
         private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
+        private const val EXTRA_STATS_REVIEWS = "reviews"
     }
 }

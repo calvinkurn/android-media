@@ -4,6 +4,7 @@ import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
 import com.tokopedia.people.model.*
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.profile.*
@@ -25,4 +26,6 @@ interface UserProfileUiMapper {
     fun mapFeedPosts(response: UserFeedPostsModel): UserFeedPostsUiModel
 
     fun mapPlayVideo(response: UserPostModel): UserPlayVideoUiModel
+
+    fun mapProfileSettings(response: GetProfileSettingsResponse): List<ProfileSettingsUiModel>
 }

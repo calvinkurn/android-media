@@ -2,8 +2,7 @@ package com.tokopedia.people.viewmodels
 
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.content.common.producttag.util.extension.combine
-import com.tokopedia.content.common.producttag.util.extension.setValue
+import com.tokopedia.content.common.util.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
@@ -13,12 +12,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
-import com.tokopedia.people.model.PlayGetContentSlot
-import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.utils.UserProfileSharedPref
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.getReviewSettings
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
@@ -42,7 +42,8 @@ class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
     private val followRepo: UserFollowRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val userProfileSharedPref: UserProfileSharedPref,
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -106,6 +107,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _videoPostContent = MutableStateFlow(UserPlayVideoUiModel.Empty)
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<Throwable?>(null)
+    private val _reviewSettings = MutableStateFlow(ProfileSettingsUiModel.Empty)
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -122,9 +124,10 @@ class UserProfileViewModel @AssistedInject constructor(
         _feedPostsContent,
         _videoPostContent,
         _isLoading,
-        _error
+        _error,
+        _reviewSettings,
     ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
-        isLoading, error ->
+        isLoading, error, reviewSettings ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
@@ -135,7 +138,8 @@ class UserProfileViewModel @AssistedInject constructor(
             feedPostsContent = feedPostsContent,
             videoPostsContent = videoPostContent,
             isLoading = isLoading,
-            error = error
+            error = error,
+            reviewSettings = reviewSettings,
         )
     }
 
@@ -160,6 +164,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickCopyLinkPlayChannel -> handleClickCopyLinkPlayChannel(action.channel)
             is UserProfileAction.ClickSeePerformancePlayChannel -> handleClickSeePerformancePlayChannel(action.channel)
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
+            else -> {}
         }
     }
 
@@ -489,6 +494,7 @@ class UserProfileViewModel @AssistedInject constructor(
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val profileInfo = repo.getProfile(username)
+        val profileSettings = repo.getProfileSettings(profileInfo.userID)
 
         val profileType = if (userSession.isLoggedIn) {
             if (userSession.userId == profileInfo.userID) {
@@ -509,6 +515,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
         _profileType.update { profileType }
+        _reviewSettings.update { profileSettings.getReviewSettings() }
 
         if (isBlocking) {
             _feedPostsContent.value = UserFeedPostsUiModel()
@@ -523,6 +530,18 @@ class UserProfileViewModel @AssistedInject constructor(
         if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
 
         if (isRefresh) loadProfileTab()
+
+        if (isSelfProfile &&
+            profileSettings.getReviewSettings().isEnabled &&
+            !userProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+        ) {
+            viewModelScope.launch {
+                delay(DELAY_SHOW_REVIEW_ONBOARDING)
+
+                userProfileSharedPref.setHasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding)
+                _uiEvent.emit(UserProfileUiEvent.ShowReviewOnboarding)
+            }
+        }
     }
 
     private suspend fun loadProfileTab() {
@@ -595,5 +614,6 @@ class UserProfileViewModel @AssistedInject constructor(
         private const val FOLLOW_TYPE_SHOP = 2
         private const val FOLLOW_TYPE_BUYER = 3
         private const val DEFAULT_LIMIT = 10
+        private const val DELAY_SHOW_REVIEW_ONBOARDING = 1000L
     }
 }

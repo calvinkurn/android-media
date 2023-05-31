@@ -93,4 +93,18 @@ data class Stats(
 
     @SerializedName("totalFollowingFmt")
     val totalFollowingFmt: String,
+
+    @SerializedName("ExtraStats")
+    val extraStats: List<ExtraStats> = emptyList()
+)
+
+data class ExtraStats(
+    @SerializedName("field")
+    val field: String,
+
+    @SerializedName("count")
+    val count: Int,
+
+    @SerializedName("countFmt")
+    val countFmt: String,
 )
