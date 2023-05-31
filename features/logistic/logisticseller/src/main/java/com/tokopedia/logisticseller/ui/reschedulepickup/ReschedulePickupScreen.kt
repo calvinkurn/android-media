@@ -365,12 +365,16 @@ private fun ReschedulePickupSummary(summary: String) {
         exit = ExitTransition.None
     ) {
         NestTicker(
-            title = "",
-            type = TickerType.ANNOUNCEMENT,
-            description = HtmlLinkHelper(
-                LocalContext.current,
-                summary
-            ).spannedString?.toAnnotatedString() ?: "",
+            ticker = listOf(
+                NestTickerData(
+                    tickerTitle = "",
+                    tickerType = TickerType.ANNOUNCEMENT,
+                    tickerDescription = HtmlLinkHelper(
+                        LocalContext.current,
+                        summary
+                    ).spannedString?.toAnnotatedString() ?: "",
+                )
+            ),
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             closeButtonVisibility = false

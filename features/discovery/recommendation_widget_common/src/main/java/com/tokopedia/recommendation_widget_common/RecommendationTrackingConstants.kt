@@ -9,6 +9,7 @@ object RecommendationTrackingConstants {
 
         const val ITEM_LIST = "item_list"
         const val ITEMS = "items"
+        const val PROMOTIONS = "promotions"
 
         const val PRODUCT_ID = "productId"
 
@@ -50,6 +51,7 @@ object RecommendationTrackingConstants {
     }
 
     object Action {
+        const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
         const val VIEW_ITEM_LIST = "view_item_list"
 

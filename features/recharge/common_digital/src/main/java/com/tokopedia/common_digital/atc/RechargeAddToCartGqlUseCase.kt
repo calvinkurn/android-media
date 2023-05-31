@@ -111,6 +111,7 @@ class RechargeAddToCartGqlUseCase @Inject constructor(graphqlRepository: Graphql
                       type
                       id
                       attributes {
+                        channel_id
                         user_id
                         client_number
                         title

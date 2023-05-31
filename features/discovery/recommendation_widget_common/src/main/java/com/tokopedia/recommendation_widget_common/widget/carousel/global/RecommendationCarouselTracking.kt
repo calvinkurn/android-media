@@ -65,4 +65,16 @@ object RecommendationCarouselTracking {
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(RecommendationTrackingConstants.Action.ADD_TO_CART, bundle)
     }
+
+    fun sendEventItemImpression() {
+
+    }
+
+    fun sendEventItemClick() {
+
+    }
+
+    fun sendEventSeeMoreClick() {
+
+    }
 }
