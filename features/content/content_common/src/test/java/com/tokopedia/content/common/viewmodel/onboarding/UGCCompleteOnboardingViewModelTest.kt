@@ -7,8 +7,11 @@ import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboarding
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.content.common.robot.UGCOnboardingViewModelRobot
-import com.tokopedia.content.common.util.*
-import com.tokopedia.feedcomponent.util.*
+import com.tokopedia.content.common.util.andThen
+import com.tokopedia.content.common.util.assertEvent
+import com.tokopedia.content.common.util.assertFalse
+import com.tokopedia.content.common.util.assertTrue
+import com.tokopedia.content.common.util.equalTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
