@@ -1563,6 +1563,7 @@ class DetailEditorFragment @Inject constructor(
                     }
 
                     implementAddTextData()
+                    isEdited = true
                     dismiss()
                 }
             }
