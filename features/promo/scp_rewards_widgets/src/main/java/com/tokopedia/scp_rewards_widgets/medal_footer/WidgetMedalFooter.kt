@@ -11,13 +11,14 @@ import com.tokopedia.unifycomponents.UnifyButton
 class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 
     private val binding = WidgetMedalTaskFooterBinding.inflate(LayoutInflater.from(context), this)
+    private var list = mutableListOf<UnifyButton>()
 
     private companion object {
         private const val STYLE_PRIMARY = "primary"
         private const val STYLE_SECONDARY = "secondary"
     }
 
-    fun bindData(list: List<FooterData>, onButtonClick: (String?, String?) -> Unit) {
+    fun bindData(list: List<FooterData>, onButtonClick: (FooterData) -> Unit) {
         list.forEach { footer ->
             val button = UnifyButton(context)
             button.apply {
@@ -27,16 +28,22 @@ class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : Co
                 layoutParams = LayoutParams(0, LayoutParams.WRAP_CONTENT).apply {
                     horizontalWeight = 1f
                 }
+                isLoading = footer.isLoading
+                footer.id = id
                 applyStyle(footer)
                 setOnClickListener {
                     isLoading = true
-                    onButtonClick(footer.appLink, footer.url)
-                    isLoading = false
+                    onButtonClick(footer)
                 }
             }
+            this.list.add(button)
             (binding.root as ConstraintLayout).addView(button)
             binding.flowCta.addView(button)
         }
+    }
+
+    fun showLoading(id: Int, isLoading: Boolean) {
+        list.find { it.id == id }?.isLoading = isLoading
     }
 
     private fun UnifyButton.applyStyle(footer: FooterData) {

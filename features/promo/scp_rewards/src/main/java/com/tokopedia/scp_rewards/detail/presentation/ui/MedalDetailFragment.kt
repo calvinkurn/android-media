@@ -12,8 +12,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -42,22 +42,11 @@ import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
+import com.tokopedia.unifycomponents.Toaster
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-
-const val IMG_DETAIL_BASE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg_base.png"
-const val IMG_DETAIL_BG = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/04/medalidetail_bg.png"
-const val FRAME_MASK = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/26/medali_frame_mask.png"
-const val SHIMMER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/26/shimmer_alt.png"
-const val FRAME = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_frame.png"
-const val MASKING_SHAPE = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_mask.png"
-const val MEDAL_ICON = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/01/medali_brand.png"
-const val SHUTTER = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_shutter.png"
-const val CONTENT = "https://images.tokopedia.net/img/HThbdi/scp/2023/05/08/medali_inner_icon.png"
-const val LOTTIE_BADGE = "https://gist.githubusercontent.com/abhishekjain-gojek/99be6bad982dea1518f03ff1dffbf40d/raw/6cedac0248cbf1d5fc55825385034d1cdb3a5f6c/medali_detail.json"
-const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/08/medali_outer_blinking.json"
 
 class MedalDetailFragment : BaseDaggerFragment() {
 
@@ -105,6 +94,37 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupViewModelObservers() {
+        observeBadgeData()
+        observeCouponAutoApply()
+    }
+
+    private fun observeCouponAutoApply() {
+        medalDetailViewModel.autoApplyCoupon.observe(viewLifecycleOwner) {
+            it?.let { safeResult ->
+                when (safeResult) {
+                    is MedalDetailViewModel.AutoApplyState.Error -> {
+                        binding.viewMedalFooter.showLoading(safeResult.id, false)
+                    }
+
+                    is MedalDetailViewModel.AutoApplyState.Loading -> {
+                        binding.viewMedalFooter.showLoading(safeResult.id, true)
+                    }
+
+                    is MedalDetailViewModel.AutoApplyState.SuccessCouponApplied -> {
+                        binding.viewMedalFooter.showLoading(safeResult.id, false)
+                        Toaster.build(binding.viewMedalFooter, safeResult.data?.couponAutoApply?.infoMessage?.title.orEmpty()).show()
+                    }
+
+                    is MedalDetailViewModel.AutoApplyState.SuccessCouponFailed -> {
+                        binding.viewMedalFooter.showLoading(safeResult.id, false)
+                        Toaster.build(binding.viewMedalFooter, safeResult.data?.couponAutoApply?.infoMessage?.title.orEmpty()).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeBadgeData() {
         medalDetailViewModel.badgeLiveData.observe(viewLifecycleOwner) {
             it?.let { safeResult ->
                 when (safeResult) {
@@ -125,7 +145,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     }
 
                     is Loading -> {
-                        // TODO
+                        binding.loadContainer.loaderFlipper.visible()
                     }
                 }
             }
@@ -140,14 +160,24 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         text = it.text,
                         url = it.url,
                         appLink = it.appLink,
-                        style = it.unifiedStyle
+                        style = it.unifiedStyle,
+                        autoApply = it.isAutoApply,
+                        couponCode = it.couponCode
                     )
                 }
-            ) { appLink, webLink ->
-                if (TextUtils.isEmpty(appLink)) {
-                    RouteManager.route(requireContext(), String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(webLink)))
+            ) { data ->
+                if (data.autoApply) {
+                    medalDetailViewModel.applyCoupon(
+                        id = data.id ?: -1,
+                        shopId = null,
+                        couponCode = data.couponCode.orEmpty()
+                    )
                 } else {
-                    RouteManager.route(requireContext(), appLink)
+                    if (TextUtils.isEmpty(data.appLink)) {
+                        RouteManager.route(requireContext(), String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(data.url)))
+                    } else {
+                        RouteManager.route(requireContext(), data.appLink)
+                    }
                 }
             }
         }
@@ -169,18 +199,18 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding.viewMedalHeader.bindData(
             MedalHeader(
                 isGrayScale = medaliDetailPage?.isMedaliGrayScale ?: false,
-                medalIconUrl = medaliDetailPage?.iconImageURL ?: MEDAL_ICON,
-                lottieUrl = medaliDetailPage?.shimmerShutterLottieURL ?: LOTTIE_BADGE,
-                lottieSparklesUrl = medaliDetailPage?.outerBlinkingLottieURL ?: LOTTIE_SPARKS,
-                podiumUrl = medaliDetailPage?.baseImageURL ?: IMG_DETAIL_BASE,
-                background = medaliDetailPage?.backgroundImageURL ?: IMG_DETAIL_BG,
+                medalIconUrl = medaliDetailPage?.iconImageURL,
+                lottieUrl = medaliDetailPage?.shimmerShutterLottieURL,
+                lottieSparklesUrl = medaliDetailPage?.outerBlinkingLottieURL,
+                podiumUrl = medaliDetailPage?.baseImageURL,
+                background = medaliDetailPage?.backgroundImageURL,
                 backgroundColor = medaliDetailPage?.backgroundImageColor,
-                medalUrl = medaliDetailPage?.innerIconImageURL ?: CONTENT,
-                frameUrl = medaliDetailPage?.frameImageURL ?: FRAME,
-                shimmerUrl = medaliDetailPage?.shimmerImageURL ?: SHIMMER,
-                frameMaskUrl = medaliDetailPage?.maskingImageURL ?: FRAME_MASK,
-                maskingShapeUrl = medaliDetailPage?.frameMaskingImageURL ?: MASKING_SHAPE,
-                shutterUrl = medaliDetailPage?.shutterImageURL ?: SHUTTER,
+                medalUrl = medaliDetailPage?.innerIconImageURL,
+                frameUrl = medaliDetailPage?.frameImageURL,
+                shimmerUrl = medaliDetailPage?.shimmerImageURL,
+                frameMaskUrl = medaliDetailPage?.maskingImageURL,
+                maskingShapeUrl = medaliDetailPage?.frameMaskingImageURL,
+                shutterUrl = medaliDetailPage?.shutterImageURL,
                 shutterText = medaliDetailPage?.shutterText.orEmpty(),
                 coachMarkInformation = medaliDetailPage?.coachMark?.text
             )
@@ -197,21 +227,20 @@ class MedalDetailFragment : BaseDaggerFragment() {
         mission?.let { safeMission ->
             if (safeMission.task?.isEmpty() == true) {
                 binding.viewTasksProgress.gone()
-                return
-            }
-            val taskProgress = TaskProgress(
-                title = safeMission.title,
-                progress = safeMission.progress,
-                tasks = safeMission.task?.map {
-                    Task(
-                        title = it.title,
-                        isCompleted = it.isCompleted
-                    )
+            } else {
+                val taskProgress = TaskProgress(
+                    title = safeMission.title,
+                    progress = safeMission.progress,
+                    tasks = safeMission.task?.map {
+                        Task(
+                            title = it.title,
+                            isCompleted = it.isCompleted
+                        )
+                    }
+                )
+                binding.viewTasksProgress.apply {
+                    bindData(taskProgress)
                 }
-            )
-            binding.viewTasksProgress.apply {
-                bindData(taskProgress)
-                visible()
             }
         } ?: run { binding.viewTasksProgress.gone() }
     }
@@ -254,7 +283,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
             windowInsetsController?.isAppearanceLightStatusBars = false
             binding.tvTermsConditions.setTextColor(
                 ContextCompat.getColor(
-                    this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
             )
         }
@@ -316,16 +346,18 @@ class MedalDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadCouponWidget(benefits:List<Benefit>?) {
+    private fun loadCouponWidget(benefits: List<Benefit>?) {
         benefits?.let {
             val couponList = mutableListOf<MedalRewardsModel>()
             it.forEach { it1 ->
-                couponList.add(MedalRewardsModel(
-                    imageUrl = it1.imageUrl ?: "",
-                    status = it1.status ?: "",
-                    statusDescription = it1.statusDescription ?: "",
-                    isActive = it1.isActive
-                ))
+                couponList.add(
+                    MedalRewardsModel(
+                        imageUrl = it1.imageUrl ?: "",
+                        status = it1.status ?: "",
+                        statusDescription = it1.statusDescription ?: "",
+                        isActive = it1.isActive
+                    )
+                )
             }
             binding.couponView.renderCoupons(couponList)
         }
