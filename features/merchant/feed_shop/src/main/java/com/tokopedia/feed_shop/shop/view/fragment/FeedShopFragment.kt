@@ -889,8 +889,8 @@ class FeedShopFragment :
             ApplinkConst.INTERNAL_CONTENT_DETAIL,
             postId,
         )
-        val finaApplink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
-        onGoToLink(finaApplink)
+        val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
+        onGoToLink(finalAppLink)
     }
 
     /**
@@ -1020,8 +1020,8 @@ class FeedShopFragment :
             ApplinkConst.INTERNAL_CONTENT_DETAIL,
             postId
         )
-        val finaApplink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
-        onGoToLink(finaApplink)
+        val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
+        onGoToLink(finalAppLink)
     }
 
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
