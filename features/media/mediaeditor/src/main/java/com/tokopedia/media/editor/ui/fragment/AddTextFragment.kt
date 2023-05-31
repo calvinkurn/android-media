@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
@@ -21,7 +22,6 @@ import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_CENTER
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_LEFT
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_ALIGNMENT_RIGHT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_POSITION_BOTTOM
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_REGULAR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
@@ -124,6 +124,9 @@ class AddTextFragment @Inject constructor(
         when (viewModel.pageMode.value) {
             AddTextActivity.TEXT_MODE -> {
                 viewBinding?.textOverlayContainer?.show()
+
+                viewBinding?.addTextInput?.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
             }
             AddTextActivity.POSITION_MODE -> {
                 viewBinding?.let {
