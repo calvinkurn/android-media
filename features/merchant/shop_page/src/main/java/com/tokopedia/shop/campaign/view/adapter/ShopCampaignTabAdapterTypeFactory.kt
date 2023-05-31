@@ -19,6 +19,10 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderSqu
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignSliderSquareViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVideoPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVideoViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderItemViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderMoreItemViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderPlaceholderViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderViewHolder
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
@@ -32,6 +36,7 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
+import com.tokopedia.shop.home.WidgetName.VOUCHER_SLIDER
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
@@ -51,10 +56,13 @@ class ShopCampaignTabAdapterTypeFactory(
     private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener,
     private val shopCampaignInterface: ShopCampaignInterface,
     private val sliderBannerHighlightListener: ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
+    private val shopCampaignVoucherSliderItemListener: ShopCampaignVoucherSliderItemViewHolder.Listener,
+    private val shopCampaignVoucherSliderMoreItemListener: ShopCampaignVoucherSliderMoreItemViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ShopWidgetTypeFactory {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         return when (baseShopHomeWidgetUiModel.name) {
+            VOUCHER_SLIDER -> getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel)
             BANNER_TIMER -> getShopCampaignDisplayBannerTimerViewHolder(baseShopHomeWidgetUiModel)
             PRODUCT_HIGHLIGHT -> getShopCampaignCarouselProductViewHolder(baseShopHomeWidgetUiModel)
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopCampaignMultipleImageColumnViewHolder(
@@ -70,6 +78,14 @@ class ShopCampaignTabAdapterTypeFactory(
 
             else -> HideViewHolder.LAYOUT
         }
+    }
+
+    private fun getShopCampaignVoucherSliderViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if (isShowWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopCampaignVoucherSliderPlaceholderViewHolder.LAYOUT
+        else
+            ShopCampaignVoucherSliderViewHolder.LAYOUT
+
     }
 
     private fun getShopCampaignSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -159,6 +175,14 @@ class ShopCampaignTabAdapterTypeFactory(
                 parent,
                 shopHomeDisplayWidgetListener,
                 shopCampaignInterface
+            )
+
+            ShopCampaignVoucherSliderPlaceholderViewHolder.LAYOUT -> ShopCampaignVoucherSliderPlaceholderViewHolder(parent)
+            ShopCampaignVoucherSliderViewHolder.LAYOUT -> ShopCampaignVoucherSliderViewHolder(
+                parent,
+                shopCampaignInterface,
+                shopCampaignVoucherSliderItemListener,
+                shopCampaignVoucherSliderMoreItemListener
             )
 
             ShopCampaignSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopCampaignSliderSquarePlaceholderViewHolder(

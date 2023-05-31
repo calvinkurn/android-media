@@ -1,4 +1,4 @@
-package com.tokopedia.shop.campaign.view.adapter.viewholder
+package com.tokopedia.shop.campaign.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter

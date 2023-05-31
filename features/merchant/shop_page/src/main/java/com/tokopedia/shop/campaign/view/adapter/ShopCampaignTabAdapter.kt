@@ -8,13 +8,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.common.util.WidgetState
 
@@ -76,7 +77,7 @@ class ShopCampaignTabAdapter(
         super.onBindViewHolder(holder, position)
     }
 
-    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetLayoutUiModel>) {
+    fun removeShopHomeWidget(listShopWidgetLayout: List<ShopPageWidgetUiModel>) {
         val newList = getNewVisitableItems()
         listShopWidgetLayout.onEach { shopWidgetLayout ->
             newList.filterIsInstance<Visitable<*>>().indexOfFirst {
@@ -101,7 +102,7 @@ class ShopCampaignTabAdapter(
             .getOrNull(position)?.widgetState == WidgetState.PLACEHOLDER
     }
 
-    fun updateShopCampaignWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageWidgetLayoutUiModel>) {
+    fun updateShopCampaignWidgetStateToLoading(listWidgetLayout: MutableList<ShopPageWidgetUiModel>) {
         listWidgetLayout.onEach { widgetLayout ->
             visitables.filterIsInstance<Visitable<*>>().firstOrNull {
                 when (it) {
@@ -183,6 +184,26 @@ class ShopCampaignTabAdapter(
                             newList.setElement(position, widgetContentData.value)
                         }
                     }
+                }
+            }
+        }
+        submitList(newList)
+    }
+
+    fun getVoucherSliderUiModel(): ShopWidgetVoucherSliderUiModel? {
+        return visitables.filterIsInstance<ShopWidgetVoucherSliderUiModel>().firstOrNull()
+    }
+
+    fun updateVoucherSliderWidgetData(voucherSliderUiModel: ShopWidgetVoucherSliderUiModel) {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is ShopWidgetVoucherSliderUiModel }.let { index ->
+            if (index >= 0) {
+                if ((voucherSliderUiModel.listVoucher.isEmpty() || voucherSliderUiModel.isError)) {
+                    newList.removeAt(index)
+                } else {
+                    voucherSliderUiModel.widgetState = WidgetState.FINISH
+                    voucherSliderUiModel.isNewData = true
+                    newList.setElement(index, voucherSliderUiModel)
                 }
             }
         }

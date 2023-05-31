@@ -1,4 +1,4 @@
-package com.tokopedia.shop.campaign.view.adapter.viewholder
+package com.tokopedia.shop.campaign.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignCarouselProductItemBigGridViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignCarouselProductItemListViewHolder
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.home.view.adapter.TypeFactoryShopHomeProductCarousel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel

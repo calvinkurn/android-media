@@ -28,23 +28,33 @@ import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_MULTIPLE_BUNDLING
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SINGLE_BUNDLING
+import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
+import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapter
 import com.tokopedia.shop.campaign.view.adapter.ShopCampaignTabAdapterTypeFactory
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplaySliderBannerHighlightViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignProductBundleParentWidgetViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderItemViewHolder
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderMoreItemViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
+import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
+import com.tokopedia.shop.campaign.view.bottomsheet.PromoVoucherDetailBottomSheet
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.campaign.view.viewmodel.ShopCampaignViewModel
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
+import com.tokopedia.shop.common.extension.showToaster
+import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.databinding.FragmentShopPageCampaignBinding
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
@@ -52,7 +62,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
@@ -60,7 +70,6 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class ShopPageCampaignFragment :
@@ -70,7 +79,9 @@ class ShopPageCampaignFragment :
     ShopHomeListener,
     ShopCampaignInterface,
     ShopCampaignDisplaySliderBannerHighlightViewHolder.Listener,
-    ShopCampaignCarouselProductListener {
+    ShopCampaignCarouselProductListener,
+    ShopCampaignVoucherSliderItemViewHolder.Listener,
+    ShopCampaignVoucherSliderMoreItemViewHolder.Listener {
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
@@ -109,7 +120,9 @@ class ShopPageCampaignFragment :
             singleProductBundleListener = this,
             bundlingParentListener = this,
             shopCampaignInterface = this,
-            sliderBannerHighlightListener = this
+            sliderBannerHighlightListener = this,
+            shopCampaignVoucherSliderItemListener = this,
+            shopCampaignVoucherSliderMoreItemListener = this
         )
     }
 
@@ -132,6 +145,43 @@ class ShopPageCampaignFragment :
         return inflater.inflate(R.layout.fragment_shop_page_campaign, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeVoucherSliderWidgetData()
+        observeRedeemResult()
+    }
+
+    private fun observeRedeemResult() {
+        viewModelCampaign?.redeemResult?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    handleRedeemVoucherSuccess(it.data)
+                }
+
+                is Fail -> {
+                    showToasterError(view ?: return@observe, it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun observeVoucherSliderWidgetData() {
+        viewModelCampaign?.voucherSliderWidgetData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> shopCampaignTabAdapter.updateVoucherSliderWidgetData(it.data)
+                else -> {
+                    shopCampaignTabAdapter.getVoucherSliderUiModel()?.copy(
+                        isError = true
+                    )?.let { voucherSliderUiModel ->
+                        shopCampaignTabAdapter.updateVoucherSliderWidgetData(
+                            voucherSliderUiModel
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     override fun getRecyclerViewResourceId(): Int {
         return R.id.recycler_view
     }
@@ -146,7 +196,7 @@ class ShopPageCampaignFragment :
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
         shopPageHomeLayoutUiModel?.let {
-            setShopWidgetLayoutData(it)
+            setShopLayoutData(it)
             setWidgetLayoutPlaceholder()
         }
     }
@@ -160,7 +210,7 @@ class ShopPageCampaignFragment :
         shopCampaignTabAdapter.setCampaignLayoutData(shopHomeWidgetContentData)
     }
 
-    override fun setShopWidgetLayoutData(dataWidgetLayoutUiModel: ShopPageHomeWidgetLayoutUiModel) {
+    override fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
         listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.toMutableList()
         val shopCampaignWidgetContentData =
             ShopPageCampaignMapper.mapShopCampaignWidgetLayoutToListShopCampaignWidget(
@@ -485,21 +535,33 @@ class ShopPageCampaignFragment :
             }
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopCampaignTabAdapter.updateShopCampaignWidgetStateToLoading(listWidgetLayoutToLoad)
-
-            val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
-                listWidgetLayoutToLoad.remove(this)
-            }
+            checkLoadVoucherSliderData(listWidgetLayoutToLoad)
             getWidgetContentData(listWidgetLayoutToLoad)
 
-            // get mvc widget content data
-            widgetMvcLayout?.let {
-                getMvcWidgetData()
-            }
             listWidgetLayoutToLoad.clear()
         }
     }
 
-    private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>) {
+    private fun checkLoadVoucherSliderData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
+        listWidgetLayoutToLoad.firstOrNull {
+            isWidgetVoucherSlider(it)
+        }?.let {
+            listWidgetLayoutToLoad.remove(it)
+            getVoucherSliderData()
+        }
+    }
+
+    private fun getVoucherSliderData() {
+        shopCampaignTabAdapter.getVoucherSliderUiModel()?.let {
+            viewModelCampaign?.getVoucherSliderData(it)
+        }
+    }
+
+    private fun isWidgetVoucherSlider(uiModel: ShopPageWidgetUiModel): Boolean {
+        return uiModel.widgetType == WidgetType.VOUCHER && uiModel.widgetName == WidgetName.VOUCHER_SLIDER
+    }
+
+    private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
         if (listWidgetLayoutToLoad.isNotEmpty()) {
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
@@ -511,7 +573,7 @@ class ShopPageCampaignFragment :
         }
     }
 
-    private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetLayoutUiModel> {
+    private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetUiModel> {
         return if (listWidgetLayout.isNotEmpty()) {
             if (shopCampaignTabAdapter.isLoadFirstWidgetContentData()) {
                 listWidgetLayout.subList(
@@ -582,7 +644,7 @@ class ShopPageCampaignFragment :
 
     override fun onWidgetSliderBannerHighlightCtaClicked(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
         val appLink = uiModel.header.ctaLink
-        if(Uri.parse(appLink).lastPathSegment.equals("home", true)) {
+        if (Uri.parse(appLink).lastPathSegment.equals("home", true)) {
             (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
         }
     }
@@ -610,6 +672,79 @@ class ShopPageCampaignFragment :
         position: Int,
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel
     ) {
+    }
+
+    override fun onCampaignVoucherSliderItemImpression(
+        model: ExclusiveLaunchVoucher,
+        position: Int
+    ) {
+//        TODO("Not yet implemented")
+    }
+
+    override fun onCampaignVoucherSliderItemClick(model: ExclusiveLaunchVoucher, position: Int) {
+        showVoucherDetailBottomSheet(model)
+    }
+
+    override fun onCampaignVoucherSliderItemCtaClaimClick(
+        model: ExclusiveLaunchVoucher,
+        position: Int
+    ) {
+        if (isLogin) {
+            redeemCampaignVoucherSlider(model)
+        } else {
+            redirectToLoginPage()
+        }
+    }
+
+    private fun redeemCampaignVoucherSlider(model: ExclusiveLaunchVoucher) {
+        viewModelCampaign?.redeemCampaignVoucherSlider(model)
+    }
+
+    override fun onCampaignVoucherSliderMoreItemClick(listCategorySlug: List<String>) {
+        showVoucherListBottomSheet(listCategorySlug)
+    }
+
+    private fun showVoucherListBottomSheet(listCategorySlug: List<String>) {
+        val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
+            useDarkBackground = isCampaignTabDarkMode(),
+            promoVouchersCategorySlugs = listCategorySlug
+        )
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
+        if (!isAdded) return
+
+        val categorySlug =
+            if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
+                selectedVoucher.source.categorySlug
+            } else {
+                ""
+            }
+
+        val promoVoucherCode =
+            if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
+                selectedVoucher.source.voucherCode
+            } else {
+                ""
+            }
+
+        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(
+            categorySlug = categorySlug,
+            promoVoucherCode = promoVoucherCode
+        ).apply {
+            setOnVoucherRedeemSuccess { redeemResult ->
+                handleRedeemVoucherSuccess(redeemResult)
+            }
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
+        if (redeemResult.redeemMessage.isNotEmpty()) {
+            showToaster(view ?: return, redeemResult.redeemMessage)
+            getVoucherSliderData()
+        }
     }
 
 }

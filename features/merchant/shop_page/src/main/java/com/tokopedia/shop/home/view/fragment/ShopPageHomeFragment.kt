@@ -111,7 +111,6 @@ import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
-import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -121,9 +120,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
-import com.tokopedia.shop.common.data.model.*
-import com.tokopedia.shop.common.extension.isOnDarkMode
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
@@ -187,7 +184,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
@@ -216,7 +213,6 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -353,7 +349,7 @@ open class ShopPageHomeFragment :
         get() = viewModel?.isLogin ?: false
     val isOwner: Boolean
         get() = ShopUtil.isMyShop(shopId, viewModel?.userSessionShopId ?: "")
-    protected var shopPageHomeLayoutUiModel: ShopPageHomeWidgetLayoutUiModel? = null
+    protected var shopPageHomeLayoutUiModel: ShopPageLayoutUiModel? = null
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -421,8 +417,8 @@ open class ShopPageHomeFragment :
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
-    var listWidgetLayout = mutableListOf<ShopPageWidgetLayoutUiModel>()
-    var initialLayoutData = mutableListOf<ShopPageWidgetLayoutUiModel>()
+    var listWidgetLayout = mutableListOf<ShopPageWidgetUiModel>()
+    var initialLayoutData = mutableListOf<ShopPageWidgetUiModel>()
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -558,7 +554,7 @@ open class ShopPageHomeFragment :
             when (it) {
                 is Success -> {
                     getRecyclerView(view)?.visible()
-                    setShopWidgetLayoutData(it.data)
+                    setShopLayoutData(it.data)
                 }
                 is Fail -> {
                     onErrorGetLatestShopHomeWidgetLayoutData(it.throwable)
@@ -887,7 +883,7 @@ open class ShopPageHomeFragment :
                 shopId
             )
             shopHomeAdapter?.hideLoading()
-            setShopWidgetLayoutData(it)
+            setShopLayoutData(it)
             setWidgetLayoutPlaceholder()
         }
     }
@@ -936,7 +932,7 @@ open class ShopPageHomeFragment :
             when (it) {
                 is Success -> {
                     shopPageHomeLayoutUiModel = it.data
-                    setShopWidgetLayoutData(it.data)
+                    setShopLayoutData(it.data)
                 }
                 is Fail -> {
                     val throwable = it.throwable
@@ -1552,8 +1548,8 @@ open class ShopPageHomeFragment :
         }
     }
 
-    open fun setShopWidgetLayoutData(dataWidgetLayoutUiModel: ShopPageHomeWidgetLayoutUiModel) {
-        val data: ShopPageHomeWidgetLayoutUiModel = filterNplWidgetLayoutDataIfDisabled(dataWidgetLayoutUiModel)
+    open fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
+        val data: ShopPageLayoutUiModel = filterNplWidgetLayoutDataIfDisabled(dataWidgetLayoutUiModel)
         initialLayoutData = data.listWidgetLayout.toMutableList()
         listWidgetLayout = initialLayoutData.toMutableList()
         shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
@@ -1577,8 +1573,8 @@ open class ShopPageHomeFragment :
     }
 
     private fun filterNplWidgetLayoutDataIfDisabled(
-        dataWidgetLayoutUiModel: ShopPageHomeWidgetLayoutUiModel
-    ): ShopPageHomeWidgetLayoutUiModel {
+        dataWidgetLayoutUiModel: ShopPageLayoutUiModel
+    ): ShopPageLayoutUiModel {
         return if (!ShopPageRemoteConfigChecker.isEnableShopHomeNplWidget(context)) {
             dataWidgetLayoutUiModel.copy(
                 listWidgetLayout = dataWidgetLayoutUiModel.listWidgetLayout.filter {
@@ -1779,7 +1775,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun excludeWidgetBundle(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>) {
+    private fun excludeWidgetBundle(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
         viewModel?.let { viewModel ->
             val iterator = listWidgetLayoutToLoad.iterator()
             while (iterator.hasNext()) {
@@ -1797,7 +1793,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>) {
+    private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
         if (listWidgetLayoutToLoad.isNotEmpty()) {
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
@@ -1811,15 +1807,15 @@ open class ShopPageHomeFragment :
         }
     }
 
-    protected fun isWidgetMvc(data: ShopPageWidgetLayoutUiModel): Boolean {
+    protected fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
     }
 
-    private fun isWidgetPlay(data: ShopPageWidgetLayoutUiModel): Boolean {
+    private fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == DYNAMIC && data.widgetName == PLAY_CAROUSEL_WIDGET
     }
 
-    private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetLayoutUiModel> {
+    private fun getListWidgetLayoutToLoad(lastCompletelyVisibleItemPosition: Int): MutableList<ShopPageWidgetUiModel> {
         return if (listWidgetLayout.isNotEmpty()) {
             if (shopHomeAdapter?.isLoadFirstWidgetContentData() == true) {
                 val toIndex = ShopUtil.getActualPositionFromIndex(lastCompletelyVisibleItemPosition)
@@ -2104,7 +2100,7 @@ open class ShopPageHomeFragment :
                     goToBundlingSelectionPage(selectedMultipleBundle.bundleId)
                 } else {
                     // atc bundle directly from shop page home
-                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                    val widgetLayoutParams = ShopPageWidgetUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
@@ -2148,7 +2144,7 @@ open class ShopPageHomeFragment :
                     goToBundlingSelectionPage(selectedBundle.bundleId)
                 } else {
                     // atc bundle directly from shop page home
-                    val widgetLayoutParams = ShopPageWidgetLayoutUiModel(
+                    val widgetLayoutParams = ShopPageWidgetUiModel(
                         widgetId = widgetLayout.widgetId,
                         widgetMasterId = widgetLayout.widgetMasterId,
                         widgetType = widgetLayout.widgetType,
@@ -2173,7 +2169,7 @@ open class ShopPageHomeFragment :
     private fun handleOnFinishAtcBundle(
         atcBundleModel: AddToCartBundleModel,
         bundleListSize: Int,
-        widgetLayout: ShopPageWidgetLayoutUiModel,
+        widgetLayout: ShopPageWidgetUiModel,
         bundleName: String,
         bundleType: String,
         shopHomeProductBundleDetailUiModel: ShopHomeProductBundleDetailUiModel
@@ -2269,7 +2265,7 @@ open class ShopPageHomeFragment :
         errorTitle: String,
         errorDescription: String,
         ctaText: String,
-        widgetLayoutParams: ShopPageWidgetLayoutUiModel
+        widgetLayoutParams: ShopPageWidgetUiModel
     ) {
         context?.let {
             DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -3338,7 +3334,7 @@ open class ShopPageHomeFragment :
         return (activity as? ShopPageSharedListener)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 
-    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
+    protected fun redirectToLoginPage(requestCode: Int = REQUEST_CODE_USER_LOGIN) {
         context?.let {
             val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             startActivityForResult(intent, requestCode)

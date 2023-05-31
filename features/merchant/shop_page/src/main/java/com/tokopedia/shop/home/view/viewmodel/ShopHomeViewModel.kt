@@ -123,17 +123,17 @@ class ShopHomeViewModel @Inject constructor(
         get() = _productListData
     private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
 
-    val shopHomeWidgetLayoutData: LiveData<Result<ShopPageHomeWidgetLayoutUiModel>>
+    val shopHomeWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
         get() = _shopHomeWidgetLayoutData
-    private val _shopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
+    private val _shopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
 
     val shopHomeWidgetContentData: Flow<Result<Map<Pair<String, String>, Visitable<*>?>>>
         get() = _shopHomeWidgetContentData
     private val _shopHomeWidgetContentData = MutableSharedFlow<Result<Map<Pair<String, String>, Visitable<*>?>>>()
 
-    val shopHomeWidgetContentDataError: Flow<List<ShopPageWidgetLayoutUiModel>>
+    val shopHomeWidgetContentDataError: Flow<List<ShopPageWidgetUiModel>>
         get() = _shopHomeWidgetContentDataError
-    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageWidgetLayoutUiModel>>()
+    private val _shopHomeWidgetContentDataError = MutableSharedFlow<List<ShopPageWidgetUiModel>>()
 
     val shopHomeMerchantVoucherLayoutData: LiveData<Result<ShopHomeVoucherUiModel>>
         get() = _shopHomeMerchantVoucherLayoutData
@@ -222,9 +222,9 @@ class ShopHomeViewModel @Inject constructor(
 
     private var miniCartData: MiniCartSimplifiedData? = null
 
-    val latestShopHomeWidgetLayoutData: LiveData<Result<ShopPageHomeWidgetLayoutUiModel>>
+    val latestShopHomeWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
         get() = _latestShopHomeWidgetLayoutData
-    private val _latestShopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageHomeWidgetLayoutUiModel>>()
+    private val _latestShopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
 
     fun getShopPageHomeWidgetLayoutData(
         shopId: String,
@@ -822,7 +822,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun getWidgetContentData(
-        listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
+        listWidgetLayout: List<ShopPageWidgetUiModel>,
         shopId: String,
         widgetUserAddressLocalData: LocalCacheModel,
         isThematicWidgetShown: Boolean,
@@ -1241,7 +1241,7 @@ class ShopHomeViewModel @Inject constructor(
         _shopPageAtcTracker.postValue(shopPageAtcTracker)
     }
 
-    fun isWidgetBundle(data: ShopPageWidgetLayoutUiModel): Boolean {
+    fun isWidgetBundle(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == WidgetType.BUNDLE
     }
 
@@ -1268,7 +1268,7 @@ class ShopHomeViewModel @Inject constructor(
         shopId: String,
         extParam: String,
         locData: LocalCacheModel
-    ): ShopPageHomeWidgetLayoutUiModel {
+    ): ShopPageLayoutUiModel {
         val useCase = getShopDynamicTabUseCase.get()
         useCase.isFromCacheFirst = false
         useCase.setRequestParams(
