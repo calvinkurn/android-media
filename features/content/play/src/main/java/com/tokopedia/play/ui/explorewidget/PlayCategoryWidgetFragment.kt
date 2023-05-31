@@ -15,6 +15,7 @@ import com.tokopedia.play.util.CachedState
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
+import com.tokopedia.play.view.uimodel.ExploreWidgetState
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -86,8 +87,8 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
     private fun renderCards(state: CachedState<PlayViewerNewUiState>) {
         if (state.isNotChanged { it.exploreWidget.category }) return
 
-        when (state.value.exploreWidget.category) {
-            is NetworkResult.Success -> categoryAdapter.setItemsAndAnimateChanges(state.value.exploreWidget.category.data)
+        when (state.value.exploreWidget.category.state) {
+            is ExploreWidgetState.Success -> categoryAdapter.setItemsAndAnimateChanges(state.value.exploreWidget.category.data)
             else -> {
                 categoryAdapter.setItemsAndAnimateChanges(
                     listOf(

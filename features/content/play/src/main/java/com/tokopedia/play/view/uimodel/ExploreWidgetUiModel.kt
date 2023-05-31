@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 
 /**
@@ -109,14 +110,8 @@ val List<WidgetUiModel>.getChannelBlocks: List<WidgetItemUiModel>
 
 val List<WidgetItemUiModel>.getChannelCards: List<PlayWidgetItemUiModel>
     get() {
-        val list = this // TODO() temp
-        return buildList {
-            list.onEach {
-                it.item.items.map {
-                    add(it)
-                }
-            }
-        }
+        val list = this
+        return list.flatMap { it.item.items }
     }
 
 val List<WidgetUiModel>.getChips: TabMenuUiModel
@@ -165,4 +160,14 @@ sealed class ExploreWidgetState {
 enum class ExploreWidgetType {
     Default,
     Category;
+}
+
+data class CategoryWidgetUiModel(
+    val data: List<PlayWidgetItemUiModel>,
+    val state: ExploreWidgetState,
+    val pagingConfig: PageConfig,
+) {
+    companion object {
+        val Empty get() = CategoryWidgetUiModel(data = emptyList(), state = ExploreWidgetState.Loading, pagingConfig = PageConfig.Empty)
+    }
 }

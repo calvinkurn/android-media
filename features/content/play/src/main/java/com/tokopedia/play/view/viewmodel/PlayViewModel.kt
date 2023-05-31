@@ -209,7 +209,7 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
     private val _exploreWidget = MutableStateFlow(ExploreWidgetUiModel.Empty)
-    private val _categoryWidget = MutableStateFlow<NetworkResult<List<PlayWidgetItemUiModel>>>(NetworkResult.Loading)
+    private val _categoryWidget = MutableStateFlow(CategoryWidgetUiModel.Empty)
 
     private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
 
@@ -1088,7 +1088,7 @@ class PlayViewModel @AssistedInject constructor(
             is FetchWidgets -> {
                 _isBottomSheetsShown.update { true }
 //                fetchWidgets()
-                getWidget(action.type)
+                getWidget(action.type, true)
             }
             is ClickChipWidget -> handleClickChip(action.item)
             NextPageWidgets -> onActionWidget(isNextPage = true)
@@ -2859,13 +2859,13 @@ class PlayViewModel @AssistedInject constructor(
      */
 
     private val _widgetQuery = MutableStateFlow(WidgetParamUiModel.Empty)
-    private fun getWidget (type: ExploreWidgetType) {
+    private fun getWidget(type: ExploreWidgetType, isRefresh: Boolean = false) {
         viewModelScope.launch {
             _widgetQuery.distinctUntilChanged { old, new ->  old == new }
                 .collectLatest {
                     when (type) {
-                        ExploreWidgetType.Category -> updateCategoryWidget()
-                        else -> updateDefaultWidget(isRefresh = false)
+                        ExploreWidgetType.Category -> updateCategoryWidget(isRefresh)
+                        else -> updateDefaultWidget(isRefresh = isRefresh)
                     }
             }
         }
@@ -2896,21 +2896,21 @@ class PlayViewModel @AssistedInject constructor(
         }) {}
     }
 
-    private fun updateCategoryWidget() {
+    private fun updateCategoryWidget(isRefresh: Boolean) {
         viewModelScope.launchCatchError(block = {
-            _categoryWidget.value = NetworkResult.Loading
+            _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
 
+            val cursor = if (!isRefresh) _categoryWidget.value.pagingConfig.cursor else ""
             val param = _channelDetail.value.exploreWidgetConfig //TODO(): change to category
             val response = repo.getWidgets(
                 group = param.group,
                 sourceType = param.sourceType,
                 sourceId = param.sourceId,
-                cursor = _exploreWidget.value.param.cursor
+                cursor = cursor
             )
-
-            _categoryWidget.update { widget -> widget.map { response.getChannelBlocks.getChannelCards } }
+            _categoryWidget.update { widget -> widget.copy(data = response.getChannelBlocks.getChannelCards, state = ExploreWidgetState.Success, pagingConfig = response.getConfig) }
         }) {
-                exception -> _categoryWidget.value = NetworkResult.Fail(exception)
+                exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception)) }
         }
     }
 

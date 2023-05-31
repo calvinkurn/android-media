@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.state
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.CategoryWidgetUiModel
 import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -160,14 +161,14 @@ data class FollowPopUpUiState(
 data class ExploreWidgetUiState(
     val shouldShow: Boolean,
     val data: ExploreWidgetUiModel,
-    val category: NetworkResult<List<PlayWidgetItemUiModel>>,
+    val category: CategoryWidgetUiModel,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
             get() = ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
-                category = NetworkResult.Loading,
+                category = CategoryWidgetUiModel.Empty,
             )
     }
 }
