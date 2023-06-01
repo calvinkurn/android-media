@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.scp_rewards.common.utils.hide
+import com.tokopedia.scp_rewards.common.utils.parseColor
 import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.WidgetMedalDetailBinding
 
@@ -19,8 +20,8 @@ class MedalDetailView(private val context: Context, attrs: AttributeSet?) :
             data.sponsorText?.let {
                 cvSponsor.show()
                 tvBrand.text = it
-                tvBrand.setTextColor(Color.parseColor(data.sponsorTextColor ?: "#FFFFFF"))
-                cvSponsor.setCardBackgroundColor(Color.parseColor(data.sponsorBackgroundColor ?: "#000000"))
+                tvBrand.setTextColor(parseColor(data.sponsorTextColor) ?: Color.WHITE)
+                cvSponsor.setCardBackgroundColor(parseColor(data.sponsorBackgroundColor) ?: Color.BLACK)
             } ?: run {
                 cvSponsor.hide()
             }

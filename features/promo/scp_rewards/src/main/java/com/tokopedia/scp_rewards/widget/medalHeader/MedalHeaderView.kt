@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.utils.grayscale
 import com.tokopedia.scp_rewards.common.utils.hide
 import com.tokopedia.scp_rewards.common.utils.loadLottieFromUrl
+import com.tokopedia.scp_rewards.common.utils.parseColor
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
 
 class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
@@ -24,7 +25,6 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
                 lottieViewSparks.hide()
                 lottieView.hide()
                 ivMedalIcon.setImageUrl(data.medalIconUrl ?: "")
-
             } else {
                 ivMedalIcon.hide()
                 lottieViewSparks.visible()
@@ -49,6 +49,6 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
         backgroundColor: String?
     ) {
         ivBackground.setImageUrl(backgroundUrl.orEmpty())
-        binding.apply { setBackgroundColor(Color.parseColor(backgroundColor ?: "#000000")) }
+        binding.apply { setBackgroundColor(parseColor(backgroundColor) ?: Color.BLACK) }
     }
 }

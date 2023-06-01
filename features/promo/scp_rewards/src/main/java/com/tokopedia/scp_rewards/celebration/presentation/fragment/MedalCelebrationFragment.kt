@@ -61,7 +61,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         private const val FALLBACK_DELAY = 2000L
         private const val MDPI_SCREEN_SIZE = 5.0
 
-        //UI States
+        // UI States
         const val LOADING_STATE = 0
         const val HAPPY_STATE = 1
         const val ERROR_STATE = 2
@@ -131,7 +131,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initStatusBarSetup()
         setupViewModelObservers()
-        medalCelebrationViewModel.getRewards(medaliSlug,"homepage")
+        medalCelebrationViewModel.getRewards(medaliSlug, "homepage")
         CelebrationAnalytics.sendImpressionCelebrationLoading(medaliSlug)
     }
 
@@ -165,9 +165,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.apply {
                 val color = scpRewardsCelebrationPage?.celebrationPage?.backgroundColor
-                parseColor(color,{
-                    mainView.container.setBackgroundColor(it)
-                })
+                mainView.container.setBackgroundColor(parseColor(color) ?: Color.WHITE)
             }
         }
     }
@@ -327,13 +325,13 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupHeadingMarginBasedOnDeviceSize(){
+    private fun setupHeadingMarginBasedOnDeviceSize() {
         val screenSize = DeviceInfo.getScreenSizeInInches(context)
-        if (screenSize > MDPI_SCREEN_SIZE){
+        if (screenSize > MDPI_SCREEN_SIZE) {
             binding?.mainView?.celebrationHeading?.apply {
                 val lp = layoutParams as ConstraintLayout.LayoutParams
                 val topMargin = resources.getDimensionPixelSize(R.dimen.mdpi_device_top_margin)
-                lp.setMargins(0,topMargin,0,0)
+                lp.setMargins(0, topMargin, 0, 0)
             }
         }
     }
@@ -348,27 +346,24 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupSponsorCard(){
+    private fun setupSponsorCard() {
         binding?.mainView?.apply {
-            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply{
+            (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
                 val medaliSourceText = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText.orEmpty()
                 val medaliSourceBgColor = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceBackgroundColor.orEmpty()
                 val medaliSourceFontColor = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceFontColor.orEmpty()
-                if(medaliSourceText.isNotEmpty()){
+                if (medaliSourceText.isNotEmpty()) {
                     brandTag.text = scpRewardsCelebrationPage?.celebrationPage?.medaliSourceText
-                    parseColor(medaliSourceFontColor,{
-                        brandTag.setTextColor(it)
-                    })
-                    parseColor(medaliSourceBgColor,{
-                        sponsorCard.setCardBackgroundColor(it)
-                    })
+                    brandTag.setTextColor(parseColor(medaliSourceFontColor) ?: Color.WHITE)
+                    sponsorCard.setCardBackgroundColor(parseColor(medaliSourceBgColor) ?: Color.BLACK)
+                } else {
+                    hideSponsorCard()
                 }
-                else hideSponsorCard()
             }
         }
     }
 
-    private fun hideSponsorCard(){
+    private fun hideSponsorCard() {
         binding?.mainView?.sponsorCard?.hide()
         binding?.mainView?.badgeName?.apply {
             val lp = layoutParams as ConstraintLayout.LayoutParams
@@ -376,7 +371,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun configureBackgroundImage(bgImage:Drawable) {
+    private fun configureBackgroundImage(bgImage: Drawable) {
         (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
             binding?.mainView?.backgroundImage?.apply {
                 show()
@@ -506,18 +501,20 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun animateBadge() {
-        val badgeDrawable = if(isFallbackCase){
+        val badgeDrawable = if (isFallbackCase) {
             CelebrationAnalytics.sendImpressionFallbackBadge(medaliSlug)
             changeBadgeSize()
-            ResourcesCompat.getDrawable(resources,R.drawable.fallback_badge,null)
-        } else badgeImage
+            ResourcesCompat.getDrawable(resources, R.drawable.fallback_badge, null)
+        } else {
+            badgeImage
+        }
         binding?.mainView?.badgeImage?.setImageDrawable(badgeDrawable)
         val listener = object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
             override fun onAnimationEnd(animation: Animator) {
-               if(isFallbackCase || mandatoryAssetFailure){
-                   startRedirection()
-               }
+                if (isFallbackCase || mandatoryAssetFailure) {
+                    startRedirection()
+                }
             }
             override fun onAnimationCancel(animation: Animator) {}
             override fun onAnimationRepeat(animation: Animator) {}
@@ -530,7 +527,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun changeBadgeSize(){
+    private fun changeBadgeSize() {
         binding?.mainView?.badgeImage?.apply {
             val newWidth = resources.getDimensionPixelSize(R.dimen.fallback_badge_width)
             val newHeight = resources.getDimensionPixelSize(R.dimen.fallback_badge_height)
@@ -542,10 +539,10 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun animateSpotlight() {
-        if(shouldShowAsset()){
+        if (shouldShowAsset()) {
             binding?.mainView?.spotlight?.setImageDrawable(spotlightImage)
             binding?.mainView?.spotlight?.apply {
-                pivotX = width/2f
+                pivotX = width / 2f
                 pivotY = 0f
             }
             scaleView(
@@ -557,7 +554,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun animateSunflare() {
-        if(shouldShowAsset()){
+        if (shouldShowAsset()) {
             binding?.mainView?.sunflare?.setImageDrawable(sunburstImage)
             val listener = object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {}
@@ -611,16 +608,16 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun showCelebrationConfetti() {
-        if(shouldShowAsset()){
+        if (shouldShowAsset()) {
             celebrationLottieComposition?.let {
                 binding?.mainView?.celebrationView?.apply {
                     setComposition(it)
                     playAnimation()
-                    addAnimatorListener(object : Animator.AnimatorListener{
+                    addAnimatorListener(object : Animator.AnimatorListener {
                         override fun onAnimationStart(animation: Animator) {}
                         override fun onAnimationCancel(animation: Animator) {}
                         override fun onAnimationEnd(animation: Animator) {
-                          startRedirection()
+                            startRedirection()
                         }
                         override fun onAnimationRepeat(animation: Animator) {}
                     })
@@ -630,7 +627,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun showStarsConfetti() {
-        if(shouldShowAsset()){
+        if (shouldShowAsset()) {
             starsLottieComposition?.let {
                 binding?.mainView?.lottieStars?.apply {
                     setComposition(it)
@@ -650,7 +647,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun showErrorView() {
         context?.let {
-            val defaultBg = ContextCompat.getColor(it,R.color.white)
+            val defaultBg = ContextCompat.getColor(it, R.color.white)
             binding?.mainFlipper?.setBackgroundColor(defaultBg)
         }
         binding?.mainFlipper?.displayedChild = ERROR_STATE
@@ -676,7 +673,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun resetPage() {
         binding?.mainFlipper?.displayedChild = LOADING_STATE
-        medalCelebrationViewModel.getRewards(medaliSlug,"homepage")
+        medalCelebrationViewModel.getRewards(medaliSlug, "homepage")
     }
 
     private fun startRedirection() {
@@ -690,7 +687,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun fadeOutPage(){
+    private fun fadeOutPage() {
         binding?.mainView?.apply {
             val opacityPvh = getOpacityPropertyValueHolder(from = 255, to = 0)
             ObjectAnimator.ofPropertyValuesHolder(this, opacityPvh).apply {
@@ -722,6 +719,3 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         audioManager?.releaseMediaPlayer()
     }
 }
-
-
-
