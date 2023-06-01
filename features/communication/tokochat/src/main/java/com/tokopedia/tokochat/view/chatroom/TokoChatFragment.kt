@@ -59,6 +59,7 @@ import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
@@ -342,6 +343,11 @@ open class TokoChatFragment :
                 savedInstanceState,
                 ""
             )
+        }
+
+        // Only set the flag when detected
+        if (activity?.isFromBubble() == true) {
+            viewModel.isFromBubble = true
         }
     }
 
@@ -1051,7 +1057,11 @@ open class TokoChatFragment :
         } else {
             if (appLink.isNotBlank()) {
                 context?.let {
-                    RouteManager.route(it, appLink)
+                    val intent = RouteManager.getIntent(it, appLink)
+                    if (viewModel.isFromBubble) {
+                        intent.putExtra(IS_FROM_BUBBLE_KEY, true)
+                    }
+                    startActivity(intent)
                 }
             }
         }

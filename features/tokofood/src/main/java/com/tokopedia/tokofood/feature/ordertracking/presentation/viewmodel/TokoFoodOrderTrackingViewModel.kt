@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.*
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
@@ -80,6 +81,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private var merchantData: MerchantDataUiModel? = null
     private var orderId = ""
     private var orderStatusKey = ""
+    private var isFromBubble = false
 
     var channelId: String = ""
     var goFoodOrderNumber: String = ""
@@ -117,6 +119,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getOrderStatus() = orderStatusKey
 
+    fun getIsFromBubble() = isFromBubble
+
     fun updateOrderId(orderId: String) {
         this.orderId = orderId
         orderIdFlow.tryEmit(this.orderId)
@@ -126,6 +130,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         savedStateHandle[ORDER_ID] = orderId
         savedStateHandle[GOFOOD_ORDER_NUMBER] = goFoodOrderNumber
         savedStateHandle[CHANNEL_ID] = channelId
+        savedStateHandle[TokoChatValueUtil.IS_FROM_BUBBLE_KEY] = isFromBubble
     }
 
     fun onRestoreSavedInstanceState() {

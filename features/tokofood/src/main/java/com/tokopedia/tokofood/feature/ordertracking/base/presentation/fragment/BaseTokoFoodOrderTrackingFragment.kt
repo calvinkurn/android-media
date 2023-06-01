@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.showErrorToaster
@@ -87,6 +88,10 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private val orderId by lazy {
         arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
+    }
+
+    private val isFromBubble by lazy {
+        arguments?.getBoolean(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, false)
     }
 
     private var toolbarHandler: OrderTrackingToolbarHandler? = null
@@ -212,6 +217,9 @@ class BaseTokoFoodOrderTrackingFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, tokoChatAppLink).apply {
                 putExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, true)
+                if (isFromBubble == true) { // Only assign if it's true
+                    putExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, true)
+                }
             }
             startActivity(intent)
         }
@@ -376,7 +384,7 @@ class BaseTokoFoodOrderTrackingFragment :
                     )
                 }
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }

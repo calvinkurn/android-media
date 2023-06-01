@@ -132,6 +132,7 @@ class TokoChatViewModel @Inject constructor(
     var isFromTokoFoodPostPurchase = false
     var pushNotifTemplateKey = ""
     var channelId = ""
+    var isFromBubble = false
 
     @Volatile
     var imageAttachmentMap = mutableMapOf<String, String>()
