@@ -192,7 +192,8 @@ open class TokoChatFragment :
         val shouldShowBubblesAwarenessBottomSheet =
             TokoChatValueUtil.shouldShowBubblesAwareness() &&
                 (activity?.isFromBubble() == false) &&
-                viewModel.shouldShowBottomsheetBubblesCache()
+                viewModel.shouldShowBottomsheetBubblesCache() &&
+                !viewModel.isFromBubble
 
         return if (shouldShowBubblesAwarenessBottomSheet) {
             showBubblesAwarenessBottomSheet()
@@ -604,7 +605,8 @@ open class TokoChatFragment :
     private fun addBubbleTicker() {
         if (TokoChatValueUtil.shouldShowBubblesAwareness() &&
             viewModel.shouldShowTickerBubblesCache() &&
-            (activity?.isFromBubble() == false)
+            (activity?.isFromBubble() == false) &&
+            !viewModel.isFromBubble
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
                 message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
@@ -1367,7 +1369,9 @@ open class TokoChatFragment :
     }
 
     private fun setupTrackers() {
-        tokoChatAnalytics = TokoChatAnalytics(isFromBubble = activity?.isFromBubble() ?: false)
+        tokoChatAnalytics = TokoChatAnalytics(
+            isFromBubble = (activity?.isFromBubble() ?: false) || viewModel.isFromBubble
+        )
 
         getComposeMessageArea()?.setTracker(
             trackOnClickComposeArea = {
