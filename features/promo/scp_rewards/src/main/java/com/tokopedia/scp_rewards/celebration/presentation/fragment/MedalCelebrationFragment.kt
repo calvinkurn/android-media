@@ -60,6 +60,11 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
         private const val ASSET_TOTAL_COUNT = 5
         private const val FALLBACK_DELAY = 2000L
         private const val MDPI_SCREEN_SIZE = 5.0
+
+        //UI States
+        const val LOADING_STATE = 0
+        const val HAPPY_STATE = 1
+        const val ERROR_STATE = 2
     }
 
     // Assets
@@ -143,7 +148,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
                     showErrorView()
                 }
                 is Loading -> {
-                    binding?.mainFlipper?.displayedChild = 0
+                    binding?.mainFlipper?.displayedChild = LOADING_STATE
                 }
             }
         }
@@ -151,7 +156,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun showMainView() {
         binding?.apply {
-            mainFlipper.displayedChild = 1
+            mainFlipper.displayedChild = HAPPY_STATE
         }
         setupBackground()
     }
@@ -295,7 +300,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun showAnimatedView() {
-        binding?.mainView?.animationViewFlipper?.displayedChild = 1
+        binding?.mainView?.animationViewFlipper?.displayedChild = HAPPY_STATE
         initViewSetup()
         handler.postDelayed(
             {
@@ -319,8 +324,6 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             lottieStars.setImageDrawable(null)
             setAllText()
             setupSponsorCard()
-//            val headingSize = resources.getDimension(R.dimen.heading_2_large)
-//            celebrationHeading.setTextSize(TypedValue.COMPLEX_UNIT_PX,headingSize)
         }
     }
 
@@ -403,7 +406,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun translateView(view: View?, duration: Long, from: Int, to: Int = 0, interpolatorType: Int) {
-        view?.let { _ ->
+        view?.let {
             val translatePvh = getTranslationPropertyValueHolder(from, to)
             val opacityPvh = getOpacityPropertyValueHolder()
             ObjectAnimator.ofPropertyValuesHolder(view, translatePvh, opacityPvh).apply {
@@ -419,7 +422,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
 
     private fun rotateSunflare() {
         binding?.mainView?.sunflare?.apply {
-            ObjectAnimator.ofFloat(this, "rotation", 0f, 360f).apply {
+            ObjectAnimator.ofFloat(this, View.ROTATION, 0f, 360f).apply {
                 duration = ROTATION_DURATION
                 interpolator = null
                 repeatCount = ValueAnimator.INFINITE
@@ -429,25 +432,25 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun getTranslationPropertyValueHolder(from: Int, to: Int = 0) = PropertyValuesHolder.ofFloat(
-        "translationY",
+        View.TRANSLATION_Y,
         from.toFloat(),
         to.toFloat()
     )
 
     private fun getOpacityPropertyValueHolder(from: Int = 0, to: Int = 255) = PropertyValuesHolder.ofFloat(
-        "alpha",
+        View.ALPHA,
         from.toFloat(),
         to.toFloat()
     )
 
     private fun getScaleXPropertyValueHolder(from: Int = 0, to: Int = 1) = PropertyValuesHolder.ofFloat(
-        "scaleX",
+        View.SCALE_X,
         from.toFloat(),
         to.toFloat()
     )
 
     private fun getScaleYPropertyValueHolder(from: Int = 0, to: Int = 1) = PropertyValuesHolder.ofFloat(
-        "scaleY",
+        View.SCALE_Y,
         from.toFloat(),
         to.toFloat()
     )
@@ -576,28 +579,31 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private fun animateRest() {
         binding?.mainView?.apply {
             context?.let {
+                val dimen53 = it.resources.getDimension(R.dimen.dimen_53).toInt()
+                val dimen40 = it.resources.getDimension(R.dimen.dimen_40).toInt()
+                val dimen44 = it.resources.getDimension(R.dimen.dimen_44).toInt()
                 translateView(
                     view = celebrationHeading,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it, -53).toInt(),
+                    from = dpToPx(it, -dimen53).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = badgeName,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it, 40).toInt(),
+                    from = dpToPx(it, dimen40).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = sponsorCard,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it, 44).toInt(),
+                    from = dpToPx(it, dimen44).toInt(),
                     interpolatorType = EASE_IN
                 )
                 translateView(
                     view = badgeDescription,
                     duration = ANIMATION_DURATION,
-                    from = dpToPx(it, 40).toInt(),
+                    from = dpToPx(it, dimen40).toInt(),
                     interpolatorType = EASE_IN
                 )
             }
@@ -647,7 +653,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
             val defaultBg = ContextCompat.getColor(it,R.color.white)
             binding?.mainFlipper?.setBackgroundColor(defaultBg)
         }
-        binding?.mainFlipper?.displayedChild = 2
+        binding?.mainFlipper?.displayedChild = ERROR_STATE
         binding?.errorView?.apply {
             errorSecondaryAction.show()
             if (errorSecondaryAction is UnifyButton) {
@@ -669,7 +675,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun resetPage() {
-        binding?.mainFlipper?.displayedChild = 0
+        binding?.mainFlipper?.displayedChild = LOADING_STATE
         medalCelebrationViewModel.getRewards(medaliSlug,"homepage")
     }
 

@@ -5,4 +5,7 @@
     <dimen name="mdpi_device_top_margin">142dp</dimen>
     <dimen name="heading_2_large">22sp</dimen>
     <dimen name="margin_20_dp">20dp</dimen>
+    <dimen name="dimen_53">53dp</dimen>
+    <dimen name="dimen_40">40dp</dimen>
+    <dimen name="dimen_44">44dp</dimen>
 </resources>
