@@ -1029,15 +1029,17 @@ open class DiscoveryFragment :
     private fun setupObserveAndShowAnchor() {
         if (!stickyHeaderShowing) {
             anchorViewHolder?.let {
-                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers()) {
-                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
-                }
-                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
-                    mAnchorHeaderView.removeAllViews()
-                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
-                        anchorViewHolder?.itemView
-                    )
-                    mAnchorHeaderView.addView(it.itemView)
+                it.viewModel?.let { anchorTabsViewModel ->
+                    if (!anchorTabsViewModel.getCarouselItemsListData().hasActiveObservers()) {
+                        anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                    }
+                    if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                        mAnchorHeaderView.removeAllViews()
+                        (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+                            anchorViewHolder?.itemView
+                        )
+                        mAnchorHeaderView.addView(it.itemView)
+                    }
                 }
             }
         }
@@ -2172,8 +2174,9 @@ open class DiscoveryFragment :
                     }
                 }
             smoothScroller.targetPosition = position
-            if (this.isResumed)
+            if (this.isResumed) {
                 staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            }
         } catch (e: Exception) {
         }
     }
