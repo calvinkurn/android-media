@@ -1,6 +1,5 @@
 package com.tokopedia.scp_rewards.celebration.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.ScpResult
 import com.tokopedia.scp_rewards.common.data.Success
-import kotlinx.coroutines.launch
 import com.tokopedia.scp_rewards.common.utils.launchCatchError
 
 class MedalCelebrationViewModel @Inject constructor(
@@ -25,10 +23,10 @@ class MedalCelebrationViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                     val response = rewardsGetMedaliCelebrationPageUseCase.getRewards(
-                        medaliSlug = "INJECT_BADGE_1",
-                        sourceName = "homepage"
+                        medaliSlug = medaliSlug,
+                        sourceName = sourceName
                     )
-                    if(response.scpRewardsCelebrationPage?.celebrationPage!=null){
+                    if(response.scpRewardsCelebrationPage?.resultStatus?.code == "200"){
                         _badgeLiveData.postValue(Success(response))
                     }
                     else throw Throwable()

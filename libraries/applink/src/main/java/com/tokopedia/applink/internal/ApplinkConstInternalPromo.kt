@@ -73,4 +73,8 @@ object ApplinkConstInternalPromo {
     const val INTERNAL_GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
     const val INTERNAL_GAMIFICATION_TAP_TAP_GIFT = "$INTERNAL_GLOBAL/gamification_gift_60s"
 
+    //Scp Rewards
+    private const val HOST_SCP_REWARDS = "scp-rewards"
+    private const val INTERNAL_SCP_REWARDS = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_SCP_REWARDS}"
+    const val CELEBRATION_PAGE = "${INTERNAL_SCP_REWARDS}/celebration/{medali_slug}"
 }
