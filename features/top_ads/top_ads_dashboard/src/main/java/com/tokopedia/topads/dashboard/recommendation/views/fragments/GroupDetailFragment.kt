@@ -40,10 +40,16 @@ class GroupDetailFragment : BaseDaggerFragment() {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
                 onChipClick,
-                onInsightItemClick
+                onInsightItemClick,
+                onAccordianItemClick
             )
         )
     }
+
+    private var onAccordianItemClick: (clickedItem: Int) -> Unit = { clickedItem ->
+        viewModel.reOrganiseData(clickedItem)
+    }
+
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
 
     @Inject
@@ -80,7 +86,7 @@ class GroupDetailFragment : BaseDaggerFragment() {
         val adGroupName = arguments?.getString("adGroupName")
         val adGroupId = arguments?.getString("groupId") ?: ""
         val insightType = arguments?.getInt("insightType") ?: 0
-        viewModel.selectDefaultChips(insightType)
+        viewModel.selectDefaultChips(insightType, adType)
         viewModel.loadInsightTypeChips(adType, insightList, adGroupName)
         if (adType != null && adGroupId != null) {
             loadData(if ("product" == adType) TYPE_PRODUCT else TYPE_SHOP, adGroupId)

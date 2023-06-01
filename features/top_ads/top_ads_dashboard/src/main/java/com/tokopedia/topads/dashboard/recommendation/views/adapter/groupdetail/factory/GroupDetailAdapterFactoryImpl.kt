@@ -10,7 +10,8 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.v
 
 class GroupDetailAdapterFactoryImpl(
     private val onChipClick: (Int) -> Unit,
-    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit
+    private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit,
+    private val onAccordianItemClick: ((clickedItem: Int) -> Unit)
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {
@@ -62,7 +63,7 @@ class GroupDetailAdapterFactoryImpl(
             InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view)
             PerformanceWidgetViewHolder.LAYOUT -> PerformanceWidgetViewHolder(view)
             GroupDetailChipsViewHolder.LAYOUT -> GroupDetailChipsViewHolder(view, onChipClick)
-            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick)
+            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick, onAccordianItemClick)
             AccordianKataKunciViewHolder.LAYOUT -> AccordianKataKunciViewHolder(view)
             AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view)
             AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view)

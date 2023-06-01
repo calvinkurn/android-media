@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -51,9 +52,9 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun reOrganiseData() {
+    fun reOrganiseData(clickedItem: Int = INVALID_INSIGHT_TYPE) {
         _detailPageLiveData.value =
-            TopAdsListAllInsightState.Success(groupDetailMapper.reArrangedDataMap())
+            TopAdsListAllInsightState.Success(groupDetailMapper.reArrangedDataMap(clickedItem))
     }
 
     fun loadInsightTypeChips(
@@ -115,7 +116,11 @@ class GroupDetailViewModel @Inject constructor(
         return groupDetailMapper.detailPageDataMap[TYPE_CHIPS] != null
     }
 
-    fun selectDefaultChips(insightType: Int) {
+    fun selectDefaultChips(insightType: Int, adType: String?) {
+        if (adType == "headline") {
+            groupDetailMapper.detailPageDataMap.remove(TYPE_CHIPS)
+            return
+        }
         chipsList.forEachIndexed { index, groupDetailChipsItemUiModel ->
             groupDetailChipsItemUiModel.isSelected = (index == insightType)
         }

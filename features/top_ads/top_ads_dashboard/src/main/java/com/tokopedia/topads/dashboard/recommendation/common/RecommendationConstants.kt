@@ -11,4 +11,6 @@ object RecommendationConstants {
     const val TYPE_NEGATIVE_KEYWORD_BID = 7
     const val TYPE_EMPTY_STATE = 8
     const val TYPE_UN_OPTIMIZED_GROUP = 9
+
+    const val INVALID_INSIGHT_TYPE = -1
 }
