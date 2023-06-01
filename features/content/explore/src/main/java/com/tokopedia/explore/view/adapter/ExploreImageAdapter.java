@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
         this.list = new ArrayList<>();
         this.loadingMoreModel = new LoadingMoreModel();
         this.emptyModel = new EmptyModel();
-        this.emptyModel.setIconRes(com.tokopedia.feedcomponent.R.drawable.ic_empty_search);
+        this.emptyModel.setIconRes(com.tokopedia.feedcomponent.R.drawable.ic_feed_empty_search);
         this.emptyModel.setContent(context.getString(R.string.explore_empty_result));
     }
 
@@ -97,6 +98,7 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
         return this.list.contains(loadingMoreModel);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void clearData() {
         this.list.clear();
         notifyDataSetChanged();

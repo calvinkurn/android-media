@@ -23,7 +23,7 @@ class BubbleChatNotification(
     baseNotificationModel: BaseNotificationModel,
     private val baseNotificationList: List<BaseNotificationModel>,
     private val bubbleBitmap: Bitmap?
-) : RichDefaultNotification(context, baseNotificationModel) {
+) : RichDefaultNotification(context, baseNotificationModel, baseNotificationList) {
 
     private val bubblesFactory = BubblesFactoryImpl(context)
 

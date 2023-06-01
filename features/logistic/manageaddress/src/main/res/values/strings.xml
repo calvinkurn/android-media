@@ -29,14 +29,6 @@
     <string name="set_default_address">Jadikan Alamat Utama</string>
     <string name="set_default_choose_address">Jadikan Alamat Utama &amp; Pilih</string>
     <string name="delete_address">Hapus Alamat</string>
-
-    <!--Checkout Address-->
-    <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
-    <string name="change_address">Ubah Alamat</string>
-    <string name="add_address">Tambah Alamat Baru</string>
-    <string name="label_oops">Oopppsss..</string>
-    <string name="message_address_not_found">Kami tidak dapat menemukan alamat yang Anda cari.</string>
-    <string name="label_button_change_search">Ganti Pencarian</string>
     <string name="label_find_address">Cari Alamat</string>
 
     <!--Content Description-->
@@ -148,6 +140,7 @@
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
+    <string name="title_delete_address_dialog">Hapus Alamat ini?</string>
 
 <!--    tab layout label-->
     <string name="tablayout_label_main">Semua Alamat</string>

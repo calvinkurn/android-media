@@ -55,11 +55,11 @@ public class CMNotificationFactory {
                 if (baseNotificationModel.isReviewOn()) {
                     return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
                 } else if (baseNotificationModel.isReplyChat()) {
-                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel);
+                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel, getTopChatNotificationModelList(baseNotificationModelList));
                 } else if (isEnableBubble(baseNotificationModel)) {
                     return new BubbleChatNotification(context.getApplicationContext(), baseNotificationModel, getTokoChatNotificationModelList(baseNotificationModelList), null);
                 } else {
-                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel, baseNotificationModelList);
                 }
             }
 
@@ -103,6 +103,15 @@ public class CMNotificationFactory {
         notificationManager.cancel(notificationId);
     }
 
+    public static List<BaseNotificationModel> getTopChatNotificationModelList(List<BaseNotificationModel> baseNotificationModelList) {
+        List<BaseNotificationModel> topChatNotificationModelList = new ArrayList<>();
+        for (BaseNotificationModel baseNotificationModel : baseNotificationModelList) {
+            if (baseNotificationModel.isTopChatOn()) {
+                topChatNotificationModelList.add(baseNotificationModel);
+            }
+        }
+        return topChatNotificationModelList;
+    }
     private static boolean isEnableBubble(BaseNotificationModel baseNotificationModel) {
         boolean isEnableBubble = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
         return isEnableBubble && getIsBubbleRollenceEnabled() && isTokoChatPNIdExist(baseNotificationModel);

@@ -10,6 +10,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Price
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceTextData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -852,6 +853,50 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Payment Success With Logistic Ticker Not Showing And BO Promo Exist`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(
+            isShowLogisticPromoTickerMessage = false,
+            isApplyLogisticPromo = true,
+            logisticPromoShipping = ShippingCourierUiModel(),
+            logisticPromoViewModel = LogisticPromoUiModel(promoCode = "BOPromo")
+        )
+        val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } returns null
+
+        // When
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
+
+        // Then
+        assertEquals(orderSummaryPageViewModel.orderShipment.value.isShowLogisticPromoTickerMessage, true)
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Payment Success With Logistic Ticker Not Showing And BO Promo Not Exist`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = OrderShipment(
+            isShowLogisticPromoTickerMessage = false,
+            isApplyLogisticPromo = false
+        )
+        val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } returns null
+
+        // When
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
+
+        // Then
+        assertEquals(orderSummaryPageViewModel.orderShipment.value.isShowLogisticPromoTickerMessage, false)
         assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
     }
 

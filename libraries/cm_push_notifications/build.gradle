@@ -64,6 +64,10 @@ dependencies {
     implementation (rootProject.ext.playServicesDependencies.ads){
         exclude group: 'com.android.support'
     }
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
