@@ -559,5 +559,7 @@
     <string name="topads_insight_performance_count">%sx teratas dari %s total tampil</string>
     <string name="topads_insight_performance_not_rated_desc">Data sedang diproses. Cek lagi nanti, ya.</string>
     <string name="topads_insight_performance_info_heading">Perhitungan dari persentase jumlah tampil teratas dibagi total tampil.</string>
+    <string name="wide">Luas</string>
+    <string name="specific">Spesifik</string>
 </resources>
 

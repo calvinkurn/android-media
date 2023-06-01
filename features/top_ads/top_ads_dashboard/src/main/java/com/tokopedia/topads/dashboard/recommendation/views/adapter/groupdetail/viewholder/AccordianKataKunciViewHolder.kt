@@ -3,10 +3,13 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 
@@ -22,10 +25,20 @@ class AccordianKataKunciViewHolder(private val itemView: View) :
             private val title : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.title)
             private val searchesCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.searches_count_value)
             private val potentialCount : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.show_potential_value)
+            private val keywordStateType : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
+            private val keywordCost : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.keyword_cost)
             fun bind(element: NewPositiveKeywordsRecom) {
                 title.text = element.keywordTag
-                searchesCount.text = element.totalSearch
-                potentialCount.text = element.predictedImpression
+                searchesCount.text = String.format("%s/bulan",element.totalSearch)
+                potentialCount.text = String.format("+%s kali/hari",element.predictedImpression)
+                keywordCost.editText.setText(element.suggestionBid.toString())
+                if(element.keywordType == KEYWORD_TYPE_POSITIVE_PHRASE){
+                    keywordStateType.text = getString(R.string.wide)
+                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+                } else {
+                    keywordStateType.text = getString(R.string.specific)
+                    keywordStateType.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN100))
+                }
             }
         }
 
@@ -58,6 +71,12 @@ class AccordianKataKunciViewHolder(private val itemView: View) :
         element?.newPositiveKeywordsRecom?.let {
             adapter.kataKunciItemList = it
         }
+        kataKunciRv.addItemDecoration(
+            DividerItemDecoration(
+                itemView.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
     companion object {

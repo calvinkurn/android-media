@@ -20,4 +20,6 @@ object RecommendationConstants {
     const val PERFORMANCE_RARITY_THRESHOLD = 5
     const val PERFORMANCE_NOT_RATED_THRESHOLD = 0
     const val DEFAULT_SELECTED_INSIGHT_TYPE = 0
+    const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
+    const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
 }

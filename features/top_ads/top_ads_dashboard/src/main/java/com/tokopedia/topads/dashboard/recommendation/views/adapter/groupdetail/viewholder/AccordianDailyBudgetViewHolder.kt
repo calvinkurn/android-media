@@ -8,14 +8,17 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianD
 class AccordianDailyBudgetViewHolder(private val view: View) :
     AbstractViewHolder<AccordianDailyBudgetUiModel>(view) {
 
-    private val text: com.tokopedia.unifyprinciples.Typography =
-        view.findViewById(R.id.accordianTypography)
+    private val currentBudget : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.currentBudget)
+    private val recommendedBudget : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.recommendedBudget)
+    private val dailyBudget : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.dailyBudgetInput)
 
     override fun bind(element: AccordianDailyBudgetUiModel?) {
-        text.text = element?.text
+        currentBudget.text = String.format("Rp%d", 1324)
+        recommendedBudget.text = String.format("Rp%d", 1234)
+        dailyBudget.editText.setText("1234")
     }
 
     companion object {
-        val LAYOUT = R.layout.top_ads_accordian_daily_budget_layout
+        val LAYOUT = R.layout.topads_insights_accordian_anggaran_harian_item_layout
     }
 }

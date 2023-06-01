@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@id/recommended" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
-        android:id="@+id/keyword_cost_cta"
+        android:id="@+id/keyword_cost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:unify_text_field_label="@string/topads_insight_keyword_cost"

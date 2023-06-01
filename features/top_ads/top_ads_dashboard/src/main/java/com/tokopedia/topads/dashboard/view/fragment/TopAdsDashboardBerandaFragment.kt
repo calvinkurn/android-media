@@ -398,6 +398,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 is TopAdsListAllInsightState.Fail -> {
 
                 }
+                else -> {}
             }
         }
 
