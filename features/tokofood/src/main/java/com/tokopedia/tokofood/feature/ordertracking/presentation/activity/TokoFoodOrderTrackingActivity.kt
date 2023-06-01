@@ -44,8 +44,12 @@ class TokoFoodOrderTrackingActivity :
                 val params = UriUtil.uriQueryParamsToMap(it)
                 val orderIdParam = params[DeeplinkMapperTokoFood.PATH_ORDER_ID].orEmpty()
                 putString(DeeplinkMapperTokoFood.PATH_ORDER_ID, orderIdParam)
-                putBoolean(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, viewModel.getIsFromBubble())
             }
+        }?.apply {
+            putBoolean(
+                TokoChatValueUtil.IS_FROM_BUBBLE_KEY,
+                intent.getBooleanExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, false)
+            )
         }
         return BaseTokoFoodOrderTrackingFragment.newInstance(bundle)
     }

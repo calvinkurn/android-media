@@ -90,10 +90,6 @@ class BaseTokoFoodOrderTrackingFragment :
         arguments?.getString(DeeplinkMapperTokoFood.PATH_ORDER_ID).orEmpty()
     }
 
-    private val isFromBubble by lazy {
-        arguments?.getBoolean(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, false)
-    }
-
     private var toolbarHandler: OrderTrackingToolbarHandler? = null
 
     private var binding by autoClearedNullable<FragmentTokofoodOrderTrackingBinding>()
@@ -140,6 +136,7 @@ class BaseTokoFoodOrderTrackingFragment :
         observeOrderCompletedLiveTracking()
         observeDriverPhoneNumber()
         observeTokoChatMutationProfile()
+        setDataArguments()
     }
 
     override fun onDestroy() {
@@ -217,7 +214,7 @@ class BaseTokoFoodOrderTrackingFragment :
         context?.let {
             val intent = RouteManager.getIntent(it, tokoChatAppLink).apply {
                 putExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, true)
-                if (isFromBubble == true) { // Only assign if it's true
+                if (viewModel.isFromBubble) { // Only assign if it's true
                     putExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, true)
                 }
             }
@@ -632,6 +629,13 @@ class BaseTokoFoodOrderTrackingFragment :
             viewModel.userSession.deviceId.orEmpty(),
             TokofoodErrorLogger.ErrorDescription.UNREAD_CHAT_COUNT_ERROR
         )
+    }
+
+    private fun setDataArguments() {
+        viewModel.isFromBubble = arguments?.getBoolean(
+            TokoChatValueUtil.IS_FROM_BUBBLE_KEY,
+            false
+        ) ?: false
     }
 
     companion object {

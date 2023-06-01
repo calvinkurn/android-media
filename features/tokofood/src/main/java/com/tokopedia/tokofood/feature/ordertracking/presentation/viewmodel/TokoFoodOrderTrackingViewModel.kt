@@ -9,6 +9,7 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -81,10 +82,10 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private var merchantData: MerchantDataUiModel? = null
     private var orderId = ""
     private var orderStatusKey = ""
-    private var isFromBubble = false
 
     var channelId: String = ""
     var goFoodOrderNumber: String = ""
+    var isFromBubble = false
 
     init {
         viewModelScope.launch {
@@ -119,8 +120,6 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun getOrderStatus() = orderStatusKey
 
-    fun getIsFromBubble() = isFromBubble
-
     fun updateOrderId(orderId: String) {
         this.orderId = orderId
         orderIdFlow.tryEmit(this.orderId)
@@ -139,6 +138,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         )
         goFoodOrderNumber = savedStateHandle.get<String>(GOFOOD_ORDER_NUMBER).orEmpty()
         channelId = savedStateHandle.get<String>(CHANNEL_ID).orEmpty()
+        isFromBubble = savedStateHandle.get<Boolean>(TokoChatValueUtil.IS_FROM_BUBBLE_KEY).orFalse()
     }
 
     fun fetchOrderDetail(orderId: String) {
