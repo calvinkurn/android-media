@@ -1,29 +1,20 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
 import android.graphics.Color
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
-import androidx.core.widget.NestedScrollView
-import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -46,13 +37,11 @@ import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
-import com.tokopedia.scp_rewards_common.R
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import com.tokopedia.scp_rewards_common.R
 import java.util.*
 import javax.inject.Inject
 
@@ -70,7 +59,7 @@ const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/
 
 class MedalDetailFragment : BaseDaggerFragment() {
 
-    private lateinit var windowInsetsController: WindowInsetsControllerCompat
+    private var windowInsetsController: WindowInsetsControllerCompat? = null
     private lateinit var binding: MedalDetailFragmentLayoutBinding
 
     @Inject
@@ -93,52 +82,14 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding = MedalDetailFragmentLayoutBinding.inflate(layoutInflater)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        setupToolbar(binding.toolbar)
-        setupToolbar(binding.loadContainer.loadToolbar)
+        setupToolbar(binding.toolbar)
+        setupScrollListener()
         setupViewModelObservers()
         medalDetailViewModel.getMedalDetail()
-
-        loadData()
-    }
-
-    private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
-        (activity as AppCompatActivity).let {
-            it.setSupportActionBar(toolbar)
-            it.supportActionBar?.apply {
-                setDisplayShowTitleEnabled(false)
-                setDisplayHomeAsUpEnabled(true)
-                elevation = 0f
-                // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
-
-                // it.setTransparentSystemBar()
-            }
-        }
-    }
-
-    private fun loadData() {
-        binding.viewMedalHeader.bindData(
-            MedalHeader(
-                lottieUrl = LOTTIE_BADGE,
-                lottieSparklesUrl = LOTTIE_SPARKS,
-                podiumUrl = IMG_DETAIL_BASE,
-                background = IMG_DETAIL_BG,
-                medalUrl = CONTENT,
-                frameUrl = FRAME,
-                shimmerUrl = SHIMMER,
-                maskUrl = MASK,
-                maskingShapeUrl = MASKING_SHAPE,
-                shutterUrl = SHUTTER
-            )
-        )
-
-        binding.layoutDetailContent.viewMedalDetail.bindData(
-            MedalDetail()
-        )
-
-        binding.ivBadgeBase.setImageUrl(IMG_DETAIL_BASE)
     }
 
     private fun setupViewModelObservers() {
@@ -146,7 +97,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it?.let { safeResult ->
                 when (safeResult) {
                     is Success<*> -> {
-                        setupToolbar(binding.toolbar)
                         binding.mainFlipper.displayedChild = 1
                         val data = safeResult.data as MedalDetailResponseModel
                         loadHeader(data.detail?.medaliDetailPage)
@@ -226,7 +176,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 launchWeblink(requireContext(), url.orEmpty())
             }
         }
-
     }
 
     private fun loadTaskProgress(mission: Mission?) {
@@ -238,7 +187,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
             val taskProgress = TaskProgress(
                 title = safeMission.title,
                 progress = safeMission.progress,
-                tasks = safeMission.task?.map { Task(title = it.title, isCompleted = it.isCompleted) }
+                tasks = safeMission.task?.map {
+                    Task(
+                        title = it.title,
+                        isCompleted = it.isCompleted
+                    )
+                }
             )
             binding.viewTasksProgress.apply {
                 bindData(taskProgress)
@@ -247,25 +201,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         } ?: run { binding.viewTasksProgress.gone() }
     }
 
-    private fun initToolbar() {
-        (activity as AppCompatActivity?)?.apply {
-            setSupportActionBar(binding.toolbar)
-            supportActionBar?.apply {
-                setDisplayShowTitleEnabled(false)
-                setDisplayHomeAsUpEnabled(true)
-                elevation = 0f
-                ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
-                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-                    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                        topMargin = insets.top
-                    }
-                    WindowInsetsCompat.CONSUMED
-                }
-            }
-            windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-            setTransparentStatusBar()
-        }
-
+    private fun setupScrollListener() {
         binding.scrollView.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
                 if (scrollY == 0) {
@@ -277,13 +213,33 @@ class MedalDetailFragment : BaseDaggerFragment() {
         )
     }
 
+    private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
+        (activity as AppCompatActivity?)?.apply {
+            setSupportActionBar(toolbar)
+            supportActionBar?.apply {
+                setDisplayShowTitleEnabled(false)
+                setDisplayHomeAsUpEnabled(true)
+                elevation = 0f
+                ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                        topMargin = insets.top
+                    }
+                    WindowInsetsCompat.CONSUMED
+                }
+            }
+            windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+            setTransparentStatusBar()
+        }
+    }
+
     private fun setWhiteStatusBar() {
         (activity as AppCompatActivity?)?.apply {
             window?.statusBarColor = Color.WHITE
             binding.toolbar.setBackgroundColor(Color.WHITE)
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_back_grayscale_24)
+            setToolbarBackButtonTint(R.color.Unify_NN900)
 
-            windowInsetsController.isAppearanceLightStatusBars = true
+            windowInsetsController?.isAppearanceLightStatusBars = true
             binding.tvTermsConditions.setTextColor(
                 ContextCompat.getColor(
                     this,
@@ -297,9 +253,9 @@ class MedalDetailFragment : BaseDaggerFragment() {
         (activity as AppCompatActivity?)?.apply {
             activity?.window?.statusBarColor = Color.TRANSPARENT
             binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_back_white_24)
+            setToolbarBackButtonTint(R.color.Unify_NN0)
 
-            windowInsetsController.isAppearanceLightStatusBars = false
+            windowInsetsController?.isAppearanceLightStatusBars = false
             binding.tvTermsConditions.setTextColor(
                 ContextCompat.getColor(
                     this, com.tokopedia.unifyprinciples.R.color.Unify_N0
@@ -310,7 +266,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun handleError(error: Throwable) {
         binding.loadContainer.loaderFlipper.displayedChild = 1
-        setLoadToolBarBackButtonTint(R.color.Unify_NN900)
+        setToolbarBackButtonTint(R.color.Unify_NN900)
         if (error is UnknownHostException || error is SocketTimeoutException) {
             binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
         } else {
@@ -328,13 +284,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding.mainFlipper.displayedChild = 0
         binding.loadContainer.loaderFlipper.displayedChild = 0
         medalDetailViewModel.getMedalDetail()
-        setupToolbar(binding.loadContainer.loadToolbar)
-        setLoadToolBarBackButtonTint(R.color.Unify_NN0)
+        setToolbarBackButtonTint(R.color.Unify_NN0)
     }
 
-    private fun setLoadToolBarBackButtonTint(color: Int) {
+    private fun setToolbarBackButtonTint(color: Int) {
         context?.let {
-            binding.loadContainer.loadToolbar.navigationIcon?.setTint(
+            binding.toolbar.navigationIcon?.setTint(
                 ContextCompat.getColor(it, color)
             )
         }
