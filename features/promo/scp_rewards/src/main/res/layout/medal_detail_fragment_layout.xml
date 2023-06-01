@@ -23,7 +23,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_NN0">
 
                 <com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderView
                     android:id="@+id/view_medal_header"
@@ -57,6 +58,15 @@
                     app:layout_constraintTop_toBottomOf="@id/view_medal_detail"
                     tools:visibility="visible" />
 
+                <com.tokopedia.scp_rewards_widgets.views.rewardsview.MedalRewardsView
+                    android:id="@+id/coupon_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/dp_16"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/view_tasks_progress" />
+
                 <com.tokopedia.scp_rewards_widgets.medal_footer.WidgetMedalFooter
                     android:id="@+id/view_medal_footer"
                     android:layout_width="0dp"
@@ -66,7 +76,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/view_tasks_progress" />
+                    app:layout_constraintTop_toBottomOf="@id/coupon_view" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

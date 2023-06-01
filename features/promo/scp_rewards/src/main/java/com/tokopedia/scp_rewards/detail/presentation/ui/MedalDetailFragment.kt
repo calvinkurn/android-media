@@ -309,7 +309,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     isActive = it1.isActive
                 ))
             }
-            binding.layoutDetailContent.couponView.renderCoupons(couponList)
+            binding.couponView.renderCoupons(couponList)
         }
     }
 
