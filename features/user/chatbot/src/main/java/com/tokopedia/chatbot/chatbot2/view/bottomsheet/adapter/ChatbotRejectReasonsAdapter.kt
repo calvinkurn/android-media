@@ -1,0 +1,43 @@
+package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
+
+import android.annotation.SuppressLint
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.databinding.ItemChatbotRejectReasonsBinding
+import com.tokopedia.chatbot.databinding.ItemChatbotRetryUploadMediaBinding
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifyprinciples.Typography
+
+class ChatbotRejectReasonsAdapter : RecyclerView.Adapter<ChatbotRejectReasonsAdapter.ChatbotRejectReasonsViewHolder>() {
+
+    val list = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+
+    inner class ChatbotRejectReasonsViewHolder(itemView: ItemChatbotRejectReasonsBinding) : RecyclerView.ViewHolder(itemView.root) {
+        var item: ChipsUnify = itemView.chip
+        fun bind(item: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip, position: Int) {
+            this.item.chipText = item.text
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatbotRejectReasonsViewHolder {
+        val view = ItemChatbotRejectReasonsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ChatbotRejectReasonsViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
+    }
+
+    override fun onBindViewHolder(holder: ChatbotRejectReasonsViewHolder, position: Int) {
+        holder.bind(list[position], position)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setList(list: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>) {
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
+    }
+}
