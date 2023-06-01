@@ -30,6 +30,7 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
+import com.tokopedia.scp_rewards.detail.domain.model.Benefit
 import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
 import com.tokopedia.scp_rewards.detail.domain.model.MedalDetailResponseModel
 import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
@@ -38,6 +39,7 @@ import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewMo
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
+import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import java.net.SocketTimeoutException
@@ -102,6 +104,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         loadHeader(data.detail?.medaliDetailPage)
                         loadMedalDetails(data.detail?.medaliDetailPage)
                         loadTaskProgress(data.detail?.medaliDetailPage?.mission)
+                        loadCouponWidget(data.detail?.medaliDetailPage?.benefit)
                         loadFooter(data.detail?.medaliDetailPage?.benefitButton)
                     }
 
@@ -292,6 +295,21 @@ class MedalDetailFragment : BaseDaggerFragment() {
             binding.toolbar.navigationIcon?.setTint(
                 ContextCompat.getColor(it, color)
             )
+        }
+    }
+
+    private fun loadCouponWidget(benefits:List<Benefit>?) {
+        benefits?.let {
+            val couponList = mutableListOf<MedalRewardsModel>()
+            it.forEach { it1 ->
+                couponList.add(MedalRewardsModel(
+                    imageUrl = it1.imageUrl ?: "",
+                    status = it1.status ?: "",
+                    statusDescription = it1.statusDescription ?: "",
+                    isActive = it1.isActive
+                ))
+            }
+            binding.layoutDetailContent.couponView.renderCoupons(couponList)
         }
     }
 

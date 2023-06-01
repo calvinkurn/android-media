@@ -67,7 +67,7 @@ data class Task(
 )
 
 data class Benefit(
-    @SerializedName("imageUrl") val imageUrl: String? = null,
+    @SerializedName("imageURL") val imageUrl: String? = null,
     @SerializedName("isActive") val isActive: Boolean = false,
     @SerializedName("status") val status: String? = null,
     @SerializedName("statusDescription") val statusDescription: String? = null
