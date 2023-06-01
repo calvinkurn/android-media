@@ -1,6 +1,7 @@
 package com.tokopedia.scp_rewards.widget.medalDetail
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,8 +14,10 @@ class MedalDetailView(private val context: Context, attrs: AttributeSet?) : Cons
 
     fun bindData(data: MedalDetail) {
         with(binding) {
-            data.sponsorInformation?.let {
+            data.sponsorText?.let {
                 tvBrand.text = it
+                tvBrand.setTextColor(Color.parseColor(data.sponsorTextColor ?: "#FFFFFF"))
+                cvSponsor.setCardBackgroundColor(Color.parseColor(data.sponsorBackgroundColor ?: "#000000"))
                 cvSponsor.visible()
             }
             tvMedalTitle.text = data.medalTitle
