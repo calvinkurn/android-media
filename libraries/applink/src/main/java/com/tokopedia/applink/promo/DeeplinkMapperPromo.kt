@@ -136,6 +136,15 @@ fun getInternalDeeplinkForScpMedalDetail(deeplink: Uri) : String{
     return ""
 }
 
+fun getInternalDeeplinkForScpCelebration(deeplink: Uri) : String{
+    val segments = deeplink.pathSegments
+    if(segments.last()!=""){
+        val medaliSlug = segments.last()
+        return UriUtil.buildUri(ApplinkConstInternalPromo.CELEBRATION_PAGE,medaliSlug)
+    }
+    return ""
+}
+
 fun getPromoRegexMap() : MutableMap<String,Regex> {
     val couponDetailRegex = "^(/.*/voucher/[0-9]+)"
     return mutableMapOf(

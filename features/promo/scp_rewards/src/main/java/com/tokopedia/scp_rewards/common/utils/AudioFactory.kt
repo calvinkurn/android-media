@@ -22,25 +22,24 @@ class AudioFactory private constructor(){
                     isAudioLoading = true
                     try {
                         setDataSource(url)
+                        setOnPreparedListener {
+                            val elapsed = System.currentTimeMillis() - current
+                            Log.i("from audio factory", "elapsed time -> ${elapsed / 1000L}")
+                            if (isAudioLoading) {
+                                isAudioLoading = false
+                                onPrepare?.invoke()
+                            }
+                        }
+                        setOnErrorListener { _, _, _ ->
+                            isAudioLoading = false
+                            onError?.invoke()
+                            false
+                        }
+                        current = System.currentTimeMillis()
+                        prepareAsync()
                     } catch (err: Throwable) {
                         onError?.invoke()
                     }
-
-                    setOnPreparedListener {
-                        val elapsed = System.currentTimeMillis() - current
-                        Log.i("from audio factory", "elapsed time -> ${elapsed / 1000L}")
-                        if (isAudioLoading) {
-                            isAudioLoading = false
-                            onPrepare?.invoke()
-                        }
-                    }
-                    setOnErrorListener { _, _, _ ->
-                        isAudioLoading = false
-                        onError?.invoke()
-                        false
-                    }
-                    current = System.currentTimeMillis()
-                    prepareAsync()
                 }
             }
         }

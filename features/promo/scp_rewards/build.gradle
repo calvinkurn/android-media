@@ -59,6 +59,14 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
 
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
+
+    //test
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
