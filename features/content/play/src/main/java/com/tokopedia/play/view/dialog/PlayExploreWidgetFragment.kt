@@ -327,17 +327,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
             is ExploreWidgetState.Fail -> {
                 analytic?.impressToasterGlobalError()
-                val errMessage =
-                    if (state.error is UnknownHostException) {
-                        getString(playR.string.play_explore_widget_noconn_errmessage)
-                    } else {
-                        getString(
-                            playR.string.play_explore_widget_default_errmessage
-                        )
-                    }
-
                 toaster.showToaster(
-                    message = errMessage,
+                    message = generateErrorMessage(state.error),
                     actionLabel = getString(playR.string.play_try_again),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,

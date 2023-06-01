@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
+import com.tokopedia.play.R
 import com.tokopedia.play.databinding.FragmentPlayCategoryWidgetBinding
 import com.tokopedia.play.ui.explorewidget.adapter.CategoryWidgetAdapter
 import com.tokopedia.play.ui.explorewidget.viewholder.CategoryWidgetViewHolder
@@ -18,10 +19,13 @@ import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.ExploreWidgetState
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
+import com.tokopedia.play.view.uimodel.action.RefreshWidget
+import com.tokopedia.play.view.uimodel.getCategoryShimmering
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
-import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -49,6 +53,10 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
             }
         }
     }
+
+    private val toaster by viewLifecycleBound(
+        creator = { PlayToaster(requireView(), viewLifecycleOwner) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,19 +95,22 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
     private fun renderCards(state: CachedState<PlayViewerNewUiState>) {
         if (state.isNotChanged { it.exploreWidget.category }) return
 
-        when (state.value.exploreWidget.category.state) {
-            is ExploreWidgetState.Success -> categoryAdapter.setItemsAndAnimateChanges(state.value.exploreWidget.category.data)
-            else -> {
-                categoryAdapter.setItemsAndAnimateChanges(
-                    listOf(
-                        PlayWidgetShimmerUiModel,
-                        PlayWidgetShimmerUiModel,
-                        PlayWidgetShimmerUiModel,
-                        PlayWidgetShimmerUiModel,
-                        PlayWidgetShimmerUiModel
-                    )
+        val result = state.value.exploreWidget.category
+        when (result.state) {
+            is ExploreWidgetState.Success -> categoryAdapter.setItemsAndAnimateChanges(result.data)
+            ExploreWidgetState.Loading -> categoryAdapter.setItemsAndAnimateChanges(getCategoryShimmering)
+            is ExploreWidgetState.Fail -> {
+                toaster.showToaster(
+                    message = generateErrorMessage(result.state.error),
+                    actionLabel = getString(R.string.play_try_again),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    actionListener = {
+                        viewModel.submitAction(RefreshWidget)
+                    }
                 )
             }
+            else -> {}
         }
     }
 

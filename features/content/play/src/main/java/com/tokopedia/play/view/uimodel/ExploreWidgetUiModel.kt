@@ -3,8 +3,8 @@ package com.tokopedia.play.view.uimodel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetShimmerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 
 /**
@@ -136,6 +136,11 @@ internal val getChipsShimmering: List<ChipsShimmering>
         return List(6) {
             ChipsShimmering
         }
+    }
+
+internal val getCategoryShimmering: List<PlayWidgetShimmerUiModel>
+    get() = List(6) {
+        PlayWidgetShimmerUiModel
     }
 
 sealed class ExploreWidgetState {
