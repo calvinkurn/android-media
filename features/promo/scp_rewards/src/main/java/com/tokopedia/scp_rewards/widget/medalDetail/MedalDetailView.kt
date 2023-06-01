@@ -5,23 +5,28 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.scp_rewards.common.utils.hide
+import com.tokopedia.scp_rewards.common.utils.show
 import com.tokopedia.scp_rewards.databinding.WidgetMedalDetailBinding
 
-class MedalDetailView(private val context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+class MedalDetailView(private val context: Context, attrs: AttributeSet?) :
+    ConstraintLayout(context, attrs) {
 
     private val binding = WidgetMedalDetailBinding.inflate(LayoutInflater.from(context), this)
 
     fun bindData(data: MedalDetail) {
         with(binding) {
             data.sponsorText?.let {
+                cvSponsor.show()
                 tvBrand.text = it
                 tvBrand.setTextColor(Color.parseColor(data.sponsorTextColor ?: "#FFFFFF"))
                 cvSponsor.setCardBackgroundColor(Color.parseColor(data.sponsorBackgroundColor ?: "#000000"))
-                cvSponsor.visible()
+            } ?: run {
+                cvSponsor.hide()
             }
             tvMedalTitle.text = data.medalTitle
             tvMedalDesc.text = data.medalDescription
+            requestLayout()
         }
     }
 }
