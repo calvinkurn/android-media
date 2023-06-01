@@ -19,6 +19,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
@@ -1924,6 +1925,12 @@ class PlayViewModel @AssistedInject constructor(
             is QuizResponse -> {
                 val interactive = playSocketToModelMapper.mapQuizFromSocket(result)
                 setupInteractive(interactive)
+            }
+            is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
+                //TODO() separate class
+                _channelDetail.update { channel ->
+                    channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName, categoryGroup = result.group, hasCategory = result.hasCategory))
+                }
             }
         }
     }

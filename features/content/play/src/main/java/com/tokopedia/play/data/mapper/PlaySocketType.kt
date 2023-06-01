@@ -20,4 +20,5 @@ enum class PlaySocketType(var value: String) {
     UpdateConfigMultipleLike("UPDATE_CONFIG_MULTIPLE_LIKE"),
     UserWinnerStatus("USER_WINNER_STATUS"),
     ChannelInteractiveQuiz("CHANNEL_QUIZ"),
+    WidgetDominantCategory("DOMINANT_CATEGORY_UPDATE"),
 }

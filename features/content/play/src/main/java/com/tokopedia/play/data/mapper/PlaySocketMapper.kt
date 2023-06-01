@@ -6,6 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.data.*
+import com.tokopedia.play.data.detail.recom.ChannelDetailsWithRecomResponse
 import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
@@ -75,6 +76,9 @@ class PlaySocketMapper(
             PlaySocketType.ChannelInteractiveQuiz.value-> {
                 return mapToChannelQuiz()
             }
+            PlaySocketType.WidgetDominantCategory.value-> {
+                return mapDominantCategory()
+            }
         }
         return null
     }
@@ -136,6 +140,8 @@ class PlaySocketMapper(
     }
 
     private fun mapToChannelQuiz(): QuizResponse? = convertToModel(webSocketResponse.jsonObject, QuizResponse::class.java)
+
+    private fun mapDominantCategory(): ChannelDetailsWithRecomResponse.ExploreWidgetConfig? = convertToModel(webSocketResponse.jsonObject, ChannelDetailsWithRecomResponse.ExploreWidgetConfig::class.java)
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
         try {
