@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,6 +101,7 @@ import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingRespons
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.di.ChatbotModule
 import com.tokopedia.chatbot.chatbot2.di.DaggerChatbotComponent
@@ -242,6 +244,7 @@ class ChatbotFragment2 :
     ChatbotReplyBottomSheetAdapter.ReplyBubbleBottomSheetListener,
     com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener,
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
+    ChatbotRejectReasonsBottomSheet.ChatbotRejectReasonsListener,
     DynamicStickyButtonListener {
 
     @Inject
@@ -997,10 +1000,13 @@ class ChatbotFragment2 :
                     // TODO add the quick reply here
                     // On clicking that quick reply open the Bottom Sheet
 
-                    val bottomSheetUnify = ChatbotRejectReasonsBottomSheet.newInstance(
+                    val reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
                         it.feedbackForm
                     )
-                    bottomSheetUnify.show(childFragmentManager, "")
+
+                    reasonsBottomSheet.setUpListener(this)
+
+                    reasonsBottomSheet.show(childFragmentManager, "")
                 }
             }
         }
@@ -2811,5 +2817,13 @@ class ChatbotFragment2 :
         )
         getViewState()?.removeDynamicStickyButton()
         getViewState()?.scrollToBottom()
+    }
+
+    override fun submitRejectReasonsViaSocket(
+        selectedReasons: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
+        reasonText: String
+    ) {
+        // TODO implement it ya
+        Log.d("FATAL", "submitRejectReasonsViaSocket: ${selectedReasons.size}")
     }
 }

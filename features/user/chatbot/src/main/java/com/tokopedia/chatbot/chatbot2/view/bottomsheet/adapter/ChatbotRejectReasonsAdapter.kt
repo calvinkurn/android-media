@@ -1,23 +1,34 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.databinding.ItemChatbotRejectReasonsBinding
-import com.tokopedia.chatbot.databinding.ItemChatbotRetryUploadMediaBinding
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_NORMAL
+import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_SELECTED
 
 class ChatbotRejectReasonsAdapter : RecyclerView.Adapter<ChatbotRejectReasonsAdapter.ChatbotRejectReasonsViewHolder>() {
 
     val list = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+    val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
 
     inner class ChatbotRejectReasonsViewHolder(itemView: ItemChatbotRejectReasonsBinding) : RecyclerView.ViewHolder(itemView.root) {
         var item: ChipsUnify = itemView.chip
         fun bind(item: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip, position: Int) {
             this.item.chipText = item.text
+            this.item.setOnClickListener {
+                if (selectedList.contains(item)) {
+                    selectedList.remove(item)
+                    this.item.chipType = TYPE_NORMAL
+                } else {
+                    selectedList.add(item)
+                    this.item.chipType = TYPE_SELECTED
+                }
+            }
         }
     }
 
