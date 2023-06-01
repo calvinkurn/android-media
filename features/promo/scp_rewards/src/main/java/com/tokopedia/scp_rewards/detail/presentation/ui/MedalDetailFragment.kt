@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
@@ -29,6 +32,8 @@ import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -94,9 +99,49 @@ class MedalDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initToolbar()
+//        setupToolbar(binding.toolbar)
+        setupToolbar(binding.loadContainer.loadToolbar)
         setupViewModelObservers()
         medalDetailViewModel.getMedalDetail(medaliSlug)
+
+        loadData()
+    }
+
+    private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
+        (activity as AppCompatActivity).let {
+            it.setSupportActionBar(toolbar)
+            it.supportActionBar?.apply {
+                setDisplayShowTitleEnabled(false)
+                setDisplayHomeAsUpEnabled(true)
+                elevation = 0f
+                // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
+
+                // it.setTransparentSystemBar()
+            }
+        }
+    }
+
+    private fun loadData() {
+        binding.viewMedalHeader.bindData(
+            MedalHeader(
+                lottieUrl = LOTTIE_BADGE,
+                lottieSparklesUrl = LOTTIE_SPARKS,
+                podiumUrl = IMG_DETAIL_BASE,
+                background = IMG_DETAIL_BG,
+                medalUrl = CONTENT,
+                frameUrl = FRAME,
+                shimmerUrl = SHIMMER,
+                maskUrl = MASK,
+                maskingShapeUrl = MASKING_SHAPE,
+                shutterUrl = SHUTTER
+            )
+        )
+
+        binding.layoutDetailContent.viewMedalDetail.bindData(
+            MedalDetail()
+        )
+
+        binding.ivBadgeBase.setImageUrl(IMG_DETAIL_BASE)
     }
 
     private fun setupViewModelObservers() {
@@ -104,6 +149,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it?.let { safeResult ->
                 when (safeResult) {
                     is Success<*> -> {
+                        setupToolbar(binding.toolbar)
+                        binding.mainFlipper.displayedChild = 1
                         val data = safeResult.data as MedalDetailResponseModel
                         loadHeader(data.detail?.medaliDetailPage)
                         loadMedalDetails(data.detail?.medaliDetailPage)
@@ -112,7 +159,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     }
 
                     is Error -> {
-                        // TODO
+                        handleError(safeResult.error)
                     }
 
                     is Loading -> {
@@ -190,6 +237,38 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 visible()
             }
         } ?: run { binding.layoutDetailContent.viewTasksProgress.gone() }
+    }
+
+    private fun handleError(error: Throwable) {
+        binding.loadContainer.loaderFlipper.displayedChild = 1
+        setLoadToolBarBackButtonTint(R.color.Unify_NN900)
+        if (error is UnknownHostException || error is SocketTimeoutException) {
+            binding.loadContainer.mdpError.setType(GlobalError.NO_CONNECTION)
+        } else {
+            binding.loadContainer.mdpError.apply {
+                setType(GlobalError.SERVER_ERROR)
+                errorSecondaryAction.text = context.getText(R.string.goto_medali_cabinet_text)
+                setActionClickListener {
+                    resetPage()
+                }
+            }
+        }
+    }
+
+    private fun resetPage() {
+        binding.mainFlipper.displayedChild = 0
+        binding.loadContainer.loaderFlipper.displayedChild = 0
+        medalDetailViewModel.getMedalDetail()
+        setupToolbar(binding.loadContainer.loadToolbar)
+        setLoadToolBarBackButtonTint(R.color.Unify_NN0)
+    }
+
+    private fun setLoadToolBarBackButtonTint(color: Int) {
+        context?.let {
+            binding.loadContainer.loadToolbar.navigationIcon?.setTint(
+                ContextCompat.getColor(it, color)
+            )
+        }
     }
 
     override fun getScreenName() = ""
