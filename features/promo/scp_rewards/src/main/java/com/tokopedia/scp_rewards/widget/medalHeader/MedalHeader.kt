@@ -14,5 +14,6 @@ data class MedalHeader(
     val maskingShapeUrl: String? = null,
     val medalUrl: String? = null,
     val shutterUrl: String? = null,
+    val shutterText: String? = null,
     val shimmerUrl: String? = null
 )

@@ -1,12 +1,28 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
+import android.graphics.Color
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.widget.NestedScrollView
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.widget.NestedScrollView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -30,11 +46,13 @@ import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
 import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
+import com.tokopedia.scp_rewards_common.R
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
 import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import com.tokopedia.scp_rewards_common.R
 import java.util.*
 import javax.inject.Inject
 
@@ -52,6 +70,7 @@ const val LOTTIE_SPARKS = "https://assets.tokopedia.net/asts/HThbdi/scp/2023/05/
 
 class MedalDetailFragment : BaseDaggerFragment() {
 
+    private lateinit var windowInsetsController: WindowInsetsControllerCompat
     private lateinit var binding: MedalDetailFragmentLayoutBinding
 
     @Inject
@@ -74,21 +93,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
         binding = MedalDetailFragmentLayoutBinding.inflate(layoutInflater)
         return binding.root
     }
-
-    private fun initToolbar() {
-        (activity as AppCompatActivity).let {
-            it.setSupportActionBar(binding.toolbar)
-            it.supportActionBar?.apply {
-                setDisplayShowTitleEnabled(false)
-                setDisplayHomeAsUpEnabled(true)
-                elevation = 0f
-                // setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.Unify_Background)))
-
-                // it.setTransparentSystemBar()
-            }
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -165,7 +169,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadFooter(listOfButtons: List<BenefitButton>?) {
         listOfButtons?.let { buttons ->
-            binding.layoutDetailContent.viewMedalFooter.bindData(
+            binding.viewMedalFooter.bindData(
                 buttons.map {
                     FooterData(
                         text = it.text,
@@ -185,7 +189,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     }
 
     private fun loadMedalDetails(medaliDetailPage: MedaliDetailPage?) {
-        binding.layoutDetailContent.viewMedalDetail.bindData(
+        binding.viewMedalDetail.bindData(
             MedalDetail(
                 sponsorText = medaliDetailPage?.sourceText,
                 sponsorTextColor = medaliDetailPage?.sourceFontColor,
@@ -212,6 +216,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 frameMaskUrl = medaliDetailPage?.maskingImageURL ?: FRAME_MASK,
                 maskingShapeUrl = medaliDetailPage?.frameMaskingImageURL ?: MASKING_SHAPE,
                 shutterUrl = medaliDetailPage?.shutterImageURL ?: SHUTTER,
+                shutterText = medaliDetailPage?.shutterText.orEmpty(),
                 coachMarkInformation = medaliDetailPage?.coachMark?.text
             )
         )
@@ -227,7 +232,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     private fun loadTaskProgress(mission: Mission?) {
         mission?.let { safeMission ->
             if (safeMission.task?.isEmpty() == true) {
-                binding.layoutDetailContent.viewTasksProgress.gone()
+                binding.viewTasksProgress.gone()
                 return
             }
             val taskProgress = TaskProgress(
@@ -235,11 +240,72 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 progress = safeMission.progress,
                 tasks = safeMission.task?.map { Task(title = it.title, isCompleted = it.isCompleted) }
             )
-            binding.layoutDetailContent.viewTasksProgress.apply {
+            binding.viewTasksProgress.apply {
                 bindData(taskProgress)
                 visible()
             }
-        } ?: run { binding.layoutDetailContent.viewTasksProgress.gone() }
+        } ?: run { binding.viewTasksProgress.gone() }
+    }
+
+    private fun initToolbar() {
+        (activity as AppCompatActivity?)?.apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.apply {
+                setDisplayShowTitleEnabled(false)
+                setDisplayHomeAsUpEnabled(true)
+                elevation = 0f
+                ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
+                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                        topMargin = insets.top
+                    }
+                    WindowInsetsCompat.CONSUMED
+                }
+            }
+            windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+            setTransparentStatusBar()
+        }
+
+        binding.scrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                if (scrollY == 0) {
+                    setTransparentStatusBar()
+                } else {
+                    setWhiteStatusBar()
+                }
+            }
+        )
+    }
+
+    private fun setWhiteStatusBar() {
+        (activity as AppCompatActivity?)?.apply {
+            window?.statusBarColor = Color.WHITE
+            binding.toolbar.setBackgroundColor(Color.WHITE)
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_back_grayscale_24)
+
+            windowInsetsController.isAppearanceLightStatusBars = true
+            binding.tvTermsConditions.setTextColor(
+                ContextCompat.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+            )
+        }
+    }
+
+    private fun setTransparentStatusBar() {
+        (activity as AppCompatActivity?)?.apply {
+            activity?.window?.statusBarColor = Color.TRANSPARENT
+            binding.toolbar.setBackgroundColor(Color.TRANSPARENT)
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_action_back_white_24)
+
+            windowInsetsController.isAppearanceLightStatusBars = false
+            binding.tvTermsConditions.setTextColor(
+                ContextCompat.getColor(
+                    this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
+        }
     }
 
     private fun handleError(error: Throwable) {
