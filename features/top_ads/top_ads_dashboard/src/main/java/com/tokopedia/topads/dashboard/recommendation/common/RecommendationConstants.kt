@@ -22,4 +22,5 @@ object RecommendationConstants {
     const val DEFAULT_SELECTED_INSIGHT_TYPE = 0
     const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
     const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
+    const val INVALID_INSIGHT_TYPE = -1
 }

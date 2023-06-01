@@ -10,6 +10,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -53,9 +54,9 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun reOrganiseData() {
+    fun reOrganiseData(clickedItem: Int = INVALID_INSIGHT_TYPE) {
         _detailPageLiveData.value =
-            TopAdsListAllInsightState.Success(groupDetailMapper.reArrangedDataMap())
+            TopAdsListAllInsightState.Success(groupDetailMapper.reArrangedDataMap(clickedItem))
     }
 
     fun loadInsightTypeChips(
@@ -122,7 +123,11 @@ class GroupDetailViewModel @Inject constructor(
         return groupDetailMapper.detailPageDataMap[TYPE_CHIPS] != null
     }
 
-    fun selectDefaultChips(insightType: Int) {
+    fun selectDefaultChips(insightType: Int, adType: String?) {
+        if (adType == "headline") {
+            groupDetailMapper.detailPageDataMap.remove(TYPE_CHIPS)
+            return
+        }
         chipsList.forEachIndexed { index, groupDetailChipsItemUiModel ->
             groupDetailChipsItemUiModel.isSelected = (index == insightType)
         }

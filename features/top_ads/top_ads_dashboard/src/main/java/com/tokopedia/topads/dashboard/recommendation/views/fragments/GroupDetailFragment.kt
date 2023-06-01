@@ -51,10 +51,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             GroupDetailAdapterFactoryImpl(
                 onChipClick,
                 onInsightItemClick,
-                ::onInsightTypeChipClick
+                ::onInsightTypeChipClick,
+                onAccordianItemClick
             )
         )
     }
+
+    private var onAccordianItemClick: (clickedItem: Int) -> Unit = { clickedItem ->
+        viewModel.reOrganiseData(clickedItem)
+    }
+
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
 
     @Inject
@@ -91,8 +97,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         val adGroupName = arguments?.getString("adGroupName")
         val adGroupId = arguments?.getString("groupId") ?: ""
         val insightType = arguments?.getInt("insightType") ?: 0
-        viewModel.selectDefaultChips(insightType)
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
+        viewModel.selectDefaultChips(insightType, adType)
         if (adType != null && adGroupId != null) {
             loadData(if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE, adGroupId ?: "")
         }

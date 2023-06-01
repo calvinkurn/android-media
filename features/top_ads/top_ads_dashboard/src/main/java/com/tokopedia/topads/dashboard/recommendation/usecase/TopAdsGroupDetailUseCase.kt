@@ -77,6 +77,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         batchKeyword.data.topAdsBatchGetKeywordInsightByGroupIDV3.groups.firstOrNull()?.groupData
                     groupDetailMapper.detailPageDataMap[TYPE_POSITIVE_KEYWORD] =
                         GroupInsightsUiModel(
+                            TYPE_POSITIVE_KEYWORD,
                             "Kata Kunci",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
                             !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
@@ -87,6 +88,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                             )
                         )
                     groupDetailMapper.detailPageDataMap[TYPE_KEYWORD_BID] = GroupInsightsUiModel(
+                        TYPE_KEYWORD_BID,
                         "Biaya Kata Kunci",
                         "Kunjungan pembeli menurun. Pakai kata kunci...",
                         !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
@@ -98,6 +100,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     )
                     groupDetailMapper.detailPageDataMap[TYPE_NEGATIVE_KEYWORD_BID] =
                         GroupInsightsUiModel(
+                            TYPE_NEGATIVE_KEYWORD_BID,
                             "Kata Kunci Negatif",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
                             !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
@@ -119,6 +122,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID.groups.firstOrNull()?.adGroupBidInsightData
                     groupDetailMapper.detailPageDataMap[TYPE_GROUP_BID] =
                         GroupInsightsUiModel(
+                            TYPE_GROUP_BID,
                             "Biaya Iklan",
                             "Kunjungan pembeli menurun. Pakai kata kunci...",
                             !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
@@ -138,6 +142,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 is TopAdsListAllInsightState.Success -> {
                     val data = sellerInsightData.data.getSellerInsightData.sellerInsightData
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
+                        TYPE_DAILY_BUDGET,
                         "Anggaran harian",
                         "Kunjungan embellish menurun. Pakai kata kunci...",
                         data.dailyBudgetData.isNotEmpty(),
@@ -151,6 +156,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 is TopAdsListAllInsightState.Fail -> {
 //                    throw sellerInsightData.throwable
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
+                        TYPE_DAILY_BUDGET,
                         "Anggaran harian",
                         "Kunjungan embellish menurun. Pakai kata kunci...",
                         true,

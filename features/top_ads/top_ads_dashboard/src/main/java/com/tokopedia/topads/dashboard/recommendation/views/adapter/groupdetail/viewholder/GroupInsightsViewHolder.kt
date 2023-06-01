@@ -15,7 +15,12 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.G
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.unifycomponents.toPx
 
-class GroupInsightsViewHolder(private val view: View, private val onChipClick: (Int) -> Unit, private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)? = null) :
+class GroupInsightsViewHolder(
+    private val view: View,
+    private val onChipClick: (Int) -> Unit,
+    private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)? = null,
+    private val onAccordianItemClick: ((clickedItem: Int) -> Unit)
+) :
     AbstractViewHolder<GroupInsightsUiModel>(view) {
 
     private val accordionUnify: AccordionUnify = itemView.findViewById(R.id.accordionUnify)
@@ -27,11 +32,15 @@ class GroupInsightsViewHolder(private val view: View, private val onChipClick: (
             val accordionUnifyData = AccordionDataUnify(
                 title = element.title,
                 subtitle = element.subTitle,
-                isExpanded = false,
+                isExpanded = element.isExpanded,
                 expandableView = getView(element.expandItemDataModel)
             )
             accordionUnifyData.setContentPadding(8.toPx(), 0.toPx(), 8.toPx(), 16.toPx())
             addGroup(accordionUnifyData)
+            onItemClick = { _, isExpanded ->
+                element.isExpanded = isExpanded
+                onAccordianItemClick.invoke(element.type)
+            }
         }
     }
 
@@ -40,7 +49,7 @@ class GroupInsightsViewHolder(private val view: View, private val onChipClick: (
             View.inflate(view.context, R.layout.top_ads_group_insights_accordian_layout, null)
         val rv: RecyclerView = layout.findViewById(R.id.accordianRecyclerview)
         rv.layoutManager = LinearLayoutManager(view.context)
-        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(onChipClick, { _, _ -> },onInsightTypeChipClick))
+        val accordianAdapter = GroupDetailAdapter(GroupDetailAdapterFactoryImpl(onChipClick, { _, _ -> },onInsightTypeChipClick, onAccordianItemClick))
         rv.adapter = accordianAdapter
         accordianAdapter.submitList(listOf(expandItemDataModel))
         return layout

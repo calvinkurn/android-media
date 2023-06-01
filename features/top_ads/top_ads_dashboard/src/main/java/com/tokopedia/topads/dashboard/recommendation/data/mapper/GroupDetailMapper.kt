@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
@@ -31,7 +32,7 @@ class GroupDetailMapper @Inject constructor() {
         TYPE_NEGATIVE_KEYWORD_BID to GroupInsightsUiModel()
     )
 
-    fun reArrangedDataMap(): MutableMap<Int, GroupDetailDataModel> {
+    fun reArrangedDataMap(clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
         val map = mutableMapOf<Int, GroupDetailDataModel>()
         val position = chipsList.findPositionOfSelected { it.isSelected }
         return if (position == TYPE_INSIGHT) {
@@ -39,7 +40,9 @@ class GroupDetailMapper @Inject constructor() {
             detailPageDataMap
             var isPresent = false
             detailPageDataMap.values.forEach {
-                if ((it as? GroupInsightsUiModel)?.isAvailable() == true) isPresent = true
+                val groupInsightsUiModel = it as? GroupInsightsUiModel
+                if (groupInsightsUiModel?.isAvailable() == true) isPresent = true
+                reshuffleInsightExpansion(clickedItem, groupInsightsUiModel)
             }
             if (!isPresent && detailPageDataMap[TYPE_EMPTY_STATE] == null) {
                 addDataForUnoptimisedGroup()
@@ -64,6 +67,18 @@ class GroupDetailMapper @Inject constructor() {
                 }
             }
             map
+        }
+    }
+
+    private fun reshuffleInsightExpansion(
+        clickedItem: Int,
+        groupInsightsUiModel: GroupInsightsUiModel?
+    ) {
+        if (clickedItem != INVALID_INSIGHT_TYPE && groupInsightsUiModel != null) {
+            if (clickedItem != groupInsightsUiModel.type && groupInsightsUiModel.isExpanded) {
+                detailPageDataMap[groupInsightsUiModel.type] =
+                    groupInsightsUiModel.copy(isExpanded = false)
+            }
         }
     }
 

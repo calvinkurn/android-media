@@ -3,8 +3,17 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse.TopAdsListAllInsightCounts.AdGroup
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailEmptyStateUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailInsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
+import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupPerformanceWidgetUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder.InsightTypeChipsViewHolder
@@ -23,6 +32,7 @@ class GroupDetailAdapterFactoryImpl(
     private val onChipClick: (Int) -> Unit,
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?,
+    private val onAccordianItemClick: ((clickedItem: Int) -> Unit)
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {
@@ -74,7 +84,7 @@ class GroupDetailAdapterFactoryImpl(
             InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view, onInsightTypeChipClick)
             PerformanceWidgetViewHolder.LAYOUT -> PerformanceWidgetViewHolder(view)
             GroupDetailChipsViewHolder.LAYOUT -> GroupDetailChipsViewHolder(view, onChipClick)
-            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick)
+            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick, onInsightTypeChipClick, onAccordianItemClick)
             AccordianKataKunciViewHolder.LAYOUT -> AccordianKataKunciViewHolder(view)
             AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view)
             AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view)
