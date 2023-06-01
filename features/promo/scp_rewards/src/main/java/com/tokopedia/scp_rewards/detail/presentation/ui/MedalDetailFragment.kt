@@ -51,12 +51,21 @@ class MedalDetailFragment : BaseDaggerFragment() {
     @JvmField
     var viewModelFactory: ViewModelFactory? = null
 
+    private var medaliSlug = ""
+
     private val medalDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory!!)[MedalDetailViewModel::class.java]
     }
 
     override fun initInjector() {
         getComponent(MedalDetailComponent::class.java).inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.intent?.let {
+            medaliSlug = it.data?.pathSegments?.last() ?: ""
+        }
     }
 
     override fun onCreateView(
@@ -87,7 +96,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
         initToolbar()
         setupViewModelObservers()
-        medalDetailViewModel.getMedalDetail()
+        medalDetailViewModel.getMedalDetail(medaliSlug)
     }
 
     private fun setupViewModelObservers() {

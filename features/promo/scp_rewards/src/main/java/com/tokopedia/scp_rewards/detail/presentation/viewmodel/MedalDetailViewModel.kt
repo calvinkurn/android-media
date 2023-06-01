@@ -16,6 +16,10 @@ class MedalDetailViewModel @Inject constructor(
     private val medalDetailUseCase: MedalDetailUseCase
 ) : ViewModel() {
 
+    private companion object{
+        private const val SUCCESS_CODE = "200"
+    }
+
     private val _badgeLiveData: MutableLiveData<ScpResult> = MutableLiveData(Loading)
     val badgeLiveData: LiveData<ScpResult> = _badgeLiveData
 
@@ -23,11 +27,11 @@ class MedalDetailViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val response = medalDetailUseCase.getMedalDetail(
-                    medaliSlug = "INJECT_BADGE_1",
+                    medaliSlug = medaliSlug,
                     sourceName = "celebration_page",
                     pageName = ""
                 )
-                if (response.detail != null) {
+                if (response.detail?.resultStatus?.code == SUCCESS_CODE) {
                     _badgeLiveData.postValue(Success(response))
                 } else {
                     throw Throwable()
