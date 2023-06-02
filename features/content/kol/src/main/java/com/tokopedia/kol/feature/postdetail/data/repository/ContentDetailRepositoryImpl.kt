@@ -3,9 +3,9 @@ package com.tokopedia.kol.feature.postdetail.data.repository
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.content.common.usecase.TrackVisitChannelBroadcasterUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
@@ -37,7 +37,7 @@ import javax.inject.Inject
  * Created by meyta.taliti on 02/08/22.
  */
 class ContentDetailRepositoryImpl @Inject constructor(
-    private  val dispatcher: CoroutineDispatchers,
+    private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val getPostDetailUseCase: GetPostDetailUseCase,
     private val getRecommendationPostUseCase: GetRecommendationPostUseCase,
@@ -47,7 +47,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val addToWishlistUseCase: AddToWishlistV2UseCase,
     private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val submitReportContentUseCase: SubmitReportContentUseCase,
-    private val trackVisitChannelUseCase: FeedBroadcastTrackerUseCase,
+    private val trackVisitChannelUseCase: TrackVisitChannelBroadcasterUseCase,
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
@@ -55,7 +55,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val followUserUseCase: ProfileFollowUseCase,
     private val unfollowUserUseCase: ProfileUnfollowedUseCase,
     private val mapper: ContentDetailMapper,
-    private val profileMutationMapper: ProfileMutationMapper,
+    private val profileMutationMapper: ProfileMutationMapper
 ) : ContentDetailRepository {
 
     override suspend fun getContentDetail(contentId: String): ContentDetailUiModel {
@@ -86,14 +86,14 @@ class ContentDetailRepositoryImpl @Inject constructor(
     override suspend fun getFeedPosts(
         userID: String,
         cursor: String,
-        limit: Int,
+        limit: Int
     ): ContentDetailUiModel {
         return withContext(dispatcher.io) {
             val response = getUserProfileFeedPostUseCase.executeOnBackground(
-                    userID = userID,
-                    cursor = cursor,
-                    limit = limit,
-                )
+                userID = userID,
+                cursor = cursor,
+                limit = limit
+            )
             return@withContext mapper.mapFeedPosts(response)
         }
     }
@@ -132,8 +132,11 @@ class ContentDetailRepositoryImpl @Inject constructor(
             val response = followShopUseCase.executeOnBackground()
             if (response.followShop?.success == false) {
                 throw CustomUiMessageThrowable(
-                    if (action.isFollowing) R.string.feed_follow_error_message
-                    else R.string.feed_unfollow_error_message
+                    if (action.isFollowing) {
+                        R.string.feed_follow_error_message
+                    } else {
+                        R.string.feed_unfollow_error_message
+                    }
                 )
             }
             mapper.mapShopFollow(rowNumber, action, isFollowedFromRSRestrictionBottomSheet)
@@ -158,7 +161,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
         productId: String,
         productName: String,
         price: String,
-        shopId: String,
+        shopId: String
     ): Boolean = withContext(dispatcher.io) {
         val params = AddToCartUseCase.getMinimumParams(
             productId,
@@ -173,8 +176,11 @@ class ContentDetailRepositoryImpl @Inject constructor(
             if (response.isDataError()) throw MessageErrorException(response.getAtcErrorMessage())
             return@withContext !response.isStatusError()
         } catch (e: Throwable) {
-            if (e is ResponseErrorException) throw MessageErrorException(e.localizedMessage)
-            else throw e
+            if (e is ResponseErrorException) {
+                throw MessageErrorException(e.localizedMessage)
+            } else {
+                throw e
+            }
         }
     }
 
@@ -184,7 +190,6 @@ class ContentDetailRepositoryImpl @Inject constructor(
             addToWishlistUseCase.executeOnBackground()
             mapper.mapWishlistData(rowNumber, productId)
         }
-
 
     override suspend fun deleteContent(contentId: String, rowNumber: Int): DeleteContentModel = withContext(dispatcher.io) {
         submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId))
@@ -214,7 +219,10 @@ class ContentDetailRepositoryImpl @Inject constructor(
     override suspend fun trackVisitChannel(channelId: String, rowNumber: Int): VisitContentModel {
         return withContext(dispatcher.io) {
             trackVisitChannelUseCase.setRequestParams(
-                FeedBroadcastTrackerUseCase.createParams(channelId)
+                TrackVisitChannelBroadcasterUseCase.createParams(
+                    channelId,
+                    TrackVisitChannelBroadcasterUseCase.FEED_ENTRY_POINT_VALUE
+                )
             )
             trackVisitChannelUseCase.executeOnBackground()
             mapper.mapVisitChannel(rowNumber)
@@ -245,6 +253,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
             val response = postUpcomingCampaignReminderUseCase.apply {
                 setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
             }.executeOnBackground()
-            return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message) }
+            return@withContext Pair(response.response.success, if (response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
+        }
     }
 }
