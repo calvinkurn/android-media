@@ -9,14 +9,12 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
 import com.tokopedia.loginregister.stub.usecase.GetAdminTypeUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.LoginTokenV2UseCaseStub
-import com.tokopedia.loginregister.stub.usecase.TickerInfoUseCaseStub
 import com.tokopedia.sessioncommon.data.LoginTokenPojoV2
 import com.tokopedia.sessioncommon.domain.usecase.GetAdminTypeUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
@@ -72,14 +70,8 @@ class LoginUseCaseModuleStub {
         resources: Resources,
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
         userSessionInterface: UserSessionInterface
-    ): LoginTokenUseCaseStub = LoginTokenUseCaseStub(resources, graphqlUseCase, userSessionInterface)
-
-    @Provides
-    @ActivityScope
-    fun provideTickerInfoUseCase(
-        resources: Resources,
-        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
-    ): TickerInfoUseCase = TickerInfoUseCaseStub(resources, graphqlUseCase)
+    ): LoginTokenUseCaseStub =
+        LoginTokenUseCaseStub(resources, graphqlUseCase, userSessionInterface)
 
     @Provides
     @ActivityScope
