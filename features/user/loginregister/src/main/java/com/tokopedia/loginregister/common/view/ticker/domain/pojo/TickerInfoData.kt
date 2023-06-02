@@ -1,11 +1,17 @@
 package com.tokopedia.loginregister.common.view.ticker.domain.pojo
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-/**
- * @author by ade on 8/5/2019
- */
 class TickerInfoData(
-    @SerializedName("ticker") @Expose var tickersInfoPojo: TickersInfoPojo
+    @SerializedName("ticker") var tickersInfoPojo: TickersInfoPojo
+)
+
+class TickersInfoPojo(
+    @SerializedName("tickers") var listTickerInfoPojo: List<TickerInfoPojo>
+)
+
+class TickerInfoPojo(
+    @SerializedName("title") val title: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("color") val color: String
 )
