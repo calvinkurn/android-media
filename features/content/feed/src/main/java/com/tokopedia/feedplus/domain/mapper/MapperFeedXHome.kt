@@ -337,6 +337,11 @@ class MapperFeedXHome @Inject constructor(
         }
     }
 
+    private fun isMyContent(author: FeedAuthorModel): Boolean {
+        return (author.type.isShop && author.id == userSession.shopId) ||
+            (author.type.isUser && author.id == userSession.userId)
+    }
+
     private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<FeedMenuItem> {
         val contentData = FeedContentData(
             card.text,
@@ -344,7 +349,7 @@ class MapperFeedXHome @Inject constructor(
             card.author.id
         )
         return buildList {
-            if (author.type.isShop && author.id == userSession.shopId) {
+            if (isMyContent(author)) {
                 if (card.performanceSummaryPageLink.isNotBlank()) {
                     add(
                         FeedMenuItem(
