@@ -1,10 +1,11 @@
 package com.tokopedia.loginregister.common.view.banner.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.banner.domain.query.QueryDynamicBanner
 import javax.inject.Inject
 
 /**
@@ -13,25 +14,27 @@ import javax.inject.Inject
  */
 
 open class DynamicBannerUseCase @Inject constructor(
-        private val graphqlUseCase: MultiRequestGraphqlUseCase
-) : BaseDynamicBannerUseCase<DynamicBannerDataModel>() {
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<String, DynamicBannerDataModel>(dispatchers.io) {
 
-    override suspend fun executeOnBackground(): DynamicBannerDataModel {
-        val request = GraphqlRequest(QueryDynamicBanner.getQuery(), DynamicBannerDataModel::class.java, params)
-
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(request)
-        return graphqlUseCase.executeOnBackground().run {
-            getData<DynamicBannerDataModel>(DynamicBannerDataModel::class.java)
-        }
+    override suspend fun execute(params: String): DynamicBannerDataModel {
+        val mapParam = mapOf(PARAM_PAGE to params)
+        return repository.request(graphqlQuery(), mapParam)
     }
+
+    override fun graphqlQuery(): String = """
+        query getDynamicBanner(${'$'}page: String!) {
+            GetBanner(page: ${'$'}page}) {
+                URL
+                enable
+                message
+                error_message
+            }
+        }
+    """.trimIndent()
 
     companion object {
-        fun createRequestParams(page: String): Map<String, Any> {
-            return mapOf(
-                    DynamicBannerConstant.Params.PAGE to page
-            )
-        }
+        private const val PARAM_PAGE = "page"
     }
-
 }

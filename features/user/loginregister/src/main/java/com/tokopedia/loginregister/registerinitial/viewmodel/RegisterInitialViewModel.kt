@@ -129,7 +129,8 @@ class RegisterInitialViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = _dynamicBannerResponse
 
-    var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
+    var idlingResourceProvider =
+        TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
 
     private var _otherMethodState: OtherMethodState<DiscoverData?> = OtherMethodState.Loading()
     val otherMethodState get() = _otherMethodState
@@ -262,7 +263,8 @@ class RegisterInitialViewModel @Inject constructor(
             if (keyData.key.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
 
-                val params = createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
+                val params =
+                    createRegisterBasicParams(email, encryptedPassword, fullname, validateToken)
                 params[RegisterInitialQueryConstant.PARAM_HASH] = keyData.hash
 
                 userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
@@ -288,9 +290,11 @@ class RegisterInitialViewModel @Inject constructor(
                 result.isSuccess == 1 -> {
                     onSuccessActivateUser().invoke(result)
                 }
+
                 result.message.isNotEmpty() -> {
                     onFailedActivateUser().invoke(MessageErrorException(result.message))
                 }
+
                 else -> {
                     onFailedActivateUser().invoke(Throwable())
                 }
@@ -319,11 +323,8 @@ class RegisterInitialViewModel @Inject constructor(
 
     fun getDynamicBannerData(page: String) {
         launchCatchError(coroutineContext, {
-            val params = DynamicBannerUseCase.createRequestParams(page)
-            dynamicBannerUseCase.createParams(params)
-            dynamicBannerUseCase.executeOnBackground().run {
-                _dynamicBannerResponse.postValue(Success(this))
-            }
+            val model = dynamicBannerUseCase(page)
+            _dynamicBannerResponse.value = Success(model)
         }, {
             _dynamicBannerResponse.postValue(Fail(it))
         })
