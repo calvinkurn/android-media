@@ -104,9 +104,8 @@ class FeedPostVideoViewHolder(
             )
         }
 
-
-                val postGestureDetector = GestureDetector(
-                    binding.root.context,
+        val postGestureDetector = GestureDetector(
+            binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
@@ -218,20 +217,15 @@ class FeedPostVideoViewHolder(
             }
 
             if (payloads.contains(FEED_POST_SELECTED)) {
+                val trackerModel = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(it)
                 listener.onPostImpression(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        it
-                    ),
+                    trackerModel,
                     it.id,
                     absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
-                listener.onWatchPostVideo(
-                    trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                        it
-                    )
-                )
+                listener.onWatchPostVideo(it, trackerModel)
             }
 
             if (payloads.contains(FEED_POST_NOT_SELECTED)) {
