@@ -10,13 +10,13 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.loginregister.goto_seamless.model.GetTemporaryKeyParam
@@ -141,7 +141,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
         get() = mutableDynamicBannerResponse
 
-
     private val mutableLoginBiometricResponse = MutableLiveData<Result<LoginToken>>()
     val loginBiometricResponse: LiveData<Result<LoginToken>>
         get() = mutableLoginBiometricResponse
@@ -160,7 +159,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
             val response = registerCheckUseCase.executeOnBackground()
             if (response.data.errors.isEmpty()) {
                 mutableRegisterCheckResponse.value = Success(response.data)
-            } else{
+            } else {
                 mutableRegisterCheckResponse.value = Fail(MessageErrorException(response.data.errors.first()))
             }
         }, {
@@ -391,7 +390,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }
-
 
     suspend fun isGojekProfileExist(): Boolean {
         return try {

@@ -7,21 +7,29 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
-import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
-import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestErrorData
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
+import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.sessioncommon.data.*
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
+import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -34,7 +42,14 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.mockkStatic
+import io.mockk.verify
 import junit.framework.TestCase.assertEquals
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.instanceOf
@@ -61,8 +76,8 @@ class RegisterInitialViewModelTest {
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val rawQueries = mapOf(
-            RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test2",
-            RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST to "test"
+        RegisterInitialQueryConstant.MUTATION_REGISTER_CHECK to "test2",
+        RegisterInitialQueryConstant.MUTATION_REGISTER_REQUEST to "test"
     )
 
     private var registerCheckObserver = mockk<Observer<Result<RegisterCheckData>>>(relaxed = true)
@@ -97,19 +112,19 @@ class RegisterInitialViewModelTest {
         mockkObject(EncoderDecoder())
 
         viewModel = RegisterInitialViewModel(
-                registerCheckUseCase,
-                registerRequestUseCase,
-                registerV2UseCase,
-                activateUserUseCase,
-                discoverUseCase,
-                loginTokenUseCase,
-                getProfileUseCase,
-                tickerInfoUseCase,
-                dynamicBannerUseCase,
-                generatePublicKeyUseCase,
-                userSession,
-                rawQueries,
-                CoroutineTestDispatchersProvider
+            registerCheckUseCase,
+            registerRequestUseCase,
+            registerV2UseCase,
+            activateUserUseCase,
+            discoverUseCase,
+            loginTokenUseCase,
+            getProfileUseCase,
+            tickerInfoUseCase,
+            dynamicBannerUseCase,
+            generatePublicKeyUseCase,
+            userSession,
+            rawQueries,
+            CoroutineTestDispatchersProvider
         )
         viewModel.idlingResourceProvider = null
         viewModel.registerCheckResponse.observeForever(registerCheckObserver)
@@ -128,7 +143,6 @@ class RegisterInitialViewModelTest {
         viewModel.validateToken.observeForever(validateTokenObserver)
         viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
         viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
-
     }
 
     @Test
@@ -182,7 +196,6 @@ class RegisterInitialViewModelTest {
         verify { registerCheckObserver.onChanged(any<Fail>()) }
         assertThat((viewModel.registerCheckResponse.value as Fail).throwable, instanceOf(RuntimeException::class.java))
     }
-
 
     @Test
     fun `on Failed Register Check`() {
@@ -277,7 +290,6 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Failed Register Request`() {
-
         coEvery { registerRequestUseCase.executeOnBackground() } throws throwable
 
         viewModel.registerRequest("", "", "", "")

@@ -4,9 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.loginregister.discover.pojo.DiscoverData
-import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
-import com.tokopedia.loginregister.discover.pojo.ProviderData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
+import com.tokopedia.loginregister.common.domain.pojo.ProviderData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.test.application.graphql.GqlMockUtil
@@ -51,8 +51,9 @@ class FakeGraphqlRepository : GraphqlRepository {
                                     "https://accounts.tokopedia.com/gplus-login",
                                     "",
                                     "#FFFFFF"
-                                ),
-                            ), ""
+                                )
+                            ),
+                            ""
                         )
                     )
                     is Config.Error -> throw Exception("mocked error")
@@ -63,7 +64,6 @@ class FakeGraphqlRepository : GraphqlRepository {
             else -> throw IllegalArgumentException()
         }
     }
-
 }
 
 sealed class Config {
