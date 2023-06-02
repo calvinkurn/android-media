@@ -1,12 +1,12 @@
-package com.tokopedia.loginregister.common.view.ticker.domain.usecase
+package com.tokopedia.loginregister.common.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoData
-import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.common.domain.pojo.TickerInfoData
+import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import javax.inject.Inject
 
 class TickerInfoUseCase @Inject constructor(
