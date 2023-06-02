@@ -11,10 +11,10 @@ import javax.inject.Inject
 class DynamicBannerUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<String, DynamicBannerDataModel>(dispatchers.io) {
+) : CoroutineUseCase<DynamicBannerUseCase.Page, DynamicBannerDataModel>(dispatchers.io) {
 
-    override suspend fun execute(params: String): DynamicBannerDataModel {
-        val mapParam = mapOf(PARAM_PAGE to params)
+    override suspend fun execute(params: Page): DynamicBannerDataModel {
+        val mapParam = mapOf(PARAM_PAGE to params.value)
         return repository.request(graphqlQuery(), mapParam)
     }
 

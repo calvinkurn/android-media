@@ -651,7 +651,7 @@ class RegisterInitialViewModelTest {
 
         coEvery { dynamicBannerUseCase(any()) } returns response
 
-        viewModel.getDynamicBannerData("1")
+        viewModel.getDynamicBannerData()
 
         /* Then */
         verify {
@@ -664,7 +664,7 @@ class RegisterInitialViewModelTest {
         /* When */
         coEvery { dynamicBannerUseCase(any()) } throws throwable
 
-        viewModel.getDynamicBannerData("1")
+        viewModel.getDynamicBannerData()
 
         /* Then */
         verify {

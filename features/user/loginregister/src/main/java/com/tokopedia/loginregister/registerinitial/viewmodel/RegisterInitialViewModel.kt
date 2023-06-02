@@ -322,9 +322,9 @@ class RegisterInitialViewModel @Inject constructor(
         )
     }
 
-    fun getDynamicBannerData(page: String) {
+    fun getDynamicBannerData() {
         launchCatchError(coroutineContext, {
-            val model = dynamicBannerUseCase(page)
+            val model = dynamicBannerUseCase(DynamicBannerUseCase.Page.REGISTER)
             _dynamicBannerResponse.value = Success(model)
         }, {
             _dynamicBannerResponse.postValue(Fail(it))

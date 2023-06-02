@@ -98,10 +98,13 @@ class LoginEmailPhoneViewModelTest {
 
     private var loginTokenGoogleObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
     private var getUserInfoObserver = mockk<Observer<Result<ProfilePojo>>>(relaxed = true)
-    private var getTickerInfoObserver = mockk<Observer<Result<List<TickerInfoPojo>>>>(relaxed = true)
-    private var getDynamicBannerObserver = mockk<Observer<Result<DynamicBannerDataModel>>>(relaxed = true)
+    private var getTickerInfoObserver =
+        mockk<Observer<Result<List<TickerInfoPojo>>>>(relaxed = true)
+    private var getDynamicBannerObserver =
+        mockk<Observer<Result<DynamicBannerDataModel>>>(relaxed = true)
     private var reloginAfterSqObserver = mockk<Observer<Result<LoginTokenPojo>>>(relaxed = true)
-    private var goToActivationPageAfterReloginObserver = mockk<Observer<MessageErrorException>>(relaxed = true)
+    private var goToActivationPageAfterReloginObserver =
+        mockk<Observer<MessageErrorException>>(relaxed = true)
     private var goToSecurityAfterReloginQuestionObserver = mockk<Observer<String>>(relaxed = true)
     private var goToActivationPage = mockk<Observer<String>>(relaxed = true)
     private var getTemporaryKeyObserver = mockk<Observer<Boolean>>(relaxed = true)
@@ -162,8 +165,12 @@ class LoginEmailPhoneViewModelTest {
         viewModel.dynamicBannerResponse.observeForever(getDynamicBannerObserver)
         viewModel.loginTokenAfterSQResponse.observeForever(reloginAfterSqObserver)
         viewModel.goToActivationPage.observeForever(goToActivationPage)
-        viewModel.goToActivationPageAfterRelogin.observeForever(goToActivationPageAfterReloginObserver)
-        viewModel.goToSecurityQuestionAfterRelogin.observeForever(goToSecurityAfterReloginQuestionObserver)
+        viewModel.goToActivationPageAfterRelogin.observeForever(
+            goToActivationPageAfterReloginObserver
+        )
+        viewModel.goToSecurityQuestionAfterRelogin.observeForever(
+            goToSecurityAfterReloginQuestionObserver
+        )
         viewModel.loginBiometricResponse.observeForever(loginFingerprint)
         viewModel.showLocationAdminPopUp.observeForever(showLocationAdminPopUp)
         viewModel.getTemporaryKeyResponse.observeForever(getTemporaryKeyObserver)
@@ -201,8 +208,14 @@ class LoginEmailPhoneViewModelTest {
         viewModel.registerCheck(testId)
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.registerCheckResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-        assertEquals((viewModel.registerCheckResponse.value as Fail).throwable.message, throwable.message)
+        MatcherAssert.assertThat(
+            viewModel.registerCheckResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
+        assertEquals(
+            (viewModel.registerCheckResponse.value as Fail).throwable.message,
+            throwable.message
+        )
     }
 
     @Test
@@ -225,7 +238,12 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Success Activate User`() {
         /* When */
-        val responseData = ActivateUserData(isSuccess = 1, accessToken = "asd", refreshToken = "fffaa", tokenType = "Bearer")
+        val responseData = ActivateUserData(
+            isSuccess = 1,
+            accessToken = "asd",
+            refreshToken = "fffaa",
+            tokenType = "Bearer"
+        )
         val response = ActivateUserPojo(data = responseData)
 
         coEvery { activateUserUseCase.executeOnBackground() } returns response
@@ -269,7 +287,10 @@ class LoginEmailPhoneViewModelTest {
         viewModel.discoverLogin()
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.discoverResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        MatcherAssert.assertThat(
+            viewModel.discoverResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
         verify { discoverObserver.onChanged(Fail(throwable)) }
     }
 
@@ -348,7 +369,8 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Login Email V2 Success - has errors`() {
         /* When */
-        val loginToken = LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
+        val loginToken =
+            LoginToken(accessToken = "abc123", errors = arrayListOf(Error("msg", "error")))
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
 
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
@@ -403,7 +425,8 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Login Email V2 Success - activation error`() {
         /* When */
-        val loginToken = LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
+        val loginToken =
+            LoginToken(accessToken = "", errors = arrayListOf(Error(message = "belum diaktivasi")))
         val responseToken = LoginTokenPojoV2(loginToken = loginToken)
 
         val keyData = KeyData(key = "cGFkZGluZw==", hash = "zzzz")
@@ -462,7 +485,10 @@ class LoginEmailPhoneViewModelTest {
         viewModel.loginEmailV2(email, password, useHash = true)
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.loginTokenV2Response.value, CoreMatchers.instanceOf(Fail::class.java))
+        MatcherAssert.assertThat(
+            viewModel.loginTokenV2Response.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
     }
 
     @Test
@@ -548,7 +574,10 @@ class LoginEmailPhoneViewModelTest {
         viewModel.loginGoogle("", email)
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.loginTokenGoogleResponse.value, CoreMatchers.instanceOf(Success::class.java))
+        MatcherAssert.assertThat(
+            viewModel.loginTokenGoogleResponse.value,
+            CoreMatchers.instanceOf(Success::class.java)
+        )
     }
 
     @Test
@@ -562,7 +591,10 @@ class LoginEmailPhoneViewModelTest {
         viewModel.loginGoogle("", email)
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.loginTokenGoogleResponse.value, CoreMatchers.instanceOf(Fail::class.java))
+        MatcherAssert.assertThat(
+            viewModel.loginTokenGoogleResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
     }
 
     @Test
@@ -728,8 +760,14 @@ class LoginEmailPhoneViewModelTest {
         coEvery { tickerInfoUseCase(any()) } throws throwable
         viewModel.getTickerInfo()
         /* Then */
-        MatcherAssert.assertThat(viewModel.getTickerInfoResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-        assertEquals((viewModel.getTickerInfoResponse.value as Fail).throwable.message, throwable.message)
+        MatcherAssert.assertThat(
+            viewModel.getTickerInfoResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
+        assertEquals(
+            (viewModel.getTickerInfoResponse.value as Fail).throwable.message,
+            throwable.message
+        )
     }
 
     @Test
@@ -740,7 +778,7 @@ class LoginEmailPhoneViewModelTest {
 
         coEvery { dynamicBannerUseCase(any()) } returns response
 
-        viewModel.getDynamicBannerData("1")
+        viewModel.getDynamicBannerData()
 
         /* Then */
         verify {
@@ -753,7 +791,7 @@ class LoginEmailPhoneViewModelTest {
         /* When */
         coEvery { dynamicBannerUseCase(any()) } throws throwable
 
-        viewModel.getDynamicBannerData("1")
+        viewModel.getDynamicBannerData()
 
         /* Then */
         verify {
@@ -797,9 +835,20 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Success Login Fingerprint`() {
         /* When */
-        val responseToken = LoginToken(accessToken = "abc123", refreshToken = "azzz", tokenType = "12")
+        val responseToken =
+            LoginToken(accessToken = "abc123", refreshToken = "azzz", tokenType = "12")
 
-        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+        every {
+            loginFingerprintUseCase.loginBiometric(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             arg<(LoginToken) -> Unit>(2).invoke(responseToken)
         }
 
@@ -811,24 +860,55 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Failed Login Fingerprint`() {
-        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+        every {
+            loginFingerprintUseCase.loginBiometric(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             arg<(Throwable) -> Unit>(3).invoke(throwable)
         }
 
         viewModel.loginTokenBiometric("test", "1234")
 
         /* Then */
-        MatcherAssert.assertThat(viewModel.loginBiometricResponse.value, CoreMatchers.instanceOf(Fail::class.java))
-        assertEquals((viewModel.loginBiometricResponse.value as Fail).throwable.message, throwable.message)
+        MatcherAssert.assertThat(
+            viewModel.loginBiometricResponse.value,
+            CoreMatchers.instanceOf(Fail::class.java)
+        )
+        assertEquals(
+            (viewModel.loginBiometricResponse.value as Fail).throwable.message,
+            throwable.message
+        )
     }
 
     @Test
     fun `on Failed Login Fingerprint Show Popup Error`() {
         /* When */
         val popupError = mockk<PopupError>(relaxed = true)
-        val responseToken = LoginToken(accessToken = "abc123", refreshToken = "azzz", tokenType = "12", popupError = popupError)
+        val responseToken = LoginToken(
+            accessToken = "abc123",
+            refreshToken = "azzz",
+            tokenType = "12",
+            popupError = popupError
+        )
 
-        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+        every {
+            loginFingerprintUseCase.loginBiometric(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             arg<(LoginToken) -> Unit>(4).invoke(responseToken)
         }
 
@@ -845,7 +925,17 @@ class LoginEmailPhoneViewModelTest {
         /* When */
         val messageErrorException = mockk<MessageErrorException>(relaxed = true)
 
-        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+        every {
+            loginFingerprintUseCase.loginBiometric(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             arg<(MessageErrorException) -> Unit>(5).invoke(messageErrorException)
         }
 
@@ -859,7 +949,17 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Failed Login Fingerprint onGoToSecurityQuestion`() {
-        every { loginFingerprintUseCase.loginBiometric(any(), any(), any(), any(), any(), any(), any()) } answers {
+        every {
+            loginFingerprintUseCase.loginBiometric(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } answers {
             arg<() -> Unit>(6).invoke()
         }
 
@@ -954,7 +1054,12 @@ class LoginEmailPhoneViewModelTest {
         val gojekProfileData = GojekProfileData(authCode = "abc")
         coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
         coEvery { registerCheckFingerprintUseCase(Unit) } returns false
-        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = true,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         assert(viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
     }
 
@@ -962,7 +1067,12 @@ class LoginEmailPhoneViewModelTest {
     fun `login options - enableSeamless true && doesn't have gojek profile`() {
         val gojekProfileData = GojekProfileData(authCode = "")
         coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
-        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = true,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
     }
 
@@ -970,7 +1080,12 @@ class LoginEmailPhoneViewModelTest {
     fun `login options - enableSeamless false`() {
         val gojekProfileData = GojekProfileData(authCode = "")
         coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         coVerify(exactly = 0) { gotoSeamlessHelper.getGojekProfile() }
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
     }
@@ -978,27 +1093,47 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `login options - isEnableFingerprint true && isRegistered == true`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = true, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = true,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         assert(viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
     }
 
     @Test
     fun `login options - isEnableFingerprint true && isRegistered == false`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns false
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = true, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = true,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
     }
 
     @Test
     fun `login options - isEnableFingerprint == true && isEnableDirectBiometric == false`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = true, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = true,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         coVerify { registerCheckFingerprintUseCase(Unit) }
     }
 
     @Test
     fun `login options - isEnableFingerprint == false && isEnableDirectBiometric == false`() {
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         coVerify(exactly = 0) { registerCheckFingerprintUseCase(Unit) }
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
@@ -1007,21 +1142,36 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `login options - isEnableDirectBiometric true && isRegistered == true`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = true, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = true,
+            isEnableOcl = false
+        )
         assert(viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
     }
 
     @Test
     fun `login options - isEnableDirectBiometric true && isRegistered == false`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns false
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = true, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = true,
+            isEnableOcl = false
+        )
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
     }
 
     @Test
     fun `login options - isEnableFingerprint == false && isEnableDirectBiometric == true`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = true, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = true,
+            isEnableOcl = false
+        )
         coVerify { registerCheckFingerprintUseCase(Unit) }
     }
 
@@ -1031,7 +1181,12 @@ class LoginEmailPhoneViewModelTest {
         coEvery { gotoSeamlessHelper.getGojekProfile() } returns gojekProfileData
         coEvery { registerCheckFingerprintUseCase(Unit) } throws Exception()
 
-        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = true)
+        viewModel.checkLoginOption(
+            isEnableSeamless = true,
+            isEnableFingerprint = true,
+            isEnableDirectBiometric = true,
+            isEnableOcl = true
+        )
 
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
@@ -1047,7 +1202,12 @@ class LoginEmailPhoneViewModelTest {
         coEvery { gotoSeamlessHelper.getGojekProfile() } throws Exception()
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
 
-        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = true)
+        viewModel.checkLoginOption(
+            isEnableSeamless = true,
+            isEnableFingerprint = true,
+            isEnableDirectBiometric = true,
+            isEnableOcl = true
+        )
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableSeamless)
         assert(viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
         assert(viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
@@ -1062,7 +1222,12 @@ class LoginEmailPhoneViewModelTest {
         coEvery { gotoSeamlessHelper.getGojekProfile() } throws Exception()
         coEvery { registerCheckFingerprintUseCase(Unit) } throws Exception()
 
-        viewModel.checkLoginOption(isEnableSeamless = true, isEnableFingerprint = true, isEnableDirectBiometric = true, isEnableOcl = true)
+        viewModel.checkLoginOption(
+            isEnableSeamless = true,
+            isEnableFingerprint = true,
+            isEnableDirectBiometric = true,
+            isEnableOcl = true
+        )
 
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableBiometrics)
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableDirectBiometric)
@@ -1073,13 +1238,23 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `login options - isEnableOcl true`() {
         coEvery { registerCheckFingerprintUseCase(Unit) } returns true
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = true)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = false,
+            isEnableOcl = true
+        )
         assert(viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
     }
 
     @Test
     fun `login options - isEnableOcl false`() {
-        viewModel.checkLoginOption(isEnableSeamless = false, isEnableFingerprint = false, isEnableDirectBiometric = false, isEnableOcl = false)
+        viewModel.checkLoginOption(
+            isEnableSeamless = false,
+            isEnableFingerprint = false,
+            isEnableDirectBiometric = false,
+            isEnableOcl = false
+        )
         assert(!viewModel.getLoginOption.getOrAwaitValue().isEnableOcl)
     }
 

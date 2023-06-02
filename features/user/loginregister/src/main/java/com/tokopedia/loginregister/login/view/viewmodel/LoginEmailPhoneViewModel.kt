@@ -349,9 +349,9 @@ class LoginEmailPhoneViewModel @Inject constructor(
         })
     }
 
-    fun getDynamicBannerData(page: String) {
+    fun getDynamicBannerData() {
         launchCatchError(coroutineContext, {
-            val model = dynamicBannerUseCase(page)
+            val model = dynamicBannerUseCase(DynamicBannerUseCase.Page.LOGIN)
             mutableDynamicBannerResponse.value = Success(model)
         }, {
             mutableDynamicBannerResponse.postValue(Fail(it))
