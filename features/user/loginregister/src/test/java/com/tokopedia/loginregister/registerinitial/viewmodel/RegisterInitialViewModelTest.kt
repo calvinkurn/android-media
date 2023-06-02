@@ -58,7 +58,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 
 class RegisterInitialViewModelTest {
 
@@ -314,14 +313,14 @@ class RegisterInitialViewModelTest {
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
 
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns keyPojo
+        coEvery { generatePublicKeyUseCase() } returns keyPojo
         coEvery { registerV2UseCase.executeOnBackground() } returns response
 
         viewModel.registerRequestV2("yoris.prayogo@tokopedia.com", "123456", "Yoris", "asd")
 
         /* Then */
         coVerify {
-            generatePublicKeyUseCase.executeOnBackground()
+            generatePublicKeyUseCase()
             RsaUtils.encrypt(any(), any(), true)
             userSession.setToken(any(), any())
             registerRequestObserver.onChanged(Success(responseData))
@@ -330,7 +329,7 @@ class RegisterInitialViewModelTest {
 
     @Test
     fun `on Failed Register Request v2`() {
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
+        coEvery { generatePublicKeyUseCase() } throws throwable
 
         viewModel.registerRequestV2("yoris.prayogo@tokopedia.com", "123456", "Yoris", "asd")
 
@@ -620,9 +619,7 @@ class RegisterInitialViewModelTest {
         val tickerInfo = TickerInfoPojo("test", "test message", "")
         val tickerList = listOf(tickerInfo)
 
-        every { tickerInfoUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<List<TickerInfoPojo>>>().onNext(tickerList)
-        }
+        coEvery { tickerInfoUseCase(any()) } returns tickerList
 
         viewModel.getTickerInfo()
 
@@ -635,15 +632,14 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Failed get ticker`() {
         /* When */
-        every { tickerInfoUseCase.execute(any(), any()) } answers {
-            secondArg<Subscriber<List<TickerInfoPojo>>>().onError(throwable)
-        }
+        val e = Exception()
+        coEvery { tickerInfoUseCase(any()) } throws e
 
         viewModel.getTickerInfo()
 
         /* Then */
         verify {
-            getTickerInfoObserver.onChanged(Fail(throwable))
+            getTickerInfoObserver.onChanged(Fail(e))
         }
     }
 
@@ -653,7 +649,7 @@ class RegisterInitialViewModelTest {
         val banner = DynamicBannerDataModel.GetBanner(message = "test")
         val response = DynamicBannerDataModel(banner = banner)
 
-        coEvery { dynamicBannerUseCase.executeOnBackground() } returns response
+        coEvery { dynamicBannerUseCase(any()) } returns response
 
         viewModel.getDynamicBannerData("1")
 
@@ -666,7 +662,7 @@ class RegisterInitialViewModelTest {
     @Test
     fun `on Failed get dynamic banner`() {
         /* When */
-        coEvery { dynamicBannerUseCase.executeOnBackground() } throws throwable
+        coEvery { dynamicBannerUseCase(any()) } throws throwable
 
         viewModel.getDynamicBannerData("1")
 
@@ -771,7 +767,6 @@ class RegisterInitialViewModelTest {
         verify {
             registerRequestUseCase.cancelJobs()
             registerCheckUseCase.cancelJobs()
-            tickerInfoUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }

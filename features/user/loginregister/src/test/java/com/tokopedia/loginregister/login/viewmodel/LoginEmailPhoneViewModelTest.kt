@@ -304,7 +304,7 @@ class LoginEmailPhoneViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.loginEmailV2(email, password, useHash = true)
@@ -333,7 +333,7 @@ class LoginEmailPhoneViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.loginEmailV2(email, password, useHash = false)
@@ -361,7 +361,7 @@ class LoginEmailPhoneViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.loginEmailV2(email, password, useHash = true)
@@ -389,7 +389,7 @@ class LoginEmailPhoneViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.loginEmailV2(email, password, useHash = true)
@@ -416,7 +416,7 @@ class LoginEmailPhoneViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.loginEmailV2(email, password, useHash = true)
@@ -443,7 +443,7 @@ class LoginEmailPhoneViewModelTest {
         every { Base64.decode(keyData.key, any()) } returns ByteArray(10)
 
         coEvery { RsaUtils.encrypt(any(), any(), true) } returns "qwerty"
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
         coEvery { loginTokenV2UseCase.executeOnBackground() } returns responseToken
 
         viewModel.loginEmailV2(email, password, useHash = true)
@@ -457,7 +457,7 @@ class LoginEmailPhoneViewModelTest {
         val keyData = KeyData(key = "", hash = "")
         val generateKeyPojo = GenerateKeyPojo(keyData = keyData)
 
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } returns generateKeyPojo
+        coEvery { generatePublicKeyUseCase() } returns generateKeyPojo
 
         viewModel.loginEmailV2(email, password, useHash = true)
 
@@ -467,7 +467,7 @@ class LoginEmailPhoneViewModelTest {
 
     @Test
     fun `on Login Email V2 Error`() {
-        coEvery { generatePublicKeyUseCase.executeOnBackground() } throws throwable
+        coEvery { generatePublicKeyUseCase() } throws throwable
 
         viewModel.loginEmailV2(email, password, useHash = true)
 
@@ -712,7 +712,7 @@ class LoginEmailPhoneViewModelTest {
         val tickerInfo = TickerInfoPojo("test", "test message", "")
         val tickerList = listOf(tickerInfo)
 
-        coEvery { tickerInfoUseCase.createObservable(any()).toBlocking().single() } returns tickerList
+        coEvery { tickerInfoUseCase(any()) } returns tickerList
 
         viewModel.getTickerInfo()
 
@@ -725,7 +725,7 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Failed get ticker`() {
         /* When */
-        coEvery { tickerInfoUseCase.createObservable(any()).toBlocking().single() } throws throwable
+        coEvery { tickerInfoUseCase(any()) } throws throwable
         viewModel.getTickerInfo()
         /* Then */
         MatcherAssert.assertThat(viewModel.getTickerInfoResponse.value, CoreMatchers.instanceOf(Fail::class.java))
@@ -738,7 +738,7 @@ class LoginEmailPhoneViewModelTest {
         val banner = DynamicBannerDataModel.GetBanner(message = "test")
         val response = DynamicBannerDataModel(banner = banner)
 
-        coEvery { dynamicBannerUseCase.executeOnBackground() } returns response
+        coEvery { dynamicBannerUseCase(any()) } returns response
 
         viewModel.getDynamicBannerData("1")
 
@@ -751,7 +751,7 @@ class LoginEmailPhoneViewModelTest {
     @Test
     fun `on Failed get dynamic banner`() {
         /* When */
-        coEvery { dynamicBannerUseCase.executeOnBackground() } throws throwable
+        coEvery { dynamicBannerUseCase(any()) } throws throwable
 
         viewModel.getDynamicBannerData("1")
 
@@ -944,7 +944,6 @@ class LoginEmailPhoneViewModelTest {
     fun `clear task`() {
         viewModel.clearBackgroundTask()
         verify {
-            tickerInfoUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }
@@ -1145,7 +1144,6 @@ class LoginEmailPhoneViewModelTest {
         viewModel.onCleared()
 
         verify {
-            tickerInfoUseCase.unsubscribe()
             loginTokenUseCase.unsubscribe()
             getProfileUseCase.unsubscribe()
         }
