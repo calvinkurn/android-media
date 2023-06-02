@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
+import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
@@ -66,7 +67,6 @@ class FakeGraphqlRepository : GraphqlRepository {
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
-
             "generate_key" -> {
                 GqlMockUtil.createSuccessResponse(
                     GenerateKeyPojo(
@@ -76,6 +76,9 @@ class FakeGraphqlRepository : GraphqlRepository {
                         )
                     )
                 )
+            }
+            "GetBanner" -> {
+                GqlMockUtil.createSuccessResponse(DynamicBannerDataModel())
             }
             else -> throw IllegalArgumentException()
         }

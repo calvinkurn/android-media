@@ -9,10 +9,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserPojo
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
-import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.DynamicBannerUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GetAdminTypeUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
@@ -82,14 +80,6 @@ class LoginUseCaseModuleStub {
         resources: Resources,
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
     ): TickerInfoUseCase = TickerInfoUseCaseStub(resources, graphqlUseCase)
-
-    @Provides
-    @ActivityScope
-    fun provideDynamicBannerUseCase(
-        graphqlRepository: MultiRequestGraphqlUseCase
-    ): DynamicBannerUseCase {
-        return DynamicBannerUseCaseStub(graphqlRepository)
-    }
 
     @Provides
     @ActivityScope

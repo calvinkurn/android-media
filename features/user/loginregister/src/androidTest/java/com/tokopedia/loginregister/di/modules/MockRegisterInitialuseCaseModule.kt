@@ -4,15 +4,12 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
 import com.tokopedia.loginregister.stub.FakeGraphqlRepository
-import com.tokopedia.loginregister.stub.usecase.DynamicBannerUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GetProfileUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.GraphqlUseCaseStub
 import com.tokopedia.loginregister.stub.usecase.TickerInfoUseCaseStub
@@ -29,11 +26,6 @@ class MockRegisterInitialuseCaseModule {
     @Provides
     fun provideRegisterRequestV2GraphQlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<RegisterRequestV2> =
         GraphqlUseCase(graphqlRepository)
-
-    @Provides
-    fun provideDynamicBannerUseCase(
-        graphqlRepository: MultiRequestGraphqlUseCase
-    ): DynamicBannerUseCase = DynamicBannerUseCaseStub(graphqlRepository)
 
     @Provides
     @ActivityScope
