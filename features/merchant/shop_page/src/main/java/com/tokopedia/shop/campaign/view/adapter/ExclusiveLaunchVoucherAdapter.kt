@@ -1,6 +1,5 @@
 package com.tokopedia.shop.campaign.view.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.databinding.ItemExclusiveLaunchVoucherBinding
 import com.tokopedia.shop.R
-import com.tokopedia.shop.campaign.domain.entity.isMerchantVoucher
 
 class ExclusiveLaunchVoucherAdapter :
     RecyclerView.Adapter<ExclusiveLaunchVoucherAdapter.ViewHolder>() {
@@ -35,7 +33,6 @@ class ExclusiveLaunchVoucherAdapter :
     private val differ = AsyncListDiffer(this, differCallback)
     private var onVoucherClick: (Int) -> Unit = {}
     private var onVoucherClaimClick: (Int) -> Unit = {}
-    private var onVoucherUseClick: (Int) -> Unit = {}
     private var useDarkBackground = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -80,16 +77,11 @@ class ExclusiveLaunchVoucherAdapter :
                 setRemainingQuota(remainingQuota)
                 setVoucherName(voucher.voucherName)
 
-                val isMerchantCreatedVoucher = voucher.isMerchantVoucher()
-                val ctaText = getVoucherClaimStatus(context, voucher)
+                val ctaText = voucher.buttonStr
                 setPrimaryCta(
                     ctaText = ctaText,
                     onClick = {
-                        if (isMerchantCreatedVoucher) {
-                            onVoucherUseClick(bindingAdapterPosition)
-                        } else {
-                            onVoucherClaimClick(bindingAdapterPosition)
-                        }
+                        onVoucherClaimClick(bindingAdapterPosition)
                     }
                 )
 
@@ -99,13 +91,6 @@ class ExclusiveLaunchVoucherAdapter :
 
     }
 
-    private fun getVoucherClaimStatus(context: Context, voucher: ExclusiveLaunchVoucher): String {
-        return if (voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
-            voucher.source.claimStatus
-        } else {
-            context.getString(R.string.shop_page_use)
-        }
-    }
 
     fun submit(newVouchers: List<ExclusiveLaunchVoucher>) {
         differ.submitList(newVouchers)
@@ -117,10 +102,6 @@ class ExclusiveLaunchVoucherAdapter :
 
     fun setOnVoucherClaimClick(onVoucherClaimClick: (Int) -> Unit) {
         this.onVoucherClaimClick = onVoucherClaimClick
-    }
-
-    fun setOnVoucherUseClick(onVoucherUseClick: (Int) -> Unit) {
-        this.onVoucherUseClick = onVoucherUseClick
     }
 
     fun setUseDarkBackground(useDarkBackground: Boolean) {

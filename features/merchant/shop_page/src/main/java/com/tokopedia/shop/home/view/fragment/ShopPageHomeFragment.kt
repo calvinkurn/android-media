@@ -534,7 +534,6 @@ open class ShopPageHomeFragment :
     private fun showVoucherListBottomsheet() {
         //TODO: Replace with real shopId and category slugs from backend
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            shopId = "1854168", //Unilever Official Store
             useDarkBackground = true,
             slugs = listOf(
                 "HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY", "MEGAEL12MAY",

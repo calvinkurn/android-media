@@ -16,12 +16,10 @@ class GetPromoVoucherListMapper @Inject constructor() {
                     voucherName = voucher.title,
                     minimumPurchase = voucher.minimumUsage.digitsOnly(),
                     remainingQuota = voucher.quota,
-                    source = ExclusiveLaunchVoucher.VoucherSource.Promo(
-                        voucher.isDisabledButton,
-                        voucher.couponCode,
-                        voucher.buttonStr
-                    ),
-                    slug = voucher.slug
+                    slug = voucher.slug,
+                    isDisabledButton = voucher.isDisabledButton,
+                    couponCode = voucher.couponCode,
+                    buttonStr = voucher.buttonStr
                 )
             }
         }

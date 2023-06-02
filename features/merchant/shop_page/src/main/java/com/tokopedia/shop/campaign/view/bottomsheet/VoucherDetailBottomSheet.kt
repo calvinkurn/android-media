@@ -27,7 +27,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.shop.databinding.BottomsheetVoucherDetailBinding
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -36,19 +35,13 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_SLUG = "slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
-        private const val BUNDLE_KEY_IS_MERCHANT_VOUCHER = "is_merchant_voucher"
 
         @JvmStatic
-        fun newInstance(
-            slug: String,
-            promoVoucherCode: String,
-            isMerchantVoucher: Boolean
-        ): VoucherDetailBottomSheet {
+        fun newInstance(slug: String, promoVoucherCode: String): VoucherDetailBottomSheet {
             return VoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SLUG, slug)
                     putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
-                    putBoolean(BUNDLE_KEY_IS_MERCHANT_VOUCHER, isMerchantVoucher)
                 }
             }
         }
@@ -78,7 +71,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     private val viewModel by lazy { viewModelProvider[VoucherDetailViewModel::class.java] }
     private val slug by lazy { arguments?.getString(BUNDLE_KEY_SLUG).orEmpty() }
     private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
-    private val isMerchantVoucher by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_MERCHANT_VOUCHER).orFalse() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -133,9 +125,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
             btnClaimPromoVoucher.setOnClickListener {
                 binding?.btnClaimPromoVoucher?.startLoading()
                 viewModel.claimPromoVoucher()
-            }
-            btnApplyMerchantVoucher.setOnClickListener {
-                viewModel.applyMerchantVoucher()
             }
             imgVoucher.cornerRadius = Int.ZERO
         }
@@ -221,11 +210,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
         }
 
-        if (isMerchantVoucher) {
-            handleMerchantVoucher(voucherDetail)
-        } else {
-            handlePromoVoucher(promoVoucherCode)
-        }
+        handlePromoVoucher(promoVoucherCode)
 
     }
 
@@ -237,10 +222,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handleMerchantVoucher(voucherDetail: VoucherDetail) {
-        showApplyMerchantVoucherButton()
-        binding?.tpgPromoPeriod?.text = voucherDetail.expired
-    }
 
     private fun UnifyButton.startLoading() {
         this.isLoading = true
@@ -259,7 +240,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
         binding?.btnUsePromoVoucher?.visible()
         binding?.btnClaimPromoVoucher?.gone()
-        binding?.btnApplyMerchantVoucher?.gone()
 
         binding?.tpgVoucherPrice?.gone()
     }
@@ -269,19 +249,8 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
         binding?.btnUsePromoVoucher?.gone()
         binding?.btnClaimPromoVoucher?.visible()
-        binding?.btnApplyMerchantVoucher?.gone()
 
         binding?.tpgVoucherPrice?.visible()
-    }
-
-    private fun showApplyMerchantVoucherButton() {
-        binding?.card?.visible()
-
-        binding?.btnUsePromoVoucher?.gone()
-        binding?.btnClaimPromoVoucher?.gone()
-        binding?.btnApplyMerchantVoucher?.visible()
-
-        binding?.tpgVoucherPrice?.gone()
     }
 
     fun setOnVoucherRedeemSuccess(onVoucherRedeemSuccess : (RedeemPromoVoucherResult) -> Unit) {

@@ -217,21 +217,6 @@
                 app:unifyButtonType="transaction"
                 tools:text="@string/shop_page_claim" />
 
-            <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btnApplyMerchantVoucher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unifyButtonSize="medium"
-                android:text="@string/shop_page_use_merchant_voucher"
-                app:unifyButtonType="main" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -70,13 +70,7 @@ class VoucherDetailViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val redeemedVoucherCode = _redeemResult.voucherCodeOrEmpty()
-                val promoVoucherCode = if (redeemedVoucherCode.isEmpty()) {
-                    voucherCode
-                } else {
-                    redeemedVoucherCode
-                }
-                val useVoucherResult = usePromoVoucherUseCase.execute(promoVoucherCode)
+                val useVoucherResult = usePromoVoucherUseCase.execute(voucherCode)
                 _useVoucherResult.postValue(Success(useVoucherResult))
             },
             onError = { throwable ->
@@ -85,25 +79,12 @@ class VoucherDetailViewModel @Inject constructor(
         )
     }
 
-    fun applyMerchantVoucher() {
-        _applyMerchantVoucher.value = _voucherDetail.getVoucherDetailOrNull()
-    }
-
     private fun LiveData<Result<VoucherDetail>>.getVoucherDetailOrNull(): VoucherDetail? {
         val voucherDetail = this.value
         return if (voucherDetail is Success) {
             voucherDetail.data
         } else {
             null
-        }
-    }
-
-    private fun LiveData<Result<RedeemPromoVoucherResult>>.voucherCodeOrEmpty(): String {
-        val redeemResult = this.value
-        return if (redeemResult is Success) {
-           redeemResult.data.voucherCode
-        } else {
-            ""
         }
     }
 }

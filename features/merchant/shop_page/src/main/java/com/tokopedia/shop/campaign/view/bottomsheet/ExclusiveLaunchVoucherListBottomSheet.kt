@@ -16,11 +16,9 @@ import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
 import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
-import com.tokopedia.shop.campaign.domain.entity.isMerchantVoucher
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
-import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
 import com.tokopedia.shop.databinding.BottomsheetExclusiveLaunchVoucherBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -35,17 +33,14 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
         private const val BUNDLE_KEY_VOUCHER_SLUGS = "category_slugs"
-        private const val BUNDLE_KEY_SHOP_ID = "shop_id"
 
         @JvmStatic
         fun newInstance(
-            shopId: String,
             useDarkBackground: Boolean,
             slugs: List<String>
         ): ExclusiveLaunchVoucherListBottomSheet {
             return ExclusiveLaunchVoucherListBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
                     putStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS, ArrayList(slugs))
                 }
@@ -55,7 +50,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
 
-    private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND).orFalse() }
     private val voucherSlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS)?.toList().orEmpty() }
 
@@ -114,7 +108,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        viewModel.getExclusiveLaunchVouchers(shopId, voucherSlugs)
+        viewModel.getExclusiveLaunchVouchers(voucherSlugs)
     }
 
     private fun observeVouchers() {
@@ -158,27 +152,15 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClaimClick
                 showVoucherDetailBottomSheet(selectedVoucher)
             }
-            setOnVoucherUseClick { selectedVoucherPosition ->
-                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherUseClick
-                showVoucherDetailBottomSheet(selectedVoucher)
-            }
         }
     }
 
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
         if (!isAdded) return
 
-        val promoVoucherCode = if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
-            selectedVoucher.source.voucherCode
-        } else {
-            ""
-        }
-
-        val isMerchantVoucher = selectedVoucher.isMerchantVoucher()
         val bottomSheet = VoucherDetailBottomSheet.newInstance(
             slug = selectedVoucher.slug,
-            promoVoucherCode = promoVoucherCode,
-            isMerchantVoucher = isMerchantVoucher
+            promoVoucherCode = selectedVoucher.couponCode
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult -> handleRedeemVoucherSuccess(redeemResult) }
             setOnVoucherUseSuccess { handleUseVoucherSuccess(selectedVoucher) }
@@ -189,7 +171,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
         if (redeemResult.redeemMessage.isNotEmpty()){
             binding?.loader?.visible()
-            viewModel.getExclusiveLaunchVouchers(shopId, voucherSlugs)
+            viewModel.getExclusiveLaunchVouchers(voucherSlugs)
         }
     }
 
