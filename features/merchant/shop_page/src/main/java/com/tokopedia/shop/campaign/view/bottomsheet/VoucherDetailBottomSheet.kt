@@ -33,14 +33,16 @@ import com.tokopedia.user.session.UserSessionInterface
 class VoucherDetailBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val BUNDLE_KEY_SLUG = "slug"
+        private const val BUNDLE_KEY_SHOP_ID = "shop_id"
+        private const val BUNDLE_KEY_VOUCHER_SLUG = "voucher_slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
 
         @JvmStatic
-        fun newInstance(slug: String, promoVoucherCode: String): VoucherDetailBottomSheet {
+        fun newInstance(shopId: String, slug: String, promoVoucherCode: String): VoucherDetailBottomSheet {
             return VoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putString(BUNDLE_KEY_SLUG, slug)
+                    putString(BUNDLE_KEY_SHOP_ID, shopId)
+                    putString(BUNDLE_KEY_VOUCHER_SLUG, slug)
                     putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
                 }
             }
@@ -69,7 +71,9 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[VoucherDetailViewModel::class.java] }
-    private val slug by lazy { arguments?.getString(BUNDLE_KEY_SLUG).orEmpty() }
+
+    private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
+    private val voucherSlug by lazy { arguments?.getString(BUNDLE_KEY_VOUCHER_SLUG).orEmpty() }
     private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,8 +113,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         observeVoucherDetail()
         observePromoVoucherRedeemResult()
         observeUseVoucherPromoResult()
-        observeApplyMerchantVoucher()
-        viewModel.getVoucherDetail(slug)
+        viewModel.getVoucherDetail(voucherSlug)
     }
 
 
@@ -119,7 +122,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         binding?.run {
             btnUsePromoVoucher.setOnClickListener {
                 binding?.btnUsePromoVoucher?.startLoading()
-                viewModel.usePromoVoucher(promoVoucherCode)
+                viewModel.usePromoVoucher(shopId, promoVoucherCode)
             }
 
             btnClaimPromoVoucher.setOnClickListener {
@@ -179,14 +182,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
                     showToasterError(binding?.btnUsePromoVoucher ?: return@observe, result.throwable)
                 }
-            }
-        }
-    }
-
-    private fun observeApplyMerchantVoucher() {
-        viewModel.applyMerchantVoucher.observe(viewLifecycleOwner) { voucherDetail ->
-            if (voucherDetail != null) {
-                redirectToVoucherProductPage(voucherDetail.id)
             }
         }
     }
@@ -259,17 +254,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
     fun setOnVoucherUseSuccess(onVoucherUseSuccess : () -> Unit) {
         this.onVoucherUseSuccess = onVoucherUseSuccess
-    }
-
-    private fun redirectToVoucherProductPage(voucherId: Long) {
-        val route = UriUtil.buildUri(
-            ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT,
-            userSession.shopId,
-            voucherId.toString()
-        )
-        context?.let {
-            RouteManager.route(context, route)
-        }
     }
 
 }

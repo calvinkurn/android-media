@@ -31,16 +31,19 @@ import javax.inject.Inject
 class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     companion object {
+        private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
-        private const val BUNDLE_KEY_VOUCHER_SLUGS = "category_slugs"
+        private const val BUNDLE_KEY_VOUCHER_SLUGS = "voucher_slugs"
 
         @JvmStatic
         fun newInstance(
+            shopId: String,
             useDarkBackground: Boolean,
             slugs: List<String>
         ): ExclusiveLaunchVoucherListBottomSheet {
             return ExclusiveLaunchVoucherListBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
                     putStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS, ArrayList(slugs))
                 }
@@ -50,6 +53,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetExclusiveLaunchVoucherBinding>()
 
+    private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND).orFalse() }
     private val voucherSlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS)?.toList().orEmpty() }
 
@@ -108,7 +112,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeVouchers()
-        viewModel.getExclusiveLaunchVouchers(voucherSlugs)
+        viewModel.getPromoVouchers(voucherSlugs)
     }
 
     private fun observeVouchers() {
@@ -159,6 +163,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         if (!isAdded) return
 
         val bottomSheet = VoucherDetailBottomSheet.newInstance(
+            shopId  = shopId,
             slug = selectedVoucher.slug,
             promoVoucherCode = selectedVoucher.couponCode
         ).apply {
@@ -171,7 +176,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
         if (redeemResult.redeemMessage.isNotEmpty()){
             binding?.loader?.visible()
-            viewModel.getExclusiveLaunchVouchers(voucherSlugs)
+            viewModel.refreshVoucherClaimStatus(exclusiveLaunchAdapter.snapshot(), voucherSlugs)
         }
     }
 

@@ -34,10 +34,6 @@ class VoucherDetailViewModel @Inject constructor(
     val useVoucherResult: LiveData<Result<Boolean>>
         get() = _useVoucherResult
 
-    private val _applyMerchantVoucher = MutableLiveData<VoucherDetail?>()
-    val applyMerchantVoucher: LiveData<VoucherDetail?>
-        get() = _applyMerchantVoucher
-
     fun getVoucherDetail(slug: String) {
         launchCatchError(
             dispatchers.io,
@@ -66,11 +62,12 @@ class VoucherDetailViewModel @Inject constructor(
         )
     }
 
-    fun usePromoVoucher(voucherCode: String) {
+    fun usePromoVoucher(shopId: String, voucherCode: String) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val useVoucherResult = usePromoVoucherUseCase.execute(voucherCode)
+                val param = UsePromoVoucherUseCase.Param(shopId, voucherCode)
+                val useVoucherResult = usePromoVoucherUseCase.execute(param)
                 _useVoucherResult.postValue(Success(useVoucherResult))
             },
             onError = { throwable ->
