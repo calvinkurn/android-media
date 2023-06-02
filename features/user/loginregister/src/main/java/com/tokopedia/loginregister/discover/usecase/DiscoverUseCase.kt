@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
-import com.tokopedia.loginregister.discover.query.DiscoverQuery
 import javax.inject.Inject
 
 class DiscoverUseCase @Inject constructor(
@@ -15,18 +14,27 @@ class DiscoverUseCase @Inject constructor(
 ) : CoroutineUseCase<String, DiscoverPojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return DiscoverQuery.query
+        return """
+            query discover(${'$'}$PARAM_TYPE: String!){
+            discover(type: ${'$'}$PARAM_TYPE) {
+                providers {
+                    id
+                    name
+                    image
+                    url
+                    scope
+                    color
+                }
+                url_background_seller
+            }
+        }
+        """.trimIndent()
     }
 
     override suspend fun execute(params: String): DiscoverPojo {
-        return repository.request(graphqlQuery(), getParams(params))
+        val mapParam = mapOf(PARAM_TYPE to params)
+        return repository.request(graphqlQuery(), mapParam)
     }
-
-    private fun getParams(
-        type: String
-    ): Map<String, Any> = mapOf(
-        PARAM_TYPE to type
-    )
 
     companion object {
         private const val PARAM_TYPE = "type"
