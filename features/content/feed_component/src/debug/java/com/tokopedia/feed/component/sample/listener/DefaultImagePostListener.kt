@@ -7,11 +7,11 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 
 class DefaultImagePostListener : ImagePostViewHolder.ImagePostListener {
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        
+
     }
 
     override fun userCarouselImpression(feedXCard: FeedXCard, positionInFeed: Int) {
-        
+
     }
 
     override fun userGridPostImpression(
@@ -21,7 +21,7 @@ class DefaultImagePostListener : ImagePostViewHolder.ImagePostListener {
         shopId: String,
         hasVoucher: Boolean
     ) {
-        
+
     }
 
     override fun userProductImpression(
@@ -32,14 +32,19 @@ class DefaultImagePostListener : ImagePostViewHolder.ImagePostListener {
         isFollowed: Boolean,
         productList: List<FeedXProduct>
     ) {
-        
+
     }
 
-    override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
-        
+    override fun onImageClick(
+        postId: String,
+        positionInFeed: Int,
+        contentPosition: Int,
+        redirectLink: String
+    ) {
+
     }
 
     override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
-        
+
     }
 }

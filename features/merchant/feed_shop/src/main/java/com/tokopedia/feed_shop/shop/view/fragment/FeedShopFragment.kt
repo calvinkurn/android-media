@@ -44,6 +44,8 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.feed_shop.shop.view.util.PostMenuListener
+import com.tokopedia.feed_shop.shop.view.util.createBottomMenu
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
@@ -69,8 +71,6 @@ import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.feed_shop.shop.view.util.PostMenuListener
-import com.tokopedia.feed_shop.shop.view.util.createBottomMenu
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
@@ -871,7 +871,7 @@ class FeedShopFragment :
     ) {
     }
 
-    override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
+    override fun onImageClick(postId: String, positionInFeed: Int, contentPosition: Int, redirectLink: String) {
         if (adapter.data[positionInFeed] is DynamicPostModel) {
             val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventShopPageClickPost(
@@ -882,8 +882,15 @@ class FeedShopFragment :
                 positionInFeed
             )
         }
-        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectLink)
-        onGoToLink(finaApplink)
+
+        /** temporary solution by hardcoding the url to cdp **/
+//        val cdpAppLink = redirectLink
+        val cdpAppLink = UriUtil.buildUri(
+            ApplinkConst.INTERNAL_CONTENT_DETAIL,
+            postId,
+        )
+        val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
+        onGoToLink(finalAppLink)
     }
 
     /**
@@ -1006,8 +1013,15 @@ class FeedShopFragment :
                 positionInFeed
             )
         }
-        val finaApplink = getUpdatedApplinkForContentDetailPage(redirectUrl)
-        onGoToLink(finaApplink)
+
+        /** temporary solution by hardcoding the url to cdp **/
+//        val cdpAppLink = redirectLink
+        val cdpAppLink = UriUtil.buildUri(
+            ApplinkConst.INTERNAL_CONTENT_DETAIL,
+            postId
+        )
+        val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
+        onGoToLink(finalAppLink)
     }
 
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
