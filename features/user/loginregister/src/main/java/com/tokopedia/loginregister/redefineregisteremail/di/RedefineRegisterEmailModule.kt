@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.redefineregisteremail.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -11,7 +12,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object RedefineRegisterEmailModule {
+open class RedefineRegisterEmailModule {
 
     @Provides
     @ActivityScope
@@ -25,4 +26,8 @@ object RedefineRegisterEmailModule {
         return FirebaseRemoteConfigImpl(context)
     }
 
+    @Provides
+    @ActivityScope
+    open fun provideBasicIdlingResource(): BasicIdlingResource =
+        BasicIdlingResource.emptyInstance()
 }

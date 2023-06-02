@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.utils.BasicIdlingResource
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.EMPTY_RESOURCE
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.INITIAL_RESOURCE
@@ -13,8 +14,8 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.lo
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateModel
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileValidateParam
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.Register
@@ -36,6 +37,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val getUserProfileUpdateUseCase: GetUserProfileUpdateUseCase,
     private val getUserProfileValidateUseCase: GetUserProfileValidateUseCase,
     private val registerPreferences: RegisterPreferences,
+    private val idlingResource: BasicIdlingResource,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -134,9 +136,11 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
             _getUserInfo.value = getUserInfoAndSaveSessionUseCase(Unit)
 
             _submitRegisterLoading.value = false
+            idlingResource.decrement()
         }, {
             _submitRegisterLoading.value = false
             _getUserInfo.value = Fail(it)
+            idlingResource.decrement()
         })
     }
 
@@ -144,9 +148,9 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     fun registerV2(
         registerV2Param: RegisterV2Param
     ) {
+        idlingResource.increment()
         _submitRegisterLoading.value = true
         launchCatchError(coroutineContext, {
-
             val result = getRegisterV2AndSaveSessionUseCase(registerV2Param)
 
             _registerV2.value = result
@@ -160,7 +164,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private fun userProfileValidate(userProfileValidateParam: UserProfileValidateParam) {
         _submitPhoneLoading.value = true
         launchCatchError(coroutineContext, {
-
             val response = getUserProfileValidateUseCase(userProfileValidateParam)
 
             _submitPhoneLoading.value = false
@@ -174,7 +177,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     // token must get from OTP type 11
     fun userProfileUpdate(userProfileUpdateParam: UserProfileUpdateParam) {
         launchCatchError(coroutineContext, {
-
             val response = getUserProfileUpdateUseCase(userProfileUpdateParam)
 
             _userPhoneUpdate.value = Success(response)
@@ -190,7 +192,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
             } catch (_: Exception) {}
         }
     }
-
 }
 
 sealed class RegistrationPhoneState(val message: String = "", val throwable: Throwable? = null) {
