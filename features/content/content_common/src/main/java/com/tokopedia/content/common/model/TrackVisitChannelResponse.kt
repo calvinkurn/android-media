@@ -1,15 +1,18 @@
-package com.tokopedia.feedcomponent.data.pojo
+package com.tokopedia.content.common.model
 
 import com.google.gson.annotations.SerializedName
 
 
-data class VisitChannelTracking(
+/**
+ * Created by mzennis on 05/02/21.
+ */
+data class TrackVisitChannelResponse(
         @SerializedName("success")
         val success: Boolean = false,
 ) {
 
     data class Response(
             @SerializedName("broadcasterReportVisitChannel")
-            val reportVisitChannelTracking: VisitChannelTracking
+            val model: TrackVisitChannelResponse
     )
 }
