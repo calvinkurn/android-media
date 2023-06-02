@@ -345,24 +345,28 @@ class MapperFeedXHome @Inject constructor(
         )
         return buildList {
             if (author.type.isShop && author.id == userSession.shopId) {
-                add(
-                    FeedMenuItem(
-                        iconUnify = IconUnify.GRAPH,
-                        name = com.tokopedia.content.common.R.string.performance_see,
-                        type = FeedMenuIdentifier.SeePerformance,
-                        appLink = card.performanceSummaryPageLink,
-                        contentData = contentData
+                if (card.performanceSummaryPageLink.isNotBlank()) {
+                    add(
+                        FeedMenuItem(
+                            iconUnify = IconUnify.GRAPH,
+                            name = com.tokopedia.content.common.R.string.performance_see,
+                            type = FeedMenuIdentifier.SeePerformance,
+                            appLink = card.performanceSummaryPageLink,
+                            contentData = contentData
+                        )
                     )
-                )
-                add(
-                    FeedMenuItem(
-                        iconUnify = IconUnify.GRAPH_REPORT,
-                        name = com.tokopedia.content.common.R.string.performance_learn_video_insight,
-                        type = FeedMenuIdentifier.LearnVideoInsight,
-                        appLink = card.insightSummaryPageLink,
-                        contentData = contentData
+                }
+                if (card.insightSummaryPageLink.isNotBlank()) {
+                    add(
+                        FeedMenuItem(
+                            iconUnify = IconUnify.GRAPH_REPORT,
+                            name = com.tokopedia.content.common.R.string.performance_learn_video_insight,
+                            type = FeedMenuIdentifier.LearnVideoInsight,
+                            appLink = card.insightSummaryPageLink,
+                            contentData = contentData
+                        )
                     )
-                )
+                }
             }
             add(
                 FeedMenuItem(
