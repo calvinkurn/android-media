@@ -27,7 +27,7 @@ class FakeGraphqlRepository : GraphqlRepository {
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        Timber.d("Pass through FakeGraphql $requests")
+        Timber.d("Passed through FakeGraphql: ${requests.first().query.slice(0..20)}")
         return when (GqlQueryParser.parse(requests).first()) {
             "registerCheck" -> {
                 val obj: RegisterCheckPojo = when (registerCheckConfig) {
@@ -69,6 +69,7 @@ class FakeGraphqlRepository : GraphqlRepository {
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
+
             "generate_key" -> {
                 GqlMockUtil.createSuccessResponse(
                     GenerateKeyPojo(
@@ -79,13 +80,19 @@ class FakeGraphqlRepository : GraphqlRepository {
                     )
                 )
             }
+
             "GetBanner" -> {
                 GqlMockUtil.createSuccessResponse(DynamicBannerDataModel())
             }
+
             "ticker" -> {
                 GqlMockUtil.createSuccessResponse(TickerInfoData(TickersInfoPojo(listOf())))
             }
-            else -> throw IllegalArgumentException()
+
+            else -> {
+                Timber.w("unhandled request ${GqlQueryParser.parse(requests).joinToString()}")
+                throw IllegalArgumentException()
+            }
         }
     }
 }
