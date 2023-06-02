@@ -53,8 +53,8 @@ class LoginUseCaseModuleStub {
     @Provides
     @ActivityScope
     fun provideGetAdminTypeUseCase(
-        stub: GetAdminTypeUseCaseStub
-    ): GetAdminTypeUseCase = stub
+        graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
+    ): GetAdminTypeUseCase = GetAdminTypeUseCaseStub(graphqlUseCase)
 
     @ActivityScope
     @Provides
@@ -74,34 +74,20 @@ class LoginUseCaseModuleStub {
         resources: Resources,
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
         userSessionInterface: UserSessionInterface
-    ): LoginTokenUseCaseStub {
-        return LoginTokenUseCaseStub(resources, graphqlUseCase, userSessionInterface)
-    }
+    ): LoginTokenUseCaseStub = LoginTokenUseCaseStub(resources, graphqlUseCase, userSessionInterface)
 
     @Provides
     @ActivityScope
     fun provideTickerInfoUseCase(
-        stub: TickerInfoUseCaseStub
-    ): TickerInfoUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideTickerInfoUseCaseStub(
         resources: Resources,
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
-    ): TickerInfoUseCaseStub {
-        return TickerInfoUseCaseStub(resources, graphqlUseCase)
-    }
+    ): TickerInfoUseCase = TickerInfoUseCaseStub(resources, graphqlUseCase)
 
     @Provides
     @ActivityScope
     fun provideDynamicBannerUseCase(
-        stub: DynamicBannerUseCaseStub
-    ): DynamicBannerUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideDynamicBannerUseCaseStub(graphqlRepository: MultiRequestGraphqlUseCase): DynamicBannerUseCaseStub {
+        graphqlRepository: MultiRequestGraphqlUseCase
+    ): DynamicBannerUseCase {
         return DynamicBannerUseCaseStub(graphqlRepository)
     }
 

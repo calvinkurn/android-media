@@ -32,28 +32,15 @@ class MockRegisterInitialuseCaseModule {
 
     @Provides
     fun provideDynamicBannerUseCase(
-        stub: DynamicBannerUseCaseStub
-    ): DynamicBannerUseCase = stub
-
-    @Provides
-    fun provideDynamicBannerUseCaseStub(graphqlRepository: MultiRequestGraphqlUseCase): DynamicBannerUseCaseStub {
-        return DynamicBannerUseCaseStub(graphqlRepository)
-    }
+        graphqlRepository: MultiRequestGraphqlUseCase
+    ): DynamicBannerUseCase = DynamicBannerUseCaseStub(graphqlRepository)
 
     @Provides
     @ActivityScope
     fun provideTickerInfoUseCase(
-        stub: TickerInfoUseCaseStub
-    ): TickerInfoUseCase = stub
-
-    @ActivityScope
-    @Provides
-    fun provideTickerInfoUseCaseStub(
         resources: Resources,
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase
-    ): TickerInfoUseCaseStub {
-        return TickerInfoUseCaseStub(resources, graphqlUseCase)
-    }
+    ): TickerInfoUseCase = TickerInfoUseCaseStub(resources, graphqlUseCase)
 
     @Provides
     @ActivityScope
