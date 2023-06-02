@@ -15,7 +15,7 @@
       
         <activity android:name="com.tokopedia.updateinactivephone.features.InactivePhoneActivity"
           android:label="Inactive Phone"
-          android:theme="@style/Theme.White"
+          android:theme="@style/Theme.WhiteUnify"
           android:screenOrientation="portrait"
             android:exported="false"
           android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
@@ -38,16 +38,16 @@
         <activity android:name="com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneSubmitDataActivity"
           android:windowSoftInputMode="adjustResize"
           android:screenOrientation="portrait"
-          android:theme="@style/Theme.White"/>
+          android:theme="@style/Theme.WhiteUnify"/>
         <activity android:name="com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity"
           android:screenOrientation="portrait"
-          android:theme="@style/Theme.White"/>
+          android:theme="@style/Theme.WhiteUnify"/>
         <activity android:name="com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity"
           android:screenOrientation="portrait"
-          android:theme="@style/Theme.White"/>
+          android:theme="@style/Theme.WhiteUnify"/>
         <activity android:name="com.tokopedia.updateinactivephone.features.successpage.InactivePhoneSuccessPageActivity"
           android:screenOrientation="portrait"
-          android:theme="@style/Theme.White"/>
+          android:theme="@style/Theme.WhiteUnify"/>
 
         <activity
             android:name="com.tokopedia.updateinactivephone.features.inputoldphonenumber.activity.InputOldPhoneNumberActivity"
