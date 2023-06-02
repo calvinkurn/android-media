@@ -29,6 +29,10 @@ class DynamicBannerUseCase @Inject constructor(
         }
     """.trimIndent()
 
+    enum class Page(val value: String) {
+        LOGIN("login"), REGISTER("register");
+    }
+
     companion object {
         private const val PARAM_PAGE = "page"
     }

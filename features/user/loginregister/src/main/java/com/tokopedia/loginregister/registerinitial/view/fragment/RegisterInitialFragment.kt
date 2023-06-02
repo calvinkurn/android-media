@@ -65,8 +65,8 @@ import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
-import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheetListener
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
@@ -368,7 +368,7 @@ class RegisterInitialFragment :
 
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
-                registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
+                registerInitialViewModel.getDynamicBannerData(DynamicBannerUseCase.Page.REGISTER.value)
             } else {
                 showTicker()
             }
