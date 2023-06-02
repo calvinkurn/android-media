@@ -8,12 +8,7 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import javax.inject.Inject
 
-/**
- * @author rival
- * @created on 20/02/2020
- */
-
-open class DynamicBannerUseCase @Inject constructor(
+class DynamicBannerUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<String, DynamicBannerDataModel>(dispatchers.io) {
