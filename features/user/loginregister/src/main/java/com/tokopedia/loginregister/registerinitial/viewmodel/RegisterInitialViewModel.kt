@@ -258,7 +258,7 @@ class RegisterInitialViewModel @Inject constructor(
         validateToken: String
     ) {
         launchCatchError(coroutineContext, {
-            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            val keyData = generatePublicKeyUseCase().keyData
             if (keyData.key.isNotEmpty()) {
                 val encryptedPassword = RsaUtils.encrypt(password, keyData.key.decodeBase64(), true)
 

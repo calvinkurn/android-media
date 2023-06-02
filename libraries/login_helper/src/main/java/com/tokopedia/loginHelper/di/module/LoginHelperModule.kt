@@ -5,11 +5,7 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -45,13 +41,6 @@ class LoginHelperModule {
 
     @LoginHelperScope
     @Provides
-    fun provideGeneratePublicKeyUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCase {
-        val useCase = GraphqlUseCase<GenerateKeyPojo>(graphqlRepository)
-        return GeneratePublicKeyUseCase(useCase)
-    }
-
-    @LoginHelperScope
-    @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
@@ -61,5 +50,4 @@ class LoginHelperModule {
     fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
     }
-
 }

@@ -9,6 +9,8 @@ import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
+import com.tokopedia.sessioncommon.data.GenerateKeyPojo
+import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
@@ -36,10 +38,12 @@ class FakeGraphqlRepository : GraphqlRepository {
                             view = "yoris.prayogo@tokopedia.com"
                         )
                     )
+
                     else -> throw IllegalStateException()
                 }
                 GqlMockUtil.createSuccessResponse(obj)
             }
+
             "discover" -> {
                 val obj: DiscoverPojo = when (discoverConfig) {
                     is Config.Default -> DiscoverPojo(
@@ -56,10 +60,22 @@ class FakeGraphqlRepository : GraphqlRepository {
                             ""
                         )
                     )
+
                     is Config.Error -> throw Exception("mocked error")
                     else -> DiscoverPojo()
                 }
                 GqlMockUtil.createSuccessResponse(obj)
+            }
+
+            "generate_key" -> {
+                GqlMockUtil.createSuccessResponse(
+                    GenerateKeyPojo(
+                        KeyData(
+                            key = "stubbedPublicKey",
+                            hash = "1234"
+                        )
+                    )
+                )
             }
             else -> throw IllegalArgumentException()
         }

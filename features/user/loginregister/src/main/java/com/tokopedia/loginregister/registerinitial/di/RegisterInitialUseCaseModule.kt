@@ -7,8 +7,6 @@ import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBann
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestPojo
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestV2
-import com.tokopedia.sessioncommon.data.GenerateKeyPojo
-import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -18,29 +16,22 @@ import dagger.Provides
  */
 
 @Module
-class RegisterInitialUseCaseModule{
+class RegisterInitialUseCaseModule {
 
     @Provides
-    fun provideRegisterCheckGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<RegisterCheckPojo> = GraphqlUseCase(graphqlRepository)
+    fun provideRegisterCheckGraphQlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<RegisterCheckPojo> =
+        GraphqlUseCase(graphqlRepository)
 
     @Provides
-    fun provideRegisterRequestGraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<RegisterRequestPojo> = GraphqlUseCase(graphqlRepository)
+    fun provideRegisterRequestGraphQlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<RegisterRequestPojo> =
+        GraphqlUseCase(graphqlRepository)
 
     @Provides
-    fun provideRegisterRequestV2GraphQlUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<RegisterRequestV2> = GraphqlUseCase(graphqlRepository)
+    fun provideRegisterRequestV2GraphQlUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<RegisterRequestV2> =
+        GraphqlUseCase(graphqlRepository)
 
     @Provides
     fun provideDynamicBannerUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): DynamicBannerUseCase {
         return DynamicBannerUseCase(graphqlUseCase)
     }
-
-    @Provides
-    fun provideGeneratePublicKeyUseCase(graphqlRepository: GraphqlRepository): GeneratePublicKeyUseCase {
-        val useCase = GraphqlUseCase<GenerateKeyPojo>(graphqlRepository)
-        return GeneratePublicKeyUseCase(useCase)
-    }
-
 }

@@ -251,7 +251,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun loginEmailV2(email: String, password: String, useHash: Boolean) {
         launchCatchError(coroutineContext, {
-            val keyData = generatePublicKeyUseCase.executeOnBackground().keyData
+            val keyData = generatePublicKeyUseCase().keyData
             if (keyData.key.isNotEmpty()) {
                 var finalPassword = password
                 if (useHash) {
