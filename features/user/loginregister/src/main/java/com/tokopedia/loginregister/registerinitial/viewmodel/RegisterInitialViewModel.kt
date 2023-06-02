@@ -42,7 +42,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -142,10 +141,7 @@ class RegisterInitialViewModel @Inject constructor(
     fun getProvider() {
         launchCatchError(block = {
             val result = discoverUseCase(PARAM_DISCOVER_REGISTER)
-
-            withContext(dispatcherProvider.main) {
-                mutableGetProviderResponse.value = Success(result.data)
-            }
+            mutableGetProviderResponse.value = Success(result.data)
         }, onError = {
                 mutableGetProviderResponse.value = Fail(it)
             })
@@ -275,7 +271,7 @@ class RegisterInitialViewModel @Inject constructor(
                 registerRequestUseCaseV2.setGraphqlQuery(RegisterV2Query.registerQuery)
                 val result = registerRequestUseCaseV2.executeOnBackground()
                 onSuccessRegisterRequest(result.data)
-            } 
+            }
         }, {
             onFailedRegisterRequest(it)
         })
