@@ -8,6 +8,8 @@ import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverPojo
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoData
+import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickersInfoPojo
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
@@ -79,6 +81,9 @@ class FakeGraphqlRepository : GraphqlRepository {
             }
             "GetBanner" -> {
                 GqlMockUtil.createSuccessResponse(DynamicBannerDataModel())
+            }
+            "ticker" -> {
+                GqlMockUtil.createSuccessResponse(TickerInfoData(TickersInfoPojo(listOf())))
             }
             else -> throw IllegalArgumentException()
         }
