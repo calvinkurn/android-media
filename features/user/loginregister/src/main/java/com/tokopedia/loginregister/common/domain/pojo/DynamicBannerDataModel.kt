@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.common.view.banner.data
+package com.tokopedia.loginregister.common.domain.pojo
 
 import com.google.gson.annotations.SerializedName
 

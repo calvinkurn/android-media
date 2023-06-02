@@ -1,11 +1,11 @@
-package com.tokopedia.loginregister.common.view.banner.domain.usecase
+package com.tokopedia.loginregister.common.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
 import javax.inject.Inject
 
 class DynamicBannerUseCase @Inject constructor(

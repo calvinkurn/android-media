@@ -11,13 +11,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.domain.usecase.DiscoverUseCase
+import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.common.domain.usecase.TickerInfoUseCase
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.view.banner.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData

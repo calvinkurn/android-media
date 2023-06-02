@@ -58,6 +58,7 @@ import com.tokopedia.loginregister.common.analytics.RedefineInitialRegisterAnaly
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
+import com.tokopedia.loginregister.common.domain.pojo.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.domain.pojo.ProviderData
 import com.tokopedia.loginregister.common.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.common.error.getMessage
@@ -65,7 +66,6 @@ import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
-import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheetListener
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
