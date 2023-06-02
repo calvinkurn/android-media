@@ -9,7 +9,6 @@ import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.TkpdIdlingResourceProvider
-import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.pojo.DiscoverData
 import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
@@ -42,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -192,13 +192,14 @@ class RegisterInitialViewModel @Inject constructor(
     }
 
     fun getTickerInfo() {
-        tickerInfoUseCase.execute(
-            TickerInfoUseCase.createRequestParam(TickerInfoUseCase.REGISTER_PAGE),
-            resultUsecaseCoroutineToSubscriber(
-                onSuccessGetTickerInfo(),
-                onFailedGetTickerInfo()
-            )
-        )
+        launch {
+            runCatching {
+                val ticker = tickerInfoUseCase(TickerInfoUseCase.REGISTER_PAGE)
+                mutableGetTickerInfoResponse.value = Success(ticker)
+            }.onFailure {
+                mutableGetTickerInfoResponse.value = Fail(it)
+            }
+        }
     }
 
     fun registerCheck(id: String) {
@@ -495,7 +496,6 @@ class RegisterInitialViewModel @Inject constructor(
     fun clearBackgroundTask() {
         registerRequestUseCase.cancelJobs()
         registerCheckUseCase.cancelJobs()
-        tickerInfoUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }

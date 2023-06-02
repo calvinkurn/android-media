@@ -46,7 +46,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LoginEmailPhoneViewModel @Inject constructor(
@@ -343,10 +342,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
 
     fun getTickerInfo() {
         launchCatchError(coroutineContext, {
-            val params = TickerInfoUseCase.createRequestParam(TickerInfoUseCase.LOGIN_PAGE)
-            val ticker = withContext(dispatchers.io) {
-                tickerInfoUseCase.createObservable(params).toBlocking().single()
-            }
+            val ticker = tickerInfoUseCase(TickerInfoUseCase.LOGIN_PAGE)
             mutableGetTickerInfoResponse.value = Success(ticker)
         }, {
             mutableGetTickerInfoResponse.value = Fail(it)
@@ -383,7 +379,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     }
 
     fun clearBackgroundTask() {
-        tickerInfoUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
     }
