@@ -7,12 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ApplinkLogOnNotificationUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class ApplinkLogOnNotificationViewHolder(
     itemView: View
-): AbstractViewHolder<ApplinkLogOnNotificationUiModel>(itemView)
-{
+) : AbstractViewHolder<ApplinkLogOnNotificationUiModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_applink_log_on_notification
@@ -22,6 +22,7 @@ class ApplinkLogOnNotificationViewHolder(
         val cb = itemView.findViewById<CheckboxUnify>(R.id.applink_log_on_notification_cb)
         cb.isChecked = ApplinkLogger.getInstance(itemView.context).isNotificationEnabled
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
+            DevOpsTracker.trackClickEvent(this::class.simpleName.toString())
             ApplinkLogger.getInstance(itemView.context).enableNotification(state)
         }
     }

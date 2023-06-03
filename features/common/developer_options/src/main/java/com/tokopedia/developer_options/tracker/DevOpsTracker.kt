@@ -23,22 +23,32 @@ object DevOpsTracker {
                 }
         )
 
-    private lateinit var influx: InfluxInteractor
+    private var influx: InfluxInteractor? = null
 
     fun init(context: Context) {
-        if (!::influx.isInitialized) {
-            val id = UserSession(context).androidId
-            influx = InfluxInteractor.Builder()
-                .measurement("devops_tracker")
-                .setIdentity(IdType.CUSTOM(id))
-                .build()
+        if (influx == null) {
+            try {
+                val id = UserSession(context).androidId
+                scope.launch(Dispatchers.IO) {
+                    val i = InfluxInteractor.Builder()
+                        .measurement("devops_tracker")
+                        .setIdentity(IdType.CUSTOM(id))
+                        .build()
+                    if (i.ping()) {
+                        influx = i
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 
-    fun trackImpression(page: String) {
+    fun trackClickEvent(page: String) {
+        if (influx == null) return
         scope.launch {
             withContext(Dispatchers.IO) {
-                influx.send(
+                influx?.send(
                     tags = mapOf("page" to page, "event" to "click"),
                     values = mapOf("count" to 1)
                 )
