@@ -1,6 +1,9 @@
 package com.tokopedia.developer_options.tracker
 
+import IdType
 import InfluxInteractor
+import android.content.Context
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -13,13 +16,23 @@ import timber.log.Timber
 object DevOpsTracker {
 
     private val scope =
-        CoroutineScope(CoroutineName("influxTracker") + SupervisorJob() +
-            CoroutineExceptionHandler { coroutineContext, throwable ->
-                Timber.e(throwable)
-            })
+        CoroutineScope(
+            CoroutineName("influxTracker") + SupervisorJob() +
+                CoroutineExceptionHandler { coroutineContext, throwable ->
+                    Timber.e(throwable)
+                }
+        )
 
-    private val influx: InfluxInteractor by lazy {
-        InfluxInteractor.Builder().measurement("devops_tracker").build()
+    private lateinit var influx: InfluxInteractor
+
+    fun init(context: Context) {
+        if (!::influx.isInitialized) {
+            val id = UserSession(context).androidId
+            influx = InfluxInteractor.Builder()
+                .measurement("devops_tracker")
+                .setIdentity(IdType.CUSTOM(id))
+                .build()
+        }
     }
 
     fun trackImpression(page: String) {

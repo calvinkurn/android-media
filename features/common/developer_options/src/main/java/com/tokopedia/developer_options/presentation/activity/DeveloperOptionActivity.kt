@@ -25,8 +25,14 @@ import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
-import com.tokopedia.developer_options.presentation.viewholder.*
+import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.DevOptsAuthorizationViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.HomeAndNavigationRevampSwitcherViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.LoginHelperListener
+import com.tokopedia.developer_options.presentation.viewholder.ResetOnBoardingViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.UrlEnvironmentViewHolder
 import com.tokopedia.developer_options.session.DevOptLoginSession
+import com.tokopedia.developer_options.tracker.DevOpsTracker
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.translator.manager.TranslatorManager
@@ -37,7 +43,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.init
 import com.tokopedia.url.TokopediaUrl.Companion.setEnvironment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.RuntimeException
 
 /**
  * @author Said Faisal on 24/11/2021
@@ -107,6 +112,7 @@ class DeveloperOptionActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DevOpsTracker.init(this)
         checkDebuggingModeOrNot()
     }
 
