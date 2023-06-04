@@ -1405,7 +1405,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.product_add_edit_text_variant_product_dt_can_not_delete))
-            setDescription(getString(R.string.product_add_edit_text_descroption_variant_product_dt_can_not_delete))
+            setDescription(getString(R.string.product_add_edit_text_description_variant_product_dt_can_not_delete))
             setPrimaryCTAText(getString(R.string.action_oke))
             setPrimaryCTAClickListener {
                 dialog.dismiss()
@@ -1418,7 +1418,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.product_add_edit_text_product_dt_can_not_delete))
-            setDescription(getString(R.string.product_add_edit_text_descroption_product_dt_can_not_delete))
+            setDescription(getString(R.string.product_add_edit_text_description_product_dt_can_not_delete))
             setPrimaryCTAText(getString(R.string.action_oke))
             setPrimaryCTAClickListener {
                 dialog.dismiss()
