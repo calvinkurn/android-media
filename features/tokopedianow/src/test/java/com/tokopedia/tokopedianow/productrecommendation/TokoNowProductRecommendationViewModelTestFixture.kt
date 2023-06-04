@@ -261,8 +261,8 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
 
     @Test
     fun `verify the properties`() {
-        Assert.assertEquals(viewModel.isLogin, false)
-        Assert.assertEquals(viewModel.userId, "")
+        Assert.assertEquals(viewModel.isLoggedIn(), false)
+        Assert.assertEquals(viewModel.getUserId(), "")
 
         val isLogin = true
         val userId = "1222233"
@@ -279,7 +279,7 @@ abstract class TokoNowProductRecommendationViewModelTestFixture {
             userId
         }
 
-        Assert.assertEquals(viewModel.isLogin, isLogin)
-        Assert.assertEquals(viewModel.userId, userId)
+        Assert.assertEquals(viewModel.isLoggedIn(), isLogin)
+        Assert.assertEquals(viewModel.getUserId(), userId)
     }
 }

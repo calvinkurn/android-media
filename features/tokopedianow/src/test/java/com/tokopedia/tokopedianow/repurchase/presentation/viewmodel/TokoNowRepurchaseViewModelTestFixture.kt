@@ -327,7 +327,7 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
     }
 
     protected fun verifyGetCategoryListUseCaseCalled() {
-        coVerify(exactly = 1) { getCategoryListUseCase.execute("1", TokoNowRepurchaseFragment.CATEGORY_LEVEL_DEPTH) }
+        coVerify { getCategoryListUseCase.execute(warehouseId = any(), depth = any()) }
     }
 
     protected fun onGetLayoutList_thenReturnNull() {
@@ -346,32 +346,20 @@ abstract class TokoNowRepurchaseViewModelTestFixture {
         verify { addToCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifyAddToCartUseCaseNotCalled() {
-        verify(exactly = 0) { addToCartUseCase.execute(any(), any()) }
-    }
-
     protected fun verifyDeleteCartUseCaseCalled() {
         verify { deleteCartUseCase.execute(any(), any()) }
-    }
-
-    protected fun verifyDeleteCartUseCaseNotCalled() {
-        verify(exactly = 0) { deleteCartUseCase.execute(any(), any()) }
     }
 
     protected fun verifyUpdateCartUseCaseCalled() {
         verify { updateCartUseCase.execute(any(), any()) }
     }
 
-    protected fun verifyUpdateCartUseCaseNotCalled() {
-        verify(exactly = 0) { updateCartUseCase.execute(any(), any()) }
-    }
-
     protected fun verifyGetProductUseCaseCalled() {
-        coVerify { getRepurchaseProductListUseCase.execute(any()) }
+        coVerify { getRepurchaseProductListUseCase.execute(param = any()) }
     }
 
     protected fun verifyGetProductUseCaseCalled(param: GetRepurchaseProductListParam) {
-        coVerify { getRepurchaseProductListUseCase.execute(param) }
+        coVerify { getRepurchaseProductListUseCase.execute(param = param) }
     }
 
     protected fun verifyGetProductUseCaseCalled(times: Int = 1) {

@@ -2,9 +2,9 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.category.domain.model.CategorySharingModel
-import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategorySharingModel
+import com.tokopedia.tokopedianow.oldcategory.presentation.view.TokoNowCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField
 import org.junit.Assert

@@ -10,10 +10,11 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY

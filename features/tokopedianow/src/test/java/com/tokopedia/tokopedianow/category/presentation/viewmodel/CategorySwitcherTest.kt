@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.SwitcherWidgetDataView
 import org.junit.Assert.assertTrue

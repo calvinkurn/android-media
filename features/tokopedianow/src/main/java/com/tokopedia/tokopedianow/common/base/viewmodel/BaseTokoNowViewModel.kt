@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem.MiniCartItemProduct
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
@@ -171,6 +172,10 @@ open class BaseTokoNowViewModel(
     fun createAffiliateLink(url: String) = affiliateService.createAffiliateLink(url)
 
     fun getAffiliateShareInput() = affiliateService.createShareInput()
+
+    fun setAddressData(data: LocalCacheModel) {
+        addressData.setLocalData(data)
+    }
 
     fun initAffiliateCookie(affiliateUuid: String = "", affiliateChannel: String = "") {
         launchCatchError(block = {

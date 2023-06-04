@@ -3,8 +3,8 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment.Companion.DEFAULT_CATEGORY_ID
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.presentation.view.TokoNowCategoryFragment.Companion.DEFAULT_CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData

@@ -150,7 +150,6 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 hasBlockedAddToCart = hasBlockedAddToCart
             )
         }
-
     }) {
         categoryL2Models.remove(categoryL2Model)
 

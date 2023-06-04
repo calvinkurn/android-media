@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView

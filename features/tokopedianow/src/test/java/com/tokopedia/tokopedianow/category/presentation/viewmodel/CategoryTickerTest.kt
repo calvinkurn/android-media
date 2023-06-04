@@ -1,11 +1,11 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.util.TestUtils.getParentPrivateField

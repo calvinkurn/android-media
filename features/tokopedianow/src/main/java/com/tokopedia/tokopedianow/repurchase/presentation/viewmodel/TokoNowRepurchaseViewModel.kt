@@ -391,6 +391,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun setLocalCacheModel(localCacheModel: LocalCacheModel?) {
+        localCacheModel?.let { setAddressData(localCacheModel) }
         this.localCacheModel = localCacheModel
     }
 

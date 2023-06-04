@@ -6,7 +6,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper

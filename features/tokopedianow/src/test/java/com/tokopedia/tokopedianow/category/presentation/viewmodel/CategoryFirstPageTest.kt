@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.assertBannerDataView
 import com.tokopedia.tokopedianow.searchcategory.assertCategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.assertChooseAddressDataView

@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.domain.mapper.CategoryMenuMapper

@@ -1,7 +1,7 @@
 package com.tokopedia.tokopedianow.category.presentation.viewmodel
 
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
-import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat

@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.category.presentation.viewmodel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.oldcategory.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.UpdateCartTestHelper
 import com.tokopedia.tokopedianow.searchcategory.UpdateCartTestHelper.Callback
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
