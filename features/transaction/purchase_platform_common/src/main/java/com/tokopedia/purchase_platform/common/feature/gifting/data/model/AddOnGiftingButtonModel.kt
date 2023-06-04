@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnButtonModel(
+data class AddOnGiftingButtonModel(
     var leftIconUrl: String = "",
     var rightIconUrl: String = "",
     var description: String = "",

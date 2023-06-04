@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
@@ -383,9 +383,9 @@ class ShipmentCartItemViewHolder(
 
     private fun renderAddOnProductLevel(
         cartItemModel: CartItemModel,
-        addOnWordingModel: AddOnWordingModel
+        addOnWordingModel: AddOnGiftingWordingModel
     ) {
-        val addOns = cartItemModel.addOnProductLevelModel
+        val addOns = cartItemModel.addOnGiftingProductLevelModel
         if (addOns.status == 0) {
             binding.llGiftingAddonProductLevel.visibility = View.GONE
         } else {
@@ -417,7 +417,7 @@ class ShipmentCartItemViewHolder(
 
         fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel)
 
-        fun onClickAddOnProductLevel(cartItem: CartItemModel, addOnWording: AddOnWordingModel)
+        fun onClickAddOnProductLevel(cartItem: CartItemModel, addOnWording: AddOnGiftingWordingModel)
 
         fun onImpressionAddOnProductLevel(productId: String)
     }

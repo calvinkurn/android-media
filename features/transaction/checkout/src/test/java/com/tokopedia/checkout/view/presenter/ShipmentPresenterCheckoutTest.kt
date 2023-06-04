@@ -26,10 +26,10 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingProductItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnBottomSheetResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
@@ -864,7 +864,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        presenter.updateAddOnGiftingProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
         // Then
         verify {
@@ -883,7 +883,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
                 cartStringGroup = "239594-0-301643",
-                addOnsOrderLevelModel = AddOnsDataModel()
+                addOnsOrderLevelModel = AddOnGiftingDataModel()
             )
         )
 
@@ -907,17 +907,17 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        presenter.updateAddOnGiftingOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
-        val productList = arrayListOf<AddOnProductItemModel>()
+        val productList = arrayListOf<AddOnGiftingProductItemModel>()
         productList.add(
-            AddOnProductItemModel().apply {
+            AddOnGiftingProductItemModel().apply {
                 productImageUrl = "https://images.tokopedia.net/img/android/product_icon.jpeg"
                 productName = "testProductName"
             }
         )
-        val addOnsDataModel = AddOnsDataModel().apply {
-            addOnsBottomSheetModel = AddOnBottomSheetModel().apply {
+        val addOnsDataModel = AddOnGiftingDataModel().apply {
+            addOnsBottomSheetModel = AddOnGiftingBottomSheetModel().apply {
                 products = productList
             }
         }
@@ -935,7 +935,7 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         shipmentCartItemModelList.add(
             ShipmentCartItemModel(
                 cartStringGroup = "239594-0-301643",
-                addOnsOrderLevelModel = AddOnsDataModel()
+                addOnsOrderLevelModel = AddOnGiftingDataModel()
             )
         )
 
@@ -962,21 +962,21 @@ class ShipmentPresenterCheckoutTest : BaseShipmentPresenterTest() {
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
 
         // When
-        presenter.updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+        presenter.updateAddOnGiftingOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
 
-        val productList = arrayListOf<AddOnProductItemModel>()
+        val productList = arrayListOf<AddOnGiftingProductItemModel>()
         productList.add(
-            AddOnProductItemModel().apply {
+            AddOnGiftingProductItemModel().apply {
                 productImageUrl = "https://images.tokopedia.net/img/android/product_icon.jpeg"
                 productName = "testProductName"
             }
         )
-        val addOnsDataModel = AddOnsDataModel().apply {
-            addOnsBottomSheetModel = AddOnBottomSheetModel().apply {
+        val addOnsDataModel = AddOnGiftingDataModel().apply {
+            addOnsBottomSheetModel = AddOnGiftingBottomSheetModel().apply {
                 products = productList
             }
             addOnsDataItemModelList = listOf(
-                AddOnDataItemModel()
+                AddOnGiftingDataItemModel()
             )
         }
 

@@ -4,9 +4,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnBottomSheetModel(
-    var ticker: AddOnTickerModel = AddOnTickerModel(),
+data class AddOnGiftingBottomSheetModel(
+    var ticker: AddOnGiftingTickerModel = AddOnGiftingTickerModel(),
     var headerTitle: String = "",
     var description: String = "",
-    var products: List<AddOnProductItemModel> = emptyList()
+    var products: List<AddOnGiftingProductItemModel> = emptyList()
 ) : Parcelable

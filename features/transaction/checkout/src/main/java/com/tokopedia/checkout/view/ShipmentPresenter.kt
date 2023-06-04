@@ -132,14 +132,14 @@ import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.re
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCaseCoroutine
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingTickerModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
@@ -367,9 +367,9 @@ class ShipmentPresenter @Inject constructor(
                         } else {
                             totalItemPrice += cartItem.quantity * cartItem.price
                         }
-                        if (cartItem.addOnProductLevelModel.status == 1) {
-                            if (cartItem.addOnProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-                                for (addOnsData in cartItem.addOnProductLevelModel.addOnsDataItemModelList) {
+                        if (cartItem.addOnGiftingProductLevelModel.status == 1) {
+                            if (cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+                                for (addOnsData in cartItem.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
                                     totalAddOnPrice += addOnsData.addOnPrice
                                     hasAddOnSelected = true
                                 }
@@ -5014,7 +5014,7 @@ class ShipmentPresenter @Inject constructor(
     // endregion
 
     // region add ons
-    fun updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    fun updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel) {
@@ -5024,8 +5024,8 @@ class ShipmentPresenter @Inject constructor(
                         val keyProductLevel =
                             "${cartItemModel.cartStringGroup}-${cartItemModel.cartId}"
                         if (keyProductLevel.equals(addOnResult.addOnKey, ignoreCase = true)) {
-                            val addOnsDataModel = cartItemModel.addOnProductLevelModel
-                            setAddOnsData(
+                            val addOnsDataModel = cartItemModel.addOnGiftingProductLevelModel
+                            setAddOnsGiftingData(
                                 addOnsDataModel,
                                 addOnResult,
                                 0,
@@ -5039,7 +5039,7 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    fun updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
+    fun updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult: SaveAddOnStateResult) {
         for (addOnResult in saveAddOnStateResult.addOns) {
             for (shipmentCartItemModel in shipmentCartItemModelList) {
                 if (shipmentCartItemModel is ShipmentCartItemModel && (shipmentCartItemModel.cartStringGroup + "-0").equals(
@@ -5048,7 +5048,7 @@ class ShipmentPresenter @Inject constructor(
                     )
                 ) {
                     val addOnsDataModel = shipmentCartItemModel.addOnsOrderLevelModel
-                    setAddOnsData(
+                    setAddOnsGiftingData(
                         addOnsDataModel,
                         addOnResult,
                         1,
@@ -5061,8 +5061,8 @@ class ShipmentPresenter @Inject constructor(
     }
 
     // identifier : 0 = product level, 1  = order level
-    private fun setAddOnsData(
-        addOnsDataModel: AddOnsDataModel,
+    private fun setAddOnsGiftingData(
+        addOnsDataModel: AddOnGiftingDataModel,
         addOnResult: AddOnResult,
         identifier: Int,
         cartString: String,
@@ -5070,7 +5070,7 @@ class ShipmentPresenter @Inject constructor(
     ) {
         addOnsDataModel.status = addOnResult.status
         val addOnButton = addOnResult.addOnButton
-        addOnsDataModel.addOnsButtonModel = AddOnButtonModel(
+        addOnsDataModel.addOnsButtonModel = AddOnGiftingButtonModel(
             addOnButton.leftIconUrl,
             addOnButton.rightIconUrl,
             addOnButton.description,
@@ -5078,30 +5078,30 @@ class ShipmentPresenter @Inject constructor(
             addOnButton.title
         )
         val addOnBottomSheet = addOnResult.addOnBottomSheet
-        val addOnBottomSheetModel = AddOnBottomSheetModel()
+        val addOnBottomSheetModel = AddOnGiftingBottomSheetModel()
         addOnBottomSheetModel.headerTitle = addOnBottomSheet.headerTitle
         addOnBottomSheetModel.description = addOnBottomSheet.description
-        val addOnTickerModel = AddOnTickerModel()
+        val addOnTickerModel = AddOnGiftingTickerModel()
         addOnTickerModel.text = addOnBottomSheet.ticker.text
         addOnBottomSheetModel.ticker = addOnTickerModel
-        val listProductAddOn = ArrayList<AddOnProductItemModel>()
+        val listProductAddOn = ArrayList<AddOnGiftingProductItemModel>()
         for (product in addOnBottomSheet.products) {
-            val addOnProductItemModel = AddOnProductItemModel()
+            val addOnProductItemModel = AddOnGiftingProductItemModel()
             addOnProductItemModel.productName = product.productName
             addOnProductItemModel.productImageUrl = product.productImageUrl
             listProductAddOn.add(addOnProductItemModel)
         }
         addOnBottomSheetModel.products = listProductAddOn
         addOnsDataModel.addOnsBottomSheetModel = addOnBottomSheetModel
-        val listAddOnDataItem = arrayListOf<AddOnDataItemModel>()
+        val listAddOnDataItem = arrayListOf<AddOnGiftingDataItemModel>()
         for (addOnData in addOnResult.addOnData) {
-            val addOnDataItemModel = AddOnDataItemModel()
+            val addOnDataItemModel = AddOnGiftingDataItemModel()
             val addOnNote = addOnData.addOnMetadata.addOnNote
             addOnDataItemModel.addOnId = addOnData.addOnId
             addOnDataItemModel.addOnPrice = addOnData.addOnPrice
             addOnDataItemModel.addOnQty = addOnData.addOnQty.toLong()
-            addOnDataItemModel.addOnMetadata = AddOnMetadataItemModel(
-                AddOnNoteItemModel(
+            addOnDataItemModel.addOnMetadata = AddOnGiftingMetadataItemModel(
+                AddOnGiftingNoteItemModel(
                     addOnNote.isCustomNote,
                     addOnNote.to,
                     addOnNote.from,
@@ -5176,14 +5176,14 @@ class ShipmentPresenter @Inject constructor(
                 for (groupShopV2 in groupShop.groupShopData) {
                     for (product in groupShopV2.products) {
                         // product level
-                        if (product.addOnProduct.status == 1) {
+                        if (product.addOnGiftingProduct.status == 1) {
                             val dynamicDataParam = DynamicDataParam()
                             dynamicDataParam.level = PRODUCT_LEVEL
                             dynamicDataParam.parentUniqueId = groupShop.cartString
                             dynamicDataParam.uniqueId = product.cartId.toString()
                             dynamicDataParam.attribute = ATTRIBUTE_ADDON_DETAILS
                             dynamicDataParam.addOn =
-                                getAddOnFromSAF(product.addOnProduct, isOneClickShipment)
+                                getAddOnFromSAF(product.addOnGiftingProduct, isOneClickShipment)
                             listDataParam.add(dynamicDataParam)
                         }
                     }

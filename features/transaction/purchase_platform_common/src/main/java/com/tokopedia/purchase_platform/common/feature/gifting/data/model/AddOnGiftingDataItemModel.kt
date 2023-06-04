@@ -4,9 +4,9 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnDataItemModel(
+data class AddOnGiftingDataItemModel(
     var addOnPrice: Double = 0.0,
     var addOnId: String = "",
-    var addOnMetadata: AddOnMetadataItemModel = AddOnMetadataItemModel(),
+    var addOnMetadata: AddOnGiftingMetadataItemModel = AddOnGiftingMetadataItemModel(),
     var addOnQty: Long = 0L
 ) : Parcelable

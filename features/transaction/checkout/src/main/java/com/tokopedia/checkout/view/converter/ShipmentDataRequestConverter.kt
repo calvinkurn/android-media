@@ -21,7 +21,7 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.SelectedShipperModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 
@@ -158,7 +158,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         val product = Product().apply {
             productId = it.productId.toString()
             isPpp = it.isProtectionOptIn
-            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnProductLevelModel)
+            checkoutGiftingProductLevel = mapGiftingAddOn(it.addOnGiftingProductLevelModel)
             cartId = it.cartId.toString()
             productCategoryId = it.analyticsProductCheckoutData.productCategoryId
             protectionPricePerProduct = it.protectionPricePerProduct
@@ -168,7 +168,7 @@ class ShipmentDataRequestConverter @Inject constructor(private val _gson: Gson) 
         return product
     }
 
-    private fun mapGiftingAddOn(addOnsData: AddOnsDataModel): List<CheckoutGiftingAddOn> {
+    private fun mapGiftingAddOn(addOnsData: AddOnGiftingDataModel): List<CheckoutGiftingAddOn> {
         val listCheckoutGiftingAddOn = arrayListOf<CheckoutGiftingAddOn>()
         if (addOnsData.status == 1) {
             for (addOnItem in addOnsData.addOnsDataItemModelList) {

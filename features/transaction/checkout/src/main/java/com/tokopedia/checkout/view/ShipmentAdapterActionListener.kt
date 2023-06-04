@@ -12,7 +12,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import rx.subjects.PublishSubject
 
@@ -107,12 +107,12 @@ interface ShipmentAdapterActionListener {
     fun onClickSetPinpoint(position: Int)
     fun openAddOnProductLevelBottomSheet(
         cartItemModel: CartItemModel,
-        addOnWordingModel: AddOnWordingModel?
+        addOnWordingModel: AddOnGiftingWordingModel?
     )
 
     fun openAddOnOrderLevelBottomSheet(
         cartItemModel: ShipmentCartItemModel,
-        addOnWordingModel: AddOnWordingModel?
+        addOnWordingModel: AddOnGiftingWordingModel?
     )
 
     fun addOnProductLevelImpression(productId: String)

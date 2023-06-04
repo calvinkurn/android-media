@@ -64,7 +64,7 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.U
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder.Companion.ITEM_VIEW_UPLOAD
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
@@ -1057,7 +1057,7 @@ class ShipmentAdapter @Inject constructor(
         for (i in shipmentDataList.indices) {
             if (shipmentDataList[i] is CartItemModel) {
                 val cartItemModel = shipmentDataList[i] as CartItemModel
-                if (cartItemModel.cartStringGroup == cartString && cartItemModel.cartId == cartId && cartItemModel.addOnProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
+                if (cartItemModel.cartStringGroup == cartString && cartItemModel.cartId == cartId && cartItemModel.addOnGiftingProductLevelModel.addOnsButtonModel.title.isNotEmpty()) {
                     return i
                 }
             }
@@ -1272,7 +1272,7 @@ class ShipmentAdapter @Inject constructor(
 
     override fun onClickAddOnProductLevel(
         cartItem: CartItemModel,
-        addOnWording: AddOnWordingModel
+        addOnWording: AddOnGiftingWordingModel
     ) {
         shipmentAdapterActionListener.openAddOnProductLevelBottomSheet(cartItem, addOnWording)
     }

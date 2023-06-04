@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnNoteItemModel(
+data class AddOnGiftingNoteItemModel(
     @SerializedName("is_custom_note")
     var isCustomNote: Boolean = false,
     @SerializedName("to")

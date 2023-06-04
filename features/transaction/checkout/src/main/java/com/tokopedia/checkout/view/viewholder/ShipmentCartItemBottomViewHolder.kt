@@ -828,9 +828,9 @@ class ShipmentCartItemBottomViewHolder(
                         totalPurchaseProtectionItem += cartItemModel.quantity
                         totalPurchaseProtectionPrice += cartItemModel.protectionPrice.toLong()
                     }
-                    if (cartItemModel.addOnProductLevelModel.status == 1) {
-                        if (cartItemModel.addOnProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
-                            for (addOnsData in cartItemModel.addOnProductLevelModel.addOnsDataItemModelList) {
+                    if (cartItemModel.addOnGiftingProductLevelModel.status == 1) {
+                        if (cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList.isNotEmpty()) {
+                            for (addOnsData in cartItemModel.addOnGiftingProductLevelModel.addOnsDataItemModelList) {
                                 totalAddOnPrice += addOnsData.addOnPrice.toInt()
                                 hasAddOnSelected = true
                             }

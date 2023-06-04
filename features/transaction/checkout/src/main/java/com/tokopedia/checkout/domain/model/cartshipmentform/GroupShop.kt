@@ -2,8 +2,9 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,7 +14,7 @@ data class GroupShop(
     var hasUnblockingError: Boolean = false,
     var unblockingErrorMessage: String = "",
     var firstProductErrorIndex: Int = -1,
-    var addOns: AddOnsDataModel = AddOnsDataModel(),
+    var addOns: AddOnGiftingDataModel = AddOnGiftingDataModel(),
     var groupShopData: List<GroupShopV2> = emptyList(),
     var shopShipments: List<ShopShipment> = emptyList(),
     var shippingId: Int = 0,
@@ -45,7 +46,10 @@ data class GroupShop(
     val groupType: Int = 0,
     val uiGroupType: Int = 0,
     val groupInfoName: String = "",
-    val groupInfoBadgeUrl: String = ""
+    val groupInfoBadgeUrl: String = "",
+
+    // addon product
+    var addOnProduct: AddOnProductDataModel = AddOnProductDataModel()
 ) : Parcelable {
 
     companion object {

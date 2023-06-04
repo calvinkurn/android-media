@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnMetadataItemModel(
+data class AddOnGiftingMetadataItemModel(
     @SerializedName("add_on_note")
-    var addOnNoteItemModel: AddOnNoteItemModel = AddOnNoteItemModel()
+    var addOnNoteItemModel: AddOnGiftingNoteItemModel = AddOnGiftingNoteItemModel()
 ) : Parcelable

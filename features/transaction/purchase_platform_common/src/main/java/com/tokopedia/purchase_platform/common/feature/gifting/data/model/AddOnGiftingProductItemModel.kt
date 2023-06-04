@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnProductItemModel(
+data class AddOnGiftingProductItemModel(
     var productImageUrl: String = "",
     var productName: String = ""
 ) : Parcelable

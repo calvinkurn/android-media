@@ -20,7 +20,7 @@ import com.tokopedia.logisticcart.shipping.model.CoachmarkPlusData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItem
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
@@ -475,7 +475,7 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnOrderLevelModel: AddOnWordingModel
+        addOnOrderLevelModel: AddOnGiftingWordingModel
     ): List<CartItemModel> {
         var counterIndex = index
         return groupShopV2.products.map { product ->
@@ -499,7 +499,7 @@ class ShipmentDataConverter @Inject constructor() {
         groupShop: GroupShop,
         username: String,
         receiverName: String,
-        addOnWordingModel: AddOnWordingModel,
+        addOnWordingModel: AddOnGiftingWordingModel,
         groupShopV2: GroupShopV2
     ): CartItemModel {
         val ppp = product.purchaseProtectionPlanData
@@ -571,7 +571,7 @@ class ShipmentDataConverter @Inject constructor() {
             bundleQuantity = product.bundleQuantity,
             bundleIconUrl = product.bundleIconUrl,
             analyticsProductCheckoutData = product.analyticsProductCheckoutData,
-            addOnProductLevelModel = product.addOnProduct,
+            addOnGiftingProductLevelModel = product.addOnGiftingProduct,
             ethicalDrugDataModel = product.ethicalDrugs,
             addOnDefaultFrom = username,
             addOnDefaultTo = receiverName,
@@ -582,8 +582,8 @@ class ShipmentDataConverter @Inject constructor() {
         )
     }
 
-    private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnWordingModel {
-        val addOnWordingModel = AddOnWordingModel()
+    private fun convertFromAddOnWordingData(addOnWordingData: AddOnWordingData): AddOnGiftingWordingModel {
+        val addOnWordingModel = AddOnGiftingWordingModel()
         addOnWordingModel.onlyGreetingCard = addOnWordingData.onlyGreetingCard
         addOnWordingModel.packagingAndGreetingCard = addOnWordingData.packagingAndGreetingCard
         addOnWordingModel.invoiceNotSendToRecipient = addOnWordingData.invoiceNotSendToRecipient

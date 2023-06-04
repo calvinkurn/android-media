@@ -12,8 +12,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import org.junit.Assert.assertEquals
@@ -136,10 +136,10 @@ class ShipmentPresenterCostTest : BaseShipmentPresenterTest() {
                         isError = false,
                         quantity = 1,
                         price = 1000.0,
-                        addOnProductLevelModel = AddOnsDataModel(
+                        addOnGiftingProductLevelModel = AddOnGiftingDataModel(
                             status = 1,
                             addOnsDataItemModelList = listOf(
-                                AddOnDataItemModel(
+                                AddOnGiftingDataItemModel(
                                     addOnPrice = 100.0
                                 )
                             )

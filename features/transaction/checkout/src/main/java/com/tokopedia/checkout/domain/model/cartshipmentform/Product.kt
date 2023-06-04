@@ -3,8 +3,9 @@ package com.tokopedia.checkout.domain.model.cartshipmentform
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import kotlinx.parcelize.Parcelize
 
@@ -57,8 +58,9 @@ data class Product(
     var bundleOriginalPrice: Double = 0.0,
     var bundleQuantity: Int = 0,
     var bundleIconUrl: String = "",
-    var addOnProduct: AddOnsDataModel = AddOnsDataModel(),
+    var addOnGiftingProduct: AddOnGiftingDataModel = AddOnGiftingDataModel(),
     var ethicalDrugs: EthicalDrugDataModel = EthicalDrugDataModel(),
+    var addOnProduct: AddOnProductDataModel = AddOnProductDataModel(),
 
     // new
     val shouldShowShopInfo: Boolean = false,

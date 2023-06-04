@@ -168,7 +168,7 @@ import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.re
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AvailableBottomSheetData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
@@ -3483,7 +3483,7 @@ class ShipmentFragment :
             val saveAddOnStateResult =
                 data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
             if (saveAddOnStateResult != null) {
-                shipmentPresenter.updateAddOnProductLevelDataBottomSheet(saveAddOnStateResult)
+                shipmentPresenter.updateAddOnGiftingProductLevelDataBottomSheet(saveAddOnStateResult)
             }
         }
     }
@@ -3493,17 +3493,17 @@ class ShipmentFragment :
             val saveAddOnStateResult =
                 data.getParcelableExtra<SaveAddOnStateResult>(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA_RESULT)
             if (saveAddOnStateResult != null) {
-                shipmentPresenter.updateAddOnOrderLevelDataBottomSheet(saveAddOnStateResult)
+                shipmentPresenter.updateAddOnGiftingOrderLevelDataBottomSheet(saveAddOnStateResult)
             }
         }
     }
 
     override fun openAddOnProductLevelBottomSheet(
         cartItemModel: CartItemModel,
-        addOnWordingModel: AddOnWordingModel?
+        addOnWordingModel: AddOnGiftingWordingModel?
     ) {
         if (activity != null) {
-            val addOnsDataModel = cartItemModel.addOnProductLevelModel
+            val addOnsDataModel = cartItemModel.addOnGiftingProductLevelModel
             val addOnBottomSheetModel = addOnsDataModel.addOnsBottomSheetModel
 
             // No need to open add on bottom sheet if action = 0
@@ -3514,7 +3514,7 @@ class ShipmentFragment :
                 unavailableBottomSheetData =
                     mapUnavailableBottomSheetProductLevelData(addOnBottomSheetModel, cartItemModel)
             }
-            if (cartItemModel.addOnProductLevelModel.status == ADD_ON_STATUS_ACTIVE) {
+            if (cartItemModel.addOnGiftingProductLevelModel.status == ADD_ON_STATUS_ACTIVE) {
                 availableBottomSheetData = mapAvailableBottomSheetProductLevelData(
                     addOnWordingModel!!,
                     cartItemModel
@@ -3536,7 +3536,7 @@ class ShipmentFragment :
 
     override fun openAddOnOrderLevelBottomSheet(
         cartItemModel: ShipmentCartItemModel,
-        addOnWordingModel: AddOnWordingModel?
+        addOnWordingModel: AddOnGiftingWordingModel?
     ) {
         if (activity != null) {
             val addOnsDataModel = cartItemModel.addOnsOrderLevelModel

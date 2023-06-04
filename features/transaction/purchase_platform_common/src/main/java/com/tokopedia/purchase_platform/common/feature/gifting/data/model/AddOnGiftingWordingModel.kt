@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class AddOnWordingModel(
+data class AddOnGiftingWordingModel(
     var packagingAndGreetingCard: String = "",
     var onlyGreetingCard: String = "",
     var invoiceNotSendToRecipient: String = ""
