@@ -2,11 +2,9 @@ package com.tokopedia.pdpCheckout.testing.product.detail
 
 import android.view.View
 import androidx.core.view.get
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -103,13 +101,7 @@ class ProductDetailRobot {
     }
 
     private fun showVariantBottomSheet() {
-        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))), ViewActions.scrollTo()))
-        val viewInteraction = onView(AllOf.allOf(withId(R.id.rv_single_variant))).check(
-            matches(
-                isDisplayed()
-            )
-        )
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickChildViewWithId(R.id.atc_variant_chip)))
+        onView(withId(R.id.btn_buy_now)).perform(click())
     }
 
     private fun selectVariant(position: Int) {
