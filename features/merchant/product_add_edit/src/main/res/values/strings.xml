@@ -550,6 +550,7 @@
     <string name="product_add_edit_text_title_product_dt_cannot_deactivate">Varian ini terdaftar dalam gudang Dilayani Tokopedia</string>
     <string name="product_add_edit_text_description_product_dt_cannot_deactivate"><![CDATA[Jika menonaktifkan, kamu berpotensi <b>tetap harus membayar biaya Dilayani Tokopedia</b> meski varian dinonaktifkan. <br/><b><font color=\'#42b549\'><a href=”###”>Baca Artikel</a></font></b>]]></string>
     <string name="product_add_edit_text_dt_deactivate">Tetap Nonaktifkan</string>
+    <string name="product_add_edit_text_toaster_campaign_deactivate">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
 
 
 </resources>

@@ -35,7 +35,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
@@ -133,7 +132,6 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -599,6 +597,11 @@ class AddEditProductPreviewFragment :
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
             val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
+
+            if (productInputModel.isCampaignActive) {
+                showToasterErrorSetStatusCampaignActive(isChecked)
+                return@setOnClickListener
+            }
 
             if (isChecked && viewModel.isVariantEmpty.value == false) {
                 activateVariantStatusConfirmation(productInputModel.variantInputModel.getStockStatus())
@@ -1781,6 +1784,20 @@ class AddEditProductPreviewFragment :
                 getString(R.string.label_for_toaster_success_set_shop_location),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
+                getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ).show()
+        }
+    }
+
+    private fun showToasterErrorSetStatusCampaignActive(isChecked: Boolean) {
+        viewModel.updateProductStatus(!isChecked)
+        productStatusSwitch?.isChecked = !isChecked
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.product_add_edit_text_toaster_campaign_deactivate),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
                 getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ).show()
         }
