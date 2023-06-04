@@ -11,4 +11,12 @@ data class CategoryShowcaseItemUiModel(
     val headerName: String
 ): Visitable<CategoryShowcaseTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CategoryShowcaseTypeFactory): Int  = typeFactory.type(this)
+
+    fun getChangePayload(categoryShowcaseItem: CategoryShowcaseItemUiModel): Any? {
+        val newProductCard = categoryShowcaseItem.productCardModel
+        return when {
+            productCardModel != newProductCard -> true
+            else -> null
+        }
+    }
 }

@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.listener.CategoryTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
@@ -45,7 +47,9 @@ class CategoryAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
     private val tokoNowChooseAddressWidgetListener: TokoNowChooseAddressWidgetListener? = null,
     private val tokoNowCategoryMenuListener: TokoNowCategoryMenuListener? = null,
-    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null
+    private val tokoNowProductRecommendationListener: TokoNowProductRecommendationListener? = null,
+    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
 ): BaseAdapterTypeFactory(),
     CategoryTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
@@ -84,7 +88,9 @@ class CategoryAdapterTypeFactory(
             CategoryShowcaseViewHolder.LAYOUT -> CategoryShowcaseViewHolder(
                 itemView = view,
                 categoryShowcaseItemListener = categoryShowcaseItemListener,
-                categoryShowcaseHeaderListener = categoryShowcaseHeaderListener
+                categoryShowcaseHeaderListener = categoryShowcaseHeaderListener,
+                productCardCompactListener = productCardCompactListener,
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
             )
 
             /* Common Component View Holder */

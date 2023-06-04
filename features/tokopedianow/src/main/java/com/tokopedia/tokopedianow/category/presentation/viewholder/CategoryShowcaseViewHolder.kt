@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
+import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.adapter.CategoryShowcaseAdapter
-import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryDiffer
+import com.tokopedia.tokopedianow.category.presentation.adapter.differ.CategoryShowcaseDiffer
 import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.CategoryShowcaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.category.presentation.viewholder.CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener
@@ -22,7 +24,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 class CategoryShowcaseViewHolder(
     itemView: View,
     private val categoryShowcaseItemListener: CategoryShowcaseItemListener? = null,
-    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null
+    private val categoryShowcaseHeaderListener: TokoNowDynamicHeaderListener? = null,
+    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
 ): AbstractViewHolder<CategoryShowcaseUiModel>(itemView) {
     companion object {
         private const val SPAN_COUNT = 3
@@ -37,9 +41,11 @@ class CategoryShowcaseViewHolder(
     private val adapter: CategoryShowcaseAdapter by lazy {
         CategoryShowcaseAdapter(
             typeFactory = CategoryShowcaseAdapterTypeFactory(
-                categoryShowcaseItemListener = categoryShowcaseItemListener
+                categoryShowcaseItemListener = categoryShowcaseItemListener,
+                productCardCompactListener = productCardCompactListener,
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
             ),
-            differ = CategoryDiffer()
+            differ = CategoryShowcaseDiffer()
         )
     }
 
@@ -54,6 +60,12 @@ class CategoryShowcaseViewHolder(
                 TokoNowLayoutState.SHOW -> showShowcase(element)
                 else -> { /* nothing to do */ }
             }
+        }
+    }
+
+    override fun bind(element: CategoryShowcaseUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.showShowcase(element)
         }
     }
 

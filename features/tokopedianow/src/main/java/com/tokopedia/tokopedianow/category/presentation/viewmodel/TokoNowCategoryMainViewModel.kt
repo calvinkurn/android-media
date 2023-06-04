@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTick
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateWishlistStatus
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
@@ -99,13 +100,12 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         quantity: Int,
         layoutType: CategoryLayoutType
     ) {
-        miniCartData?.apply {
-            layout.updateProductQuantity(
-                productId = productId,
-                quantity = quantity,
-                layoutType = layoutType
-            )
-        }
+        layout.updateProductQuantity(
+            productId = productId,
+            quantity = quantity,
+            layoutType = layoutType
+        )
+        _categoryPage.postValue(layout)
     }
 
     override fun onSuccessGetMiniCartData(
@@ -305,7 +305,22 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     }
 
     fun removeProductRecommendation() {
-        layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
-        _categoryPage.postValue(layout)
+        launch {
+            layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
+            _categoryPage.postValue(layout)
+        }
+    }
+
+    fun updateWishlistStatus(
+        productId: String,
+        hasBeenWishlist: Boolean
+    ) {
+        launch {
+            layout.updateWishlistStatus(
+                productId = productId,
+                hasBeenWishlist = hasBeenWishlist
+            )
+            _categoryPage.postValue(layout)
+        }
     }
 }

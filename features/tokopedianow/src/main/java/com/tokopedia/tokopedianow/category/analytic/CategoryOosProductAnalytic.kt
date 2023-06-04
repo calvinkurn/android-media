@@ -59,10 +59,11 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import java.io.Serializable
 import java.util.ArrayList
 
-class CategoryOosProductAnalytic {
-    private fun createGeneralDataLayer(event: String, action: String, label: String = TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE, userId: String): Bundle {
+class CategoryOosProductAnalytic: Serializable {
+    private fun createGeneralDataLayer(event: String, action: String, label: String =DEFAULT_EMPTY_VALUE, userId: String): Bundle {
         return Bundle().apply {
             putString(EVENT, event)
             putString(EVENT_ACTION, action)

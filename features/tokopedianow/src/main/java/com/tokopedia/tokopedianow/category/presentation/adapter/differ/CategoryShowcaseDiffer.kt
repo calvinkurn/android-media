@@ -1,10 +1,10 @@
 package com.tokopedia.tokopedianow.category.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
+import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 
-class CategoryDiffer : BaseTokopediaNowDiffer() {
+class CategoryShowcaseDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
     private var newList: List<Visitable<*>> = emptyList()
 
@@ -12,8 +12,8 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
-            oldItem.id == newItem.id
+        return if (oldItem is CategoryShowcaseItemUiModel && newItem is CategoryShowcaseItemUiModel) {
+            oldItem.productCardModel.productId == newItem.productCardModel.productId
         } else {
             oldItem == newItem
         }
@@ -27,13 +27,12 @@ class CategoryDiffer : BaseTokopediaNowDiffer() {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
 
-        return if (oldItem is CategoryShowcaseUiModel && newItem is CategoryShowcaseUiModel) {
+        return if (oldItem is CategoryShowcaseItemUiModel && newItem is CategoryShowcaseItemUiModel) {
             oldItem.getChangePayload(newItem)
-        }  else {
+        } else {
             super.getChangePayload(oldItemPosition, newItemPosition)
         }
     }
-
     override fun getOldListSize() = oldList.size
 
     override fun getNewListSize() = newList.size

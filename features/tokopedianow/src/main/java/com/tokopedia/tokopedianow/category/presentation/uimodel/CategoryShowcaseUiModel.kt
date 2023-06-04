@@ -14,4 +14,12 @@ data class CategoryShowcaseUiModel(
     @TokoNowLayoutState val state: Int = TokoNowLayoutState.LOADING
 ): Visitable<CategoryTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CategoryTypeFactory): Int = typeFactory.type(this)
+
+    fun getChangePayload(categoryShowcase: CategoryShowcaseUiModel): Any? {
+        return when {
+            productListUiModels != categoryShowcase.productListUiModels ||
+            state != categoryShowcase.state -> true
+            else -> null
+        }
+    }
 }

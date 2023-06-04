@@ -52,7 +52,6 @@ import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.view.NoAddressEmptyStateView.ActionListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowCategoryBaseBinding
-import com.tokopedia.tokopedianow.oldcategory.analytics.CategoryTracking
 import com.tokopedia.tokopedianow.oldcategory.presentation.view.TokoNowCategoryFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -318,6 +317,8 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
             val finalAppLink = ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?" + UrlParamUtils.generateUrlParamString(params)
 
             RouteManager.route(context, finalAppLink)
+
+            analytic.sendSearchBarClickEvent(categoryIdL1)
         },
         disableDefaultGtmTracker = true,
     )
@@ -353,7 +354,7 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
         disableRouteManager = false,
         disableDefaultGtmTracker = true
     ) {
-        CategoryTracking.sendCartClickEvent(categoryIdL1)
+        analytic.sendCartClickEvent(categoryIdL1)
     }
 
     private fun FragmentTokopedianowCategoryBaseBinding.setupNavigationToolbar() {

@@ -18,6 +18,7 @@ class CategoryShowcaseItemCallback(
     private val onAddToCartBlocked: () -> Unit,
     private val onProductCartQuantityChanged: (position: Int, product: CategoryShowcaseItemUiModel, quantity: Int) -> Unit,
     private val startActivityForResult: (Intent, Int) -> Unit,
+    private val onWishlistButtonClicked: (productId: String, isWishlistSelected: Boolean, descriptionToaster: String, ctaToaster: String, type: Int, ctaClickListener: (() -> Unit)?) -> Unit
 ): CategoryShowcaseItemViewHolder.CategoryShowcaseItemListener {
     override fun onProductCardAddVariantClicked(
         context: Context,
@@ -80,4 +81,22 @@ class CategoryShowcaseItemCallback(
     )
 
     override fun onProductCardAddToCartBlocked() = onAddToCartBlocked()
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        onWishlistButtonClicked.invoke(
+            productId,
+            isWishlistSelected,
+            descriptionToaster,
+            ctaToaster,
+            type,
+            ctaClickListener
+        )
+    }
 }

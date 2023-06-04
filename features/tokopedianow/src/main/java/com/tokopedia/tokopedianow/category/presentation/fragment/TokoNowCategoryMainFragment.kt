@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic
@@ -19,6 +20,8 @@ import com.tokopedia.tokopedianow.category.presentation.callback.CategoryProduct
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseHeaderCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryShowcaseItemCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.CategoryTitleCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactCallback
+import com.tokopedia.tokopedianow.category.presentation.callback.ProductCardCompactSimilarProductTrackerCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowCategoryMenuCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAddressWidgetCallback
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
@@ -27,6 +30,7 @@ import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
 import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
+import com.tokopedia.tokopedianow.similarproduct.presentation.activity.TokoNowSimilarProductBottomSheetActivity
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -79,7 +83,9 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
                 tokoNowView = createTokoNowViewCallback(),
                 tokoNowChooseAddressWidgetListener = createTokoNowChooseAddressWidgetCallback(),
                 tokoNowCategoryMenuListener = createTokoNowCategoryMenuCallback(),
-                tokoNowProductRecommendationListener = createProductRecommendationCallback()
+                tokoNowProductRecommendationListener = createProductRecommendationCallback(),
+                productCardCompactListener = createProductCardCompactCallback(),
+                productCardCompactSimilarProductTrackerListener = createProductCardCompactSimilarProductTrackerCallback()
             ),
             differ = CategoryDiffer()
         )
@@ -130,11 +136,13 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         observeAddToCart()
         observeUpdateCartItem()
         observeRemoveCartItem()
-        observeToolbarNotification()
+        observeAtcDataTracker()
         observeProductRecommendationAddToCart()
         observeProductRecommendationRemoveCartItem()
         observeProductRecommendationUpdateCartItem()
         observeProductRecommendationToolbarNotification()
+        observeProductRecommendationAtcDataTracker()
+        observeToolbarNotification()
         observeRefreshState()
         observeOosState()
         observeOpenScreenTracker()
@@ -310,6 +318,38 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         }
     }
 
+    private fun observeAtcDataTracker() {
+        viewModel.atcDataTracker.observe(viewLifecycleOwner) { model ->
+            analytic.categoryShowcaseAnalytic.sendClickAtcOnShowcaseLEvent(
+                categoryIdL1 = categoryIdL1,
+                index = model.index,
+                productId = model.productId,
+                warehouseId = model.warehouseId,
+                isOos = model.isOos,
+                name = model.name,
+                price = model.price,
+                headerName = model.headerName,
+                quantity = model.quantity
+            )
+        }
+    }
+
+    private fun observeProductRecommendationAtcDataTracker() {
+        productRecommendationViewModel.atcDataTracker.observe(viewLifecycleOwner) { model ->
+            analytic.categoryProductRecommendationAnalytic.sendClickAtcCarouselWidgetEvent(
+                categoryIdL1 = categoryIdL1,
+                index = model.position,
+                productId = model.productRecommendation.getProductId(),
+                warehouseId = viewModel.getWarehouseId(),
+                isOos = model.productRecommendation.productCardModel.isOos(),
+                name = model.productRecommendation.getProductName(),
+                price = model.productRecommendation.getProductPrice().toIntSafely(),
+                headerName = model.productRecommendation.headerName,
+                quantity = model.quantity
+            )
+        }
+    }
+
     private fun clickProductCard(
         appLink: String
     ) {
@@ -477,12 +517,50 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
                 quantity = quantity,
                 stock = product.productCardModel.availableStock,
                 shopId = shopId,
-                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+                position = position,
+                isOos = product.productCardModel.isOos(),
+                name = product.productCardModel.name,
+                categoryIdL1 = categoryIdL1,
+                price = product.productCardModel.price.getDigits().orZero(),
+                headerName = product.headerName,
+                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
             )
         }
     }
 
     private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
+
+    private fun clickWishlistButton(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ){
+        if(isWishlistSelected) {
+            analytic.categoryOosProductAnalytic.trackClickAddToWishlist(
+                warehouseId = viewModel.getWarehouseId(),
+                productId = productId
+            )
+        } else {
+            analytic.categoryOosProductAnalytic.trackClickRemoveFromWishlist(
+                warehouseId = viewModel.getWarehouseId(),
+                productId = productId
+            )
+        }
+        viewModel.updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(
+            message = descriptionToaster,
+            type = type,
+            actionText = ctaToaster
+        ) {
+            ctaClickListener?.invoke()
+        }
+    }
 
     /**
      * -- callback function section --
@@ -507,6 +585,7 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         onAddToCartBlocked = ::showToasterWhenAddToCartBlocked,
         onProductCartQuantityChanged = ::changeProductCardQuantity,
         startActivityForResult = ::startActivityForResult,
+        onWishlistButtonClicked = ::clickWishlistButton
     )
 
     private fun createCategoryShowcaseHeaderCallback() = CategoryShowcaseHeaderCallback(
@@ -537,4 +616,19 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
         onHideProductRecommendationWidget = ::hideProductRecommendationWidget,
         startActivityResult = ::startActivityForResult
     )
+
+    private fun createProductCardCompactCallback() = ProductCardCompactCallback { productId, similarProductTrackerListener ->
+        context?.apply {
+            val intent = TokoNowSimilarProductBottomSheetActivity.createNewIntent(
+                this,
+                productId,
+                similarProductTrackerListener
+            )
+            startActivity(intent)
+        }
+    }
+
+    private fun createProductCardCompactSimilarProductTrackerCallback(): ProductCardCompactSimilarProductTrackerCallback {
+        return ProductCardCompactSimilarProductTrackerCallback(analytic.categoryOosProductAnalytic)
+    }
 }

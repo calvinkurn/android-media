@@ -295,6 +295,28 @@ internal object VisitableMapper {
         )
     }
 
+    fun MutableList<Visitable<*>>.updateWishlistStatus(
+        productId: String,
+        hasBeenWishlist: Boolean
+    ) {
+        filterIsInstance<CategoryShowcaseUiModel>().forEach { uiModel ->
+            uiModel.productListUiModels?.find { it.productCardModel.productId == productId }?.apply {
+                val index = uiModel.productListUiModels.indexOf(this)
+
+                uiModel.productListUiModels.getOrNull(index)?.productCardModel?.copy(hasBeenWishlist = hasBeenWishlist)?.let {
+                    uiModel.productListUiModels[index].copy(productCardModel = it)
+                }?.let { resultUiModel ->
+                    val productListUiModels: MutableList<CategoryShowcaseItemUiModel> = uiModel.productListUiModels.toMutableList()
+                    productListUiModels[index] = resultUiModel
+
+                    updateItemById(uiModel.getVisitableId()) {
+                        uiModel.copy(productListUiModels = productListUiModels)
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * -- Others Section --
      */

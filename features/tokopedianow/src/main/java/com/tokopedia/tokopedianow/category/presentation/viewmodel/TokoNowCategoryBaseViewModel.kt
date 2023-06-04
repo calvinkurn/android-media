@@ -11,6 +11,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.network.authentication.AuthHelper.Companion.getMD5Hash
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
@@ -47,9 +48,11 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
 
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
     private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
+    private val _atcDataTracker: MutableLiveData<CategoryAtcTrackerModel> = MutableLiveData()
 
     val updateToolbarNotification: LiveData<Boolean> = _updateToolbarNotification
     val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
+    val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
 
     private fun updateToolbarNotification() {
         _updateToolbarNotification.postValue(true)
@@ -62,10 +65,12 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
     ) { /* nothing to do */ }
 
     protected fun sendOpenScreenTracker(detailResponse: CategoryDetailResponse) {
-        _openScreenTracker.value = CategoryOpenScreenTrackerModel(
-            id = detailResponse.categoryDetail.data.id,
-            name = detailResponse.categoryDetail.data.name,
-            url = detailResponse.categoryDetail.data.url
+        _openScreenTracker.postValue(
+            CategoryOpenScreenTrackerModel(
+                id = detailResponse.categoryDetail.data.id,
+                name = detailResponse.categoryDetail.data.name,
+                url = detailResponse.categoryDetail.data.url
+            )
         )
     }
 
@@ -76,7 +81,13 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
         quantity: Int,
         stock: Int,
         shopId: String,
-        layoutType: CategoryLayoutType
+        position: Int,
+        isOos: Boolean,
+        name: String,
+        categoryIdL1: String,
+        price: Int,
+        headerName: String,
+        layoutType: CategoryLayoutType,
     ) {
         onCartQuantityChanged(
             isVariant = false,
@@ -87,12 +98,25 @@ open class TokoNowCategoryBaseViewModel @Inject constructor(
             onSuccessAddToCart = {
                 updateProductCartQuantity(productId, quantity, layoutType)
                 updateToolbarNotification()
+                _atcDataTracker.postValue(
+                    CategoryAtcTrackerModel(
+                        categoryIdL1 = categoryIdL1,
+                        index = position,
+                        productId = productId,
+                        warehouseId = getWarehouseId(),
+                        isOos = isOos,
+                        name = name,
+                        price = price,
+                        headerName = headerName,
+                        quantity = quantity
+                    )
+                )
             },
-            onSuccessUpdateCart = { miniCartItem, _ ->
+            onSuccessUpdateCart = { _, _ ->
                 updateProductCartQuantity(productId, quantity, layoutType)
                 updateToolbarNotification()
             },
-            onSuccessDeleteCart = { miniCartItem, _ ->
+            onSuccessDeleteCart = { _, _ ->
                 updateProductCartQuantity(productId, DEFAULT_PRODUCT_QUANTITY, layoutType)
                 updateToolbarNotification()
             },

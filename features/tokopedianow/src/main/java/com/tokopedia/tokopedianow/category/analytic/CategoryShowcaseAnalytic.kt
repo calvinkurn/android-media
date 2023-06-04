@@ -48,6 +48,11 @@ import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
 import com.tokopedia.track.builder.Tracker
 
+/**
+ * Category Revamp L1 Tracker
+ * Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3980
+ **/
+
 class CategoryShowcaseAnalytic(
     private val userId: String
 ) {
@@ -76,7 +81,7 @@ class CategoryShowcaseAnalytic(
         isOos: Boolean,
         id: String,
         name: String,
-        price: Long,
+        price: Int,
         quantity: String
     ): Bundle {
         val items = Bundle()
@@ -169,9 +174,9 @@ class CategoryShowcaseAnalytic(
         warehouseId: String,
         isOos: Boolean,
         name: String,
-        price: Long,
+        price: Int,
         headerName: String,
-        quantity: String
+        quantity: Int
     ) {
         val bundle = Bundle().apply {
             putString(EVENT, EVENT_ADD_TO_CART)
@@ -188,12 +193,12 @@ class CategoryShowcaseAnalytic(
                     id = productId,
                     name = name,
                     price = price,
-                    quantity = quantity
+                    quantity = quantity.toString()
                 )
             )
             putString(KEY_USER_ID, userId)
         }
-        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, bundle)
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, bundle)
     }
 
     // Tracker ID: 43854

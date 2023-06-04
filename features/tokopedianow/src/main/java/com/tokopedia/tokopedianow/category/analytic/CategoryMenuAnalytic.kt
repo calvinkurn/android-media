@@ -13,6 +13,11 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDash
 import com.tokopedia.track.builder.Tracker
 
+/**
+ * Category Revamp L1 Tracker
+ * Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3980
+ **/
+
 class CategoryMenuAnalytic {
     // Tracker ID: 43858
     fun sendImpressionCategoryRecomWidgetEvent(
