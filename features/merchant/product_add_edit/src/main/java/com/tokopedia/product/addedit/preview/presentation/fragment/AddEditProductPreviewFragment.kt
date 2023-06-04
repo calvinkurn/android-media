@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -597,11 +598,12 @@ class AddEditProductPreviewFragment :
     private fun setupStatusViews() {
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
+            val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
 
             if (isChecked && viewModel.isVariantEmpty.value == false) {
-                viewModel.productInputModel.value?.variantInputModel?.getStockStatus()?.let {
-                    activateVariantStatusConfirmation(it)
-                }
+                activateVariantStatusConfirmation(productInputModel.variantInputModel.getStockStatus())
+            } else if (!isChecked && productInputModel.hasDTStock) {
+                deactivateProductStatusConfirmation()
             } else {
                 viewModel.updateProductStatus(isChecked)
                 viewModel.setIsDataChanged(true)
@@ -1739,6 +1741,29 @@ class AddEditProductPreviewFragment :
                 dismiss()
             }
         }.show()
+    }
+
+    private fun deactivateProductStatusConfirmation() {
+        viewModel.updateProductStatus(true)
+        productStatusSwitch?.isChecked = true
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = MethodChecker
+            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
+            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setPrimaryCTAClickListener {
+                productStatusSwitch?.isChecked = false
+                viewModel.updateProductStatus(false)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
     }
 
     private fun moveToLocationPicker() {
