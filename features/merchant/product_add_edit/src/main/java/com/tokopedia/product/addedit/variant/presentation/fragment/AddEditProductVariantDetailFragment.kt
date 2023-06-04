@@ -270,27 +270,6 @@ class AddEditProductVariantDetailFragment :
         showDTNotAllowedChangeStatusDialog(position)
     }
 
-    private fun showDTNotAllowedChangeStatusDialog(position: Int) {
-        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        val descriptionText = MethodChecker
-            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
-        dialog.apply {
-            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
-            setDescription(descriptionText)
-            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
-            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
-            setPrimaryCTAClickListener {
-                viewModel.updateSwitchStatus(false, position)
-                variantDetailFieldsAdapter?.deactivateVariantStatus(position)
-                dismiss()
-            }
-            setSecondaryCTAClickListener {
-                dismiss()
-            }
-        }
-        dialog.show()
-    }
-
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         val headerList = variantDetailFieldsAdapter?.list?.filterIsInstance<VariantDetailHeaderUiModel>()
         headerList?.forEach {
@@ -510,6 +489,27 @@ class AddEditProductVariantDetailFragment :
         val bottomSheet = SelectVariantMainBottomSheet(this)
         bottomSheet.setData(variantInputModel)
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showDTNotAllowedChangeStatusDialog(position: Int) {
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = MethodChecker
+            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
+            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setPrimaryCTAClickListener {
+                viewModel.updateSwitchStatus(false, position)
+                variantDetailFieldsAdapter?.deactivateVariantStatus(position)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
     }
 
     private fun submitVariantInput() {
