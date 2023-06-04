@@ -19,7 +19,7 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryCategoryFilterTest: CategoryTestFixtures() {
 
-    private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+    private val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
 
     @Test
     fun `when view created, category filter isSelected should be based on category L2 value`() {
@@ -166,7 +166,7 @@ class CategoryCategoryFilterTest: CategoryTestFixtures() {
 
     @Test
     fun `hide L2 category filter if only 1 filter option`() {
-        val categoryModel = "category/categoryfilter/only-one-category-filter.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/categoryfilter/only-one-category-filter.json".jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModel)
 

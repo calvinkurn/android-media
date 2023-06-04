@@ -11,7 +11,7 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 class CategoryProductVariantAndNonVariantTest: CategoryTestFixtures() {
 
     private val categoryModel =
-        "category/first-page-products-variant-and-non-variant.json".jsonToObject<CategoryModel>()
+        "oldcategory/first-page-products-variant-and-non-variant.json".jsonToObject<CategoryModel>()
 
     @Test
     fun `test product item with non variant configuration`() {

@@ -27,7 +27,7 @@ class CategoryUpdateCartTest: CategoryTestFixtures(), Callback {
 
     override fun `Given first page API will be successful`() {
         val categoryModel =
-                "category/first-page-products-variant-and-non-variant.json".jsonToObject<CategoryModel>()
+                "oldcategory/first-page-products-variant-and-non-variant.json".jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModel)
     }

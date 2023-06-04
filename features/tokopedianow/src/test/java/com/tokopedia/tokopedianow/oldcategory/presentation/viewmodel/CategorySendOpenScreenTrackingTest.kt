@@ -11,7 +11,7 @@ class CategorySendOpenScreenTrackingTest: CategoryTestFixtures() {
 
     @Test
     fun `opening category page will send open screen tracking`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel)
 
         `When view created`()

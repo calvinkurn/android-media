@@ -181,7 +181,7 @@ class GetProductRecommendationTest : TokoNowProductRecommendationViewModelTestFi
         /**
          * 6. the job is not null but the page name is not in the list, so it should do nothing
          */
-        viewModel.updateProductRecommendation(GetRecommendationRequestParam(pageName = "category"))
+        viewModel.updateProductRecommendation(GetRecommendationRequestParam(pageName = "oldcategory"))
 
         viewModel.productRecommendation.verifySuccessEquals(Success(expectedProductModels))
     }

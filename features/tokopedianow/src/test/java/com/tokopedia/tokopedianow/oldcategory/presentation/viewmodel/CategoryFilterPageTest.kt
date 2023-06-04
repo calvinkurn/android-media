@@ -12,7 +12,7 @@ import org.junit.Test
 
 class CategoryFilterPageTest: CategoryTestFixtures(), Callback {
 
-    private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+    private val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
 
     private lateinit var filterPageTestHelper: FilterPageTestHelper
 

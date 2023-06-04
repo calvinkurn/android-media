@@ -22,7 +22,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test first page is last page`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
 
         `When view created`()
@@ -106,7 +106,7 @@ class CategoryFirstPageTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test first page has next page`() {
-        val categoryModel = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-16-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
 
         `When view created`()

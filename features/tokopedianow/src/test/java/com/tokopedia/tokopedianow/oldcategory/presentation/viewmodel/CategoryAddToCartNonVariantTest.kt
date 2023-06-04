@@ -8,7 +8,7 @@ import org.junit.Test
 
 class CategoryAddToCartNonVariantTest: CategoryTestFixtures(), Callback {
 
-    private val categoryModelJSON = "category/first-page-products-variant-and-non-variant.json"
+    private val categoryModelJSON = "oldcategory/first-page-products-variant-and-non-variant.json"
     private val categoryModel = categoryModelJSON.jsonToObject<CategoryModel>()
 
     private lateinit var addToCartTestHelper: AddToCartNonVariantTestHelper

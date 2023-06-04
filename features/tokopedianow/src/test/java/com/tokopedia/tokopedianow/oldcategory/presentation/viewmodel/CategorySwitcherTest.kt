@@ -43,7 +43,7 @@ class CategorySwitcherTest : BaseCategoryPageLoadTest() {
 
     @Test
     fun `test category switcher 2h service type`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(
             categoryModel,
             requestParamsSlot
@@ -60,7 +60,7 @@ class CategorySwitcherTest : BaseCategoryPageLoadTest() {
 
     @Test
     fun `test category switcher 15m service type`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(
             categoryModel,
             requestParamsSlot

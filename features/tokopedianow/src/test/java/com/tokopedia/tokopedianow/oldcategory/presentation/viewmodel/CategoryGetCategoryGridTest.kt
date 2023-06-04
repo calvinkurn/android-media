@@ -19,8 +19,8 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
-    private val emptyProductCategoryModel = "category/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
-    private val categoryList = "category/categorylist/category-list.json".jsonToObject<GetCategoryListResponse>()
+    private val emptyProductCategoryModel = "oldcategory/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
+    private val categoryList = "oldcategory/categorylist/category-list.json".jsonToObject<GetCategoryListResponse>()
 
     private val warehouseIdSlot = slot<String>()
     private val warehouseId by lazy { warehouseIdSlot.captured }
@@ -69,7 +69,7 @@ class CategoryGetCategoryGridTest: CategoryTestFixtures() {
 
     @Test
     fun `do not show category grid if has product list`() {
-        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel)
         `Given get category list use case will return category list`()
 

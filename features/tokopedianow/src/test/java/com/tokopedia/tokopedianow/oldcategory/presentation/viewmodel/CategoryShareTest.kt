@@ -12,7 +12,7 @@ import org.junit.Test
 
 class CategoryShareTest : CategoryTestFixtures() {
 
-    private val categoryModel = "category/first-page-8-products-share.json".jsonToObject<CategoryModel>()
+    private val categoryModel = "oldcategory/first-page-8-products-share.json".jsonToObject<CategoryModel>()
 
     private val privateQueryParamMutable by lazy {
         tokoNowCategoryViewModel.getParentPrivateField<MutableMap<String, String>>("queryParamMutable")

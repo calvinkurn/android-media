@@ -35,7 +35,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
     @Test
     fun `show repurchase widget after 4th product`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
             .jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel)
 
@@ -59,7 +59,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
     @Test
     fun `do not show repurchase if less than 4 products`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget-less-than-4-products.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget-less-than-4-products.json"
             .jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel)
 
@@ -80,7 +80,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
     @Test
     fun `update repurchase widget quantity from mini cart`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
             .jsonToObject<CategoryModel>()
 
         val miniCartSimplifiedData = SearchCategoryDummyUtils.miniCartSimplifiedData
@@ -204,7 +204,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     }
 
     private fun AddToCartNonVariantTestHelper.`add to cart repurchase widget product`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
             .jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModel)
@@ -280,7 +280,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
     }
 
     private fun AddToCartNonVariantTestHelper.`add to cart repurchase widget product failed`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
             .jsonToObject<CategoryModel>()
 
         println("CategoryModel: $categoryModel")
@@ -312,7 +312,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             userSession,
             object : AddToCartNonVariantTestHelper.Callback {
                 override fun `Given first page API will be successful`() {
-                    val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+                    val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
                         .jsonToObject<CategoryModel>()
 
                     `Given get category first page use case will be successful`(categoryModel)
@@ -354,7 +354,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             userSession,
             object : AddToCartNonVariantTestHelper.Callback {
                 override fun `Given first page API will be successful`() {
-                    val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+                    val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
                         .jsonToObject<CategoryModel>()
 
                     `Given get category first page use case will be successful`(categoryModel)
@@ -386,7 +386,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
     @Test
     fun `add to cart repurchase widget product non login`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget.json"
             .jsonToObject<CategoryModel>()
 
         `Given user not logged in`()

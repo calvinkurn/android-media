@@ -13,8 +13,8 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test load more page as last page`() {
-        val categoryModelPage1 = "category/first-page-16-products.json".jsonToObject<CategoryModel>()
-        val categoryModelPage2 = "category/load-more-products.json".jsonToObject<CategoryModel>()
+        val categoryModelPage1 = "oldcategory/first-page-16-products.json".jsonToObject<CategoryModel>()
+        val categoryModelPage2 = "oldcategory/load-more-products.json".jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModelPage1)
         `Given get category load more page use case will be successful`(categoryModelPage2)
@@ -64,8 +64,8 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test load more page has next page`() {
-        val categoryModelPage1 = "category/first-page-24-products.json".jsonToObject<CategoryModel>()
-        val categoryModelPage2 = "category/load-more-products.json".jsonToObject<CategoryModel>()
+        val categoryModelPage1 = "oldcategory/first-page-24-products.json".jsonToObject<CategoryModel>()
+        val categoryModelPage2 = "oldcategory/load-more-products.json".jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModelPage1)
         `Given get category load more page use case will be successful`(categoryModelPage2)
@@ -82,7 +82,7 @@ class CategoryLoadMoreTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test do not load more page when already reached last page`() {
-        val categoryModelPage1 = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+        val categoryModelPage1 = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModelPage1)
         `Given view already created`()

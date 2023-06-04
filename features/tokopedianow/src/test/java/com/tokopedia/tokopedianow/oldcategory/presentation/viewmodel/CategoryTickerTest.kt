@@ -44,7 +44,7 @@ class CategoryTickerTest: CategoryTestFixtures() {
     }
 
     private fun AddToCartNonVariantTestHelper.`add to cart repurchase widget when hasBlockedAddToCart is true`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget-block-add-to-cart.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget-block-add-to-cart.json"
             .jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModel)
@@ -67,7 +67,7 @@ class CategoryTickerTest: CategoryTestFixtures() {
     }
 
     private fun AddToCartNonVariantTestHelper.`add to cart repurchase widget when hasBlockedAddToCart is false`() {
-        val categoryModel = "category/repurchasewidget/repurchase-widget-not-block-add-to-cart.json"
+        val categoryModel = "oldcategory/repurchasewidget/repurchase-widget-not-block-add-to-cart.json"
             .jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModel)

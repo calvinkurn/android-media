@@ -24,7 +24,7 @@ class CategoryProductFeedbackOutOfCoverageTest:CategoryTestFixtures() {
 
         @Test
         fun `test don't show product feedback widget`() {
-            val categoryModel = "category/first-page-6-products.json".jsonToObject<CategoryModel>()
+            val categoryModel = "oldcategory/first-page-6-products.json".jsonToObject<CategoryModel>()
             `Given get warehouse API will be successful`(GetStateChosenAddressResponse())
             `Given get category first page use case will be successful`(categoryModel)
 

@@ -12,7 +12,7 @@ class CategoryAgeRestrictionTest: CategoryTestFixtures() {
 
     @Test
     fun `when on view created should give query safe model`() {
-        val categoryModel = "category/first-page-8-products.json"
+        val categoryModel = "oldcategory/first-page-8-products.json"
             .jsonToObject<CategoryModel>()
 
         `Given get category first page use case will be successful`(categoryModel)

@@ -20,7 +20,7 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryChooseAddressTest: CategoryTestFixtures() {
 
-    private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+    private val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
     private val requestParamsSlot = slot<RequestParams>()
     private val requestParams by lazy { requestParamsSlot.captured }
 

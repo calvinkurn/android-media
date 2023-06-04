@@ -11,7 +11,7 @@ class CategoryOssTest: BaseCategoryPageLoadTest() {
 
     @Test
     fun `test oos state product card`() {
-        val categoryModel = "category/first-page-8-products-oos.json".jsonToObject<CategoryModel>()
+        val categoryModel = "oldcategory/first-page-8-products-oos.json".jsonToObject<CategoryModel>()
         `Given get category first page use case will be successful`(categoryModel, requestParamsSlot)
 
         `When view created`()

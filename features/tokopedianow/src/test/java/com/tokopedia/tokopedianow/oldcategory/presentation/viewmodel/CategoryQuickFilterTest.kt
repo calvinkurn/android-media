@@ -20,12 +20,12 @@ import org.hamcrest.CoreMatchers.`is` as shouldBe
 
 class CategoryQuickFilterTest: CategoryTestFixtures() {
 
-    private val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+    private val categoryModel = "oldcategory/first-page-8-products.json".jsonToObject<CategoryModel>()
 
     @Test
     fun `quick filter with same option as category filter should have exclude_ prefix in option key`() {
         val quickFilterWithCategoryOptionJSON =
-                "category/quickfilter/quick-filter-contains-category-filter.json"
+                "oldcategory/quickfilter/quick-filter-contains-category-filter.json"
         val categoryModel = quickFilterWithCategoryOptionJSON.jsonToObject<CategoryModel>()
 
         `Given category view model`()
@@ -50,7 +50,7 @@ class CategoryQuickFilterTest: CategoryTestFixtures() {
     @Test
     fun `quick filter with same option as category filter should always have type normal`() {
         val quickFilterWithCategoryOptionJSON =
-                "category/quickfilter/quick-filter-contains-category-filter.json"
+                "oldcategory/quickfilter/quick-filter-contains-category-filter.json"
         val categoryModel = quickFilterWithCategoryOptionJSON.jsonToObject<CategoryModel>()
 
         `Given category view model`(defaultCategoryL1, "1333")
