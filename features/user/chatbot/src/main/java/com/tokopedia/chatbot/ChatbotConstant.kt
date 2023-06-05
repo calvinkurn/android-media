@@ -70,6 +70,7 @@ object ChatbotConstant {
         const val DYNAMIC_STICKY_BUTTON_RECEIVE = 105
         const val DYNAMIC_TEXT_SEND = 106
         const val DYNAMIC_REJECT_REASON = 107
+        const val DYNAMIC_REJECT_REASON_SEND = 108
         val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(
             TYPE_BIG_REPLY_BOX,
             REPLY_BOX_TOGGLE_VALUE,

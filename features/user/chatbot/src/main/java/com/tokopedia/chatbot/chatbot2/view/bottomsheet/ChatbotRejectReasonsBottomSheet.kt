@@ -58,8 +58,9 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                 btnSubmit.setOnClickListener {
                     listener?.submitRejectReasonsViaSocket(
                         reasonsAdapter?.selectedList ?: emptyList(),
-                    reasonText.editText.text?.toString() ?: ""
+                        reasonText.editText.text?.toString() ?: ""
                     )
+                    dismiss()
                 }
             }
         }

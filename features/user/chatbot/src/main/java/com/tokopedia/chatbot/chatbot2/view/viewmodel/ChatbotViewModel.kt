@@ -49,6 +49,7 @@ import com.tokopedia.chatbot.chatbot2.data.uploadsecure.CheckUploadSecureRespons
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.chatbot2.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam
+import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachment108
 import com.tokopedia.chatbot.chatbot2.domain.socket.ChatbotSendableWebSocketParam.generateParamDynamicAttachmentText
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.chatbot2.domain.usecase.ChatbotCheckUploadSecureUseCase
@@ -1390,6 +1391,25 @@ class ChatbotViewModel @Inject constructor(
     }
 
     private fun isValidReply(message: String) = message.isNotBlank()
+
+    fun sendDynamicAttachment108(
+        reasonCodeList: List<Long>,
+        reason: String,
+        messageId: String,
+        toUid: String,
+        startTime: String
+    ) {
+        chatbotWebSocket.send(
+            generateParamDynamicAttachment108(
+                reasonCodeList,
+                reason,
+                messageId,
+                toUid,
+                startTime
+            ),
+            listInterceptor
+        )
+    }
 
     fun sendMessage(
         messageId: String,

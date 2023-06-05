@@ -11,7 +11,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -2823,7 +2822,16 @@ class ChatbotFragment2 :
         selectedReasons: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
         reasonText: String
     ) {
-        // TODO implement it ya
-        Log.d("FATAL", "submitRejectReasonsViaSocket: ${selectedReasons.size}")
+        val list = mutableListOf<Long>()
+        selectedReasons.forEach {
+            list.add(it.code)
+        }
+        viewModel.sendDynamicAttachment108(
+            list,
+            reasonText,
+            messageId,
+            opponentId,
+            SendableUiModel.generateStartTime()
+        )
     }
 }

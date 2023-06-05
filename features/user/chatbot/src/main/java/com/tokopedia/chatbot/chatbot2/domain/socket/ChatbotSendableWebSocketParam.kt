@@ -3,6 +3,7 @@ package com.tokopedia.chatbot.chatbot2.domain.socket
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType
@@ -387,6 +388,83 @@ object ChatbotSendableWebSocketParam {
         val content = JsonObject().apply {
             add("button_action", buttonActionContent)
         }
+        return try {
+            Gson().toJson(content)
+        } catch (e: JSONException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
+            ""
+        }
+    }
+
+    fun generateParamDynamicAttachment108(
+        reasonCodeList: List<Long>,
+        reasonText: String,
+        messageId: String,
+        toUid: String,
+        startTime: String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val dynamicContent = generateDynamicContent108(reasonCodeList, reasonText)
+
+        val attribute = JsonObject().apply {
+            addProperty(
+                "content_code",
+                ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON_SEND
+            )
+            addProperty("dynamic_content", dynamicContent)
+            addProperty("user_id", toUid.toLongOrZero())
+        }
+
+        val payload = JsonObject().apply {
+            add("attribute", attribute)
+            addProperty("is_log_history", true)
+        }
+
+        val data = JsonObject().apply {
+            addProperty("message_id", messageId.convertMessageIdToLong())
+            addProperty("message", "Notifikasi Chat")
+            addProperty("attachment_type", ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT.toIntOrZero())
+            add("payload", payload)
+            addProperty("start_time", startTime)
+            addProperty("source", ChatbotConstant.SOURCE_CHATBOT)
+        }
+
+        json.add("data", data)
+
+        return json
+    }
+
+    private fun generateDynamicContent108(reasonCodeList: List<Long>, reasonText: String): String {
+        val newQuickRepliesBody = JsonObject().apply {
+            addProperty("action", "csat-no")
+            addProperty("text", "Tidak")
+            addProperty("value", "tidak")
+        }
+        val newQuickReplies = JsonObject().apply {
+            add("new_quick_replies", newQuickRepliesBody)
+        }
+
+        val reasonsJsonArray = JsonArray()
+        reasonCodeList.forEach {
+            reasonsJsonArray.add(it)
+        }
+
+        val feedbackFormBody = JsonObject().apply {
+            addProperty("reason", reasonText)
+            add("reason_chip_code_list", reasonsJsonArray)
+        }
+
+        val helpfulQuestions = JsonObject().apply {
+            add("helpful_question", newQuickReplies)
+            add("feedback_form", feedbackFormBody)
+        }
+
+        val content = JsonObject().apply {
+            add("helpful_question_feedback_form", helpfulQuestions)
+        }
+
         return try {
             Gson().toJson(content)
         } catch (e: JSONException) {
