@@ -2,8 +2,6 @@ package com.tokopedia.discovery2
 
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapperTest
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardItemModelTest
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModelTest
@@ -23,6 +21,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.circ
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.comingsoonview.ComingSoonViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcard.ContentCardItemModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcard.ContentCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModelTest
@@ -134,9 +134,6 @@ import org.junit.runners.Suite
     ContentCardModelTest::class,
     ContentCardItemModelTest::class,
     DiscoveryListViewModelTest::class,
-    ProductHighlightViewModelTest::class,
+    ProductHighlightViewModelTest::class
 )
-
-
-class DiscoveryTestSuite {
-}
+class DiscoveryTestSuite

@@ -12,14 +12,13 @@ import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
-import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.tokopoints_rv)
     private var discoveryRecycleAdapter: DiscoveryRecycleAdapter
 
-    private lateinit var productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel
+    private var productCardSprintSaleCarouselViewModel: ProductCardSprintSaleCarouselViewModel? = null
 
     init {
         recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -29,31 +28,38 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardSprintSaleCarouselViewModel = discoveryBaseViewModel as ProductCardSprintSaleCarouselViewModel
-        getSubComponent().inject(productCardSprintSaleCarouselViewModel)
+        productCardSprintSaleCarouselViewModel?.let {
+            getSubComponent().inject(it)
+        }
         addShimmer()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            productCardSprintSaleCarouselViewModel.getProductCarouselItemsListData().observe(it, Observer { item ->
-                discoveryRecycleAdapter.setDataList(item)
-            })
-            productCardSprintSaleCarouselViewModel.syncData.observe(it, Observer { sync ->
-                if (sync) {
-                    discoveryRecycleAdapter.notifyDataSetChanged()
+            productCardSprintSaleCarouselViewModel?.getProductCarouselItemsListData()?.observe(
+                it,
+                Observer { item ->
+                    discoveryRecycleAdapter.setDataList(item)
                 }
-            })
+            )
+            productCardSprintSaleCarouselViewModel?.syncData?.observe(
+                it,
+                Observer { sync ->
+                    if (sync) {
+                        discoveryRecycleAdapter.notifyDataSetChanged()
+                    }
+                }
+            )
         }
     }
 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
-        if (productCardSprintSaleCarouselViewModel.getProductCarouselItemsListData().hasObservers()) {
-            lifecycleOwner?.let { productCardSprintSaleCarouselViewModel.getProductCarouselItemsListData().removeObservers(it) }
+        if (productCardSprintSaleCarouselViewModel?.getProductCarouselItemsListData()?.hasObservers() == true) {
+            lifecycleOwner?.let { productCardSprintSaleCarouselViewModel?.getProductCarouselItemsListData()?.removeObservers(it) }
         }
     }
-
 
     private fun addShimmer() {
         val list: ArrayList<ComponentsItem> = ArrayList()
@@ -65,5 +71,4 @@ class ProductCardSaleSprintCarouselViewHolder(itemView: View, private val fragme
     override fun getInnerRecycleView(): RecyclerView? {
         return recyclerView
     }
-
 }

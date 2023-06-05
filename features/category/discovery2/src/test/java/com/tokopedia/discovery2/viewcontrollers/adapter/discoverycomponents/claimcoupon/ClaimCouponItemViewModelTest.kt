@@ -142,7 +142,7 @@ class ClaimCouponItemViewModelTest {
     fun `redeemCoupon when isLoggedIn is false`() {
         viewModel.userSession = userSession
         viewModel.claimCouponClickUseCase = claimCouponClickUseCase
-        coEvery { viewModel.userSession.isLoggedIn } returns false
+        coEvery { viewModel.userSession?.isLoggedIn } returns false
 
         viewModel.redeemCoupon { }
 
@@ -171,8 +171,8 @@ class ClaimCouponItemViewModelTest {
         val dataItem = CatalogWithCouponList(id = 12)
         list.add(dataItem)
         every { componentsItem.claimCouponList } returns list
-        coEvery { viewModel.userSession.isLoggedIn } returns true
-        coEvery { viewModel.claimCouponClickUseCase.redeemCoupon(any()) } returns data
+        coEvery { viewModel.userSession?.isLoggedIn } returns true
+        coEvery { viewModel.claimCouponClickUseCase?.redeemCoupon(any()) } returns data
 
         viewModel.redeemCoupon { }
 
@@ -198,8 +198,8 @@ class ClaimCouponItemViewModelTest {
             )
         )
         every { componentsItem.claimCouponList } returns null
-        coEvery { viewModel.userSession.isLoggedIn } returns true
-        coEvery { viewModel.claimCouponClickUseCase.redeemCoupon(any()) } returns data
+        coEvery { viewModel.userSession?.isLoggedIn } returns true
+        coEvery { viewModel.claimCouponClickUseCase?.redeemCoupon(any()) } returns data
 
         viewModel.redeemCoupon { }
 
@@ -225,8 +225,8 @@ class ClaimCouponItemViewModelTest {
             )
         )
         every { componentsItem.claimCouponList } returns arrayListOf()
-        coEvery { viewModel.userSession.isLoggedIn } returns true
-        coEvery { viewModel.claimCouponClickUseCase.redeemCoupon(any()) } returns data
+        coEvery { viewModel.userSession?.isLoggedIn } returns true
+        coEvery { viewModel.claimCouponClickUseCase?.redeemCoupon(any()) } returns data
 
         viewModel.redeemCoupon { }
 

@@ -2,9 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.pro
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,15 +17,12 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
     private val productCarouselComponentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private val productCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
+    @JvmField
     @Inject
-    lateinit var productCardsUseCase: ProductCardsUseCase
-
+    var productCardsUseCase: ProductCardsUseCase? = null
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
-
-
-
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
@@ -39,24 +34,20 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
         fetchProductCarouselData()
     }
 
-
-
     fun getProductCarouselItemsListData() = productCarouselList
-
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+            if (productCardsUseCase?.loadFirstPageComponents(components.id, components.pageEndPoint) == true) {
                 productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
                 syncData.value = true
             }
         }, onError = {
-            it.printStackTrace()
-        })
+                it.printStackTrace()
+            })
     }
 
     fun isUserLoggedIn(): Boolean {
         return UserSession(application).isLoggedIn
     }
-
 }

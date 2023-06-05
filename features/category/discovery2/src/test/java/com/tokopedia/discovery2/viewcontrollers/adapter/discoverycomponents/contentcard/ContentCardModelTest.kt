@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcard
 
 import android.app.Application
 import android.content.Context
