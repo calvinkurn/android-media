@@ -18,5 +18,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        tools:text="@string/play_user_report_footer" />
+        tools:text="@string/content_user_report_footer" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,12 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
-import com.tokopedia.play.ui.userreport.adapter.UserReportReasoningAdapter
-import com.tokopedia.play.ui.userreport.itemdecoration.ReasoningListItemDecoration
-import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
-import com.tokopedia.play.view.type.PlayUserReportSectionType
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportSection
+import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.report_content.adapter.UserReportReasoningAdapter
+import com.tokopedia.content.common.report_content.adapter.itemdecoration.ReasoningListItemDecoration
+import com.tokopedia.content.common.report_content.adapter.viewholder.UserReportReasoningViewHolder
+import com.tokopedia.content.common.report_content.model.PlayUserReportSectionType
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.PlayUserReportSection
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -39,7 +40,7 @@ class PlayUserReportSheetViewComponent(
 
     private val tvFooter = PlayUserReportSection(
         type = PlayUserReportSectionType.Footer,
-        title = R.string.play_user_report_footer,
+        title = commonR.string.content_user_report_footer,
         isUrl = true,
         onClick = { listener.onFooterClicked(this@PlayUserReportSheetViewComponent) }
     )
@@ -109,7 +110,7 @@ class PlayUserReportSheetViewComponent(
     }
 
     private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(
-        reasoningList = List(5){PlayUserReportReasoningUiModel.Placeholder},
+        reasoningList = List(5){ PlayUserReportReasoningUiModel.Placeholder},
         resultState = ResultState.Loading
     )
 

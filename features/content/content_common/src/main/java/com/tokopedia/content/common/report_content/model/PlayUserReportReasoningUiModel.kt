@@ -1,6 +1,4 @@
-package com.tokopedia.play.view.uimodel
-
-import com.tokopedia.play.data.UserReportOptions
+package com.tokopedia.content.common.report_content.model
 
 /**
  * @author by astidhiyaa on 09/12/21

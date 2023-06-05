@@ -1,11 +1,11 @@
-package com.tokopedia.play.ui.userreport.viewholder
+package com.tokopedia.content.common.report_content.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.play.R
-import com.tokopedia.play.view.type.PlayUserReportSectionType
-import com.tokopedia.play.view.uimodel.PlayUserReportSection
+import com.tokopedia.content.common.R
+import com.tokopedia.content.common.report_content.model.PlayUserReportSectionType
+import com.tokopedia.content.common.report_content.model.PlayUserReportSection
 import com.tokopedia.unifyprinciples.Typography
 
 /**

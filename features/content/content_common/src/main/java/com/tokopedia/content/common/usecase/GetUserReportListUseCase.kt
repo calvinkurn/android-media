@@ -1,11 +1,11 @@
-package com.tokopedia.play.domain
+package com.tokopedia.content.common.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.data.UserReportOptions
+import com.tokopedia.content.common.report_content.model.UserReportOptions
 import javax.inject.Inject
 
 /**

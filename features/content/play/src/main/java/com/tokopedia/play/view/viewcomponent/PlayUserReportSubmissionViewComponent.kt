@@ -8,7 +8,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.R as commonR
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.UnifyButton
@@ -55,7 +56,7 @@ class PlayUserReportSubmissionViewComponent(
 
         findViewById<TextView>(com.tokopedia.play_common.R.id.tv_sheet_title).text = getString(R.string.play_kebab_report_title)
 
-        tvFooter.text = MethodChecker.fromHtml(getString(R.string.play_user_report_footer))
+        tvFooter.text = MethodChecker.fromHtml(getString(commonR.string.content_user_report_footer))
         tvFooter.setOnClickListener {
             listener.onFooterClicked(this@PlayUserReportSubmissionViewComponent)
         }

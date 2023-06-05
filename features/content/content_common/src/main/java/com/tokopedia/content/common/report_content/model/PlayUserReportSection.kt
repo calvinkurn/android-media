@@ -1,7 +1,6 @@
-package com.tokopedia.play.view.uimodel
+package com.tokopedia.content.common.report_content.model
 
 import androidx.annotation.StringRes
-import com.tokopedia.play.view.type.PlayUserReportSectionType
 
 /**
  * @author by astidhiyaa on 16/12/21

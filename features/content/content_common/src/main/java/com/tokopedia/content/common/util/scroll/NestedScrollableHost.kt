@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.play.util.scroll
+package com.tokopedia.content.common.util.scroll
 
 import android.content.Context
 import android.util.AttributeSet
@@ -24,7 +24,7 @@ import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
-import com.tokopedia.play.R
+import com.tokopedia.content.common.R
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 

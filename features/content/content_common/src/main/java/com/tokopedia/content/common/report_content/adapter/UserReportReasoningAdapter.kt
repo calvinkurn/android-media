@@ -1,11 +1,11 @@
-package com.tokopedia.play.ui.userreport.adapter
+package com.tokopedia.content.common.report_content.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
-import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportAdapterDelegate
-import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportSectionAdapterDelegate
-import com.tokopedia.play.ui.userreport.adapter.delegate.UserReportShimmeringAdapterDelegate
-import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.adapter.delegate.UserReportAdapterDelegate
+import com.tokopedia.content.common.report_content.adapter.delegate.UserReportSectionAdapterDelegate
+import com.tokopedia.content.common.report_content.adapter.delegate.UserReportShimmeringAdapterDelegate
+import com.tokopedia.content.common.report_content.adapter.viewholder.UserReportReasoningViewHolder
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 
 /**
  * @author by astidhiyaa on 09/12/21
