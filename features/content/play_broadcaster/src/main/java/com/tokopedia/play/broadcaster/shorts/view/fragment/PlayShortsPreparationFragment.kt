@@ -24,7 +24,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
@@ -43,6 +42,7 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayBroadcastPreparationBannerItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel
+import com.tokopedia.play.broadcaster.ui.model.PlayBroadcastPreparationBannerModel.Companion.TYPE_SHORTS_AFFILIATE
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.view.adapter.PlayBroadcastPreparationBannerAdapter
@@ -56,7 +56,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.content.common.R as contentCommonR
@@ -194,6 +193,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                     override fun getPageSource(): PlayBroPageSource {
                         return PlayBroPageSource.Shorts
                     }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return viewModel.isAffiliate
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {
@@ -286,6 +289,10 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     override fun onBannerClick(data: PlayBroadcastPreparationBannerModel) {
+        when (data.type) {
+            TYPE_SHORTS_AFFILIATE -> openShortsAffiliateTncBottomSheet()
+            else -> return
+        }
     }
 
     private fun setupView() {
@@ -392,7 +399,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderNextButton(it.prevValue, it.value)
-                renderBannerPreparation(it.prevValue, it.value)
+                renderBannerPreparationPage(it.prevValue?.bannerPreparation, it.value.bannerPreparation)
             }
         }
 
@@ -460,26 +467,15 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
-    private fun renderBannerPreparation(
-        prev: PlayShortsUiState?,
-        curr: PlayShortsUiState
+    private fun renderBannerPreparationPage(
+        prev: List<PlayBroadcastPreparationBannerModel>?,
+        curr: List<PlayBroadcastPreparationBannerModel>
     ) {
-        if (prev?.isAffiliate == curr.isAffiliate) return
+        if (prev == curr) return
 
-        /**
-         * revamp this after mobile analytic merged
-         */
-        if (!curr.isAffiliate) {
-            binding.bannerShorts.apply {
-                title = getString(R.string.play_bro_banner_shorts_join_affiliate_title)
-                description = getString(R.string.play_bro_banner_shorts_join_affiliate_description)
-                bannerIcon = IconUnify.SALDO
-                setOnClickListener {
-                    openShortsAffiliateTncBottomSheet()
-                }
-                visible()
-            }
-        } else binding.bannerShorts.gone()
+        adapterBanner.setItemsAndAnimateChanges(curr)
+        if (curr.size > 1) binding.pcBannerPreparation.setIndicator(curr.size)
+        else binding.pcBannerPreparation.setIndicator(0)
     }
 
     private fun setupCoachMark(coachMarkItem: CoachMark2Item) {

@@ -106,15 +106,14 @@ class PlayBroProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProductTagSummarySection(channelID: String) =
+    override suspend fun getProductTagSummarySection(channelID: String, fetchCommission: Boolean) =
         withContext(dispatchers.io) {
             val response = getProductTagSummarySectionUseCase.apply {
-                setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID))
+                setRequestParams(GetProductTagSummarySectionUseCase.createParams(channelID, fetchCommission))
             }.executeOnBackground()
 
             return@withContext productMapper.mapProductTagSection(response)
         }
-
 
     private var lastRequestTime: Long = 0L
     private val isEligibleForPin: Boolean

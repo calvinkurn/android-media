@@ -25,7 +25,7 @@ class ProductChooserTest {
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockSection = List(1) {
         ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
-            ProductUiModel(it.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
+            ProductUiModel(it.toString(), "Product $it", false, "", 0, false,"", 1, OriginalPrice("Rp1000.00", 1000.0))
         })
     }
     private val mockProduct = mockSection.flatMap { it.products }

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterCheckAffiliateResponseModel
 import javax.inject.Inject
 
@@ -13,7 +14,11 @@ class BroadcasterCheckIsAffiliateUseCase @Inject constructor(
 ) : CoroutineUseCase<Unit, BroadcasterCheckAffiliateResponseModel>(dispatcher.io) {
 
     override suspend fun execute(params: Unit): BroadcasterCheckAffiliateResponseModel {
-        return repository.request(graphqlQuery(), params)
+        return try {
+            repository.request(graphqlQuery(), params)
+        } catch (e: Exception) {
+            throw MessageErrorException(e.message)
+        }
     }
 
     override fun graphqlQuery(): String {

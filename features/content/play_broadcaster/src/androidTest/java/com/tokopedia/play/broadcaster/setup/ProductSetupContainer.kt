@@ -5,7 +5,6 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.play.broadcaster.helper.BottomSheetContainer
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
@@ -41,10 +40,11 @@ class ProductSetupContainer(
                         savedStateHandle: SavedStateHandle,
                         isEligibleForPin: Boolean,
                         source: PlayBroPageSource,
+                        fetchCommissionProduct: Boolean,
                     ): PlayBroProductSetupViewModel {
                         return viewModel(savedStateHandle)
                     }
-                }.create("123", 30, emptyList(), handle, false, source = PlayBroPageSource.Live) as T
+                }.create("123", 30, emptyList(), handle, false, source = PlayBroPageSource.Live, false) as T
             }
         }
     }

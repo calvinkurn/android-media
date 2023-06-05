@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateResponseModel
 import com.tokopedia.url.TokopediaUrl
@@ -15,15 +16,23 @@ class OnBoardAffiliateUseCase @Inject constructor(
 ) : CoroutineUseCase<OnboardAffiliateRequestModel, OnboardAffiliateResponseModel>(dispatcher.io) {
 
     override suspend fun execute(params: OnboardAffiliateRequestModel): OnboardAffiliateResponseModel {
-        val param = generateParams(params)
-        return repository.request(graphqlQuery(), param)
+        return try {
+            val param = generateParams(params)
+            repository.request(graphqlQuery(), param)
+        } catch (e: Exception) {
+            throw MessageErrorException(e.message)
+        }
     }
 
     private fun generateParams(params: OnboardAffiliateRequestModel): Map<String, Any> {
         return mapOf(
-            KEY_PARAM_NAME to VALUE_PARAM_NAME,
-            KEY_PARAM_CHANNEL_ID to params.channelID,
-            KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
+            KEY_PARAM_CHANNEL to listOf(
+                mapOf(
+                    KEY_PARAM_NAME to VALUE_PARAM_NAME,
+                    KEY_PARAM_CHANNEL_ID to params.channelID,
+                    KEY_PARAM_PROFILE_ID to String.format(valueParamID, params.profileID),
+                )
+            )
         )
     }
 
