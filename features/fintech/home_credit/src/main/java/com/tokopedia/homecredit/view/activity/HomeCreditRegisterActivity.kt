@@ -6,11 +6,15 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.otaliastudios.cameraview.controls.Facing
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.di.component.DaggerHomeCreditComponent
 import com.tokopedia.homecredit.di.component.HomeCreditComponent
+import com.tokopedia.homecredit.domain.model.CameraDetail
+import com.tokopedia.homecredit.view.fragment.HomeCreditCameraV2Fragment
 import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment
 import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment
 import java.util.*
@@ -77,11 +81,18 @@ open class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeC
     @SuppressLint("MissingPermission")
     override fun getNewFragment(): Fragment? {
         val intent = intent
+        val isV2 = intent.getBooleanExtra(isV2, false)
+
         if (intent != null) {
             val uri = intent.data
             showKtp = "true" == uri!!.getQueryParameter(SHOW_KTP)
         }
-        return if (showKtp) {
+        return if (isV2) {
+            HomeCreditCameraV2Fragment.createInstance(
+                CameraDetail.create(this, showKtp)
+            )
+        }
+        else if (showKtp) {
             HomeCreditKTPFragment.createInstance()
         } else {
             HomeCreditSelfieFragment.createInstance()
@@ -102,6 +113,7 @@ open class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeC
     companion object {
         const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         const val HCI_TYPE = "type"
+        const val isV2 = "isV2"
         private const val REQUEST_CAMERA_PERMISSIONS = 932
         private const val SHOW_KTP = "show_ktp"
     }

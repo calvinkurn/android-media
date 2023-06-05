@@ -45,7 +45,7 @@
     <application>
 
         <activity
-            android:name=".IndodanaActivity"
+            android:name=".presentation.view.activity.IndodanaActivity"
             android:label="Indodana"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"
