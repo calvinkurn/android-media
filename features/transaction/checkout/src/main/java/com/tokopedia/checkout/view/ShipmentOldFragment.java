@@ -5,7 +5,7 @@ package com.tokopedia.checkout.view;
  * Originaly authored by Aghny, Angga, Kris
  */
 
-public class ShipmentOldFragment /*extends BaseCheckoutFragment implements ShipmentOldContract.View,
+public class ShipmentOldFragment{} /*extends BaseCheckoutFragment implements ShipmentOldContract.View,
         ShipmentOldContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         PromoNotEligibleActionListener, SellerCashbackListener,
@@ -3041,7 +3041,6 @@ public class ShipmentOldFragment /*extends BaseCheckoutFragment implements Shipm
      * This method is to solve expired dialog not shown up after time expired in background
      * Little caveat: what if device's time is tempered and not synchronized with server?
      * Later: consider serverTimeOffset, need more time
-     * */
     private void checkCampaignTimer() {
         if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
@@ -4161,4 +4160,4 @@ public class ShipmentOldFragment /*extends BaseCheckoutFragment implements Shipm
         hideLoaderTotalPayment();
         updateCost();
     }
-}
+}*/

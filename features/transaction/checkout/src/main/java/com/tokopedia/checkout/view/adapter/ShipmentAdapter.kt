@@ -973,13 +973,18 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun doCheckAllCourier(): Boolean {
+    fun checkHasSelectAllCourier(
+        passCheckShipmentFromPaymentClick: Boolean,
+        lastSelectedCourierOrderIndex: Int,
+        lastSelectedCourierOrdercartString: String?,
+        forceHitValidateUse: Boolean,
+        skipValidateUse: Boolean
+    ): Boolean {
         var cartItemCounter = 0
         if (shipmentCartItemModelList != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff ||
-                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
+                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
                         cartItemCounter++
                     }
                 } else if (shipmentCartItemModel.isError) {
@@ -987,16 +992,17 @@ class ShipmentAdapter @Inject constructor(
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList!!.size) {
-            if (!passCheckShipmentFromPaymentClick) {
-                shipmentAdapterActionListener.onFinishChoosingShipment(
+                if (!passCheckShipmentFromPaymentClick) {
+                    shipmentAdapterActionListener.onFinishChoosingShipment(
                         lastSelectedCourierOrderIndex,
                         lastSelectedCourierOrdercartString,
                         forceHitValidateUse,
                         skipValidateUse
-                )
-            }
+                    )
+                }
 //                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
-            return true
+                return true
+            }
         }
         return false
     }

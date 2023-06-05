@@ -11,9 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -197,14 +195,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorStrin
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.time.TimeHelper.timeBetweenRFC3339
 import com.tokopedia.utils.time.TimeHelper.timeSinceNow
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
-import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -894,28 +888,28 @@ class ShipmentFragment :
     }
 
     private fun delayScrollToFirstShop() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                delay(1_000)
-                if (isActive) {
-                    if (binding?.rvShipment?.layoutManager != null) {
-                        val linearSmoothScroller: LinearSmoothScroller =
-                            object : LinearSmoothScroller(
-                                binding?.rvShipment!!.context
-                            ) {
-                                override fun getVerticalSnapPreference(): Int {
-                                    return SNAP_TO_START
-                                }
-                            }
-                        linearSmoothScroller.targetPosition =
-                            shipmentAdapter.firstShopPosition
-                        binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            try {
+//                delay(1_000)
+//                if (isActive) {
+//                    if (binding?.rvShipment?.layoutManager != null) {
+//                        val linearSmoothScroller: LinearSmoothScroller =
+//                            object : LinearSmoothScroller(
+//                                binding?.rvShipment!!.context
+//                            ) {
+//                                override fun getVerticalSnapPreference(): Int {
+//                                    return SNAP_TO_START
+//                                }
+//                            }
+//                        linearSmoothScroller.targetPosition =
+//                            shipmentAdapter.firstShopPosition
+//                        binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
+//                    }
+//                }
+//            } catch (t: Throwable) {
+//                Timber.d(t)
+//            }
+//        }
     }
     // endregion
 
@@ -3868,18 +3862,18 @@ class ShipmentFragment :
 
     // region epharmacy
     private fun delayEpharmacyProcess(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                delay(1_000)
-                if (isActive && activity != null) {
-                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
-                        shipmentPresenter.fetchEpharmacyData()
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            try {
+//                delay(1_000)
+//                if (isActive && activity != null) {
+//                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
+//                        shipmentPresenter.fetchEpharmacyData()
+//                    }
+//                }
+//            } catch (t: Throwable) {
+//                Timber.d(t)
+//            }
+//        }
     }
 
     fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
@@ -4054,9 +4048,9 @@ class ShipmentFragment :
 
     override fun checkPlatformFee() {
         if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
-            val platformFeeModel = shipmentPresenter.getShipmentCostModel().dynamicPlatformFee
-            if (shipmentPresenter.getShipmentCostModel().totalPrice > platformFeeModel.minRange &&
-                shipmentPresenter.getShipmentCostModel().totalPrice < platformFeeModel.maxRange
+            val platformFeeModel = shipmentPresenter.shipmentCostModel.value.dynamicPlatformFee
+            if (shipmentPresenter.shipmentCostModel.value.totalPrice > platformFeeModel.minRange &&
+                shipmentPresenter.shipmentCostModel.value.totalPrice < platformFeeModel.maxRange
             ) {
                 shipmentAdapter.setPlatformFeeData(platformFeeModel)
                 updateCost()
@@ -4067,42 +4061,42 @@ class ShipmentFragment :
     }
 
     private fun updateCost() {
-        if (rvShipment!!.isComputingLayout) {
-            rvShipment!!.post {
-                shipmentAdapter.updateShipmentCostModel()
-                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
-            }
-        } else {
-            shipmentAdapter.updateShipmentCostModel()
-            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
-        }
+//        if (rvShipment!!.isComputingLayout) {
+//            rvShipment!!.post {
+//                shipmentAdapter.updateShipmentCostModel()
+//                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
+//            }
+//        } else {
+//            shipmentAdapter.updateShipmentCostModel()
+//            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
+//        }
     }
 
     override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
-        val childView = View.inflate(context, R.layout.bottom_sheet_platform_fee_info, null)
-        val tvPlatformFeeInfo: Typography = childView.findViewById(R.id.tv_platform_fee_info)
-        tvPlatformFeeInfo.text = platformFeeModel.tooltip
-        val bottomSheetUnify = BottomSheetUnify()
-        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.title))
-        bottomSheetUnify.showCloseIcon = true
-        bottomSheetUnify.setChild(childView)
-        bottomSheetUnify.show(childFragmentManager, null)
-        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
-            userSessionInterface.userId,
-            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
-        )
+//        val childView = View.inflate(context, R.layout.bottom_sheet_platform_fee_info, null)
+//        val tvPlatformFeeInfo: Typography = childView.findViewById(R.id.tv_platform_fee_info)
+//        tvPlatformFeeInfo.text = platformFeeModel.tooltip
+//        val bottomSheetUnify = BottomSheetUnify()
+//        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.title))
+//        bottomSheetUnify.showCloseIcon = true
+//        bottomSheetUnify.setChild(childView)
+//        bottomSheetUnify.show(childFragmentManager, null)
+//        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
+//            userSessionInterface.userId,
+//            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+//        )
     }
 
     private fun getPaymentFee() {
         val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest()
         paymentFeeCheckoutRequest.gatewayCode = ""
         paymentFeeCheckoutRequest.profileCode = shipmentPresenter.getShipmentPlatformFeeData().profileCode
-        paymentFeeCheckoutRequest.paymentAmount = shipmentPresenter.getShipmentCostModel().totalPrice
+        paymentFeeCheckoutRequest.paymentAmount = shipmentPresenter.shipmentCostModel.value.totalPrice
         paymentFeeCheckoutRequest.additionalData = shipmentPresenter.getShipmentPlatformFeeData().additionalData
         shipmentPresenter.getDynamicPaymentFee(paymentFeeCheckoutRequest)
     }
 
-    override fun showPaymentFeeData(platformFeeData: PaymentFeeResponse) {
+    fun showPaymentFeeData(platformFeeData: PaymentFeeResponse) {
         val platformFeeModel = ShipmentPaymentFeeModel()
         for (paymentFee in platformFeeData.data) {
             if (paymentFee.code.equals(PLATFORM_FEE_CODE, ignoreCase = true)) {
@@ -4121,11 +4115,11 @@ class ShipmentFragment :
         updateCost()
         checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
             userSessionInterface.userId,
-            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+            convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
         )
     }
 
-    override fun showPaymentFeeSkeletonLoading() {
+    fun showPaymentFeeSkeletonLoading() {
         val platformFeeModel = ShipmentPaymentFeeModel()
         platformFeeModel.isLoading = true
         shipmentAdapter.setPlatformFeeData(platformFeeModel)
@@ -4134,18 +4128,18 @@ class ShipmentFragment :
     }
 
     fun showLoaderTotalPayment() {
-        val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
-        shipmentButtonPaymentModel.isLoading = true
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
+//        shipmentButtonPaymentModel.isLoading = true
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
     fun hideLoaderTotalPayment() {
-        val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
-        shipmentButtonPaymentModel.isLoading = true
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
+//        shipmentButtonPaymentModel.isLoading = true
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
-    override fun showPaymentFeeTickerFailedToLoad(ticker: String) {
+    fun showPaymentFeeTickerFailedToLoad(ticker: String) {
         val platformFeeModel = ShipmentPaymentFeeModel()
         platformFeeModel.isShowTicker = true
         platformFeeModel.ticker = ticker

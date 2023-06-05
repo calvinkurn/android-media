@@ -41,9 +41,13 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
+import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -5464,31 +5468,31 @@ class ShipmentPresenter @Inject constructor(
     }
     // endregion
 
-    override fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
+    fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
         view?.showPaymentFeeSkeletonLoading()
 
-        getPaymentFeeCheckoutUseCase.setParams(request!!);
+        getPaymentFeeCheckoutUseCase.setParams(request!!)
         getPaymentFeeCheckoutUseCase.execute(
-                { (platformFeeData): PaymentFeeGqlResponse ->
-                    if (view != null) {
-                        if (platformFeeData.success) {
-                            view?.showPaymentFeeData(platformFeeData);
-                        } else {
-                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
-                        }
+            { (platformFeeData): PaymentFeeGqlResponse ->
+                if (view != null) {
+                    if (platformFeeData.success) {
+                        view?.showPaymentFeeData(platformFeeData)
+                    } else {
+                        view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
                     }
-                    Unit
                 }
-        ){ throwable: Throwable ->
-            Timber.d(throwable);
+                Unit
+            }
+        ) { throwable: Throwable ->
+            Timber.d(throwable)
             if (view != null) {
-                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
+                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
             }
             Unit
         }
     }
 
-    override fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
+    fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
         return shipmentPlatformFeeData
     }
 

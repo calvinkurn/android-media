@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -13,10 +12,7 @@ import com.tokopedia.checkout.databinding.ItemSummaryTransactionCrossSellBinding
 import com.tokopedia.checkout.databinding.ViewItemShipmentCostDetailsBinding
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
@@ -98,7 +94,7 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
         if (shipmentCost.productDiscountAmount > 0) {
             binding.tvProductDiscountLabel.text = binding.tvProductDiscountLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_product_discount)
             binding.tvProductDiscountPrice.text = getPriceFormat(binding.tvProductDiscountLabel, binding.tvProductDiscountPrice, (shipmentCost.productDiscountAmount * -1).toDouble())
-            mTvProductDiscountPrice.setTextColor(ContextCompat.getColor(mTvProductDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+            binding.tvProductDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvProductDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         } else {
             binding.tvProductDiscountLabel.visibility = View.GONE
             binding.tvProductDiscountPrice.visibility = View.GONE
@@ -114,7 +110,7 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
                 binding.tvShippingDiscountLabel.visibility = View.GONE
             } else {
                 binding.tvShippingDiscountPrice.text = getPriceFormat(binding.tvShippingDiscountLabel, binding.tvShippingDiscountPrice, (shipmentCost.shippingDiscountAmount * -1).toDouble())
-                mTvShippingDiscountPrice.setTextColor(ContextCompat.getColor(mTvShippingDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+                binding.tvShippingDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvShippingDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
             }
         } else {
             binding.tvShippingDiscountLabel.visibility = View.GONE
@@ -125,7 +121,7 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
     private fun renderGeneralDiscount(shipmentCost: ShipmentCostModel) {
         binding.tvDiscountLabel.text = binding.tvDiscountLabel.context.getString(R.string.label_total_discount)
         binding.tvDiscountPrice.text = getPriceFormat(binding.tvDiscountLabel, binding.tvDiscountPrice, (shipmentCost.discountAmount * -1).toDouble())
-        mTvDiscountPrice.setTextColor(ContextCompat.getColor(mTvDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        binding.tvDiscountPrice.setTextColor(ContextCompat.getColor(binding.tvDiscountPrice.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
     }
 
     private fun renderAddOnCost(shipmentCost: ShipmentCostModel) {
@@ -143,80 +139,80 @@ class ShipmentCostViewHolder(private val binding: ViewItemShipmentCostDetailsBin
     }
 
     private fun hidePlatformFee() {
-        mTickerPlatformFeeInfo.gone()
-        mTvPlatformFeeLabel.gone()
-        mIvPlatformFeeIconInfo.gone()
-        mTvPlatformFeeValue.gone()
-        mTvPlatformSlashedFeeValue.gone()
-        mLoaderPlatformFeeLabel.gone()
-        mLoaderPlatformFeeValue.gone()
+//        mTickerPlatformFeeInfo.gone()
+//        mTvPlatformFeeLabel.gone()
+//        mIvPlatformFeeIconInfo.gone()
+//        mTvPlatformFeeValue.gone()
+//        mTvPlatformSlashedFeeValue.gone()
+//        mLoaderPlatformFeeLabel.gone()
+//        mLoaderPlatformFeeValue.gone()
     }
 
     private fun renderPlatformFee(platformFeeModel: ShipmentPaymentFeeModel) {
-        if (platformFeeModel.isLoading) {
-            mTickerPlatformFeeInfo.gone()
-            mTvPlatformFeeLabel.gone()
-            mIvPlatformFeeIconInfo.gone()
-            mTvPlatformFeeValue.gone()
-            mTvPlatformSlashedFeeValue.gone()
-            mLoaderPlatformFeeLabel.visible()
-            mLoaderPlatformFeeValue.visible()
-        } else if (platformFeeModel.isShowTicker) {
-            mTvPlatformFeeLabel.gone()
-            mIvPlatformFeeIconInfo.gone()
-            mTvPlatformFeeValue.gone()
-            mTvPlatformSlashedFeeValue.gone()
-            mLoaderPlatformFeeLabel.gone()
-            mLoaderPlatformFeeValue.gone()
-            mTickerPlatformFeeInfo.visible()
-            mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
-            mTickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    shipmentAdapterActionListener.checkPlatformFee()
-                }
-
-                override fun onDismiss() { }
-            })
-        } else {
-            mTickerPlatformFeeInfo.gone()
-
-            if (platformFeeModel.title.isEmpty()) {
-                mLoaderPlatformFeeLabel.gone()
-                mLoaderPlatformFeeValue.gone()
-                mTvPlatformFeeLabel.gone()
-                mIvPlatformFeeIconInfo.gone()
-                mTvPlatformFeeValue.gone()
-                mTvPlatformSlashedFeeValue.gone()
-            } else {
-                mLoaderPlatformFeeLabel.gone()
-                mLoaderPlatformFeeValue.gone()
-                mTvPlatformFeeLabel.visible()
-                mTvPlatformFeeLabel.text = platformFeeModel.title
-                mTvPlatformFeeValue.visible()
-
-                if (platformFeeModel.isShowSlashed) {
-                    mTvPlatformSlashedFeeValue.visible()
-                    mTvPlatformSlashedFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-                    mTvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
-
-                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-                } else {
-                    mTvPlatformSlashedFeeValue.gone()
-                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                }
-
-                if (platformFeeModel.isShowTooltip) {
-                    mIvPlatformFeeIconInfo.visible()
-                    mIvPlatformFeeIconInfo.setOnClickListener {
-                        shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
-                    }
-                } else {
-                    mIvPlatformFeeIconInfo.gone()
-                }
-            }
-        }
+//        if (platformFeeModel.isLoading) {
+//            mTickerPlatformFeeInfo.gone()
+//            mTvPlatformFeeLabel.gone()
+//            mIvPlatformFeeIconInfo.gone()
+//            mTvPlatformFeeValue.gone()
+//            mTvPlatformSlashedFeeValue.gone()
+//            mLoaderPlatformFeeLabel.visible()
+//            mLoaderPlatformFeeValue.visible()
+//        } else if (platformFeeModel.isShowTicker) {
+//            mTvPlatformFeeLabel.gone()
+//            mIvPlatformFeeIconInfo.gone()
+//            mTvPlatformFeeValue.gone()
+//            mTvPlatformSlashedFeeValue.gone()
+//            mLoaderPlatformFeeLabel.gone()
+//            mLoaderPlatformFeeValue.gone()
+//            mTickerPlatformFeeInfo.visible()
+//            mTickerPlatformFeeInfo.setHtmlDescription(platformFeeModel.ticker)
+//            mTickerPlatformFeeInfo.setDescriptionClickEvent(object : TickerCallback {
+//                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+//                    shipmentAdapterActionListener.checkPlatformFee()
+//                }
+//
+//                override fun onDismiss() { }
+//            })
+//        } else {
+//            mTickerPlatformFeeInfo.gone()
+//
+//            if (platformFeeModel.title.isEmpty()) {
+//                mLoaderPlatformFeeLabel.gone()
+//                mLoaderPlatformFeeValue.gone()
+//                mTvPlatformFeeLabel.gone()
+//                mIvPlatformFeeIconInfo.gone()
+//                mTvPlatformFeeValue.gone()
+//                mTvPlatformSlashedFeeValue.gone()
+//            } else {
+//                mLoaderPlatformFeeLabel.gone()
+//                mLoaderPlatformFeeValue.gone()
+//                mTvPlatformFeeLabel.visible()
+//                mTvPlatformFeeLabel.text = platformFeeModel.title
+//                mTvPlatformFeeValue.visible()
+//
+//                if (platformFeeModel.isShowSlashed) {
+//                    mTvPlatformSlashedFeeValue.visible()
+//                    mTvPlatformSlashedFeeValue.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+//                    mTvPlatformSlashedFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.slashedFee.toLong(), false).removeDecimalSuffix()
+//
+//                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+//                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+//                } else {
+//                    mTvPlatformSlashedFeeValue.gone()
+//                    mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+//                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+//                }
+//
+//                if (platformFeeModel.isShowTooltip) {
+//                    mIvPlatformFeeIconInfo.visible()
+//                    mIvPlatformFeeIconInfo.setOnClickListener {
+//                        shipmentAdapterActionListener.showPlatformFeeTooltipInfoBottomSheet(platformFeeModel)
+//                    }
+//                } else {
+//                    mIvPlatformFeeIconInfo.gone()
+//                }
+//            }
+//        }
     }
 
     private fun getTotalItemLabel(context: Context, totalItem: Int): String {
