@@ -1,4 +1,4 @@
-package com.tokopedia.feed.detail
+package com.tokopedia.feedplus.detail
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
