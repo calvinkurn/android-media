@@ -116,7 +116,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
         gson: Gson,
         executorSchedulers: ExecutorSchedulers,
-        eligibleForAddressUseCase: EligibleForAddressUseCase,
         updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
         dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
     ): ShipmentContract.Presenter {
@@ -131,7 +130,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase,
+            executorSchedulers,
             ratesWithScheduleUseCase, updateDynamicDataPassingUseCase, dynamicPaymentFeeCheckoutUseCase
         )
     }
