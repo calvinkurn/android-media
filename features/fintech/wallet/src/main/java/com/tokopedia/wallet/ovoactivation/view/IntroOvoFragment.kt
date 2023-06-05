@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common_wallet.balance.data.CacheUtil
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wallet.R
 import com.tokopedia.wallet.databinding.FragmentIntroOvoBinding
@@ -178,18 +178,24 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
 
     override fun showDialogErrorPhoneNumber(phoneActionModel: PhoneActionModel?) {
         phoneActionModel?.let {
-            val dialog = Dialog(activity, Dialog.Type.LONG_PROMINANCE)
-            dialog.setTitle(phoneActionModel.titlePhoneAction)
-            dialog.setDesc(phoneActionModel.descPhoneAction)
-            dialog.setBtnOk(phoneActionModel.labelBtnPhoneAction)
-            dialog.setOnOkClickListener {
-                ovoActivationAnalytics.eventClickPopupPhoneNumber(phoneActionModel.labelBtnPhoneAction)
-                directPageWithApplink(phoneActionModel.applinkPhoneAction)
-                dialog.dismiss()
+            context?.let { ctx ->
+                val dialog = DialogUnify(ctx, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(phoneActionModel.titlePhoneAction)
+                dialog.setDescription(phoneActionModel.descPhoneAction)
+                dialog.setPrimaryCTAText(phoneActionModel.labelBtnPhoneAction)
+                dialog.setPrimaryCTAClickListener {
+                    ovoActivationAnalytics.eventClickPopupPhoneNumber(phoneActionModel.labelBtnPhoneAction)
+                    directPageWithApplink(phoneActionModel.applinkPhoneAction)
+                    dialog.dismiss()
+                }
+                dialog.setSecondaryCTAText(getString(R.string.wallet_button_label_cancel))
+                dialog.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog.setOverlayClose(false)
+
+                dialog.show()
             }
-            dialog.setBtnCancel(getString(R.string.wallet_button_label_cancel))
-            dialog.setOnCancelClickListener { dialog.dismiss() }
-            dialog.show()
         }
     }
 
