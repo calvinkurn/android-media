@@ -25,6 +25,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.EMPTY_DISCOUNT_PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.FLASH_SALE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.INDEX
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.IS_LOGGEDIN_STATUS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEMS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEM_BRAND
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEM_CATEGORY
@@ -36,6 +37,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PROMOTIONS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.QUANTITY
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SCREEN_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.REGULAR
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_NAME
@@ -223,6 +225,270 @@ class DigitalPDPAnalytics {
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43697
+    fun impressionCheckBalanceWidget(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_CHECK_BALANCE_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_CHECK_BALANCE_WIDGET
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43698
+    fun clickCheckBalanceWidget(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_CHECK_BALANCE_WIDGET,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_CHECK_BALANCE_WIDGET
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43699
+    fun impressionPdpOtpPopUp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_PDP_OTP_POP_UP,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_PDP_OTP_POP_UP
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43700
+    fun clickPdpOtpPopUp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_PDP_OTP_POP_UP,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_PDP_OTP_TOP_UP
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43701
+    fun clickInputOtp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String,
+        isLogin: Boolean
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_INPUT_OTP,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $loyaltyStatus",
+            TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_INPUT_OTP,
+            IS_LOGGEDIN_STATUS, isLogin,
+            SCREEN_NAME, "iframe-otp"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43702
+    fun clickCloseOtp(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String,
+        isLogin: Boolean
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CLOSE_OTP,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $loyaltyStatus",
+            TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_OTP,
+            IS_LOGGEDIN_STATUS, isLogin,
+            SCREEN_NAME, "iframe-otp"
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43704
+    fun impressionCheckBalanceInfo(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        errorMessage: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.IMPRESSION_CHECK_BALANCE_INFO,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus - $errorMessage",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.IMPRESSION_CHECK_BALANCE_INFO
+        )
+        data.viewDigitalIris(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43705
+    fun clickLihatDetailCheckBalance(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_LIHAT_DETAIL_CHECK_BALANCE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_LIHAT_DETAIL_CHECK_BALANCE)
+//            putParcelableArrayList(PROMOTIONS, mapperBannerToItemList("", "", ""))
+        }
+
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43706
+    fun impressionSheetActivePackage(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_SHEET_ACTIVE_PACKAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.IMPRESSION_SHEET_ACTIVE_PACKAGE)
+//            putParcelableArrayList(PROMOTIONS, mapperBannerToItemList(creativeUrl, categoryId, categoryName))
+        }
+        eventDataLayer.viewItem(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43707
+    fun clickCloseSheetActivePackage(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_CLOSE_SHEET_ACTIVE_PACKAGE,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_SHEET_ACTIVE_PACKAGE
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43708
+    fun impressionActivePackageCheckBalance(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        productListName: String,
+        productId: String,
+        productName: String,
+        index: Int,
+        price: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_ACTIVE_PACKAGE_CHECK_BALANCE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $index - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.IMPRESSION_ACTIVE_PACKAGE_CHECK_BALANCE)
+            putString(ITEM_LIST, productListName)
+            putParcelableArrayList(
+                ITEMS,
+                mapperCheckBalanceProductToItemList(
+                    productListName,
+                    index,
+                    categoryName,
+                    operatorName,
+                    productId,
+                    productName,
+                    price
+                )
+            )
+        }
+        eventDataLayer.viewItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
+    // Tracker ID: 43709
+    fun clickBeliLagiActivePackage(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        productListName: String,
+        productId: String,
+        productName: String,
+        index: Int,
+        price: String,
+        userId: String
+    ) {
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_BELI_LAGI_ACTIVE_PACKAGE)
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $index - $operatorName - $loyaltyStatus")
+            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_BELI_LAGI_ACTIVE_PACKAGE)
+            putString(ITEM_LIST, productListName)
+            putParcelableArrayList(
+                ITEMS,
+                mapperCheckBalanceProductToItemList(
+                    productListName,
+                    index,
+                    categoryName,
+                    operatorName,
+                    productId,
+                    productName,
+                    price
+                )
+            )
+        }
+        eventDataLayer.clickGeneralItemList(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
     }
 
     fun eventClearInputNumber(categoryName: String, userId: String) {
@@ -1033,6 +1299,31 @@ class DigitalPDPAnalytics {
                 putString(SHOP_ID, null)
                 putString(SHOP_NAME, null)
                 putString(SHOP_TYPE, null)
+            }
+        )
+        return listItems
+    }
+
+    fun mapperCheckBalanceProductToItemList(
+        title: String,
+        index: Int,
+        categoryName: String,
+        operatorName: String,
+        productId: String,
+        productName: String,
+        price: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+            Bundle().apply {
+                putString(DIMENSION40, title)
+                putString(INDEX, index.toString())
+                putString(ITEM_BRAND, operatorName)
+                putString(ITEM_CATEGORY, categoryName)
+                putString(ITEM_ID, productId)
+                putString(ITEM_NAME, productName)
+                putString(ITEM_VARIANT, "")
+                putString(PRICE, price)
             }
         )
         return listItems

@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.databinding.BottomsheetRechargeCheckBalanceOtpBinding
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
+class RechargeCheckBalanceOTPBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetRechargeCheckBalanceOtpBinding>()
     private lateinit var bottomSheetModel: RechargeCheckBalanceOTPBottomSheetModel
@@ -50,7 +49,6 @@ class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
         renderBottomSheet()
     }
 
-
     private fun renderBottomSheet() {
         binding?.run {
             setTitle(bottomSheetModel.title)
@@ -60,11 +58,13 @@ class RechargeCheckBalanceOTPBottomSheet: BottomSheetUnify() {
             bottomsheetOtpButton.setOnClickListener {
                 mListener?.onClickButton(bottomSheetModel.buttonAppLink)
             }
+            mListener?.onRenderCheckBalanceOTPBottomSheet()
         }
     }
 
     interface RechargeCheckBalanceOTPBottomSheetListener {
         fun onClickButton(applink: String)
+        fun onRenderCheckBalanceOTPBottomSheet()
     }
 
     companion object {

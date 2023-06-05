@@ -8,9 +8,10 @@ import com.tokopedia.recharge_component.databinding.ViewRechargeCheckBalanceDeta
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
 
-class RechargeCheckBalanceDetailAdapter: RecyclerView.Adapter<RechargeCheckBalanceDetailViewHolder>() {
+class RechargeCheckBalanceDetailAdapter : RecyclerView.Adapter<RechargeCheckBalanceDetailViewHolder>() {
 
     private var checkBalanceDetails: List<RechargeCheckBalanceDetailModel> = emptyList()
+    private var checkBalanceDetailViewHolderListener: RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener? = null
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -21,7 +22,7 @@ class RechargeCheckBalanceDetailAdapter: RecyclerView.Adapter<RechargeCheckBalan
             parent,
             false
         )
-        return RechargeCheckBalanceDetailViewHolder(binding)
+        return RechargeCheckBalanceDetailViewHolder(binding, checkBalanceDetailViewHolderListener)
     }
 
     override fun onBindViewHolder(holder: RechargeCheckBalanceDetailViewHolder, position: Int) {
@@ -34,5 +35,9 @@ class RechargeCheckBalanceDetailAdapter: RecyclerView.Adapter<RechargeCheckBalan
     fun setCheckBalanceDetails(details: List<RechargeCheckBalanceDetailModel>) {
         checkBalanceDetails = details
         notifyDataSetChanged()
+    }
+
+    fun setCheckBalanceDetailViewHolderListener(listener: RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener?) {
+        checkBalanceDetailViewHolderListener = listener
     }
 }

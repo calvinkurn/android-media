@@ -89,6 +89,7 @@ import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailBottomSheetModel
+import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceOTPBottomSheetModel
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
@@ -97,6 +98,7 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceDetailBottomSheet
 import com.tokopedia.recharge_component.presentation.bottomsheet.RechargeCheckBalanceOTPBottomSheet
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -130,6 +132,8 @@ class DigitalPDPPulsaFragment :
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
     ClientNumberCheckBalanceListener,
+    RechargeCheckBalanceDetailBottomSheet.RechargeCheckBalanceDetailBottomSheetListener,
+    RechargeCheckBalanceDetailViewHolder.RechargeCheckBalanceDetailViewHolderListener,
     DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
 
     @Inject
@@ -300,7 +304,7 @@ class DigitalPDPPulsaFragment :
                 }
 
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -313,7 +317,7 @@ class DigitalPDPPulsaFragment :
                 }
 
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -322,7 +326,7 @@ class DigitalPDPPulsaFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -331,7 +335,7 @@ class DigitalPDPPulsaFragment :
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -341,7 +345,7 @@ class DigitalPDPPulsaFragment :
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -397,7 +401,7 @@ class DigitalPDPPulsaFragment :
                 }
 
                 else -> {
-                    //no-op
+                    // no-op
                 }
             }
         }
@@ -635,10 +639,16 @@ class DigitalPDPPulsaFragment :
                     DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
                 )
                 showCheckBalanceOtpWidget()
+                digitalPDPAnalytics.impressionCheckBalanceWidget(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    operator.attributes.name,
+                    loyaltyStatus,
+                    userSession.userId
+                )
             } else {
                 renderCheckBalanceWidget(
                     DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
-                    DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData),
+                    DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
                 )
                 showCheckBalanceWidget()
             }
@@ -650,6 +660,12 @@ class DigitalPDPPulsaFragment :
 //                        DigitalPDPWidgetMapper.mapCheckBalanceOTPToWidgetModels(checkBalanceData)
 //                    )
 //                    showCheckBalanceOtpWidget()
+//                    digitalPDPAnalytics.impressionCheckBalanceWidget(
+//                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+//                        operator.attributes.name,
+//                        loyaltyStatus,
+//                        userSession.userId
+//                    )
 //                }
 //                "widget" -> {
 //                    renderCheckBalanceWidget(
@@ -670,7 +686,13 @@ class DigitalPDPPulsaFragment :
             } else {
                 hideCheckBalanceWarning()
             }
-
+            digitalPDPAnalytics.impressionCheckBalanceInfo(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                checkBalanceData.campaignLabelText,
+                userSession.userId
+            )
             setupDynamicScrollViewPadding()
         }
     }
@@ -686,7 +708,6 @@ class DigitalPDPPulsaFragment :
         // TODO: [Misael] show local load error
         Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
-
 
     private fun onLoadingGetCheckBalance() {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
@@ -1508,6 +1529,12 @@ class DigitalPDPPulsaFragment :
 
     //region ClientNumberCheckBalanceListener
     override fun onClickCheckBalanceOTPWidget(model: RechargeCheckBalanceOTPBottomSheetModel) {
+        digitalPDPAnalytics.clickCheckBalanceWidget(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
         val bottomSheet = RechargeCheckBalanceOTPBottomSheet()
         bottomSheet.setBottomSheetModel(model)
         bottomSheet.setListener(this)
@@ -1515,16 +1542,100 @@ class DigitalPDPPulsaFragment :
     }
 
     override fun onClickCheckBalanceWidget(model: RechargeCheckBalanceDetailBottomSheetModel) {
-        val bottomSheet = RechargeCheckBalanceDetailBottomSheet()
-        bottomSheet.setBottomSheetTitle(model.title)
-        bottomSheet.setCheckBalanceDetailModels(model.details)
+        digitalPDPAnalytics.clickLihatDetailCheckBalance(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+        val bottomSheet = RechargeCheckBalanceDetailBottomSheet().apply {
+            setCheckBalanceDetailBottomSheetListener(this@DigitalPDPPulsaFragment)
+            setCheckBalanceDetailViewHolderListener(this@DigitalPDPPulsaFragment)
+            setBottomSheetTitle(model.title)
+            setCheckBalanceDetailModels(model.details)
+        }
         bottomSheet.show(childFragmentManager)
     }
     //endregion
 
-    //region RechargeCheckBalanceOTPBottomSheet
+    //region RechargeCheckBalanceOTPBottomSheetListener
+    override fun onRenderCheckBalanceOTPBottomSheet() {
+        digitalPDPAnalytics.impressionPdpOtpPopUp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+
     override fun onClickButton(applink: String) {
-        indosatCheckBalanceLauncher.launch(applink)
+        digitalPDPAnalytics.clickPdpOtpPopUp(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            loyaltyStatus,
+            userSession.userId
+        )
+        // TODO: [Misael] remove this dummy applink
+//        indosatCheckBalanceLauncher.launch(applink)
+        indosatCheckBalanceLauncher.launch("https://staging.tokopedia.com/mybills")
+    }
+    //endregion
+
+    //region RechargeCheckBalanceDetailBottomSheetListener
+    override fun onRenderCheckBalanceDetailBottomSheet() {
+        digitalPDPAnalytics.impressionSheetActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+
+    override fun onCloseCheckBalanceDetailBottomSheet() {
+        digitalPDPAnalytics.clickCloseSheetActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+    }
+    //endregion
+
+    //region RechargeCheckBalanceDetailViewHolderListener
+    override fun onRenderCheckBalanceDetailBuyButton(
+        model: RechargeCheckBalanceDetailModel,
+        position: Int,
+        bottomSheetTitle: String
+    ) {
+        // TODO: [Misael] Update data
+        digitalPDPAnalytics.impressionActivePackageCheckBalance(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            bottomSheetTitle,
+            "",
+            "",
+            position,
+            "",
+            userSession.userId
+        )
+    }
+
+    override fun onClickCheckBalanceDetailBuyButton(
+        model: RechargeCheckBalanceDetailModel,
+        position: Int,
+        bottomSheetTitle: String
+    ) {
+        // TODO: [Misael] Update data
+        digitalPDPAnalytics.clickBeliLagiActivePackage(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            bottomSheetTitle,
+            "",
+            "",
+            position,
+            "",
+            userSession.userId
+        )
     }
     //endregion
 
