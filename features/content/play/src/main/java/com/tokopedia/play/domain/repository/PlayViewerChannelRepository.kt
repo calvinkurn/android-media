@@ -6,6 +6,7 @@ import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
+import com.tokopedia.play.view.uimodel.recom.PlayCommentUiModel
 
 interface PlayViewerChannelRepository {
 
@@ -24,4 +25,6 @@ interface PlayViewerChannelRepository {
     ): PlayChatHistoryUiModel
 
     suspend fun getCartCount(): Int
+
+    suspend fun getCountComment(channelId: String) : PlayCommentUiModel
 }

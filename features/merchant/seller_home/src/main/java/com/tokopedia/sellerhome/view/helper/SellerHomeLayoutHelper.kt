@@ -6,7 +6,8 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetHeight
-import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamCommonWidgetModel
+import com.tokopedia.sellerhomecommon.domain.model.ParamTableWidgetModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.BaseGqlUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetBarChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCalendarDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCardDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetCarouselDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetLineGraphDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMilestoneDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetMultiLineGraphUseCase
@@ -36,6 +38,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
@@ -50,12 +53,12 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
 import com.tokopedia.user.session.UserSessionInterface
@@ -86,6 +89,7 @@ class SellerHomeLayoutHelper @Inject constructor(
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
     private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
+    private val getRichListDataUseCase: Lazy<GetRichListDataUseCase>,
     private val userSession: Lazy<UserSessionInterface>,
     private val remoteConfig: Lazy<SellerHomeRemoteConfig>,
     private val dispatcher: CoroutineDispatchers
@@ -93,12 +97,12 @@ class SellerHomeLayoutHelper @Inject constructor(
 
     private var startWidgetCustomMetricTag = MutableLiveData<String>()
     private var stopWidgetType = MutableLiveData<String>()
-    private var dynamicParameter: DynamicParameterModel = DynamicParameterModel()
+    private var dynamicParameter: ParamCommonWidgetModel = ParamCommonWidgetModel()
 
     fun init(
         startWidgetLiveData: MutableLiveData<String>,
         stopWidgetLiveData: MutableLiveData<String>,
-        dynamicParameter: DynamicParameterModel
+        dynamicParameter: ParamCommonWidgetModel
     ) {
         this.startWidgetCustomMetricTag = startWidgetLiveData
         this.stopWidgetType = stopWidgetLiveData
@@ -249,12 +253,16 @@ class SellerHomeLayoutHelper @Inject constructor(
             WidgetType.UNIFICATION,
             isFromCache
         )
+        val richListDataFlow = groupedWidgets.getWidgetDataByType<RichListDataUiModel>(
+            WidgetType.RICH_LIST,
+            isFromCache
+        )
 
         return combine(
             lineGraphDataFlow, announcementDataFlow, cardDataFlow, progressDataFlow,
             carouselDataFlow, postDataFlow, tableDataFlow, pieChartDataFlow,
             barChartDataFlow, multiLineGraphDataFlow, recommendationDataFlow, milestoneDataFlow,
-            calendarDataFlow, unificationDataFlow
+            calendarDataFlow, unificationDataFlow, richListDataFlow
         ) { widgetDataList ->
             val widgetsData = widgetDataList.flatMap { it }
             widgetsData.mapToWidgetModel(widgets)
@@ -293,6 +301,7 @@ class SellerHomeLayoutHelper @Inject constructor(
                             WidgetType.MILESTONE -> getMilestoneData(it)
                             WidgetType.CALENDAR -> getCalendarData(it)
                             WidgetType.UNIFICATION -> getUnificationData(it)
+                            WidgetType.RICH_LIST -> getRichListData(it)
                             else -> null
                         }
                     }.orEmpty()
@@ -397,7 +406,10 @@ class SellerHomeLayoutHelper @Inject constructor(
     ): List<LineGraphDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<LineGraphWidgetUiModel>(widgets)
-        val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val params = GetLineGraphDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val useCase = getLineGraphDataUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
@@ -431,7 +443,11 @@ class SellerHomeLayoutHelper @Inject constructor(
                 val postFilters = postFilter?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
             }
-        val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val params = GetPostDataUseCase.getRequestParams(
+            dataKey = dataKeys,
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate
+        )
         val useCase = getPostDataUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
@@ -466,7 +482,12 @@ class SellerHomeLayoutHelper @Inject constructor(
                 val postFilters = postFilter?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilters, it.maxData, it.maxDisplay)
             }
-        val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val tableParam = ParamTableWidgetModel(
+            startDate = dynamicParameter.startDate,
+            endDate = dynamicParameter.endDate,
+            pageSource = dynamicParameter.pageSource
+        )
+        val params = GetTableDataUseCase.getRequestParams(dataKeys, tableParam)
         val useCase = getTableDataUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
@@ -511,7 +532,10 @@ class SellerHomeLayoutHelper @Inject constructor(
     private suspend fun getMultiLineGraphData(widgets: List<BaseWidgetUiModel<*>>): List<MultiLineGraphDataUiModel> {
         widgets.setLoading()
         val dataKeys = Utils.getWidgetDataKeys<MultiLineGraphWidgetUiModel>(widgets)
-        val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val params = GetMultiLineGraphUseCase.getRequestParams(
+            dataKey = dataKeys,
+            dynamicParam = dynamicParameter
+        )
         val useCase = getMultiLineGraphUseCase.get()
         useCase.params = params
         withContext(dispatcher.main) {
@@ -597,6 +621,23 @@ class SellerHomeLayoutHelper @Inject constructor(
         }
         val shouldUseCache = remoteConfig.get().isSellerHomeDashboardCachingEnabled()
                 && useCase.isFirstLoad
+        return getDataFromUseCase(useCase, shouldUseCache)
+    }
+
+    private suspend fun getRichListData(widgets: List<BaseWidgetUiModel<*>>): List<RichListDataUiModel> {
+        widgets.setLoading()
+        val dataKeys = Utils.getWidgetDataKeys<RichListWidgetUiModel>(widgets)
+        val useCase = getRichListDataUseCase.get()
+        val shopId = userSession.get().shopId
+        useCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys, shopId = shopId, pageSource = dynamicParameter.pageSource
+        )
+        withContext(dispatcher.main) {
+            startWidgetCustomMetricTag.value =
+                SellerHomePerformanceMonitoringConstant.SELLER_HOME_RICH_LIST_TRACE
+        }
+        val shouldUseCache =
+            remoteConfig.get().isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad
         return getDataFromUseCase(useCase, shouldUseCache)
     }
 

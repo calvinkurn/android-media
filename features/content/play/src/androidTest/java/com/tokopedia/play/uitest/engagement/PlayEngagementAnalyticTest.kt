@@ -138,7 +138,7 @@ class PlayEngagementAnalyticTest {
                 voucherList = listOf(uiModelBuilder.buildMerchantVoucher(), uiModelBuilder.buildMerchantVoucher(highlighted = true, id = "1234"))
             )
         )
-        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItems
 
        val robot = createRobot()
         with(robot) {
@@ -157,7 +157,7 @@ class PlayEngagementAnalyticTest {
                     (highlighted = true, id = "1234", isPrivate = true, copyable = true, title = "Voucher KFC", description = "Diskon hingga 100rb", code = "ASHH"))
             )
         )
-        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItems
 
         val robot = createRobot()
         with(robot) {
@@ -182,7 +182,7 @@ class PlayEngagementAnalyticTest {
                     uiModelBuilder.buildMerchantVoucher(id = "1235",title = "Voucher Gopay", description = "Potongan hingga 100rb"))
             )
         )
-        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItems
 
         val robot = createRobot()
         with(robot) {
@@ -203,7 +203,7 @@ class PlayEngagementAnalyticTest {
             )
         )
 
-        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItems
+        coEvery { repo.getTagItem(any(), any(), any(), any()) } returns tagItems
 
         val game = uiModelBuilder.buildQuiz(id = "11", "Quiz Sepeda", status = GameUiModel.Quiz.Status.Ongoing(200L.millisFromNow()))
 

@@ -116,12 +116,50 @@ open class GetPdpLayoutUseCase @Inject constructor(
                         variantOptionID
                         URLMaxRes
                       }
+                      recommendation {
+                        lightIcon
+                        darkIcon
+                        iconText
+                        bottomsheetTitle
+                        recommendation
+                      }
                       videos {
                         source
                         url
                       }
                       containerType
             		}
+                    ... on pdpDataOnGoingCampaign {
+                      campaign {
+                        campaignID
+                        campaignType
+                        campaignTypeName
+                        percentageAmount
+                        originalPrice
+                        discountedPrice
+                        stock
+                        stockSoldPercentage
+                        threshold
+                        startDate
+                        endDate
+                        endDateUnix
+                        appLinks
+                        isAppsOnly
+                        isActive
+                        hideGimmick
+                        isCheckImei
+                        isUsingOvo
+                        background
+                        campaignIdentifier
+                        paymentInfoWording
+                      }
+                      thematicCampaign{
+                        campaignName
+                        icon
+                        background
+                        additionalInfo
+                      }
+                    }
             		... on pdpDataProductContent {
                       name
                       parentName
@@ -197,6 +235,10 @@ open class GetPdpLayoutUseCase @Inject constructor(
                     ... on pdpDataProductDetail {
                       title
                       content {
+                        key
+                        type
+                        action
+                        extParam
                         title
                         subtitle
                         applink
@@ -270,6 +312,9 @@ open class GetPdpLayoutUseCase @Inject constructor(
                       defaultChild
                       sizeChart
                       maxFinalPrice
+                      postATCLayout {
+                        layoutID
+                      }
                       variants {
                         productVariantID
                         variantID

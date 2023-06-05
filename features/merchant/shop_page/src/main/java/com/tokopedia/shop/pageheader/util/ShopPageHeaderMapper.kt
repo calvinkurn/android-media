@@ -1,10 +1,12 @@
 package com.tokopedia.shop.pageheader.util
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
 import com.tokopedia.shop.common.graphql.data.isshoppowermerchant.GetIsShopPowerMerchant
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant.SHOP_PAGE_POWER_MERCHANT_ACTIVE
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageHeaderP1HeaderData
@@ -37,22 +39,21 @@ object ShopPageHeaderMapper {
             SHOP_LOGO
         )?.image.orEmpty()
         return ShopPageHeaderP1HeaderData(
-                shopInfoOsData.data.isOfficial,
-                shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
-                shopInfoGoldData.data.powerMerchant.pmTier,
-                shopPageHomeTypeData.shopHomeType,
-                shopName,
-                shopAvatar,
-                "",
-                feedWhitelistData.isWhitelist,
-                feedWhitelistData.url,
-                listShopHeaderWidget
+            shopInfoOsData.data.isOfficial,
+            shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
+            shopInfoGoldData.data.powerMerchant.pmTier,
+            shopPageHomeTypeData.shopHomeType,
+            shopName,
+            shopAvatar,
+            "",
+            feedWhitelistData.isWhitelist,
+            feedWhitelistData.url,
+            listShopHeaderWidget
         )
     }
 
     fun mapToNewShopPageP1HeaderData(
-        shopInfoOsData: GetIsShopOfficialStore,
-        shopInfoGoldData: GetIsShopPowerMerchant,
+        shopInfoCoreData: ShopInfo,
         shopPageGetDynamicTabResponse: ShopPageGetDynamicTabResponse,
         feedWhitelistData: Whitelist,
         shopPageHeaderLayoutData: ShopPageHeaderLayoutResponse
@@ -69,17 +70,17 @@ object ShopPageHeaderMapper {
             SHOP_LOGO
         )?.image.orEmpty()
         return ShopPageHeaderP1HeaderData(
-            shopInfoOsData.data.isOfficial,
-            shopInfoGoldData.data.powerMerchant.status == SHOP_PAGE_POWER_MERCHANT_ACTIVE,
-            shopInfoGoldData.data.powerMerchant.pmTier,
-            "",
-            shopName,
-            shopAvatar,
-            "",
-            feedWhitelistData.isWhitelist,
-            feedWhitelistData.url,
-            listShopHeaderWidget,
-            shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData
+            isOfficial = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.OFFICIAL_STORE,
+            isGoldMerchant = shopInfoCoreData.goldOS.shopTier == ShopPageConstant.ShopTierType.POWER_MERCHANT_PRO,
+            pmTier = shopInfoCoreData.goldOS.shopTier,
+            shopHomeType = "",
+            shopName = shopName,
+            shopAvatar = shopAvatar,
+            shopDomain = "",
+            isWhitelist = feedWhitelistData.isWhitelist,
+            feedUrl = feedWhitelistData.url,
+            listShopPageHeaderWidget = listShopHeaderWidget,
+            listDynamicTabData = shopPageGetDynamicTabResponse.shopPageGetDynamicTab.tabData
         )
     }
 

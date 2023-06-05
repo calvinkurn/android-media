@@ -397,6 +397,16 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 productID
                 value
               }
+              shipmentPlus {
+                isShow
+                logoUrl
+                logoUrlDark
+                bgUrl
+                bgUrlDark
+                text
+                action
+                actionLink
+              }
             }
             merchantVoucherSummary{
                 animatedInfo{
