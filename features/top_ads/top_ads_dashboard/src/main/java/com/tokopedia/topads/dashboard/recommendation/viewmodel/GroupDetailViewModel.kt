@@ -6,12 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.common.data.model.InsightTypeApplyInput
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
+import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
@@ -27,6 +30,7 @@ class GroupDetailViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGroupDetailUseCase: TopAdsGroupDetailUseCase,
     private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
+    private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val groupDetailMapper: GroupDetailMapper
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
@@ -62,7 +66,7 @@ class GroupDetailViewModel @Inject constructor(
     fun loadInsightTypeChips(
         adType: String?,
         insightList: ArrayList<AdGroupUiModel>,
-        adGroupName: String?,
+        adGroupName: String?
     ) {
         val list =
             mutableListOf(
@@ -73,7 +77,7 @@ class GroupDetailViewModel @Inject constructor(
             InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
-    fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String="") {
+    fun loadDetailPageOnAction(adType: Int, adgroupID: String, insightType: Int, isSwitchAdType: Boolean = false, groupName: String = "") {
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
                 val data = topAdsListAllInsightCountsUseCase(
@@ -97,7 +101,6 @@ class GroupDetailViewModel @Inject constructor(
                             insightType
                         )
                     )
-
             } else {
                 loadDetailPage(
                     adType,
@@ -131,5 +134,19 @@ class GroupDetailViewModel @Inject constructor(
         chipsList.forEachIndexed { index, groupDetailChipsItemUiModel ->
             groupDetailChipsItemUiModel.isSelected = (index == insightType)
         }
+    }
+
+    fun applyInsight(insightTypeApplyInput: InsightTypeApplyInput) {
+        val requestParams = topAdsCreateUseCase.createRequestParamForInsight(insightTypeApplyInput)
+        launchCatchError(dispatcher.main, block = {
+            topAdsCreateUseCase.execute(requestParams)
+        }, onError = {})
+    }
+
+    fun applyInsight2(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput) {
+        val requestParams = topAdsCreateUseCase.createRequestParamForInsight2(topAdsManagePromoGroupProductInput)
+        launchCatchError(dispatcher.main, block = {
+            topAdsCreateUseCase.execute(requestParams)
+        }, onError = {})
     }
 }
