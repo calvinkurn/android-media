@@ -86,7 +86,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
-import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.R as universalSharingR
@@ -1373,18 +1372,12 @@ class FeedShopFragment :
     }
 
     override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        try {
-            super.startActivityForResult(intent, requestCode)
-        } catch (e: IllegalStateException) {
-            // ignored
-        }
+        if (!isAdded) return
+        super.startActivityForResult(intent, requestCode)
     }
 
     override fun startActivity(intent: Intent?) {
-        try {
-            super.startActivity(intent)
-        } catch (e: IllegalStateException) {
-            // ignored
-        }
+        if (!isAdded) return
+        super.startActivity(intent)
     }
 }
