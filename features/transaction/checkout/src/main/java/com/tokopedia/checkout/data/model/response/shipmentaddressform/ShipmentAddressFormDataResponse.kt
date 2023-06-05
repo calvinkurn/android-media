@@ -3,7 +3,6 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.response.dynamicdata.ShipmentDynamicDataPassing
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
-import com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee
 import com.tokopedia.purchase_platform.common.feature.coachmarkplus.CoachmarkPlusResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
