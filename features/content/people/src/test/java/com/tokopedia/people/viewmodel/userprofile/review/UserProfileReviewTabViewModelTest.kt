@@ -1,4 +1,4 @@
-package com.tokopedia.people.viewmodel.userprofile
+package com.tokopedia.people.viewmodel.userprofile.review
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.data.UserProfileRepository
@@ -30,9 +30,6 @@ import org.junit.Test
  * Created By : Jonathan Darwin on June 05, 2023
  */
 class UserProfileReviewTabViewModelTest {
-
-    @get:Rule
-    val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
@@ -82,7 +79,7 @@ class UserProfileReviewTabViewModelTest {
 
 
     @Test
-    fun `loadUserReview - refresh content`() {
+    fun `LoadUserReview - refresh content`() {
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
@@ -115,7 +112,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load next page and exists`() {
+    fun `LoadUserReview - load next page and exists`() {
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
@@ -140,7 +137,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load next page on last page`() {
+    fun `LoadUserReview - load next page on last page`() {
 
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } returns mockReviewContentLastPage
 
@@ -168,7 +165,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load page and error`() {
+    fun `LoadUserReview - load page and error`() {
 
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } throws mockException
 
@@ -194,7 +191,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load next page and error`() {
+    fun `LoadUserReview - load next page and error`() {
 
         val robot = UserProfileViewModelRobot(
             username = mockOwnUsername,
@@ -224,7 +221,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load page and review setting is hidden`() {
+    fun `LoadUserReview - load page and review setting is hidden`() {
 
         coEvery { mockRepo.getProfileSettings(any()) } returns mockReviewSettingsDisabled
 
@@ -246,7 +243,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load page on own profile and emit event show onboarding`() {
+    fun `LoadUserReview - load page on own profile and emit event show onboarding`() {
         coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
 
         val robot = UserProfileViewModelRobot(
@@ -267,7 +264,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `loadUserReview - load page on toher profile and dont emit event show onboarding`() {
+    fun `LoadUserReview - load page on toher profile and dont emit event show onboarding`() {
         coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
 
         val robot = UserProfileViewModelRobot(

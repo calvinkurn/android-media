@@ -566,6 +566,10 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickLikeReview(review: UserReviewUiModel.Review) {
         launchCatchError(block = {
+            if (_reviewContent.value.reviewList.find { it.feedbackID == review.feedbackID } == null) {
+                return@launchCatchError
+            }
+
             toggleLikeDislikeStatus(review.feedbackID)
 
             val response = repo.setLikeStatus(
@@ -573,7 +577,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 likeStatus = review.likeDislike.switchLikeStatus()
             )
 
-            val selectedReview = _reviewContent.value.reviewList.firstOrNull {
+            val selectedReview = _reviewContent.value.reviewList.find {
                 it.feedbackID == review.feedbackID
             } ?: return@launchCatchError
 
@@ -583,7 +587,6 @@ class UserProfileViewModel @AssistedInject constructor(
         }) { throwable ->
             toggleLikeDislikeStatus(review.feedbackID)
 
-            /** TODO: handle this */
             _uiEvent.emit(UserProfileUiEvent.ErrorLikeDislike(throwable))
         }
     }
@@ -606,7 +609,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleClickReviewMedia(feedbackID: String, attachment: UserReviewUiModel.Attachment) {
         launch {
-            val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackID } ?: return@launch
+            val review = _reviewContent.value.reviewList.find { it.feedbackID == feedbackID } ?: return@launch
             val mediaPosition = review.attachments.indexOf(attachment) + 1
 
             _uiEvent.emit(

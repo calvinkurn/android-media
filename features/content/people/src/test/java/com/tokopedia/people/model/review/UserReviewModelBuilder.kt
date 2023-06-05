@@ -20,8 +20,10 @@ class UserReviewModelBuilder {
 
     fun buildReviewList(
         size: Int = 5,
+        sizeAttachment: Int = 5,
         page: Int = 2,
         hasNext: Boolean = true,
+        isLike: Boolean = false,
         status: UserReviewUiModel.Status = UserReviewUiModel.Status.Success,
     ): UserReviewUiModel = UserReviewUiModel(
         reviewList = List(size) { idx ->
@@ -41,10 +43,23 @@ class UserReviewModelBuilder {
                 rating = idx.coerceAtMost(5),
                 reviewText = "Waw",
                 reviewTime = "time",
-                attachments = listOf(),
+                attachments = List(sizeAttachment) {
+                    if (it % 2 == 0) {
+                        UserReviewUiModel.Attachment.Image(
+                            attachmentID = it.toString(),
+                            thumbnailUrl = "thumbnail_$it",
+                            fullSizeUrl = "fullsizeUrl_$it",
+                        )
+                    } else {
+                        UserReviewUiModel.Attachment.Video(
+                            attachmentID = it.toString(),
+                            mediaUrl = "mediaUrl_$it",
+                        )
+                    }
+                },
                 likeDislike = UserReviewUiModel.LikeDislike(
                     totalLike = idx,
-                    likeStatus = 3,
+                    likeStatus = if (isLike) 1 else 3,
                 ),
                 isReviewTextExpanded = false
             )
@@ -52,5 +67,13 @@ class UserReviewModelBuilder {
         page = page,
         hasNext = hasNext,
         status = status,
+    )
+
+    fun buildLikeDislike(
+        totalLike: Int = 123,
+        likeStatus: Int = 3,
+    ) = UserReviewUiModel.LikeDislike(
+        totalLike = totalLike,
+        likeStatus = likeStatus,
     )
 }
