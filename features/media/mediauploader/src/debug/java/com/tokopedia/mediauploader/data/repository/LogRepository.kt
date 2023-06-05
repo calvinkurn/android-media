@@ -10,6 +10,7 @@ import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.data.entity.Logs
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -24,8 +25,8 @@ interface LogRepository {
 
 class LogRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val trackerCacheStore: AnalyticsCacheDataStore,
-    private val videoMetaDataExtractor: VideoMetaDataExtractor
+    @UploaderQualifier private val videoMetaDataExtractor: VideoMetaDataExtractor,
+    @UploaderQualifier private val trackerCacheStore: AnalyticsCacheDataStore,
 ) : LogRepository {
 
     /**

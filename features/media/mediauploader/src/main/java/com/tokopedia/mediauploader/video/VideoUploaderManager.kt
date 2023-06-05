@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.common.FeatureToggleUploader
 import com.tokopedia.mediauploader.common.data.consts.*
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
 import com.tokopedia.mediauploader.analytics.MediaUploaderAnalytics
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isMaxFileSize
@@ -18,7 +19,7 @@ import java.io.File
 import javax.inject.Inject
 
 class VideoUploaderManager @Inject constructor(
-    private val policyManager: SourcePolicyManager,
+    @UploaderQualifier private val policyManager: SourcePolicyManager,
     private val policyUseCase: GetVideoPolicyUseCase,
     private val videoCompression: SetVideoCompressionUseCase,
     private val simpleUploaderManager: SimpleUploaderManager,

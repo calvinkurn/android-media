@@ -3,6 +3,7 @@ package com.tokopedia.mediauploader.video.data.repository
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.VideoCompressor
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
@@ -17,9 +18,9 @@ interface VideoCompressionRepository {
 }
 
 class VideoCompressionRepositoryImpl @Inject constructor(
-    private val compressor: VideoCompressor,
-    private val metadata: VideoMetaDataExtractor,
-    private val cacheAnalytics: AnalyticsCacheDataStore
+    @UploaderQualifier private val compressor: VideoCompressor,
+    @UploaderQualifier private val metadata: VideoMetaDataExtractor,
+    @UploaderQualifier private val cacheAnalytics: AnalyticsCacheDataStore
 ) : VideoCompressionRepository {
 
     override suspend operator fun invoke(

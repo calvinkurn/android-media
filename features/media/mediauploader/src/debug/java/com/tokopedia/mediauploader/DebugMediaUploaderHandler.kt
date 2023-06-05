@@ -9,6 +9,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.data.entity.LogType
 import com.tokopedia.mediauploader.data.repository.LogRepository
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -31,9 +32,9 @@ interface DebugMediaUploaderHandlerContract {
 }
 
 class DebugMediaUploaderHandler @Inject constructor(
-    private val trackerCacheStore: AnalyticsCacheDataStore,
+    @UploaderQualifier private val logRepository: LogRepository,
+    @UploaderQualifier private val trackerCacheStore: AnalyticsCacheDataStore,
     private val uploaderUseCase: UploaderUseCase,
-    private val logRepository: LogRepository
 ) : ViewModel(), DebugMediaUploaderHandlerContract {
 
     private val _event = MutableSharedFlow<DebugMediaLoaderEvent>(replay = 50)

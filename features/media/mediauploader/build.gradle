@@ -32,8 +32,6 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.AbedElazizShe:LightCompressor:1.2.3'
-
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)

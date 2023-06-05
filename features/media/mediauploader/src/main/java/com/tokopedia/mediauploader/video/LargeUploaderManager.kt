@@ -6,6 +6,7 @@ import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.logger.DebugLog
 import com.tokopedia.mediauploader.common.logger.onShowDebugLogcat
 import com.tokopedia.mediauploader.common.logger.trackToTimber
@@ -30,8 +31,8 @@ import javax.inject.Inject
 import kotlin.math.ceil
 
 class LargeUploaderManager @Inject constructor(
+    @UploaderQualifier private val policyManager: SourcePolicyManager,
     private val uploadStateManager: LargeUploadStateCacheManager,
-    private val policyManager: SourcePolicyManager,
     private val initUseCase: InitVideoUploaderUseCase,
     private val checkerUseCase: GetChunkCheckerUseCase,
     private val uploaderUseCase: GetChunkUploaderUseCase,

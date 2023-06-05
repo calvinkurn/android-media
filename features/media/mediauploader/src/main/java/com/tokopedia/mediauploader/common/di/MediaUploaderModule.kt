@@ -41,89 +41,95 @@ abstract class MediaUploaderModule {
     // -- common --
 
     @Binds
+    @UploaderQualifier
     abstract fun provideVideoCompressor(impl: VideoCompressorImpl): VideoCompressor
 
     @Binds
+    @UploaderQualifier
     abstract fun provideLogRepository(impl: LogRepositoryImpl): LogRepository
 
     @Binds
+    @UploaderQualifier
     abstract fun provideSourcePolicyManager(impl: SourcePolicyManagerImpl): SourcePolicyManager
 
     @Binds
+    @UploaderQualifier
     abstract fun provideVideoMetaDataExtractor(impl: VideoMetaDataExtractorImpl): VideoMetaDataExtractor
 
     @Binds
+    @UploaderQualifier
     abstract fun provideVideoCompressionRepository(impl: VideoCompressionRepositoryImpl): VideoCompressionRepository
 
     // -- image --
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetImagePolicyUseCase(impl: GetImagePolicyUseCase): GetImagePolicyUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetImageUploaderUseCase(impl: GetImageUploaderUseCase): GetImageUploaderUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetImageSecurePolicyUseCase(impl: GetImageSecurePolicyUseCase): GetImageSecurePolicyUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideImageUploaderManager(impl: ImageUploaderManager): ImageUploaderManager
 
     // -- common video --
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideSetVideoCompressionUseCase(impl: SetVideoCompressionUseCase): SetVideoCompressionUseCase
 
     // -- simple video --
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetVideoPolicyUseCase(impl: GetVideoPolicyUseCase): GetVideoPolicyUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetSimpleUploaderUseCase(impl: GetSimpleUploaderUseCase): GetSimpleUploaderUseCase
 
     // -- large video --
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideInitVideoUploaderUseCase(impl: InitVideoUploaderUseCase): InitVideoUploaderUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetChunkCheckerUseCase(impl: GetChunkCheckerUseCase): GetChunkCheckerUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideGetChunkUploaderUseCase(impl: GetChunkUploaderUseCase): GetChunkUploaderUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideSetCompleteUploaderUseCase(impl: SetCompleteUploaderUseCase): SetCompleteUploaderUseCase
 
     @Binds
-    @MediaUploaderQualifier
+    @UploaderQualifier
     abstract fun provideSetAbortUploaderUseCase(impl: SetAbortUploaderUseCase): SetAbortUploaderUseCase
 
     @Module
     companion object {
 
         @Provides
-        @MediaUploaderQualifier
+        @UploaderQualifier
         fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
             return UserSession(context)
         }
 
         @Provides
+        @UploaderQualifier
         fun provideTrackerCacheDataStore(
             @ApplicationContext context: Context,
-            metaDataExtractor: VideoMetaDataExtractor
+            @UploaderQualifier metaDataExtractor: VideoMetaDataExtractor
         ): AnalyticsCacheDataStore {
             return AnalyticsCacheDataStoreImpl(
                 metaDataExtractor,

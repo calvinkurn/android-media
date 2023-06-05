@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit
 class NetworkModule {
 
     @Provides
-    @MediaUploaderQualifier
+    @UploaderQualifier
     fun provideOkHttpClientBuilder(
         @ApplicationContext context: Context,
-        @MediaUploaderQualifier userSession: UserSessionInterface
+        @UploaderQualifier userSession: UserSessionInterface
     ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
             .connectTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
@@ -51,7 +51,7 @@ class NetworkModule {
     }
 
     @Provides
-    @MediaUploaderQualifier
+    @UploaderQualifier
     fun provideMediaUploaderRetrofitBuilder(): Retrofit.Builder {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)

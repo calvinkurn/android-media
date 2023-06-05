@@ -3,11 +3,12 @@ package com.tokopedia.mediauploader.analytics.datastore
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.data.store.base.CacheDataStore
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import java.io.File
 import javax.inject.Inject
 
 class AnalyticsCacheDataStoreImpl @Inject constructor(
-    private val metaDataExtractor: VideoMetaDataExtractor,
+    @UploaderQualifier private val metaDataExtractor: VideoMetaDataExtractor,
     store: CacheDataStore<UploaderTracker>
 ) : CacheDataStore<UploaderTracker> by store, AnalyticsCacheDataStore {
 

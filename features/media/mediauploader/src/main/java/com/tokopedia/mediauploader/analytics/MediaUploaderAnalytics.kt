@@ -4,6 +4,7 @@ import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.track.TrackApp
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -11,7 +12,7 @@ import javax.inject.Inject
 
 class MediaUploaderAnalytics @Inject constructor(
     private val uploadStateManager: LargeUploadStateCacheManager,
-    store: AnalyticsCacheDataStore
+    @UploaderQualifier store: AnalyticsCacheDataStore
 ) : AnalyticsCacheDataStore by store {
 
     suspend fun sendEvent(sourceId: String, file: File, isRetry: Boolean, isSimpleUpload: Boolean) {
