@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -93,7 +94,7 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun setPageBackground() {
         try {
-            binding?.backgroundSob?.loadImage(OnboardingConst.ImageUrl.BG_THEMATIC_RAMADAN)
+            binding?.backgroundSob?.setImageResource(R.drawable.bg_sob_full)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
@@ -112,8 +113,18 @@ class SellerOnboardingActivity : BaseActivity() {
                     setSlideIndicator(position)
                     setPreviousButtonVisibility(position)
                     updateNextButtonState(position)
+                    updateHeaderBackground(position)
                 }
             })
+        }
+    }
+
+    private fun updateHeaderBackground(position: Int) {
+        try {
+            val slideItem = slideItems[position]
+            binding?.imgSobHeader?.loadImage(slideItem.headerResBg)
+        } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 

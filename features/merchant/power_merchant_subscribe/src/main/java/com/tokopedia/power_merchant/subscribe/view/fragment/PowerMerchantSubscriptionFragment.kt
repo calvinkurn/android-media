@@ -142,9 +142,11 @@ open class PowerMerchantSubscriptionFragment :
     }
 
     override fun setOnTickerWidgetRemoved(position: Int) {
-        adapter.data.removeAt(position)
-        recyclerView?.post {
-            adapter.notifyItemRemoved(position)
+        if (position != RecyclerView.NO_POSITION) {
+            adapter.data.removeAt(position)
+            recyclerView?.post {
+                adapter.notifyItemRemoved(position)
+            }
         }
     }
 

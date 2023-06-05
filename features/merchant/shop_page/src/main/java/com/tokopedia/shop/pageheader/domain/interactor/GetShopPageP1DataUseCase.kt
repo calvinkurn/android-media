@@ -133,7 +133,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
             if (shopId.toIntOrZero() == 0) listOf() else listOf(shopId.toIntOrZero()),
             shopDomain,
             source = SHOP_PAGE_SOURCE,
-            fields = listOf(GQLGetShopInfoUseCase.FIELD_CORE, GQLGetShopInfoUseCase.FIELD_ASSETS)
+            fields = listOf(GQLGetShopInfoUseCase.FIELD_CORE, GQLGetShopInfoUseCase.FIELD_ASSETS, GQLGetShopInfoUseCase.FIELD_OTHER_GOLD_OS)
         )
         return createGraphqlRequest<ShopInfo.Response>(
             mapQuery[GQLQueryNamedConstant.SHOP_INFO_FOR_CORE_AND_ASSETS].orEmpty(),

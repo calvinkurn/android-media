@@ -1,14 +1,18 @@
 package com.tokopedia.createpost.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.content.common.di.ContentFragmentFactoryModule
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.CreatePostScope
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagModule
+import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
+import dagger.BindsInstance
 import dagger.Component
 
 /**
@@ -23,6 +27,7 @@ import dagger.Component
         ContentCreationProductTagModule::class,
         ContentFragmentFactoryModule::class,
     ],
+    dependencies = [BaseAppComponent::class]
 )
 interface CreatePostComponent {
 
@@ -33,4 +38,12 @@ interface CreatePostComponent {
     fun inject(baseCreatePostFragmentNew: BaseCreatePostFragmentNew)
     fun inject(createPostActivityNew: CreatePostActivityNew)
     fun inject(productTagActivity: ProductTagActivity)
+
+    @Component.Factory
+    interface Factory {
+        fun create(
+            baseAppComponent: BaseAppComponent,
+            @BindsInstance @ActivityContext context: Context
+        ): CreatePostComponent
+    }
 }
