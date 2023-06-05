@@ -14,19 +14,11 @@ import com.tokopedia.media.editor.R as editorR
 
 class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
     private var carouselIndex = 0
-    set(value) {
-        if (value > btnTextCollection.size - 1) {
-            dismiss()
-            return
-        }
-        field = value
-        updateBtnAndCarousel()
-    }
 
     private var btnRef: UnifyButton? = null
     private var carouselRef: CarouselUnify? = null
 
-    private val btnTextCollection = listOf<String>(
+    private val btnTextCollection = listOf(
         "Lanjut",
         "Oke, Mengerti"
     )
@@ -48,6 +40,17 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
         }
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun updateCarouselIndex(newValue: Int, isCarouselUpdate: Boolean) {
+        if (newValue > btnTextCollection.size - 1) {
+            dismiss()
+            return
+        }
+
+        carouselIndex = newValue
+
+        updateBtnAndCarousel(isCarouselUpdate)
     }
 
     private fun setCarousel() {
@@ -83,18 +86,27 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
 
                 index++
             }
+
+            onActiveIndexChangedListener = object: CarouselUnify.OnActiveIndexChangedListener {
+                override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    updateCarouselIndex(current, false)
+                }
+            }
         }
     }
 
     private fun setBtnListener() {
         btnRef?.setOnClickListener {
-            carouselIndex++
+            updateCarouselIndex(carouselIndex + 1, true)
         }
     }
 
-    private fun updateBtnAndCarousel() {
+    private fun updateBtnAndCarousel(isCarouselUpdate: Boolean) {
         btnRef?.text = btnTextCollection[carouselIndex]
-        carouselRef?.activeIndex = carouselIndex
+
+        if (isCarouselUpdate) {
+            carouselRef?.activeIndex = carouselIndex
+        }
     }
 
     companion object{
