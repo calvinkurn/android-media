@@ -860,17 +860,10 @@ class ShopPageHeaderFragment :
                         it.tagline = result.data.shopCore.tagLine
                         it.shopStatus = result.data.statusInfo.shopStatus
                     }
-                }
 
-                checkAffiliate(
-                    AffiliatePDPInput().apply {
-                        pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
-                        pageType = PageType.SHOP.value
-                        product = Product()
-                        shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
-                        affiliateLinkType = AffiliateLinkType.SHOP
-                    }
-                )
+                    // check whether shop is eligible for affiliate or not
+                    checkAffiliate()
+                }
             }
         )
 
@@ -1405,16 +1398,20 @@ class ShopPageHeaderFragment :
         }
     }
 
-    private fun isAffiliateShareIcon(): Boolean {
+    private fun isEnableAffiliateShareIcon(): Boolean {
         val abTestValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+            RollenceKey.AFFILIATE_SHARE_ICON
         )
-        return abTestValue == RollenceKey.AB_TEST_SHOP_AFFILIATE_SHARE_ICON
+        return abTestValue == RollenceKey.AFFILIATE_SHARE_ICON
     }
 
+    /**
+     * only enable affiliate share icon when
+     * @param isAffiliate == true && [isMyShop] == true
+     */
     private fun updateShareIcon(isAffiliate: Boolean) {
         newNavigationToolbar?.let {
-            if (isAffiliateShareIcon() && isAffiliate) {
+            if (isEnableAffiliateShareIcon() && isAffiliate && !isMyShop) {
                 it.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST)
             }
         }
@@ -3435,12 +3432,19 @@ class ShopPageHeaderFragment :
     private fun isAffiliateInputValid(shopStatus: Int): Boolean = shopStatus.isMoreThanZero()
 
     /**
-     * update shop id if null or empty since that id is not getting from
-     * [com.tokopedia.shop.pageheader.presentation.ShopPageHeaderViewModel.shopIdFromDomainData]
+     * check affiliate if [isEnableAffiliateShareIcon] == true && [isMyShop] != true
      */
-    private fun checkAffiliate(data: AffiliatePDPInput) {
-        var inputAffiliate = data
-        if (isAffiliateInputValid(data.shop?.shopStatus ?: 0)) {
+    private fun checkAffiliate() {
+        if (!isEnableAffiliateShareIcon() || isMyShop) return
+        val inputAffiliate = AffiliatePDPInput().apply {
+            pageDetail = PageDetail(pageId = shopId, pageType = PageType.SHOP.value, siteId = "1", verticalId = "1")
+            pageType = PageType.SHOP.value
+            product = Product()
+            shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            affiliateLinkType = AffiliateLinkType.SHOP
+        }
+
+        if (isAffiliateInputValid(inputAffiliate.shop?.shopStatus ?: 0)) {
             shopHeaderViewModel?.checkAffiliate(inputAffiliate)
         }
     }

@@ -2926,7 +2926,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun checkAffiliateEligibility(shopInfo: ShopInfo) {
-        if (isShareAffiliateIconEnabled()) {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
             viewModel.getDynamicProductInfoP1?.let { dataP1 ->
                 val affiliateInput = generateAffiliateShareData(dataP1, shopInfo, viewModel.variantData)
                 viewModel.checkAffiliateEligibility(affiliateInput)
@@ -4347,15 +4347,15 @@ open class DynamicProductDetailFragment :
     }
 
     private fun updateToolbarShareAffiliate() {
-        if (!GlobalConfig.isSellerApp()) {
+        if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
             navToolbar?.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST) ?: return
         }
     }
 
     private fun isShareAffiliateIconEnabled(): Boolean {
         val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-        ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
+            RollenceKey.AFFILIATE_SHARE_ICON
+        ) == RollenceKey.AFFILIATE_SHARE_ICON
 
         return isAbTestEnabled
     }
