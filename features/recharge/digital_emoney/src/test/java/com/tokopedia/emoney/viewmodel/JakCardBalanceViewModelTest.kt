@@ -290,10 +290,9 @@ class JakCardBalanceViewModelTest {
     fun `processJakCardTagIntent failed select staging process and return error`() {
         //given
         initSuccessData()
-        every { GlobalConfig.isAllowDebuggingTools() } returns true
         every { isoDep.transceive(COMMAND_SELECT_STAG_BYTE_ARRAY) } returns resultFail
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, true)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -305,10 +304,9 @@ class JakCardBalanceViewModelTest {
     fun `processJakCardTagIntent failed select production process and return error`() {
         //given
         initSuccessData()
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultFail
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -320,11 +318,10 @@ class JakCardBalanceViewModelTest {
     fun `processJakCardTagIntent success select production process but checkBalance error and return error`() {
         //given
         initSuccessData()
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultFail
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -337,11 +334,10 @@ class JakCardBalanceViewModelTest {
         //given
         initSuccessData()
         every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } throws IOException()
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -361,13 +357,12 @@ class JakCardBalanceViewModelTest {
         val responseCheckBalance =
             Gson().fromJson(checkBalanceResponse, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responseCheckBalance
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
@@ -385,7 +380,6 @@ class JakCardBalanceViewModelTest {
             lastBalance
         )
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
@@ -393,7 +387,7 @@ class JakCardBalanceViewModelTest {
             ERROR_MESSAGE
         )
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -413,14 +407,13 @@ class JakCardBalanceViewModelTest {
         val responsePendingBalance =
             Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultFail
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -440,14 +433,13 @@ class JakCardBalanceViewModelTest {
         val responsePendingBalance =
             Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } throws IOException(ERROR_MESSAGE)
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -467,13 +459,12 @@ class JakCardBalanceViewModelTest {
         val responsePendingBalanceCryptogramEmpty =
             Gson().fromJson(getPendingBalanceResponseCryptogramEmpty, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalanceCryptogramEmpty
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -493,13 +484,12 @@ class JakCardBalanceViewModelTest {
         val responsePendingBalance =
             Gson().fromJson(getPendingBalanceResponse, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
 
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -546,7 +536,6 @@ class JakCardBalanceViewModelTest {
         val topUpWithoutWrite =
             Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
@@ -554,7 +543,7 @@ class JakCardBalanceViewModelTest {
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         coEvery { jakCardUseCase.execute(createTopUpParam) } returns topUpWithoutWrite
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             (jakCardBalanceViewModel.jakCardInquiry.value) as EmoneyInquiry,
@@ -584,7 +573,6 @@ class JakCardBalanceViewModelTest {
         val topUpWithoutWrite =
             Gson().fromJson(topUpResponseWithoutWrite, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
@@ -594,7 +582,7 @@ class JakCardBalanceViewModelTest {
             ERROR_MESSAGE
         )
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -624,7 +612,6 @@ class JakCardBalanceViewModelTest {
         val topUpCryptogramEmpty =
             Gson().fromJson(topUpResponseCryptogramEmpty, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
@@ -632,7 +619,7 @@ class JakCardBalanceViewModelTest {
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         coEvery { jakCardUseCase.execute(createTopUpParam) } returns topUpCryptogramEmpty
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -661,7 +648,6 @@ class JakCardBalanceViewModelTest {
         )
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
@@ -669,7 +655,7 @@ class JakCardBalanceViewModelTest {
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         coEvery { jakCardUseCase.execute(createTopUpParam) } returns topUp
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
@@ -698,7 +684,6 @@ class JakCardBalanceViewModelTest {
         )
         val topUp = Gson().fromJson(topUpResponse, JakCardResponse::class.java)
 
-        every { GlobalConfig.isAllowDebuggingTools() } returns false
         every { isoDep.transceive(COMMAND_SELECT_PROD_BYTE_ARRAY) } returns resultSelectSuccess
         every { isoDep.transceive(COMMAND_CHECK_BALANCE_BYTE_ARRAY) } returns resultCheckBalanceSuccess
         every { isoDep.transceive(COMMAND_INIT_LOAD_BYTE_ARRAY) } returns resultInitLoadSuccess
@@ -707,7 +692,7 @@ class JakCardBalanceViewModelTest {
         coEvery { jakCardUseCase.execute(createPendingBalanceParam) } returns responsePendingBalance
         coEvery { jakCardUseCase.execute(createTopUpParam) } returns topUp
         //when
-        jakCardBalanceViewModel.processJakCardTagIntent(isoDep)
+        jakCardBalanceViewModel.processJakCardTagIntent(isoDep, false)
         //then
         assertEquals(
             ((jakCardBalanceViewModel.errorCardMessage.value) as Throwable).message,
