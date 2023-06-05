@@ -17,6 +17,8 @@ import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStoreImpl
+import com.tokopedia.mediauploader.common.VideoCompressor
+import com.tokopedia.mediauploader.common.VideoCompressorImpl
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
@@ -37,6 +39,9 @@ import dagger.Provides
 abstract class MediaUploaderModule {
 
     // -- common --
+
+    @Binds
+    abstract fun provideVideoCompressor(impl: VideoCompressorImpl): VideoCompressor
 
     @Binds
     abstract fun provideLogRepository(impl: LogRepositoryImpl): LogRepository

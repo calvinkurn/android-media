@@ -1,35 +1,28 @@
 package com.tokopedia.mediauploader.video.data.repository
 
-import android.content.Context
-import android.net.Uri
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.common.state.ProgressType
-import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
-import com.tokopedia.mediauploader.common.internal.compressor.CompressionProgressListener
-import com.tokopedia.mediauploader.common.internal.compressor.Compressor
+import com.tokopedia.mediauploader.common.VideoCompressor
+import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
+import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
-import com.tokopedia.utils.file.FileUtil
-import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.min
 import kotlin.math.round
 
 interface VideoCompressionRepository {
-    suspend fun compress(progressUploader: ProgressUploader?, param: VideoCompressionParam): String
+    suspend operator fun invoke(progressUploader: ProgressUploader?, param: VideoCompressionParam): String
 }
 
 class VideoCompressionRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val compressor: VideoCompressor,
     private val metadata: VideoMetaDataExtractor,
-    private val cacheData: AnalyticsCacheDataStore
+    private val cacheAnalytics: AnalyticsCacheDataStore
 ) : VideoCompressionRepository {
 
-    override suspend fun compress(
+    override suspend operator fun invoke(
         progressUploader: ProgressUploader?,
         param: VideoCompressionParam
     ): String {
@@ -39,8 +32,8 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         val startCompressionTime = System.currentTimeMillis()
 
         // if the same video already compressed, return the compressedVideoPath (if exist)
-        val key = cacheData.key(sourceId, originalPath)
-        val cache = cacheData.getData(key)
+        val key = cacheAnalytics.key(sourceId, originalPath)
+        val cache = cacheAnalytics.getData(key)
 
         // return the compressed file path if user has compressed before and file is exist
         if (cache != null &&
@@ -66,7 +59,6 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
             // generate the output video size based on original video info and expected minim resolution from policy
             val generateVideoSize = generateVideoSize(videoOriginalInfo, resolution)
-            val cacheFile = compressedVideoPath(originalPath)
 
             // get minimum bitrate and convert it from Bps into Mbps
             val mBitrate = min(param.bitrate, videoOriginalInfo.bitrate)
@@ -77,16 +69,10 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 videoWidth = (generateVideoSize.width.toDouble() * 2) / 2
             )
 
-            val compression = Compressor.compressVideo(
-                context = context,
-                srcUri = Uri.parse(originalPath),
-                destination = cacheFile.path,
+            val compression = compressor.compress(
+                path = originalPath,
                 configuration = config,
-                listener = object : CompressionProgressListener {
-                    override fun onProgressChanged(percent: Float) {
-                        progressUploader?.onProgress(percent.toInt(), ProgressType.Compression)
-                    }
-                }
+                progressUploader = progressUploader
             )
 
             if (compression.success) {
@@ -97,7 +83,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
                 val compressedMetadataInfo = metadata.extract(compressedPath)
 
                 // update the tracker for the compression step
-                cacheData.setCompressionInfo(key) {
+                cacheAnalytics.setCompressionInfo(key) {
                     compressedVideoPath = compressedPath
                     startCompressedTime = startCompressionTime
                     endCompressedTime = endCompressionTime
@@ -160,20 +146,4 @@ class VideoCompressionRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun compressedVideoPath(originalPath: String): File {
-        val currentTime = System.currentTimeMillis()
-
-        // internal app storage
-        val internalAppCacheDir = FileUtil
-            .getTokopediaInternalDirectory(ImageProcessingUtil.DEFAULT_DIRECTORY)
-            .absolutePath
-
-        // get the file name from original path
-        val fileName = File(originalPath).nameWithoutExtension
-
-        return File(
-            internalAppCacheDir,
-            "compressed_${fileName}_${currentTime}.mp4"
-        )
-    }
 }
