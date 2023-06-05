@@ -241,15 +241,17 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
     private fun showOrHideResetFilter(state: Boolean) {
         activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE
         if (state){
-            activity?.globalerror_category_event?.let {
-                it.errorIllustration.loadImageDrawable(R.drawable.ent_ic_empty_item)
-                it.errorTitle.setText(resources.getString(R.string.ent_search_oops))
-                it.errorDescription.setText(resources.getString(R.string.ent_search_intip_kategori))
-                it.errorAction.setText(resources.getString(R.string.ent_search_reset_filter))
-                it.setActionClickListener {
+            activity?.globalerror_category_event?.let { globalError ->
+                globalError.errorIllustration.loadImageDrawable(R.drawable.ent_ic_empty_item)
+                context?.let { context ->
+                    globalError.errorTitle.setText(context.resources.getString(R.string.ent_search_oops))
+                    globalError.errorDescription.setText(context.resources.getString(R.string.ent_search_intip_kategori))
+                    globalError.errorAction.setText(context.resources.getString(R.string.ent_search_reset_filter))
+                }
+                globalError.setActionClickListener {
                     resetFilter()
                 }
-                it.errorSecondaryAction.hide()
+                globalError.errorSecondaryAction.hide()
             }
         }
     }

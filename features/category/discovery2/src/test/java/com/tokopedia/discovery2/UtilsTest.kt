@@ -5,17 +5,10 @@ import android.graphics.Color
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import io.mockk.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.junit.*
-import java.lang.AssertionError
 import java.lang.IllegalArgumentException
-import java.lang.RuntimeException
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.regex.Pattern
 
 class UtilsTest {
 
@@ -86,7 +79,6 @@ class UtilsTest {
         every { Utils.parseData(any(), any()) } returns cal.time
         Assert.assertEquals(Utils.isSaleOver("test data"), false)
         unmockkObject(Utils)
-
     }
 
     @Test
@@ -132,7 +124,6 @@ class UtilsTest {
         every { Utils.parseData(date2, any()) } returns cal2.time
         Assert.assertEquals(Utils.isFutureSaleOngoing(date1, date2), true)
         unmockkObject(Utils)
-
     }
 
     @Test
@@ -156,7 +147,6 @@ class UtilsTest {
         Assert.assertEquals(Utils.getElapsedTime("1996-01-20 21:59:00 +0000 +0000"), DEFAULT_TIME_DATA)
 //        Empty End Date returns Default value
         Assert.assertEquals(Utils.getElapsedTime(""), DEFAULT_TIME_DATA)
-
     }
 
     @Test
@@ -168,10 +158,11 @@ class UtilsTest {
         every { Color.parseColor(fontColour) } returns 1
         Utils.parsedColor(context, fontColour, defaultColor)
         verify { Color.parseColor(fontColour) }
+        unmockkStatic(Color::class)
     }
 
     @Test
-    fun `parse Color throws exception`(){
+    fun `parse Color throws exception`() {
         val context: Context = mockk()
         val fontColour = "#FFFFFF"
         val defaultColor = 564843
@@ -181,24 +172,23 @@ class UtilsTest {
         every { MethodChecker.getColor(context, defaultColor) } returns 1
         Utils.parsedColor(context, fontColour, defaultColor)
         verify { MethodChecker.getColor(context, defaultColor) }
+        unmockkStatic(Color::class)
+        unmockkStatic(MethodChecker::class)
     }
 
-
     @Test
-    fun `getValidHexCode Color`(){
+    fun `getValidHexCode Color`() {
         val context: Context = mockk()
         val defaultColor = "#FFFFFF"
         val hexcode = "#564843"
         val hexcode8 = "#FFF"
         val hexcodeinvalid = "#FLF"
         val hexcode3 = "#12564843"
-        every { context.resources.getString(any()) } returns  defaultColor
+        every { context.resources.getString(any()) } returns defaultColor
         Assert.assertEquals(Utils.getValidHexCode(context, hexcode), hexcode)
         Assert.assertEquals(Utils.getValidHexCode(context, ""), defaultColor)
         Assert.assertEquals(Utils.getValidHexCode(context, hexcode3), hexcode3)
         Assert.assertEquals(Utils.getValidHexCode(context, hexcode8), hexcode8)
         Assert.assertEquals(Utils.getValidHexCode(context, hexcodeinvalid), defaultColor)
     }
-
-
 }

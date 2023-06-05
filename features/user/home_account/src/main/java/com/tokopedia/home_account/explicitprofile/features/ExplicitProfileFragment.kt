@@ -17,7 +17,7 @@ import com.tokopedia.home_account.databinding.FragmentExplicitProfileBinding
 import com.tokopedia.home_account.explicitprofile.ExplicitProfileConstant.SCREEN_EXPLICIT_PROFILE
 import com.tokopedia.home_account.explicitprofile.data.CategoriesDataModel
 import com.tokopedia.home_account.explicitprofile.data.TemplateDataModel
-import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponentsBuilder
+import com.tokopedia.home_account.explicitprofile.di.component.ExplicitProfileComponents
 import com.tokopedia.home_account.explicitprofile.trackers.ExplicitProfileAnalytics
 import com.tokopedia.home_account.explicitprofile.wrapper.ExplicitProfileResult
 import com.tokopedia.media.loader.loadImage
@@ -30,7 +30,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-open class ExplicitProfileFragment : BaseDaggerFragment() {
+class ExplicitProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var tracker: ExplicitProfileAnalytics
@@ -49,11 +49,7 @@ open class ExplicitProfileFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = SCREEN_EXPLICIT_PROFILE
 
     override fun initInjector() {
-        activity?.application?.let {
-            ExplicitProfileComponentsBuilder
-                .getComponent(it)
-                .inject(this)
-        }
+        getComponent(ExplicitProfileComponents::class.java).inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -72,7 +68,7 @@ open class ExplicitProfileFragment : BaseDaggerFragment() {
 
     private fun initObservers() {
         viewModel.explicitCategories.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is ExplicitProfileResult.Loading -> {
                     showLoading(true)
                 }
@@ -88,7 +84,7 @@ open class ExplicitProfileFragment : BaseDaggerFragment() {
         }
 
         viewModel.saveAnswers.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is ExplicitProfileResult.Loading -> {
                     showLoading(true)
                 }

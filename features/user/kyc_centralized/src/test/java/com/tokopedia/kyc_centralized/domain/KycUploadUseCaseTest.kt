@@ -33,16 +33,17 @@ class KycUploadUseCaseTest {
 
         val ktpImageString = "good ktp image"
         val faceImageString = "good face image"
+        val isLiveness = true
 
         coEvery {
-            repository.uploadImages(any(), any(), any(), any())
+            repository.uploadImages(any(), any(), any(), any(), any())
         } coAnswers {
             expectedResult.data.isSuccessRegister  = true
             expectedResult
         }
 
         val result = runBlocking {
-            useCase.uploadImages(ktpImageString, faceImageString, projectId)
+            useCase.uploadImages(ktpImageString, faceImageString, projectId, isLiveness)
         }
 
         assertEquals(result, expectedResult)
@@ -54,16 +55,17 @@ class KycUploadUseCaseTest {
         val expectedResult = mockk<KycResponse>(relaxed = true)
         val ktpImageString = "bad ktp image"
         val faceImageString = "bad face image"
+        val isLiveness = true
 
         coEvery {
-            repository.uploadImages(any(), any(), any(), any())
+            repository.uploadImages(any(), any(), any(), any(), any())
         } coAnswers {
             expectedResult.data.isSuccessRegister  = false
             expectedResult
         }
 
         val result = runBlocking {
-            useCase.uploadImages(ktpImageString, faceImageString, projectId)
+            useCase.uploadImages(ktpImageString, faceImageString, projectId, isLiveness)
         }
 
         assertEquals(result, expectedResult)
@@ -75,14 +77,15 @@ class KycUploadUseCaseTest {
         val expectedResult = mockk<Exception>(relaxed = true)
         val ktpImageString = "bad ktp image"
         val faceImageString = "bad face image"
+        val isLiveness = true
 
         coEvery {
-            repository.uploadImages(any(), any(), any(), any())
+            repository.uploadImages(any(), any(), any(), any(), any())
         } throws expectedResult
 
         assertFailsWith<Exception> {
             runBlocking {
-                useCase.uploadImages(ktpImageString, faceImageString, projectId)
+                useCase.uploadImages(ktpImageString, faceImageString, projectId, isLiveness)
             }
         }
     }

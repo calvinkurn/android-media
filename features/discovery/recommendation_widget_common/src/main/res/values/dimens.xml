@@ -21,4 +21,20 @@
     <dimen name="comparison_widget_collapsed_height">463dp</dimen>
 
     <dimen name="recom_margin_default">16dp</dimen>
+
+    <dimen name="comparison_bpc_widget_margin_start">12dp</dimen>
+    <dimen name="comparison_bpc_widget_margin_end">12dp</dimen>
+    <dimen name="comparison_bpc_widget_spacing">2dp</dimen>
+    <dimen name="comparison_bpc_widget_product_card_width">248dp</dimen>
+    <dimen name="comparison_bpc_widget_product_card_width_measure">224dp</dimen>
+    <dimen name="comparison_bpc_first_specs_translation_y">-16dp</dimen>
+    <dimen name="comparison_bpc_first_specs_extra_margin_top">2dp</dimen>
+    <dimen name="comparison_bpc_specs_margin_top">8dp</dimen>
+    <dimen name="comparison_bpc_specs_margin_start">8dp</dimen>
+    <dimen name="comparison_bpc_specs_margin_end">8dp</dimen>
+    <dimen name="comparison_bpc_specs_margin_bottom">8dp</dimen>
+    <dimen name="comparison_bpc_specs_icon_size">24dp</dimen>
+    <dimen name="comparison_bpc_specs_bullet_size">3dp</dimen>
+    <dimen name="comparison_bpc_specs_icon_margin">4dp</dimen>
+    <dimen name="comparison_bpc_specs_bullet_margin">8dp</dimen>
 </resources>
