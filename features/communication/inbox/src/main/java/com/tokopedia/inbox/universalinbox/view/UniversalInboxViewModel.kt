@@ -42,6 +42,7 @@ import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
@@ -80,13 +81,14 @@ class UniversalInboxViewModel @Inject constructor(
         _inboxMenu.postValue(Success(staticMenuList))
     }
 
-    fun loadWidgetMeta() {
+    fun loadWidgetMetaAndCounter() {
         viewModelScope.launch {
             withContext(dispatcher.io) {
                 try {
-                    val response = getWidgetMetaUseCase(Unit)
+                    val widgetMetaResponse = getWidgetMeta()
+                    val allCounterResponse = getAllCounter()
                     val result = inboxMenuMapper.mapWidgetMetaToUiModel(
-                        response.chatInboxWidgetMeta
+                        widgetMetaResponse, allCounterResponse
                     )
                     _widget.postValue(result)
                 } catch (throwable: Throwable) {
@@ -96,16 +98,23 @@ class UniversalInboxViewModel @Inject constructor(
         }
     }
 
-    fun loadAllCounter() {
-        viewModelScope.launch {
-            withContext(dispatcher.io) {
-                try {
-                    val result = getAllCounterUseCase(userSession.shopId)
-                    _allCounter.postValue(Success(result))
-                } catch (throwable: Throwable) {
-                    _allCounter.postValue(Fail(throwable))
-                }
-            }
+    private suspend fun getWidgetMeta(): UniversalInboxWidgetMetaResponse? {
+        return try {
+            getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            null
+        }
+    }
+
+    private suspend fun getAllCounter(): UniversalInboxAllCounterResponse? {
+        return try {
+            val result = getAllCounterUseCase(userSession.shopId)
+            _allCounter.postValue(Success(result))
+            result
+        } catch (throwable: Throwable) {
+            _allCounter.postValue(Fail(throwable))
+            null
         }
     }
 

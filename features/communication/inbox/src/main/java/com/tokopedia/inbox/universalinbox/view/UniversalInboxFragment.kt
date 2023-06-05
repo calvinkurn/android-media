@@ -200,8 +200,7 @@ class UniversalInboxFragment :
                     binding?.inboxRv?.post {
                         adapter.notifyItemRangeChanged(Int.ZERO, it.data.size - Int.ONE)
                     }
-                    refreshCounter()
-                    loadWidgetMeta()
+                    loadWidgetMetaAndCounter()
                     loadTopAdsAndRecommendation()
                 }
                 is Fail -> {
@@ -219,13 +218,15 @@ class UniversalInboxFragment :
                 adapter.addItem(Int.ZERO, it)
             }
             binding?.inboxRv?.post {
-                adapter.notifyItemChanged(Int.ZERO)
+                val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
+                adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
             }
         }
 
         viewModel.allCounter.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    // Update notif & static menu counters
                     if (activity is UniversalInboxActivity) {
                         val notifUnread = it.data.notifCenterUnread.notifUnread
                         if (notifUnread.toIntOrZero() > Int.ZERO) {
@@ -236,13 +237,14 @@ class UniversalInboxFragment :
                     }
                     val updatedMenuList = adapter.updateAllCounters(it.data)
                     binding?.inboxRv?.post {
-                        val firstIndex = updatedMenuList.firstOrNull()
-                        if (firstIndex != null && updatedMenuList.isNotEmpty()) {
-                            adapter.notifyItemRangeChanged(firstIndex, updatedMenuList.size)
+                        if (updatedMenuList.isNotEmpty()) {
+                            adapter.notifyItemRangeChanged(Int.ZERO, updatedMenuList.size)
                         }
                     }
                 }
-                is Fail -> {}
+                is Fail -> {
+                    // Do nothing
+                }
             }
         }
 
@@ -366,12 +368,8 @@ class UniversalInboxFragment :
         viewModel.generateStaticMenu()
     }
 
-    private fun loadWidgetMeta() {
-        viewModel.loadWidgetMeta()
-    }
-
-    override fun refreshCounter() {
-        viewModel.loadAllCounter()
+    override fun loadWidgetMetaAndCounter() {
+        viewModel.loadWidgetMetaAndCounter()
     }
 
     private fun loadTopAdsAndRecommendation() {
@@ -425,13 +423,13 @@ class UniversalInboxFragment :
     }
 
     override fun onRefreshWidgetMeta() {
-        loadWidgetMeta()
+        loadWidgetMetaAndCounter()
     }
 
     override fun onRefreshWidgetCard(item: UniversalInboxWidgetUiModel) {
         when (item.type) {
             CHATBOT_TYPE -> {
-                loadWidgetMeta()
+                loadWidgetMetaAndCounter()
             }
             GOJEK_TYPE -> {
                 //TODO SDK
@@ -669,7 +667,7 @@ class UniversalInboxFragment :
     private val inboxMenuResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        refreshCounter()
+        loadWidgetMetaAndCounter()
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
