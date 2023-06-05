@@ -20,6 +20,8 @@
     <string name="onekyc_zero_clicks_selfie_prepare_card_info4">Cahaya cukup</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta1">Mulai Selfie</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Tap here if you need time to get ready</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta">Mulai Selfie</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Siap-siap Dulu</string>
 
     <!-- Zero Click Flow Feedbacks-->
     <string name="onekyc_zero_clicks_feedback_ktp_face_not_detected">Fotomu yang ada di e-KTP harus masuk di kotak</string>
@@ -106,5 +108,6 @@
     <string name="gofin_kyc_auto_capture_exhausted_dialog_description">Sepertinya kamu kesulitan saat ambil foto otomatis, coba foto manual buat lanjutin.</string>
     <string name="gofin_kyc_auto_capture_continue_cta">Foto Otomatis</string>
     <string name="gofin_kyc_auto_capture_swicth_mode_cta">Foto Manual</string>
+    <string name="gofin_kyc_auto_capture_switch_mode_cta">Foto Manual</string>
 
 </resources>
