@@ -112,6 +112,10 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         this.callback = callback
     }
 
+    fun refreshAdapter() {
+        adapter?.notifyDataSetChanged()
+    }
+
     override fun onErrorImageLoad(exception: MediaException?) {
         errorHandler(exception)
     }

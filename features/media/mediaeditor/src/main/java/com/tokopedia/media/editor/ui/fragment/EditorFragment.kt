@@ -449,6 +449,10 @@ class EditorFragment @Inject constructor(
         }
     }
 
+    fun refreshToolAdapter() {
+        viewBinding?.viewPager?.refreshAdapter()
+    }
+
     companion object {
         private const val SCREEN_NAME = "Main Editor"
         private const val TOAST_UNDO = 0
