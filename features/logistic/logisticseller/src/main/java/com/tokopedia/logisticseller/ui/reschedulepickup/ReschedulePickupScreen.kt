@@ -33,6 +33,7 @@ import com.tokopedia.nest.components.NestButton
 import com.tokopedia.nest.components.NestTextField
 import com.tokopedia.nest.components.NestTips
 import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
 import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestTheme
@@ -372,7 +373,7 @@ private fun ReschedulePickupSummary(summary: String) {
                     tickerDescription = HtmlLinkHelper(
                         LocalContext.current,
                         summary
-                    ).spannedString?.toAnnotatedString() ?: "",
+                    ).spannedString?.toAnnotatedString() ?: ""
                 )
             ),
             modifier = Modifier

@@ -46,6 +46,7 @@ import com.tokopedia.nest.components.NestLabel
 import com.tokopedia.nest.components.NestLabelType
 import com.tokopedia.nest.components.NestSearchBar
 import com.tokopedia.nest.components.ticker.NestTicker
+import com.tokopedia.nest.components.ticker.NestTickerData
 import com.tokopedia.nest.components.ticker.TickerType
 import com.tokopedia.nest.principles.NestTypography
 import com.tokopedia.nest.principles.ui.NestNN
@@ -198,7 +199,7 @@ private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed: () -> Uni
             NestTickerData(
                 tickerTitle = "",
                 tickerType = TickerType.ANNOUNCEMENT,
-                tickerDescription = stringResource(id = R.string.cl_another_campaign_type_wording),
+                tickerDescription = stringResource(id = R.string.cl_another_campaign_type_wording)
             )
         ),
         modifier = modifier.fillMaxWidth(),
