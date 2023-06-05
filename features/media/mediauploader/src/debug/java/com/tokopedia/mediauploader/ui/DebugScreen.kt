@@ -159,7 +159,7 @@ fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
                         bottom.linkTo(parent.bottom)
                     },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = NestTheme.colors.GN._500,
+                    backgroundColor = if (state.isUploading.not()) NestTheme.colors.GN._500 else NestTheme.colors.RN._500,
                     contentColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0,
                     disabledContentColor = NestTheme.colors.NN._400,
                     disabledBackgroundColor = NestTheme.colors.NN._100
@@ -168,7 +168,11 @@ fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
                     viewModel.setAction(DebugMediaLoaderEvent.Upload)
                 }
             ) {
-                Text(text = "Upload")
+                Text(text = if (state.isUploading.not()) {
+                    "Upload"
+                } else {
+                    "Abort"
+                })
             }
         }
     }

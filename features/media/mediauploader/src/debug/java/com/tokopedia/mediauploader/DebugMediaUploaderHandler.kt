@@ -10,6 +10,7 @@ import com.tokopedia.mediauploader.data.entity.LogType
 import com.tokopedia.mediauploader.data.repository.LogRepository
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +43,12 @@ class DebugMediaUploaderHandler @Inject constructor(
 
     override val config = MutableStateFlow(DebugUploaderParam.default())
 
+    private var uploadJob = Job()
+        get() {
+            if (field.isCancelled) field = Job()
+            return field
+        }
+
     init {
         viewModelScope.launch {
             _event
@@ -60,7 +67,12 @@ class DebugMediaUploaderHandler @Inject constructor(
                             }
                         }
                         is DebugMediaLoaderEvent.Upload -> {
+                            _state.value = state.value.copy(isUploading = true)
                             onFileUpload(state.value.filePath)
+                        }
+                        is DebugMediaLoaderEvent.AbortUpload -> {
+                            _state.value = state.value.copy(isUploading = false)
+                            uploadJob.cancel()
                         }
                     }
                 }
@@ -99,7 +111,7 @@ class DebugMediaUploaderHandler @Inject constructor(
         )
 
         uploaderUseCase.trackProgress { i, type ->
-            viewModelScope.launch {
+            viewModelScope.launch(uploadJob) {
                 val key = trackerCacheStore.key(config.value.sourceId, state.value.filePath)
                 val cached = trackerCacheStore.getData(key)
 
@@ -125,10 +137,9 @@ class DebugMediaUploaderHandler @Inject constructor(
                     it.updateProgress(type, i)
                 }
             }
-
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(uploadJob) {
             val uploader = uploaderUseCase(param)
 
             withContext(Dispatchers.Main) {
