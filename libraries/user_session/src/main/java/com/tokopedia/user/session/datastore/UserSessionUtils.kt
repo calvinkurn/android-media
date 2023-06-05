@@ -1,10 +1,15 @@
 package com.tokopedia.user.session.datastore
 
+import android.util.Log
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.Constants.*
+import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-
-object UserSessionKeyMapper {
+object UserSessionUtils {
     fun mapUserSessionKeyString(
         key: String,
         userSessionDataStore: UserSessionDataStore?,
@@ -28,6 +33,8 @@ object UserSessionKeyMapper {
                 AUTOFILL_USER_DATA -> userSessionDataStore?.setAutofillUserData(value)
                 LOGIN_METHOD -> userSessionDataStore?.setLoginMethod(value)
                 UUID_KEY -> userSessionDataStore?.setUUID(value)
+                TWITTER_ACCESS_TOKEN -> userSessionDataStore?.setTwitterAccessToken(value)
+                TWITTER_ACCESS_TOKEN_SECRET -> userSessionDataStore?.setTwitterAccessTokenSecret(value)
                 else -> {}
             }
         }
@@ -51,8 +58,40 @@ object UserSessionKeyMapper {
                 IS_GOLD_MERCHANT -> userSessionDataStore?.setIsGoldMerchant(value)
                 IS_LOCATION_ADMIN -> userSessionDataStore?.setIsLocationAdmin(value)
                 IS_MULTI_LOCATION_SHOP -> userSessionDataStore?.setIsMultiLocationShop(value)
+                TWITTER_SHOULD_POST -> userSessionDataStore?.setTwitterShouldPost(value)
                 else -> {}
             }
+        }
+    }
+
+    private const val MAX_STACKTRACE_LENGTH = 1000
+
+    // we use helper to support java code, because we need global scope
+    @JvmStatic
+    fun logoutSession(userSessionDataStore: UserSessionDataStore?) {
+        GlobalScope.launch {
+            try {
+                userSessionDataStore?.logoutSession()
+            } catch (e: Exception) {
+                val data = mapOf(
+                    "method" to "logout_datastore_session",
+                    "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
+                )
+                ServerLogger.log(
+                    Priority.P2,
+                    DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG,
+                    data
+                )
+            }
+        }
+    }
+
+    @JvmStatic
+    fun clearTokenDataStore(userSessionDataStore: UserSessionDataStore?) {
+        GlobalScope.launch {
+            try {
+                userSessionDataStore?.clearToken()
+            } catch (ignored: Exception) { }
         }
     }
 }
