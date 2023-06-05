@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/loader_flipper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="gone">
+
+    <include
+        android:id="@+id/mdp_shimmer"
+        layout="@layout/medal_detail_shimmer" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/mdp_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical" />
+
+</ViewFlipper>

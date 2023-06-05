@@ -66,6 +66,7 @@ import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
 import com.tokopedia.applink.promo.getDynamicDeeplinkForTokomember
 import com.tokopedia.applink.promo.getInternalDeeplinkForScpCelebration
+import com.tokopedia.applink.promo.getInternalDeeplinkForScpMedalDetail
 import com.tokopedia.applink.promo.getRegisteredNavigationPromoFromHttp
 import com.tokopedia.applink.promo.getRegisteredNavigationTokopoints
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
@@ -636,7 +637,8 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.TOKO_CHAT) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(deeplink) },
         DLP.exact(ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink) },
         DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.ScpRewards.CELEBRATION_BASE){_, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri)}
+        DLP.startWith(ApplinkConst.ScpRewards.CELEBRATION_BASE){_, uri, _, _ -> getInternalDeeplinkForScpCelebration(uri)},
+        DLP.startWith(ApplinkConst.ScpRewards.MEDAL_DETAIL_BASE) { _, uri, _, _ -> getInternalDeeplinkForScpMedalDetail(uri) }
     )
 
     fun getTokopediaSchemeList(): List<DLP> {
