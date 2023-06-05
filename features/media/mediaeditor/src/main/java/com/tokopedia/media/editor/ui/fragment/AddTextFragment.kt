@@ -417,7 +417,7 @@ class AddTextFragment @Inject constructor(
 
     private fun implementAddTextData() {
         val bitmap = viewModel.getAddTextFilterOverlay()
-        viewBinding?.overlayTest?.setImageBitmap(bitmap)
+        viewBinding?.overlayAddText?.setImageBitmap(bitmap)
     }
 
     // Temporary, will be delete later when icon already on unify icon collection

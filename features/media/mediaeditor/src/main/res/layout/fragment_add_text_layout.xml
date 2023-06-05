@@ -134,7 +134,7 @@
         android:elevation="1dp"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        android:id="@+id/overlay_test"
+        android:id="@+id/overlay_add_text"
         app:layout_constraintLeft_toLeftOf="@id/add_text_fragment_img"
         app:layout_constraintTop_toTopOf="@id/add_text_fragment_img"
         app:layout_constraintBottom_toBottomOf="@id/add_text_fragment_img"
