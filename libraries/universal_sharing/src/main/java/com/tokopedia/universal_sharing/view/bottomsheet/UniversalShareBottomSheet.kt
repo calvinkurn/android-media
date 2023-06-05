@@ -56,7 +56,15 @@ import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
-import com.tokopedia.universal_sharing.model.*
+import com.tokopedia.universal_sharing.model.BroadcastChannelModel
+import com.tokopedia.universal_sharing.model.CampaignStatus
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
+import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.model.PersonalizedCampaignModel
+import com.tokopedia.universal_sharing.model.ShopPageParamModel
+import com.tokopedia.universal_sharing.model.TickerShareModel
+import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
@@ -83,8 +91,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 import com.tokopedia.iconunify.R as unifyIconR
 
 /**

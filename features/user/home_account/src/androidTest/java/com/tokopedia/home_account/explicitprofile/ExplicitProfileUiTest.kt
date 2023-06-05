@@ -2,13 +2,11 @@ package com.tokopedia.home_account.explicitprofile
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.home_account.explicitprofile.fakes.ExplicitProfileInterceptor
-import com.tokopedia.home_account.explicitprofile.fakes.FakeExplicitProfileActivity
+import com.tokopedia.home_account.di.ActivityComponentFactory
+import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileActivity
+import com.tokopedia.home_account.stub.di.ActivityComponentFactoryStub
 import com.tokopedia.test.application.annotations.CassavaTest
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -20,25 +18,18 @@ class ExplicitProfileUiTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(
-        FakeExplicitProfileActivity::class.java, false, false
+        ExplicitProfileActivity::class.java,
+        false,
+        false
     )
 
     @get:Rule
     var cassavaRule = CassavaTestRule()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
     @Before
     fun setup() {
-        GraphqlClient.reInitRetrofitWithInterceptors(
-            listOf(ExplicitProfileInterceptor(context)),
-            context
-        )
-    }
-
-    @After
-    fun tearDown() {
-        activityRule.finishActivity()
+        val stub = ActivityComponentFactoryStub()
+        ActivityComponentFactory.instance = stub
     }
 
     @Test
@@ -55,7 +46,6 @@ class ExplicitProfileUiTest {
             selectTabWithText("Kategori Lain")
         } validateComponent {
             shouldViewEmptyPage()
-        } validateTracker {
             cassavaRule.validateTrackerOnClickTab("Kategori Lain")
         }
     }
@@ -63,7 +53,6 @@ class ExplicitProfileUiTest {
     @Test
     fun saveShoppingPreferences() {
         activityRule.launchActivity(null)
-
 
         explicitProfileRobot {
             /**
@@ -73,13 +62,15 @@ class ExplicitProfileUiTest {
             clickAnswerWithText("Halal")
             clickAnswerWithText("Vegan")
             clickAnswerWithText("Halal")
-            clickButtonSave()
         } validateComponent {
             shouldButtonSaveEnabled()
-        } validateTracker {
-            cassavaRule.validateTrackerOnClickAnswer("Halal")
-            cassavaRule.validateTrackerOnClickAnswer("Vegan")
-            cassavaRule.validateTrackerOnSavePreference(true)
+            explicitProfileRobot {
+                clickButtonSave()
+
+                cassavaRule.validateTrackerOnClickAnswer("Halal")
+                cassavaRule.validateTrackerOnClickAnswer("Vegan")
+                cassavaRule.validateTrackerOnSavePreference(true)
+            }
         }
     }
 
@@ -99,7 +90,6 @@ class ExplicitProfileUiTest {
             clickAnswerWithText("Vegan")
         } validateComponent {
             shouldButtonSaveDisabled()
-        } validateTracker {
             cassavaRule.validateTrackerOnClickAnswer("Halal")
             cassavaRule.validateTrackerOnClickAnswer("Vegan")
         }
@@ -112,7 +102,6 @@ class ExplicitProfileUiTest {
             clickOnInfoSection()
         } validateComponent {
             shouldViewBottomSheetSectionInfo()
-        } validateTracker {
             cassavaRule.validateTrackerOnClickSectionInfo()
         }
     }

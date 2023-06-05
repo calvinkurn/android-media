@@ -1037,4 +1037,9 @@ class CatalogDetailPageFragment :
     override fun setIsScrollButtonDown(value: Boolean) {
         isScrollDownButtonClicked = false
     }
+
+    override fun onReviewClicked(position: Int, productUrl: String, isFromBottomSheet: Boolean) {
+        super.onReviewClicked(position, productUrl, isFromBottomSheet)
+        RouteManager.route(context, productUrl)
+    }
 }

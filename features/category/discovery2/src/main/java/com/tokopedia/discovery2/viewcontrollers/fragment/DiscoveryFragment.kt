@@ -11,9 +11,15 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -33,6 +39,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -43,15 +50,36 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.DISCO_PAGE_SOURCE
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.toDecodedString
-import com.tokopedia.discovery2.analytics.*
-import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.analytics.AFFILIATE
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
+import com.tokopedia.discovery2.analytics.CLICK_SCREENSHOT_SHARE_CHANNEL
+import com.tokopedia.discovery2.analytics.CLICK_SHARE_CHANNEL
+import com.tokopedia.discovery2.analytics.EMPTY_STRING
+import com.tokopedia.discovery2.analytics.EVENT_CLICK_DISCOVERY
+import com.tokopedia.discovery2.analytics.SHARE
+import com.tokopedia.discovery2.analytics.UNIFY_CLICK_SHARE
+import com.tokopedia.discovery2.analytics.UNIFY_CLOSE_SCREENSHOT_SHARE
+import com.tokopedia.discovery2.analytics.UNIFY_CLOSE_SHARE
+import com.tokopedia.discovery2.analytics.UTM_DISCOVERY
+import com.tokopedia.discovery2.analytics.VIEW_DISCOVERY_IRIS
+import com.tokopedia.discovery2.analytics.VIEW_SCREENSHOT_SHARE
+import com.tokopedia.discovery2.analytics.VIEW_UNIFY_SHARE
+import com.tokopedia.discovery2.data.AdditionalInfo
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.data.ParamsForOpenScreen
+import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
+import com.tokopedia.discovery2.di.DiscoveryComponent
+import com.tokopedia.discovery2.di.UIWidgetComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
@@ -88,7 +116,9 @@ import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -121,10 +151,18 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -133,7 +171,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.*
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -151,7 +193,7 @@ private const val DEFAULT_SCROLL_POSITION = 0
 private const val ROTATION = 90f
 const val CUSTOM_SHARE_SHEET = 1
 
-class DiscoveryFragment :
+open class DiscoveryFragment :
     BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
     View.OnClickListener,
@@ -163,11 +205,13 @@ class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var recyclerViewPaddingResetNeeded: Boolean = false
     private var thematicHeaderColor: String = ""
     private var navScrollListener: NavRecyclerViewScrollListener? = null
     private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
-    private lateinit var discoveryViewModel: DiscoveryViewModel
+    lateinit var discoveryViewModel: DiscoveryViewModel
+    lateinit var discoveryComponent: DiscoveryComponent
     private lateinit var mDiscoveryFab: CustomTopChatView
     private lateinit var mAnchorHeaderView: FrameLayout
     private lateinit var recyclerView: StickyHeadRecyclerView
@@ -193,12 +237,24 @@ class DiscoveryFragment :
     private var userPressed: Boolean = false
     private var isTabPresentToDoubleScroll: Boolean = false
 
+    private val isFromCategory: Boolean by lazy {
+        (context as? DiscoveryActivity)?.isFromCategory() ?: false
+    }
+
     private val analytics: BaseDiscoveryAnalytics by lazy {
-        (context as DiscoveryActivity).getAnalytics()
+        provideAnalytics()
     }
-    private val trackingQueue: TrackingQueue by lazy {
-        (context as DiscoveryActivity).trackingQueue
+    open fun provideAnalytics(): BaseDiscoveryAnalytics {
+        return (context as DiscoveryActivity).getAnalytics()
     }
+
+    val trackingQueue: TrackingQueue by lazy {
+        provideTrackingQueue()
+    }
+    open fun provideTrackingQueue(): TrackingQueue {
+        return (context as DiscoveryActivity).trackingQueue
+    }
+
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
     private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
@@ -275,6 +331,7 @@ class DiscoveryFragment :
             if (this is DiscoveryActivity) {
                 this.discoveryComponent
                     .inject(this@DiscoveryFragment)
+                this@DiscoveryFragment.discoveryComponent = this.discoveryComponent
             }
         }
     }
@@ -324,7 +381,32 @@ class DiscoveryFragment :
             oldToolbar.visibility = View.GONE
             navToolbar.setOnBackButtonClickListener(disableDefaultGtmTracker = true, backButtonClickListener = ::handleBackPress)
         }
-
+        if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
+            navToolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+            navToolbar.setIcon(
+                IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_SOS))
+                    .addIcon(
+                        IconList.ID_MESSAGE,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.INBOX) },
+                        disableDefaultGtmTracker = false
+                    )
+                    .addIcon(
+                        IconList.ID_NOTIFICATION,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.NOTIF) },
+                        disableDefaultGtmTracker = false
+                    )
+                    .addIcon(
+                        iconId = IconList.ID_CART,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                        disableDefaultGtmTracker = true
+                    )
+                    .addIcon(
+                        iconId = IconList.ID_NAV_GLOBAL,
+                        onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                        disableDefaultGtmTracker = true
+                    )
+            )
+        }
         bottomNav = view.findViewById(R.id.bottomNav)
         bottomNav?.tabLayout?.addOnTabSelectedListener(this)
     }
@@ -402,6 +484,10 @@ class DiscoveryFragment :
                     if (mAnchorHeaderView.childCount == 0) {
                         setupObserveAndShowAnchor()
                     }
+                    if (userPressed && recyclerViewPaddingResetNeeded) {
+                        recyclerViewPaddingResetNeeded = false
+                        recyclerView.setPadding(0, 0, 0, 0)
+                    }
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         scrollToLastSection()
                     }
@@ -469,6 +555,11 @@ class DiscoveryFragment :
                 }
             }
         )
+        if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
+            activity?.let {
+                navToolbar.setupToolbarWithStatusBar(it)
+            }
+        }
     }
 
     private fun hideShowChooseAddressOnScroll() {
@@ -551,7 +642,7 @@ class DiscoveryFragment :
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
+        injectDiscoveryViewModel()
         discoveryViewModel.sendCouponInjectDataForLoggedInUsers()
         /** Future Improvement : Please don't remove any commented code from this file. Need to work on this **/
 //        mDiscoveryViewModel = ViewModelProviders.of(requireActivity()).get((activity as BaseViewModelActivity<DiscoveryViewModel>).getViewModelType())
@@ -561,6 +652,10 @@ class DiscoveryFragment :
         checkForSamePageOpened()
         fetchDiscoveryPageData()
         setUpObserver()
+    }
+
+    open fun injectDiscoveryViewModel() {
+        discoveryViewModel = (activity as DiscoveryActivity).getViewModel()
     }
 
     private fun checkForSamePageOpened() {
@@ -918,7 +1013,9 @@ class DiscoveryFragment :
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
         if (anchorViewHolder == null) {
             val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
-            anchorViewHolder = AnchorTabsViewHolder(view, this)
+            anchorViewHolder = AnchorTabsViewHolder(view, this).apply {
+                uiWidgetComponent = provideSubComponent()
+            }
             val viewModel =
                 AnchorTabsViewModel(context?.applicationContext as Application, it.data, 0)
             anchorViewHolder?.bindView(viewModel)
@@ -1031,6 +1128,10 @@ class DiscoveryFragment :
     }
 
     private fun handleShare(data: PageInfo?) {
+        if (arguments?.getString(DISCO_PAGE_SOURCE) == Constant.DiscoveryPageSource.HOME) {
+            navToolbar.updateNotification()
+            return
+        }
         if (data?.share?.enabled == true) {
             if (showOldToolbar) {
                 ivShare.show()
@@ -1040,9 +1141,22 @@ class DiscoveryFragment :
             } else {
                 navToolbar.setIcon(
                     IconBuilder()
-                        .addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleShareClick(data) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId = IconList.ID_CART, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }, disableDefaultGtmTracker = true)
-                        .addIcon(iconId = IconList.ID_NAV_GLOBAL, onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }, disableDefaultGtmTracker = true)
+                        .addIcon(
+                            iconId = IconList.ID_SHARE,
+                            disableRouteManager = true,
+                            onClick = { handleShareClick(data) },
+                            disableDefaultGtmTracker = true
+                        )
+                        .addIcon(
+                            iconId = IconList.ID_CART,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) },
+                            disableDefaultGtmTracker = true
+                        )
+                        .addIcon(
+                            iconId = IconList.ID_NAV_GLOBAL,
+                            onClick = { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) },
+                            disableDefaultGtmTracker = true
+                        )
                 )
                 navToolbar.updateNotification()
             }
@@ -1337,14 +1451,25 @@ class DiscoveryFragment :
                 isTabPresentToDoubleScroll = isTabPresent
                 if (position >= 0) {
                     userPressed = false
+                    if (position > 0 && isTabPresent) {
+                        handleAutoScrollUI()
+                    }
                     if (this.isResumed) {
-                        recyclerView.smoothScrollToPosition(position, isTabPresent)
+                        recyclerView.smoothScrollToPosition(position)
                     }
                     isManualScroll = false
                 }
             }
             pinnedAlreadyScrolled = true
         }
+    }
+
+    private fun handleAutoScrollUI() {
+        recyclerViewPaddingResetNeeded = true
+        shouldShowChooseAddressWidget = false
+        chooseAddressWidget?.hide()
+        chooseAddressWidgetDivider?.hide()
+        recyclerView.setPaddingToInnerRV(0, recyclerView.dpToPx(55).toInt(), 0, 0)
     }
 
     fun scrollToComponentWithID(componentID: String) {
@@ -1415,7 +1540,7 @@ class DiscoveryFragment :
     }
 
     private fun checkTabPositionBeforeRefresh() {
-        if ((activity as? DiscoveryActivity)?.isFromCategory() != true && currentTabPosition != null) {
+        if (!isFromCategory && currentTabPosition != null) {
             this.arguments?.putString(ACTIVE_TAB, (currentTabPosition).toString())
         }
     }
@@ -1571,12 +1696,12 @@ class DiscoveryFragment :
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
-        (activity as? DiscoveryActivity)?.let { activity ->
+        activity?.let { activity ->
             if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
                 if (productCardOptionsModel.wishlistResult.isAddWishlist) {
                     trackAddToWishlist(productCardOptionsModel)
                     if (productCardOptionsModel.wishlistResult.isSuccess) {
-                        if (activity.isFromCategory()) {
+                        if (isFromCategory) {
                             NetworkErrorHelper.showSnackbar(
                                 activity,
                                 getString(R.string.discovery_msg_success_add_wishlist)
@@ -1825,7 +1950,7 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceData(): String {
-        return if ((context as DiscoveryActivity).isFromCategory()) {
+        return if (isFromCategory) {
             Constant.ChooseAddressGTMSSource.CATEGORY_HOST_SOURCE
         } else {
             Constant.ChooseAddressGTMSSource.HOST_SOURCE
@@ -1833,7 +1958,7 @@ class DiscoveryFragment :
     }
 
     override fun getLocalizingAddressHostSourceTrackingData(): String {
-        return if ((context as DiscoveryActivity).isFromCategory()) {
+        return if (isFromCategory) {
             Constant.ChooseAddressGTMSSource.CATEGORY_HOST_TRACKING_SOURCE
         } else {
             Constant.ChooseAddressGTMSSource.HOST_TRACKING_SOURCE
@@ -1847,7 +1972,7 @@ class DiscoveryFragment :
     }
 
     override fun getEventLabelHostPage(): String {
-        return if ((context as DiscoveryActivity).isFromCategory()) {
+        return if (isFromCategory) {
             (context as DiscoveryActivity).getPageIdentifier()
         } else {
             EMPTY_STRING
@@ -2098,12 +2223,39 @@ class DiscoveryFragment :
 
     private fun requestStatusBarDark() {
         isLightThemeStatusBar = false
-        (activity as? DiscoveryActivity)?.requestStatusBarDark()
+        activity?.let {
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                requestStatusBarLight()
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    it.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                        View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    StatusBarUtil.setWindowFlag(
+                        it,
+                        WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                        false
+                    )
+                    it.window.statusBarColor = Color.TRANSPARENT
+                }
+            }
+        }
     }
 
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
-        (activity as? DiscoveryActivity)?.requestStatusBarLight()
+        activity?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                it.window.decorView.systemUiVisibility =
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                StatusBarUtil.setWindowFlag(
+                    it,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    false
+                )
+                it.window.statusBarColor = Color.TRANSPARENT
+            }
+        }
     }
 
     private fun getLightIconColor(context: Context): Int {
@@ -2137,5 +2289,14 @@ class DiscoveryFragment :
 
     fun getItemCount(): Int {
         return discoveryAdapter.itemCount
+    }
+
+    fun provideSubComponent(): UIWidgetComponent {
+        return if (::discoveryComponent.isInitialized) {
+            discoveryComponent.provideSubComponent()
+        } else {
+            initInjector()
+            discoveryComponent.provideSubComponent()
+        }
     }
 }

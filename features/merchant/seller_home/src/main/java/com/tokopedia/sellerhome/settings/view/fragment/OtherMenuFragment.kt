@@ -26,7 +26,10 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.review.ReviewApplinkConst
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.linker.LinkerManager
@@ -48,6 +51,7 @@ import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.bottomsheet.RMTransactionBottomSheet
+import com.tokopedia.seller.menu.common.view.typefactory.CoachMarkListener
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -97,7 +101,8 @@ class OtherMenuFragment :
     StatusBarCallback,
     FragmentChangeCallback,
     SellerHomeFragmentListener,
-    ShareBottomsheetListener {
+    ShareBottomsheetListener,
+    CoachMarkListener {
 
     companion object {
         private const val TAB_PM_PARAM = "tab"
@@ -124,6 +129,7 @@ class OtherMenuFragment :
         const val TOTAL_TOKO_MEMBER = "total tokomember"
 
         private const val MAX_RM_TRANSACTION_THRESHOLD = 100
+        private const val SHARED_PREF_SUFFIX = "OtherMenuFragmentSuffix"
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -180,6 +186,12 @@ class OtherMenuFragment :
         } == true
     }
 
+    private val coachMark2 by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
+    }
+
     @FragmentType
     private var currentFragmentType: Int = FragmentType.OTHER
 
@@ -221,8 +233,7 @@ class OtherMenuFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            val isNewSeller = (activity as? SellerHomeActivity)?.isNewSeller == true
-            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this, isNewSeller)
+            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
         }
         viewHolder?.setInitialLayouts()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -254,7 +265,7 @@ class OtherMenuFragment :
     override fun loadData(page: Int) {}
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory =
-        OtherMenuAdapterTypeFactory(this, userSession = userSession)
+        OtherMenuAdapterTypeFactory(this, userSession = userSession, coachMarkListener = this)
 
     override fun initInjector() {
         DaggerSellerHomeComponent.builder()
@@ -339,7 +350,7 @@ class OtherMenuFragment :
             RouteManager.route(
                 context,
                 kreditTopadsClickedBundle,
-                ApplinkConst.SellerApp.TOPADS_CREDIT
+                ApplinkConst.SellerApp.TOPADS_ADD_CREDIT
             )
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
@@ -550,6 +561,7 @@ class OtherMenuFragment :
         observeToasterAlreadyShown()
         observeToggleTopadsCount()
         observeIsShowTageCentralizePromo()
+        observeIsTopAdsShopUsed()
     }
 
     private fun observeShopBadge() {
@@ -728,6 +740,13 @@ class OtherMenuFragment :
         }
     }
 
+    private fun observeIsTopAdsShopUsed() {
+        viewModel.isTopAdsShopUsed.observe(viewLifecycleOwner) {
+            viewHolder?.setTopAdsShop(it)
+            setTrackerTopAdsMenu()
+        }
+    }
+
     private fun goToReputationHistory() {
         val appLink = UriUtil.buildUriAppendParam(
             ApplinkConst.REPUTATION,
@@ -868,6 +887,16 @@ class OtherMenuFragment :
         }
     }
 
+    private fun setTrackerTopAdsMenu() {
+        val topAdsMenuData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL || it.onClickApplink == ApplinkConstInternalTopAds.TOPADS_ONBOARDING
+        }
+
+        topAdsMenuData?.clickSendTracker = {
+            sellerMenuTracker.sendEventClickedTopAdsMenu()
+        }
+    }
+
     private fun animateShareButtonFromShareData(shareInfo: OtherMenuShopShareData?) {
         if (shareInfo != null) {
             viewHolder?.runShareButtonAnimation()
@@ -996,5 +1025,40 @@ class OtherMenuFragment :
         ) {
             onRetryAction()
         }.show()
+    }
+
+    override fun onViewReadyForCoachMark(menuName: String, targetView: View?) {
+        view?.post {
+            if (menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
+                showCoachMarkTopAdsMenuItem(menuName, targetView)
+            }
+        }
+    }
+
+    private fun showCoachMarkTopAdsMenuItem(menuName: String, view: View?) {
+        if (viewModel.isTopAdsShopUsed.value != null) {
+            val key = "$menuName+$SHARED_PREF_SUFFIX"
+            val coachMarkList = arrayListOf<CoachMark2Item>()
+
+            val alreadyShow = sharedPref.getBoolean(key, false)
+            val title = context?.getString(R.string.menu_setting_topads_coachmark_title)
+            val description = context?.getString(R.string.menu_setting_topads_coachmark_desciption)
+
+            if (!alreadyShow) {
+                view?.let {
+                    coachMarkList.add(
+                        CoachMark2Item(
+                            anchorView = view,
+                            title = title.toString(),
+                            description = description.toString(),
+                            position = CoachMark2.POSITION_TOP
+                        )
+                    )
+                }
+
+                coachMark2?.showCoachMark(coachMarkList, null, 0)
+                sharedPref.putBoolean(key, true)
+            }
+        }
     }
 }

@@ -38,10 +38,11 @@ class ShareExperienceViewComponent(
     private val fragment: Fragment,
     private val listener: Listener,
     private val context: Context,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val source: Source = Source.PlayRoom,
 ) : ViewComponent(container, idRes) {
 
-    private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
+    private val ivShareLink = rootView as IconUnify
 
     private var imgSaveFilePath = ""
     private var bitmap: Bitmap? = null
@@ -65,6 +66,7 @@ class ShareExperienceViewComponent(
         ivShareLink.setOnClickListener {
             listener.onShareIconClick(this)
         }
+        ivShareLink.setImage(newIconId = if(source == Source.Upcoming) IconUnify.SHARE_MOBILE else IconUnify.SHARE)
     }
 
     fun setIsShareable(isShow: Boolean) {
@@ -201,5 +203,9 @@ class ShareExperienceViewComponent(
         fun onSharePermissionAction(view: ShareExperienceViewComponent, label: String)
         fun onHandleShareFallback(view: ShareExperienceViewComponent)
         fun onShareIconImpressed(view: ShareExperienceViewComponent)
+    }
+
+    enum class Source {
+        Upcoming, PlayRoom;
     }
 }

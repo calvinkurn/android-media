@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
@@ -163,17 +162,12 @@ class TokoNowHomeViewModelTestTicker : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = repurchaseChannelId,
                         productId = repurchaseProductId,
-                        quantity = repurchaseProductMaxOrder,
+                        quantity = DEFAULT_QUANTITY,
                         stock = repurchaseProductStock,
-                        product = ProductCardModel(
-                            nonVariant = ProductCardModel.NonVariant(
-                                quantity = DEFAULT_QUANTITY,
-                                minQuantity = repurchaseProductMinOrder,
-                                maxQuantity = repurchaseProductMaxOrder
-                            ),
-                            hasAddToCartButton = true
-                        ),
+                        minOrder = repurchaseProductMinOrder,
+                        maxOrder = repurchaseProductMaxOrder,
                         position = repurchaseProductPosition,
+                        originalPosition = repurchaseProductPosition,
                         headerName = repurchaseProductTitle
                     )
                 ),

@@ -120,3 +120,5 @@ object RefreshWidget : PlayViewerNewAction()
 data class UpdateReminder(val channelId: String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
 object DismissExploreWidget : PlayViewerNewAction()
 object EmptyPageWidget : PlayViewerNewAction()
+
+data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction ()

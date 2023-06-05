@@ -277,7 +277,14 @@ object SharingUtil {
         }
     }
 
-    fun executeShareIntent(shareModel: ShareModel, linkerShareData: LinkerShareResult?, activity: Activity?, view: View?, shareStringContainer: String) {
+    fun executeShareIntent(
+            shareModel: ShareModel,
+            linkerShareData: LinkerShareResult?,
+            activity: Activity?,
+            view: View?,
+            shareStringContainer: String,
+            onSuccessCopyLink: (() -> Unit)? = null
+        ) {
         try {
             var shareImageFileUri: Uri? = null
             if (!TextUtils.isEmpty(shareModel.savedImageFilePath)) {
@@ -295,11 +302,11 @@ object SharingUtil {
                             ClipboardHandler().copyToClipboard(activity, it)
                         }
                     }
-                    view.let {
+                    if (onSuccessCopyLink == null) {view.let {
                         if (it != null) {
                             Toaster.build(view = it, text = copyLinkToastString, actionText = actionBtnTxt).show()
                         }
-                    }
+                    }} else onSuccessCopyLink.invoke()
                 }
 
                 is ShareModel.Instagram, is ShareModel.Facebook -> {
