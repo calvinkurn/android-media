@@ -2,9 +2,11 @@ package com.tokopedia.pdpCheckout.testing.product.detail
 
 import android.view.View
 import androidx.core.view.get
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -37,7 +39,9 @@ class ProductDetailRobot {
 
     fun clickBuyNormal() {
         // show and select variant with normal button
-        selectVariantOnVbs(2)
+        onView(withId(R.id.btn_buy_now)).perform(click())
+        selectVariant(2)
+
         onView(withId(R.id.btn_buy_variant))
             .check(matches(isDisplayed()))
             .check(matches(ViewMatchers.withText("Beli test")))
@@ -94,17 +98,23 @@ class ProductDetailRobot {
         onView(withId(R.id.btn_close)).perform(click())
     }
 
-    private fun selectVariantOnVbs(position: Int) {
-        showVariantBottomSheet()
+    private fun selectVariantOnVbs(index: Int) {
+        showVariantBottomSheet(index)
 
-        selectVariant(position)
+        selectVariant(index)
     }
 
-    private fun showVariantBottomSheet() {
-        onView(withId(R.id.btn_buy_now)).perform(click())
+    private fun showVariantBottomSheet(index: Int) {
+        onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.rv_single_variant))), ViewActions.scrollTo()))
+        val viewInteraction = onView(AllOf.allOf(withId(R.id.rv_single_variant))).check(
+            matches(isDisplayed())
+        )
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(index, clickChildViewWithId(R.id.atc_variant_chip_container))
+        )
     }
 
-    private fun selectVariant(position: Int) {
+    private fun selectVariant(index: Int) {
         // checking recyclerview variant bottom sheet is display or not
         onView(AllOf.allOf(withId(R.id.rv_atc_variant_bottomsheet))).check(matches(isDisplayed()))
         // click item on position
@@ -126,7 +136,7 @@ class ProductDetailRobot {
             override fun perform(uiController: UiController?, view: View?) {
                 val chipGroup = view as? ChipGroup
                 chipGroup?.let {
-                    it[position].performClick()
+                    it[index].performClick()
                     uiController?.loopMainThreadUntilIdle()
                 }
             }
