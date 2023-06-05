@@ -346,8 +346,14 @@ open class TokoChatFragment :
             )
         }
 
-        // Only set the flag when detected
-        if (activity?.isFromBubble() == true) {
+        // Only set the flag when detected or has param extra
+        val isFromBubbleExtra = getParamBoolean(
+            IS_FROM_BUBBLE_KEY,
+            arguments,
+            savedInstanceState,
+            false
+        )
+        if (activity?.isFromBubble() == true || isFromBubbleExtra) {
             viewModel.isFromBubble = true
         }
     }
