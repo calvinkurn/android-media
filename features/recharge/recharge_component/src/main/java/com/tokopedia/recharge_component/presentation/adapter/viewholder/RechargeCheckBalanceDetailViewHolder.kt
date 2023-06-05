@@ -9,25 +9,40 @@ import com.tokopedia.recharge_component.databinding.ViewRechargeCheckBalanceDeta
 import com.tokopedia.recharge_component.model.check_balance.RechargeCheckBalanceDetailModel
 
 class RechargeCheckBalanceDetailViewHolder(
-    private val binding: ViewRechargeCheckBalanceDetailBinding
-): RecyclerView.ViewHolder(binding.root) {
+    private val binding: ViewRechargeCheckBalanceDetailBinding,
+    private var mListener: RechargeCheckBalanceDetailViewHolderListener?
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: RechargeCheckBalanceDetailModel) {
         with(binding) {
             checkBalanceDetailTitle.text = model.title
             checkBalanceDetailSubtitle.text = model.subtitle
-
-            // TODO: [Misael] check kalau 0 gmn
             checkBalanceDetailSubtitle.setTextColor(model.subtitleColor.toIntOrZero())
+
             if (model.applink.isNotEmpty() && model.buttonText.isNotEmpty()) {
                 checkBalanceDetailBuyButton.text = model.buttonText
                 checkBalanceDetailBuyButton.setOnClickListener {
+                    mListener?.onClickCheckBalanceDetailBuyButton(model, absoluteAdapterPosition, "")
                     RouteManager.route(itemView.context, model.applink)
                 }
                 checkBalanceDetailBuyButton.show()
             } else {
                 checkBalanceDetailBuyButton.hide()
             }
+            mListener?.onRenderCheckBalanceDetailBuyButton(model, absoluteAdapterPosition, "")
         }
+    }
+
+    interface RechargeCheckBalanceDetailViewHolderListener {
+        fun onClickCheckBalanceDetailBuyButton(
+            model: RechargeCheckBalanceDetailModel,
+            position: Int,
+            bottomSheetTitle: String
+        )
+        fun onRenderCheckBalanceDetailBuyButton(
+            model: RechargeCheckBalanceDetailModel,
+            position: Int,
+            bottomSheetTitle: String
+        )
     }
 }
