@@ -24,7 +24,11 @@ import com.tokopedia.feedplus.domain.usecase.FeedCampaignCheckReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedCampaignReminderUseCase
 import com.tokopedia.feedplus.domain.usecase.FeedXHomeUseCase
 import com.tokopedia.feedplus.presentation.adapter.FeedAdapterTypeFactory
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FollowShopModel
+import com.tokopedia.feedplus.presentation.model.LikeFeedDataModel
 import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
@@ -34,7 +38,21 @@ import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
-import com.tokopedia.topads.sdk.utils.*
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -158,7 +176,7 @@ class FeedPostViewModel @Inject constructor(
 
                         _shouldShowNoMoreContent =
                             _feedHome.value?.items.orEmpty().isNotEmpty() &&
-                            items.isEmpty()
+                                items.isEmpty()
 
                         Success(
                             data = feedPosts.data.copy(
@@ -398,14 +416,15 @@ class FeedPostViewModel @Inject constructor(
     private suspend fun getFeedPosts(
         source: String,
         cursor: String = ""
-    ): FeedModel {
-        return feedXHomeUseCase(
-            feedXHomeUseCase.createParams(
-                source,
-                cursor
+    ): FeedModel =
+        if (source.isNotEmpty())
+            feedXHomeUseCase(
+                feedXHomeUseCase.createParams(
+                    source,
+                    cursor
+                )
             )
-        )
-    }
+        else throw MessageErrorException("Source is empty")
 
     private suspend fun getCampaignReminderStatus(campaignId: Long): Boolean =
         try {
@@ -482,6 +501,7 @@ class FeedPostViewModel @Inject constructor(
     fun suspendAddProductToCart(product: FeedTaggedProductUiModel) {
         _suspendedAddProductToCartData.value = product
     }
+
     fun suspendBuyProduct(product: FeedTaggedProductUiModel) {
         _suspendedBuyProductData.value = product
     }
@@ -502,7 +522,8 @@ class FeedPostViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
-                _observeAddProductToCart.value = Fail(ResponseErrorException(response.getAtcErrorMessage()))
+                _observeAddProductToCart.value =
+                    Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
                 _observeAddProductToCart.value = Success(response)
             }
@@ -515,7 +536,8 @@ class FeedPostViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             val response = addToCart(product)
             if (response.isDataError()) {
-                _observeBuyProduct.value = Fail(ResponseErrorException(response.getAtcErrorMessage()))
+                _observeBuyProduct.value =
+                    Fail(ResponseErrorException(response.getAtcErrorMessage()))
             } else {
                 _observeBuyProduct.value = Success(response)
             }
@@ -558,7 +580,9 @@ class FeedPostViewModel @Inject constructor(
                     _merchantVoucherLiveData.value = Success(result)
                 } else {
                     _merchantVoucherLiveData.value = Fail(
-                        ResponseErrorException(response.data?.resultStatus?.message?.firstOrNull().orEmpty())
+                        ResponseErrorException(
+                            response.data?.resultStatus?.message?.firstOrNull().orEmpty()
+                        )
                     )
                 }
             }
