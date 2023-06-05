@@ -525,30 +525,8 @@ open class ShopPageHomeFragment :
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         isLoadInitialData = true
-//        showVoucherListBottomsheet()
     }
 
-    private fun showVoucherListBottomsheet() {
-        //TODO: Replace with real category slugs from backend
-        val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            useDarkBackground = false,
-            promoVouchersCategorySlugs = listOf(
-                "HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY", "MEGAEL12MAY",
-                "MEGAEL8MAY", "ELCPC523", "MEGAEL1JTMAY",
-                "MEGAEL150MAY"
-            )
-        )
-        bottomSheet.setOnVoucherClaimSuccess {
-            //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
-        }
-        bottomSheet.setOnVoucherUseSuccess {
-            showToaster(
-                view ?: return@setOnVoucherUseSuccess,
-                context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
-            )
-        }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
-    }
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
             when (it) {
@@ -1396,11 +1374,11 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun onSuccessGetYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+    protected open fun onSuccessGetYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
         shopHomeAdapter?.setHomeYouTubeData(widgetId, data)
     }
 
-    private fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
+    protected open fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
         logExceptionToCrashlytics(ERROR_WHEN_GET_YOUTUBE_DATA, throwable)
         shopHomeAdapter?.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
     }

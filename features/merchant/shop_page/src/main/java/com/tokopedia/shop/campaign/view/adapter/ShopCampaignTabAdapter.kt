@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.common.util.WidgetState
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 
 class ShopCampaignTabAdapter(
     shopCampaignTabAdapterTypeFactory: ShopCampaignTabAdapterTypeFactory
@@ -207,6 +208,18 @@ class ShopCampaignTabAdapter(
                 }
             }
         }
+        submitList(newList)
+    }
+
+    fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopHomeDisplayWidgetUiModel>()
+            .find {
+                it.widgetId == widgetId
+            }?.let {
+                it.data?.firstOrNull()?.youTubeVideoDetail = data
+                it.isNewData = true
+            }
         submitList(newList)
     }
 }

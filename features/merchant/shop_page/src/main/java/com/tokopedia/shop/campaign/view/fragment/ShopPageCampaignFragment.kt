@@ -49,6 +49,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.extension.showToasterError
+import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -70,6 +71,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import javax.inject.Inject
 
 class ShopPageCampaignFragment :
@@ -747,4 +749,15 @@ class ShopPageCampaignFragment :
         }
     }
 
+    override fun onSuccessGetYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {
+        shopCampaignTabAdapter.setHomeYouTubeData(widgetId, data)
+    }
+
+    override fun onFailedGetYouTubeData(widgetId: String, throwable: Throwable) {
+        ShopPageExceptionHandler.logExceptionToCrashlytics(
+            ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA,
+            throwable
+        )
+        shopCampaignTabAdapter.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
+    }
 }
