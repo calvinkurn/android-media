@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateRequestModel
 import com.tokopedia.play.broadcaster.shorts.domain.model.OnboardAffiliateResponseModel
 import com.tokopedia.url.TokopediaUrl
@@ -19,15 +20,7 @@ class OnBoardAffiliateUseCase @Inject constructor(
             val param = generateParams(params)
             repository.request(graphqlQuery(), param)
         } catch (e: Exception) {
-            OnboardAffiliateResponseModel(
-                data = OnboardAffiliateResponseModel.Data(
-                    error = OnboardAffiliateResponseModel.Data.Error(
-                        errorType = 1,
-                        message = e.message.orEmpty(),
-                    ),
-                    status = 0,
-                )
-            )
+            throw MessageErrorException(e.message)
         }
     }
 
