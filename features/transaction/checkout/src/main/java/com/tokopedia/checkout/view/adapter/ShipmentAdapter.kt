@@ -26,6 +26,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
@@ -972,18 +973,13 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun checkHasSelectAllCourier(
-        passCheckShipmentFromPaymentClick: Boolean,
-        lastSelectedCourierOrderIndex: Int,
-        lastSelectedCourierOrdercartString: String?,
-        forceHitValidateUse: Boolean,
-        skipValidateUse: Boolean
-    ): Boolean {
+    fun doCheckAllCourier(): Boolean {
         var cartItemCounter = 0
         if (shipmentCartItemModelList != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
+                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff ||
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
                         cartItemCounter++
                     }
                 } else if (shipmentCartItemModel.isError) {
@@ -991,17 +987,16 @@ class ShipmentAdapter @Inject constructor(
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList!!.size) {
-                if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(
+            if (!passCheckShipmentFromPaymentClick) {
+                shipmentAdapterActionListener.onFinishChoosingShipment(
                         lastSelectedCourierOrderIndex,
                         lastSelectedCourierOrdercartString,
                         forceHitValidateUse,
                         skipValidateUse
-                    )
-                }
-//                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
-                return true
+                )
             }
+//                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
+            return true
         }
         return false
     }
@@ -1326,6 +1321,20 @@ class ShipmentAdapter @Inject constructor(
     ) {
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
+    }
+
+    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
+        if (shipmentCostModel != null) {
+            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
+        }
+    }
+
+    fun getShipmentCostItemIndex(): Int {
+        var index = 0
+        if (shipmentCostModel != null) {
+            index = shipmentDataList.indexOf(shipmentCostModel!!)
+        }
+        return index
     }
 
     fun updateItem(item: Any, position: Int) {

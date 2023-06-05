@@ -126,6 +126,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.espressoCore

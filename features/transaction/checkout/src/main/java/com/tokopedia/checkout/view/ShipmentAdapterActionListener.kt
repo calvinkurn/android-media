@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -129,6 +130,10 @@ interface ShipmentAdapterActionListener {
         position: Int,
         donePublisher: PublishSubject<Boolean>
     )
+
+    fun checkPlatformFee()
+
+    fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel)
 
     fun updateShipmentCostModel()
 }

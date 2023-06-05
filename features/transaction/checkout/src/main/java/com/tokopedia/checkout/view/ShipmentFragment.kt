@@ -54,6 +54,8 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorApplyBo
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorCheckout
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorLoadCheckoutPage
@@ -74,6 +76,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity.Companion.newInstance
@@ -4049,6 +4052,108 @@ class ShipmentFragment :
     }
     // endregion
 
+    override fun checkPlatformFee() {
+        if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
+            val platformFeeModel = shipmentPresenter.getShipmentCostModel().dynamicPlatformFee
+            if (shipmentPresenter.getShipmentCostModel().totalPrice > platformFeeModel.minRange &&
+                shipmentPresenter.getShipmentCostModel().totalPrice < platformFeeModel.maxRange
+            ) {
+                shipmentAdapter.setPlatformFeeData(platformFeeModel)
+                updateCost()
+            } else {
+                getPaymentFee()
+            }
+        }
+    }
+
+    private fun updateCost() {
+        if (rvShipment!!.isComputingLayout) {
+            rvShipment!!.post {
+                shipmentAdapter.updateShipmentCostModel()
+                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
+            }
+        } else {
+            shipmentAdapter.updateShipmentCostModel()
+            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
+        }
+    }
+
+    override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
+        val childView = View.inflate(context, R.layout.bottom_sheet_platform_fee_info, null)
+        val tvPlatformFeeInfo: Typography = childView.findViewById(R.id.tv_platform_fee_info)
+        tvPlatformFeeInfo.text = platformFeeModel.tooltip
+        val bottomSheetUnify = BottomSheetUnify()
+        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.title))
+        bottomSheetUnify.showCloseIcon = true
+        bottomSheetUnify.setChild(childView)
+        bottomSheetUnify.show(childFragmentManager, null)
+        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
+            userSessionInterface.userId,
+            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+        )
+    }
+
+    private fun getPaymentFee() {
+        val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest()
+        paymentFeeCheckoutRequest.gatewayCode = ""
+        paymentFeeCheckoutRequest.profileCode = shipmentPresenter.getShipmentPlatformFeeData().profileCode
+        paymentFeeCheckoutRequest.paymentAmount = shipmentPresenter.getShipmentCostModel().totalPrice
+        paymentFeeCheckoutRequest.additionalData = shipmentPresenter.getShipmentPlatformFeeData().additionalData
+        shipmentPresenter.getDynamicPaymentFee(paymentFeeCheckoutRequest)
+    }
+
+    override fun showPaymentFeeData(platformFeeData: PaymentFeeResponse) {
+        val platformFeeModel = ShipmentPaymentFeeModel()
+        for (paymentFee in platformFeeData.data) {
+            if (paymentFee.code.equals(PLATFORM_FEE_CODE, ignoreCase = true)) {
+                platformFeeModel.title = paymentFee.title
+                platformFeeModel.fee = paymentFee.fee
+                platformFeeModel.minRange = paymentFee.minRange
+                platformFeeModel.maxRange = paymentFee.maxRange
+                platformFeeModel.isShowTooltip = paymentFee.showTooltip
+                platformFeeModel.tooltip = paymentFee.tooltipInfo
+                platformFeeModel.isShowSlashed = paymentFee.showSlashed
+                platformFeeModel.slashedFee = paymentFee.slashedFee.toDouble()
+            }
+        }
+        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        hideLoaderTotalPayment()
+        updateCost()
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
+            userSessionInterface.userId,
+            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+        )
+    }
+
+    override fun showPaymentFeeSkeletonLoading() {
+        val platformFeeModel = ShipmentPaymentFeeModel()
+        platformFeeModel.isLoading = true
+        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        showLoaderTotalPayment()
+        updateCost()
+    }
+
+    fun showLoaderTotalPayment() {
+        val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
+        shipmentButtonPaymentModel.isLoading = true
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+    }
+
+    fun hideLoaderTotalPayment() {
+        val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
+        shipmentButtonPaymentModel.isLoading = true
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+    }
+
+    override fun showPaymentFeeTickerFailedToLoad(ticker: String) {
+        val platformFeeModel = ShipmentPaymentFeeModel()
+        platformFeeModel.isShowTicker = true
+        platformFeeModel.ticker = ticker
+        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        hideLoaderTotalPayment()
+        updateCost()
+    }
+
     companion object {
         private const val REQUEST_CODE_EDIT_ADDRESS = 11
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
@@ -4059,6 +4164,7 @@ class ShipmentFragment :
         private const val ADD_ON_STATUS_ACTIVE = 1
         private const val ADD_ON_STATUS_DISABLE = 2
         private const val SHIPMENT_TRACE = "mp_shipment"
+        private const val PLATFORM_FEE_CODE = "platform_fee"
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
         const val ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT"
         const val ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID"

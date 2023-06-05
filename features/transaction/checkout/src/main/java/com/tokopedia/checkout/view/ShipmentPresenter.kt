@@ -188,6 +188,7 @@ class ShipmentPresenter @Inject constructor(
     private val prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
     private val epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
+    private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
     private val checkoutGqlUseCase: CheckoutUseCase,
     private val shipmentDataConverter: ShipmentDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
@@ -279,6 +280,8 @@ class ShipmentPresenter @Inject constructor(
 
     private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
 
+    private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
+
     var dynamicData = ""
 
     var isOneClickShipment: Boolean = false
@@ -312,6 +315,7 @@ class ShipmentPresenter @Inject constructor(
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
+        getPaymentFeeCheckoutUseCase.cancelJobs()
         ratesQueue.clear()
         promoQueue.clear()
         view = null
@@ -905,6 +909,7 @@ class ShipmentPresenter @Inject constructor(
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
+        shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
     }
 
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -5458,6 +5463,34 @@ class ShipmentPresenter @Inject constructor(
         return promoRequest
     }
     // endregion
+
+    override fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
+        view?.showPaymentFeeSkeletonLoading()
+
+        getPaymentFeeCheckoutUseCase.setParams(request!!);
+        getPaymentFeeCheckoutUseCase.execute(
+                { (platformFeeData): PaymentFeeGqlResponse ->
+                    if (view != null) {
+                        if (platformFeeData.success) {
+                            view?.showPaymentFeeData(platformFeeData);
+                        } else {
+                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
+                        }
+                    }
+                    Unit
+                }
+        ){ throwable: Throwable ->
+            Timber.d(throwable);
+            if (view != null) {
+                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
+            }
+            Unit
+        }
+    }
+
+    override fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
+        return shipmentPlatformFeeData
+    }
 
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000

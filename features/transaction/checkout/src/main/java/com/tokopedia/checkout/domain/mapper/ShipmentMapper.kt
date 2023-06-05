@@ -35,6 +35,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
@@ -156,6 +157,7 @@ class ShipmentMapper @Inject constructor() {
             coachmarkPlus = mapCoachmarkPlus(shipmentAddressFormDataResponse.coachmark)
             isUsingDdp = shipmentAddressFormDataResponse.dynamicDataPassing.isDdp && false
             dynamicData = shipmentAddressFormDataResponse.dynamicDataPassing.dynamicData
+            shipmentPlatformFee = mapPlatformFee(shipmentAddressFormDataResponse.shipmentPlatformFee)
         }
     }
 
@@ -1134,6 +1136,15 @@ class ShipmentMapper @Inject constructor() {
             isShown = coachmarkPlus.plus.isShown,
             title = coachmarkPlus.plus.title,
             content = coachmarkPlus.plus.content
+        )
+    }
+
+    private fun mapPlatformFee(platformFee: com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee): ShipmentPlatformFeeData {
+        return ShipmentPlatformFeeData(
+                isEnable = platformFee.isEnable,
+                errorWording = platformFee.errorWording,
+                additionalData = platformFee.additionalData,
+                profileCode = platformFee.profileCode
         )
     }
 
