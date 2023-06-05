@@ -1054,9 +1054,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createCarouselPlayWidget(dynamicHomeChannel: DynamicHomeChannel.Channels, position: Int) {
         if (isCache) return
         val dataModel = CarouselPlayWidgetDataModel(
-            dynamicHomeChannel.apply {
-                setPosition(position)
-            }
+            DynamicChannelComponentMapper.mapHomeChannelToComponent(dynamicHomeChannel, position)
         )
         val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
         if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
