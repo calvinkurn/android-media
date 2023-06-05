@@ -4867,7 +4867,7 @@ class ShipmentFragment :
 
     fun hideLoaderTotalPayment() {
         val shipmentButtonPaymentModel = shipmentPresenter.getShipmentButtonPaymentModel()
-        shipmentButtonPaymentModel.isLoading = true
+        shipmentButtonPaymentModel.isLoading = false
         onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
     }
 
