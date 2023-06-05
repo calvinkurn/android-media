@@ -514,9 +514,9 @@ class DynamicProductDetailViewModel @Inject constructor(
                 extParam
             ).also {
                 /**
-                 * using wishlist previous value
-                 * because when wishlist clicked, hit api addWishlist after that, hit api p1.
-                 * So that, in p1 the isWishlist doesn't updated, updated after hit p1Login
+                 * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
+                 * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
+                 * so then, for keep wishlist value didn't replace from p1, so using previous value
                  */
                 val isWishlist = getDynamicProductInfoP1?.data?.isWishlist.orFalse()
                 getDynamicProductInfoP1 = it.layoutData.also {

@@ -12,6 +12,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -2419,6 +2420,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify isWithList in getDynamicProductInfoP1 is true after add wishlist`() {
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        `verify add to wishlistv2 returns success`()
+        Assert.assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
     }
 
     @Test
