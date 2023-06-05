@@ -511,17 +511,18 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     productImgList
                 )
                 universalShareBottomSheet = this
+
+                setOnGetAffiliateData {
+                    onImpressShareWidget(
+                        this.getShareBottomSheetType(),
+                        productData.userId,
+                        productData.productId,
+                        productData.campaignId,
+                        productData.bundleId,
+                        it
+                    )
+                }
             }
-        }
-        universalShareBottomSheet?.let {
-            onImpressShareWidget(
-                it.getShareBottomSheetType(),
-                productData.userId,
-                productData.productId,
-                productData.campaignId,
-                productData.bundleId,
-                it.getUserType()
-            )
         }
     }
 
