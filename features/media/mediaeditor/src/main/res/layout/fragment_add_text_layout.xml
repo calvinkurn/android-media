@@ -28,14 +28,15 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
+            android:weightSum="1"
+            android:gravity="center"
             android:layout_width="10dp"
             android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_gravity="center"
                 app:icon_color_light_enable="@color/Unify_NN0"
                 app:icon_name="TAP"
-                android:layout_weight="0.23"
+                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
@@ -52,14 +53,15 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
+            android:weightSum="1"
+            android:gravity="center"
             android:layout_width="10dp"
             android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_gravity="center"
                 app:icon_color_light_enable="@color/Unify_NN0"
                 app:icon_name="TAP"
-                android:layout_weight="0.23"
+                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
@@ -76,14 +78,15 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
+            android:weightSum="1"
+            android:gravity="center"
             android:layout_width="10dp"
             android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_gravity="center"
                 app:icon_color_light_enable="@color/Unify_NN0"
                 app:icon_name="TAP"
-                android:layout_weight="0.23"
+                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
@@ -100,14 +103,15 @@
             android:maxWidth="72dp"
             android:minHeight="32dp"
             android:maxHeight="72dp"
+            android:weightSum="1"
+            android:gravity="center"
             android:layout_width="10dp"
             android:layout_height="10dp">
 
             <com.tokopedia.iconunify.IconUnify
-                android:layout_gravity="center"
                 app:icon_color_light_enable="@color/Unify_NN0"
                 app:icon_name="TAP"
-                android:layout_weight="0.23"
+                android:layout_weight="0.5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
