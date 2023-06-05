@@ -164,6 +164,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             }.apply { targetPosition = position }
         )
         groupDetailAdapter.updateItem()
+        viewModel.reSyncDetailPageData(
+            adGroupType = utils.convertAdTypeToInt(adType),
+            clickedItem = TYPE_PRODUCT_VALUE
+        )
     }
 
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
