@@ -51,10 +51,13 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressF
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase;
+import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase;
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase;
@@ -213,6 +216,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase;
+    private final GetPaymentFeeCheckoutUseCase getPaymentFeeCheckoutUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
     private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
@@ -262,6 +266,8 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
     public DynamicDataPassingParamRequest dynamicDataParam = new DynamicDataPassingParamRequest();
     public String dynamicData = "";
 
+    public ShipmentPlatformFeeData shipmentPlatformFeeData = new ShipmentPlatformFeeData();
+
     @Inject
     public ShipmentOldPresenter(CompositeSubscription compositeSubscription,
                              CheckoutGqlUseCase checkoutGqlUseCase,
@@ -287,7 +293,8 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
                              ExecutorSchedulers executorSchedulers,
                              EligibleForAddressUseCase eligibleForAddressUseCase,
                              GetRatesWithScheduleUseCase ratesWithScheduleUseCase,
-                             UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase) {
+                             UpdateDynamicDataPassingUseCase updateDynamicDataPassingUseCase,
+                             GetPaymentFeeCheckoutUseCase platformFeeUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormV3UseCase = getShipmentAddressFormV3UseCase;
@@ -313,6 +320,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
         this.executorSchedulers = executorSchedulers;
         this.eligibleForAddressUseCase = eligibleForAddressUseCase;
         this.updateDynamicDataPassingUseCase = updateDynamicDataPassingUseCase;
+        this.getPaymentFeeCheckoutUseCase = platformFeeUseCase;
     }
 
     @Override
@@ -337,6 +345,9 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
         }
         if (updateDynamicDataPassingUseCase != null) {
             updateDynamicDataPassingUseCase.cancelJobs();
+        }
+        if (getPaymentFeeCheckoutUseCase != null) {
+            getPaymentFeeCheckoutUseCase.cancelJobs();
         }
         ratesPublisher = null;
         logisticDonePublisher = null;
@@ -731,6 +742,7 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp();
         dynamicData = cartShipmentAddressFormData.getDynamicData();
+        shipmentPlatformFeeData = cartShipmentAddressFormData.getShipmentPlatformFee();
     }
 
     private void checkIsUserEligibleForRevampAna(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -3360,6 +3372,36 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
                     return Unit.INSTANCE;
                 }
         );
+    }
+
+    @Override
+    public void getDynamicPaymentFee(PaymentFeeCheckoutRequest request) {
+        getView().showPaymentFeeSkeletonLoading();
+
+        getPaymentFeeCheckoutUseCase.setParams(request);
+        getPaymentFeeCheckoutUseCase.execute(
+                platformFeeData -> {
+                    if (getView() != null) {
+                        if (platformFeeData.getResponse().getSuccess()) {
+                            getView().showPaymentFeeData(platformFeeData);
+                        } else {
+                            getView().showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
+                        }
+                    }
+                    return Unit.INSTANCE;
+                }, throwable -> {
+                    Timber.d(throwable);
+                    if (getView() != null) {
+                        getView().showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
+                    }
+                    return Unit.INSTANCE;
+                }
+        );
+    }
+
+    @Override
+    public ShipmentPlatformFeeData getShipmentPlatformFeeData() {
+        return shipmentPlatformFeeData;
     }
 
     @Override

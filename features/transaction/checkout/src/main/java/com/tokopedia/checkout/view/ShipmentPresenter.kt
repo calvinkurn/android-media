@@ -37,13 +37,12 @@ import com.tokopedia.checkout.domain.mapper.DynamicDataPassingMapper.getAddOnFro
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil.getEnableFingerprintPayment
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil.getFingerprintPublicKey
 import com.tokopedia.checkout.view.ShipmentContract.AnalyticsActionListener
@@ -190,7 +189,9 @@ class ShipmentPresenter @Inject constructor(
     private val executorSchedulers: ExecutorSchedulers,
     private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val ratesWithScheduleUseCase: GetRatesWithScheduleUseCase,
-    private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+    private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
+    private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
+
 ) : ShipmentContract.Presenter {
 
     private var view: ShipmentContract.View? = null
@@ -271,6 +272,8 @@ class ShipmentPresenter @Inject constructor(
 
     private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
 
+    private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
+
     var dynamicData = ""
 
     override fun attachView(view: ShipmentContract.View) {
@@ -283,6 +286,7 @@ class ShipmentPresenter @Inject constructor(
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
+        getPaymentFeeCheckoutUseCase.cancelJobs()
         ratesPublisher = null
         logisticDonePublisher = null
         ratesPromoPublisher = null
@@ -657,6 +661,7 @@ class ShipmentPresenter @Inject constructor(
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
+        shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
     }
 
     private fun checkIsUserEligibleForRevampAna(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -3700,6 +3705,34 @@ class ShipmentPresenter @Inject constructor(
                 }
             }
         }
+    }
+
+    override fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
+        view?.showPaymentFeeSkeletonLoading()
+
+        getPaymentFeeCheckoutUseCase.setParams(request!!);
+        getPaymentFeeCheckoutUseCase.execute(
+                { (platformFeeData): PaymentFeeGqlResponse ->
+                    if (view != null) {
+                        if (platformFeeData.success) {
+                            view?.showPaymentFeeData(platformFeeData);
+                        } else {
+                            view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
+                        }
+                    }
+                    Unit
+                }
+        ){ throwable: Throwable ->
+            Timber.d(throwable);
+            if (view != null) {
+                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording);
+            }
+            Unit
+        }
+    }
+
+    override fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
+        return shipmentPlatformFeeData
     }
 
     companion object {

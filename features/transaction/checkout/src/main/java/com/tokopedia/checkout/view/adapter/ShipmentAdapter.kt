@@ -20,6 +20,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
@@ -76,6 +77,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
+
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -234,7 +236,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
-                return ShipmentCostViewHolder(view, layoutInflater)
+                return ShipmentCostViewHolder(view, layoutInflater, shipmentAdapterActionListener)
             }
 
             ITEM_VIEW_PROMO_CHECKOUT -> {
@@ -575,6 +577,7 @@ class ShipmentAdapter @Inject constructor(
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList!!.size) {
                 val priceTotal: Double =
                     if (shipmentCostModel!!.totalPrice <= 0) 0.0 else shipmentCostModel!!.totalPrice
+                val platformFee = shipmentCostModel
                 val priceTotalFormatted =
                     removeDecimalSuffix(convertPriceValueToIdrFormat(priceTotal.toLong(), false))
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem)
@@ -1081,18 +1084,13 @@ class ShipmentAdapter @Inject constructor(
         }
     }
 
-    fun checkHasSelectAllCourier(
-        passCheckShipmentFromPaymentClick: Boolean,
-        lastSelectedCourierOrderIndex: Int,
-        lastSelectedCourierOrdercartString: String?,
-        forceHitValidateUse: Boolean,
-        skipValidateUse: Boolean
-    ): Boolean {
+    fun doCheckAllCourier(): Boolean {
         var cartItemCounter = 0
         if (shipmentCartItemModelList != null) {
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
-                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff || shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
+                    if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff ||
+                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
                         cartItemCounter++
                     }
                 } else if (shipmentCartItemModel.isError) {
@@ -1100,18 +1098,32 @@ class ShipmentAdapter @Inject constructor(
                 }
             }
             if (cartItemCounter == shipmentCartItemModelList!!.size) {
-                val requestData = getRequestData(null, null, false)
-                if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(
+                shipmentAdapterActionListener.checkPlatformFee()
+                return true
+            }
+        }
+        return false
+    }
+
+    fun checkHasSelectAllCourier(
+        passCheckShipmentFromPaymentClick: Boolean,
+        lastSelectedCourierOrderIndex: Int,
+        lastSelectedCourierOrdercartString: String?,
+        forceHitValidateUse: Boolean,
+        skipValidateUse: Boolean
+    ): Boolean {
+        if (doCheckAllCourier()) {
+            val requestData = getRequestData(null, null, false)
+            if (!passCheckShipmentFromPaymentClick) {
+                shipmentAdapterActionListener.onFinishChoosingShipment(
                         lastSelectedCourierOrderIndex,
                         lastSelectedCourierOrdercartString,
                         forceHitValidateUse,
                         skipValidateUse
-                    )
-                }
-                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
-                return true
+                )
             }
+            shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
+            return true
         }
         return false
     }
@@ -1665,5 +1677,19 @@ class ShipmentAdapter @Inject constructor(
     ) {
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
+    }
+
+    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
+        if (shipmentCostModel != null) {
+            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
+        }
+    }
+
+    fun getShipmentCostItemIndex(): Int {
+        var index = 0
+        if (shipmentCostModel != null) {
+            index = shipmentDataList.indexOf(shipmentCostModel!!)
+        }
+        return index
     }
 }
