@@ -27,6 +27,16 @@
         app:typographyType="display_3"
         app:typographyWeight="reguler"/>
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_product_addon_info"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginStart="6dp"
+        app:layout_constraintStart_toEndOf="@id/tv_shipment_add_on_name"
+        app:layout_constraintTop_toTopOf="@id/tv_shipment_add_on_name"
+        app:layout_constraintBottom_toBottomOf="@id/tv_shipment_add_on_name"
+        app:icon_name="INFORMATION"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipment_add_on_price"
         android:layout_width="wrap_content"

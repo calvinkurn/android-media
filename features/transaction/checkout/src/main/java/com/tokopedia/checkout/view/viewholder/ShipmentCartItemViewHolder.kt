@@ -21,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -31,7 +33,8 @@ import java.util.*
 
 class ShipmentCartItemViewHolder(
     itemView: View,
-    private val listener: Listener? = null
+    private val listener: Listener? = null,
+    private val layoutInflater: LayoutInflater
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -44,6 +47,7 @@ class ShipmentCartItemViewHolder(
     }
 
     private val binding: ItemShipmentProductBinding = ItemShipmentProductBinding.bind(itemView)
+    // private val llAddOnProduct: LinearLayout = itemView.findViewById(R.id.ll_addon_product)
 
     fun bind(
         cartItem: CartItemModel
@@ -58,7 +62,8 @@ class ShipmentCartItemViewHolder(
         renderProductProperties(cartItem)
         val isFirstItem = cartItem.cartItemPosition == 0
         renderBundlingInfo(cartItem, isFirstItem)
-        renderAddOnProductLevel(cartItem, cartItem.addOnOrderLevelModel)
+        renderAddOnGiftingProductLevel(cartItem, cartItem.addOnOrderLevelModel)
+        renderAddOnProduct(cartItem)
     }
 
     private fun renderShopInfo(cartItem: CartItemModel) {
@@ -381,7 +386,7 @@ class ShipmentCartItemViewHolder(
         }
     }
 
-    private fun renderAddOnProductLevel(
+    private fun renderAddOnGiftingProductLevel(
         cartItemModel: CartItemModel,
         addOnWordingModel: AddOnGiftingWordingModel
     ) {
@@ -411,6 +416,43 @@ class ShipmentCartItemViewHolder(
         }
     }
 
+    private fun renderAddOnProduct(cartItemModel: CartItemModel) {
+        val addOnProduct = cartItemModel.addOnProduct
+        if (addOnProduct.listAddOnProductData.isEmpty()) {
+            binding.llAddonProduct.visibility = View.GONE
+        } else {
+            cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
+                if (addon.addOnDataName.isEmpty()) {
+                    binding.llAddonProduct.visibility = View.GONE
+                } else {
+                    binding.itemShipmentAddonProduct.apply {
+                        tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
+                        if (cartItemModel.addOnProduct.bottomsheet.isShown) {
+                            
+                        }
+                    }
+                    val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
+                    val addOnName = addOnView.tvShipmentAddOnName
+                    addOnName.text = addon.addOnDataName
+                    val addOnPrice = addOnView.tvShipmentAddOnPrice
+                    addOnPrice.text = CurrencyFormatUtil
+                            .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
+                            .removeDecimalSuffix()
+                    addOnView.cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
+                        listener?.onCheckboxAddonProductListener(addon)
+                    }
+                    addOnView.icProductAddonInfo.setOnClickListener {
+                        listener?.onClickAddonProductInfoIcon()
+                    }
+                    binding.llAddonProduct.apply {
+                        addView(addOnView.root)
+                        visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+    }
+
     interface Listener {
 
         fun onCheckPurchaseProtection(position: Int, cartItem: CartItemModel)
@@ -420,5 +462,9 @@ class ShipmentCartItemViewHolder(
         fun onClickAddOnProductLevel(cartItem: CartItemModel, addOnWording: AddOnGiftingWordingModel)
 
         fun onImpressionAddOnProductLevel(productId: String)
+
+        fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel)
+
+        fun onClickAddonProductInfoIcon()
     }
 }

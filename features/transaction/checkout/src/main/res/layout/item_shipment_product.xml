@@ -380,6 +380,21 @@
             </LinearLayout>
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/ll_addon_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <include
+                android:id="@+id/item_shipment_addon_product"
+                layout="@layout/item_shipment_addon_product"
+                tools:visibility="visible"/>
+
+        </LinearLayout>
+
         <!--Gifting: Gifting Experience - Product Level-->
         <LinearLayout
             android:id="@+id/ll_gifting_addon_product_level"
@@ -388,11 +403,6 @@
             android:layout_marginTop="16dp"
             android:orientation="vertical"
             android:visibility="visible">
-
-            <include
-                android:id="@+id/item_shipment_addon_product_level"
-                layout="@layout/item_shipment_addon_product"
-                tools:visibility="visible"/>
 
             <include
                 android:id="@+id/item_shipment_gifting_addon_product_level"

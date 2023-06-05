@@ -60,6 +60,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
@@ -326,7 +327,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             ShipmentCartItemViewHolder.LAYOUT -> {
-                return ShipmentCartItemViewHolder(view, this@ShipmentAdapter)
+                return ShipmentCartItemViewHolder(view, this@ShipmentAdapter, layoutInflater)
             }
 
             ShipmentCartItemExpandViewHolder.LAYOUT -> {
@@ -1326,6 +1327,14 @@ class ShipmentAdapter @Inject constructor(
     ) {
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
+    }
+
+    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel) {
+        shipmentAdapterActionListener.onCheckboxAddonProductListener(addOnProductDataItemModel)
+    }
+
+    override fun onClickAddonProductInfoIcon() {
+        shipmentAdapterActionListener.onClickAddonProductInfoIcon()
     }
 
     fun updateItem(item: Any, position: Int) {

@@ -162,6 +162,7 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.REQUEST_ADD_ON_PRODUCT_LEVEL_BOTTOMSHEET
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.data.request.DynamicDataPassingParamRequest.DynamicDataParam
@@ -3812,6 +3813,14 @@ class ShipmentFragment :
         if (isEligibleNewShippingExperience) {
             shipmentAdapter.updateShippingCompletionTickerVisibility()
         }
+    }
+
+    override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel) {
+        // TODO: adjust calculation
+    }
+
+    override fun onClickAddonProductInfoIcon() {
+        // TODO: open bottomsheet product info
     }
     // endregion
 

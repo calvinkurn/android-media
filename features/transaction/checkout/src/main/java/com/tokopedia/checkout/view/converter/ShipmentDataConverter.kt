@@ -578,7 +578,8 @@ class ShipmentDataConverter @Inject constructor() {
             warehouseId = groupShop.fulfillmentId.toString(),
             isTokoCabang = groupShop.isFulfillment,
             cartItemPosition = index,
-            addOnOrderLevelModel = addOnWordingModel
+            addOnOrderLevelModel = addOnWordingModel,
+            addOnProduct = product.addOnProduct
         )
     }
 

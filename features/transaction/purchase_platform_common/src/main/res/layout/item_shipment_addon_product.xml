@@ -14,8 +14,8 @@
     
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_product_addon"
-        android:layout_width="13dp"
-        android:layout_height="13dp"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
         app:icon_name="PRODUCT_ADD"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tv_title_addon_product"
@@ -33,6 +33,7 @@
         app:typographyWeight="bold"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_see_all_addon_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,13 +43,14 @@
         android:textColor="@color/Unify_GN500"
         tools:text="Lihat Semua"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_add_on_product"
+    <LinearLayout
+        android:id="@+id/ll_addon_product_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_addon_product"
-        android:layout_marginTop="15dp"/>
+        android:layout_marginTop="15dp"
+        android:orientation="vertical"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

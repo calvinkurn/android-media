@@ -12,6 +12,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import rx.subjects.PublishSubject
@@ -131,4 +132,8 @@ interface ShipmentAdapterActionListener {
     )
 
     fun updateShipmentCostModel()
+
+    fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel)
+
+    fun onClickAddonProductInfoIcon()
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
@@ -87,5 +88,6 @@ data class CartItemModel(
     val shouldShowShopInfo: Boolean = false,
     val shopTypeInfoData: ShopTypeInfoData = ShopTypeInfoData(),
     val cartStringOrder: String = "",
-    val originWarehouseIds: List<Long> = emptyList()
+    val originWarehouseIds: List<Long> = emptyList(),
+    val addOnProduct: AddOnProductDataModel = AddOnProductDataModel()
 ) : Parcelable, ShipmentCartItem
