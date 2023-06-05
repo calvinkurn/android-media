@@ -10,6 +10,8 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PERFORMANCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_UN_OPTIMIZED_GROUP
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
@@ -32,11 +34,10 @@ class GroupDetailMapper @Inject constructor() {
         TYPE_NEGATIVE_KEYWORD_BID to GroupInsightsUiModel()
     )
 
-    fun reArrangedDataMap(clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
+    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
         val map = mutableMapOf<Int, GroupDetailDataModel>()
         val position = chipsList.findPositionOfSelected { it.isSelected }
-        return if (position == TYPE_INSIGHT) {
-//            detailPageDataMap.remove(8)
+        return if (position == TYPE_INSIGHT || adGroupType == TYPE_SHOP_VALUE) {
             detailPageDataMap
             var isPresent = false
             detailPageDataMap.values.forEach {
@@ -47,7 +48,8 @@ class GroupDetailMapper @Inject constructor() {
             if (!isPresent && detailPageDataMap[TYPE_EMPTY_STATE] == null) {
                 addDataForUnoptimisedGroup()
             }
-            detailPageDataMap
+            handleChipsData(adGroupType)
+            detailPageDataMap.toSortedMap()
         } else {
             val selectedIndex = position + 2
             for (i in TYPE_INSIGHT..TYPE_CHIPS) {
@@ -66,7 +68,15 @@ class GroupDetailMapper @Inject constructor() {
                     map[i] = GroupInsightsUiModel()
                 }
             }
-            map
+            map.toSortedMap()
+        }
+    }
+
+    private fun handleChipsData(adGroupType: Int) {
+        if (adGroupType == TYPE_PRODUCT_VALUE) {
+            detailPageDataMap[TYPE_CHIPS] = GroupDetailChipsUiModel()
+        } else {
+            detailPageDataMap.remove(TYPE_CHIPS)
         }
     }
 

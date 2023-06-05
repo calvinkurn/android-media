@@ -24,6 +24,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
@@ -42,6 +43,7 @@ import javax.inject.Inject
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private var adType: String? = ""
+    private var insightType: Int = 0
     private var insightList: ArrayList<AdGroupUiModel>? = null
     private var adGroupId: String? = ""
     private var groupDetailsRecyclerView: RecyclerView? = null
@@ -59,13 +61,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private var onAccordianItemClick: (clickedItem: Int) -> Unit = { clickedItem ->
-        viewModel.reOrganiseData(clickedItem)
+        viewModel.reSyncDetailPageData(adGroupType = utils.convertAdTypeToInt(adType), clickedItem)
     }
 
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var utils: Utils
 
     private val viewModel: GroupDetailViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory)[GroupDetailViewModel::class.java]
@@ -93,15 +98,19 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private fun retrieveInitialData() {
-        insightList = arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
+        insightList =
+            arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
         adType = arguments?.getString("adType")
         val adGroupName = arguments?.getString("adGroupName")
         val adGroupId = arguments?.getString("groupId") ?: ""
-        val insightType = arguments?.getInt("insightType") ?: 0
+        insightType = arguments?.getInt("insightType") ?: 0
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
-        viewModel.selectDefaultChips(insightType, adType)
+        viewModel.selectDefaultChips(insightType)
         if (adType != null && adGroupId != null) {
-            loadData(if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE, adGroupId ?: "")
+            loadData(
+                if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
+                adGroupId
+            )
         }
     }
 
@@ -200,7 +209,10 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     }
 
     private val onChipClick: (Int) -> Unit = {
-        viewModel.reOrganiseData()
+        viewModel.reSyncDetailPageData(
+            adGroupType = utils.convertAdTypeToInt(adType),
+            clickedItem = TYPE_PRODUCT_VALUE
+        )
     }
 
     private fun onInsightTypeChipClick(groupList: MutableList<InsightListUiModel>?) {
@@ -232,7 +244,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 (it as? AdGroupUiModel)?.apply {
                     list.add(
                         ItemListUiModel(
-                            adType = if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
+                            adType = utils.convertAdTypeToInt(adType),
                             title = this.adGroupName,
                             groupId = this.adGroupID,
                             isSelected = this.adGroupID == this@GroupDetailFragment.adGroupId
@@ -256,6 +268,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId
+        this.insightType = if (adType == TYPE_PRODUCT_VALUE) 0 else 5
+        viewModel.selectDefaultChips(insightType)
         viewModel.loadDetailPageOnAction(
             adType,
             groupId,
