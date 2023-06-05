@@ -32,6 +32,7 @@ import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsM
 import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
@@ -351,6 +352,18 @@ class FeedFragment :
 
     override fun onMenuBottomSheetCloseClick(contentId: String) {
         // add analytics(if any)
+    }
+
+    override fun onFooterClicked() {
+        RouteManager.route(requireContext(), getString(com.tokopedia.content.common.R.string.content_user_report_footer_weblink))
+    }
+
+    override fun onReportClicked(item: PlayUserReportReasoningUiModel.Reasoning) {
+        feedPostViewModel.selectReport(item)
+    }
+
+    override fun onSubmitReport(desc: String) {
+        feedPostViewModel.submitReport(desc)
     }
 
     override fun onSharePostClicked(data: FeedShareModel, trackerModel: FeedTrackerDataModel) {

@@ -13,6 +13,7 @@ import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.content.common.report_content.model.UserReportOptions
 import com.tokopedia.content.common.usecase.GetUserReportListUseCase
+import com.tokopedia.content.common.usecase.PostUserReportUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -89,6 +90,7 @@ class FeedPostViewModel @Inject constructor(
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
     private val getReportUseCase: GetUserReportListUseCase,
+    private val postReportUseCase: PostUserReportUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -126,6 +128,11 @@ class FeedPostViewModel @Inject constructor(
     private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
     val userReportList get() =
         _userReport.value ?: Success(emptyList())
+
+    private val _selectedReport = MutableLiveData<PlayUserReportReasoningUiModel.Reasoning>()
+    val selectedReport get() = _selectedReport.value
+    private val _isReported = MutableLiveData<Result<Unit>>()
+    val isReported get() = _isReported.value
 
     fun fetchFeedPosts(
         source: String, isNewData: Boolean = false, postId: String? = null
@@ -775,6 +782,23 @@ class FeedPostViewModel @Inject constructor(
             _userReport.value = Success(mapped)
         }){
             _userReport.value = Fail(it)
+        }
+    }
+
+    fun selectReport(item: PlayUserReportReasoningUiModel.Reasoning) {
+        _selectedReport.value = item
+    }
+
+    fun submitReport(desc: String) {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+//                postReportUseCase.createParam()
+                postReportUseCase.executeOnBackground()
+            }
+            val isSuccess = response.submissionReport.status == "success"
+            _isReported.value = if (isSuccess) Success(Unit) else Fail(MessageErrorException())
+        }){
+            _isReported.value = Fail(it)
         }
     }
 

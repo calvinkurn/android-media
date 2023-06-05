@@ -99,15 +99,36 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
                 }
 
                 override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
-                    //TODO() open submission sheet
+                    submissionReportSheet.apply {
+                        setData(item)
+                    }.show(childFragmentManager)
+                    mListener?.onReportClicked(item)
                 }
 
-                override fun onFooterClicked() {}
+                override fun onFooterClicked() {
+                    mListener?.onFooterClicked()
+                }
             })
         }
     }
 
-    private val submissionReportSheet by lazyThreadSafetyNone {  }
+    private val submissionReportSheet by lazyThreadSafetyNone {
+        ContentSubmitReportBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader).apply {
+            setListener(object : ContentSubmitReportBottomSheet.Listener {
+                override fun onBackButtonListener() {
+                    dismiss()
+                }
+
+                override fun onFooterClicked() {
+                    mListener?.onFooterClicked()
+                }
+
+                override fun onSubmitReport(desc: String) {
+                    mListener?.onSubmitReport(desc)
+                }
+            })
+        }
+    }
     fun showReportLayoutWhenLaporkanClicked(data: Result<List<PlayUserReportReasoningUiModel>> = Success(emptyList())) {
         if (data is Success && data.data.isNotEmpty()) {
            reportSheet.apply {
@@ -220,5 +241,9 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
         fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String)
         fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param)
         fun onMenuBottomSheetCloseClick(contentId: String)
+
+        fun onFooterClicked()
+        fun onReportClicked(item: PlayUserReportReasoningUiModel.Reasoning)
+        fun onSubmitReport(desc: String)
     }
 }

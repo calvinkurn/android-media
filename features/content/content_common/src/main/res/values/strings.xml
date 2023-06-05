@@ -164,6 +164,7 @@
     <string name="content_user_report_header">Laporkan</string>
     <string name="content_user_report_submission_button">Laporkan</string>
     <string name="content_user_report_footer_weblink">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
+    <string name="content_user_report_text_area_min">%1$s Min. %2$d karakter</string>
 
     <string name="kol_action_share">Share</string>
     <string name="kol_action_like">Like</string>

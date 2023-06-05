@@ -22,7 +22,7 @@ class PlayUserReportSubmissionViewComponent(
     private val listener: Listener
 ) : ViewComponent(container, R.id.cl_user_report_submission_sheet) {
 
-    private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close)
+    private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close) //change R
 
     private val tvTitle: TextView = findViewById(R.id.tv_user_report_title)
     private val tvDesc: TextView = findViewById(R.id.tv_user_report_desc)
@@ -88,9 +88,9 @@ class PlayUserReportSubmissionViewComponent(
 
     private fun getFieldMessage(isError: Boolean) : String{
         return if(isError){
-            getString(R.string.play_user_report_text_area_min, errorFieldPrefix, minChar)
+            getString(commonR.string.content_user_report_text_area_min, errorFieldPrefix, minChar)
         }else{
-            getString(R.string.play_user_report_text_area_min, "", minChar)
+            getString(commonR.string.content_user_report_text_area_min, "", minChar)
         }
     }
 

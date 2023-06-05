@@ -117,12 +117,15 @@ class ContentReportBottomSheet : BottomSheetUnify() {
     companion object {
         private val TAG = "ContentReportBottomSheet"
 
+        fun get(fragmentManager: FragmentManager): ContentReportBottomSheet? {
+            return fragmentManager.findFragmentByTag(TAG) as? ContentReportBottomSheet
+        }
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentReportBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentReportBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            return get(fragmentManager) ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ContentReportBottomSheet::class.java.name
             ) as ContentReportBottomSheet
