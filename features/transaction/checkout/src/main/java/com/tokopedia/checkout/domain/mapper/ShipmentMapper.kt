@@ -1,23 +1,12 @@
 package com.tokopedia.checkout.domain.mapper
 
-import com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.AddOnWording
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CampaignTimer
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.UserAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.*
+import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
+import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
+import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
 import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
@@ -1070,10 +1059,10 @@ class ShipmentMapper @Inject constructor() {
 
     private fun mapPlatformFee(platformFee: ShipmentPlatformFee): ShipmentPlatformFeeData {
         return ShipmentPlatformFeeData(
-            isEnable = platformFee.isEnable,
-            errorWording = platformFee.errorWording,
-            additionalData = platformFee.additionalData,
-            profileCode = platformFee.profileCode
+                isEnable = platformFee.isEnable,
+                errorWording = platformFee.errorWording,
+                additionalData = platformFee.additionalData,
+                profileCode = platformFee.profileCode
         )
     }
 

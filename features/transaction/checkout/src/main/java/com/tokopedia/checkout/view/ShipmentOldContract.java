@@ -15,8 +15,8 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeD
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
-import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData;
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;

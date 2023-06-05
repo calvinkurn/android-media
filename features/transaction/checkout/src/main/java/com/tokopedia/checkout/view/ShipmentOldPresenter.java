@@ -52,6 +52,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeD
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
@@ -3372,6 +3373,36 @@ public class ShipmentOldPresenter extends BaseDaggerPresenter<ShipmentOldContrac
                     return Unit.INSTANCE;
                 }
         );
+    }
+
+    @Override
+    public void getDynamicPaymentFee(PaymentFeeCheckoutRequest request) {
+        getView().showPaymentFeeSkeletonLoading();
+
+        getPaymentFeeCheckoutUseCase.setParams(request);
+        getPaymentFeeCheckoutUseCase.execute(
+                platformFeeData -> {
+                    if (getView() != null) {
+                        if (platformFeeData.getResponse().getSuccess()) {
+                            getView().showPaymentFeeData(platformFeeData);
+                        } else {
+                            getView().showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
+                        }
+                    }
+                    return Unit.INSTANCE;
+                }, throwable -> {
+                    Timber.d(throwable);
+                    if (getView() != null) {
+                        getView().showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.getErrorWording());
+                    }
+                    return Unit.INSTANCE;
+                }
+        );
+    }
+
+    @Override
+    public ShipmentPlatformFeeData getShipmentPlatformFeeData() {
+        return shipmentPlatformFeeData;
     }
 
     @Override

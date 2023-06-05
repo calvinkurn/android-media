@@ -98,6 +98,9 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData;
 import com.tokopedia.checkout.domain.model.checkout.Prompt;
 import com.tokopedia.checkout.domain.model.checkout.TrackerData;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFee;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest;
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse;
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener;
@@ -111,6 +114,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
@@ -4322,7 +4326,7 @@ public class ShipmentOldFragment extends BaseCheckoutFragment implements Shipmen
     }
 
     @Override
-    public void showPlatformFeeTooltipInfoBottomSheet(ShipmentPaymentFeeModel platformFeeModel) {
+    public void showPlatformFeeTooltipInfoBottomSheet(@NonNull ShipmentPaymentFeeModel platformFeeModel) {
         View childView = View.inflate(getContext(), R.layout.bottom_sheet_platform_fee_info, null);
         Typography tvPlatformFeeInfo = childView.findViewById(R.id.tv_platform_fee_info);
         tvPlatformFeeInfo.setText(platformFeeModel.getTooltip());

@@ -132,8 +132,8 @@ class CheckoutModule constructor(private val shipmentFragment: ShipmentFragment)
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase,
-            ratesWithScheduleUseCase, updateDynamicDataPassingUseCase, dynamicPaymentFeeCheckoutUseCase
+            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase,
+                updateDynamicDataPassingUseCase, dynamicPaymentFeeCheckoutUseCase
         )
     }
 

@@ -2,7 +2,6 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
@@ -26,11 +25,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 
-class ShipmentCostViewHolder(
-    itemView: View,
-    private val layoutInflater: LayoutInflater,
-    private val shipmentAdapterActionListener: ShipmentAdapterActionListener
-) : RecyclerView.ViewHolder(itemView) {
+class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater,
+                             private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
 
     private val mRlShipmentCostLayout: RelativeLayout = itemView.findViewById(R.id.rl_shipment_cost)
     private val mTvTotalItemLabel: TextView = itemView.findViewById(R.id.tv_total_item_label)
@@ -254,7 +250,7 @@ class ShipmentCostViewHolder(
                 } else {
                     mTvPlatformSlashedFeeValue.gone()
                     mTvPlatformFeeValue.text = convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
-                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                    mTvPlatformFeeValue.setTextColor(ContextCompat.getColor(mTvPlatformFeeValue.context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 }
 
                 if (platformFeeModel.isShowTooltip) {
