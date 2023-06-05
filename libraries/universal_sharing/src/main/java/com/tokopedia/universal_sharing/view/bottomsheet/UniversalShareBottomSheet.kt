@@ -104,6 +104,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     @Inject lateinit var tracker: UniversalSharebottomSheetTracker
 
+    @Inject lateinit var imagePolicyUseCase: ImagePolicyUseCase
+
     // View
     private var fragmentView: View? = null
     private var bottomSheetListener: ShareBottomsheetListener? = null
@@ -438,7 +440,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         featureFlagRemoteConfigKey = remoteConfigKey
     }
 
-    fun updateThumbnailImage(imgUrl: String) {
+    private fun updateThumbnailImage(imgUrl: String) {
         if (!isInitialClickThumbnail) {
             imageThumbnailListener?.invoke(imgUrl)
         }
@@ -494,7 +496,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     /**
      * this function is deprecated and replaced with [setLinkProperties]
      */
-    @Deprecated("please use setLinkProperties to set ogImage")
+    @Deprecated("if you are enable enableDefaultShareIntent, please use setLinkProperties to set ogImage")
     fun setOgImageUrl(imgUrl: String) {
         ogImageUrl = imgUrl
     }
@@ -1080,10 +1082,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                     executePdpContextualImage(shareModel)
                 }
                 ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE -> {
-                    executeShopContextualImage(shareModel)
+                    executeContextualImage<ShopPageParamModel>(shareModel)
                 }
                 ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
-                    executeWishlistCollectionContextualImage(shareModel)
+                    executeContextualImage<WishlistCollectionParamModel>(shareModel)
                 }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
@@ -1096,44 +1098,30 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         }
     }
 
+    private inline fun <reified T : ImageGeneratorParamModel> executeContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is T)) return
+        (imageGeneratorParam as? PdpParamModel)?.apply {
+            this.platform = shareModel.platform
+        }
+
+        lifecycleScope.launchCatchError(block = {
+            val result = imagePolicyUseCase(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(listOfParams, shareModel)
+        }, onError = {
+                executeSharingFlow(shareModel)
+            })
+    }
+
     private fun executePdpContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
         (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
-            this.productImageUrl = transformOgImageURL(ogImageUrl)
+            this.productImageUrl = SharingUtil.transformOgImageURL(context, ogImageUrl)
         }
 
         lifecycleScope.launchCatchError(block = {
-            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
-            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(listOfParams, shareModel)
-        }, onError = {
-                executeSharingFlow(shareModel)
-            })
-    }
-
-    private fun executeShopContextualImage(shareModel: ShareModel) {
-        if (imageGeneratorParam == null || !(imageGeneratorParam is ShopPageParamModel)) return
-        (imageGeneratorParam as? ShopPageParamModel)?.apply {
-            this.platform = shareModel.platform
-        }
-
-        lifecycleScope.launchCatchError(block = {
-            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
-            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            executeImageGeneratorUseCase(listOfParams, shareModel)
-        }, onError = {
-                executeSharingFlow(shareModel)
-            })
-    }
-
-    private fun executeWishlistCollectionContextualImage(shareModel: ShareModel) {
-        if (imageGeneratorParam == null) return
-        imageGeneratorParam?.apply {
-            this.platform = shareModel.platform
-        }
-        lifecycleScope.launchCatchError(block = {
-            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val result = imagePolicyUseCase(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(listOfParams, shareModel)
         }, onError = {
@@ -1162,7 +1150,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             loaderUnify?.visibility = View.GONE
         }
         preserveImage = true
-        shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
+        shareModel.ogImgUrl = SharingUtil.transformOgImageURL(context, ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
         if (isDefaultShareIntent) {
             shareChannelClicked(shareModel)
@@ -1179,21 +1167,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         ) {
             shareModel.isAffiliate = true
         }
-    }
-
-    private fun transformOgImageURL(imageURL: String): String {
-        if (context != null) {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            val ogImageTransformationEnabled = remoteConfig.getBoolean(UniversalShareConst.RemoteConfigKey.GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
-            if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
-                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp") ||
-                    imageURL.endsWith(".jpeg.webp")
-                ) {
-                    return imageURL.replace(".webp", "")
-                }
-            }
-        }
-        return imageURL
     }
 
     private fun executeImageGeneratorUseCase(

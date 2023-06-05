@@ -515,4 +515,19 @@ object SharingUtil {
     fun clearState(screenshotDetector: ScreenshotDetector?) {
         screenshotDetector?.stop()
     }
+
+    fun transformOgImageURL(context: Context?, imageURL: String): String {
+        if (context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            val ogImageTransformationEnabled = remoteConfig.getBoolean(UniversalShareConst.RemoteConfigKey.GLOBAL_ENABLE_OG_IMAGE_TRANSFORM)
+            if (ogImageTransformationEnabled && !TextUtils.isEmpty(imageURL) && imageURL.endsWith(".webp")) {
+                if (imageURL.endsWith(".png.webp") || imageURL.endsWith(".jpg.webp") ||
+                    imageURL.endsWith(".jpeg.webp")
+                ) {
+                    return imageURL.replace(".webp", "")
+                }
+            }
+        }
+        return imageURL
+    }
 }

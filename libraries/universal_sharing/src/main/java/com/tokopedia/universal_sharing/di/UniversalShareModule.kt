@@ -8,6 +8,7 @@ import com.tokopedia.universal_sharing.data.api.ExtractBranchLinkApi
 import com.tokopedia.universal_sharing.data.model.BranchLinkErrorResponse
 import com.tokopedia.universal_sharing.data.repository.ExtractBranchLinkDataStore
 import com.tokopedia.universal_sharing.data.repository.ExtractBranchLinkRepository
+import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,7 +26,7 @@ open class UniversalShareModule {
     fun provideExtractBranchLinkApi(retrofitBuilder: Retrofit.Builder, logger: HttpLoggingInterceptor): ExtractBranchLinkApi {
         val baseUrl = "https://www.tokopedia.com/"
         return retrofitBuilder.client(
-                OkHttpClient.Builder()
+            OkHttpClient.Builder()
                 .addInterceptor(logger)
                 .addInterceptor(ErrorResponseInterceptor(BranchLinkErrorResponse::class.java))
                 .build()
@@ -35,6 +36,11 @@ open class UniversalShareModule {
     @Provides
     fun provideAffiliateUsecase(@ApplicationContext repo: GraphqlRepository): AffiliateEligibilityCheckUseCase {
         return AffiliateEligibilityCheckUseCase(repo)
+    }
+
+    @Provides
+    fun provideImagePolicyUsecase(@ApplicationContext repo: GraphqlRepository): ImagePolicyUseCase {
+        return ImagePolicyUseCase(repo)
     }
 
     @Provides
