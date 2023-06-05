@@ -48,8 +48,6 @@
         android:layout_gravity="center"
         android:id="@+id/new_label"
         android:layout_marginTop="5dp"
-        android:visibility="gone"
-        tools:visibility="visible"
         app:labelType="general_dark_red"
         app:labelTitle="Baru"
         android:layout_width="wrap_content"

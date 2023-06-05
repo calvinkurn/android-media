@@ -149,21 +149,6 @@ class EditorActivity : BaseEditorActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        try {
-            // needed when using `Baru` label on tools editor to refresh tool height between ucrop & image view
-            (fragment as EditorFragment).refreshToolAdapter()
-        } catch (e: Exception) {
-            newRelicLog(
-                mapOf(
-                    GENERAL_ERROR to "${e.message}"
-                )
-            )
-        }
-    }
-
     private fun saveImageToGallery() {
         val listImageEditState = viewModel.editStateList.values.toList()
         viewModel.saveToGallery(

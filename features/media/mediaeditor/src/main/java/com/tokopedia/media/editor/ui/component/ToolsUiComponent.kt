@@ -23,7 +23,7 @@ class ToolsUiComponent constructor(
 
     private val lstTool: RecyclerView = findViewById(R.id.lst_tool)
 
-    // set to -1 to clear label "Baru"
+    // set to EditorToolAdapter.EMPTY_LABEL_STATE to clear label "Baru"
     private val newLabelShow = EditorToolType.ADD_TEXT
 
     private val adapter by lazy {
@@ -44,7 +44,7 @@ class ToolsUiComponent constructor(
 
         adapter.addItem(tools.create())
 
-        if (newLabelShow != -1) {
+        if (newLabelShow != EditorToolAdapter.EMPTY_LABEL_STATE) {
             findViewById<RelativeLayout>(R.id.uc_editor_tool_container).apply {
                 updatePadding(bottom = TOOL_LABEL_PADDING.toPx())
             }

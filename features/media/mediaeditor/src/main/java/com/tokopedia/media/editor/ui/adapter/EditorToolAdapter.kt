@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
@@ -73,10 +74,19 @@ class EditorToolAdapter constructor(
             }
         }
 
-        holder.bind(toolModel, isActive, toolModel.id == newLabelShow)
+        holder.bind(
+            toolModel,
+            isActive,
+            toolModel.id == newLabelShow,
+            newLabelShow > EMPTY_LABEL_STATE
+        )
     }
 
     override fun getItemCount() = tools.size
+
+    companion object {
+        const val EMPTY_LABEL_STATE = -1
+    }
 }
 
 class EditorToolViewHolder(
@@ -91,7 +101,7 @@ class EditorToolViewHolder(
 
     private val context = view.context
 
-    fun bind(tool: ToolUiModel, isActive: Boolean = false, isShowNewLabel: Boolean = false) {
+    fun bind(tool: ToolUiModel, isActive: Boolean = false, isShowNewLabel: Boolean = false, isLabeledSize: Boolean) {
         txtName.text = context.getString(tool.name)
         when (tool.id) {
             EditorToolType.REMOVE_BACKGROUND -> {
@@ -110,7 +120,12 @@ class EditorToolViewHolder(
         }
 
         toolNotification.showWithCondition(isActive)
-        newLabel.showWithCondition(isShowNewLabel)
+
+        if (isLabeledSize) {
+            newLabel.visibleWithCondition(isShowNewLabel)
+        } else {
+            newLabel.showWithCondition(isShowNewLabel)
+        }
     }
 
     companion object {
