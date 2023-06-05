@@ -472,13 +472,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun addBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
             if (_bannerPreparation.value.contains(data)) return@launchCatchError
-            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
+            _bannerPreparation.update { it + data }
         }, onError = {})
     }
 
     private fun removeBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
+            _bannerPreparation.update { it - data }
         }, onError = {})
     }
 
