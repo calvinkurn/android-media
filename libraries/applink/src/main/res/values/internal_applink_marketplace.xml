@@ -22,7 +22,6 @@
     <string name="path_cart" translatable="false">/cart</string>
     <string name="path_checkout" translatable="false">/checkout</string>
     <string name="path_normal_checkout" translatable="false">/normal-checkout</string>
-    <string name="path_checkout_address_selection" translatable="false">/checkout-address-selection</string>
     <string name="path_one_click_checkout" translatable="false">/one-click-checkout</string>
     <string name="path_add_on_gifting" translatable="false">/add-on-gifting</string>
 
@@ -46,12 +45,11 @@
     <string name="path_stock_reminder" translatable="false">/stock-reminder/.*\\/.*\\/.*</string>
     <string name="path_reserved_stock" translatable="false">/reserved-stock/.*\\/.*\\/</string>
     <string name="path_create_review" translatable="false">/product-review/create/.*\\/.*\\/</string>
-    <string name="path_bulk_create_review" translatable="false">/product-review/bulk-create/</string>
+    <string name="path_bulk_create_review" translatable="false">/product-review/bulk-create</string>
     <string name="path_edit_review" translatable="false">/product-review/edit/.*\\/.*\\/</string>
     <string name="path_review_credibility" translatable="false">/review/credibility/.*\\/.*\\/</string>
     <string name="path_review_media_gallery" translatable="false">/review/media-gallery</string>
     <string name="path_product_review_gallery" translatable="false">/product/.*\\/review/gallery</string>
-    <string name="path_product_review_gallery_old" translatable="false">/product/.*\\/review/gallery-old</string>
     <string name="path_product_report" translatable="false">/product-report/.*\\/</string>
     <string name="path_qr_scanner" translatable="false">/qr-scanner/.*\\/</string>
     <string name="path_shop_open" translatable="false">/shop-open</string>
@@ -111,7 +109,9 @@
     <string name="path_chat_template_setting">/chat/settings/templatechat</string>
     <string name="path_chat_setting">/chat/settings</string>
     <string name="path_notification">/notification</string>
+    <string name="host_notif_center" translatable="false">notif-center</string>
     <string name="path_notification_buyer_info" translatable="false">/notif-center</string>
+    <string name="path_notification_affiliate" translatable="false">/affiliate</string>
     <string name="path_notification_buyer_info_id" translatable="false">/notif-center/.*\\/</string>
 
     <string name="path_product_ar">/productar/.*\\/</string>

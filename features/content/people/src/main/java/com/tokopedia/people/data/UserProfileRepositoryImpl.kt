@@ -1,9 +1,8 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.usecase.GetWhiteListUseCase
 import com.tokopedia.content.common.types.ContentCommonUserType
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
@@ -11,10 +10,17 @@ import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Com
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
-import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.GetProfileSettingsRequest
 import com.tokopedia.people.model.SetProfileSettingsRequest
 import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.domains.GetUserProfileTabUseCase
+import com.tokopedia.people.domains.PlayPostContentUseCase
+import com.tokopedia.people.domains.PostBlockUserUseCase
+import com.tokopedia.people.domains.ProfileTheyFollowedUseCase
+import com.tokopedia.people.domains.UserDetailsUseCase
+import com.tokopedia.people.domains.VideoPostReminderUseCase
+import com.tokopedia.people.domains.GetProfileSettingsUseCase
+import com.tokopedia.people.domains.SetProfileSettingsUseCase
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
@@ -38,7 +44,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val playVodUseCase: PlayPostContentUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistNewUseCase: GetWhiteListNewUseCase,
+    private val getWhitelistUseCase: GetWhiteListUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
@@ -66,7 +72,7 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getWhitelist(): ProfileWhitelistUiModel {
         return withContext(dispatcher.io) {
-            val result = getWhitelistNewUseCase.execute(WHITELIST_ENTRY_POINT)
+            val result = getWhitelistUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
 
             mapper.mapUserWhitelist(result)
         }
@@ -80,14 +86,18 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFeedPosts(userID: String, cursor: String, limit: Int): UserFeedPostsUiModel {
+    override suspend fun getFeedPosts(
+        userID: String,
+        cursor: String,
+        limit: Int
+    ): UserFeedPostsUiModel {
         return withContext(dispatcher.io) {
             return@withContext mapper.mapFeedPosts(
                 getUserProfileFeedPostsUseCase.executeOnBackground(
                     userID = userID,
                     cursor = cursor,
-                    limit = limit,
-                ),
+                    limit = limit
+                )
             )
         }
     }
@@ -105,20 +115,21 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel = withContext(dispatcher.io) {
-        val result = shopRecomUseCase.executeOnBackground(
-            screenName = VAL_SCREEN_NAME_USER_PROFILE,
-            limit = VAL_LIMIT,
-            cursor = cursor,
-        )
+    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel =
+        withContext(dispatcher.io) {
+            val result = shopRecomUseCase.executeOnBackground(
+                screenName = VAL_SCREEN_NAME_USER_PROFILE,
+                limit = VAL_LIMIT,
+                cursor = cursor
+            )
 
-        return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
-    }
+            return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
+        }
 
     override suspend fun getUserProfileTab(userID: String): ProfileTabUiModel {
         return withContext(dispatcher.io) {
             val result = getUserProfileTabUseCase.executeOnBackground(
-                userID = userID,
+                userID = userID
             )
             return@withContext mapper.mapProfileTab(result)
         }

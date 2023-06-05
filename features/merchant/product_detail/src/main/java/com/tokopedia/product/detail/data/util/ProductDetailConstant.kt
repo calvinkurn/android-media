@@ -86,6 +86,7 @@ object ProductDetailConstant {
     const val INFO_OBAT_KERAS = "info_obat_keras"
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
+    const val ONGOING_CAMPAIGN = "ongoing_campaign"
     const val MEDIA = "product_media"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
@@ -108,8 +109,10 @@ object ProductDetailConstant {
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
     const val DILAYANI_TOKOPEDIA = "dt_info"
     const val AR_BUTTON = "button_ar"
+
     // custom info title as component type
     const val CUSTOM_INFO_TITLE = "custom_info_title"
+
     // custom info title as component name
     const val OTHER_OFFERS = "other_offers"
 
@@ -193,4 +196,7 @@ object ProductDetailConstant {
     const val ADD_WISHLIST = "true"
     const val REMOVE_WISHLIST = "false"
     const val PDP_SOURCE_WISHLIST = "pdp"
+
+    const val HTTP_PREFIX = "http"
+    const val WEBVIEW_URL_PARAM = "url"
 }

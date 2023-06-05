@@ -198,39 +198,74 @@ class HotelCancellationFragment : HotelBaseFragment() {
             if (it.desc.isEmpty()) {
                 binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.hide()
             } else {
-                val description = it.desc.replace(getString(R.string.hotel_cancellation_hyperlink_open_tag), getString(R.string.hotel_cancellation_a_hyperlink_open_tag))
-                        .replace(getString(R.string.hotel_cancellation_hyperlink_close_tag), getString(R.string.hotel_cancellation_a_hyperlink_close_tag))
-                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setHtmlDescription(description)
-                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.isClickable = it.isClickable
-                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.tickerShape = Ticker.SHAPE_LOOSE
-                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                context?.let { context ->
+                    val description = it.desc.replace(
+                        context.resources.getString(R.string.hotel_cancellation_hyperlink_open_tag),
+                        context.resources.getString(R.string.hotel_cancellation_a_hyperlink_open_tag)
+                    )
+                        .replace(
+                            context.resources.getString(R.string.hotel_cancellation_hyperlink_close_tag),
+                            context.resources.getString(R.string.hotel_cancellation_a_hyperlink_close_tag)
+                        )
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setHtmlDescription(
+                        description
+                    )
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.isClickable =
+                        it.isClickable
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.tickerShape =
+                        Ticker.SHAPE_LOOSE
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.tickerType =
+                        Ticker.TYPE_ANNOUNCEMENT
 
-                if (it.isClickable) {
-                    cancelInfoBottomSheet.setTitle(it.longDesc.title)
-                    val typography = AppCompatTextView(requireContext())
-                    typography.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.body_3))
-                    typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
-                    typography.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT)
-                    typography.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
-                    typography.setLineSpacing(ADD_LINE_SPACING, MUL_LINE_SPACING)
-                    typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                    cancelInfoBottomSheet.setChild(typography)
+                    if (it.isClickable) {
+                        cancelInfoBottomSheet.setTitle(it.longDesc.title)
+                        val typography = AppCompatTextView(requireContext())
+                        typography.setTextSize(
+                            TypedValue.COMPLEX_UNIT_PX,
+                            context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.body_3)
+                        )
+                        typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
+                        typography.layoutParams = ViewGroup.MarginLayoutParams(
+                            ViewGroup.MarginLayoutParams.MATCH_PARENT,
+                            ViewGroup.MarginLayoutParams.WRAP_CONTENT
+                        )
+                        typography.setMargin(
+                            0,
+                            0,
+                            0,
+                            context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+                        )
+                        typography.setLineSpacing(ADD_LINE_SPACING, MUL_LINE_SPACING)
+                        typography.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            )
+                        )
+                        cancelInfoBottomSheet.setChild(typography)
 
-                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setDescriptionClickEvent(
+                            object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    fragmentManager?.let { fm ->
+                                        cancelInfoBottomSheet.show(
+                                            fm,
+                                            ""
+                                        )
+                                    }
+                                }
+
+                                override fun onDismiss() {
+                                    //do nothing
+                                }
+                            })
+
+                        binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setOnClickListener {
                             fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
                         }
-
-                        override fun onDismiss() {
-                            //do nothing
-                        }
-                    })
-
-                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setOnClickListener {
-                        fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
+                    } else {
+                        //do nothing
                     }
-                }else{
-                    //do nothing
                 }
             }
         }

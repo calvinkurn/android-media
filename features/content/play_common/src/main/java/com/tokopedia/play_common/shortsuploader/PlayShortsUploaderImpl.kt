@@ -27,18 +27,31 @@ class PlayShortsUploaderImpl @Inject constructor(
         )
     }
 
-    override fun observe(owner: LifecycleOwner, observer: (progress: Int, uploadData: PlayShortsUploadModel) -> Unit) {
+    override fun observe(
+        owner: LifecycleOwner,
+        observer: (progress: Int, uploadData: PlayShortsUploadModel) -> Unit
+    ): Observer<List<WorkInfo>> {
+        val workObserver = Observer<List<WorkInfo>> {
+            it.firstOrNull()?.let { workInfo ->
+                if(workInfo.state == WorkInfo.State.RUNNING) {
+                    val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
+                    val uploadData = PlayShortsUploadModel.parse(workInfo.progress.getString(PlayShortsUploadConst.UPLOAD_DATA).orEmpty())
+
+                    observer(progress, uploadData)
+                }
+            }
+        }
+
         workManager
             .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
-            .observe(owner, Observer {
-                it.firstOrNull()?.let { workInfo ->
-                    if(workInfo.state == WorkInfo.State.RUNNING) {
-                        val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
-                        val uploadData = PlayShortsUploadModel.parse(workInfo.progress.getString(PlayShortsUploadConst.UPLOAD_DATA).orEmpty())
+            .observe(owner, workObserver)
 
-                        observer(progress, uploadData)
-                    }
-                }
-            })
+        return workObserver
+    }
+
+    override fun cancelObserve(observer: Observer<List<WorkInfo>>) {
+        workManager
+            .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
+            .removeObserver(observer)
     }
 }

@@ -8,6 +8,8 @@ interface EventKeys {
         const val PROMOTIONS = "promotions"
         const val PAGE_PATH = "pagePath"
         const val SESSION_IRIS = "sessionIris"
+        const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+        const val SCREEN_NAME = "screenName"
         const val VIEW_CONTENT_IRIS = "viewContentIris"
         const val ITEMS = "items"
         const val ITEM_LIST = "item_list"
@@ -18,6 +20,7 @@ interface EventKeys {
 
         const val BUSINESS_UNIT_VALUE = "Physical Goods"
         const val CURRENT_SITE_VALUE = "tokopediamarketplace"
+        const val OPEN_SCREEN = "openScreen"
 
         const val INDEX = "index"
         const val ITEM_BRAND = "item_brand"
@@ -99,7 +102,7 @@ interface ActionKeys {
         const val CLICK_CATALOG_ON_MOST_VIRAL_CATALOG_IN_CATEGORY =
             "click on most viral catalog in category"
         const val CLICK_ON_CATALOG_LIST_IN_CATEGORY = "click on catalog list in category"
-        const val CLICK_ON_CATALOG = "click catalog "
+        const val CLICK_ON_CATALOG = "click catalog"
     }
 }
 
@@ -124,6 +127,7 @@ interface TrackerId {
         const val CLICK_CATALOG_ON_MOST_VIRAL_CATALOG_IN_CATEGORY = "33789"
         const val CLICK_ON_CATALOG_LIST_IN_CATEGORY = "33790"
         const val CLICK_ON_CATALOG_LIST_IN_BRAND = "37376"
+        const val OPEN_SCREEN_CLP = "37805"
 
         const val IMPRESSION_ON_CATEGORY_LIST = "33791"
         const val IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING = "37382"

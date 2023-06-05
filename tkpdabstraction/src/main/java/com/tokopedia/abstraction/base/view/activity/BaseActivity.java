@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
+import com.tokopedia.abstraction.base.view.listener.TouchListenerActivity;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -44,7 +45,7 @@ import timber.log.Timber;
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements
-        ErrorNetworkReceiver.ReceiveListener {
+        ErrorNetworkReceiver.ReceiveListener, TouchListenerActivity {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String FORCE_LOGOUT_V2 = "com.tokopedia.tkpd.FORCE_LOGOUT_v2";

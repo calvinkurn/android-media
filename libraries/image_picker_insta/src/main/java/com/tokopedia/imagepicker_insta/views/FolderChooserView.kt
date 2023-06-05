@@ -1,5 +1,6 @@
 package com.tokopedia.imagepicker_insta.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -39,6 +40,7 @@ class FolderChooserView @JvmOverloads constructor(
         adapter.onClick = onClick
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(list:List<FolderData>){
         dataList.clear()
         dataList.addAll(list)
