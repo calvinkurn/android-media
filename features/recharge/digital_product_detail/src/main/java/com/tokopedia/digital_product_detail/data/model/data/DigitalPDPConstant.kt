@@ -45,4 +45,6 @@ object DigitalPDPConstant {
 
     const val OTHER_COMPONENT_APPLINK_OMNI = "applink_omni"
     const val APPLINK_OMNI_DATA_CODE = "omni_applink_data_code"
+
+    const val EXTRA_CHECK_BALANCE_ACCESS_TOKEN = "indosat_check_balance"
 }

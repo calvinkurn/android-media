@@ -1,15 +1,17 @@
 package com.tokopedia.digital_product_detail.presentation.webview
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.webkit.WebView
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN
 import com.tokopedia.digital_product_detail.databinding.FragmentRechargeCheckBalanceWebViewBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
-class RechargeCheckBalanceWebViewFragment: BaseSessionWebViewFragment() {
+class RechargeCheckBalanceWebViewFragment : BaseSessionWebViewFragment() {
 
     private var binding by autoClearedNullable<FragmentRechargeCheckBalanceWebViewBinding>()
     private var webUrl = ""
@@ -36,7 +38,12 @@ class RechargeCheckBalanceWebViewFragment: BaseSessionWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         if (url.isNotEmpty() && url.contains(ApplinkConst.INDOSAT_CHECK_BALANCE)) {
-            activity?.setResult(Activity.RESULT_OK)
+            // TODO: [Misael] get access token
+            val accessToken = ""
+            val intent = Intent().apply {
+                putExtra(EXTRA_CHECK_BALANCE_ACCESS_TOKEN, accessToken)
+            }
+            activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
             return true
         }

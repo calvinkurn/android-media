@@ -43,6 +43,7 @@ import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DEFAULT_ICON_RES
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_CHECK_BALANCE_ACCESS_TOKEN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
@@ -722,8 +723,10 @@ class DigitalPDPPulsaFragment :
     private fun onSuccessSaveAccessToken(data: DigitalSaveAccessTokenResultModel) {
         if (data.isSuccess) {
             getIndosatCheckBalance()
+            println("SUCCESS GAN")
         } else {
             showErrorToaster(MessageErrorException(data.message))
+            println("FAILED GAN")
         }
     }
 
@@ -1686,8 +1689,9 @@ class DigitalPDPPulsaFragment :
                 showErrorFromCheckout(data)
             } else if (requestCode == REQUEST_CODE_INDOSAT_CHECK_BALANCE) {
                 if (data != null) {
-                    val accessToken = data.getStringExtra(EXTRA_CALLBACK_CLIENT_NUMBER) ?: ""
+                    val accessToken = data.getStringExtra(EXTRA_CHECK_BALANCE_ACCESS_TOKEN) ?: ""
                     saveIndosatAccessToken(accessToken)
+                    println("EKSEKUSI GAN")
                 }
             }
         }

@@ -57,6 +57,7 @@ class RechargeCheckBalanceOTPBottomSheet : BottomSheetUnify() {
             bottomsheetOtpButton.text = bottomSheetModel.buttonText
             bottomsheetOtpButton.setOnClickListener {
                 mListener?.onClickButton(bottomSheetModel.buttonAppLink)
+                dismiss()
             }
             mListener?.onRenderCheckBalanceOTPBottomSheet()
         }
