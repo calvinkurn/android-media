@@ -504,30 +504,30 @@ class DynamicProductDetailViewModel @Inject constructor(
             forceRefresh = refreshPage
             userLocationCache = userLocationLocal
             getPdpLayout(
-                productParams.productId ?: "",
-                productParams.shopDomain
-                    ?: "",
-                productParams.productName ?: "",
-                productParams.warehouseId
-                    ?: "",
-                layoutId,
-                extParam
-            ).also {
+                productId = productParams.productId.orEmpty(),
+                shopDomain = productParams.shopDomain.orEmpty(),
+                productKey = productParams.productName.orEmpty(),
+                whId = productParams.warehouseId.orEmpty(),
+                layoutId = layoutId,
+                extParam = extParam
+            ).also { pdpLayout ->
                 /**
                  * When wishlist clicked, so viewModel should hit addWishlist api and refresh page.
                  * refresh page in p1 the isWishlist field value doesn't updated, should updated after hit p2Login.
                  * so then, for keep wishlist value didn't replace from p1, so using previous value
                  */
                 val isWishlist = getDynamicProductInfoP1?.data?.isWishlist.orFalse()
-                getDynamicProductInfoP1 = it.layoutData.also {
-                    listOfParentMedia = it.data.media.toMutableList()
-                }.run {
+                getDynamicProductInfoP1 = pdpLayout.layoutData.run {
+                    listOfParentMedia = data.media.toMutableList()
                     copy(data = data.copy(isWishlist = isWishlist))
                 }
 
-                variantData =
-                    if (getDynamicProductInfoP1?.isProductVariant() == false) null else it.variantData
-                parentProductId = it.layoutData.parentProductId
+                variantData = if (getDynamicProductInfoP1?.isProductVariant() == false) {
+                    null
+                } else {
+                    pdpLayout.variantData
+                }
+                parentProductId = pdpLayout.layoutData.parentProductId
 
                 // Remove all component that can be remove by using p1 data
                 // So we don't have to inflate to UI
@@ -535,7 +535,7 @@ class DynamicProductDetailViewModel @Inject constructor(
                     getDynamicProductInfoP1,
                     variantData,
                     isShopOwner(),
-                    it.listOfLayout
+                    pdpLayout.listOfLayout
                 )
 
                 // Render initial data
