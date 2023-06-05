@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokofood.feature.ordertracking.base.presentation.fragment.BaseTokoFoodOrderTrackingFragment
 import com.tokopedia.tokofood.feature.ordertracking.di.component.DaggerTokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -44,6 +45,11 @@ class TokoFoodOrderTrackingActivity :
                 val orderIdParam = params[DeeplinkMapperTokoFood.PATH_ORDER_ID].orEmpty()
                 putString(DeeplinkMapperTokoFood.PATH_ORDER_ID, orderIdParam)
             }
+        }?.apply {
+            putBoolean(
+                TokoChatValueUtil.IS_FROM_BUBBLE_KEY,
+                intent.getBooleanExtra(TokoChatValueUtil.IS_FROM_BUBBLE_KEY, false)
+            )
         }
         return BaseTokoFoodOrderTrackingFragment.newInstance(bundle)
     }

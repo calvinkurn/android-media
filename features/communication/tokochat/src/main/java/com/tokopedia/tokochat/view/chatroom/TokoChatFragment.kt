@@ -59,6 +59,7 @@ import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DEFAULT_CENSOR_PERCENTAGE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.IS_FROM_BUBBLE_KEY
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
@@ -191,7 +192,8 @@ open class TokoChatFragment :
         val shouldShowBubblesAwarenessBottomSheet =
             TokoChatValueUtil.shouldShowBubblesAwareness() &&
                 (activity?.isFromBubble() == false) &&
-                viewModel.shouldShowBottomsheetBubblesCache()
+                viewModel.shouldShowBottomsheetBubblesCache() &&
+                !viewModel.isFromBubble
 
         return if (shouldShowBubblesAwarenessBottomSheet) {
             showBubblesAwarenessBottomSheet()
@@ -342,6 +344,17 @@ open class TokoChatFragment :
                 savedInstanceState,
                 ""
             )
+        }
+
+        // Only set the flag when detected or has param extra
+        val isFromBubbleExtra = getParamBoolean(
+            IS_FROM_BUBBLE_KEY,
+            arguments,
+            savedInstanceState,
+            false
+        )
+        if (activity?.isFromBubble() == true || isFromBubbleExtra) {
+            viewModel.isFromBubble = true
         }
     }
 
@@ -598,7 +611,8 @@ open class TokoChatFragment :
     private fun addBubbleTicker() {
         if (TokoChatValueUtil.shouldShowBubblesAwareness() &&
             viewModel.shouldShowTickerBubblesCache() &&
-            (activity?.isFromBubble() == false)
+            (activity?.isFromBubble() == false) &&
+            !viewModel.isFromBubble
         ) {
             val tickerBubble = TokoChatReminderTickerUiModel(
                 message = getString(com.tokopedia.tokochat_common.R.string.tokochat_bubbles_ticker_desc),
@@ -1051,7 +1065,11 @@ open class TokoChatFragment :
         } else {
             if (appLink.isNotBlank()) {
                 context?.let {
-                    RouteManager.route(it, appLink)
+                    val intent = RouteManager.getIntent(it, appLink)
+                    if (viewModel.isFromBubble) {
+                        intent.putExtra(IS_FROM_BUBBLE_KEY, true)
+                    }
+                    startActivity(intent)
                 }
             }
         }
@@ -1357,7 +1375,9 @@ open class TokoChatFragment :
     }
 
     private fun setupTrackers() {
-        tokoChatAnalytics = TokoChatAnalytics(isFromBubble = activity?.isFromBubble() ?: false)
+        tokoChatAnalytics = TokoChatAnalytics(
+            isFromBubble = (activity?.isFromBubble() ?: false) || viewModel.isFromBubble
+        )
 
         getComposeMessageArea()?.setTracker(
             trackOnClickComposeArea = {

@@ -72,4 +72,9 @@ object TokoChatValueUtil {
             CONSENT_ID_PROD
         }
     }
+
+    /**
+     * TokoChat Bubbles
+     */
+    const val IS_FROM_BUBBLE_KEY = "isFromBubble"
 }
