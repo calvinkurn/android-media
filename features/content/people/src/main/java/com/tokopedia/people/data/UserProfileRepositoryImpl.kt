@@ -24,6 +24,8 @@ import com.tokopedia.people.domains.UserDetailsUseCase
 import com.tokopedia.people.domains.VideoPostReminderUseCase
 import com.tokopedia.people.domains.GetProfileSettingsUseCase
 import com.tokopedia.people.domains.SetProfileSettingsUseCase
+import com.tokopedia.people.domains.GetUserReviewListUseCase
+import com.tokopedia.people.domains.SetLikeStatusUseCase
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
