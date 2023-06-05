@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.NAVSOURCE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.OB
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.PAGE
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.ROWS
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SOURCE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_PAGE_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.UNIQUE_ID
@@ -34,6 +35,7 @@ class GetCategoryProductUseCase @Inject constructor(
         const val USE_PAGE_VALUE = "true"
         const val SOURCE_VALUE = "category_tokonow_directory"
         const val PAGE_VALUE = "1"
+        const val ROWS_VALUE = "6"
     }
 
     private val graphql by lazy { GraphqlUseCase<AceSearchProductModel>(graphqlRepository) }
@@ -76,6 +78,7 @@ class GetCategoryProductUseCase @Inject constructor(
             queryParams[NAVSOURCE] = SOURCE_VALUE
             queryParams[SOURCE] = SOURCE_VALUE
             queryParams[SRP_PAGE_ID] = categoryIdL2
+            queryParams[ROWS] = ROWS_VALUE
 
             setRequestParams(
                 RequestParams.create().apply {

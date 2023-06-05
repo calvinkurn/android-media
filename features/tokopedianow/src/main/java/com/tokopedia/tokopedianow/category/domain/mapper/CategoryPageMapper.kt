@@ -1,5 +1,6 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.category.domain.mapper.MiniCartMapper.getAddToCartQuantity
@@ -67,7 +68,7 @@ internal object CategoryPageMapper {
             )
         },
         title = title,
-        seeAllAppLink = seeAllAppLink,
+        seeAllAppLink = if (searchProduct.header.totalData > MAX_SHOWCASE_PRODUCT) seeAllAppLink else String.EMPTY,
         state = state
     )
 }
