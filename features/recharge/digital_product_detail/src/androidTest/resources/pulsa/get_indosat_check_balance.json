@@ -1,0 +1,62 @@
+[
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "items": [
+          {
+            "title": "Detail Paket",
+            "subtitle": "",
+            "iconURL": "https://images.tokopedia.net/img/SnKlQx/2022/1/6/3164b99c-3b8d-47eb-bb60-0c781cf86c34.png",
+            "mediaURL": "",
+            "label1": "",
+            "textLink": "",
+            "appLink": "",
+            "mediaUrlType": "",
+            "campaignLabelText": "Ada paket kamu yang berakhir \u003cb\u003e2 hari lagi\u003c/b\u003e",
+            "campaignLabelTextColor": "#F94D63",
+            "widgets": [
+              {
+                "title": "Internet",
+                "subtitle": "\u003cb\u003e108 GB\u003c/b\u003e",
+                "iconURL": "https://images.tokopedia.net/img/SnKlQx/2022/1/6/3164b99c-3b8d-47eb-bb60-0c781cf86c34.png"
+              },
+              {
+                "title": "Telepon",
+                "subtitle": "\u003cb\u003e71 Menit\u003c/b\u003e",
+                "iconURL": "https://images.tokopedia.net/img/recharge/operator/simpati_2.png"
+              },
+              {
+                "title": "SMS",
+                "subtitle": "\u003cb\u003e164 SMS\u003c/b\u003e",
+                "iconURL": "https://images.tokopedia.net/img/recharge/operator/simpati_2.png"
+              }
+            ],
+            "products": [
+              {
+                "title": "Freedom Internet 2.5GB",
+                "subtitle": "Berakhir dalam 2 hari",
+                "subtitleColor": "#F94D63",
+                "applink": "tokopedia://digital/cart?category_id\u003d55\u0026client_number\u003d087820903964\u0026idem_potency_key\u003d1681212441-55-087820903964-26766-5\u0026operator_id\u003d5\u0026product_id\u003d26766",
+                "buttonText": "Beli Lagi"
+              },
+              {
+                "title": "Freedom Internet 2GB + Bonus Kuota Zona Hingga 2GB",
+                "subtitle": "Berakhir dalam 3 hari",
+                "subtitleColor": "#F94D63",
+                "applink": "tokopedia://digital/cart?category_id\u003d55\u0026client_number\u003d087820903964\u0026idem_potency_key\u003d1681212441-55-087820903964-26766-5\u0026operator_id\u003d5\u0026product_id\u003d26766",
+                "buttonText": "Beli Lagi"
+              },
+              {
+                "title": "Freedom U 45GB",
+                "subtitle": "Berakhir dalam 30 hari",
+                "subtitleColor": "#6D7588",
+                "applink": "",
+                "buttonText": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]
