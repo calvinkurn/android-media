@@ -85,7 +85,7 @@
         android:id="@+id/content_list"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintTop_toBottomOf="@id/text_list_header"
-        tools:listitem="@layout/listitem_contact_us_migration" />
+        tools:listitem="@layout/item_chatbot_contact_us_migration" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_tokopedia_care"
