@@ -11,7 +11,7 @@ import com.tokopedia.digital_product_detail.databinding.FragmentRechargeCheckBal
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.webview.BaseSessionWebViewFragment
 
-class RechargeCheckBalanceWebViewFragment : BaseSessionWebViewFragment() {
+class RechargeCheckBalanceWebViewFragment: BaseSessionWebViewFragment() {
 
     private var binding by autoClearedNullable<FragmentRechargeCheckBalanceWebViewBinding>()
     private var webUrl = ""

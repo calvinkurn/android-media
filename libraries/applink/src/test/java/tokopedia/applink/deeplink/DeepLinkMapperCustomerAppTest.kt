@@ -23,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 227
+        const val SIZE_MAPPER = 228
     }
 
     override fun setup() {
@@ -2229,6 +2229,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         val eduAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/edu-page"
         assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_EDU_PAGE, eduAppLink)
+
+        val promoPageAppLink = "${DeeplinkConstant.SCHEME_INTERNAL}://affiliate/promosikan"
+        assertEqualsDeepLinkMapper(ApplinkConst.AFFILIATE_TOKO_PROMO_PAGE, promoPageAppLink)
     }
 
     @Test

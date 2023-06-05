@@ -111,13 +111,11 @@ class RechargeCheckBalanceWidget @JvmOverloads constructor(
     }
 
     fun hideLocalLoad() {
-        binding.checkBalanceLocalload.run {
-            binding.run {
-                checkBalanceRv.show()
-                checkBalanceWarningContainer.show()
-                checkBalanceLocalload.setOnClickListener { }
-                checkBalanceLocalload.hide()
-            }
+        binding.run {
+            checkBalanceRv.show()
+            checkBalanceWarningContainer.show()
+            checkBalanceLocalload.setOnClickListener { }
+            checkBalanceLocalload.hide()
         }
     }
 
