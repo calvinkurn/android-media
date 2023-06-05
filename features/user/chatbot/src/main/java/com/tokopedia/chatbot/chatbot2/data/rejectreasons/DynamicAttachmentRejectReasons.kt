@@ -1,4 +1,4 @@
-package com.tokopedia.chatbot.chatbot2.data.reject_reasons
+package com.tokopedia.chatbot.chatbot2.data.rejectreasons
 
 import com.google.gson.annotations.SerializedName
 

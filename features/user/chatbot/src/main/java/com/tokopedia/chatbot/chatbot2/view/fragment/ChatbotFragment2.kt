@@ -100,7 +100,7 @@ import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingRespons
 import com.tokopedia.chatbot.chatbot2.data.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.chatbot2.data.dynamicAttachment.DynamicAttachment
 import com.tokopedia.chatbot.chatbot2.data.newsession.TopBotNewSessionResponse
-import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.chatbot2.di.ChatbotModule
 import com.tokopedia.chatbot.chatbot2.di.DaggerChatbotComponent

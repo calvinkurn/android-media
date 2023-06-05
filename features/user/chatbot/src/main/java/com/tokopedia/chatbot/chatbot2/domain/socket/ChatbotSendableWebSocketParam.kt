@@ -11,7 +11,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
@@ -450,8 +450,12 @@ object ChatbotSendableWebSocketParam {
                 addProperty("value", it.value)
             }
         }
+
+        val newQuickRepliesArray = JsonArray()
+        newQuickRepliesArray.add(newQuickRepliesBody)
+
         val newQuickReplies = JsonObject().apply {
-            add("new_quick_replies", newQuickRepliesBody)
+            add("new_quick_replies", newQuickRepliesArray)
         }
 
         val reasonsJsonArray = JsonArray()

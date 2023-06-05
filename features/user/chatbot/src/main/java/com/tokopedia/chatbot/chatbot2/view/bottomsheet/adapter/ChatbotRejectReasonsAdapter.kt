@@ -1,11 +1,10 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.databinding.ItemChatbotRejectReasonsBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_NORMAL
