@@ -32,7 +32,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 class ProductRecommendationViewHolder(
     private val view: View,
     private val listener: DynamicProductDetailListener,
-    private val affiliateCookieHelper: AffiliateCookieHelper,
+    private val affiliateCookieHelper: AffiliateCookieHelper
 ) : AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     companion object {
@@ -285,6 +285,22 @@ class ProductRecommendationViewHolder(
                     )
                 }
             },
+            carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
+                override fun onItemAddToCart(
+                    productCardModel: ProductCardModel,
+                    carouselProductCardPosition: Int
+                ) {
+                    val productRecommendation =
+                        product.recommendationItemList.getOrNull(carouselProductCardPosition)
+                            ?: return
+                    listener.onRecomAddToCartClick(
+                        recommendationWidget = product,
+                        recomItem = productRecommendation,
+                        adapterPosition = absoluteAdapterPosition,
+                        itemPosition = carouselProductCardPosition
+                    )
+                }
+            },
             finishCalculate = {
                 binding.rvProductRecom.show()
                 binding.loadingRecom.gone()
@@ -294,13 +310,15 @@ class ProductRecommendationViewHolder(
 
     private fun productRecommendationApplink(
         recommendationWidget: RecommendationWidget,
-        productRecommendation: RecommendationItem,
-    ) = if (recommendationWidget.isTokonow)
-            affiliateCookieHelper.createAffiliateLink(
-                productRecommendation.appUrl,
-                recommendationWidget.affiliateTrackerId,
-            )
-        else productRecommendation.appUrl
+        productRecommendation: RecommendationItem
+    ) = if (recommendationWidget.isTokonow) {
+        affiliateCookieHelper.createAffiliateLink(
+            productRecommendation.appUrl,
+            recommendationWidget.affiliateTrackerId
+        )
+    } else {
+        productRecommendation.appUrl
+    }
 
     private fun getComponentTrackData(element: ProductRecommendationDataModel?) =
         ComponentTrackDataModel(

@@ -42,6 +42,7 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
 import com.tokopedia.topchat.R
@@ -109,6 +110,9 @@ class ChatListFragment constructor() :
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
 
     private val viewModelFragmentProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -229,7 +233,7 @@ class ChatListFragment constructor() :
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -993,6 +997,15 @@ class ChatListFragment constructor() :
         super.onResume()
         if (!isFromTopChatRoom()) {
             adapter?.resetActiveChatIndicator()
+        }
+    }
+
+    override fun getRollenceValue(key: String): Boolean {
+        return try {
+            abTestPlatform.getString(key, "").isNotEmpty()
+        } catch (t: Throwable) {
+            Timber.d(t)
+            false
         }
     }
 

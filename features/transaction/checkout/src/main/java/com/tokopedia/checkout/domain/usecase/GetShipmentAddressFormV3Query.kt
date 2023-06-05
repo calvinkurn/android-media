@@ -577,6 +577,12 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 is_ddp
                 dynamic_data
               }
+              platform_fee {
+                enable
+                profile_code
+                additional_data
+                error_wording
+              }
             }
           }
         }"""
