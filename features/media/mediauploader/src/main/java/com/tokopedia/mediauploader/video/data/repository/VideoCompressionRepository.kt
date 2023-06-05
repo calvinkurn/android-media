@@ -1,5 +1,6 @@
 package com.tokopedia.mediauploader.video.data.repository
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.VideoCompressor
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
@@ -8,6 +9,7 @@ import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.min
@@ -94,8 +96,10 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
                 return compressedPath
             } else {
-                println("VOD-COMPRESS: ${compression.failureMessage}")
-                // failed to compress, return the originalPath
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    Timber.d(compression.failureMessage)
+                }
+
                 return originalPath
             }
         } else {
@@ -132,8 +136,8 @@ class VideoCompressionRepositoryImpl @Inject constructor(
             var width = round(info.width * scale).toInt()
             var height = round(info.height * scale).toInt()
 
-            // since the MediaCodec android doesn't support an odd number,
-            // we have to force the size into even number.
+            // since the MediaCodec android framework doesn't support an odd number,
+            // let's force the size into even number.
             if (width % 2 == 1) width--
             if (height % 2 == 1) height--
 

@@ -10,7 +10,7 @@ data class DebugMediaLoaderState(
     var filePath: String = "",
     var progress: Pair<ProgressType, Int> = Pair(ProgressType.Upload, 0),
     val logs: SnapshotStateList<Pair<LogType, List<Logs>>> = mutableStateListOf(),
-    val isUploading: Boolean = false
+    val uploading: Boolean = false
 ) {
 
     fun reset() {

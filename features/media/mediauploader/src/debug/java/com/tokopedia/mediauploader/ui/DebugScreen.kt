@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -75,6 +76,10 @@ fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
                 browsed = { hasBrowseFile = it }
             )
 
+            if (state.filePath.isNotEmpty() && hasBrowseFile) {
+                LoadImage(state.filePath)
+            }
+
             Box(
                 modifier = Modifier
                     .background(color = NestTheme.colors.NN._950)
@@ -84,11 +89,6 @@ fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
                         top.linkTo(parent.top)
                     }
             )
-
-            AnimatedVisibility(hasBrowseFile) {
-                val file = state.filePath.firstOrNull()
-                if (file != null) LoadImage(file.toString())
-            }
 
             ProgressLoaderItem(
                 state.progress.first.toString(),
@@ -159,7 +159,7 @@ fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
                         bottom.linkTo(parent.bottom)
                     },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = if (state.isUploading.not()) NestTheme.colors.GN._500 else NestTheme.colors.RN._500,
+                    backgroundColor = NestTheme.colors.GN._500,
                     contentColor = if (isSystemInDarkTheme()) NestTheme.colors.NN._1000 else NestTheme.colors.NN._0,
                     disabledContentColor = NestTheme.colors.NN._400,
                     disabledBackgroundColor = NestTheme.colors.NN._100
@@ -168,11 +168,7 @@ fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
                     viewModel.setAction(DebugMediaLoaderEvent.Upload)
                 }
             ) {
-                Text(text = if (state.isUploading.not()) {
-                    "Upload"
-                } else {
-                    "Abort"
-                })
+                Text(text = "Upload")
             }
         }
     }

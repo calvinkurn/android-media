@@ -1,19 +1,17 @@
 package com.tokopedia.mediauploader
 
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isVideoFormat
 import com.tokopedia.mediauploader.image.ImageUploaderManager
+import com.tokopedia.mediauploader.util.BaseUploaderTest
 import com.tokopedia.mediauploader.video.VideoUploaderManager
-import com.tokopedia.picker.common.utils.fileExtension
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
-class ImageUploaderTest : CompressionTest() {
+class ImageUploaderTest : BaseUploaderTest() {
 
     private val imageUploaderManager = mockk<ImageUploaderManager>()
     private val videoUploaderManager = mockk<VideoUploaderManager>()

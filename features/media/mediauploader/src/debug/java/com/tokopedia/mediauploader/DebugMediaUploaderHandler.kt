@@ -58,7 +58,8 @@ class DebugMediaUploaderHandler @Inject constructor(
                     when (event) {
                         is DebugMediaLoaderEvent.FileChosen -> {
                             _state.value = state.value.copy(
-                                filePath = event.filePath
+                                filePath = event.filePath,
+                                progress = Pair(ProgressType.Upload, 0)
                             ).also {
                                 it.reset()
                                 it.log(
@@ -68,11 +69,10 @@ class DebugMediaUploaderHandler @Inject constructor(
                             }
                         }
                         is DebugMediaLoaderEvent.Upload -> {
-                            _state.value = state.value.copy(isUploading = true)
                             onFileUpload(state.value.filePath)
                         }
                         is DebugMediaLoaderEvent.AbortUpload -> {
-                            _state.value = state.value.copy(isUploading = false)
+                            _state.value = state.value.copy(uploading = false)
                             uploadJob.cancel()
                         }
                     }
@@ -123,9 +123,8 @@ class DebugMediaUploaderHandler @Inject constructor(
                     state.value.isCompressed().not()
                 ) {
 
-                    _state.value = state.value.copy()
+                    _state.value = state.value.copy(uploading = true)
                         .also {
-
                             it.log(
                                 LogType.CompressInfo, logRepository.compressionInfo(
                                 sourceId = config.value.sourceId,
@@ -134,9 +133,11 @@ class DebugMediaUploaderHandler @Inject constructor(
                         }
                 }
 
-                _state.value = state.value.copy().also {
-                    it.updateProgress(type, i)
-                }
+            }
+
+            // update loading
+            _state.value = state.value.copy().also {
+                it.updateProgress(type, i)
             }
         }
 
@@ -144,7 +145,9 @@ class DebugMediaUploaderHandler @Inject constructor(
             val uploader = uploaderUseCase(param)
 
             withContext(Dispatchers.Main) {
-                _state.value = state.value.copy().also {
+                _state.value = state.value.copy(
+                    uploading = false
+                ).also {
                     it.log(
                         LogType.UploadResult,
                         logRepository.uploadResult(
@@ -155,28 +158,6 @@ class DebugMediaUploaderHandler @Inject constructor(
                     )
                 }
             }
-        }
-    }
-
-    private val _uploading = MutableLiveData<UploadState>()
-    val uploading: LiveData<UploadState> get() = _uploading
-
-    fun setUploadingStatus(uploading: UploadState) {
-        _uploading.value = uploading
-    }
-
-    companion object {
-        sealed class UploadState {
-            object Idle : UploadState()
-            data class Uploading(
-                val withWorker: Boolean
-            ) : UploadState()
-
-            object Stopped : UploadState()
-            object Aborted : UploadState()
-            data class Finished(
-                val result: UploadResult
-            ) : UploadState()
         }
     }
 }
