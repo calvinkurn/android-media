@@ -1,6 +1,5 @@
 package com.tokopedia.people.viewmodel.userprofile.review
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.review.UserReviewModelBuilder
@@ -61,19 +60,19 @@ class UserProfileReviewInteractionViewModelTest {
     fun `ClickLikeReview - like review`() {
         coEvery { mockRepo.setLikeStatus(any(), any()) } returns mockLike
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
-        } andThen {
-            reviewContent.reviewList[0].likeDislike.isLike.assertTrue()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
+            } andThen {
+                reviewContent.reviewList[0].likeDislike.isLike.assertTrue()
+            }
         }
     }
 
@@ -82,19 +81,19 @@ class UserProfileReviewInteractionViewModelTest {
         coEvery { mockRepo.setLikeStatus(any(), any()) } returns mockUnlike
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } returns mockReviewContentLike
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentLike.reviewList[0]))
-        } andThen {
-            reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentLike.reviewList[0]))
+            } andThen {
+                reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+            }
         }
     }
 
@@ -103,19 +102,19 @@ class UserProfileReviewInteractionViewModelTest {
 
         coEvery { mockRepo.setLikeStatus(any(), any()) } throws mockException
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
-        } andThen {
-            reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
+            } andThen {
+                reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+            }
         }
     }
 
@@ -124,19 +123,19 @@ class UserProfileReviewInteractionViewModelTest {
 
         coEvery { mockRepo.setLikeStatus(any(), any()) } returns mockUnlike
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
-        } andThen {
-            reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = mockReviewContentUnlike.reviewList[0]))
+            } andThen {
+                reviewContent.reviewList[0].likeDislike.isLike.assertFalse()
+            }
         }
     }
 
@@ -147,19 +146,19 @@ class UserProfileReviewInteractionViewModelTest {
 
         val randomReview = mockReviewContentUnlike.reviewList[0].copy(feedbackID = "asdfasdf")
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickLikeReview(review = randomReview))
-        } andThen {
-            reviewContent.equalTo(mockReviewContentUnlike)
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickLikeReview(review = randomReview))
+            } andThen {
+                reviewContent.equalTo(mockReviewContentUnlike)
+            }
         }
     }
 
@@ -168,23 +167,23 @@ class UserProfileReviewInteractionViewModelTest {
     fun `ClickReviewTextSeeMore - expand review text`() {
         val selectedIdx = 0
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review = mockReviewContentUnlike.reviewList[selectedIdx]))
-        } andThen {
-            reviewContent.reviewList.forEachIndexed { idx, e ->
-                if (idx == selectedIdx) {
-                    e.isReviewTextExpanded.assertTrue()
-                } else {
-                    e.isReviewTextExpanded.assertFalse()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review = mockReviewContentUnlike.reviewList[selectedIdx]))
+            } andThen {
+                reviewContent.reviewList.forEachIndexed { idx, e ->
+                    if (idx == selectedIdx) {
+                        e.isReviewTextExpanded.assertTrue()
+                    } else {
+                        e.isReviewTextExpanded.assertFalse()
+                    }
                 }
             }
         }
@@ -194,44 +193,44 @@ class UserProfileReviewInteractionViewModelTest {
     fun `ClickReviewTextSeeMore - review is not found`() {
         val randomReview = mockReviewContentUnlike.reviewList[0].copy(feedbackID = "asdfasdf")
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordState {
-            viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review = randomReview))
-        } andThen {
-            reviewContent.reviewList.forEach { it.isReviewTextExpanded.assertFalse() }
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordState {
+                viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review = randomReview))
+            } andThen {
+                reviewContent.reviewList.forEach { it.isReviewTextExpanded.assertFalse() }
+            }
         }
     }
 
     /** Click Review Media */
     @Test
     fun `ClickReviewMedia - emit event open review media gallery page`() {
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordEvent {
-            viewModel.submitAction(UserProfileAction.ClickReviewMedia(
-                feedbackID = mockReviewContentUnlike.reviewList[0].feedbackID,
-                attachment = mockReviewContentUnlike.reviewList[0].attachments[0],
-            ))
-        } andThen {
-            last().assertEvent(UserProfileUiEvent.OpenReviewMediaGalleryPage(
-                review = mockReviewContentUnlike.reviewList[0],
-                mediaPosition = 1
-            ))
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordEvent {
+                viewModel.submitAction(UserProfileAction.ClickReviewMedia(
+                    feedbackID = mockReviewContentUnlike.reviewList[0].feedbackID,
+                    attachment = mockReviewContentUnlike.reviewList[0].attachments[0],
+                ))
+            } andThen {
+                last().assertEvent(UserProfileUiEvent.OpenReviewMediaGalleryPage(
+                    review = mockReviewContentUnlike.reviewList[0],
+                    mediaPosition = 1
+                ))
+            }
         }
     }
 
@@ -239,22 +238,22 @@ class UserProfileReviewInteractionViewModelTest {
     fun `ClickReviewMedia - review is not found`() {
         val randomReview = mockReviewContentUnlike.reviewList[0].copy(feedbackID = "asdfasdf")
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } recordEvent {
-            viewModel.submitAction(UserProfileAction.ClickReviewMedia(
-                feedbackID = randomReview.feedbackID,
-                attachment = randomReview.attachments[0],
-            ))
-        } andThen {
-            assertEmpty()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordEvent {
+                viewModel.submitAction(UserProfileAction.ClickReviewMedia(
+                    feedbackID = randomReview.feedbackID,
+                    attachment = randomReview.attachments[0],
+                ))
+            } andThen {
+                assertEmpty()
+            }
         }
     }
 }

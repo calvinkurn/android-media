@@ -1,6 +1,5 @@
 package com.tokopedia.people.viewmodel.userprofile.review
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.review.UserReviewModelBuilder
@@ -80,59 +79,59 @@ class UserProfileReviewTabViewModelTest {
 
     @Test
     fun `LoadUserReview - refresh content`() {
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+                viewModel.submitAction(UserProfileAction.LoadUserReview())
+                viewModel.submitAction(UserProfileAction.LoadUserReview())
+            } andThen {
+                reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size * 3)
+                reviewContent.reviewList.equalTo(mockReviewContent.reviewList + mockReviewContent.reviewList + mockReviewContent.reviewList)
+            }
 
-        robot.recordState {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-            viewModel.submitAction(UserProfileAction.LoadUserReview())
-            viewModel.submitAction(UserProfileAction.LoadUserReview())
-        } andThen {
-            reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size * 3)
-            reviewContent.reviewList.equalTo(mockReviewContent.reviewList + mockReviewContent.reviewList + mockReviewContent.reviewList)
-        }
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } andThen {
+                reviewSettings.isEnabled.assertTrue()
 
-        robot.recordState {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } andThen {
-            reviewSettings.isEnabled.assertTrue()
-
-            reviewContent.isLoading.assertFalse()
-            reviewContent.page.equalTo(mockReviewContent.page)
-            reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size)
-            reviewContent.reviewList.equalTo(mockReviewContent.reviewList)
-            reviewContent.status.equalTo(mockReviewContent.status)
-            reviewContent.hasNext.equalTo(mockReviewContent.hasNext)
+                reviewContent.isLoading.assertFalse()
+                reviewContent.page.equalTo(mockReviewContent.page)
+                reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size)
+                reviewContent.reviewList.equalTo(mockReviewContent.reviewList)
+                reviewContent.status.equalTo(mockReviewContent.status)
+                reviewContent.hasNext.equalTo(mockReviewContent.hasNext)
+            }
         }
     }
 
     @Test
     fun `LoadUserReview - load next page and exists`() {
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+                viewModel.submitAction(UserProfileAction.LoadUserReview())
+            } andThen {
+                reviewSettings.isEnabled.assertTrue()
 
-        robot.recordState {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-            viewModel.submitAction(UserProfileAction.LoadUserReview())
-        } andThen {
-            reviewSettings.isEnabled.assertTrue()
-
-            reviewContent.isLoading.assertFalse()
-            reviewContent.page.equalTo(mockReviewContent.page)
-            reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size * 2)
-            reviewContent.reviewList.equalTo(mockReviewContent.reviewList + mockReviewContent.reviewList)
-            reviewContent.status.equalTo(mockReviewContent.status)
-            reviewContent.hasNext.equalTo(mockReviewContent.hasNext)
+                reviewContent.isLoading.assertFalse()
+                reviewContent.page.equalTo(mockReviewContent.page)
+                reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size * 2)
+                reviewContent.reviewList.equalTo(mockReviewContent.reviewList + mockReviewContent.reviewList)
+                reviewContent.status.equalTo(mockReviewContent.status)
+                reviewContent.hasNext.equalTo(mockReviewContent.hasNext)
+            }
         }
     }
 
@@ -141,26 +140,26 @@ class UserProfileReviewTabViewModelTest {
 
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } returns mockReviewContentLastPage
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+                viewModel.submitAction(UserProfileAction.LoadUserReview())
+            } andThen {
+                reviewSettings.isEnabled.assertTrue()
 
-        robot.recordState {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-            viewModel.submitAction(UserProfileAction.LoadUserReview())
-        } andThen {
-            reviewSettings.isEnabled.assertTrue()
-
-            reviewContent.isLoading.assertFalse()
-            reviewContent.page.equalTo(mockReviewContent.page)
-            reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size)
-            reviewContent.reviewList.equalTo(mockReviewContent.reviewList)
-            reviewContent.status.equalTo(mockReviewContent.status)
-            reviewContent.hasNext.assertFalse()
+                reviewContent.isLoading.assertFalse()
+                reviewContent.page.equalTo(mockReviewContent.page)
+                reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size)
+                reviewContent.reviewList.equalTo(mockReviewContent.reviewList)
+                reviewContent.status.equalTo(mockReviewContent.status)
+                reviewContent.hasNext.assertFalse()
+            }
         }
     }
 
@@ -169,54 +168,54 @@ class UserProfileReviewTabViewModelTest {
 
         coEvery { mockRepo.getUserReviewList(any(), any(), any()) } throws mockException
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
+        ).start {
+            recordStateAndEvent {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } andThen { state, events ->
+                state.reviewContent.page.equalTo(1)
+                state.reviewContent.reviewList.size.equalTo(0)
+                state.reviewContent.reviewList.equalTo(emptyList())
+                state.reviewContent.status.equalTo(UserReviewUiModel.Status.Error)
+                state.reviewContent.hasNext.assertTrue()
 
-        robot.recordStateAndEvent {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } andThen { state, events ->
-            state.reviewContent.page.equalTo(1)
-            state.reviewContent.reviewList.size.equalTo(0)
-            state.reviewContent.reviewList.equalTo(emptyList())
-            state.reviewContent.status.equalTo(UserReviewUiModel.Status.Error)
-            state.reviewContent.hasNext.assertTrue()
-
-            events.last().assertEvent(UserProfileUiEvent.ErrorLoadReview(mockException))
+                events.last().assertEvent(UserProfileUiEvent.ErrorLoadReview(mockException))
+            }
         }
     }
 
     @Test
     fun `LoadUserReview - load next page and error`() {
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
+        ).start {
+            recordStateAndEvent {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
 
-        robot.recordStateAndEvent {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+                coEvery { mockRepo.getUserReviewList(any(), any(), any()) } throws mockException
+                viewModel.submitAction(UserProfileAction.LoadUserReview())
+            } andThen { state, events ->
+                state.reviewSettings.isEnabled.assertTrue()
 
-            coEvery { mockRepo.getUserReviewList(any(), any(), any()) } throws mockException
-            viewModel.submitAction(UserProfileAction.LoadUserReview())
-        } andThen { state, events ->
-            state.reviewSettings.isEnabled.assertTrue()
+                state.reviewContent.isLoading.assertFalse()
+                state.reviewContent.page.equalTo(mockReviewContent.page)
+                state.reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size)
+                state.reviewContent.reviewList.equalTo(mockReviewContent.reviewList)
+                state.reviewContent.status.equalTo(UserReviewUiModel.Status.Error)
+                state.reviewContent.hasNext.assertTrue()
 
-            state.reviewContent.isLoading.assertFalse()
-            state.reviewContent.page.equalTo(mockReviewContent.page)
-            state.reviewContent.reviewList.size.equalTo(mockReviewContent.reviewList.size)
-            state.reviewContent.reviewList.equalTo(mockReviewContent.reviewList)
-            state.reviewContent.status.equalTo(UserReviewUiModel.Status.Error)
-            state.reviewContent.hasNext.assertTrue()
-
-            events.last().assertEvent(UserProfileUiEvent.ErrorLoadReview(mockException))
+                events.last().assertEvent(UserProfileUiEvent.ErrorLoadReview(mockException))
+            }
         }
     }
 
@@ -225,20 +224,20 @@ class UserProfileReviewTabViewModelTest {
 
         coEvery { mockRepo.getProfileSettings(any()) } returns mockReviewSettingsDisabled
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } andThen {
+                reviewSettings.isEnabled.assertFalse()
 
-        robot.recordState {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } andThen {
-            reviewSettings.isEnabled.assertFalse()
-
-            reviewContent.equalTo(UserReviewUiModel.Empty)
+                reviewContent.equalTo(UserReviewUiModel.Empty)
+            }
         }
     }
 
@@ -246,20 +245,20 @@ class UserProfileReviewTabViewModelTest {
     fun `LoadUserReview - load page on own profile and emit event show onboarding`() {
         coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOwnUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-        } recordEvent {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } andThen {
-            last().assertEvent(UserProfileUiEvent.ShowReviewOnboarding)
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordEvent {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } andThen {
+                last().assertEvent(UserProfileUiEvent.ShowReviewOnboarding)
+            }
         }
     }
 
@@ -267,20 +266,20 @@ class UserProfileReviewTabViewModelTest {
     fun `LoadUserReview - load page on toher profile and dont emit event show onboarding`() {
         coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
 
-        val robot = UserProfileViewModelRobot(
+        UserProfileViewModelRobot(
             username = mockOtherUsername,
             repo = mockRepo,
             dispatcher = testDispatcher,
             userSession = mockUserSession,
             userProfileSharedPref = mockUserProfileSharedPref,
-        )
-
-        robot.setup {
-            viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-        } recordEvent {
-            viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
-        } andThen {
-            assertEmpty()
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordEvent {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } andThen {
+                assertEmpty()
+            }
         }
     }
 }
