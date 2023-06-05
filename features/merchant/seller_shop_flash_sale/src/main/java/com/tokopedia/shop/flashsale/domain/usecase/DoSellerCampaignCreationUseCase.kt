@@ -102,7 +102,8 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
             ),
             params.showTeaser,
             params.paymentType.id,
-            params.packageId.toString()
+            params.packageId.toString(),
+            params.isOosImprovement
         )
 
         val requestParams = mapOf(REQUEST_PARAM_KEY to payload)
@@ -126,7 +127,8 @@ class DoSellerCampaignCreationUseCase @Inject constructor(
         val secondColor: String,
         val showTeaser: Boolean = false,
         val paymentType: PaymentType,
-        val packageId: Long
+        val packageId: Long,
+        val isOosImprovement: Boolean
     )
 
 }

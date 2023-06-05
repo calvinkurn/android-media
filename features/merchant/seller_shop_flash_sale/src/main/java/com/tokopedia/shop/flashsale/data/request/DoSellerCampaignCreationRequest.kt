@@ -41,7 +41,10 @@ data class DoSellerCampaignCreationRequest(
     val paymentType: Int,
 
     @SerializedName("package_id")
-    val packageId: String
+    val packageId: String,
+
+    @SerializedName("is_oos_improvement")
+    val oosImprovement: Boolean
 ) {
 
     data class GradientColorInput(
