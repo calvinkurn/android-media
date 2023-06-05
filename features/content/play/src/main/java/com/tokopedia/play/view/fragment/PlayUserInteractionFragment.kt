@@ -558,6 +558,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * ImmersiveBox View Component Listener
      */
     override fun onImmersiveBoxClicked(view: ImmersiveBoxViewComponent, currentAlpha: Float) {
+        if (playViewModel.hasNoMedia) return
+
         analytic.clickWatchArea(
             screenOrientation = orientation.orientation
         )
