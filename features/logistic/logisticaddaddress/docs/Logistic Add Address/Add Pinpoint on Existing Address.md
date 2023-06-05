@@ -5,14 +5,14 @@ labels:
 ---
 
 <!--left header table-->
-| **Status** | ​<!--start status:GREEN-->DONE<!--end status--> |
-| --- | --- |
-| Contributors | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)  |
-| Product Manager | [Wahyu Ivan Satyagraha](https://tokopedia.atlassian.net/wiki/people/61ad4312c15977006a17ce75?ref=confluence)  |
-| Team | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051) |
-| Release date | ​10 Feb 2023 / ​<!--start status:GREY-->MA-3.208<!--end status-->  |
-| Module type | ​<!--start status:YELLOW-->FEATURE<!--end status--> |
-| Module Location | `features/logistic/logisticaddress` |
+| **Status**      | ​<!--start status:GREEN-->DONE<!--end status-->                                                              |
+|-----------------|--------------------------------------------------------------------------------------------------------------|
+| Contributors    | [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)        |
+| Product Manager | [Wahyu Ivan Satyagraha](https://tokopedia.atlassian.net/wiki/people/61ad4312c15977006a17ce75?ref=confluence) |
+| Team            | [Minion Bob](https://tokopedia.atlassian.net/people/team/2373d8a6-1afc-4f2a-aa7a-63855c273051)               |
+| Release date    | ​10 Feb 2023 / ​<!--start status:GREY-->MA-3.208<!--end status-->                                            |
+| Module type     | ​<!--start status:YELLOW-->FEATURE<!--end status-->                                                          |
+| Module Location | `features/logistic/logisticaddress`                                                                          |
 
 <!--toc-->
 

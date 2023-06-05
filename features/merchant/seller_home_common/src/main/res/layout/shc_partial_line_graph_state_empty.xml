@@ -22,7 +22,7 @@
             android:id="@+id/tvLineGraphEmptyStateTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="@string/shc_data_empty_state_title" />
 
@@ -34,8 +34,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:textColor="@color/Unify_NN600"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
+            app:typographyType="display_3"
             tools:text="@string/shc_empty_state_description" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -44,8 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textColor="@color/Unify_GN500"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
+            app:typographyType="display_3"
             tools:text="@string/shc_empty_state_cta" />
     </LinearLayout>
 

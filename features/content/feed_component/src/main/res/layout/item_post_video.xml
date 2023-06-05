@@ -22,14 +22,14 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_loading_image"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintDimensionRatio="1:1"
             tools:src="@tools:sample/avatars"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            tools:ignore="ContentDescription" />
 
         <View
             android:layout_width="match_parent"
