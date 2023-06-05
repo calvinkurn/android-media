@@ -1781,10 +1781,10 @@ class PromoCheckoutViewModel @Inject constructor(
         promoListItemUiModel: PromoListItemUiModel,
         selectedItem: PromoListItemUiModel
     ) {
-        val clashingInfo =
+        val primaryClashingInfo =
             promoListItemUiModel.uiData.clashingInfos
                 .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
-        if (clashingInfo != null) {
+        if (primaryClashingInfo != null) {
             if (promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
                 promoListItemUiModel.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
                 if (promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty()) {
@@ -1818,35 +1818,32 @@ class PromoCheckoutViewModel @Inject constructor(
             promoListItemUiModel.uiData.clashingInfos
                 .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (primaryClashingInfo != null) {
-            if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
-                if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
-                    errorMessageBuilder.clear()
+            if (promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()) {
+                val secondaryCouponWithClashingInfo = promoListItemUiModel.uiData.secondaryCoupons
+                    .firstOrNull { secondaryCoupon -> secondaryCoupon.clashingInfos.any { it.code == selectedItem.uiData.promoCode } }
+                if (secondaryCouponWithClashingInfo != null) {
+                    val secondaryCouponClashingInfo = secondaryCouponWithClashingInfo.clashingInfos
+                        .firstOrNull { it.code == selectedItem.uiData.promoCode }
+                    if (secondaryCouponClashingInfo != null && !promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                        promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
+                        val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
+                        if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
+                            errorMessageBuilder.clear()
+                        }
+                        errorMessageBuilder.append(secondaryCouponClashingInfo.message)
+                        promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
+                        clashResult = true
+                    }
                 }
-                errorMessageBuilder.append(primaryClashingInfo.message)
-                promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
-                clashResult = true
-            }
-        } else {
-            val secondaryClashingInfo = promoListItemUiModel.uiData.secondaryCoupons
-                .flatMap { it.clashingInfos }
-                .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
-            if (secondaryClashingInfo != null) {
-                if (!promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)) {
+            } else {
+                if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                    promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
                     val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
                     if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
                         errorMessageBuilder.clear()
                     }
-                    errorMessageBuilder.append(secondaryClashingInfo.message)
+                    errorMessageBuilder.append(primaryClashingInfo.message)
                     promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
-                    fragmentUiModel.value?.let {
-                        if (!it.uiState.hasSeenBenefitAdjustmentMessage) {
-                            it.uiData.benefitAdjustmentMessage =
-                                promoListItemUiModel.uiData.benefitAdjustmentMessage
-                            _fragmentUiModel.value = it
-                        }
-                    }
                     clashResult = true
                 }
             }
