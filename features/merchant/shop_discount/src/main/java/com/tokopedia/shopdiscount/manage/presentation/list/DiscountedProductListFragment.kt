@@ -48,10 +48,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
-class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>(){
+class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
@@ -66,9 +66,9 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
         @JvmStatic
         fun newInstance(
-            discountStatusName : String,
+            discountStatusName: String,
             discountStatusId: Int,
-            productCount : Int,
+            productCount: Int,
             onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
         ): DiscountedProductListFragment {
             val fragment = DiscountedProductListFragment()
@@ -80,7 +80,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             fragment.onDiscountRemoved = onDiscountRemoved
             return fragment
         }
-
     }
 
     private val discountStatusName by lazy {
@@ -101,7 +100,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     lateinit var viewModelFactory: ViewModelFactory
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var tracker: ShopDiscountTracker
@@ -169,7 +168,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-
     private fun setupScrollListener() {
         binding?.run {
             recyclerView.addOnScrollListener(
@@ -207,7 +205,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     }
 
     private fun setupTabChangeListener() {
-        val listener = object : DiscountedProductManageFragment.TabChangeListener{
+        val listener = object : DiscountedProductManageFragment.TabChangeListener {
             override fun onTabChanged() {
                 handleEmptyState(productCount)
             }
@@ -275,7 +273,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-    private fun reserveProduct(requestId: String, productIds : List<String>) {
+    private fun reserveProduct(requestId: String, productIds: List<String>) {
         binding?.btnBulkManage?.isLoading = true
         binding?.btnBulkManage?.loadingText = getString(R.string.sd_please_wait)
         viewModel.reserveProduct(requestId, productIds)
@@ -316,7 +314,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
                 viewModel.getTotalProduct() - ONE_PRODUCT
             }
 
-
             binding?.recyclerView showToaster deletionWording
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_total_product), updatedTotalProduct)
@@ -334,7 +331,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
     }
-
 
     private fun handleScrollDownEvent() {
         binding?.searchBar.slideDown()
@@ -363,7 +359,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             globalError.setActionClickListener { loadInitialData() }
             root showError errorMessage
         }
-
     }
 
     private fun displayMoreMenuBottomSheet(product: Product) {
@@ -389,22 +384,21 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         this.onScrollUp = onScrollUp
     }
 
-    fun setOnSwipeRefresh(onSwipeRefresh : () -> Unit) {
+    fun setOnSwipeRefresh(onSwipeRefresh: () -> Unit) {
         this.onSwipeRefresh = onSwipeRefresh
     }
 
-    private fun showProductDetailBottomSheet(product: Product, position : Int) {
+    private fun showProductDetailBottomSheet(product: Product, position: Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
             discountStatusId,
             position
         )
-        bottomSheet.setListener(object: ShopDiscountProductDetailBottomSheet.Listener{
+        bottomSheet.setListener(object : ShopDiscountProductDetailBottomSheet.Listener {
             override fun deleteParentProduct(productId: String) {
                 deleteSingleProduct(productId)
             }
-
         })
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -412,7 +406,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
     private fun deleteSingleProduct(productId: String) {
         val totalCountProduct = viewModel.getTotalProduct() - ONE_PRODUCT
         val getDeletedProduct = adapter?.getProductBasedOnId(productId)
-        getDeletedProduct?.let{
+        getDeletedProduct?.let {
             productAdapter.delete(it)
             onDiscountRemoved(discountStatusId, totalCountProduct)
         }
@@ -471,12 +465,12 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         binding?.cardViewCreateDiscount.slideUp()
     }
 
-    private fun disableProductSelection(products : List<Product>) {
+    private fun disableProductSelection(products: List<Product>) {
         val toBeDisabledProducts = viewModel.disableProducts(products)
         adapter?.refresh(toBeDisabledProducts)
     }
 
-    private fun enableProductSelection(products : List<Product>) {
+    private fun enableProductSelection(products: List<Product>) {
         val toBeEnabledProducts = viewModel.enableProduct(products)
         adapter?.refresh(toBeEnabledProducts)
     }
@@ -494,7 +488,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
 
         dialog.show(dialogTitle)
     }
-
 
     private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
         if (isSelected) {
@@ -523,7 +516,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_selected_product_counter), selectedProductCount)
         }
-
 
         if (shouldDisableSelection) {
             disableProductSelection(items)
@@ -554,7 +546,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-    private val onVariantInfoClicked : (Product, Int) -> Unit = { product, position ->
+    private val onVariantInfoClicked: (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
             showProductDetailBottomSheet(product, position)
@@ -568,7 +560,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-    private fun guard(disableClick: Boolean, block : () -> Unit) {
+    private fun guard(disableClick: Boolean, block: () -> Unit) {
         if (disableClick) {
             Toaster.build(
                 binding?.recyclerView ?: return,
@@ -658,7 +650,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         onSwipeRefresh()
     }
 
-    private fun handleEmptyState(totalProduct : Int) {
+    private fun handleEmptyState(totalProduct: Int) {
         if (totalProduct == ZERO) {
             showEmptyState(discountStatusId)
         } else {
@@ -693,7 +685,6 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-
     private fun hideEmptyState() {
         binding?.emptyState?.gone()
     }
@@ -722,7 +713,7 @@ class DiscountedProductListFragment : BaseSimpleListFragment<ProductAdapter, Pro
         }
     }
 
-    private fun guardFragmentIsAttached(operation : Context.() -> Unit) {
+    private fun guardFragmentIsAttached(operation: Context.() -> Unit) {
         if (isAdded && context != null) {
             operation(requireContext())
         }

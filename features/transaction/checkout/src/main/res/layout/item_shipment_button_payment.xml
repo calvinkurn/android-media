@@ -36,6 +36,13 @@
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
 
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_total_payment"
+            android:layout_width="120dp"
+            android:layout_height="20dp"
+            app:loader_type="rect"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
     <com.tokopedia.unifycomponents.UnifyButton

@@ -7,6 +7,7 @@ import android.text.style.ImageSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.convertUrlToBitmapAndLoadImage
 import com.tokopedia.shop.common.util.removeDrawable
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetNoteButtonComponentBinding
@@ -29,6 +30,9 @@ class ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder(
     private val imageButtonShopNote: UnifyButton? = viewBinding?.imageButtonShopNote
 
     override fun bind(model: ShopPageHeaderButtonComponentUiModel) {
+        if(ShopUtil.isFoldable){
+            imageButtonShopNote?.buttonSize = UnifyButton.Size.SMALL
+        }
         imageButtonShopNote?.setOnClickListener {
             listener.onClickNoteButton(model.link)
         }
@@ -43,7 +47,7 @@ class ShopPageHeaderActionButtonWidgetNoteButtonComponentViewHolder(
                 itemView.context,
                 url,
                 itemView.context.resources.getInteger(R.integer.header_button_shop_note_icon_size).toPx()
-            ) {
+            ){
                 try {
                     val drawableImage = BitmapDrawable(itemView.resources, it)
                     val right = drawableImage.intrinsicWidth
