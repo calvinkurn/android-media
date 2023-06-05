@@ -17,6 +17,7 @@ class TopadsManagePromoGroupProductInput(
         var shopID: String = "",
         @field:SerializedName("source")
         var source: String = ""
+//afh;asfbniouasbjndf
 
 )
 
