@@ -161,6 +161,7 @@
     <string name="content_comment_error_connection">Wah, internet putus. Cek Wi-Fi atau paket datamu, ya.</string>
     <string name="content_common_report_comment">Laporkan</string>
     <string name="content_user_report_footer"><![CDATA[<strong><span style="color:#03AC0E">Pelajari Selengkapnya</span></strong> tipe-tipe pelanggaran di Tokopedia.]]></string>
+    <string name="content_user_report_header">Laporkan</string>
     <string name="content_user_report_submission_button">Laporkan</string>
     <string name="content_user_report_footer_weblink">https://www.tokopedia.com/help/article/tokopedia-play-live-streaming</string>
 

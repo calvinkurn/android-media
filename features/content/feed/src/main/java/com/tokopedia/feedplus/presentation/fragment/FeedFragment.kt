@@ -141,7 +141,7 @@ class FeedFragment :
             val feedMenuSheet =
                 childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet
             if (feedMenuSheet != null && userSession.isLoggedIn) {
-                feedMenuSheet.showReportLayoutWhenLaporkanClicked()
+                feedMenuSheet.showReportLayoutWhenLaporkanClicked(feedPostViewModel.userReportList)
             }
         }
 
@@ -231,6 +231,11 @@ class FeedFragment :
         observeReminder()
 
         observeEvent()
+
+        /**
+         * TODO() Move to if post is PLAY
+         */
+        feedPostViewModel.getReport()
     }
 
     override fun onDestroyView() {
@@ -277,7 +282,7 @@ class FeedFragment :
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
-                    (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked()
+                    (childFragmentManager.findFragmentByTag(TAG_FEED_MENU_BOTTOMSHEET) as? ContentThreeDotsMenuBottomSheet)?.showReportLayoutWhenLaporkanClicked(feedPostViewModel.userReportList)
 
                     currentTrackerData?.let {
                         feedAnalytics.eventClickReportContent(it)

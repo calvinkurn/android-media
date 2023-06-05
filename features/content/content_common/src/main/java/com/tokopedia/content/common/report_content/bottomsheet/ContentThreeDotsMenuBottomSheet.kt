@@ -19,6 +19,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlin.math.roundToInt
 import com.tokopedia.content.common.R
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 
 /**
  * Created By : Shruti Agarwal on Feb 02, 2023
@@ -85,13 +87,39 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
         setCloseClickListener {
             mListener?.onMenuBottomSheetCloseClick(contentId)
+            dismiss()
         }
     }
-    fun showReportLayoutWhenLaporkanClicked() {
-        binding.let {
-            it.root.layoutParams.height = maxSheetHeight
-            it.viewReportGroup.visible()
-            it.rvFeedMenu.gone()
+
+    private val reportSheet by lazyThreadSafetyNone {
+        ContentReportBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader).apply {
+            setListener(object : ContentReportBottomSheet.Listener {
+                override fun onCloseButtonClicked() {
+                    dismiss()
+                }
+
+                override fun onItemReportClick(item: PlayUserReportReasoningUiModel.Reasoning) {
+                    //TODO() open submission sheet
+                }
+
+                override fun onFooterClicked() {}
+            })
+        }
+    }
+
+    private val submissionReportSheet by lazyThreadSafetyNone {  }
+    fun showReportLayoutWhenLaporkanClicked(data: Result<List<PlayUserReportReasoningUiModel>> = Success(emptyList())) {
+        if (data is Success && data.data.isNotEmpty()) {
+           reportSheet.apply {
+                    updateList(data)
+                }
+                .show(childFragmentManager)
+        } else {
+            binding.let {
+                it.root.layoutParams.height = maxSheetHeight
+                it.viewReportGroup.visible()
+                it.rvFeedMenu.gone()
+            }
         }
     }
     fun sendReport() {
@@ -173,12 +201,15 @@ class ContentThreeDotsMenuBottomSheet : BottomSheetUnify(), ContentReportViewHol
 
         private const val HEIGHT_PERCENTAGE = 0.4
 
+        fun get(fragmentManager: FragmentManager): ContentThreeDotsMenuBottomSheet? {
+            return fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
+        }
+
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader
         ): ContentThreeDotsMenuBottomSheet {
-            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? ContentThreeDotsMenuBottomSheet
-            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+            return get(fragmentManager) ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
                 ContentThreeDotsMenuBottomSheet::class.java.name
             ) as ContentThreeDotsMenuBottomSheet

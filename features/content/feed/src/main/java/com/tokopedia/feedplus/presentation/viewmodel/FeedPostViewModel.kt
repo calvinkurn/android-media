@@ -10,6 +10,9 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
+import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
+import com.tokopedia.content.common.report_content.model.UserReportOptions
+import com.tokopedia.content.common.usecase.GetUserReportListUseCase
 import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -85,6 +88,7 @@ class FeedPostViewModel @Inject constructor(
     private val mvcSummaryUseCase: MVCSummaryUseCase,
     private val topAdsAddressHelper: TopAdsAddressHelper,
     private val getCountCommentsUseCase: GetCountCommentsUseCase,
+    private val getReportUseCase: GetUserReportListUseCase,
     private val dispatchers: CoroutineDispatchers
 ) : ViewModel() {
 
@@ -118,6 +122,10 @@ class FeedPostViewModel @Inject constructor(
     private var _shouldShowNoMoreContent = false
     val shouldShowNoMoreContent: Boolean
         get() = _shouldShowNoMoreContent
+
+    private val _userReport = MutableLiveData<Result<List<PlayUserReportReasoningUiModel>>>()
+    val userReportList get() =
+        _userReport.value ?: Success(emptyList())
 
     fun fetchFeedPosts(
         source: String, isNewData: Boolean = false, postId: String? = null
@@ -748,6 +756,25 @@ class FeedPostViewModel @Inject constructor(
             }
         }) {
             _merchantVoucherLiveData.value = Fail(it)
+        }
+    }
+
+    fun getReport() {
+        viewModelScope.launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                getReportUseCase.executeOnBackground()
+            }
+            val mapped = response.data.map { reasoning ->
+                PlayUserReportReasoningUiModel.Reasoning(
+                    reasoningId = reasoning.id,
+                    title = reasoning.value,
+                    detail = reasoning.detail,
+                    submissionData = if(reasoning.additionalField.isNotEmpty()) reasoning.additionalField.first() else UserReportOptions.OptionAdditionalField()
+                )
+            }
+            _userReport.value = Success(mapped)
+        }){
+            _userReport.value = Fail(it)
         }
     }
 
