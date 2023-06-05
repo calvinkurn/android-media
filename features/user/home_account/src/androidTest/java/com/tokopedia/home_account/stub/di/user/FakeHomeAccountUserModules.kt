@@ -14,7 +14,6 @@ import com.tokopedia.home_account.data.pref.AccountPreference
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
-import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -25,9 +24,7 @@ import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import com.tokopedia.sessioncommon.util.OclUtils.Companion.OCL_ROLLENCE
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import io.mockk.every
@@ -69,12 +66,6 @@ class FakeHomeAccountUserModules(val context: Context) {
             every { getBoolean(SETTING_SHOW_DARK_MODE_TOGGLE, any()) } returns true
             every { getBoolean(SETTING_SHOW_SCREEN_RECORDER, any()) } returns true
         }
-    }
-
-    @Provides
-    @ActivityScope
-    fun provideDataViewMapper(userSession: UserSessionInterface, userSessionDataStore: Lazy<UserSessionDataStore>): DataViewMapper {
-        return DataViewMapper(userSession, userSessionDataStore)
     }
 
     @Provides

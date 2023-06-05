@@ -651,19 +651,16 @@ open class HomeAccountUserFragment :
     }
 
     private fun setupObserver() {
-        viewModel.buyerAccountDataData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        onSuccessGetBuyerAccount(it.data)
-                    }
-                    is Fail -> {
-                        onFailedGetBuyerAccount()
-                    }
+        viewModel.buyerAccountDataData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    onSuccessGetBuyerAccount(it.data)
+                }
+                is Fail -> {
+                    onFailedGetBuyerAccount()
                 }
             }
-        )
+        }
 
         viewModel.firstRecommendationData.observe(
             viewLifecycleOwner,
@@ -933,14 +930,14 @@ open class HomeAccountUserFragment :
     private fun isFirstItemIsProfile(): Boolean =
         adapter?.getItem(POSITION_0) is ProfileDataView
 
-    private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel) {
+    private fun onSuccessGetBuyerAccount(buyerAccount: ProfileDataView) {
         displayMemberLocalLoad(false)
         displayBalanceAndPointLocalLoad(false)
         adapter?.run {
             if (isFirstItemIsProfile()) {
                 removeItemAt(POSITION_0)
             }
-            addItem(POSITION_0, mapper.mapToProfileDataView(buyerAccount))
+            addItem(POSITION_0, buyerAccount)
             notifyItemChanged(POSITION_0)
         }
         hideLoading()
