@@ -98,6 +98,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar(binding.toolbar)
+        setTopBottomMargin()
         setupScrollListener()
         setupViewModelObservers()
         medalDetailViewModel.getMedalDetail(medaliSlug)
@@ -110,6 +111,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     is Success<*> -> {
                         binding.mainFlipper.displayedChild = 1
                         val data = safeResult.data as MedalDetailResponseModel
+                        setTransparentStatusBar()
                         loadHeader(data.detail?.medaliDetailPage)
                         loadMedalDetails(data.detail?.medaliDetailPage)
                         loadTaskProgress(data.detail?.medaliDetailPage?.mission)
@@ -118,6 +120,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     }
 
                     is Error -> {
+                        setWhiteStatusBar()
                         handleError(safeResult.error)
                     }
 
@@ -213,18 +216,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
         } ?: run { binding.viewTasksProgress.gone() }
     }
 
-    private fun setupScrollListener() {
-        binding.scrollView.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
-                if (scrollY == 0) {
-                    setTransparentStatusBar()
-                } else {
-                    setWhiteStatusBar()
-                }
-            }
-        )
-    }
-
     private fun setupToolbar(toolbar: androidx.appcompat.widget.Toolbar) {
         (activity as AppCompatActivity?)?.apply {
             setSupportActionBar(toolbar)
@@ -232,13 +223,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
                 elevation = 0f
-                ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, windowInsets ->
-                    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-                    view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                        topMargin = insets.top
-                    }
-                    WindowInsetsCompat.CONSUMED
-                }
             }
             windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
             setTransparentStatusBar()
@@ -273,6 +257,31 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     this, com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
             )
+        }
+    }
+
+    private fun setupScrollListener() {
+        binding.scrollView.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
+                if (scrollY == 0) {
+                    setTransparentStatusBar()
+                } else {
+                    setWhiteStatusBar()
+                }
+            }
+        )
+    }
+
+    private fun setTopBottomMargin() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            binding.mainFlipper.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                bottomMargin = insets.bottom
+            }
+            WindowInsetsCompat.CONSUMED
         }
     }
 

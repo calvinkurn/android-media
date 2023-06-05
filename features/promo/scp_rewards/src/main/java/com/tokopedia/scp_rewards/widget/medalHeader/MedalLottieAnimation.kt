@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.scp_rewards.common.utils.downloadImage
+import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.utils.loadLottieFromUrl
 import com.tokopedia.scp_rewards.databinding.WidgetMedalLottieAnimationBinding
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +58,7 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                     }
                 },
                 onError = {
-                    // show placeholder
+                          lottieView.setImageResource(R.drawable.fallback_badge)
                 },
                 onLottieEnded = {
                     val markerName =
