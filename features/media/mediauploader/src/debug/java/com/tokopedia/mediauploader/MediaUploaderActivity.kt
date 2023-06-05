@@ -24,7 +24,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
-import com.tokopedia.mediauploader.DebugMediaUploaderViewModel.Companion.UploadState
+import com.tokopedia.mediauploader.DebugMediaUploaderHandler.Companion.UploadState
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
@@ -67,7 +67,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     @Inject lateinit var userSession: UserSessionInterface
     @Inject lateinit var factory: ViewModelProvider.Factory
 
-    private val viewModel: DebugMediaUploaderViewModel by viewModels { factory }
+    private val viewModel: DebugMediaUploaderHandler by viewModels { factory }
 
     private var mediaFilePath = ""
     private var isUploadImage = false

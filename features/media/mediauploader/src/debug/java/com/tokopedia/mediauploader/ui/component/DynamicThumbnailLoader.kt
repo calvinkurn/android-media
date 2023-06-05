@@ -18,13 +18,12 @@ import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFi
 @Suppress("OPT_IN_USAGE")
 fun LoadImage(file: String) {
     val context = LocalContext.current
+    val isVideoFile = file.asPickerFile().isVideo()
 
     Image(
         painter = rememberImagePainter(
             data = file,
             builder = {
-                val isVideoFile = file.asPickerFile().isVideo()
-
                 if (isVideoFile) {
                     fetcher(VideoFrameUriFetcher(context))
                     videoFrameMillis(1000)

@@ -31,14 +31,17 @@ import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestTextField
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
-import com.tokopedia.mediauploader.DebugMediaUploaderViewModelContract
+import com.tokopedia.mediauploader.DebugMediaUploaderHandlerContract
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ConfigBottomSheet(
+    sourceId: String,
+    setSourceId: (String) -> Unit,
+    setShouldCompress: (Boolean) -> Unit,
+    setWaitingTranscode: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DebugMediaUploaderViewModelContract,
     content: @Composable (ModalBottomSheetState) -> Unit = {}
 ) {
     val sheetState = rememberModalBottomSheetState(
@@ -56,7 +59,12 @@ fun ConfigBottomSheet(
 
     ModalBottomSheetLayout(
         sheetState = sheetState,
-        sheetContent = { ConfigBottomSheetContent(viewModel) },
+        sheetContent = { ConfigBottomSheetContent(
+            sourceId = sourceId,
+            setSourceId = setSourceId,
+            setShouldCompress = setShouldCompress,
+            setWaitingTranscode = setWaitingTranscode
+        ) },
         modifier = modifier.fillMaxSize()
     ) {
         content(sheetState)
@@ -64,12 +72,15 @@ fun ConfigBottomSheet(
 }
 
 @Composable
-fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
+fun ConfigBottomSheetContent(
+    sourceId: String,
+    setSourceId: (String) -> Unit,
+    setShouldCompress: (Boolean) -> Unit,
+    setWaitingTranscode: (Boolean) -> Unit
+) {
     // these variable aren't hoisted cause we only need to handle the checkbox status
     var shouldCompress by remember { mutableStateOf(false) }
     var waitingTranscode by remember { mutableStateOf(false) }
-
-    val config by viewModel.config.collectAsState()
 
     Column(
         modifier = Modifier
@@ -84,12 +95,12 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
         Spacer(modifier = Modifier.height(24.dp))
 
         NestTextField(
-            value = config.sourceId,
+            value = sourceId,
             modifier = Modifier
                 .fillMaxWidth(),
             label = "Source ID",
             onValueChanged = { text ->
-                viewModel.setSourceId(text)
+                setSourceId(text)
             }
         )
 
@@ -103,7 +114,7 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
                     checked = shouldCompress,
                     onCheckedChange = { checked ->
                         shouldCompress = checked
-                        viewModel.shouldCompress(checked)
+                        setShouldCompress(checked)
                     })
 
                 Text(
@@ -121,7 +132,7 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
                     checked = waitingTranscode,
                     onCheckedChange = { checked ->
                         waitingTranscode = checked
-                        viewModel.waitingTranscode(checked)
+                        setWaitingTranscode(checked)
                     })
 
                 Text(
@@ -136,5 +147,10 @@ fun ConfigBottomSheetContent(viewModel: DebugMediaUploaderViewModelContract) {
 @Preview(showBackground = true)
 @Composable
 fun ConfigBottomSheetPreview() {
-    ConfigBottomSheetContent(debugViewModel)
+    ConfigBottomSheetContent(
+        sourceId = "abc",
+        setSourceId = {},
+        setShouldCompress = {},
+        setWaitingTranscode = {}
+    )
 }

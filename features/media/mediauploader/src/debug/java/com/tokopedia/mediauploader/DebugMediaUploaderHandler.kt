@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
-interface DebugMediaUploaderViewModelContract {
+interface DebugMediaUploaderHandlerContract {
     val state: StateFlow<DebugMediaLoaderState>
     val config: StateFlow<DebugUploaderParam>
 
@@ -29,11 +29,11 @@ interface DebugMediaUploaderViewModelContract {
     fun waitingTranscode(status: Boolean)
 }
 
-class DebugMediaUploaderViewModel @Inject constructor(
+class DebugMediaUploaderHandler @Inject constructor(
     private val trackerCacheStore: AnalyticsCacheDataStore,
     private val uploaderUseCase: UploaderUseCase,
     private val logRepository: LogRepository
-) : ViewModel(), DebugMediaUploaderViewModelContract {
+) : ViewModel(), DebugMediaUploaderHandlerContract {
 
     private val _event = MutableSharedFlow<DebugMediaLoaderEvent>(replay = 50)
 

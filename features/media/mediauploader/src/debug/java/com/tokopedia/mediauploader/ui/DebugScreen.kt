@@ -25,16 +25,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.tokopedia.common_compose.components.NestButton
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.mediauploader.DebugMediaLoaderEvent
 import com.tokopedia.mediauploader.DebugMediaLoaderState
-import com.tokopedia.mediauploader.DebugMediaUploaderViewModelContract
+import com.tokopedia.mediauploader.DebugMediaUploaderHandlerContract
 import com.tokopedia.mediauploader.DebugUploaderParam
 import com.tokopedia.mediauploader.data.entity.LogType
 import com.tokopedia.mediauploader.data.entity.Logs
@@ -50,12 +48,18 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
+fun DebugScreen(viewModel: DebugMediaUploaderHandlerContract) {
     var hasBrowseFile by remember { mutableStateOf(false) }
     val state by viewModel.state.collectAsState()
+    val config by viewModel.config.collectAsState()
     val scope = rememberCoroutineScope()
 
-    ConfigBottomSheet(viewModel = viewModel) {
+    ConfigBottomSheet(
+        sourceId = config.sourceId,
+        setSourceId = { viewModel.setSourceId(it) },
+        setShouldCompress = { viewModel.shouldCompress(it) },
+        setWaitingTranscode = { viewModel.waitingTranscode(it) }
+    ) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (
                 imagePreview,
@@ -66,9 +70,10 @@ fun DebugScreen(viewModel: DebugMediaUploaderViewModelContract) {
                 progressLoader
             ) = createRefs()
 
-            val launcher = launchMediaPicker(viewModel) {
-                hasBrowseFile = true
-            }
+            val launcher = launchMediaPicker(
+                fileChosen = { viewModel.setAction(DebugMediaLoaderEvent.FileChosen(it)) },
+                browsed = { hasBrowseFile = it }
+            )
 
             Box(
                 modifier = Modifier
@@ -178,7 +183,7 @@ fun DebugScreenPreview() {
     DebugScreen(debugViewModel)
 }
 
-val debugViewModel = object : DebugMediaUploaderViewModelContract {
+val debugViewModel = object : DebugMediaUploaderHandlerContract {
     override val state: StateFlow<DebugMediaLoaderState> =
         MutableStateFlow(DebugMediaLoaderState().also {
             it.log(
