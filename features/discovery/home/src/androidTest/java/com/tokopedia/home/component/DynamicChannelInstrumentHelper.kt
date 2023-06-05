@@ -364,12 +364,15 @@ fun clickAndCloseOnEachTodoWidget(view: View, recyclerViewId: Int, fixedItemPosi
                     ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)
                 )
             ).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     0,
                     clickOnViewChild(com.tokopedia.home_component.R.id.cta_todo_widget)
-                )
-            ).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                ),
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(com.tokopedia.home_component.R.id.card_container_todo_widget)
+                ),
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     0,
                     clickOnViewChild(com.tokopedia.home_component.R.id.ic_close_todo_widget)
                 )

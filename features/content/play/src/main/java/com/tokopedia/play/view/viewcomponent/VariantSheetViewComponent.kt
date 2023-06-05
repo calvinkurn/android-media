@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.graphics.Paint
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,15 +13,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.ui.variantsheet.adapter.VariantLabelAdapter
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantItemDecoration
 import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantLabelItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
-import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductButtonType
+import com.tokopedia.play.view.type.ProductButtonUiModel
+import com.tokopedia.play.view.type.StockAvailable
+import com.tokopedia.play.view.type.toAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -60,8 +65,10 @@ class VariantSheetViewComponent(
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
 
-    private val imageRadius = resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
-    private val toasterMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+    private val imageRadius =
+        resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
+    private val toasterMargin =
+        resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
 
     private val variantAdapter: VariantAdapter = VariantAdapter(this)
     private var mAction: ProductAction = ProductAction.Buy
@@ -78,16 +85,21 @@ class VariantSheetViewComponent(
         }
 
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
-                .setOnClickListener {
-                    listener.onCloseButtonClicked(this)
-                }
+            .setOnClickListener {
+                listener.onCloseButtonClicked(this)
+            }
 
         ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
 
             vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
                 height = insets.systemWindowInsetBottom
             }
-            btnContainer.setPadding(btnContainer.paddingLeft, btnContainer.paddingTop, btnContainer.paddingRight, insets.systemWindowInsetBottom)
+            btnContainer.setPadding(
+                btnContainer.paddingLeft,
+                btnContainer.paddingTop,
+                btnContainer.paddingRight,
+                insets.systemWindowInsetBottom
+            )
 
             insets
         }
@@ -98,11 +110,7 @@ class VariantSheetViewComponent(
             addItemDecoration(VariantItemDecoration(context))
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            btnContainer.outlineProvider = TopShadowOutlineProvider()
-        } else {
-            btnContainer.setBackgroundResource(R.drawable.bg_play_product_action_container)
-        }
+        btnContainer.outlineProvider = TopShadowOutlineProvider()
 
         tvSheetTitle.text = getString(R.string.play_title_variant)
         tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -134,7 +142,8 @@ class VariantSheetViewComponent(
     }
 
     fun setAction(button: ProductButtonUiModel) {
-        btnAction.text = if(button.type == ProductButtonType.ATC) getString(R.string.play_product_add_to_card) else button.text
+        btnAction.text =
+            if (button.type == ProductButtonType.ATC) getString(R.string.play_product_add_to_card) else button.text
 
         mAction = button.type.toAction
     }
@@ -156,6 +165,7 @@ class VariantSheetViewComponent(
                 tvOriginalPrice.text = model.variantDetail.price.originalPrice
                 tvCurrentPrice.text = model.variantDetail.price.discountedPrice
             }
+
             is OriginalPrice -> {
                 tvProductDiscount.hide()
                 tvOriginalPrice.hide()
@@ -200,18 +210,23 @@ class VariantSheetViewComponent(
         }
 
         globalError.setType(
-                if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+            if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
         )
     }
 
-    fun showToaster(toasterType: Int, message: String = "", actionText: String, actionListener: View.OnClickListener) {
+    fun showToaster(
+        toasterType: Int,
+        message: String = "",
+        actionText: String,
+        actionListener: View.OnClickListener
+    ) {
         Toaster.toasterCustomBottomHeight = btnAction.height + toasterMargin
         Toaster.build(
-                rootView,
-                message,
-                type = toasterType,
-                actionText = actionText,
-                clickListener = actionListener
+            rootView,
+            message,
+            type = toasterType,
+            actionText = actionText,
+            clickListener = actionListener
         ).show()
     }
 
@@ -222,10 +237,12 @@ class VariantSheetViewComponent(
             is DiscountedPrice -> {
                 tvProductDiscount.show()
                 tvOriginalPrice.show()
-                tvProductDiscount.text = getString(R.string.play_discount_percent, product.price.discountPercent)
+                tvProductDiscount.text =
+                    getString(R.string.play_discount_percent, product.price.discountPercent)
                 tvOriginalPrice.text = product.price.originalPrice
                 tvCurrentPrice.text = product.price.discountedPrice
             }
+
             is OriginalPrice -> {
                 tvProductDiscount.hide()
                 tvOriginalPrice.hide()
@@ -244,8 +261,7 @@ class VariantSheetViewComponent(
 
                 clProductVariant.hide()
                 btnAction.hide()
-            }
-            else {
+            } else {
                 phProductVariant.hide()
                 phBtnAction.hide()
 
@@ -265,7 +281,7 @@ class VariantSheetViewComponent(
 
     private fun getPlaceholderModel() = List(PLACEHOLDER_VARIANT_CATEGORY_COUNT) {
         VariantPlaceholderUiModel.Category(
-                List(PLACEHOLDER_VARIANT_OPTION_COUNT) { VariantPlaceholderUiModel.Option }
+            List(PLACEHOLDER_VARIANT_OPTION_COUNT) { VariantPlaceholderUiModel.Option }
         )
     }
 
@@ -277,6 +293,10 @@ class VariantSheetViewComponent(
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
         fun onVariantOptionClicked(option: VariantOptionWithAttribute)
-        fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction)
+        fun onActionClicked(
+            variant: PlayProductUiModel.Product,
+            sectionInfo: ProductSectionUiModel.Section,
+            action: ProductAction
+        )
     }
 }

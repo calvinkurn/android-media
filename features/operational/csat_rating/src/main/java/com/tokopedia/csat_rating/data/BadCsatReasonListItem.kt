@@ -3,15 +3,15 @@ package com.tokopedia.csat_rating.data
 import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
-
 import com.google.gson.annotations.SerializedName
 
 class BadCsatReasonListItem() : Parcelable {
     @SerializedName("messageEn")
     var messageEn: String? = null
-    @SuppressLint("Invalid Data Type")
+
     @SerializedName("id")
-    var id: Long = 0L
+    var id: Long = 0
+
     @SerializedName("message")
     var message: String? = null
 
