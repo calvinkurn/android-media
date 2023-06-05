@@ -43,7 +43,7 @@ class RepurchaseProductCardListener(
                 item.productCardModel.productId,
                 quantity,
                 PRODUCT_REPURCHASE,
-                item.shopId,
+                item.shopId, 
                 item.productCardModel.availableStock,
                 item.productCardModel.isVariant
             )

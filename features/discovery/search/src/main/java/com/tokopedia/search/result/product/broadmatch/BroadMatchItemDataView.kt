@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.broadmatch
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
@@ -41,6 +42,7 @@ data class BroadMatchItemDataView(
     val discountPercentage: Int = 0,
     val externalReference: String = "",
     val stockBarDataView: StockBarDataView = StockBarDataView(),
+    val warehouseID: String = "",
 ) : ImpressHolder(), Wishlistable {
 
     override fun setWishlist(productID: String, isWishlisted: Boolean) {
@@ -61,7 +63,8 @@ data class BroadMatchItemDataView(
             "position", position,
             "dimension90", dimension90,
             "dimension115", labelGroupDataList.getFormattedPositionName(),
-            "dimension131", externalReference.orNone()
+            "dimension131", externalReference.orNone(),
+            "dimension56", warehouseID.ifNullOrBlank { "0" },
         )
     }
 
@@ -141,6 +144,7 @@ data class BroadMatchItemDataView(
             discountPercentage = product.discountPercentage,
             externalReference = externalReference,
             stockBarDataView = product.stockBarDataView,
+            warehouseID = product.warehouseID,
         )
     }
 }

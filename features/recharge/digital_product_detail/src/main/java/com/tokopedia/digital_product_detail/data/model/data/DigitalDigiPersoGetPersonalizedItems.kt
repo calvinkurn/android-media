@@ -1,5 +1,6 @@
 package com.tokopedia.digital_product_detail.data.model.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class DigitalDigiPersoGetPersonalizedItem(
@@ -33,6 +34,8 @@ data class DigitalPersoItem(
     val mediaURL: String,
     @SerializedName("mediaUrlType")
     val mediaUrlType: String,
+    @SerializedName("mediaURLDarkMode")
+    val mediaURLDarkMode: String,
     @SerializedName("label1")
     val label1: String,
     @SerializedName("label2")
@@ -45,6 +48,12 @@ data class DigitalPersoItem(
     val discount: String,
     @SerializedName("slashedPrice")
     val slashedPrice: String,
+    @SerializedName("pricePlain")
+    @Expose
+    val pricePlain: Double = 0.0,
+    @SerializedName("slashedPricePlain")
+    @Expose
+    val slashedPricePlain: Double = 0.0,
     @SerializedName("appLink")
     val appLink: String,
     @SerializedName("webLink")
@@ -86,7 +95,9 @@ data class DigitalPersoProduct(
     @SerializedName("applink")
     val applink: String,
     @SerializedName("buttonText")
-    val buttonText: String
+    val buttonText: String,
+    @SerializedName("descriptions")
+    val descriptions: List<String>
 )
 
 data class TrackingData(

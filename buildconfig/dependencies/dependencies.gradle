@@ -106,6 +106,8 @@ ext {
     gojekCourierVersion = '0.1.5'
     gojekCourierClientVersion = '0.0.8.1@aar'
     profileInstallerVersion = '1.3.0-alpha01'
+    desugarJdkVersion= '1.2.2'
+    laku6SdkVersion = '2.5.18'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -130,7 +132,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.28'
     unifyPrinciplesVersion = '1.4.6'
-    unifyComponentsVersion = '1.2.31'
+    unifyComponentsVersion = '1.2.31.rc01'
     unifyCoachMarkVersion = '1.2.22'
     unifyCalendarVersion = '1.2.3'
     unifyBannerVersion = '1.0.6.2'
@@ -266,7 +268,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            hansel                : "io.hansel.preprocessor:preprocessor:9.3.1",
+            hansel                : "io.hansel.preprocessor:preprocessor:9.3.2",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
@@ -302,7 +304,7 @@ ext {
             archCoreCommon        : "androidx.arch.core:core-common:$archCoreVersion",
             traceroute            : "com.tokopedia.traceroute:traceroute:1.0.1@aar",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:2.5.13",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:$laku6SdkVersion",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.8.2.1",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
@@ -343,7 +345,8 @@ ext {
             courierClient         : "com.gojek.courier:courier-client:$gojekCourierClientVersion",
             livenessDetection     : "ai.advance.liveness:liveness_lib:1.3.4@aar",
             livenessCore          : "ai.advance.liveness:guardian_core:2.8@aar",
-            profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion"
+            profileInstaller      : "androidx.profileinstaller:profileinstaller:$profileInstallerVersion",
+            desugarJdk            : "com.android.tools:desugar_jdk_libs:$desugarJdkVersion"
     ]
 
     testDependencies = [
@@ -441,6 +444,7 @@ ext {
     composeActivity = "1.5.1"
     composeConstraint = "1.0.1"
     composeCoil = "1.3.2"
+    accompanistPagerVersion = "0.23.1"
 
     composeDependencies = [
             composeCompiler     : "androidx.compose.compiler:compiler:$composeVersion",
@@ -453,6 +457,7 @@ ext {
             composeActivity     : "androidx.activity:activity-compose:$composeActivity",
             composeConstraint   : "androidx.constraintlayout:constraintlayout-compose:$composeConstraint",
             composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
-            composeCoil         : "io.coil-kt:coil-compose:$composeCoil"
+            composeCoil         : "io.coil-kt:coil-compose:$composeCoil",
+            accompanistPager    : "com.google.accompanist:accompanist-pager:$accompanistPagerVersion"
     ]
 }
