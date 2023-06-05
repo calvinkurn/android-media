@@ -78,7 +78,6 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFor
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-
 /**
  * @author Irfan Khoirul on 23/04/18.
  */
@@ -577,9 +576,10 @@ class ShipmentAdapter @Inject constructor(
             if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList!!.size) {
                 val priceTotal: Double =
                     if (shipmentCostModel!!.totalPrice <= 0) 0.0 else shipmentCostModel!!.totalPrice
-                val platformFee = shipmentCostModel
+                val platformFee: Double = if (shipmentCostModel!!.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCostModel!!.dynamicPlatformFee.fee
+                val finalPrice = priceTotal + platformFee
                 val priceTotalFormatted =
-                    removeDecimalSuffix(convertPriceValueToIdrFormat(priceTotal.toLong(), false))
+                    removeDecimalSuffix(convertPriceValueToIdrFormat(finalPrice.toLong(), false))
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted, !hasLoadingItem)
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange(
@@ -1090,7 +1090,8 @@ class ShipmentAdapter @Inject constructor(
             for (shipmentCartItemModel in shipmentCartItemModelList!!) {
                 if (shipmentCartItemModel.selectedShipmentDetailData != null) {
                     if (shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null && !shipmentAdapterActionListener.isTradeInByDropOff ||
-                            shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff) {
+                        shipmentCartItemModel.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null && shipmentAdapterActionListener.isTradeInByDropOff
+                    ) {
                         cartItemCounter++
                     }
                 } else if (shipmentCartItemModel.isError) {
@@ -1116,10 +1117,10 @@ class ShipmentAdapter @Inject constructor(
             val requestData = getRequestData(null, null, false)
             if (!passCheckShipmentFromPaymentClick) {
                 shipmentAdapterActionListener.onFinishChoosingShipment(
-                        lastSelectedCourierOrderIndex,
-                        lastSelectedCourierOrdercartString,
-                        forceHitValidateUse,
-                        skipValidateUse
+                    lastSelectedCourierOrderIndex,
+                    lastSelectedCourierOrdercartString,
+                    forceHitValidateUse,
+                    skipValidateUse
                 )
             }
             shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
