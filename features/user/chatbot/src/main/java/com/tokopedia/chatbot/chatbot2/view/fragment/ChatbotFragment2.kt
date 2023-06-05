@@ -1000,7 +1000,7 @@ class ChatbotFragment2 :
                     // On clicking that quick reply open the Bottom Sheet
 
                     val reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
-                        it.feedbackForm
+                        it.rejectReasons
                     )
 
                     reasonsBottomSheet.setUpListener(this)
@@ -2820,7 +2820,8 @@ class ChatbotFragment2 :
 
     override fun submitRejectReasonsViaSocket(
         selectedReasons: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
-        reasonText: String
+        reasonText: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
     ) {
         val list = mutableListOf<Long>()
         selectedReasons.forEach {
@@ -2831,7 +2832,8 @@ class ChatbotFragment2 :
             reasonText,
             messageId,
             opponentId,
-            SendableUiModel.generateStartTime()
+            SendableUiModel.generateStartTime(),
+            helpfulQuestion
         )
     }
 }

@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.chatbot2.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.util.convertMessageIdToLong
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
@@ -401,12 +402,13 @@ object ChatbotSendableWebSocketParam {
         reasonText: String,
         messageId: String,
         toUid: String,
-        startTime: String
+        startTime: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
     ): JsonObject {
         val json = JsonObject()
         json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
 
-        val dynamicContent = generateDynamicContent108(reasonCodeList, reasonText)
+        val dynamicContent = generateDynamicContent108(reasonCodeList, reasonText, helpfulQuestion)
 
         val attribute = JsonObject().apply {
             addProperty(
@@ -424,7 +426,7 @@ object ChatbotSendableWebSocketParam {
 
         val data = JsonObject().apply {
             addProperty("message_id", messageId.convertMessageIdToLong())
-            addProperty("message", "Notifikasi Chat")
+            addProperty("message", helpfulQuestion?.quickReplies?.get(1)?.message)
             addProperty("attachment_type", ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT.toIntOrZero())
             add("payload", payload)
             addProperty("start_time", startTime)
@@ -436,11 +438,17 @@ object ChatbotSendableWebSocketParam {
         return json
     }
 
-    private fun generateDynamicContent108(reasonCodeList: List<Long>, reasonText: String): String {
+    private fun generateDynamicContent108(
+        reasonCodeList: List<Long>,
+        reasonText: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
+    ): String {
         val newQuickRepliesBody = JsonObject().apply {
-            addProperty("action", "csat-no")
-            addProperty("text", "Tidak")
-            addProperty("value", "tidak")
+            helpfulQuestion?.newQuickRepliesList?.get(1)?.let {
+                addProperty("action", it.action)
+                addProperty("text", it.text)
+                addProperty("value", it.value)
+            }
         }
         val newQuickReplies = JsonObject().apply {
             add("new_quick_replies", newQuickRepliesBody)

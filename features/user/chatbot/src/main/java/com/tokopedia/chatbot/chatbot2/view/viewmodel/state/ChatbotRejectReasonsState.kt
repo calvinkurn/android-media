@@ -4,7 +4,6 @@ import com.tokopedia.chatbot.chatbot2.data.reject_reasons.DynamicAttachmentRejec
 
 sealed class ChatbotRejectReasonsState {
     data class ChatbotRejectReasonData(
-        val rejectReasonHelpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion,
-        val feedbackForm: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm
+        val rejectReasons: DynamicAttachmentRejectReasons
     ) : ChatbotRejectReasonsState()
 }

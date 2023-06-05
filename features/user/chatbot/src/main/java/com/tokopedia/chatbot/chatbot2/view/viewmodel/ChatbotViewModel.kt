@@ -1190,8 +1190,7 @@ class ChatbotViewModel @Inject constructor(
     private fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {
         _dynamicAttachmentRejectReasonState.postValue(
             ChatbotRejectReasonsState.ChatbotRejectReasonData(
-                rejectReasonData.helpfulQuestion,
-                rejectReasonData.feedbackForm
+                rejectReasonData
             )
         )
     }
@@ -1397,7 +1396,8 @@ class ChatbotViewModel @Inject constructor(
         reason: String,
         messageId: String,
         toUid: String,
-        startTime: String
+        startTime: String,
+        helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
     ) {
         chatbotWebSocket.send(
             generateParamDynamicAttachment108(
@@ -1405,7 +1405,8 @@ class ChatbotViewModel @Inject constructor(
                 reason,
                 messageId,
                 toUid,
-                startTime
+                startTime,
+                helpfulQuestion
             ),
             listInterceptor
         )

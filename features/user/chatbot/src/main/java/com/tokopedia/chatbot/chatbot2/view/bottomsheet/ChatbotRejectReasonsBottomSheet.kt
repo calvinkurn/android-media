@@ -11,11 +11,10 @@ import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotRejectReas
 import com.tokopedia.chatbot.databinding.BottomSheetChatbotReasonsBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.android.synthetic.main.item_chatbot_quick_reply_view.view.*
 
 class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
-    private var rejectReasonFeedbackForm: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm? = null
+    private var rejectReasonFeedbackForm: DynamicAttachmentRejectReasons? = null
     private var binding by autoClearedNullable<BottomSheetChatbotReasonsBinding>()
     private var reasonsAdapter: ChatbotRejectReasonsAdapter? = null
     private var listener: ChatbotRejectReasonsListener? = null
@@ -39,7 +38,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpViews() {
-        rejectReasonFeedbackForm?.let { data ->
+        rejectReasonFeedbackForm?.feedbackForm?.let { data ->
             binding?.apply {
                 setTitle(data.title)
                 senderIcon.urlSrc = data.iconTanya
@@ -58,7 +57,8 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                 btnSubmit.setOnClickListener {
                     listener?.submitRejectReasonsViaSocket(
                         reasonsAdapter?.selectedList ?: emptyList(),
-                        reasonText.editText.text?.toString() ?: ""
+                        reasonText.editText.text?.toString() ?: "",
+                        rejectReasonFeedbackForm?.helpfulQuestion
                     )
                     dismiss()
                 }
@@ -86,7 +86,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        fun newInstance(rejectReasonFeedbackForm: DynamicAttachmentRejectReasons.RejectReasonFeedbackForm): ChatbotRejectReasonsBottomSheet {
+        fun newInstance(rejectReasonFeedbackForm: DynamicAttachmentRejectReasons): ChatbotRejectReasonsBottomSheet {
             return ChatbotRejectReasonsBottomSheet().apply {
                 this.rejectReasonFeedbackForm = rejectReasonFeedbackForm
             }
@@ -98,7 +98,8 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     interface ChatbotRejectReasonsListener {
         fun submitRejectReasonsViaSocket(
             selectedReasons: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
-            reasonText: String
+            reasonText: String,
+            helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
         )
     }
 }
