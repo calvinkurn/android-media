@@ -40,8 +40,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
-
-open class BaseFragmentProvideRating : BaseDaggerFragment(),
+open class BaseFragmentProvideRating :
+    BaseDaggerFragment(),
     ProvideRatingContract.ProvideRatingView {
 
     protected lateinit var mTxtHelpTitle: TextView
@@ -65,7 +65,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         const val UPDATING = "Updating"
         const val CAPTION_LIST = "captionList"
         const val QUESTION_LIST = "questionList"
-        const val NO_EMOJI = 0
+        const val NO_EMOJI = 0L
         const val minLength = 1
         const val maxLength = 29
         const val EMOJI_STATE = "emoji_state"
@@ -78,7 +78,6 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         }
     }
 
-
     override fun initInjector() {
         DaggerCsatComponent.builder().baseAppComponent(
             ((activity as Activity).application as BaseMainApplication).baseAppComponent
@@ -87,7 +86,6 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
             .build()
             .inject(this)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -107,9 +105,9 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         viewModel?.setCaption(caption as ArrayList<String>)
         val question = arguments?.getStringArrayList(QUESTION_LIST).orEmpty()
         viewModel?.setQuestion(question as ArrayList<String>)
-        val reasonItemList : ArrayList<BadCsatReasonListItem> = arguments?.getParcelableArrayList(PARAM_OPTIONS_CSAT) ?: ArrayList()
+        val reasonItemList: ArrayList<BadCsatReasonListItem> = arguments?.getParcelableArrayList(PARAM_OPTIONS_CSAT) ?: ArrayList()
         viewModel?.setReasonList(reasonItemList)
-        val emojiState =  arguments?.getInt(CLICKED_EMOJI) ?: NO_EMOJI
+        val emojiState = arguments?.getLong(CLICKED_EMOJI) ?: NO_EMOJI
         viewModel?.setSelectedEmoji(emojiState)
 
         mTxtHelpTitle.text = arguments?.getString(CSAT_TITLE) ?: ""
@@ -147,7 +145,6 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
 
     override fun setMessage(message: String) {
         mTxtSmileSelected.text = message
-
     }
 
     override fun setMessageColor(color: Int) {
@@ -171,9 +168,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         return imageView
     }
 
-    override fun getSelectedEmoji(): Int {
-        return arguments?.getInt(CLICKED_EMOJI) ?: NO_EMOJI
-
+    override fun getSelectedEmoji(): Long {
+        return arguments?.getLong(CLICKED_EMOJI) ?: NO_EMOJI
     }
 
     override fun clearEmoji() {
@@ -184,9 +180,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         view?.let {
             Toaster.build(it, errorMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
-
     }
-
 
     open fun getLayoutManager(filterList: List<BadCsatReasonListItem>): RecyclerView.LayoutManager {
         return LinearLayoutManager(context)
@@ -238,7 +232,6 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         return arguments?.getParcelableArrayList(PARAM_OPTIONS_CSAT) ?: ArrayList()
     }
 
-
     override fun onSuccessSubmit(intent: Intent) {
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -251,7 +244,6 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
     override fun getQuestion(): ArrayList<String> {
         return arguments?.getStringArrayList(QUESTION_LIST) ?: ArrayList()
     }
-
 
     override fun showProgress() {
         progress = ProgressDialog(context)
@@ -301,14 +293,22 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
     }
 
     override fun disableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+        mTxtFinished.setTextColor(
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN400
+            )
+        )
         mTxtFinished.isEnabled = false
     }
 
     override fun enableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context,
-            com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        mTxtFinished.setTextColor(
+            MethodChecker.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        )
         mTxtFinished.isEnabled = true
     }
 
@@ -343,7 +343,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         }
     }
 
-    private fun clearAllOfSelectedReason(){
+    private fun clearAllOfSelectedReason() {
         selectedOption.clear()
     }
 
@@ -366,5 +366,4 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
         intent.putExtra(SELECTED_ITEM, getSelectedItem())
         onSuccessSubmit(intent)
     }
-
 }

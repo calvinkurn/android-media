@@ -16,7 +16,7 @@ import com.otaliastudios.cameraview.size.AspectRatio
 import com.otaliastudios.cameraview.size.SizeSelectors
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.R
+import com.tokopedia.media.R as pickerR
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
@@ -26,11 +26,11 @@ class CameraViewUiComponent(
     private val param: PickerParam,
     private val listener: Listener,
     parent: ViewGroup,
-) : UiComponent(parent, R.id.uc_camera_preview) {
+) : UiComponent(parent, pickerR.id.uc_camera_preview) {
 
-    private val spaceToolBar = findViewById<Space>(R.id.space_toolbar)
+    private val spaceToolBar = findViewById<Space>(pickerR.id.space_toolbar)
 
-    private val cameraView = findViewById<CameraView>(R.id.cameraView).apply {
+    private val cameraView = findViewById<CameraView>(pickerR.id.cameraView).apply {
         if (param.ratioIsSquare()) {
             customRatioCameraView(SQUARE_RATIO)
             squareRatioOfCameraSize()
@@ -154,7 +154,7 @@ class CameraViewUiComponent(
         ConstraintSet().apply {
             clone(parent)
             connect(
-                R.id.cameraView,
+                pickerR.id.cameraView,
                 ConstraintSet.BOTTOM,
                 ConstraintSet.PARENT_ID,
                 ConstraintSet.BOTTOM,
@@ -171,7 +171,7 @@ class CameraViewUiComponent(
 
         ConstraintSet().apply {
             clone(parent)
-            setDimensionRatio(R.id.cameraView, ratio)
+            setDimensionRatio(pickerR.id.cameraView, ratio)
         }.applyTo(parent)
     }
 

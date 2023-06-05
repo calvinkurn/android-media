@@ -30,9 +30,9 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.PostUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 class UserProfileFeedFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
@@ -98,7 +98,7 @@ class UserProfileFeedFragment @Inject constructor(
 
         binding.rvFeed.layoutManager = gridLayoutManager
         if (binding.rvFeed.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_1)
+            val spacing = requireContext().resources.getDimensionPixelOffset(contentCommonR.dimen.content_common_space_1)
             binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, false))
         }
         binding.rvFeed.adapter = mAdapter

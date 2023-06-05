@@ -8,7 +8,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselSeeMoreUiModel
@@ -21,6 +20,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.data.createHomeProductCardUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.analytic.HomeRemoveFromCartTracker
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse
 import com.tokopedia.tokopedianow.home.domain.model.Grid
 import com.tokopedia.tokopedianow.home.domain.model.Header
@@ -99,12 +99,12 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = channelId,
                         productId = productId,
-                        stock = 5,
                         quantity = 5,
-                        product = ProductCardModel(
-                            nonVariant = ProductCardModel.NonVariant(quantity, 3, 10)
-                        ),
+                        stock = 5,
+                        minOrder = 3,
+                        maxOrder = 10,
                         position = 1,
+                        originalPosition = 1,
                         headerName = "Kamu pernah beli"
                     )
                 ),
@@ -199,13 +199,12 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     createHomeProductCardUiModel(
                         channelId = channelId,
                         productId = productId,
-                        stock = 5,
                         quantity = 0,
-                        product = ProductCardModel(
-                            hasAddToCartButton = true,
-                            nonVariant = ProductCardModel.NonVariant(quantity, 3, 4)
-                        ),
+                        stock = 5,
+                        minOrder = 3,
+                        maxOrder = 4,
                         position = 1,
+                        originalPosition = 1,
                         headerName = "Kamu pernah beli"
                     )
                 ),
@@ -964,13 +963,12 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
             val productCardUiModel = createHomeProductCardUiModel(
                 channelId = channelId,
                 productId = "2",
+                quantity = 2,
                 stock = 3,
-                quantity = 4,
-                product = ProductCardModel(
-                    hasAddToCartButton = true,
-                    nonVariant = ProductCardModel.NonVariant(0, 1, 4)
-                ),
+                minOrder = 1,
+                maxOrder = 4,
                 position = 2,
+                originalPosition = 2,
                 headerName = "Kamu pernah beli"
             )
 
@@ -1131,7 +1129,8 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
                     productId = "2",
                     price = "0",
                     usePreDraw = true,
-                    needToShowQuantityEditor = true
+                    needToShowQuantityEditor = true,
+                    orderQuantity = 2
                 ),
                 position = 0
             )
@@ -1372,6 +1371,108 @@ class TokoNowHomeViewModelTestAddToCart : TokoNowHomeViewModelTestFixture() {
 
             viewModel.addItemToCart
                 .verifyValueEquals(expected = null)
+        }
+    }
+
+    @Test
+    fun `when add repurchase product to cart should move product position to last`() {
+        runTest {
+            val channelId = "1001"
+            val productId = "1"
+            val quantity = 5
+            val shopId = "5"
+            val type = TokoNowLayoutType.REPURCHASE_PRODUCT
+
+            val homeLayoutResponse = listOf(
+                HomeLayoutResponse(
+                    id = "1001",
+                    layout = "recent_purchase_tokonow",
+                    header = Header(
+                        name = "Kamu pernah beli",
+                        serverTimeUnix = 0
+                    )
+                )
+            )
+            val repurchaseResponse = GetRepurchaseResponse.RepurchaseData(
+                title = "Kamu pernah beli",
+                products = listOf(
+                    RepurchaseProduct(
+                        id = productId,
+                        stock = 5,
+                        maxOrder = 10,
+                        minOrder = 3
+                    ),
+                    RepurchaseProduct(
+                        id = "3",
+                        stock = 2,
+                        maxOrder = 2,
+                        minOrder = 1
+                    )
+                )
+            )
+            val addToCartResponse = AddToCartDataModel()
+
+            onGetHomeLayoutData_thenReturn(homeLayoutResponse)
+            onGetRepurchaseWidget_thenReturn(repurchaseResponse)
+            onAddToCart_thenReturn(addToCartResponse)
+
+            viewModel.getHomeLayout(
+                localCacheModel = LocalCacheModel(),
+                removeAbleWidgets = listOf()
+            )
+            viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
+            viewModel.onCartQuantityChanged(channelId, productId, quantity, shopId, 5, false, type)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(id = "0")
+            val repurchaseUiModel = TokoNowRepurchaseUiModel(
+                id = "1001",
+                title = "Kamu pernah beli",
+                productList = listOf(
+                    createHomeProductCardUiModel(
+                        channelId = channelId,
+                        productId = "3",
+                        quantity = 0,
+                        stock = 2,
+                        minOrder = 1,
+                        maxOrder = 2,
+                        position = 1,
+                        originalPosition = 2,
+                        headerName = "Kamu pernah beli"
+                    ),
+                    createHomeProductCardUiModel(
+                        channelId = channelId,
+                        productId = productId,
+                        quantity = 5,
+                        stock = 5,
+                        minOrder = 3,
+                        maxOrder = 10,
+                        position = 2,
+                        originalPosition = 1,
+                        headerName = "Kamu pernah beli"
+                    )
+                ),
+                state = TokoNowLayoutState.SHOW
+            )
+
+            val homeLayoutItems = listOf(
+                chooseAddressWidget,
+                repurchaseUiModel
+            )
+
+            val expectedResult = Success(
+                HomeLayoutListUiModel(
+                    items = homeLayoutItems,
+                    state = TokoNowLayoutState.UPDATE
+                )
+            )
+
+            verifyGetHomeLayoutDataUseCaseCalled()
+            verifyGetRepurchaseWidgetUseCaseCalled()
+            verifyAddToCartUseCaseCalled()
+
+            viewModel.atcQuantity
+                .verifySuccessEquals(expectedResult)
         }
     }
 }
