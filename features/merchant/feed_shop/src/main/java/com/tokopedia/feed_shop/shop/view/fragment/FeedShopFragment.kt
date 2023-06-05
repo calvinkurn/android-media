@@ -86,6 +86,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import java.lang.IllegalStateException
 import java.util.*
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.R as universalSharingR
@@ -635,7 +636,10 @@ class FeedShopFragment :
         context?.let {
             val menus =
                 createBottomMenu(
-                    it, deletable, reportable, editable,
+                    it,
+                    deletable,
+                    reportable,
+                    editable,
                     object : PostMenuListener {
                         override fun onDeleteClicked() {
                             createDeleteDialog(positionInFeed, postId)?.show()
@@ -743,7 +747,11 @@ class FeedShopFragment :
                     override fun onShareItemClicked(packageName: String) {
                     }
                 },
-                "", imageUrl, url, description, title
+                "",
+                imageUrl,
+                url,
+                description,
+                title
             )
         }.also {
             fragmentManager?.run {
@@ -887,7 +895,7 @@ class FeedShopFragment :
 //        val cdpAppLink = redirectLink
         val cdpAppLink = UriUtil.buildUri(
             ApplinkConst.INTERNAL_CONTENT_DETAIL,
-            postId,
+            postId
         )
         val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
         onGoToLink(finalAppLink)
@@ -1362,5 +1370,21 @@ class FeedShopFragment :
         positionInFeed: Int,
         feedXCard: FeedXCard
     ) {
+    }
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        try {
+            super.startActivityForResult(intent, requestCode)
+        } catch (e: IllegalStateException) {
+            // ignored
+        }
+    }
+
+    override fun startActivity(intent: Intent?) {
+        try {
+            super.startActivity(intent)
+        } catch (e: IllegalStateException) {
+            // ignored
+        }
     }
 }
