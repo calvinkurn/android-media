@@ -154,6 +154,9 @@ class UserProfileReviewFragment @Inject constructor(
         if (value.reviewSettings.isEnabled) {
             when (value.reviewContent.status) {
                 UserReviewUiModel.Status.Loading -> {
+
+                    showMainLayout()
+
                     if (value.reviewContent.isLoading && value.reviewContent.reviewList.isEmpty()) {
                         adapter.setItemsAndAnimateChanges(
                             List(USER_REVIEW_SHIMMER_COUNT) { UserReviewAdapter.Model.Shimmer }
@@ -166,8 +169,7 @@ class UserProfileReviewFragment @Inject constructor(
                         return
                     }
 
-                    binding.layoutNoUserReview.root.hide()
-                    binding.rvReview.show()
+                    showMainLayout()
 
                     val mappedList = value.reviewContent.reviewList.map {
                         UserReviewAdapter.Model.Review(it)
@@ -186,6 +188,11 @@ class UserProfileReviewFragment @Inject constructor(
         } else {
             showHiddenReviewLayout()
         }
+    }
+
+    private fun showMainLayout() {
+        binding.layoutNoUserReview.root.hide()
+        binding.rvReview.show()
     }
 
     private fun showNoReviewLayout() {
