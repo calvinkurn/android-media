@@ -37,7 +37,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
             return try {
                 var ops = NO_OPS
                 if (userSession.isLoggedIn) {
-                    val syncResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
+                    val syncResult = DataStoreMigrationHelper.checkDataSync(dataStore, userSession)
                     if (syncResult.isNotEmpty()) {
                         logSyncResult(syncResult)
                         migrateData()
@@ -58,7 +58,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
         try {
             DataStoreMigrationHelper.migrateToDataStore(dataStore, userSession)
             // Check if still difference between the data
-            val migrationResult = DataStoreMigrationHelper.checkDataSync(applicationContext)
+            val migrationResult = DataStoreMigrationHelper.checkDataSync(dataStore, userSession)
             if (migrationResult.isEmpty()) {
                 dataStorePreference.setMigrationStatus(true)
             } else {

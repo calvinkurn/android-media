@@ -11,7 +11,11 @@ import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verifyOrder
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -116,6 +120,24 @@ class DiscomPresenterTest {
 
         verifyOrder {
             view.renderData(expected.addresses, expected.isNextAvailable)
+        }
+    }
+
+    @Test
+    fun `load data with token data with no response`() {
+        val expected = null
+        every {
+            getDistrictRequestUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddressResponse>>().onNext(expected)
+        }
+
+        presenter.loadData("jak", firstPage, Token())
+
+        verifyOrder(inverse = true) {
+            view.setLoadingState(true)
+            view.setLoadingState(false)
+            view.renderData(any(), any())
         }
     }
 

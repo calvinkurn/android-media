@@ -35,7 +35,6 @@ class UserSessionV1toV2MigrationTest {
     }
 
     @Test
-    @Ignore("failing test in existing issue, will solve later")
     fun whenMigratingLoginMethodWithEmptyValue_oldPreferenceShouldBeRemoved() {
         testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "") {
             assertEquals(it, sut.loginMethod)
@@ -43,7 +42,6 @@ class UserSessionV1toV2MigrationTest {
     }
 
     @Test
-    @Ignore("failing test in existing issue, will solve later")
     fun whenMigratingLoginMethodWithEmptyValueWhileV2Exists_oldPreferenceShouldBeRemoved() {
         testV1PreferenceShouldBeRemoved(LOGIN_METHOD, "") {
             sut.loginMethod = "bar"
@@ -53,7 +51,6 @@ class UserSessionV1toV2MigrationTest {
     }
 
     @Test
-    @Ignore("failing test in existing issue, will solve later")
     fun whenMigratingEmailWhileV2Exists_oldPreferenceShouldBeRemoved() {
         testV1PreferenceShouldBeRemoved(EMAIL, "foo") {
             sut.email = "bar"

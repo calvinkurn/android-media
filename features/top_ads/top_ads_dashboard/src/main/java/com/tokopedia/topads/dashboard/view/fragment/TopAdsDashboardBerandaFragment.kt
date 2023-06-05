@@ -85,7 +85,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private var creditPerformance: String = ""
     private var topUpUCount: Int = 0
     private var autoTopUpBonus: Double = 0.0
-    private var showAutoTopUpOldFlow = true
+    private var showAutoTopUpOldFlow = false
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -419,12 +419,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 autoTopUpBonus = it.data.statusBonus
             }
         }
-
-        topAdsDashboardViewModel.isUserWhitelisted.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                showAutoTopUpOldFlow = !it.data
-            }
-        }
     }
 
     private fun setRecommendationProdukBerpostensi(item: RecommendationStatistics.Statistics.Data.ProductRecommendationStats) {
@@ -549,7 +543,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         topAdsDashboardViewModel.getTopadsTicker()
         topAdsDashboardViewModel.getAutoTopUpStatus()
         topAdsDashboardViewModel.getSelectedTopUpType()
-        topAdsDashboardViewModel.getWhiteListedUser()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
