@@ -22,8 +22,8 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestLoader(
-    modifier: Modifier = Modifier,
-    variant: NestLoaderType
+    variant: NestLoaderType,
+    modifier: Modifier = Modifier
 ) {
     when (variant) {
         is NestLoaderType.Circular -> {
@@ -75,33 +75,33 @@ private fun NestLoaderPreview() {
         NestLoader(variant = NestLoaderType.Decorative(size = NestLoaderSize.Small, isWhite = true))
 
         NestLoader(
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect()),
             modifier = Modifier
-                .size(100.dp, 50.dp),
-            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect())
+                .size(100.dp, 50.dp)
         )
 
         NestLoader(
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(rounded = 8.dp)),
             modifier = Modifier
-                .size(100.dp, 50.dp),
-            variant = NestLoaderType.Shimmer(type = NestShimmerType.Rect(rounded = 8.dp))
+                .size(100.dp, 50.dp)
         )
 
         NestLoader(
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Line),
             modifier = Modifier
-                .size(100.dp, 50.dp),
-            variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
+                .size(100.dp, 50.dp)
         )
 
         NestLoader(
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Line),
             modifier = Modifier
-                .size(100.dp, 16.dp),
-            variant = NestLoaderType.Shimmer(type = NestShimmerType.Line)
+                .size(100.dp, 16.dp)
         )
 
         NestLoader(
+            variant = NestLoaderType.Shimmer(type = NestShimmerType.Circle),
             modifier = Modifier
-                .size(100.dp),
-            variant = NestLoaderType.Shimmer(type = NestShimmerType.Circle)
+                .size(100.dp)
         )
     }
 }

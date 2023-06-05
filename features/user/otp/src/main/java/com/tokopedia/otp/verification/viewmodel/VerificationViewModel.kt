@@ -294,6 +294,7 @@ open class VerificationViewModel @Inject constructor(
 
     fun goToInputOtp(otpData: ModeListData) {
         _gotoInputOtp.value = otpData
+        done = true
     }
 
     fun getVerificationMethod(

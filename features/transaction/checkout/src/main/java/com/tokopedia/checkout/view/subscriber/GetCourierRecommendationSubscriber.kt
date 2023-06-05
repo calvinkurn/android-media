@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.subscriber
 
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -41,6 +42,11 @@ class GetCourierRecommendationSubscriber(
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
         view.logOnErrorLoadCourier(e, itemPosition, boPromoCode)
+
+        if (e is AkamaiErrorException) {
+            view.showToastErrorAkamai(e.message)
+        }
+
         logisticDonePublisher?.onCompleted()
     }
 

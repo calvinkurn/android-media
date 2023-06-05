@@ -17,6 +17,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_COMMENT_COUNT
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_LIKED_UNLIKED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
+import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_REMINDER_CHANGED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
@@ -64,7 +65,9 @@ class FeedPostVideoViewHolder(
     init {
         binding.playerControl.setListener(object : FeedPlayerControl.Listener {
             override fun onScrubbing(
-                view: PlayerControlView, currPosition: Long, totalDuration: Long
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
             ) {
                 binding.videoTimeView.setCurrentPosition(currPosition)
                 binding.videoTimeView.setTotalDuration(totalDuration)
@@ -73,7 +76,9 @@ class FeedPostVideoViewHolder(
             }
 
             override fun onStopScrubbing(
-                view: PlayerControlView, currPosition: Long, totalDuration: Long
+                view: PlayerControlView,
+                currPosition: Long,
+                totalDuration: Long
             ) {
                 binding.videoTimeView.hide()
                 hideClearView()
@@ -99,8 +104,9 @@ class FeedPostVideoViewHolder(
             )
         }
 
-        val postGestureDetector = GestureDetector(
-            binding.root.context,
+
+                val postGestureDetector = GestureDetector(
+                    binding.root.context,
             object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                     val videoPlayer = mVideoPlayer ?: return true
@@ -140,7 +146,8 @@ class FeedPostVideoViewHolder(
 
                 override fun onLongPress(e: MotionEvent) {
                 }
-            })
+            }
+        )
 
         binding.playerFeedVideo.videoSurfaceView?.setOnTouchListener { _, motionEvent ->
             postGestureDetector.onTouchEvent(motionEvent)
@@ -162,28 +169,25 @@ class FeedPostVideoViewHolder(
                 bindComments(data)
                 bindVideoPlayer(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
                         data.editable,
                         data.deletable,
-                        data.reportable || data.isTypeProductHighlight,
+                        data.reportable,
                         FeedContentData(
-                            data.text, data.id, data.author.id, absoluteAdapterPosition
+                            data.text,
+                            data.id,
+                            data.author.id,
+                            absoluteAdapterPosition
                         ),
-                        trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                            data
-                        )
+                        trackerData
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.coverUrl ?: ""
-                    )
+                    listener.onSharePostClicked(data.share, trackerData)
                 }
                 btnDisableClearMode.setOnClickListener {
                     hideClearView()
@@ -209,11 +213,17 @@ class FeedPostVideoViewHolder(
                 bindComments(it)
             }
 
+            if (payloads.contains(FEED_POST_REMINDER_CHANGED)) {
+                campaignView.bindCampaignReminder(element.campaign.isReminderActive)
+            }
+
             if (payloads.contains(FEED_POST_SELECTED)) {
                 listener.onPostImpression(
                     trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
                         it
-                    ), it.id, absoluteAdapterPosition
+                    ),
+                    it.id,
+                    absoluteAdapterPosition
                 )
                 campaignView.startAnimation()
                 mVideoPlayer?.resume()
@@ -237,9 +247,12 @@ class FeedPostVideoViewHolder(
             }
 
             payloads.forEach { payload ->
-                if (payload is FeedViewHolderPayloads) bind(
-                    element, payload.payloads.toMutableList()
-                )
+                if (payload is FeedViewHolderPayloads) {
+                    bind(
+                        element,
+                        payload.payloads.toMutableList()
+                    )
+                }
             }
         }
     }
@@ -292,7 +305,6 @@ class FeedPostVideoViewHolder(
             postType = data.typename,
             isFollowing = data.followers.isFollowed,
             campaign = data.campaign,
-            hasVoucher = data.hasVoucher,
             products = data.products,
             totalProducts = data.totalProducts,
             trackerData = trackerDataModel,
@@ -322,11 +334,11 @@ class FeedPostVideoViewHolder(
             model.campaign,
             model.cta,
             model.products.firstOrNull(),
+            model.products,
             model.hasVoucher,
             model.isTypeProductHighlight,
-            trackerDataModel ?: trackerMapper.transformVideoContentToTrackerModel(
-                model
-            ),
+            trackerDataModel ?: trackerMapper
+                .transformVideoContentToTrackerModel(model),
             model.id,
             model.author,
             model.typename,
@@ -359,7 +371,6 @@ class FeedPostVideoViewHolder(
 
         videoPlayer.setVideoStateListener(object : VideoStateListener {
             override fun onInitialStateLoading() {
-
             }
 
             override fun onBuffering() {
@@ -382,7 +393,7 @@ class FeedPostVideoViewHolder(
         videoPlayer.start(
             element.media.firstOrNull()?.mediaUrl.orEmpty(),
             false,
-            playWhenReady = false,
+            playWhenReady = false
         )
     }
 
