@@ -30,6 +30,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.celebration.analytics.CelebrationAnalytics
 import com.tokopedia.scp_rewards.celebration.di.CelebrationComponent
@@ -690,7 +692,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     private fun fadeOutPage() {
         binding?.mainView?.apply {
             val opacityPvh = getOpacityPropertyValueHolder(from = 255, to = 0)
-            ObjectAnimator.ofPropertyValuesHolder(this, opacityPvh).apply {
+            ObjectAnimator.ofPropertyValuesHolder(this.root, opacityPvh).apply {
                 duration = ANIMATION_DURATION
                 interpolator = LinearInterpolator()
                 addListener(object : Animator.AnimatorListener {
@@ -707,6 +709,7 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToMedaliDetail() {
+        RouteManager.route(context, ApplinkConst.ScpRewards.MEDAL_DETAIL, medaliSlug)
         activity?.finish()
     }
 
