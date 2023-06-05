@@ -961,6 +961,10 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     is ShowInfoEvent -> {
+                        if (PlayExploreWidgetFragment.get(childFragmentManager) != null) {
+                            return@collect
+                        }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getTextFromUiString(event.message)
