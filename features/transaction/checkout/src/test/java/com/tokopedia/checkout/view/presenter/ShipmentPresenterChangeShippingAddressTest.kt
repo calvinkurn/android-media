@@ -99,6 +99,9 @@ class ShipmentPresenterChangeShippingAddressTest {
     private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
     @MockK(relaxed = true)
+    private lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
+
+    @MockK(relaxed = true)
     private lateinit var view: ShipmentContract.View
 
     @MockK(relaxed = true)
@@ -137,7 +140,8 @@ class ShipmentPresenterChangeShippingAddressTest {
             gson,
             TestSchedulers,
             getRatesWithScheduleUseCase,
-            updateDynamicDataPassingUseCase
+            updateDynamicDataPassingUseCase,
+            dynamicPaymentFeeCheckoutUseCase
         )
         presenter.attachView(view)
     }

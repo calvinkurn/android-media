@@ -163,6 +163,19 @@
       "checkout_option": "click_payment option button",
       "userId": ".+",
       "promoFlag": "true|false"
+    },
+    {
+      "promotions": ".*",
+      "businessUnit": "purchase platform",
+      "eventCategory": "courier selection",
+      "trackerId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".+",
+      "eventAction": "view platform fee in checkout page",
+      "sessionIris": ".*",
+      "eventLabel": ".*",
+      "platformFee": ".*"
     }
   ],
   "readme": "Checkout Page Tracking"

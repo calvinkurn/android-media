@@ -128,6 +128,21 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isAccessAppPermissionFromSettings: Boolean = false
 
+    private var isGmsAvailable: Boolean = true
+    private var currentPlaceId: String? = ""
+
+    /*to differentiate positive flow or negative flow*/
+    private var isPositiveFlow: Boolean = true
+    private var showIllustrationMap: Boolean = false
+    private var isFromAddressForm: Boolean = false
+    private var isEdit: Boolean = false
+    private var isPolygon: Boolean = false
+    private var source: String? = ""
+    private var isGetPinPointOnly: Boolean = false
+
+    private val isEditOrGetPinPointOnly: Boolean
+        get() = isEdit || isGetPinPointOnly
+
     private val requiredPermissions: Array<String>
         get() = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -178,7 +193,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun checkMapsAvailability(savedInstanceState: Bundle?) {
-        if (viewModel.isGmsAvailable) {
+        if (isGmsAvailable) {
             prepareMap(savedInstanceState)
             setFusedLocationClient()
             fetchData()
@@ -196,7 +211,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun getLitePinpointIntent(context: Context): Intent {
-        if (viewModel.isEditOrGetPinPointOnly) {
+        if (isEditOrGetPinPointOnly) {
             if (viewModel.getAddress().hasPinpoint()) {
                 return PinpointWebviewActivity.getIntent(
                     context = context,
@@ -215,7 +230,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
         } else {
             val source =
-                if (viewModel.isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
+                if (isPositiveFlow) PinpointSource.ADD_ADDRESS_POSITIVE else PinpointSource.ADD_ADDRESS_NEGATIVE
             return PinpointWebviewActivity.getIntent(
                 context = context,
                 saveAddressDataModel = viewModel.getAddress(),
@@ -228,7 +243,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initView() {
-        if (viewModel.isEdit) {
+        if (isEdit) {
             binding?.bottomsheetLocation?.let {
                 it.btnPrimary.text = getString(R.string.choose_this_location)
                 it.btnSecondary.visibility = View.GONE
@@ -262,12 +277,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onResultFromSearchPage(data: Intent?) {
-        if (viewModel.isEditOrGetPinPointOnly) {
-            viewModel.currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID)
+        if (isEditOrGetPinPointOnly) {
+            currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID)
             val currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0).orZero()
             val currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0).orZero()
-            if (!viewModel.currentPlaceId.isNullOrEmpty()) {
-                viewModel.currentPlaceId?.let { viewModel.getDistrictLocation(it) }
+            if (!currentPlaceId.isNullOrEmpty()) {
+                currentPlaceId?.let { viewModel.getDistrictLocation(it) }
             } else if (currentLong != 0.0 && currentLat != 0.0) {
                 moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                 viewModel.getDistrictData(currentLat, currentLong)
@@ -310,17 +325,17 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 } else {
                     showBottomSheetLocUndefined(false)
                 }
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
                 }
             }
             PERMISSION_DENIED -> {
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
                 }
             }
             PERMISSION_DONT_ASK_AGAIN -> {
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
                 }
                 showBottomSheetLocUndefined(true)
@@ -347,7 +362,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     putExtra(EXTRA_ADDRESS_NEW, data)
                     putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
                     putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
-                    putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+                    putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                 }
             )
             finish()
@@ -366,7 +381,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             ZOOM_LEVEL
         )
 
-        if (viewModel.isPolygon) {
+        if (isPolygon) {
             viewModel.getDistrictBoundaries()
         }
 
@@ -441,28 +456,63 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initData() {
-        arguments?.let {
-            viewModel.setDataFromArguments(
-                currentPlaceId = it.getString(EXTRA_PLACE_ID),
-                latitude = it.getDouble(EXTRA_LAT),
-                longitude = it.getDouble(EXTRA_LONG),
-                addressData = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL),
-                isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW),
-                isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false),
-                isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM),
-                isEdit = it.getBoolean(EXTRA_IS_EDIT),
-                source = it.getString(PARAM_SOURCE, ""),
-                isGetPinPointOnly = it.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY),
-                districtName = it.getString(EXTRA_DISTRICT_NAME),
-                cityName = it.getString(EXTRA_CITY_NAME)
+        arguments?.apply {
+            currentPlaceId = getString(EXTRA_PLACE_ID)
+
+            viewModel.setLatLong(
+                lat = getDouble(EXTRA_LAT),
+                long = getDouble(EXTRA_LONG)
             )
 
-            getGmsAvailability(it)
+            getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
+                viewModel.setAddress(this)
+            }
+
+            isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            isPolygon = getBoolean(EXTRA_IS_POLYGON, false)
+            isFromAddressForm = getBoolean(EXTRA_FROM_ADDRESS_FORM)
+            isEdit = getBoolean(EXTRA_IS_EDIT)
+            source = getString(PARAM_SOURCE, "")
+            isGetPinPointOnly = getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)
+
+            viewModel.setDistrictAndCityName(
+                districtName = getString(EXTRA_DISTRICT_NAME),
+                cityName = getString(EXTRA_CITY_NAME)
+            )
+
+            getGmsAvailability(this)
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(EXTRA_PLACE_ID, currentPlaceId)
+
+        viewModel.getAddress().let {
+            if (it.latitude.isNotBlank() && it.longitude.isNotBlank()) {
+                outState.putDouble(EXTRA_LAT, it.latitude.toDoubleOrZero())
+                outState.putDouble(EXTRA_LONG, it.latitude.toDoubleOrZero())
+            }
+
+            if (it.districtName.isNotBlank() && it.cityName.isNotBlank()) {
+                outState.putString(EXTRA_DISTRICT_NAME, it.districtName)
+                outState.putString(EXTRA_CITY_NAME, it.cityName)
+            }
+
+            outState.putParcelable(EXTRA_SAVE_DATA_UI_MODEL, it)
+        }
+
+        outState.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+        outState.putBoolean(EXTRA_IS_POLYGON, isPolygon)
+        outState.putBoolean(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+        outState.putBoolean(EXTRA_IS_EDIT, isEdit)
+        outState.putString(PARAM_SOURCE, source)
+        outState.putBoolean(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
+
+        super.onSaveInstanceState(outState)
+    }
+
     private fun getGmsAvailability(bundle: Bundle) {
-        viewModel.isGmsAvailable = if (bundle.containsKey(EXTRA_GMS_AVAILABILITY)) {
+        isGmsAvailable = if (bundle.containsKey(EXTRA_GMS_AVAILABILITY)) {
             bundle.getBoolean(
                 EXTRA_GMS_AVAILABILITY,
                 true
@@ -473,12 +523,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun fetchData() {
-        if (!viewModel.currentPlaceId.isNullOrEmpty()) {
-            viewModel.currentPlaceId?.let { viewModel.getDistrictLocation(it) }
-        } else if (viewModel.isGetPinPointOnly || viewModel.isPositiveFlow) {
+        if (!currentPlaceId.isNullOrEmpty()) {
+            currentPlaceId?.let { viewModel.getDistrictLocation(it) }
+        } else if (isGetPinPointOnly || isPositiveFlow) {
             if (viewModel.getAddress().hasPinpoint()) {
                 viewModel.getLocationFromLatLong()
-            } else if (viewModel.hasDistrictAndCityName) {
+            } else if (viewModel.getAddress().hasDistrictAndCityName) {
                 viewModel.getGeocodeByDistrictAndCityName()
             } else {
                 getCurrentLocation()
@@ -569,7 +619,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     when {
                         msg.contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
                         else -> {
-                            viewModel.showIllustrationMap = true
+                            showIllustrationMap = true
                             showNotFoundLocation()
                         }
                     }
@@ -613,7 +663,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     when {
                         it.errorMessage.orEmpty().contains(FOREIGN_COUNTRY_MESSAGE) -> showOutOfReachBottomSheet()
                         else -> {
-                            viewModel.showIllustrationMap = true
+                            showIllustrationMap = true
                             showNotFoundLocation()
                         }
                     }
@@ -644,7 +694,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             wholeLoadingContainer.visibility = View.GONE
             invalidLayout.visibility = View.GONE
 
-            if (viewModel.isGetPinPointOnly) {
+            if (isGetPinPointOnly) {
                 btnPrimary.text = getString(R.string.btn_choose_this_location)
                 btnSecondary.gone()
             }
@@ -719,7 +769,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun setViewListener() {
         binding?.run {
             bottomsheetLocation.btnInfo.setOnClickListener {
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickIconQuestion(userSession.userId)
                 }
                 bottomsheetLocation.root.hide()
@@ -727,11 +777,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
-                if (viewModel.isGetPinPointOnly.not()) {
-                    if (viewModel.isEdit) {
+                if (isGetPinPointOnly.not()) {
+                    if (isEdit) {
                         EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId)
                     } else {
-                        if (viewModel.isPositiveFlow) {
+                        if (isPositiveFlow) {
                             AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId)
                         } else {
                             AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(
@@ -746,8 +796,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
                 AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
-                if (viewModel.isPositiveFlow) {
-                    viewModel.isPositiveFlow = false
+                if (isPositiveFlow) {
+                    isPositiveFlow = false
                     viewModel.setAddress(SaveAddressDataModel())
                     goToAddressForm()
                 } else {
@@ -756,7 +806,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                             Activity.RESULT_OK,
                             Intent().apply {
                                 putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
-                                putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+                                putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                             }
                         )
                         finish()
@@ -767,8 +817,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             chipsCurrentLoc.chipImageResource =
                 context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
             chipsCurrentLoc.setOnClickListener {
-                if (viewModel.isGetPinPointOnly.not()) {
-                    if (viewModel.isEdit) {
+                if (isGetPinPointOnly.not()) {
+                    if (isEdit) {
                         EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
                     } else {
                         AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
@@ -776,14 +826,14 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
                 getCurrentLocation()
             }
-            if (viewModel.isEdit) {
+            if (isEdit) {
                 chipsSearch.chipText = getString(R.string.pinpointpage_chips_search_edit)
             }
             chipsSearch.chipImageResource =
                 context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
-                if (viewModel.isGetPinPointOnly.not()) {
-                    if (viewModel.isEdit) {
+                if (isGetPinPointOnly.not()) {
+                    if (isEdit) {
                         EditAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
                     } else {
                         AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
@@ -795,10 +845,10 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun onChoosePinpoint() {
-        if (viewModel.isEditOrGetPinPointOnly) {
+        if (isEditOrGetPinPointOnly) {
             setResultAddressFormNegative()
         } else {
-            if (viewModel.isPositiveFlow) {
+            if (isPositiveFlow) {
                 goToAddressForm()
             } else {
                 setResultAddressFormNegative()
@@ -850,7 +900,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
                 }
                 dismiss()
@@ -875,7 +925,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
                 }
                 if (!isDontAskAgain) {
@@ -1017,13 +1067,13 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun updateAfterOnSuccessAutofill(data: Data) {
         showDistrictBottomSheet()
 
-        if (viewModel.isPolygon) {
+        if (isPolygon) {
             if (data.districtId != viewModel.getAddress().districtId) {
-                if (!viewModel.isEditOrGetPinPointOnly) {
+                if (!isEditOrGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
                 }
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    if (!viewModel.isEditOrGetPinPointOnly) {
+                    if (!isEditOrGetPinPointOnly) {
                         AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(
                             userSession.userId,
                             NOT_SUCCESS
@@ -1040,7 +1090,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
             } else {
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    if (!viewModel.isEditOrGetPinPointOnly) {
+                    if (!isEditOrGetPinPointOnly) {
                         AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(
                             userSession.userId,
                             SUCCESS
@@ -1071,8 +1121,8 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun updateInvalidBottomSheetData(type: Int) {
         if (type == BOTTOMSHEET_OUT_OF_INDO) {
-            if (viewModel.isGetPinPointOnly.not()) {
-                if (viewModel.isEdit) {
+            if (isGetPinPointOnly.not()) {
+                if (isEdit) {
                     EditAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
                 } else {
                     AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
@@ -1082,13 +1132,13 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
                 tvInvalidLoc.text = getString(R.string.out_of_indonesia_title)
                 tvInvalidLocDetail.text = getString(R.string.out_of_indonesia_desc_new)
-                if (viewModel.isEditOrGetPinPointOnly) {
+                if (isEditOrGetPinPointOnly) {
                     btnAnaNegative.visibility = View.GONE
                 }
             }
         } else {
-            if (viewModel.isGetPinPointOnly.not()) {
-                if (viewModel.isEdit) {
+            if (isGetPinPointOnly.not()) {
+                if (isEdit) {
                     EditAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
                 } else {
                     AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(
@@ -1096,17 +1146,17 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     )
                 }
             }
-            if (viewModel.showIllustrationMap) {
+            if (showIllustrationMap) {
                 binding?.mapsEmpty?.visibility = View.VISIBLE
                 binding?.mapViews?.visibility = View.GONE
                 binding?.imgMapsEmpty?.setImageUrl(MAPS_EMPTY)
-                viewModel.showIllustrationMap = false
+                showIllustrationMap = false
             }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
-                if (viewModel.isEditOrGetPinPointOnly) {
+                if (isEditOrGetPinPointOnly) {
                     tvInvalidLoc.text = getString(R.string.undetected_location_new_edit)
-                    if (viewModel.getAddress().hasPinpoint() || viewModel.isGetPinPointOnly) {
+                    if (viewModel.getAddress().hasPinpoint() || isGetPinPointOnly) {
                         tvInvalidLocDetail.text =
                             getString(R.string.undetected_location_desc_edit_w_pinpoint)
                         btnAnaNegative.visibility = View.GONE
@@ -1130,7 +1180,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
-            if (!viewModel.isEditOrGetPinPointOnly) {
+            if (!isEditOrGetPinPointOnly) {
                 if (type == BOTTOMSHEET_OUT_OF_INDO) {
                     AddNewAddressRevampAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
                 } else {
@@ -1139,32 +1189,32 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     )
                 }
             }
-            viewModel.isPositiveFlow = false
+            isPositiveFlow = false
             goToAddressForm()
         }
     }
 
     private fun goToSearchPage() {
-        if (viewModel.isEditOrGetPinPointOnly) {
+        if (isEditOrGetPinPointOnly) {
             context?.let {
                 startActivityForResult(
                     Intent(it, SearchPageActivity::class.java).apply {
-                        putExtra(EXTRA_IS_EDIT, viewModel.isEdit)
-                        putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
-                        putExtra(EXTRA_IS_GET_PINPOINT_ONLY, viewModel.isGetPinPointOnly)
+                        putExtra(EXTRA_IS_EDIT, isEdit)
+                        putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                        putExtra(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
                     },
                     REQUEST_SEARCH_PAGE
                 )
             }
         } else {
-            if (!viewModel.isPositiveFlow) {
+            if (!isPositiveFlow) {
                 // back to addressform, reset ana state to search page
                 activity?.run {
                     setResult(
                         Activity.RESULT_OK,
                         Intent().apply {
                             putExtra(EXTRA_RESET_TO_SEARCH_PAGE, true)
-                            putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+                            putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                         }
                     )
                     finish()
@@ -1177,13 +1227,13 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun goToAddressForm() {
         val saveModel = viewModel.getAddress()
-        if (viewModel.isEditOrGetPinPointOnly) {
+        if (isEditOrGetPinPointOnly) {
             activity?.run {
                 setResult(
                     Activity.RESULT_OK,
                     Intent().apply {
                         putExtra(EXTRA_IS_EDIT, true)
-                        putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
+                        putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
                     }
                 )
                 finish()
@@ -1191,9 +1241,9 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
         } else {
             Intent(context, AddressFormActivity::class.java).apply {
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
-                putExtra(EXTRA_IS_POSITIVE_FLOW, viewModel.isPositiveFlow)
-                putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
-                putExtra(PARAM_SOURCE, viewModel.source)
+                putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                putExtra(PARAM_SOURCE, source)
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         }
@@ -1207,10 +1257,10 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 Intent().apply {
                     putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
                     putExtra(EXTRA_NEGATIVE_FULL_FLOW, false)
-                    putExtra(EXTRA_FROM_ADDRESS_FORM, viewModel.isFromAddressForm)
-                    putExtra(EXTRA_IS_EDIT, viewModel.isEdit)
-                    putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
-                    putExtra(EXTRA_IS_GET_PINPOINT_ONLY, viewModel.isGetPinPointOnly)
+                    putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
+                    putExtra(EXTRA_IS_EDIT, isEdit)
+                    putExtra(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
+                    putExtra(EXTRA_IS_GET_PINPOINT_ONLY, isGetPinPointOnly)
                 }
             )
             finish()

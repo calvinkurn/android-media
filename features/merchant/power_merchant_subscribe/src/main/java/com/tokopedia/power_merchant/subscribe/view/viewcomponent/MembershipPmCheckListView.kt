@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.gm.common.data.source.local.model.PMShopInfoUiModel
+import com.tokopedia.gm.common.utils.SpannableUtil
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil
 import com.tokopedia.power_merchant.subscribe.databinding.ViewPmMembershipCheckListViewBinding
 import com.tokopedia.power_merchant.subscribe.view.model.MembershipDataUiModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -33,13 +33,13 @@ class MembershipPmCheckListView : LinearLayout {
         ViewPmMembershipCheckListViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
     private val eligibleColor by lazy {
-        PowerMerchantSpannableUtil.getColorHexString(
+        SpannableUtil.getColorHexString(
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_GN500
         )
     }
     private val notEligibleColor by lazy {
-        PowerMerchantSpannableUtil.getColorHexString(
+        SpannableUtil.getColorHexString(
             context,
             com.tokopedia.unifyprinciples.R.color.Unify_RN500
         )

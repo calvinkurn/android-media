@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.AddAddressResponse
@@ -15,12 +14,7 @@ import com.tokopedia.logisticCommon.data.response.KeroAddAddress
 import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
-import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.FieldType
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -30,7 +24,6 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import io.mockk.mockkStatic
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -50,6 +43,7 @@ class AddressFormViewModelTest {
     private val repo: KeroRepository = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
     private val addressId = "12345"
+    private val sourceValue = ""
 
     private val saveAddressObserver: Observer<Result<DataAddAddress>> = mockk(relaxed = true)
     private val defaultAddressObserver: Observer<Result<DefaultAddressData>> = mockk(relaxed = true)
@@ -93,15 +87,25 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Get Default Address Success`() {
+        // Given
         coEvery { repo.getDefaultAddress(any(), true) } returns GetDefaultAddressResponse()
+
+        // When
         addressFormViewModel.getDefaultAddress("address")
+
+        // Then
         verify { defaultAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get Default Address Fail`() {
+        // Given
         coEvery { repo.getDefaultAddress(any(), true) } throws defaultThrowable
+
+        // When
         addressFormViewModel.getDefaultAddress("address")
+
+        // Then
         verify { defaultAddressObserver.onChanged(match { it is Fail }) }
     }
 
@@ -127,7 +131,7 @@ class AddressFormViewModelTest {
 
         // When
         addressFormViewModel.saveDataModel = saveAddressDataModel
-        addressFormViewModel.saveAddress("")
+        addressFormViewModel.saveAddress("", sourceValue)
 
         // Then
         verify { saveAddressObserver.onChanged(match { it is Success }) }
@@ -137,14 +141,14 @@ class AddressFormViewModelTest {
     fun `Save Address Data Fail`() {
         coEvery { repo.saveAddress(any(), any(), any()) } throws defaultThrowable
         addressFormViewModel.saveDataModel = saveAddressDataModel
-        addressFormViewModel.saveAddress("")
+        addressFormViewModel.saveAddress("", sourceValue)
         verify { saveAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `verify when call save address but save address model is null`() {
         // When
-        addressFormViewModel.saveAddress("")
+        addressFormViewModel.saveAddress("", sourceValue)
 
         // Then
         Assert.assertNull(addressFormViewModel.saveDataModel)
@@ -161,8 +165,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.addressId = addressId
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         verify { detailAddressObserver.onChanged(match { it is Success }) }
@@ -174,8 +177,7 @@ class AddressFormViewModelTest {
         coEvery { repo.getAddressDetail(any(), any()) } returns KeroGetAddressResponse.Data()
 
         // When
-        addressFormViewModel.addressId = addressId
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         verify(exactly = 0) { detailAddressObserver.onChanged(match { it is Success }) }
@@ -187,8 +189,7 @@ class AddressFormViewModelTest {
         coEvery { repo.getAddressDetail(any(), any(), true) } throws defaultThrowable
 
         // When
-        addressFormViewModel.addressId = addressId
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         verify { detailAddressObserver.onChanged(match { it is Fail }) }
@@ -203,10 +204,9 @@ class AddressFormViewModelTest {
             phone = "081222222222",
             address1 = "detail alamat draft"
         )
-        addressFormViewModel.addressId = addressId
 
         // When
-        addressFormViewModel.getAddressDetail(saveDataModel)
+        addressFormViewModel.getAddressDetail(addressId, "", saveDataModel)
 
         // Then
         assert(addressFormViewModel.saveDataModel == saveDataModel)
@@ -215,20 +215,31 @@ class AddressFormViewModelTest {
 
     @Test
     fun `Save Edit Address Data Success`() {
+        // Given
         coEvery { repo.editAddress(any(), any()) } returns KeroEditAddressResponse.Data()
-        addressFormViewModel.saveEditAddress(saveAddressDataModel)
+
+        // When
+        addressFormViewModel.saveEditAddress(saveAddressDataModel, sourceValue)
+
+        // Then
         verify { editAddressObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Save Edit Address Data Fail`() {
+        // Given
         coEvery { repo.editAddress(any(), any()) } throws defaultThrowable
-        addressFormViewModel.saveEditAddress(saveAddressDataModel)
+
+        // When
+        addressFormViewModel.saveEditAddress(saveAddressDataModel, sourceValue)
+
+        // Then
         verify { editAddressObserver.onChanged(match { it is Fail }) }
     }
 
     @Test
     fun `Pinpoint Validation Data Success`() {
+        // Given
         coEvery {
             repo.pinpointValidation(
                 any(),
@@ -237,7 +248,11 @@ class AddressFormViewModelTest {
                 any()
             )
         } returns PinpointValidationResponse()
+
+        // When
         addressFormViewModel.validatePinpoint(saveAddressDataModel)
+
+        // Then
         verify { pinpointValidationObserver.onChanged(match { it is Success }) }
     }
 
@@ -264,7 +279,7 @@ class AddressFormViewModelTest {
         )
 
         // Given
-        coEvery { addressFormViewModel.saveEditAddress(any()) } just Runs
+        coEvery { addressFormViewModel.saveEditAddress(any(), any()) } just Runs
         coEvery {
             repo.pinpointValidation(
                 any(),
@@ -280,86 +295,6 @@ class AddressFormViewModelTest {
 
         // Then
         verify { pinpointValidationObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `verify when set page source is correctly`() {
-        val source = "source"
-
-        addressFormViewModel.source = source
-
-        Assert.assertEquals(addressFormViewModel.source, source)
-    }
-
-    @Test
-    fun `verify save edit address data success from tokonow`() {
-        coEvery { repo.editAddress(any(), any()) } returns KeroEditAddressResponse.Data()
-        addressFormViewModel.source = ManageAddressSource.TOKONOW.source
-        addressFormViewModel.saveEditAddress(saveAddressDataModel)
-        verify { editAddressObserver.onChanged(match { it is Success }) }
-    }
-
-    @Test
-    fun `verify set gms availability flag is correct`() {
-        val gmsAvailable = true
-        addressFormViewModel.isGmsAvailable = gmsAvailable
-
-        Assert.assertEquals(addressFormViewModel.isGmsAvailable, gmsAvailable)
-    }
-
-    @Test
-    fun `verify set data from arguments when edit is false is correctly`() {
-        // Inject
-        val saveDataModel = spyk<SaveAddressDataModel>()
-        val source = "source"
-
-        // When
-        addressFormViewModel.setDataFromArguments(
-            isEdit = false,
-            saveDataModel = saveDataModel,
-            isPositiveFlow = false,
-            addressId = "",
-            source = source,
-            name = "",
-            phone = "",
-            onViewEditAddressPageNew = {}
-        )
-
-        // Then
-        with(addressFormViewModel) {
-            Assert.assertFalse(this.isEdit)
-            Assert.assertEquals(this.saveDataModel, saveDataModel)
-            Assert.assertFalse(this.isPositiveFlow)
-            Assert.assertEquals(this.source, source)
-        }
-    }
-
-    @Test
-    fun `verify set data from arguments when edit is true is correctly`() {
-        // Inject
-        val addressId = "123"
-        val source = "source"
-
-        // When
-        addressFormViewModel.setDataFromArguments(
-            isEdit = true,
-            saveDataModel = null,
-            isPositiveFlow = false,
-            addressId = addressId,
-            source = source,
-            name = "",
-            phone = "",
-            onViewEditAddressPageNew = {}
-        )
-
-        // Then
-        with(addressFormViewModel) {
-            Assert.assertTrue(this.isEdit)
-            Assert.assertEquals(this.saveDataModel, null)
-            Assert.assertTrue(this.isPositiveFlow)
-            Assert.assertEquals(this.addressId, addressId)
-            Assert.assertEquals(this.source, source)
-        }
     }
 
     @Test
@@ -436,7 +371,8 @@ class AddressFormViewModelTest {
             address1 = address1,
             address1Notes = address1Notes,
             addressName = addressName,
-            isAnaPositive = isAnaPositive
+            isAnaPositive = isAnaPositive,
+            isTokonow = false
         )
 
         // Then
@@ -468,7 +404,8 @@ class AddressFormViewModelTest {
             address1 = address1,
             address1Notes = address1Notes,
             addressName = addressName,
-            isAnaPositive = isAnaPositive
+            isAnaPositive = isAnaPositive,
+            isTokonow = false
         )
 
         // Then
@@ -871,42 +808,6 @@ class AddressFormViewModelTest {
     }
 
     @Test
-    fun `verify validate fields when positive flow is correctly`() {
-        // Inject
-        val validatePositiveFlow = arrayListOf(
-            FieldType.PHONE_NUMBER,
-            FieldType.RECEIVER_NAME,
-            FieldType.COURIER_NOTE,
-            FieldType.ADDRESS,
-            FieldType.LABEL
-        )
-
-        // When
-        addressFormViewModel.isPositiveFlow = true
-
-        // Then
-        Assert.assertEquals(addressFormViewModel.validateFields, validatePositiveFlow)
-    }
-
-    @Test
-    fun `verify validate fields when negative flow is correctly`() {
-        // Inject
-        val validateNegativeFlow = arrayListOf(
-            FieldType.COURIER_NOTE,
-            FieldType.ADDRESS,
-            FieldType.LABEL,
-            FieldType.PHONE_NUMBER,
-            FieldType.RECEIVER_NAME
-        )
-
-        // When
-        addressFormViewModel.isPositiveFlow = false
-
-        // Then
-        Assert.assertEquals(addressFormViewModel.validateFields, validateNegativeFlow)
-    }
-
-    @Test
     fun `verify when isDifferentLatLong is true`() {
         // Inject
         val pinpointLat = "123"
@@ -974,87 +875,6 @@ class AddressFormViewModelTest {
     }
 
     @Test
-    fun `WHEN saveaddressdatamodel is null THEN set default name and phone number`() {
-        // Inject
-        val saveDataModel = null
-        val source = "source"
-        val defaultName = "default name"
-        val defaultPhone = "08111111111"
-
-        // When
-        addressFormViewModel.setDataFromArguments(
-            isEdit = false,
-            saveDataModel = saveDataModel,
-            isPositiveFlow = false,
-            addressId = "",
-            source = source,
-            name = defaultName,
-            phone = defaultPhone,
-            onViewEditAddressPageNew = {}
-        )
-
-        assert(addressFormViewModel.addressDetail.value is Success)
-        assert((addressFormViewModel.addressDetail.value as Success).data.receiverName == defaultName)
-        assert(addressFormViewModel.saveDataModel?.receiverName == defaultName)
-        assert((addressFormViewModel.addressDetail.value as Success).data.phone == defaultPhone)
-        assert(addressFormViewModel.saveDataModel?.phone == defaultPhone)
-    }
-
-    @Test
-    fun `WHEN saveaddressdatamodel name and phone is empty THEN set default name and phone number`() {
-        // Inject
-        val saveDataModel = SaveAddressDataModel()
-        val source = "source"
-        val defaultName = "default name"
-        val defaultPhone = "08111111111"
-
-        // When
-        addressFormViewModel.setDataFromArguments(
-            isEdit = false,
-            saveDataModel = saveDataModel,
-            isPositiveFlow = false,
-            addressId = "",
-            source = source,
-            name = defaultName,
-            phone = defaultPhone,
-            onViewEditAddressPageNew = {}
-        )
-
-        assert(addressFormViewModel.addressDetail.value is Success)
-        assert((addressFormViewModel.addressDetail.value as Success).data.receiverName == defaultName)
-        assert(addressFormViewModel.saveDataModel?.receiverName == defaultName)
-        assert((addressFormViewModel.addressDetail.value as Success).data.phone == defaultPhone)
-        assert(addressFormViewModel.saveDataModel?.phone == defaultPhone)
-    }
-
-    @Test
-    fun `WHEN saveaddressdatamodel name and phone is not empty THEN dont set default name and phone number`() {
-        // Inject
-        val saveDataModel = SaveAddressDataModel(receiverName = "name", phone = "081222222222")
-        val source = "source"
-        val defaultName = "default name"
-        val defaultPhone = "08111111111"
-
-        // When
-        addressFormViewModel.setDataFromArguments(
-            isEdit = false,
-            saveDataModel = saveDataModel,
-            isPositiveFlow = false,
-            addressId = "",
-            source = source,
-            name = defaultName,
-            phone = defaultPhone,
-            onViewEditAddressPageNew = {}
-        )
-
-        assert(addressFormViewModel.addressDetail.value is Success)
-        assert((addressFormViewModel.addressDetail.value as Success).data.receiverName == saveDataModel.receiverName)
-        assert(addressFormViewModel.saveDataModel?.receiverName == saveDataModel.receiverName)
-        assert((addressFormViewModel.addressDetail.value as Success).data.phone == saveDataModel.phone)
-        assert(addressFormViewModel.saveDataModel?.phone == saveDataModel.phone)
-    }
-
-    @Test
     fun `verify is not different location is correct`() {
         val address = "Monas Jakarta"
         val latitude = "-6.175392"
@@ -1076,7 +896,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         Assert.assertFalse(
@@ -1109,7 +929,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         Assert.assertTrue(
@@ -1142,7 +962,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         Assert.assertTrue(
@@ -1175,7 +995,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         Assert.assertTrue(
@@ -1208,7 +1028,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         Assert.assertTrue(
@@ -1241,7 +1061,7 @@ class AddressFormViewModelTest {
         )
 
         // When
-        addressFormViewModel.getAddressDetail(null)
+        addressFormViewModel.getAddressDetail(addressId, sourceValue, null)
 
         // Then
         Assert.assertTrue(
@@ -1250,104 +1070,5 @@ class AddressFormViewModelTest {
                 address2 = "$latitude,$longitude"
             )
         )
-    }
-
-    @Test
-    fun `verify get collection id add new address staging is correctly`() {
-        // Given
-        coEvery { sharedPrefs.getString(any(), any()) } returns Env.STAGING.value
-
-        // When
-        addressFormViewModel.isEdit = false
-        TokopediaUrl.init(context)
-
-        // Then
-        Assert.assertEquals(
-            addressFormViewModel.getCollectionId(),
-            AddressConstants.ADD_ADDRESS_COLLECTION_ID_STAGING
-        )
-    }
-
-    @Test
-    fun `verify get collection id add new address production is correctly`() {
-        // Given
-        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
-
-        // When
-        addressFormViewModel.isEdit = false
-        TokopediaUrl.init(context)
-
-        // Then
-        Assert.assertEquals(
-            addressFormViewModel.getCollectionId(),
-            AddressConstants.ADD_ADDRESS_COLLECTION_ID_PRODUCTION
-        )
-    }
-
-
-    @Test
-    fun `verify get collection id edit address staging is correctly`() {
-        // Given
-        coEvery { sharedPrefs.getString(any(), any()) } returns Env.STAGING.value
-
-        // When
-        addressFormViewModel.isEdit = true
-        TokopediaUrl.init(context)
-
-        // Then
-        Assert.assertEquals(
-            addressFormViewModel.getCollectionId(),
-            AddressConstants.EDIT_ADDRESS_COLLECTION_ID_STAGING
-        )
-    }
-
-    @Test
-    fun `verify get collection id edit address production is correctly`() {
-        // Given
-        coEvery { sharedPrefs.getString(any(), any()) } returns Env.LIVE.value
-
-        // When
-        addressFormViewModel.isEdit = true
-        TokopediaUrl.init(context)
-
-        // Then
-        Assert.assertEquals(
-            addressFormViewModel.getCollectionId(),
-            AddressConstants.EDIT_ADDRESS_COLLECTION_ID_PRODUCTION
-        )
-    }
-
-    @Test
-    fun `verify when isDisableAddressImprovement is true`() {
-        // Inject
-        mockkStatic(RemoteConfigInstance::class)
-
-        // Given
-        coEvery {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
-                ""
-            )
-        } returns RollenceKey.KEY_ADDRESS_IMPROVEMENTS
-
-        // Then
-        Assert.assertTrue(addressFormViewModel.isDisableAddressImprovement)
-    }
-
-    @Test
-    fun `verify when isDisableAddressImprovement is false`() {
-        // Inject
-        mockkStatic(RemoteConfigInstance::class)
-
-        // Given
-        coEvery {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ADDRESS_IMPROVEMENTS,
-                ""
-            )
-        } returns ""
-
-        // Then
-        Assert.assertFalse(addressFormViewModel.isDisableAddressImprovement)
     }
 }

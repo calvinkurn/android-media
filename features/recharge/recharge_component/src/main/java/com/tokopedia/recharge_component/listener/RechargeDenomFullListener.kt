@@ -7,6 +7,7 @@ interface RechargeDenomFullListener {
     fun onDenomFullClicked(denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int,
                            productListTitle: String,
                            isShowBuyWidget: Boolean)
-    fun onDenomFullImpression(denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int)
-    fun onChevronDenomClicked(denomFull: DenomData, position: Int, layoutType: DenomWidgetEnum)
+    fun onDenomFullImpression(denomFull: DenomData, layoutType: DenomWidgetEnum, position: Int, productListTitle: String)
+    fun onChevronDenomClicked(denomFull: DenomData, position: Int, layoutType: DenomWidgetEnum, productListTitle: String)
+    fun onShowMoreClicked()
 }
