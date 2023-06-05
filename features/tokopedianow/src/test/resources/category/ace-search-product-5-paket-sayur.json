@@ -1,0 +1,93 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 2,
+      "totalDataText": "2",
+      "responseCode": 0,
+      "keywordProcess": "0"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": [
+        {
+          "id": 4193716825,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/9/dc6ebab6-726a-4898-8d78-e8b824d5e262.jpg",
+          "name": "Marina_UV_White_Hand_\u0026_Body_Lotion_Healthy_\u0026_Glow_200_ml",
+          "price": "Rp9.900",
+          "priceInt": 9900,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 99,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 99,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        },
+        {
+          "id": 4193714869,
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/hDjmkQ/2022/6/9/0c6e57d8-65fb-47d9-91e8-4231ed433aaa.jpg",
+          "name": "Nissin_Crispy_Crackers_250_g",
+          "price": "Rp9.700",
+          "priceInt": 9700,
+          "discountPercentage": 0,
+          "originalPrice": "",
+          "childs": [],
+          "parentId": 0,
+          "maxOrder": 1,
+          "ratingAverage": "",
+          "minOrder": 1,
+          "stock": 0,
+          "source_engine": "0",
+          "boosterList": "",
+          "shop": {
+            "id": 11515028,
+            "name": ""
+          },
+          "labelGroups": [
+            {
+              "url": "",
+              "title": "Stok Habis",
+              "type": "transparentBlack",
+              "position": "status"
+            },
+            {
+              "url": "",
+              "title": "100 gr",
+              "type": "textDarkGrey",
+              "position": "weight"
+            }
+          ],
+          "labelGroupVariant": [],
+          "wishlist": false
+        }
+      ]
+    }
+  }
+}
