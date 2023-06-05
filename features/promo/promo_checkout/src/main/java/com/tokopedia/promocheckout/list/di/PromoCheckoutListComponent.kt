@@ -9,7 +9,6 @@ import dagger.Component
 @Component(modules = arrayOf(PromoCheckoutListModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface PromoCheckoutListComponent{
     fun inject(basePromoCheckoutListFragment: BasePromoCheckoutListFragment)
-    fun inject(promoCheckoutListMarketplaceFragment: PromoCheckoutListMarketplaceFragment)
     fun inject(promoCheckoutListDigitalFragment: PromoCheckoutListDigitalFragment)
     fun inject(promoCheckoutListFlightFragment: PromoCheckoutListFlightFragment)
     fun inject(promoCheckoutListHotelFragment: PromoCheckoutListHotelFragment)
