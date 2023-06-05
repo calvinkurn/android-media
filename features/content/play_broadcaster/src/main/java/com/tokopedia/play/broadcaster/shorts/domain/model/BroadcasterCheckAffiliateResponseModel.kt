@@ -11,6 +11,5 @@ data class BroadcasterCheckAffiliateResponseModel(
         val affiliateName: String = "",
         @SerializedName("isAffiliate")
         val isAffiliate: Boolean = false,
-        val errorMessage: String = "",
     )
 }

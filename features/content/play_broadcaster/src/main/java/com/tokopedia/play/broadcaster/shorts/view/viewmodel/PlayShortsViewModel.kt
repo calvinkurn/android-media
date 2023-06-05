@@ -231,30 +231,25 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.SetShowSetupCoverCoachMark -> handleSetShowSetupCoverCoachMark()
             is PlayShortsAction.SetCoverUploadedSource -> handleSetCoverUploadedSource(action.source)
             is PlayShortsAction.ResetUploadState -> handleResetUploadState()
-            is PlayShortsAction.AddBannerPreparation -> handleAddBannerPreparation(action.data)
-            is PlayShortsAction.RemoveBannerPreparation -> handleRemoveBannerPreparation(action.data)
         }
     }
 
     private fun setupShortsAffiliateEntryPoint(needToShow: Boolean) {
         val banner = PlayBroadcastPreparationBannerModel(TYPE_SHORTS_AFFILIATE)
-        if (needToShow) {
-            submitAction(PlayShortsAction.AddBannerPreparation(banner))
-        } else {
-            submitAction(PlayShortsAction.RemoveBannerPreparation(banner))
-        }
+        if (needToShow) addBannerPreparation(banner)
+        else removeBannerPreparation(banner)
     }
 
-    private fun handleAddBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+    private fun addBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
             if (_bannerPreparation.value.contains(data)) return@launchCatchError
-            _bannerPreparation.update { it.toMutableList().apply { add(data) } }
+            _bannerPreparation.update { it + data }
         }, onError = {})
     }
 
-    private fun handleRemoveBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
+    private fun removeBannerPreparation(data: PlayBroadcastPreparationBannerModel) {
         viewModelScope.launchCatchError(block = {
-            _bannerPreparation.update { it.toMutableList().apply { remove(data) } }
+            _bannerPreparation.update { it - data }
         }, onError = {})
     }
 
@@ -500,9 +495,6 @@ class PlayShortsViewModel @Inject constructor(
             return
         }
         val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
-
-        if (checkIsAffiliate.errorMessage.isNotEmpty())
-            throw Throwable(checkIsAffiliate.errorMessage)
 
         _isAffiliate.update { checkIsAffiliate.isAffiliate }
         setupShortsAffiliateEntryPoint(!_isAffiliate.value)

@@ -81,7 +81,13 @@ class PlayBroProductUiMapper @Inject constructor() {
                     price = OriginalPrice(
                         priceFormat.format(BigDecimal(data.price.min.orZero())),
                         data.price.min.orZero()
-                    ), //No discounted price because it is not supported in the current gql
+                    ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
                 )
             },
             hasNextPage = response.wrapper.pagerCursor.hasNext,
@@ -109,6 +115,12 @@ class PlayBroProductUiMapper @Inject constructor() {
                         price = data.campaign.originalPrice,
                         priceNumber = data.campaign.originalPriceFmt.toDoubleOrNull() ?: 0.0,
                     ),
+                    hasCommission = false,
+                    commissionFmt = "",
+                    commission = 0L,
+                    extraCommission = false,
+                    pinStatus = PinProductUiModel.Empty,
+                    number = "",
                 )
             },
             hasNextPage = response.getCampaignProduct.products.isNotEmpty(),
@@ -141,6 +153,10 @@ class PlayBroProductUiMapper @Inject constructor() {
                         },
                         pinStatus = getPinStatus(isPinned = product.isPinned, canPin = product.isPinnable),
                         number = product.productNumber.toString(),
+                        hasCommission = false,
+                        commissionFmt = "",
+                        commission = 0L,
+                        extraCommission = false,
                     )
                 }
             )
