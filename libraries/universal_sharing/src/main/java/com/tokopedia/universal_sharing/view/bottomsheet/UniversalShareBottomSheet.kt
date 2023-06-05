@@ -56,6 +56,7 @@ import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
+import com.tokopedia.universal_sharing.di.UniversalShareUseCaseModule
 import com.tokopedia.universal_sharing.model.BroadcastChannelModel
 import com.tokopedia.universal_sharing.model.CampaignStatus
 import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
@@ -233,7 +234,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     override fun getComponent(): UniversalShareComponent? {
         activity?.let {
             return DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                .universalShareModule(UniversalShareModule()).build()
+                .universalShareModule(UniversalShareModule()).universalShareUseCaseModule(UniversalShareUseCaseModule()).build()
         } ?: return null
     }
 
@@ -1437,7 +1438,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.universal_share_bottomsheet
-        private val TAG = UniversalShareBottomSheet::class.java.simpleName
+        val TAG = UniversalShareBottomSheet::class.java.simpleName
 
         // Delay time for timeout
         private const val DELAY_TIME_MILLISECOND = 500L
