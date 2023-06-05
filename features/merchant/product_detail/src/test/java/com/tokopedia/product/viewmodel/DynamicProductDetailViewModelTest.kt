@@ -2789,6 +2789,18 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `should re-fetch recom data when previous recom data is empty as tokonow`() {
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns listOf(RecommendationWidget())
+
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", true)
+        viewModel.showProductMediaRecomBottomSheet("Dummy", "Dummy", "123", true)
+
+        coVerify(exactly = 2) { getRecommendationUseCase.getData(any()) }
+    }
+
+    @Test
     fun `product media recom bs state should dismissed when dismiss product media recom bs`() {
         `product media recom bs state should showing when successfully fetch non-empty recom data`()
 

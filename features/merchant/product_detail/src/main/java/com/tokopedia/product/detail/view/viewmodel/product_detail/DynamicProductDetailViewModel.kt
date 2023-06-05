@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.analytics.performance.util.EmbraceKey
@@ -1266,21 +1265,23 @@ class DynamicProductDetailViewModel @Inject constructor(
         productId: String,
         isTokoNow: Boolean
     ) {
-        launchCatchError(dispatcher.main, block = {
-            val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
-                if (
-                    productMediaRecomBottomSheetData?.pageName == pageName &&
-                    productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
-                ) {
-                    productMediaRecomBottomSheetData
-                } else {
-                    setProductMediaRecomBottomSheetLoading(title)
-                    loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+        launch(context = dispatcher.main) {
+            runCatching {
+                val data = _productMediaRecomBottomSheetData.let { productMediaRecomBottomSheetData ->
+                    if (
+                        productMediaRecomBottomSheetData?.pageName == pageName &&
+                        productMediaRecomBottomSheetData.recommendationWidget.recommendationItemList.isNotEmpty()
+                    ) {
+                        productMediaRecomBottomSheetData
+                    } else {
+                        setProductMediaRecomBottomSheetLoading(title)
+                        loadProductMediaRecomBottomSheetData(pageName, productId, isTokoNow)
+                    }
                 }
+                setProductMediaRecomBottomSheetData(title, data)
+            }.onFailure {
+                setProductMediaRecomBottomSheetError(title = title, error = it)
             }
-            setProductMediaRecomBottomSheetData(title, data)
-        }) {
-            setProductMediaRecomBottomSheetError(title = title, error = it)
         }
     }
 
