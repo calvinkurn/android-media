@@ -133,7 +133,7 @@
         app:layout_constraintStart_toStartOf="@id/textStock"
         app:srcCompat="@drawable/ic_available_filled"
         tools:ignore="ContentDescription"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivDilayaniTokopedia"
@@ -171,7 +171,7 @@
         app:labelType="general_light_grey"
         app:layout_constraintStart_toEndOf="@id/labelActive"
         app:layout_constraintTop_toBottomOf="@id/textStock"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelBanned"
@@ -184,7 +184,7 @@
         app:labelType="general_light_red"
         app:layout_constraintStart_toEndOf="@id/labelInactive"
         app:layout_constraintTop_toBottomOf="@id/textStock"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelDraft"
@@ -197,7 +197,7 @@
         app:labelType="general_light_blue"
         app:layout_constraintStart_toEndOf="@id/labelBanned"
         app:layout_constraintTop_toBottomOf="@id/textStock"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelVariant"
