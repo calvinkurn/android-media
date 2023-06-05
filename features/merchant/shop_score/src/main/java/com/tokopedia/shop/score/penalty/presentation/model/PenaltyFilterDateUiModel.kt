@@ -6,9 +6,9 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenalt
 data class PenaltyFilterDateUiModel(
     val startDate: String,
     val endDate: String,
-    val defaultStartDate: String,
-    val defaultEndDate: String,
-    val completeDate: String
+    var defaultStartDate: String,
+    var defaultEndDate: String,
+    var completeDate: String
 ): BaseFilterPenaltyPage {
 
     override fun type(typeFactory: FilterPenaltyAdapterFactory): Int {

@@ -1,4 +1,4 @@
-package com.tokopedia.shop.score.penalty.presentation.adapter
+package com.tokopedia.shop.score.penalty.presentation.old.adapter
 
 import android.os.Handler
 import android.os.Looper
@@ -10,17 +10,18 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
 import com.tokopedia.shop.score.penalty.presentation.adapter.diffutil.ShopPenaltyDiffUtilCallback
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
 
-class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
+class PenaltyPageAdapterOld(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
     BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
     StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
@@ -69,12 +70,12 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
     }
 
     fun updateDateFilterText(date: String) {
-        val dateIndex = visitables.indexOfFirst { it is ItemPenaltySubsectionUiModel }
-        visitables.find { it is ItemPenaltySubsectionUiModel }?.also {
-            (it as ItemPenaltySubsectionUiModel).date = date
+        val dateIndex = visitables.indexOfFirst { it is ItemPeriodDetailPenaltyUiModel }
+        visitables.find { it is ItemPeriodDetailPenaltyUiModel }?.also {
+            (it as ItemPeriodDetailPenaltyUiModel).periodDetail = date
         }
         if (dateIndex != RecyclerView.NO_POSITION) {
-            notifyItemChanged(dateIndex)
+            notifyItemChanged(dateIndex, PAYLOAD_DATE_FILTER)
         }
     }
 

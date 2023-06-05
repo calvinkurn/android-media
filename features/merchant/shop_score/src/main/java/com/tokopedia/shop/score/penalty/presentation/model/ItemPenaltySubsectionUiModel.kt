@@ -4,7 +4,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterF
 import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyPageType
 
 data class ItemPenaltySubsectionUiModel(
-    val date: String,
+    var date: String,
     @ShopPenaltyPageType val pageType: String
 ): BasePenaltyPage {
 

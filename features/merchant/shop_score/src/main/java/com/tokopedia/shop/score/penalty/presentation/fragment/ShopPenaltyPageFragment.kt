@@ -38,6 +38,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilte
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterFactory
+import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyCalculationBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
@@ -179,7 +180,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     override fun onDateClick() {
         val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
             viewModelShopPenalty.getStartDate(),
-            viewModelShopPenalty.getEndDate()
+            viewModelShopPenalty.getEndDate(),
+            viewModelShopPenalty.getMaxStartDate(),
+            viewModelShopPenalty.getMaxEndDate()
         )
         bottomSheetDateFilter.setCalendarListener(this)
         bottomSheetDateFilter.show(childFragmentManager)
@@ -228,9 +231,15 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         )
     }
 
-    override fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>) {
+    override fun onClickFilterApplied(
+        penaltyFilterUiModelList: List<BaseFilterPenaltyPage>
+    ) {
         val typePenaltyList =
-            penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList
+            penaltyFilterUiModelList.filterIsInstance<PenaltyFilterUiModel>()
+                .find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList
+        val datePenaltyFilter =
+            penaltyFilterUiModelList.filterIsInstance<PenaltyFilterDateUiModel>()?.firstOrNull()
+
         val chipsPenaltyMap = typePenaltyList.chipsPenaltyMapToItemSortFilter()
 
         viewModelShopPenalty.setItemSortFilterWrapperList(
@@ -238,44 +247,37 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             chipsPenaltyMap
         )
 
-        penaltyPageAdapter.updateChipsSelected(chipsPenaltyMap)
-
         val typeId = typePenaltyList?.find { it.isSelected }?.value ?: ZERO_NUMBER
         val sortBy =
-            penaltyFilterUiModelList.find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
+            penaltyFilterUiModelList.filterIsInstance<PenaltyFilterUiModel>()
+                .find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
                 ?: ZERO_NUMBER
-        penaltyPageAdapter.run {
-            removePenaltyListData()
-            refreshSticky()
-            removeNotFoundPenalty()
-            removeErrorStatePenalty()
-            showLoading()
-        }
         endlessRecyclerViewScrollListener.resetState()
+        datePenaltyFilter?.let {
+            viewModelShopPenalty.setDateFilterData(it.defaultStartDate, it.defaultEndDate, it.completeDate)
+        }
         viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
+
+        binding?.rvPenaltyPage?.post {
+            penaltyPageAdapter.run {
+                updateChipsSelected(chipsPenaltyMap)
+                removePenaltyListData()
+                refreshSticky()
+                removeNotFoundPenalty()
+                removeErrorStatePenalty()
+                showLoading()
+                datePenaltyFilter?.let {
+                    updateDateFilterText(it.completeDate)
+                }
+            }
+        }
     }
 
     override fun onSaveCalendarClicked(
         startDate: Pair<String, String>,
         endDate: Pair<String, String>
     ) {
-        val date = if (startDate.second.isBlank() && endDate.second.isBlank()) {
-            ""
-        } else if (endDate.second.isBlank()) {
-            startDate.second
-        } else {
-            "${startDate.second} - ${endDate.second}"
-        }
-        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
-        penaltyPageAdapter.run {
-            removePenaltyListData()
-            refreshSticky()
-            removeNotFoundPenalty()
-            removeErrorStatePenalty()
-            showLoading()
-        }
-        endlessRecyclerViewScrollListener.resetState()
-        penaltyPageAdapter.updateDateFilterText(date)
+        // No-op
     }
 
     override fun onPenaltySubsectionIconClicked() {

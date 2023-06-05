@@ -9,9 +9,9 @@ import android.text.method.LinkMovementMethod
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_EDT
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.NumberFormatException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -96,5 +96,11 @@ fun String.getNumberFormat(defaultNumber: Long): Long {
         this.toLong()
     } catch (e: NumberFormatException) {
         defaultNumber
+    }
+}
+
+fun String.convertToFormattedDate(): String? {
+    return SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(this)?.let {
+        com.tokopedia.shop.score.common.format(it.time, PATTER_DATE_EDT, getLocale())
     }
 }

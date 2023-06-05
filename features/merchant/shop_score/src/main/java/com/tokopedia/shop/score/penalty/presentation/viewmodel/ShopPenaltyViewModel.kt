@@ -77,6 +77,8 @@ class ShopPenaltyViewModel @Inject constructor(
     private var startDate =
         format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var maxStartDate: String? = null
+    private var maxEndDate: String? = null
     private var startDateSummary =
         format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDateSummary =
@@ -89,15 +91,28 @@ class ShopPenaltyViewModel @Inject constructor(
     }
 
     fun setItemSortFilterWrapperList(
-        penaltyFilterList: List<PenaltyFilterUiModel>,
+        penaltyFilterList: List<BaseFilterPenaltyPage>,
         sortFilterItemPeriodList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>
     ) {
         this.itemSortFilterWrapperList = sortFilterItemPeriodList.toMutableList()
         this.penaltyFilterUiModel = penaltyFilterList.toMutableList()
     }
 
+    fun setDateFilterData(startDate: String, endDate: String, completeDate: String) {
+        this.startDate = startDate
+        this.endDate = endDate
+
+        penaltyFilterUiModel =
+            penaltyMapper.transformDateFilter(penaltyFilterUiModel, startDate, endDate, completeDate)
+    }
+
     fun setDateFilterData(dateFilter: Pair<String, String>) {
         _dateFilterData.value = Pair(dateFilter.first, dateFilter.second)
+    }
+
+    fun setMaxDateFilterData(maxDateFilter: Pair<String, String>) {
+        maxStartDate = maxDateFilter.first
+        maxEndDate = maxDateFilter.second
     }
 
     fun setTypeFilterData(typeId: Int) {
@@ -111,33 +126,40 @@ class ShopPenaltyViewModel @Inject constructor(
     fun getPenaltyFilterUiModelList() = penaltyFilterUiModel
     fun getStartDate() = startDate
     fun getEndDate() = endDate
+    fun getMaxStartDate() = maxStartDate
+    fun getMaxEndDate() = maxEndDate
 
     fun getDataPenalty(@ShopPenaltyPageType pageType: String = ShopPenaltyPageType.ONGOING) {
         launchCatchError(block = {
-            val penaltyDetailMergeDeffered = async {
+            val penaltyDetailMergeDeffered =
                 withContext(dispatchers.io) {
-                    getShopPenaltyDetailMergeUseCase.get().setParams(
-                        startDate = startDateSummary,
-                        endDate = endDateSummary,
-                        typeId = typeId,
-                        sort = sortBy,
-                        status = getStatusFromPageType(pageType)
-                    )
-                    getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
-                }
-            }
-
-            val notYetDeductedPenaltyDeferred = async {
-                if (pageType == ShopPenaltyPageType.ONGOING) {
-                    withContext(dispatchers.io) {
-                        getNotYetDeductedPenaltyUseCase.get().execute(startDate, endDate)
+                    async {
+                        getShopPenaltyDetailMergeUseCase.get().setParams(
+                            startDate = startDateSummary,
+                            endDate = endDateSummary,
+                            typeId = typeId,
+                            sort = sortBy,
+                            status = getStatusFromPageType(pageType)
+                        )
+                        getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
                     }
-                } else {
-                    null
                 }
-            }
 
-            val penaltyDetailMerge = penaltyDetailMergeDeffered.await()
+
+            val notYetDeductedPenaltyDeferred =
+                withContext(dispatchers.io) {
+                    async {
+                        if (pageType == ShopPenaltyPageType.ONGOING) {
+                            getNotYetDeductedPenaltyUseCase.get()
+                                .execute(startDateSummary, endDateSummary)
+                        } else {
+                            null
+                        }
+                    }
+                }
+
+            val penaltyDetailMerge =
+                penaltyDetailMergeDeffered.await()
             val notYetDeductedPenalty = notYetDeductedPenaltyDeferred.await()
 
             val penaltyDataWrapper = penaltyMapper.mapToPenaltyData(
@@ -146,9 +168,13 @@ class ShopPenaltyViewModel @Inject constructor(
                 penaltyDetailMerge.second,
                 notYetDeductedPenalty,
                 sortBy,
-                typeId,
-                startDate to endDate
+                typeId
             )
+
+            startDate = penaltyDetailMerge.second.startDate
+            endDate = penaltyDetailMerge.second.endDate
+            maxStartDate = penaltyDetailMerge.second.defaultStartDate
+            maxEndDate = penaltyDetailMerge.second.defaultEndDate
 
             penaltyFilterUiModel = penaltyDataWrapper.penaltyFilterList.toMutableList()
 

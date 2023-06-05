@@ -149,9 +149,12 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         endDate: String,
         defaultEndDate: String
     ) {
+        viewModelShopPenalty.setMaxDateFilterData(startDate to endDate)
         val bottomSheetDateFilter = PenaltyDateFilterBottomSheet.newInstance(
-            viewModelShopPenalty.getStartDate(),
-            viewModelShopPenalty.getEndDate()
+            defaultStartDate,
+            defaultEndDate,
+            startDate,
+            endDate
         )
         bottomSheetDateFilter.setCalendarListener(this)
         bottomSheetDateFilter.show(childFragmentManager)
@@ -168,7 +171,22 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         } else {
             "${startDate.second} - ${endDate.second}"
         }
-        viewModelShopPenalty.setDateFilterData(Pair(startDate.first, endDate.first))
+        viewModelShopPenalty.setDateFilterData(startDate.first, endDate.first, date)
+
+        val maxDate =
+            viewModelShopPenalty.getMaxStartDate()?.let { maxStartDate ->
+                viewModelShopPenalty.getMaxEndDate()?.let { maxEndDate ->
+                    Pair(maxStartDate, maxEndDate)
+                }
+            }
+
+        maxDate?.let {
+            filterPenaltyAdapter.updateDateSelected(
+                Pair(startDate.first, endDate.first),
+                it,
+                date
+            )
+        }
     }
 
     private fun getDataCacheFromManager() {
@@ -207,7 +225,6 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
             isApplyFilter = true
             penaltyFilterFinishListener?.onClickFilterApplied(
                 viewModelShopPenalty.getPenaltyFilterUiModelList()
-                    .filterIsInstance<PenaltyFilterUiModel>()
             )
             dismiss()
         }
@@ -288,7 +305,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     }
 
     interface PenaltyFilterFinishListener {
-        fun onClickFilterApplied(penaltyFilterUiModelList: List<PenaltyFilterUiModel>)
+        fun onClickFilterApplied(penaltyFilterUiModelList: List<BaseFilterPenaltyPage>)
     }
 
     companion object {
@@ -297,11 +314,11 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         const val KEY_CACHE_MANAGER_ID_PENALTY_FILTER = "key_cache_manager_id_penalty_filter"
 
         fun newInstance(cacheManagerId: String): PenaltyFilterBottomSheet {
-            val penaltyFilterBottomSheetOld = PenaltyFilterBottomSheet()
+            val penaltyFilterBottomSheet = PenaltyFilterBottomSheet()
             val args = Bundle()
             args.putString(KEY_CACHE_MANAGER_ID_PENALTY_FILTER, cacheManagerId)
-            penaltyFilterBottomSheetOld.arguments = args
-            return penaltyFilterBottomSheetOld
+            penaltyFilterBottomSheet.arguments = args
+            return penaltyFilterBottomSheet
         }
     }
 }

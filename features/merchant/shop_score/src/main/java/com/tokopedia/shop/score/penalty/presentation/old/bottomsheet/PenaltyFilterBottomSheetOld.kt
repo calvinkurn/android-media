@@ -120,7 +120,7 @@ class PenaltyFilterBottomSheetOld : BaseBottomSheetShopScore<BottomsheetFilterPe
     }
 
     override fun onSeeAllButtonClicked(uiModel: PenaltyFilterUiModel) {
-//        TODO("Not yet implemented")
+        // No-op
     }
 
     private fun getDataCacheFromManager() {

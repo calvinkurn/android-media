@@ -41,6 +41,7 @@ import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiM
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.old.adapter.PenaltyPageAdapterOld
 import com.tokopedia.shop.score.penalty.presentation.old.bottomsheet.PenaltyFilterBottomSheetOld
 import com.tokopedia.shop.score.penalty.presentation.old.model.FilterTypePenaltyUiModelWrapperOld
 import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyFilterUiModelOld
@@ -78,7 +79,7 @@ open class ShopPenaltyPageOldFragment :
         )
     }
 
-    open val penaltyPageAdapter by lazy { PenaltyPageAdapter(penaltyPageAdapterFactory) }
+    open val penaltyPageAdapter by lazy { PenaltyPageAdapterOld(penaltyPageAdapterFactory) }
 
     private val binding: FragmentPenaltyPageOldBinding? by viewBinding()
 

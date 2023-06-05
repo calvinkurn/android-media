@@ -8,10 +8,18 @@ import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.*
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTERN_DATE_PARAM
+import com.tokopedia.shop.score.common.ShopScoreConstant.PATTER_DATE_EDT
+import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getLocale
+import com.tokopedia.shop.score.common.getNPastDaysTimeStamp
+import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomSheetDateFilterPenaltyBinding
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,6 +37,9 @@ class PenaltyDateFilterBottomSheet :
 
     private var minDate: Date? = null
     private var maxDate: Date? = null
+
+    private var maxStartDate: Date? = null
+    private var maxEndDate: Date? = null
 
     override fun bind(view: View) = BottomSheetDateFilterPenaltyBinding.bind(view)
 
@@ -52,8 +63,17 @@ class PenaltyDateFilterBottomSheet :
     private fun getDataFromArguments() {
         val startDateParam = arguments?.getString(KEY_START_DATE_PENALTY) ?: ""
         val endDateParam = arguments?.getString(KEY_END_DATE_PENALTY) ?: ""
+        val maxStartDateParam = arguments?.getString(KEY_MAX_START_DATE_PENALTY)
+        val maxEndDateParam = arguments?.getString(KEY_MAX_END_DATE_PENALTY)
+
         minDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(startDateParam)
         maxDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(endDateParam)
+        maxStartDateParam?.let {
+            maxStartDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(it)
+        }
+        maxEndDateParam?.let {
+            maxEndDate = SimpleDateFormat(PATTERN_DATE_PARAM, getLocale()).parse(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,8 +121,8 @@ class PenaltyDateFilterBottomSheet :
     }
 
     private fun setupCalendarView() {
-        val initMinDate = getNPastDaysTimeStamp(NINETY_DAYS)
-        val initMaxDate = Date(getNowTimeStamp())
+        val initMinDate = maxStartDate ?: getNPastDaysTimeStamp(NINETY_DAYS)
+        val initMaxDate = maxEndDate ?: Date(getNowTimeStamp())
         binding?.penaltyFilterCalendar?.calendarPickerView?.let { cpv ->
             cpv.init(initMinDate, initMaxDate, emptyList()).inMode(mode)
             cpv.scrollToDate(initMinDate)
@@ -179,18 +199,29 @@ class PenaltyDateFilterBottomSheet :
 
     companion object {
         const val PenaltyDateFilterBottomSheetTag = "PenaltyDateFilterBottomSheetTag"
-        const val PATTER_DATE_EDT = "dd MMM yyyy"
-        const val PATTERN_DATE_PARAM = "yyyy-MM-dd"
         const val KEY_START_DATE_PENALTY = "key_start_date_penalty"
         const val KEY_END_DATE_PENALTY = "key_end_date_penalty"
+        const val KEY_MAX_START_DATE_PENALTY = "key_max_start_date_penalty"
+        const val KEY_MAX_END_DATE_PENALTY = "key_max_end_date_penalty"
         const val DELAY_SELECTED_FILTER_DATE_PENALTY = 300L
         const val NINETY_DAYS = 90
 
-        fun newInstance(startDate: String, endDate: String): PenaltyDateFilterBottomSheet {
+        fun newInstance(
+            startDate: String,
+            endDate: String,
+            maxStartDate: String? = null,
+            maxEndDate: String? = null
+        ): PenaltyDateFilterBottomSheet {
             return PenaltyDateFilterBottomSheet().apply {
                 val args = Bundle()
                 args.putString(KEY_START_DATE_PENALTY, startDate)
                 args.putString(KEY_END_DATE_PENALTY, endDate)
+                maxStartDate?.let {
+                    args.putString(KEY_MAX_START_DATE_PENALTY, it)
+                }
+                maxEndDate?.let {
+                    args.putString(KEY_MAX_END_DATE_PENALTY, it)
+                }
                 arguments = args
             }
         }

@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.filter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 
 class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
@@ -43,6 +44,25 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
             }
         if (chipsIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
+        }
+    }
+
+    fun updateDateSelected(
+        dateSelected: Pair<String, String>,
+        maxDateSelected: Pair<String, String>,
+        completeDate: String
+    ) {
+        visitables.forEachIndexed { index, visitable ->
+            if (visitable is PenaltyFilterDateUiModel) {
+                visitables[index] = PenaltyFilterDateUiModel(
+                    maxDateSelected.first,
+                    maxDateSelected.second,
+                    dateSelected.first,
+                    dateSelected.second,
+                    completeDate
+                )
+                notifyItemChanged(index)
+            }
         }
     }
 

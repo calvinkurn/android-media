@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.convertToFormattedDate
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltySummary
@@ -145,15 +146,14 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
         sortBy: Int,
-        typeId: Int,
-        dateFilter: Pair<String, String>
+        typeId: Int
     ): PenaltyDataWrapper {
         val penaltyTypes =
             shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result ?: emptyList()
         return PenaltyDataWrapper(
             penaltyVisitableList = mapToItemVisitablePenaltyList(
                 pageType, shopScorePenaltySummaryWrapper, shopScorePenaltyDetailResponse,
-                notYetDeductedPenalties, dateFilter, typeId
+                notYetDeductedPenalties, typeId
             ),
             penaltyFilterList = mapToPenaltyFilterBottomSheet(
                 shopScorePenaltyDetailResponse,
@@ -166,11 +166,11 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
 
     private fun mapToCardShopPenalty(
         penaltySummary: ShopScorePenaltySummary.Result,
-        dateFilter: Pair<String, String>
+        penaltyDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail
     ): ItemPenaltyPointCardUiModel {
         return ItemPenaltyPointCardUiModel(
             result = penaltySummary,
-            date = getFormattedDate(dateFilter)
+            date = getFormattedDate(penaltyDetail)
         )
     }
 
@@ -184,26 +184,18 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
 
     private fun mapToDetailPenaltyFilter(
         @ShopPenaltyPageType pageType: String,
-        dateFilter: Pair<String, String>
+        penaltyDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail
     ): ItemPenaltySubsectionUiModel {
         return ItemPenaltySubsectionUiModel(
-            date = getFormattedDate(dateFilter),
+            date = getFormattedDate(penaltyDetail),
             pageType = pageType
         )
     }
 
-    private fun getFormattedDate(dateFilter: Pair<String, String>): String {
-        val startDate = DateFormatUtils.formatDate(
-            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
-            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
-            dateFilter.first
-        )
-        val endDate = DateFormatUtils.formatDate(
-            ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM,
-            ShopScoreConstant.PATTERN_PENALTY_DATE_TEXT,
-            dateFilter.second
-        )
-        return "$startDate - $endDate"
+    private fun getFormattedDate(penaltyDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail): String {
+        return "${
+            penaltyDetail.defaultStartDate.convertToFormattedDate().orEmpty()
+        } - ${penaltyDetail.defaultEndDate.convertToFormattedDate().orEmpty()}"
     }
 
     private fun mapToSortFilterPenalty(
@@ -341,7 +333,6 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
         shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
-        dateFilter: Pair<String, String>,
         typeId: Int
     ): Triple<List<BasePenaltyPage>, Boolean, Boolean> {
         val visitablePenaltyPage = mutableListOf<BasePenaltyPage>()
@@ -353,13 +344,11 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     add(mapToNotYetDeductedItem(notYetDeductedPenalties))
                 }
             }
-            if (pageType != ShopPenaltyPageType.NOT_YET_DEDUCTED) {
-                add(mapToDetailPenaltyFilter(pageType, dateFilter))
-            }
+            add(mapToDetailPenaltyFilter(pageType, shopScorePenaltyDetailResponse))
             if (pageType == ShopPenaltyPageType.ONGOING) {
                 shopScorePenaltySummaryWrapper.shopScorePenaltySummaryResponse?.result?.let {
                     add(
-                        mapToCardShopPenalty(it, dateFilter)
+                        mapToCardShopPenalty(it, shopScorePenaltyDetailResponse)
                     )
                 }
             }
@@ -407,7 +396,11 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
                     endDate = shopScorePenaltyDetailResponse.endDate,
                     defaultStartDate = shopScorePenaltyDetailResponse.defaultStartDate,
                     defaultEndDate = shopScorePenaltyDetailResponse.defaultEndDate,
-                    completeDate = "${shopScorePenaltyDetailResponse.startDate} - ${shopScorePenaltyDetailResponse.endDate}"
+                    completeDate = "${
+                        shopScorePenaltyDetailResponse.startDate.convertToFormattedDate().orEmpty()
+                    } - ${
+                        shopScorePenaltyDetailResponse.endDate.convertToFormattedDate().orEmpty()
+                    }"
                 )
             )
 
@@ -480,28 +473,32 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
         penaltyFilterUiModel: MutableList<BaseFilterPenaltyPage>,
         itemSortFilterWrapperList: MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>
     ): Pair<MutableList<BaseFilterPenaltyPage>, MutableList<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>> {
-        penaltyFilterUiModel.filterIsInstance<PenaltyFilterUiModel>().find { it.title == titleFilter }?.run {
-            chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
-                if (index == position) {
-                    chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
-                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
-                } else {
-                    chipsFilterPenaltyUiModel.isSelected = false
-                    itemSortFilterWrapperList.getOrNull(index)?.isSelected = false
+        penaltyFilterUiModel.onEach { model ->
+            if (model is PenaltyFilterUiModel) {
+                model.takeIf { it.title == titleFilter }?.run {
+                    chipsFilterList.mapIndexed { index, chipsFilterPenaltyUiModel ->
+                        if (index == position) {
+                            chipsFilterPenaltyUiModel.isSelected = !updateChipsSelected
+                            itemSortFilterWrapperList.getOrNull(index)?.isSelected = !updateChipsSelected
+                        } else {
+                            chipsFilterPenaltyUiModel.isSelected = false
+                            itemSortFilterWrapperList.getOrNull(index)?.isSelected = false
+                        }
+                    }
+                    val selectedFilterList = chipsFilterList.filter { it.isSelected }
+                    val selectedFilterSize = selectedFilterList.size
+                    shownFilterList =
+                        when {
+                            chipsFilterList.size < MAX_SHOWN_FILTER_CHIPS -> chipsFilterList
+                            selectedFilterSize < MAX_SHOWN_FILTER_CHIPS -> {
+                                val unselectedFilterList = chipsFilterList.filter { !it.isSelected }
+                                    .take(MAX_SHOWN_FILTER_CHIPS - selectedFilterSize)
+                                selectedFilterList + unselectedFilterList
+                            }
+                            else -> selectedFilterList
+                        }
                 }
             }
-            val selectedFilterList = chipsFilterList.filter { it.isSelected }
-            val selectedFilterSize = selectedFilterList.size
-            shownFilterList =
-                when {
-                    chipsFilterList.size < MAX_SHOWN_FILTER_CHIPS -> chipsFilterList
-                    selectedFilterSize < MAX_SHOWN_FILTER_CHIPS -> {
-                        val unselectedFilterList = chipsFilterList.filter { !it.isSelected }
-                            .take(MAX_SHOWN_FILTER_CHIPS - selectedFilterSize)
-                        selectedFilterList + unselectedFilterList
-                    }
-                    else -> selectedFilterList
-                }
         }
         return Pair(penaltyFilterUiModel, itemSortFilterWrapperList)
     }
@@ -525,6 +522,22 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
             shownFilterList = chipsFilterList
         }
         return Pair(penaltyFilterUiModel, itemSortFilterWrapperList)
+    }
+
+    fun transformDateFilter(
+        penaltyFilterUiModel: MutableList<BaseFilterPenaltyPage>,
+        startDate: String,
+        endDate: String,
+        date: String
+    ): MutableList<BaseFilterPenaltyPage> {
+        penaltyFilterUiModel.forEach { model ->
+            if (model is PenaltyFilterDateUiModel) {
+                model.defaultStartDate = startDate
+                model.defaultEndDate = endDate
+                model.completeDate = date
+            }
+        }
+        return penaltyFilterUiModel
     }
 
     fun getChipsFilterList(
