@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_Header"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:text="@string/feed_component_report_description"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintEnd_toEndOf="@id/report_header"
             app:layout_constraintStart_toStartOf="@id/report_header"
             app:layout_constraintTop_toBottomOf="@id/report_header"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:text="@string/feed_component_report_subtext1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             app:layout_constraintEnd_toStartOf="@id/report_subtext1_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
             app:layout_constraintTop_toBottomOf="@id/report_description"
@@ -63,9 +63,9 @@
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_height="@dimen/content_common_dp_0.5"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN300"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
             app:layout_constraintTop_toBottomOf="@id/report_subtext1" />
 
@@ -76,7 +76,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_subtext2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             app:layout_constraintEnd_toStartOf="@id/report_subtext2_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
             app:layout_constraintTop_toBottomOf="@id/divider"
@@ -95,9 +95,9 @@
         <View
             android:id="@+id/divider1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_height="@dimen/content_common_dp_0.5"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN300"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
             app:layout_constraintTop_toBottomOf="@id/report_subtext2" />
 
@@ -108,7 +108,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_option_text1"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             app:layout_constraintEnd_toStartOf="@id/report_subtext3_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
             app:layout_constraintTop_toBottomOf="@id/divider1"
@@ -127,9 +127,9 @@
         <View
             android:id="@+id/divider2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_height="@dimen/content_common_dp_0.5"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN300"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
             app:layout_constraintTop_toBottomOf="@id/report_subtext3" />
 
@@ -140,7 +140,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_option_text2"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@id/report_subtext4_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
@@ -160,9 +160,9 @@
         <View
             android:id="@+id/divider3"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_height="@dimen/content_common_dp_0.5"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN300"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
             app:layout_constraintTop_toBottomOf="@id/report_subtext4" />
 
@@ -173,7 +173,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_option_text3"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@id/report_subtext4_icon"
             app:layout_constraintStart_toStartOf="@id/report_header"
@@ -193,9 +193,9 @@
         <View
             android:id="@+id/divider4"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/feed_component_dp_0.5"
+            android:layout_height="@dimen/content_common_dp_0.5"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@color/Unify_N75"
+            android:background="@color/Unify_NN300"
             app:layout_constraintStart_toStartOf="@id/report_subtext1"
             app:layout_constraintTop_toBottomOf="@id/report_subtext5" />
 
@@ -206,7 +206,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:text="@string/feed_component_report_option_text4"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN900"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/report_subtext5_icon"

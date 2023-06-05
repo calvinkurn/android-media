@@ -59,6 +59,7 @@ dari Feed.</string>
     <string name="feed_background_image">Feed background image</string>
     <string name="feed_header_mask">searchbar feed header mask</string>
     <string name="feed_fab_shop">Feed Fab Shop</string>
+    <string name="feed_copy_link_success_message">Link berhasil disalin!</string>
 
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
@@ -141,5 +142,13 @@ dari Feed.</string>
     <string name="dialog_delete_post_subtitle">Konten ini akan hilang dari Halamanmu jika dihapus, lho.</string>
     <string name="toast_delete_post_success">Konten berhasil dihapus</string>
     <string name="toast_delete_post_failed">Oops, gagal menghapus konten. Coba lagi, ya</string>
+    <string name="feed_reminder_set_success">Yay, kamu akan diingatkan sebelum %s dimulai.</string>
+    <string name="feed_reminder_unset_success">Pengingat telah dibatalkan</string>
+    <string name="feed_cta_ok_toaster">Oke</string>
+    <string name="feed_flash_sale">Flash Sale</string>
+    <string name="feed_special_release">Rilisan Spesial</string>
+    <string name="feed_video_time_less_than_hour">%d:%02d</string>
+    <string name="feed_video_time_hours">%d:%02d:%02d</string>
+    <string name="feed_campaign_start_from_label">Dimulai dalam</string>
 
 </resources>

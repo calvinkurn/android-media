@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.presentation.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class FeedAsgcTagAdapter(private val labelList: MutableList<String>) :
 
     override fun getItemCount(): Int = labelList.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setItems(items: List<String>) {
         labelList.clear()
         labelList.addAll(items)

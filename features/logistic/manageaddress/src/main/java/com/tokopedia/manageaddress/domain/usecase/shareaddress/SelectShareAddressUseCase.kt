@@ -12,10 +12,10 @@ import javax.inject.Inject
 class SelectShareAddressUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<SelectShareAddressParam, SelectShareAddressResponse>(dispatcher.io) {
+) : CoroutineUseCase<SelectShareAddressParam.Param, SelectShareAddressResponse>(dispatcher.io) {
 
-    override suspend fun execute(params: SelectShareAddressParam): SelectShareAddressResponse {
-        return repository.request(graphqlQuery(), params.toMapParam())
+    override suspend fun execute(params: SelectShareAddressParam.Param): SelectShareAddressResponse {
+        return repository.request(graphqlQuery(), SelectShareAddressParam(params))
     }
 
     override fun graphqlQuery(): String = """

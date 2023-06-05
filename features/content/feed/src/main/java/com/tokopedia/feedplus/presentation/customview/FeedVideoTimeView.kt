@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ViewFeedVideoTimeBinding
 import java.util.concurrent.TimeUnit
 
@@ -50,7 +51,7 @@ class FeedVideoTimeView : LinearLayout {
         val seconds = totalSeconds % 60 + if (this % 1000 >= 500) 1 else 0
         val minutes = TimeUnit.SECONDS.toMinutes(totalSeconds) % 60
         val hours = TimeUnit.SECONDS.toHours(totalSeconds)
-        return if (hours <= 0) String.format("%d:%02d", minutes, seconds)
-        else String.format("%d:%02d:%02d", hours, minutes, seconds)
+        return if (hours <= 0) String.format(context.getString(R.string.feed_video_time_less_than_hour), minutes, seconds)
+        else String.format(context.getString(R.string.feed_video_time_hours), hours, minutes, seconds)
     }
 }

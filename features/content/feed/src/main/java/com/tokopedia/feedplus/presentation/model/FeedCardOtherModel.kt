@@ -31,8 +31,11 @@ data class FeedCommentItemModel(
 )
 
 data class FeedShareModel(
-    val label: String = "",
-    val operation: String = ""
+    val contentId: String,
+    val author: FeedAuthorModel,
+    val appLink: String,
+    val webLink: String,
+    val mediaUrl: String
 )
 
 data class FeedFollowModel(
@@ -56,8 +59,6 @@ data class FeedScoreModel(
 }
 
 data class FeedCardCtaModel(
-    val text: String = "",
-    val subtitle: List<String> = emptyList(),
     val texts: List<String> = emptyList(),
     val color: String = "",
     val colorGradient: List<FeedCardCtaGradientModel> = emptyList()
@@ -91,8 +92,9 @@ data class FeedCardCampaignModel(
     companion object {
         private const val LABEL_FOLLOWERS_ONLY = "followers_only"
 
-        private const val ONGOING = "ongoing"
-        private const val UPCOMING = "upcoming"
+         const val NO = "no"
+         const val ONGOING = "ongoing"
+         const val UPCOMING = "upcoming"
     }
 }
 

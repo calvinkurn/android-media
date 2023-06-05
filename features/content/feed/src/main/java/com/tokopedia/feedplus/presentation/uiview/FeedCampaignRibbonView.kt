@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.presentation.uiview
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.TransitionDrawable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedplus.R
@@ -25,6 +26,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -38,12 +41,16 @@ enum class FeedCampaignRibbonType {
 
 class FeedCampaignRibbonView(
     private val binding: LayoutFeedCampaignRibbonMotionBinding,
-    private val listener: FeedListener,
+    private val listener: FeedListener
 ) {
-    private val scope = CoroutineScope(Dispatchers.Main)
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
+
+    private var animationJob: Job? = null
 
     private var type: FeedCampaignRibbonType = FeedCampaignRibbonType.ASGC_GENERAL
     private var mProduct: FeedCardProductModel? = null
+    private var mAllProducts: List<FeedCardProductModel> = emptyList()
     private var mCampaign: FeedCardCampaignModel? = null
     private var mCta: FeedCardCtaModel? = null
     private var mHasVoucher: Boolean = false
@@ -60,6 +67,7 @@ class FeedCampaignRibbonView(
         campaign: FeedCardCampaignModel,
         ctaModel: FeedCardCtaModel,
         product: FeedCardProductModel?,
+        allProducts: List<FeedCardProductModel>,
         hasVoucher: Boolean,
         isTypeHighlight: Boolean,
         trackerDataModel: FeedTrackerDataModel,
@@ -72,6 +80,7 @@ class FeedCampaignRibbonView(
         with(binding) {
             type = getRibbonType(modelType, campaign.isOngoing)
             mProduct = product
+            mAllProducts = allProducts
             mCampaign = campaign
             mCta = ctaModel
             mHasVoucher = hasVoucher
@@ -82,8 +91,13 @@ class FeedCampaignRibbonView(
             mIsFollowing = isFollowing
             feedPosition = positionInFeed
 
+            root.background = MethodChecker.getDrawable(
+                root.context,
+                R.drawable.feed_tag_product_background
+            )
+
             val shouldHideRibbon =
-                campaign.shortName.isEmpty() && ctaModel.text.isEmpty() && ctaModel.subtitle.isEmpty()
+                campaign.shortName.isEmpty() && ctaModel.texts.isEmpty()
 
             if (!isTypeHighlight || shouldHideRibbon) {
                 root.hide()
@@ -105,11 +119,13 @@ class FeedCampaignRibbonView(
     }
 
     fun resetView() {
+        animationJob?.cancel()
         with(binding) {
             root.background = MethodChecker.getDrawable(
                 root.context,
                 R.drawable.feed_tag_product_background
             )
+            tyFeedCampaignRibbonSubtitle.text = ""
             resetAnimationBasedOnType()
         }
     }
@@ -149,6 +165,17 @@ class FeedCampaignRibbonView(
                         }
                     }
                 }
+            }
+        }
+    }
+
+    fun bindCampaignReminder(campaignReminderStatus: Boolean) {
+        mCampaign = mCampaign?.copy(isReminderActive = campaignReminderStatus)
+        if (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING) {
+            if (mCampaign?.isReminderActive == true) {
+                binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL_FILLED)
+            } else {
+                binding.icFeedCampaignRibbonIcon.setImage(IconUnify.BELL)
             }
         }
     }
@@ -204,10 +231,11 @@ class FeedCampaignRibbonView(
 
     private fun setBackgroundGradient() {
         with(binding) {
+            val currentColor = root.background
             when {
                 !mCta?.colorGradient.isNullOrEmpty() -> {
                     mCta?.let { cta ->
-                        root.background = GradientDrawable(
+                        val newColor = GradientDrawable(
                             GradientDrawable.Orientation.LEFT_RIGHT,
                             cta.colorGradient.map {
                                 Color.parseColor(it.color)
@@ -216,25 +244,41 @@ class FeedCampaignRibbonView(
                             shape = GradientDrawable.RECTANGLE
                             cornerRadius = CORNER_RADIUS
                         }
+
+                        val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                        root.background = transitionDrawable
+                        transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                     }
                 }
                 type == FeedCampaignRibbonType.ASGC_GENERAL && mCta?.colorGradient.isNullOrEmpty() -> {
-                    root.background = MethodChecker.getDrawable(
+                    val newColor = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_general_gradient
                     )
+
+                    val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                    root.background = transitionDrawable
+                    transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING || type == FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING) && mCta?.colorGradient.isNullOrEmpty() -> {
-                    root.background = MethodChecker.getDrawable(
+                    val newColor = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_flashsale_gradient
                     )
+
+                    val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                    root.background = transitionDrawable
+                    transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 (type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING || type == FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING) && mCta?.colorGradient.isNullOrEmpty() -> {
-                    root.background = MethodChecker.getDrawable(
+                    val newColor = MethodChecker.getDrawable(
                         root.context,
                         R.drawable.bg_feed_campaign_ribbon_special_release_gradient
                     )
+
+                    val transitionDrawable = TransitionDrawable(arrayOf(currentColor, newColor))
+                    root.background = transitionDrawable
+                    transitionDrawable.startTransition(COLOR_TRANSITION_DURATION)
                 }
                 else -> {}
             }
@@ -247,30 +291,44 @@ class FeedCampaignRibbonView(
                 FeedCampaignRibbonType.ASGC_GENERAL, FeedCampaignRibbonType.ASGC_DISCOUNT -> {
                     if (!mCta?.texts.isNullOrEmpty()) {
                         tyFeedCampaignRibbonTitle.text = mCta?.texts!![0]
-                    } else {
-                        tyFeedCampaignRibbonTitle.text = mCta?.text
                     }
 
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
-                                mProduct?.let { product ->
-                                    listener.onASGCGeneralClicked(
-                                        mPostId,
-                                        author,
-                                        mPostType,
-                                        mIsFollowing,
-                                        campaign,
-                                        mHasVoucher,
-                                        listOf(product),
-                                        trackerData,
-                                    )
-                                }
+                                listener.onASGCGeneralClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData
+                                )
+                            }
+                        }
+                    }
+
+                    root.setOnClickListener {
+                        mAuthor?.let { author ->
+                            mCampaign?.let { campaign ->
+                                listener.onASGCGeneralClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData
+                                )
                             }
                         }
                     }
                 }
+
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_ONGOING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_ONGOING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
                     icFeedCampaignRibbonIcon.setImage(IconUnify.CHEVRON_RIGHT)
@@ -281,26 +339,45 @@ class FeedCampaignRibbonView(
                     icFeedCampaignRibbonIcon.setOnClickListener {
                         mAuthor?.let { author ->
                             mCampaign?.let { campaign ->
-                                mProduct?.let { product ->
-                                    listener.onOngoingCampaignClicked(
-                                        mPostId,
-                                        author,
-                                        mPostType,
-                                        mIsFollowing,
-                                        campaign,
-                                        mHasVoucher,
-                                        listOf(product),
-                                        trackerData,
-                                        campaign.shortName,
-                                        feedPosition
-                                    )
-                                }
+                                listener.onOngoingCampaignClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData,
+                                    campaign.shortName,
+                                    feedPosition
+                                )
+                            }
+                        }
+                    }
+                    root.setOnClickListener {
+                        mAuthor?.let { author ->
+                            mCampaign?.let { campaign ->
+                                listener.onOngoingCampaignClicked(
+                                    mPostId,
+                                    author,
+                                    mPostType,
+                                    mIsFollowing,
+                                    campaign,
+                                    mHasVoucher,
+                                    mAllProducts,
+                                    trackerData,
+                                    campaign.shortName,
+                                    feedPosition
+                                )
                             }
                         }
                     }
                 }
+
                 FeedCampaignRibbonType.ASGC_FLASH_SALE_UPCOMING, FeedCampaignRibbonType.ASGC_SPECIAL_RELEASE_UPCOMING -> {
                     tyFeedCampaignRibbonTitle.text = mCampaign?.shortName
+                    tyFeedCampaignRibbonSubtitle.text =
+                        root.context.getString(R.string.feed_campaign_start_from_label)
                     setupTimer(mCampaign?.startTime ?: "") {}
 
                     if (mCampaign?.isReminderActive == true) {
@@ -313,11 +390,16 @@ class FeedCampaignRibbonView(
                         listener.onReminderClicked(
                             mCampaign?.id.toLongOrZero(),
                             !(mCampaign?.isReminderActive ?: false),
-                            trackerData
+                            trackerData,
+                            type,
                         )
                     }
+
+                    root.setOnClickListener {}
                 }
             }
+
+            resetAnimationBasedOnType()
         }
     }
 
@@ -375,7 +457,8 @@ class FeedCampaignRibbonView(
     }
 
     private fun startDelayProcess(delayDurationInMilis: Long, block: () -> Unit) {
-        scope.launch {
+        animationJob?.cancel()
+        animationJob = scope.launch {
             delay(delayDurationInMilis)
             block()
         }
@@ -384,6 +467,7 @@ class FeedCampaignRibbonView(
     companion object {
         private const val TWO_SECOND = 2000L
         private const val THREE_SECOND = 3000L
+        private const val COLOR_TRANSITION_DURATION = 250
 
         private const val SEVENTY_FIVE_PERCENT = 75
 

@@ -68,4 +68,7 @@
     <string name="content_desc_label_arrow">Next</string>
 
     <string name="pref_receive_shake_nav" translatable="false">notification_shake_shake</string>
+
+    <string name="feed_icon_coachmark_title">Cari inspirasi lebih seru di Feed yang baru ✨</string>
+    <string name="feed_icon_coachmark_content">Nonton video &amp; lihat postingan kini tampilannya makin cantik dengan fitur lebih keren juga!</string>
 </resources>

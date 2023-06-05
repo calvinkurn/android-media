@@ -8,16 +8,19 @@ import android.graphics.Bitmap
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.RemoteInput
+import com.tokopedia.bubbles.factory.BubblesFactoryImpl
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.factory.RichDefaultNotification
+import com.tokopedia.notifications.factory.helper.BubbleTopChatNotificationHelper
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.user.session.UserSession
 
 class ReplyChatNotification(
     context: Context,
-    baseNotificationModel: BaseNotificationModel
-) : RichDefaultNotification(context, baseNotificationModel) {
+    baseNotificationModel: BaseNotificationModel,
+    private val baseNotificationTopChatList: List<BaseNotificationModel>
+) : RichDefaultNotification(context, baseNotificationModel, baseNotificationTopChatList) {
 
     override fun createNotification(): Notification? {
         val replyAbleNotificationBuilder = setupReplyAbleNotificationBuilder()
@@ -34,6 +37,7 @@ class ReplyChatNotification(
         }
         setNotificationIcon(builder)
         addReplyChatAction(builder)
+        addBubbleChatAction(builder)
         return builder
     }
 
@@ -139,6 +143,21 @@ class ReplyChatNotification(
 
     private fun remoteInput(): RemoteInput {
         return RemoteInput.Builder(REPLY_KEY).setLabel(REPLY_LABEL).build()
+    }
+
+    private fun addBubbleChatAction(builder: NotificationCompat.Builder) {
+        if (baseNotificationModel.isEnableBubbleOnSellerTopChat(context)) {
+            val bubblesFactory = BubblesFactoryImpl(context)
+            val bubbleTopChatNotificationHelper = BubbleTopChatNotificationHelper(
+                baseNotificationTopChatList,
+                bubblesFactory,
+                null
+            )
+            bubbleTopChatNotificationHelper.setupBubble(
+                builder,
+                baseNotificationModel
+            )
+        }
     }
 
     companion object {

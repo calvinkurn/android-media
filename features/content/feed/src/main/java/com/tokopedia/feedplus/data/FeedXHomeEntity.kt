@@ -189,7 +189,7 @@ class FeedXProduct(
     val priceOriginalFmt: String = "",
     @SerializedName("priceDiscount")
     val priceDiscount: Double = 0.0,
-    @SerializedName("pricDiscountFmt")
+    @SerializedName("priceDiscountFmt")
     val priceDiscountFmt: String = "",
     @SerializedName("totalSold")
     val totalSold: Int = 0,
@@ -351,12 +351,8 @@ class FeedXScore(
 }
 
 class FeedXCta(
-    @SerializedName("text")
-    val text: String = "",
     @SerializedName("texts")
     val texts: List<String> = emptyList(),
-    @SerializedName("subtitle")
-    val subtitle: List<String> = emptyList(),
     @SerializedName("color")
     val color: String = "",
     @SerializedName("colorGradient")

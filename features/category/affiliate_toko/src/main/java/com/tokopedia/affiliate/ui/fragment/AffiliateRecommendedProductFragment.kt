@@ -334,6 +334,7 @@ class AffiliateRecommendedProductFragment :
         commison: String,
         status: String,
         type: String?,
+        appUrl: String?,
         ssaInfo: AffiliatePromotionBottomSheetParams.SSAInfo?
     ) {
         pushPromosikanEvent(itemID, itemName, position, commison, ssaInfo?.ssaStatus)

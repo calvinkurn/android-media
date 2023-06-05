@@ -70,30 +70,35 @@ class SaveImageRepositoryImpl @Inject constructor(
             val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
             var resultFile: File? = null
-            val fileName = fileName(file.nameWithoutExtension)
 
             val contentValues = ContentValues()
-            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
             contentValues.put(MediaStore.MediaColumns.MIME_TYPE, MIME_IMAGE_TYPE)
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                val fileName = fileName(file.name)
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+
                 val basePath =
                     ContextCompat.getExternalFilesDirs(context, Environment.DIRECTORY_PICTURES)
-                resultFile = File("${basePath.first().path}/$fileName")
-                resultFile.createNewFile()
 
-                // copy image to pictures dir
                 try {
+                    resultFile = File("${basePath.first().path}/$fileName")
+                    resultFile.createNewFile()
+
+                    // copy image to pictures dir
                     copyFile(file, resultFile)
+
+                    contentValues.put(MediaStore.MediaColumns.DATA, resultFile.path)
+
+                    context.contentResolver.insert(contentUri, contentValues)
                 } catch (e: Exception) {
                     onFinish(null, e)
                     return
                 }
-
-                contentValues.put(MediaStore.MediaColumns.DATA, resultFile.path)
-
-                context.contentResolver.insert(contentUri, contentValues)
             } else {
+                val fileName = fileName(file.nameWithoutExtension)
+                contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+
                 contentValues.put(
                     MediaStore.Images.Media.RELATIVE_PATH,
                     Environment.DIRECTORY_PICTURES

@@ -34,7 +34,6 @@ class FeedProductTagView(
         postType: String,
         isFollowing: Boolean,
         campaign: FeedCardCampaignModel,
-        hasVoucher: Boolean,
         products: List<FeedCardProductModel>,
         totalProducts: Int,
         trackerData: FeedTrackerDataModel?,
@@ -100,10 +99,6 @@ class FeedProductTagView(
 
     fun showClearView() {
         binding.root.hide()
-    }
-
-    fun hideClearView() {
-        binding.root.show()
     }
 
     fun showIfPossible() {

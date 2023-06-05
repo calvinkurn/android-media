@@ -53,7 +53,11 @@ class FeedMainViewModel @Inject constructor(
     val currentTabIndex: LiveData<Int>
         get() = _currentTabIndex
 
-    private val _swipeOnboardingState = MutableStateFlow(SwipeOnboardingStateModel.Empty)
+    private val _swipeOnboardingState = MutableStateFlow(
+        SwipeOnboardingStateModel.Empty.copy(
+            hasShown = onboardingPreferences.hasShownSwipeOnboarding() && userSession.isLoggedIn
+        )
+    )
 
     val uiEvent: Flow<FeedMainEvent?>
         get() = uiEventManager.event
@@ -74,6 +78,7 @@ class FeedMainViewModel @Inject constructor(
                     if (!isEligible) return@collectLatest
                     uiEventManager.emitEvent(FeedMainEvent.ShowSwipeOnboarding)
 
+                    if (userSession.isLoggedIn) onboardingPreferences.setHasShownSwipeOnboarding()
                     _swipeOnboardingState.update { it.copy(hasShown = true) }
                 }
         }
@@ -85,6 +90,10 @@ class FeedMainViewModel @Inject constructor(
 
     fun pausePage() {
         _isPageResumed.value = false
+    }
+
+    fun changeCurrentTabByIndex(index: Int) {
+        _currentTabIndex.value = index
     }
 
     fun changeCurrentTabByType(type: String) {
@@ -230,11 +239,11 @@ class FeedMainViewModel @Inject constructor(
             creatorList.add(it)
         }
 
-        authorShopDataList?.find {
+        authorUserdataList?.find {
             it.type == CreateContentType.CREATE_POST && it.isActive
         }?.let {
             creatorList.add(it)
-        } ?: authorUserdataList?.find {
+        } ?: authorShopDataList?.find {
             it.type == CreateContentType.CREATE_POST && it.isActive
         }?.let {
             creatorList.add(it)

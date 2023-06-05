@@ -15,6 +15,7 @@ import javax.inject.Inject
  */
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val uiMapper: MapperFeedHome,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
 
@@ -24,7 +25,7 @@ class FeedXHomeUseCase @Inject constructor(
                 graphqlQuery(),
                 params
             )
-        return MapperFeedHome.transform(response.feedXHome)
+        return uiMapper.transform(response.feedXHome)
     }
 
     override fun graphqlQuery(): String = """
@@ -271,8 +272,7 @@ class FeedXHomeUseCase @Inject constructor(
               }
               hasVoucher
               cta {
-                text
-                subtitle
+                texts
                 color
                 colorGradient {
                   color
@@ -404,6 +404,6 @@ class FeedXHomeUseCase @Inject constructor(
 
         private const val SOURCE_DETAIL = "detail-immersive"
 
-        private const val LIMIT_DETAIL = 1
+        private const val LIMIT_DETAIL = 50 // limit products
     }
 }

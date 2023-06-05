@@ -13,6 +13,13 @@ class MapperFeedModelToTrackerDataModel(
     val entryPoint: String
 ) {
 
+    companion object {
+        private const val DEFAULT_CAMPAIGN_NO_STATUS = "no"
+
+        private const val UPCOMING_STATUS = "upcoming"
+        private const val PRE_STATUS = "pre"
+    }
+
     fun transformVideoContentToTrackerModel(
         model: FeedCardVideoContentModel
     ) =
@@ -28,7 +35,14 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status,
+            campaignStatus = model.campaign.status
+                .let {
+                    when (it.lowercase()) {
+                        UPCOMING_STATUS -> PRE_STATUS
+                        "" -> DEFAULT_CAMPAIGN_NO_STATUS
+                        else -> it
+                    }
+                },
             entryPoint = entryPoint
         )
 
@@ -47,7 +61,14 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status,
+            campaignStatus = model.campaign.status
+                .let {
+                    when (it.lowercase()) {
+                        UPCOMING_STATUS -> PRE_STATUS
+                        "" -> DEFAULT_CAMPAIGN_NO_STATUS
+                        else -> it
+                    }
+                },
             entryPoint = entryPoint
         )
 
@@ -67,7 +88,14 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status,
+            campaignStatus = model.campaign.status
+                .let {
+                    when (it.lowercase()) {
+                        UPCOMING_STATUS -> PRE_STATUS
+                        "" -> DEFAULT_CAMPAIGN_NO_STATUS
+                        else -> it
+                    }
+                },
             entryPoint = entryPoint
         )
 

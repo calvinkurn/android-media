@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@color/Unify_Static_Black">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/player_feed_video"
@@ -92,9 +92,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@id/tv_feed_caption"
-        app:layout_constraintEnd_toStartOf="@id/post_like_button"
+        app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_tag_view" />
 
@@ -102,12 +103,14 @@
         android:id="@+id/tv_feed_caption"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:ellipsize="end"
+        android:maxHeight="280dp"
         android:maxLines="2"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toTopOf="@id/rv_feed_asgc_tags"
-        app:layout_constraintEnd_toEndOf="@id/layout_author_info"
+        app:layout_constraintEnd_toStartOf="@id/share_button"
         app:layout_constraintStart_toStartOf="@id/layout_author_info"
         app:layout_constraintTop_toBottomOf="@id/layout_author_info"
         app:layout_constraintVertical_bias="100"
