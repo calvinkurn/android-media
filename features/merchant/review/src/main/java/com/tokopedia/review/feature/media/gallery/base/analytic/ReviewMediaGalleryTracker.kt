@@ -1,18 +1,6 @@
 package com.tokopedia.review.feature.media.gallery.base.analytic
 
-import com.tokopedia.reviewcommon.constant.AnalyticConstant
-import com.tokopedia.reviewcommon.extension.appendBusinessUnit
-import com.tokopedia.reviewcommon.extension.appendCurrentSite
-import com.tokopedia.reviewcommon.extension.appendGeneralEventData
-import com.tokopedia.reviewcommon.extension.appendProductId
-import com.tokopedia.reviewcommon.extension.appendPromotionsEnhancedEcommerce
-import com.tokopedia.reviewcommon.extension.appendShopId
-import com.tokopedia.reviewcommon.extension.appendUserId
-import com.tokopedia.reviewcommon.extension.queueEnhancedEcommerce
-import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
-import com.tokopedia.trackingoptimizer.TrackingQueue
-import javax.inject.Inject
 
 interface ReviewMediaGalleryTracker {
 
