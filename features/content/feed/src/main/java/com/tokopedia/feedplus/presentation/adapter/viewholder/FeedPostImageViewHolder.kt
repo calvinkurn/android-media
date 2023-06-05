@@ -211,8 +211,7 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
-                val trackerData =
-                    trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
 
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
@@ -227,7 +226,6 @@ class FeedPostImageViewHolder(
                             absoluteAdapterPosition
                         ),
                         trackerData
-
                     )
                 }
                 shareButton.setOnClickListener {
