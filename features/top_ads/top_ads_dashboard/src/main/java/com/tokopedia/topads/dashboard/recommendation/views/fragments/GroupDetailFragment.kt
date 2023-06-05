@@ -49,6 +49,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var groupChipsLayout: View? = null
+    private var groupDetailPageShimmer: View? = null
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
@@ -130,10 +131,12 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         }
                     }
                     Toast.makeText(context, "fejrfberf", Toast.LENGTH_SHORT).show()
+                    groupDetailPageShimmer?.hide()
                 }
                 is TopAdsListAllInsightState.Fail -> {
                 }
                 is TopAdsListAllInsightState.Loading -> {
+                    groupDetailPageShimmer?.show()
                 }
             }
         }
@@ -210,6 +213,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailsRecyclerView = view?.findViewById(R.id.groupDetailsRecyclerView)
         groupDetailChipsRv = view?.findViewById(R.id.groupDetailChipsRv)
         groupChipsLayout = view?.findViewById(R.id.groupChipsLayout)
+        groupDetailPageShimmer = view?.findViewById(R.id.groupDetailPageShimmer)
     }
 
     private val onChipClick: (Int) -> Unit = {
