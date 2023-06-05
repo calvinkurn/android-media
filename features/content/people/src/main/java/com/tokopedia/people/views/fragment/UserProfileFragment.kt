@@ -174,7 +174,7 @@ class UserProfileFragment @Inject constructor(
         if (result.resultCode == Activity.RESULT_OK &&
             ProfileSettingsActivity.getIsAnySettingsChanged(result.data)
         ) {
-            refreshLandingPageData(isRefreshPost = false)
+            refreshLandingPageData(isRefreshPost = true)
         }
     }
 

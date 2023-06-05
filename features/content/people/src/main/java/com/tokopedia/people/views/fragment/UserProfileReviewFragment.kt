@@ -41,6 +41,7 @@ import com.tokopedia.people.utils.getGreenColorSpan
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.views.adapter.UserReviewAdapter
 import com.tokopedia.people.views.itemdecoration.UserReviewItemDecoration
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
 import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -178,6 +179,8 @@ class UserProfileReviewFragment @Inject constructor(
     ) {
         if (prev?.reviewSettings == value.reviewSettings &&
             prev.reviewContent == value.reviewContent) return
+
+        if (value.reviewSettings == ProfileSettingsUiModel.Empty) return
 
         if (value.reviewSettings.isEnabled) {
             when (value.reviewContent.status) {

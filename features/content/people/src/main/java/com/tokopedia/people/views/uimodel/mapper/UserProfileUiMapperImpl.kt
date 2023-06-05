@@ -190,7 +190,7 @@ class UserProfileUiMapperImpl @Inject constructor(
                             thumbnailUrl = attachment.thumbnailURL,
                             fullSizeUrl = attachment.fullsizeURL,
                         )
-                    },
+                    }.take(MAX_REVIEW_MEDIA),
                     likeDislike = UserReviewUiModel.LikeDislike(
                         totalLike = it.likeDislike.totalLike,
                         likeStatus = it.likeDislike.likeStatus,
@@ -222,5 +222,6 @@ class UserProfileUiMapperImpl @Inject constructor(
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
         private const val EXTRA_STATS_REVIEWS = "reviews"
+        private const val MAX_REVIEW_MEDIA = 5
     }
 }
