@@ -1,5 +1,7 @@
 package com.tokopedia.people.util
 
+import com.tokopedia.people.views.uimodel.ProfileSettingsUiModel
+import com.tokopedia.people.views.uimodel.event.UserProfileSettingsEvent
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 
@@ -19,4 +21,9 @@ infix fun Pair<UserProfileUiState, List<UserProfileUiEvent>>.andThen(
     .(UserProfileUiState, List<UserProfileUiEvent>) -> Unit,
 ) {
     fn(first, second)
+}
+
+
+infix fun ProfileSettingsUiModel.andThen(fn: ProfileSettingsUiModel.() -> Unit) {
+    fn()
 }
