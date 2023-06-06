@@ -3264,6 +3264,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void setPromoBenefit(List<SummariesItemUiModel> summariesUiModels) {
         shipmentAdapter.setPromoBenefit(summariesUiModels);
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+        onNeedUpdateRequestData();
     }
 
     @Override
