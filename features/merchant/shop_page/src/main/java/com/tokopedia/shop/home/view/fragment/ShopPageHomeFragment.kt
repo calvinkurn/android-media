@@ -528,7 +528,7 @@ open class ShopPageHomeFragment :
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         isLoadInitialData = true
-        showVoucherListBottomsheet()
+        //showVoucherListBottomsheet()
     }
 
     private fun showVoucherListBottomsheet() {
