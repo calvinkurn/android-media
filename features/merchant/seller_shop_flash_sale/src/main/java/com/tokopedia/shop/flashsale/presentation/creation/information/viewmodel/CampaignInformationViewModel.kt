@@ -108,6 +108,7 @@ class CampaignInformationViewModel @Inject constructor(
     private var relatedCampaigns: List<RelatedCampaign> = emptyList()
     private var isCampaignRuleSubmit = false
     private var storedVpsPackages: List<VpsPackageUiModel> = emptyList()
+    private var isEnableOosTransaction = true
 
     private val forbiddenWords = listOf(
         "kejar diskon",
@@ -147,7 +148,8 @@ class CampaignInformationViewModel @Inject constructor(
         val secondColor: String,
         val paymentType: PaymentType,
         val remainingQuota: Int,
-        val vpsPackageId: Long
+        val vpsPackageId: Long,
+        val isOosImprovement: Boolean
     )
 
     fun validateCampaignName(campaignName: String) : CampaignNameValidationResult {
@@ -236,7 +238,8 @@ class CampaignInformationViewModel @Inject constructor(
                         firstColor = selection.firstColor,
                         secondColor = selection.secondColor,
                         paymentType = selection.paymentType,
-                        packageId = selection.vpsPackageId
+                        packageId = selection.vpsPackageId,
+                        isOosImprovement = selection.isOosImprovement
                     )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignCreation.postValue(Success(result))
@@ -270,7 +273,8 @@ class CampaignInformationViewModel @Inject constructor(
                         paymentType = selection.paymentType,
                         campaignRelation = relatedCampaigns.map { it.id },
                         isCampaignRuleSubmit = isCampaignRuleSubmit,
-                        packageId = selection.vpsPackageId
+                        packageId = selection.vpsPackageId,
+                        isOosImprovement = selection.isOosImprovement
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _campaignUpdate.postValue(Success(result))
@@ -304,7 +308,8 @@ class CampaignInformationViewModel @Inject constructor(
                     paymentType = selection.paymentType,
                     campaignRelation = relatedCampaigns.map { it.id },
                     isCampaignRuleSubmit = isCampaignRuleSubmit,
-                    packageId = selection.vpsPackageId
+                    packageId = selection.vpsPackageId,
+                    isOosImprovement = selection.isOosImprovement
                 )
                 val result = doSellerCampaignCreationUseCase.execute(param)
                 _saveDraft.postValue(Success(result))
@@ -367,6 +372,14 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun getCampaignId() : Long {
         return this.campaignId
+    }
+
+    fun setOosState(oosState: Boolean) {
+        this.isEnableOosTransaction = oosState
+    }
+
+    fun getOosState(): Boolean {
+        return isEnableOosTransaction
     }
 
     fun setPaymentType(paymentType : PaymentType) {

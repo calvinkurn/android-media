@@ -31,7 +31,8 @@ data class CampaignUiModel(
     val thematicInfo: ThematicInfo,
     val reviewStartDate: Date,
     val reviewEndDate: Date,
-    val packageInfo: PackageInfo
+    val packageInfo: PackageInfo,
+    val isOosImprovement: Boolean
 ) {
     data class ProductSummary(
         val totalItem: Int,

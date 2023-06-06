@@ -46,6 +46,7 @@ import com.tokopedia.shop.flashsale.common.extension.showError
 import com.tokopedia.shop.flashsale.common.extension.showLoading
 import com.tokopedia.shop.flashsale.common.extension.stopLoading
 import com.tokopedia.shop.flashsale.common.extension.toBulletSpan
+import com.tokopedia.shop.flashsale.common.util.RemoteConfigUtil
 import com.tokopedia.shop.flashsale.di.component.DaggerShopFlashSaleComponent
 import com.tokopedia.shop.flashsale.domain.entity.CampaignUiModel
 import com.tokopedia.shop.flashsale.domain.entity.MerchantCampaignTNC
@@ -157,10 +158,11 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         setUpClickListeners()
         setUpUniqueAccountTips()
         setUpTNCText()
-        setUpOosSubtitleText()
+        setupOosHandler()
         setUpRelatedCampaignRecyclerView()
         observeCampaign()
         observeSelectedPaymentMethod()
+        observeSelectedOosState()
         observeUniqueAccountSelected()
         observeCampaignRelationSelected()
         observeRelatedCampaignRemovedEvent()
@@ -199,6 +201,11 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         }
         binding.chipsRegularPaymentMethod.setOnClickListener {
             viewModel.onRegularPaymentMethodSelected()
+        }
+
+        binding.radioOosHandlingOptions.setOnCheckedChangeListener { _, checkedId ->
+            val isEnableTransaction = checkedId == R.id.radio_oos_option_can_transact
+            viewModel.setOosStatus(isEnableTransaction = isEnableTransaction)
         }
 
         binding.chipsUniqueAccountYes.setOnClickListener {
@@ -280,40 +287,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         binding.checkboxCampaignRuleTnc.text = getTNCText()
     }
 
-    private fun getOutOfStockSubtitleText(): SpannableString? {
-        val context = context ?: return null
-        val oosSubtitleText = SpannedString(getText(R.string.campaign_rule_fs_out_of_stock_subtitle))
-        val spannableString = SpannableString(oosSubtitleText)
-        val clickableSpan: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(p0: View) {
-                openEduPage()
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.color = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                )
-                ds.typeface = Typeface.DEFAULT_BOLD
-                ds.isUnderlineText = false
-            }
-        }
-
-        spannableString.setSpan(
-            clickableSpan,
-            oosSubtitleText.getSpanStart(76),
-            oosSubtitleText.getSpanEnd(96),
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-
-        return spannableString
-    }
-
-    private fun setUpOosSubtitleText() {
+    private fun setupOosHandler() {
+        val context = context ?: return
         val binding = binding ?: return
-        binding.tgCampaignFsOosSubtitle.text = getOutOfStockSubtitleText()
-        binding.tgCampaignFsOosSubtitle.movementMethod = LinkMovementMethod.getInstance()
+        val isShowOosSection = RemoteConfigUtil.isShowOutOfStockSection(context)
+        if (isShowOosSection) {
+            binding.viewGroupOosHandling.visible()
+        } else {
+            binding.viewGroupOosHandling.gone()
+        }
     }
 
     private fun observeSelectedPaymentMethod() {
@@ -323,6 +305,12 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 PaymentType.REGULAR -> onRegularPaymentMethodSelected()
                 else -> clearSelectedPaymentMethod()
             }
+        }
+    }
+
+    private fun observeSelectedOosState() {
+        viewModel.selectedOosState.observe(viewLifecycleOwner) { it ->
+            // TODO
         }
     }
 
