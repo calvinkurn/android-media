@@ -108,10 +108,11 @@ class LottieBottomNavbar : LinearLayout {
         adjustBadgePosition()
     }
 
-    fun changeUiMode(isNightMode: Boolean) {
-        if (isNightMode == mIsForceDarkMode) return
+    fun forceDarkMode(isDarkMode: Boolean) {
+        if (context.isDarkMode()) return
+        if (isDarkMode == mIsForceDarkMode) return
 
-        mIsForceDarkMode = isNightMode
+        mIsForceDarkMode = isDarkMode
         setupMenuItems(modeAwareContext)
         requestLayout()
     }

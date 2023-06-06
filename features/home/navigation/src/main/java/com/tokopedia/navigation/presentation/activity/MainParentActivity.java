@@ -631,7 +631,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void configureNavigationBarBasedOnFragment(Fragment fragment) {
-        bottomNavigation.changeUiMode(fragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE));
+        bottomNavigation.forceDarkMode(fragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE));
     }
 
     private void scrollToTop(Fragment fragment) {
