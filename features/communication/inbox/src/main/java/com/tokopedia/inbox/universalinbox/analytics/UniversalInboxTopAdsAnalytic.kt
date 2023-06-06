@@ -1,5 +1,35 @@
 package com.tokopedia.inbox.universalinbox.analytics
 
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.ACTION_FIELD
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.BRAND
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CATEGORY
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK_INBOX
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CLICK_ON_PRODUCT_RECOMMENDATION
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CURRENCY_CODE
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.CURRENCY_CODE_IDR
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.DATA_DIMENSION_83
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.EVENT
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.EVENT_ACTION
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.EVENT_CATEGORY
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.EVENT_ECOMMERCE
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.EVENT_LABEL
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.ID
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.IMPRESSIONS
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.IMPRESSION_ON_PRODUCT_RECOMMENDATION
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.INBOX_PAGE
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.LIST
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.NAME
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.POSITION
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.PRICE
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.PRODUCTS
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.PRODUCT_CLICK
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.PRODUCT_VIEW
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.REGEX_NUMBER
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.VALUE_BEBAS_ONGKIR
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.VALUE_BEBAS_ONGKIR_EXTRA
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.VALUE_NONE_OTHER
+import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalyticsConstants.VARIANT
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
@@ -14,13 +44,13 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
     fun eventInboxTopAdsProductView(trackingQueue: TrackingQueue?) {
         if (dataLayerList.isNotEmpty()) {
             val map = mutableMapOf(
-                "event" to "productView",
-                "eventCategory" to "inbox page",
-                "eventAction" to "impression on product recommendation",
-                "eventLabel" to "",
-                "ecommerce" to mapOf(
-                    "currencyCode" to "IDR",
-                    "impressions" to listOf(
+                EVENT to PRODUCT_VIEW,
+                EVENT_CATEGORY to INBOX_PAGE,
+                EVENT_ACTION to IMPRESSION_ON_PRODUCT_RECOMMENDATION,
+                EVENT_LABEL to "",
+                EVENT_ECOMMERCE to mapOf(
+                    CURRENCY_CODE to CURRENCY_CODE_IDR,
+                    IMPRESSIONS to listOf(
                         dataLayerList.toTypedArray()
                     )
                 )
@@ -35,17 +65,17 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
         position: Int,
         isTopAds: Boolean
     ) {
-        val priceCurrency = recommendationItem.price.replace("[^0-9]".toRegex(), "")
+        val priceCurrency = recommendationItem.price.replace(REGEX_NUMBER.toRegex(), "")
         dataLayerList.add(
             mapOf(
-                "name" to recommendationItem.name,
-                "id" to recommendationItem.productId,
-                "price" to priceCurrency,
-                "brand" to "none/other",
-                "variant" to "none/other",
-                "category" to recommendationItem.departmentId,
-                "list" to getListAttribute(recommendationItem, isTopAds),
-                "position" to position.toString(),
+                NAME to recommendationItem.name,
+                ID to recommendationItem.productId,
+                PRICE to priceCurrency,
+                BRAND to VALUE_NONE_OTHER,
+                VARIANT to VALUE_NONE_OTHER,
+                CATEGORY to recommendationItem.departmentId,
+                LIST to getListAttribute(recommendationItem, isTopAds),
+                POSITION to position.toString(),
                 DATA_DIMENSION_83 to getDimension83Attribute(recommendationItem)
             )
         )
@@ -57,26 +87,26 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
         isTopAds: Boolean
     ) {
         val tracker: ContextAnalytics = TrackApp.getInstance().gtm
-        val priceCurrency = recommendationItem.price.replace("[^0-9]".toRegex(), "")
+        val priceCurrency = recommendationItem.price.replace(REGEX_NUMBER.toRegex(), "")
         val map = mapOf(
-            "event" to "productClick",
-            "eventCategory" to "inbox page",
-            "eventAction" to "click on product recommendation",
-            "eventLabel" to "",
-            "ecommerce" to mapOf(
-                "click" to mapOf(
-                    "actionField" to mapOf(
-                        "list" to getListAttribute(recommendationItem, isTopAds)
+            EVENT to PRODUCT_CLICK,
+            EVENT_CATEGORY to INBOX_PAGE,
+            EVENT_ACTION to CLICK_ON_PRODUCT_RECOMMENDATION,
+            EVENT_LABEL to "",
+            EVENT_ECOMMERCE to mapOf(
+                CLICK to mapOf(
+                    ACTION_FIELD to mapOf(
+                        LIST to getListAttribute(recommendationItem, isTopAds)
                     ),
-                    "products" to listOf(
+                    PRODUCTS to listOf(
                         mapOf(
-                            "name" to recommendationItem.name,
-                            "id" to recommendationItem.productId,
-                            "price" to priceCurrency,
-                            "brand" to "none/other",
-                            "category" to recommendationItem.categoryBreadcrumbs,
-                            "varian" to "none/other",
-                            "position" to position.toString(),
+                            NAME to recommendationItem.name,
+                            ID to recommendationItem.productId,
+                            PRICE to priceCurrency,
+                            BRAND to VALUE_NONE_OTHER,
+                            CATEGORY to recommendationItem.categoryBreadcrumbs,
+                            VARIANT to VALUE_NONE_OTHER,
+                            POSITION to position.toString(),
                             DATA_DIMENSION_83 to getDimension83Attribute(recommendationItem)
                         )
                     )
@@ -89,10 +119,10 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
     fun eventClickRecommendationWishlist(isAdd: Boolean) {
         val tracker: ContextAnalytics = TrackApp.getInstance().gtm
         val map = mapOf(
-            "event" to "clickInbox",
-            "eventCategory" to "inbox page",
-            "eventAction" to getWishListEventAction(isAdd),
-            "eventLabel" to ""
+            EVENT to CLICK_INBOX,
+            EVENT_CATEGORY to INBOX_PAGE,
+            EVENT_ACTION to getWishListEventAction(isAdd),
+            EVENT_LABEL to ""
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -108,7 +138,9 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
     }
 
     private fun getDimension83Attribute(recommendationItem: RecommendationItem): String {
-        return if (recommendationItem.isFreeOngkirActive && recommendationItem.labelGroupList.hasLabelGroupFulfillment()) {
+        return if (recommendationItem.isFreeOngkirActive &&
+            recommendationItem.labelGroupList.hasLabelGroupFulfillment()
+        ) {
             VALUE_BEBAS_ONGKIR_EXTRA
         } else if (recommendationItem.isFreeOngkirActive) {
             VALUE_BEBAS_ONGKIR
@@ -124,12 +156,5 @@ class UniversalInboxTopAdsAnalytic @Inject constructor() {
         val isTopAdsString = if (isTopAds) " - product topads" else ""
         return "/inbox - rekomendasi untuk anda - " +
             recommendationItem.recommendationType + isTopAdsString
-    }
-
-    companion object {
-        private const val DATA_DIMENSION_83 = "dimension83"
-        private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
-        private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
-        private const val VALUE_NONE_OTHER = "none / other"
     }
 }
