@@ -108,7 +108,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
     private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
     private val _isAffiliate = MutableStateFlow(false)
-    val isAffiliate: Boolean
+    val isSelectedAccountAffiliate: Boolean
         get() = _selectedAccount.value.isUser && _isAffiliate.value
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
@@ -287,8 +287,6 @@ class PlayShortsViewModel @Inject constructor(
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
             setupConfigurationIfEligible(bestEligibleAccount)
-
-            checkIsUserAffiliate()
         }) {
             _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
         }
@@ -341,8 +339,6 @@ class PlayShortsViewModel @Inject constructor(
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
-
-            checkIsUserAffiliate()
         }) { throwable ->
             _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
@@ -492,10 +488,10 @@ class PlayShortsViewModel @Inject constructor(
     private suspend fun checkIsUserAffiliate() {
         if (selectedAccount.isShop) {
             _isAffiliate.update { false }
+            setupShortsAffiliateEntryPoint(false)
             return
         }
         val checkIsAffiliate = repo.getBroadcasterCheckAffiliate()
-
         _isAffiliate.update { checkIsAffiliate.isAffiliate }
         setupShortsAffiliateEntryPoint(!_isAffiliate.value)
     }
@@ -551,6 +547,7 @@ class PlayShortsViewModel @Inject constructor(
 
             _config.update { finalConfig }
             setSelectedAccount(account)
+            checkIsUserAffiliate()
         }
     }
 

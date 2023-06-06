@@ -195,7 +195,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
 
                     override fun fetchCommissionProduct(): Boolean {
-                        return viewModel.isAffiliate
+                        return viewModel.isSelectedAccountAffiliate
                     }
                 })
 
