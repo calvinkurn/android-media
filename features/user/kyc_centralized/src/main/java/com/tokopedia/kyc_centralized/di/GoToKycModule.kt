@@ -132,9 +132,7 @@ open class GoToKycModule {
         userSessionInterface: UserSessionInterface
     ): KycSdkUserInfo {
         return KycSdkUserInfo(
-            emailId = userSessionInterface.email,
-            userId = userSessionInterface.userId,
-            userName = userSessionInterface.name
+            userId = userSessionInterface.userId
         )
     }
 
