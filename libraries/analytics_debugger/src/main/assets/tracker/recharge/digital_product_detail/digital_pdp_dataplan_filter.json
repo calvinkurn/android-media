@@ -1,0 +1,36 @@
+{
+  "readme": "Digital PDP paket data Filter and Buy",
+  "mode": "exact",
+  "query": [
+    {
+      "eventAction": "click filter chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "impression filter chip",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*",
+      "event": "viewDigitalIris",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "eventAction": "click chevron on total bayar",
+      "eventCategory": "digital - homepage",
+      "eventLabel": ".*_.*_.*_.*",
+      "event": "clickDigital",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}
