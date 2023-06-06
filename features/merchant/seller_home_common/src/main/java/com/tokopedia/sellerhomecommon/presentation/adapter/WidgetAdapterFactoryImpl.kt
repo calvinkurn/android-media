@@ -84,6 +84,10 @@ class WidgetAdapterFactoryImpl(
         return UnificationViewHolder.RES_LAYOUT
     }
 
+    override fun type(richListWidget: RichListWidgetUiModel): Int {
+        return RichListViewHolder.RES_LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionViewHolder.RES_LAYOUT -> SectionViewHolder(parent, listener)
@@ -103,6 +107,7 @@ class WidgetAdapterFactoryImpl(
             MilestoneViewHolder.RES_LAYOUT -> MilestoneViewHolder(parent, listener)
             CalendarViewHolder.RES_LAYOUT -> CalendarViewHolder(parent, listener)
             UnificationViewHolder.RES_LAYOUT -> UnificationViewHolder(parent, listener)
+            RichListViewHolder.RES_LAYOUT -> RichListViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

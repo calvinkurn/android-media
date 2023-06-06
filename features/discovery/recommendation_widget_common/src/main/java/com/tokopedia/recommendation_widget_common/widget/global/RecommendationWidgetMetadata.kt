@@ -13,5 +13,6 @@ data class RecommendationWidgetMetadata(
     val queryParam: String = "",
     val pageNumber: Int = 1,
     val miniCartSource: MiniCartSource? = null,
-    val device: String = ""
+    val device: String = "",
+    val isTokonow: Boolean = false,
 )

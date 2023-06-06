@@ -15,6 +15,7 @@ import javax.inject.Inject
  */
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val uiMapper: MapperFeedHome,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
 
@@ -24,7 +25,7 @@ class FeedXHomeUseCase @Inject constructor(
                 graphqlQuery(),
                 params
             )
-        return MapperFeedHome.transform(response.feedXHome)
+        return uiMapper.transform(response.feedXHome)
     }
 
     override fun graphqlQuery(): String = """

@@ -19,8 +19,8 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestNotification(
-    modifier: Modifier = Modifier,
     text: String,
+    modifier: Modifier = Modifier,
     colorType: Color = Color.PRIMARY
 ) {
     val color = getNotificationColor(colorType)
