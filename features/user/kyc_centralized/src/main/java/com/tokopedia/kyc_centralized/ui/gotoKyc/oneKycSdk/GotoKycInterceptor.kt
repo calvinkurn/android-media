@@ -8,9 +8,14 @@ import okhttp3.Response
 import javax.inject.Inject
 
 @ActivityScope
-class ProjectIdInterceptor @Inject constructor(
-    private val kycSharedPreference: KycSharedPreference
-) : Interceptor {
+class GotoKycInterceptor @Inject constructor() : Interceptor {
+
+    @Volatile
+    private var projectId: String = ""
+
+    fun setProjectId(projectId: String) {
+        this.projectId = projectId
+    }
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()

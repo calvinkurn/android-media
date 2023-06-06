@@ -15,18 +15,18 @@ import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -100,12 +100,11 @@ open class GoToKycModule {
         retryPolicy: OkHttpRetryPolicy,
         loggingInterceptor: HttpLoggingInterceptor,
         chuckerInterceptor: ChuckerInterceptor,
-        projectIdInterceptor: ProjectIdInterceptor
+        gotoKycInterceptor: GotoKycInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(AkamaiBotInterceptor(context))
-        builder.addInterceptor(projectIdInterceptor)
+        builder.addInterceptor(gotoKycInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -146,8 +145,7 @@ open class GoToKycModule {
         kycSdkClientConfig: KycSdkClientConfig
     ): KycSdkConfig {
         return KycSdkConfig(
-            isDebugMode = GlobalConfig.isAllowDebuggingTools(),
-            baseUrl = "https://accounts-staging.tokopedia.com",
+            baseUrl = TokopediaUrl.getInstance().ACCOUNTS,
             clientConfig = kycSdkClientConfig,
             userInfo = kycSdkUserInfo
         )
