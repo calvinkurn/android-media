@@ -578,9 +578,11 @@ class ShipmentPresenter @Inject constructor(
         if (cartItemCounter > 0 && cartItemCounter <= shipmentCartItemModelList.size) {
             val priceTotal: Double =
                 if (shipmentCost.totalPrice <= 0) 0.0 else shipmentCost.totalPrice
+            val platformFee: Double = if (shipmentCost.dynamicPlatformFee.fee <= 0) 0.0 else shipmentCost.dynamicPlatformFee.fee
+            val finalPrice = priceTotal + platformFee
             val priceTotalFormatted =
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    priceTotal,
+                    finalPrice,
                     false
                 ).removeDecimalSuffix()
             updateShipmentButtonPaymentModel(enable = !hasLoadingItem, totalPrice = priceTotalFormatted)
