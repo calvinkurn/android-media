@@ -14,10 +14,6 @@
         <attr name="isWithPhoto" format="boolean"/>
     </declare-styleable>
 
-    <declare-styleable name="NestedScrollableHost">
-        <attr name="lockScroll" format="boolean"/>
-    </declare-styleable>
-
     <declare-styleable name="FeedFloatingButton">
         <attr name="fab_text" format="string" />
     </declare-styleable>

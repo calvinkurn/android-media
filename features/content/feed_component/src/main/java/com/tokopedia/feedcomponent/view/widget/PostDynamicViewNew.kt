@@ -49,7 +49,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
 import com.tokopedia.feedcomponent.presentation.utils.FeedXCardSubtitlesAnimationHandler
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
+import com.tokopedia.feedcomponent.util.FeedNestedScrollableHost
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.util.bold
 import com.tokopedia.feedcomponent.util.buildSpannedString
@@ -209,7 +209,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val userImage: ImageUnify = findViewById(R.id.user_image)
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
     private val gridList: RecyclerView = findViewById(R.id.gridList)
-    private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
+    private val scrollHostCarousel: FeedNestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: DynamicPostViewHolder.DynamicPostListener? = null
     private var videoListener: VideoViewHolder.VideoViewListener? = null
     private lateinit var gridPostListener: GridPostAdapter.GridItemListener
@@ -702,10 +702,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(R.string.feed_header_follow_count_text),
+                    context.getString(com.tokopedia.content.common.R.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-            } else context.getString(R.string.feed_header_follow_count_less_text)
+            } else context.getString(com.tokopedia.content.common.R.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
             shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
