@@ -308,7 +308,7 @@ class LottieBottomNavbar : LinearLayout {
                 }
             }
 
-            iconList.add(index, Pair(icon, false))
+            iconList.add(index, Pair(icon, selectedItem == index))
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(
@@ -568,7 +568,7 @@ class LottieBottomNavbar : LinearLayout {
         }
 
         // change currently selected item color
-        val activeSelectedItemColor = ContextCompat.getColor(context, menu[newPosition].activeButtonColor)
+        val activeSelectedItemColor = ContextCompat.getColor(modeAwareContext, menu[newPosition].activeButtonColor)
         val newSelectedItemPair = iconList[newPosition]
         val newSelectedItem = newSelectedItemPair.first
         if (!newSelectedItemPair.second) {
