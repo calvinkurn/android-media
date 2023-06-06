@@ -263,7 +263,7 @@ class UserProfileReviewTabViewModelTest {
     }
 
     @Test
-    fun `LoadUserReview - load page on toher profile and dont emit event show onboarding`() {
+    fun `LoadUserReview - load page on other profile and dont emit event show onboarding`() {
         coEvery { mockUserProfileSharedPref.hasBeenShown(UserProfileSharedPref.Key.ReviewOnboarding) } returns false
 
         UserProfileViewModelRobot(
@@ -282,4 +282,78 @@ class UserProfileReviewTabViewModelTest {
             }
         }
     }
+
+    @Test
+    fun `Public Getter - firstName with 1 words`() {
+
+        val mockName = "Jonathan"
+        val expectedFirstName = getFirstName(mockName)
+
+        val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId, name = mockName)
+        coEvery { mockRepo.getProfile(any()) } returns mockOwnProfile
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                viewModel.firstName.equalTo(expectedFirstName)
+            }
+        }
+    }
+
+    @Test
+    fun `Public Getter - firstName with 2 words`() {
+
+        val mockName = "Jonathan Darwin"
+        val expectedFirstName = getFirstName(mockName)
+
+        val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId, name = mockName)
+        coEvery { mockRepo.getProfile(any()) } returns mockOwnProfile
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                viewModel.firstName.equalTo(expectedFirstName)
+            }
+        }
+    }
+
+    @Test
+    fun `Public Getter - firstName is empty`() {
+
+        val mockName = ""
+        val expectedFirstName = getFirstName(mockName)
+
+        val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId, name = mockName)
+        coEvery { mockRepo.getProfile(any()) } returns mockOwnProfile
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+            userProfileSharedPref = mockUserProfileSharedPref,
+        ).start {
+            recordState {
+                viewModel.submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                viewModel.firstName.equalTo(expectedFirstName)
+            }
+        }
+    }
+
+    private fun getFirstName(name: String) = name.trim().split(" ").firstOrNull().orEmpty()
 }
