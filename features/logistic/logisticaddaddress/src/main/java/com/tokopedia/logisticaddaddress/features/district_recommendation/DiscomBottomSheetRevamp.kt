@@ -72,7 +72,7 @@ class DiscomBottomSheetRevamp :
     private var viewBinding by autoClearedNullable<BottomsheetDistcrictReccomendationRevampBinding>()
 
     private val zipCodeChipsAdapter by lazy { ZipCodeChipsAdapter(this) }
-    private val popularCityAdapter by lazy { PopularCityAdapter(context, this) }
+    private val popularCityAdapter by lazy { PopularCityAdapter(this) }
     private val listDistrictAdapter by lazy { DiscomAdapterRevamp(this) }
     private var discomRevampListener: DiscomRevampListener? = null
     private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager

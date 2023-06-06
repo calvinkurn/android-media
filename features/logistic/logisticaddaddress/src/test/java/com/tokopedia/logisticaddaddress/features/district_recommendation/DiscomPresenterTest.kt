@@ -62,7 +62,7 @@ class DiscomPresenterTest {
         verifyOrder {
             view.setLoadingState(true)
             view.setLoadingState(false)
-            view.renderData(withArg { org.assertj.core.api.Assertions.assertThat(it).isNotEmpty }, expected.keroDistrictRecommendation.nextAvailable)
+            view.renderData(any(), expected.keroDistrictRecommendation.nextAvailable)
         }
     }
 

@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
+import com.tokopedia.logisticaddaddress.databinding.ActivitySearchAddressBinding
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_search_address.*
 
 class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent> {
 
@@ -20,6 +20,8 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
+
+    private var binding: ActivitySearchAddressBinding? = null
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
@@ -29,7 +31,8 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search_address)
+        binding = ActivitySearchAddressBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         initViews()
         component.inject(this)
     }
@@ -56,7 +59,7 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
             bundle.putAll(intent.extras)
         }
         supportFragmentManager.beginTransaction().replace(R.id.container, SearchPageFragment.newInstance(bundle)).commit()
-        btn_back.setOnClickListener {
+        binding?.btnBack?.setOnClickListener {
             onBackPressed()
         }
     }

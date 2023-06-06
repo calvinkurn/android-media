@@ -137,7 +137,7 @@ class DiscomFragment :
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
             binding.rvDiscomChipsPopularCity.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
-            popularCityAdapter = PopularCityAdapter(context, this)
+            popularCityAdapter = PopularCityAdapter(this)
             popularCityAdapter?.cityList = cityList.toMutableList()
 
             binding.rvDiscomChipsPopularCity.apply {
