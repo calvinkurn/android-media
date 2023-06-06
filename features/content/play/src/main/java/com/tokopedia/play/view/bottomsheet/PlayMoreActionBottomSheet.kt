@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalContent.PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+import com.tokopedia.content.common.analytic.entrypoint.PlayPerformanceDashboardEntryPointAnalytic
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -48,13 +51,12 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.Calendar
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created by jegul on 10/12/19
@@ -62,7 +64,8 @@ import javax.inject.Inject
 class PlayMoreActionBottomSheet @Inject constructor(
     private val analytic: PlayAnalytic,
     private val trackingQueue: TrackingQueue,
-    private val analytic2Factory: PlayAnalytic2.Factory
+    private val analytic2Factory: PlayAnalytic2.Factory,
+    private val playPerformanceDashboardEntryPointAnalytic: PlayPerformanceDashboardEntryPointAnalytic,
 ) : BottomSheetUnify(),
     KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
@@ -85,23 +88,56 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     var mListener: Listener? = null
 
-    private val reportAction by lazy {
+    private val seePerformanceAction by lazy {
         PlayMoreActionUiModel(
-            type = PlayMoreActionType.Report,
+            type = PlayMoreActionType.SeePerformance,
             icon = getIconUnifyDrawable(
                 requireContext(),
-                IconUnify.WARNING,
+                IconUnify.GRAPH,
                 MethodChecker.getColor(
                     requireContext(),
                     com.tokopedia.unifycomponents.R.color.Unify_NN900
                 )
             ),
-            subtitleRes = R.string.play_kebab_report_title,
+            subtitleRes = contentCommonR.string.performance_see,
             onClick = {
-                shouldOpenUserReport()
+                playPerformanceDashboardEntryPointAnalytic.onClickReportPageEntryPointGroupChatRoom(
+                    playViewModel.shopId,
+                    playViewModel.channelId,
+                )
+                mListener?.onSeePerformanceClicked(this)
             },
-            priority = 4,
-            onImpress = { analytic2?.impressUserReport() }
+            priority = 1,
+            onImpress = {
+
+            }
+        )
+    }
+
+    private val performanceDashboardAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.PerformanceDashboard,
+            icon = getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.GRAPH_REPORT,
+                MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifycomponents.R.color.Unify_NN900
+                )
+            ),
+            subtitleRes = contentCommonR.string.performance_learn_video_insight,
+            onClick = {
+                playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointChannelPage(
+                    playViewModel.shopId,
+                    playViewModel.channelId,
+                )
+                RouteManager.route(
+                    requireContext(),
+                    PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK
+                )
+            },
+            priority = 2,
+            onImpress = { }
         )
     }
 
@@ -114,7 +150,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickPiP()
                 mListener?.onPipClicked(this)
             },
-            priority = 2,
+            priority = 3,
             onImpress = { analytic2?.impressPiP() }
         )
     }
@@ -135,30 +171,28 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 analytic2?.clickWatchMode()
                 mListener?.onWatchModeClicked(this)
             },
-            priority = 3,
+            priority = 4,
             onImpress = { analytic2?.impressWatchMode() }
         )
     }
 
-    private val seePerformanceAction by lazy {
+    private val reportAction by lazy {
         PlayMoreActionUiModel(
-            type = PlayMoreActionType.SeePerformance,
+            type = PlayMoreActionType.Report,
             icon = getIconUnifyDrawable(
                 requireContext(),
-                IconUnify.GRAPH,
+                IconUnify.WARNING,
                 MethodChecker.getColor(
                     requireContext(),
                     com.tokopedia.unifycomponents.R.color.Unify_NN900
                 )
             ),
-            subtitleRes = R.string.play_kebab_see_performance,
+            subtitleRes = R.string.play_kebab_report_title,
             onClick = {
-                mListener?.onSeePerformanceClicked(this)
+                shouldOpenUserReport()
             },
-            priority = 1,
-            onImpress = {
-
-            }
+            priority = 5,
+            onImpress = { analytic2?.impressUserReport() }
         )
     }
 
@@ -260,8 +294,16 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     trackingQueue = trackingQueue,
                     channelInfo = it.value.channel.channelInfo
                 )
+
+                renderPerformanceDashboardEntryPoint(it.prevValue?.partner?.id, it.value.partner.id)
             }
         }
+    }
+
+    private fun renderPerformanceDashboardEntryPoint(prevId: Long?, currentId: Long) {
+        if (prevId == currentId || currentId.toString() != playViewModel.shopId) return
+
+        buildListAction(action = performanceDashboardAction)
     }
 
     private fun renderPiPView(

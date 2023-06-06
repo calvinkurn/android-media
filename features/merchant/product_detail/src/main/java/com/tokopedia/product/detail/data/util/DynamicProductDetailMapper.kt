@@ -6,7 +6,6 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -25,8 +24,10 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductMediaRecomBasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
+import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.common.data.model.rates.WarehouseData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -40,9 +41,11 @@ import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OngoingCampaignDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
@@ -64,6 +67,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDa
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ShipmentPlusData
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ViewToViewWidgetDataModel
@@ -72,6 +76,7 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.datamodel.review_list.ProductShopReviewDataModel
+import com.tokopedia.product.detail.data.model.review.ProductReviewImageListQuery
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
@@ -170,6 +175,16 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_CONTENT -> {
                     listOfComponent.add(ProductContentDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.ONGOING_CAMPAIGN -> {
+                    val dataModel = mapToOngoingCampaignDataModel(
+                        type = component.type,
+                        name = component.componentName,
+                        data = component.componentData.firstOrNull()
+                    )
+                    if(dataModel != null){
+                        listOfComponent.add(dataModel)
+                    }
                 }
                 ProductDetailConstant.MEDIA -> {
                     listOfComponent.add(ProductMediaDataModel(type = component.type, name = component.componentName))
@@ -412,7 +427,8 @@ object DynamicProductDetailMapper {
             defaultChild = networkData.defaultChild,
             variants = networkData.variants,
             children = networkData.children,
-            maxFinalPrice = networkData.maxFinalPrice
+            maxFinalPrice = networkData.maxFinalPrice,
+            postAtcLayout = networkData.postAtcLayout
         )
     }
 
@@ -469,7 +485,11 @@ object DynamicProductDetailMapper {
                 showAtFront = it.showAtFront,
                 isAnnotation = it.isAnnotation,
                 infoLink = it.infoLink,
-                showAtBottomSheet = it.showAtBottomSheet
+                showAtBottomSheet = it.showAtBottomSheet,
+                key = it.key,
+                type = it.type,
+                action = it.action,
+                extParam = it.extParam
             )
         }
     }
@@ -507,7 +527,7 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    fun generateImageReview(reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewImage {
+    fun generateImageReview(reviewImage: ProductReviewImageListQuery): ReviewImage {
         return ReviewImage(
             buyerMediaCount = reviewImage.detail?.mediaCount.toIntOrZero(),
             reviewMediaThumbnails = generateReviewMediaThumbnails(reviewImage),
@@ -515,7 +535,7 @@ object DynamicProductDetailMapper {
         )
     }
 
-    private fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
+    private fun generateReviewMediaThumbnails(data: ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
         val totalVideoToShow = data.detail?.videos?.size.orZero()
         val totalImageToShow = data.detail?.images?.size.orZero()
         val totalMediaToShow = totalVideoToShow + totalImageToShow
@@ -607,7 +627,14 @@ object DynamicProductDetailMapper {
         return TokoNowParam(
             shopId = localData.shop_id,
             warehouseId = localData.warehouse_id,
-            serviceType = localData.service_type
+            serviceType = localData.service_type,
+            warehouses = localData.warehouses
+                .filter {
+                    it.warehouse_id != 0L
+                }
+                .map {
+                    WarehouseData(it.warehouse_id.toString(), it.service_type)
+                }
         )
     }
 
@@ -657,10 +684,7 @@ object DynamicProductDetailMapper {
         product.data.campaign.campaignIdentifier == CampaignRibbon.THEMATIC_CAMPAIGN,
         product.data.campaign.percentageAmount,
         startTime,
-        (
-            product.data.campaign.endDateUnix
-                ?: ""
-            ).toLongOrZero()
+        product.data.campaign.endDateUnix.toLongOrZero()
     )
 
     fun generateAffiliateShareData(
@@ -809,6 +833,52 @@ object DynamicProductDetailMapper {
             lightIcon = productMediaRecomBasicInfo.lightIcon,
             darkIcon = productMediaRecomBasicInfo.darkIcon,
             iconText = productMediaRecomBasicInfo.iconText
+        )
+    }
+
+    fun mapToShipmentPlusData(shipmentPlus: ShipmentPlus?, boType: Int): ShipmentPlusData {
+        return if (shipmentPlus == null) {
+            ShipmentPlusData()
+        } else {
+            ShipmentPlusData(
+                isShow = shipmentPlus.isShow,
+                text = shipmentPlus.text,
+                action = shipmentPlus.action,
+                actionLink = shipmentPlus.actionLink,
+                logoUrl = shipmentPlus.logoUrl,
+                logoUrlDark = shipmentPlus.logoUrlDark,
+                bgUrl = shipmentPlus.bgUrl,
+                bgUrlDark = shipmentPlus.bgUrlDark,
+                trackerData = ShipmentPlusData.TrackerData(isPlus = isPlus(boType))
+            )
+        }
+    }
+
+    private fun isPlus(boType: Int): Boolean {
+        return boType == BebasOngkirType.BO_PLUS.value || boType == BebasOngkirType.BO_PLUS_DT.value
+    }
+
+    private fun mapToOngoingCampaignDataModel(
+        type: String,
+        name: String,
+        data: ComponentData?
+    ): OngoingCampaignDataModel? {
+
+        if (data == null) return null
+
+        val mainData = ProductContentMainData(
+            campaign = data.campaign,
+            thematicCampaign = data.thematicCampaign,
+            cashbackPercentage = data.isCashback.percentage,
+            price = data.price,
+            stockWording = data.stock.stockWording,
+            isVariant = data.variant.isVariant,
+            productName = data.name
+        )
+        return OngoingCampaignDataModel(
+            type = type,
+            name = name,
+            data = mainData
         )
     }
 }
