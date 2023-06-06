@@ -20,7 +20,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
