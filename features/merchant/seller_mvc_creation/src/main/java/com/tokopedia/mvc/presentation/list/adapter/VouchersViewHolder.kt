@@ -122,15 +122,15 @@ class VouchersViewHolder(
 
     private fun Typography.setVoucherProgram(voucher: Voucher) {
         this.apply {
-            text = voucher.labelVoucher.labelSubsidyInfoFormatted
-            showWithCondition(voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty())
+            text = voucher.subsidyDetail.programDetail.programName
+            showWithCondition(voucher.subsidyDetail.programDetail.programName.isNotEmpty())
         }
     }
 
     private fun Typography.setVoucherSubsidy(voucher: Voucher) {
         this.apply {
-            text = voucher.subsidyDetail.programDetail.programLabelDetail
-            showWithCondition(voucher.subsidyDetail.programDetail.programLabelDetail.isNotEmpty())
+            text = voucher.labelVoucher.labelSubsidyInfoFormatted
+            showWithCondition(voucher.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty())
         }
     }
 
