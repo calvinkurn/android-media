@@ -145,6 +145,7 @@ open class GoToKycModule {
         kycSdkClientConfig: KycSdkClientConfig
     ): KycSdkConfig {
         return KycSdkConfig(
+            isDebugMode = GlobalConfig.isAllowDebuggingTools(),
             baseUrl = TokopediaUrl.getInstance().ACCOUNTS,
             clientConfig = kycSdkClientConfig,
             userInfo = kycSdkUserInfo
