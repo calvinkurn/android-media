@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.MERCHANT_TITLE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
@@ -79,7 +78,6 @@ class TokoFoodHomeViewModelOld @Inject constructor(
     private val tokoFoodMerchantListUseCase: TokoFoodMerchantListUseCase,
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
-    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
     private val searchCoachmarkSharedPref: TokofoodHomeSharedPref,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {

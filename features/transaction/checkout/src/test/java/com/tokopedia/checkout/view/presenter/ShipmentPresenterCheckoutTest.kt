@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -129,9 +128,6 @@ class ShipmentPresenterCheckoutTest {
     private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
 
     @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
@@ -181,7 +177,6 @@ class ShipmentPresenterCheckoutTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase,
             dynamicPaymentFeeCheckoutUseCase

@@ -12,7 +12,6 @@ import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -110,9 +109,6 @@ class ShipmentPresenterBoPromoTest {
     private lateinit var releaseBookingUseCase: ReleaseBookingUseCase
 
     @MockK
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
-    @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
     @MockK
@@ -166,7 +162,6 @@ class ShipmentPresenterBoPromoTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase,
             dynamicPaymentFeeCheckoutUseCase

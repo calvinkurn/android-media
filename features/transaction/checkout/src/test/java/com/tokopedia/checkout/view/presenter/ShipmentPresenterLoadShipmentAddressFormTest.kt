@@ -25,9 +25,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
@@ -120,9 +118,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK(relaxed = true)
-    private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
-
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
@@ -168,7 +163,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             validateUsePromoRevampUseCase,
             gson,
             TestSchedulers,
-            eligibleForAddressUseCase,
             getRatesWithScheduleUseCase,
             updateDynamicDataPassingUseCase,
             dynamicPaymentFeeCheckoutUseCase
@@ -738,13 +732,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
-                KeroAddrIsEligibleForAddressFeatureData()
-            )
-        }
 
         // When
         presenter.processInitialLoadCheckoutPage(
@@ -765,63 +752,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.resetPromoBenefit()
             view.clearTotalBenefitPromoStacking()
             view.hideLoading()
-            view.renderCheckoutPageNoAddress(any(), any())
-            view.stopTrace()
-        }
-    }
-
-    @Test
-    fun `WHEN should navigate to add new address page failed THEN should show toaster`() {
-        // Given
-        val data = CartShipmentAddressFormData().apply {
-            errorCode = CartShipmentAddressFormData.ERROR_CODE_TO_OPEN_ADD_NEW_ADDRESS
-            groupAddress = listOf(
-                GroupAddress().apply {
-                    userAddress = UserAddress(state = UserAddress.STATE_NO_ADDRESS)
-                }
-            )
-        }
-
-        coEvery {
-            getShipmentAddressFormV3UseCase.setParams(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any()
-            )
-        } just Runs
-        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
-        }
-        coEvery {
-            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(Throwable())
-        }
-
-        // When
-        presenter.processInitialLoadCheckoutPage(
-            true,
-            false,
-            false,
-            false,
-            false,
-            null,
-            "",
-            "",
-            false
-        )
-
-        // Then
-        verifyOrder {
-            view.setHasRunningApiCall(false)
-            view.resetPromoBenefit()
-            view.clearTotalBenefitPromoStacking()
-            view.hideLoading()
-            view.showToastError(any())
+            view.renderCheckoutPageNoAddress(any())
             view.stopTrace()
         }
     }
@@ -1796,7 +1727,6 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         verify {
             getShipmentAddressFormV3UseCase.cancelJobs()
-            eligibleForAddressUseCase.cancelJobs()
             epharmacyUseCase.cancelJobs()
         }
     }

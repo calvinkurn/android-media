@@ -1096,7 +1096,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData, boolean isEligibleForRevampAna) {
+    public void renderCheckoutPageNoAddress(CartShipmentAddressFormData shipmentAddressFormData) {
         Token token = new Token();
         token.setUt(shipmentAddressFormData.getKeroUnixTime());
         token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
@@ -1756,7 +1756,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
-                                                     RecipientAddressModel recipientAddressModel) {
+                                                    RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData;
         ShipmentDetailData oldShipmentDetailData = null;
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
@@ -2146,7 +2146,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
             } else {
-                for (int i=0; i<existingDdpParam.getData().size(); i++) {
+                for (int i = 0; i < existingDdpParam.getData().size(); i++) {
                     DynamicDataPassingParamRequest.DynamicDataParam existingParam = shipmentPresenter.getDynamicDataParam().getData().get(i);
                     if (existingParam.getUniqueId().equalsIgnoreCase(newParam.getUniqueId())) {
                         existingDdpParam.getData().remove(i);
@@ -2465,8 +2465,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                         ordersItem.getCodes().remove(promoLogisticCode);
                                     }
                                 }
-                            }
-                            else {
+                            } else {
                                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                                     if (ordersItem != null && ordersItem.getCodes().size() > 0) {
                                         ordersItem.getCodes().remove(promoLogisticCode);
@@ -2534,7 +2533,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShowLogisticPromo(@NonNull List<LogisticPromoUiModel> listLogisticPromo) {
-        for (LogisticPromoUiModel promoLogistic: listLogisticPromo) {
+        for (LogisticPromoUiModel promoLogistic : listLogisticPromo) {
             checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(promoLogistic.getPromoCode());
             if (promoLogistic.getDisabled()) {
                 checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(promoLogistic.getPromoCode());
@@ -4004,8 +4003,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentCartItemModel.setScheduleDate(scheduleDeliveryUiModel.getScheduleDate());
                     shipmentCartItemModel.setTimeslotId(scheduleDeliveryUiModel.getTimeslotId());
                     shipmentCartItemModel.setValidationMetadata(scheduleDeliveryUiModel.getDeliveryProduct().getValidationMetadata());
-                }
-                else {
+                } else {
                     shipmentCartItemModel.setScheduleDate("");
                     shipmentCartItemModel.setTimeslotId(0);
                     shipmentCartItemModel.setValidationMetadata("");
@@ -4102,8 +4100,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             selectedShipperModel.getLogPromoCode(),
                             false
                     );
-                }
-                else if ((!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) || hasNoPromo) {
+                } else if ((!shouldStopInClearCache && !shouldStopInDoValidateUseLogistic && !hasCheckAllCourier) || hasNoPromo) {
                     donePublisher.onCompleted();
                 }
             }
