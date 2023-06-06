@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
-import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.ProjectIdInterceptor
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
     lateinit var oneKycSdk: OneKycSdk
 
     @Inject
-    lateinit var projectIdInterceptor: ProjectIdInterceptor
+    lateinit var gotoKycInterceptor: GotoKycInterceptor
 
     private val args: CaptureKycDocumentsFragmentArgs by navArgs()
 
@@ -38,7 +38,7 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        projectIdInterceptor.setProjectId(args.parameter.projectId)
+        gotoKycInterceptor.setProjectId(args.parameter.projectId)
     }
 
     override fun onCreateView(

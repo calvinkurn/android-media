@@ -7,7 +7,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 @ActivityScope
-class ProjectIdInterceptor @Inject constructor() : Interceptor {
+class GotoKycInterceptor @Inject constructor() : Interceptor {
 
     @Volatile
     private var projectId: String = ""
