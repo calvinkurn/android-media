@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.detail
 
 import android.os.Bundle
+import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.UF_EXTRA_FEED_RELEVANT_POST
@@ -28,6 +29,16 @@ class FeedDetailActivity : BaseActivity() {
         setupView()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun setupView() {
         val extrasData = Bundle().apply {
             putString(UF_EXTRA_FEED_RELEVANT_POST, postId)
@@ -35,9 +46,10 @@ class FeedDetailActivity : BaseActivity() {
                 putAll(it)
             }
         }
+        setSupportActionBar(binding.feedDetailHeader)
         supportFragmentManager.commit {
             replace(
-                binding.root.id,
+                binding.feedDetailContainer.id,
                 FeedFragment.createFeedFragment(
                     FeedDataModel(
                         TAB_TYPE_FOR_YOU,
