@@ -20,6 +20,7 @@ class QuickReplyAdapter(
     val sendAnalyticsFromAdapter: (impressionType: String) -> Unit
 ) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
+    private var isFromDynamicAttachment: Boolean = false
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): Holder {
         val view = ItemChatbotQuickReplyViewBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return Holder(view)
@@ -29,7 +30,7 @@ class QuickReplyAdapter(
         val model = quickReplyList[position]
         holder.text.text = model.text
         holder.text.setOnClickListener {
-            listener.onQuickReplyClicked(model)
+            listener.onQuickReplyClicked(model, isFromDynamicAttachment)
         }
     }
 
@@ -41,11 +42,13 @@ class QuickReplyAdapter(
     fun clearData() {
         quickReplyList = ArrayList()
         notifyDataSetChanged()
+        isFromDynamicAttachment = false
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setList(quickReplylist: List<QuickReplyUiModel>) {
+    fun setList(quickReplylist: List<QuickReplyUiModel>, isFromDynamicAttachment: Boolean = false) {
         this.quickReplyList = quickReplylist
+        this.isFromDynamicAttachment = isFromDynamicAttachment
         notifyDataSetChanged()
         if (quickReplylist.isNotEmpty()) {
             sendAnalyticsFromAdapter(ACTION_IMRESSION_QUICK_REPLIES)

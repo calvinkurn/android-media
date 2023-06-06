@@ -75,6 +75,8 @@ import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_ONE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_THREE
 import com.tokopedia.chatbot.ChatbotConstant.CsatRating.RATING_TWO
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_REPLY_CSAT_NO
+import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.DYNAMIC_REPLY_CSAT_YES
 import com.tokopedia.chatbot.ChatbotConstant.DynamicAttachment.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.ONE_SECOND_IN_MILLISECONDS
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHATBOT_ONBOARDING
@@ -329,6 +331,7 @@ class ChatbotFragment2 :
     private var showUploadVideoButton: Boolean = false
 
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
+    private var dynamicAttachmentRejectReasons: DynamicAttachmentRejectReasons? = null
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -998,14 +1001,8 @@ class ChatbotFragment2 :
                 is ChatbotRejectReasonsState.ChatbotRejectReasonData -> {
                     // TODO add the quick reply here
                     // On clicking that quick reply open the Bottom Sheet
-
-                    val reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
-                        it.rejectReasons
-                    )
-
-                    reasonsBottomSheet.setUpListener(this)
-
-                    reasonsBottomSheet.show(childFragmentManager, "")
+                    getViewState()?.handleQuickReplyFromDynamicAttachment(true, it.rejectReasons)
+                    dynamicAttachmentRejectReasons = it.rejectReasons
                 }
             }
         }
@@ -1492,11 +1489,40 @@ class ChatbotFragment2 :
         }
     }
 
-    override fun onQuickReplyClicked(model: QuickReplyUiModel) {
+    override fun onQuickReplyClicked(model: QuickReplyUiModel, isFromDynamicAttachment: Boolean) {
+        if (isFromDynamicAttachment) {
+            if (model.action == DYNAMIC_REPLY_CSAT_YES) {
+            } else if (model.action == DYNAMIC_REPLY_CSAT_NO) {
+                openRejectReasonsBottomSheet()
+            }
+            getViewState()?.hideQuickReplyOnClick()
+        } else {
+            handleQuickReply(model)
+        }
+    }
+
+    private fun handleQuickReply(model: QuickReplyUiModel) {
         chatbotAnalytics.get().eventClick(ACTION_QUICK_REPLY_BUTTON_CLICKED)
-        viewModel.sendQuickReply(messageId, model, SendableUiModel.generateStartTime(), opponentId)
+        viewModel.sendQuickReply(
+            messageId,
+            model,
+            SendableUiModel.generateStartTime(),
+            opponentId
+        )
         getViewState()?.hideQuickReplyOnClick()
         hideCsatRatingView()
+    }
+
+    private fun openRejectReasonsBottomSheet() {
+        dynamicAttachmentRejectReasons?.let {
+            val reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
+                it
+            )
+
+            reasonsBottomSheet.setUpListener(this)
+
+            reasonsBottomSheet.show(childFragmentManager, "")
+        }
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {

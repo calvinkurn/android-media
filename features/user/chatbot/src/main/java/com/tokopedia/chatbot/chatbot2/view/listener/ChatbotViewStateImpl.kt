@@ -25,6 +25,7 @@ import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.QuickReplyAdapter
 import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.listener.QuickReplyListener
@@ -277,9 +278,9 @@ class ChatbotViewStateImpl(
         return fromUid != null && userSession.userId == fromUid
     }
 
-    private fun showQuickReply(list: List<QuickReplyUiModel>) {
+    private fun showQuickReply(list: List<QuickReplyUiModel>, isFromDynamicAttachment: Boolean = false) {
         if (::quickReplyAdapter.isInitialized && list.isNotEmpty()) {
-            quickReplyAdapter?.setList(list)
+            quickReplyAdapter.setList(list, isFromDynamicAttachment)
             rvQuickReply?.visibility = View.VISIBLE
         }
     }
@@ -434,6 +435,28 @@ class ChatbotViewStateImpl(
         }
     }
 
+    override fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        rejectReasons: DynamicAttachmentRejectReasons
+    ) {
+        val list = mutableListOf<QuickReplyUiModel>()
+        list.addAll(rejectReasons.toQuickReplyUiModel())
+        showQuickReply(list, true)
+    }
+
+    private fun DynamicAttachmentRejectReasons.toQuickReplyUiModel(): List<QuickReplyUiModel> {
+        return this.helpfulQuestion.newQuickRepliesList.map {
+            it.toQuickReplyUiModel()
+        }
+    }
+
+    private fun DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion.RejectReasonNewQuickReply.toQuickReplyUiModel(): QuickReplyUiModel {
+        return QuickReplyUiModel(
+            this.text,
+            this.value,
+            this.action
+        )
+    }
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view
     }
