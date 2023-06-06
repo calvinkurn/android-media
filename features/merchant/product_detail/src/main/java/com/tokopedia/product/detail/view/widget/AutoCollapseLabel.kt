@@ -85,11 +85,13 @@ class AutoCollapseLabel @JvmOverloads constructor(
             } else {
                 animator.animateShowExpanded()
             }
+        } else {
+            hideView()
         }
     }
 
     fun hideView() {
-        if (canShow) animator.animateHide()
+        animator.animateHide()
     }
 
     private fun bindData(recomData: ProductMediaRecomData) {
