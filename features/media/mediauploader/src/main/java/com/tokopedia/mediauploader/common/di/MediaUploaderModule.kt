@@ -2,6 +2,10 @@ package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStoreImpl
+import com.tokopedia.mediauploader.common.VideoCompressor
+import com.tokopedia.mediauploader.common.VideoCompressorImpl
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.VideoMetaDataExtractorImpl
 import com.tokopedia.mediauploader.common.cache.SourcePolicyManager
@@ -9,16 +13,10 @@ import com.tokopedia.mediauploader.common.cache.SourcePolicyManagerImpl
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.data.store.base.CacheDataStoreImpl
 import com.tokopedia.mediauploader.common.data.store.util.Serializer
-import com.tokopedia.mediauploader.data.repository.LogRepository
-import com.tokopedia.mediauploader.data.repository.LogRepositoryImpl
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.image.domain.GetImagePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageSecurePolicyUseCase
 import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStoreImpl
-import com.tokopedia.mediauploader.common.VideoCompressor
-import com.tokopedia.mediauploader.common.VideoCompressorImpl
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepository
 import com.tokopedia.mediauploader.video.data.repository.VideoCompressionRepositoryImpl
 import com.tokopedia.mediauploader.video.domain.GetChunkCheckerUseCase
@@ -43,10 +41,6 @@ abstract class MediaUploaderModule {
     @Binds
     @UploaderQualifier
     abstract fun provideVideoCompressor(impl: VideoCompressorImpl): VideoCompressor
-
-    @Binds
-    @UploaderQualifier
-    abstract fun provideLogRepository(impl: LogRepositoryImpl): LogRepository
 
     @Binds
     @UploaderQualifier

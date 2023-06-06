@@ -16,7 +16,10 @@ import kotlin.math.min
 import kotlin.math.round
 
 interface VideoCompressionRepository {
-    suspend operator fun invoke(progressUploader: ProgressUploader?, param: VideoCompressionParam): String
+    suspend operator fun invoke(
+        progressUploader: ProgressUploader?,
+        param: VideoCompressionParam
+    ): String
 }
 
 class VideoCompressionRepositoryImpl @Inject constructor(

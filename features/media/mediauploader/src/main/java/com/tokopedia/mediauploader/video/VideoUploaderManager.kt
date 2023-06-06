@@ -48,7 +48,7 @@ class VideoUploaderManager @Inject constructor(
         analytics.setOriginalVideoInfo(trackerCacheKey, file)
 
         // compress video if needed
-        val filePath = shouldCompressVideoFile(
+        val filePath = compressVideo(
             originalFile = file,
             sourceId = sourceId,
             shouldCompress = shouldCompress,
@@ -112,7 +112,7 @@ class VideoUploaderManager @Inject constructor(
         }
     }
 
-    private suspend fun shouldCompressVideoFile(
+    private suspend fun compressVideo(
         sourceId: String,
         originalFile: File,
         shouldCompress: Boolean,
