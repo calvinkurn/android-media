@@ -244,5 +244,5 @@ public class RemoteConfigKey {
 
     public static final String FEED_NEW_ICON = "FeedNewIcon";
 
-    public static final String IS_SHOW_OUT_OF_STOCK_SECTION = "android_sellerapp_enable_is_outofstock_flash_sale_toko"
+    public static final String IS_SHOW_OUT_OF_STOCK_SECTION = "android_sellerapp_enable_is_outofstock_flash_sale_toko";
 }
