@@ -152,7 +152,7 @@ object GotoKycAnalytics {
     }
 
     //A1
-    fun sendClickOnButtonAmbilKeuntungan(projectId: String, kycFlowType: String) {
+    fun sendClickOnButtonBenefit(projectId: String, kycFlowType: String) {
         Tracker.Builder()
             .setEvent(EVENT_CLICK_ACCOUNT)
             .setEventAction(ACTION_CLICK_BUTTON_AMBIL_KEUNTUNGAN)
