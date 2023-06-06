@@ -1,5 +1,8 @@
 package com.tokopedia.chatbot
 
+import com.tokopedia.url.TokopediaUrl
+import java.util.*
+
 object ChatbotConstant {
 
     const val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
@@ -17,13 +20,14 @@ object ChatbotConstant {
     // Used for invoice list, button action and dynamic sticky button action
     const val RENDER_TO_UI_BASED_ON_STATUS = 1
     const val SOURCE_CHATBOT = "chatbot"
+    const val QUERY_SOURCE_TYPE = "Apps"
 
     object CsatRating {
-        const val RATING_ONE = 1
-        const val RATING_TWO = 2
-        const val RATING_THREE = 3
-        const val RATING_FOUR = 4
-        const val RATING_FIVE = 5
+        const val RATING_ONE = 1L
+        const val RATING_TWO = 2L
+        const val RATING_THREE = 3L
+        const val RATING_FOUR = 4L
+        const val RATING_FIVE = 5L
     }
 
     object ImageUpload {
@@ -47,10 +51,11 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_CSAT_VIEW = "13"
+        const val TYPE_UPDATE_TOOLBAR = "14"
         const val TYPE_CHAT_SEPARATOR = "15"
         const val TYPE_HELPFULL_QUESTION = "22"
         const val TYPE_CSAT_OPTIONS = "23"
-        const val TYPE_STICKED_BUTTON_ACTIONS = "25"
+        const val TYPE_STICKY_BUTTON = "25"
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
         const val TYPE_REPLY_BUBBLE = "28"
         const val TYPE_VIDEO_UPLOAD = "30"
@@ -121,5 +126,32 @@ object ChatbotConstant {
         const val MAX_IMAGE_COUNT = 3
         const val MAX_MEDIA_ITEM_COUNT = 0
         const val MAX_DURATION_FOR_VIDEO = 300000
+    }
+
+    object SecureImageUploadUrl {
+
+        private val BASE_URL = TokopediaUrl.getInstance().CHAT
+
+        private const val UPLOAD_SECURE_PATH = "/tc/v1/upload_secure"
+
+        fun getUploadSecureUrl(): String {
+            return BASE_URL + UPLOAD_SECURE_PATH
+        }
+    }
+
+    object ChatbotUrl {
+        fun getPathWebsocket(deviceId: String?, userId: String?): String {
+            return String.format(
+                Locale.getDefault(),
+                "%s%s?os_type=1&device_id=%s&user_id=%s&source=chatbot",
+                WEBSOCKET_URL,
+                CONNECT_WEBSOCKET,
+                deviceId,
+                userId
+            )
+        }
+
+        private const val CONNECT_WEBSOCKET = "/connect"
+        val WEBSOCKET_URL = TokopediaUrl.getInstance().WS_CHAT
     }
 }

@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.tokopedianow.R
 
 class RepurchaseProductItemDecoration: RecyclerView.ItemDecoration() {
 
@@ -26,9 +27,15 @@ class RepurchaseProductItemDecoration: RecyclerView.ItemDecoration() {
         when (itemPosition) {
             FIRST_POSITION_INDEX -> {
                 outRect.left = view.context.resources
+                    .getDimensionPixelSize(R.dimen.tokopedianow_repurchase_product_card_spacing)
+                outRect.right = view.context.resources
                     .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             }
             lastItemIndex -> {
+                outRect.right = view.context.resources
+                    .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+            }
+            else -> {
                 outRect.right = view.context.resources
                     .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             }

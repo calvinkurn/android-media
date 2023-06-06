@@ -265,4 +265,7 @@ object AccountConstants {
         const val OFFER_VERIFY_PHONE = "phone-verif"
         const val OFFER_ACCOUNT_LINKING = "account-link"
     }
+
+    const val LABEL_OCL_BTM_SHEET = "one_click_login"
+
 }
