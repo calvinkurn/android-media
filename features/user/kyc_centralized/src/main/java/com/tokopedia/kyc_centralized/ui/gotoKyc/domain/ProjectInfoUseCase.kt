@@ -51,7 +51,7 @@ class ProjectInfoUseCase @Inject constructor(
                 } else {
                     ProjectInfoResult.StatusSubmission(
                         status = status,
-                        rejectionReason = reason.first(),
+                        rejectionReason = reason.joinToString(),
                         waitMessage = waitMessage
                     )
                 }
