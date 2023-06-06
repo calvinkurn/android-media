@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.kotlin.extensions.view.showToast
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -25,6 +24,7 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.kotlin.extensions.view.showToast
 
 /**
  * @author by yfsx on 17/05/19.

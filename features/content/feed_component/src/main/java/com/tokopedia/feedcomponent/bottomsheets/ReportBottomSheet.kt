@@ -19,6 +19,8 @@ class ReportBottomSheet : BottomSheetUnify() {
     var onClosedClicked: (() -> Unit)? = null
     private var dismissedByClosing = false
 
+
+
     companion object {
         private const val SPAM = 1
         private const val ABUSE = 2
@@ -92,9 +94,8 @@ class ReportBottomSheet : BottomSheetUnify() {
             dismiss()
         }
         setOnDismissListener {
-            if (!dismissedByClosing) {
+            if (!dismissedByClosing)
                 onDismiss?.invoke()
-            }
         }
     }
 
@@ -113,7 +114,7 @@ class ReportBottomSheet : BottomSheetUnify() {
         sendReport()
     }
 
-    fun setFinalView() {
+     fun setFinalView() {
         layout1?.gone()
         layout2?.gone()
         layout3.visible()
