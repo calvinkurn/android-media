@@ -14,8 +14,9 @@ import com.tokopedia.home_account.explicitprofile.trackers.ExplicitProfileAnalyt
 import com.tokopedia.home_account.explicitprofile.trackers.ExplicitProfileAnalyticConstants.TOKOPEDIA_MARKETPLACE_SITE
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
-class ExplicitProfileAnalytics {
+class ExplicitProfileAnalytics @Inject constructor() {
 
     private fun sendTracker(action: String, label: String) {
         val trackerParam = TrackAppUtils.gtmData(

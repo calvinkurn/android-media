@@ -1,20 +1,20 @@
 ---
-title: Logistic Add Address: Pinpoint Webview
+title: "Logistic Add Address: Pinpoint Webview"
 labels:
 - pinpoint
 ---
 
 <!--left header table-->
-| **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
-| --- | --- |
-| **Tribe** | Logistic |
-| **Contributors** | Android: [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)WPE: [Erwin Winata](https://tokopedia.atlassian.net/wiki/people/603c7cd31c44230072df325b?ref=confluence) [Irfan Andriansyah](https://tokopedia.atlassian.net/wiki/people/619ade053618cd006f62806f?ref=confluence) |
-| **Product Manager** | [Wahyu Ivan Satyagraha](https://tokopedia.atlassian.net/wiki/people/61ad4312c15977006a17ce75?ref=confluence)  |
-| **Team** | Minion Bob |
-| **Module Type** | <!--start status:YELLOW-->FEATURE<!--end status--> |
-| **Module Location** | `features/logistic/logisticaddaddress` |
-| **Product PRD** | <https://docs.google.com/document/d/156V7TudzmolCvwQ8MQGoWOTDaHuHGSHxRVu-HqNQ7_E/edit?pli=1#heading=h.yhckt7m3bwde>  |
-| **Tech Plan** | [Use Designated Page When Pinpoint](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2089192790/Use+Designated+Page+When+Pinpoint)  |
+| **Status**          | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                                                     |
+|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Tribe**           | Logistic                                                                                                                                                                                                                                                                                                                              |
+| **Contributors**    | Android: [Fakhira Devina](https://tokopedia.atlassian.net/wiki/people/61077e53b704b40068e80a8e?ref=confluence)<br/>WPE: [Erwin Winata](https://tokopedia.atlassian.net/wiki/people/603c7cd31c44230072df325b?ref=confluence) [Irfan Andriansyah](https://tokopedia.atlassian.net/wiki/people/619ade053618cd006f62806f?ref=confluence)  |
+| **Product Manager** | [Wahyu Ivan Satyagraha](https://tokopedia.atlassian.net/wiki/people/61ad4312c15977006a17ce75?ref=confluence)                                                                                                                                                                                                                          |
+| **Team**            | Minion Bob                                                                                                                                                                                                                                                                                                                            |
+| **Module Type**     | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                                                    |
+| **Module Location** | `features/logistic/logisticaddaddress`                                                                                                                                                                                                                                                                                                |
+| **Product PRD**     | <https://docs.google.com/document/d/156V7TudzmolCvwQ8MQGoWOTDaHuHGSHxRVu-HqNQ7_E/edit?pli=1#heading=h.yhckt7m3bwde>                                                                                                                                                                                                                   |
+| **Tech Plan**       | [Use Designated Page When Pinpoint](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2089192790/Use+Designated+Page+When+Pinpoint)                                                                                                                                                                                                |
 
 <!--toc-->
 
