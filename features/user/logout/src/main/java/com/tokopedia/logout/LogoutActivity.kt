@@ -189,7 +189,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun clearData() {
         hideLoading()
-        clearCacheKyc()
+        clearCacheGotoKyc()
         disconnectTokoChat()
         clearStickyLogin()
         logoutGoogleAccountIfExist()
@@ -335,7 +335,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
-    private fun clearCacheKyc() {
+    private fun clearCacheGotoKyc() {
         try {
             val preferenceName = OneKycConstants.KYC_SDK_PREFERENCE_NAME
             applicationContext.getSharedPreferences(preferenceName, Context.MODE_PRIVATE).edit().clear().apply()
