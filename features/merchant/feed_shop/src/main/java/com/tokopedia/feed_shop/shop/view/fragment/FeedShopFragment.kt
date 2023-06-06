@@ -1225,7 +1225,7 @@ class FeedShopFragment :
         view?.let {
             Toaster.make(
                 it,
-                getString(com.tokopedia.feedcomponent.R.string.feed_content_reported),
+                getString(com.tokopedia.content.common.R.string.feed_content_reported),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
                 getString(universalSharingR.string.label_close),
