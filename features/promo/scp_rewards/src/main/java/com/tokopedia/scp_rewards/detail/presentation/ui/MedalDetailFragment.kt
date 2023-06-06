@@ -137,7 +137,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun showToastAndNavigateToLink(id: Int?, message: String?, appLink: String?, url: String?) {
         binding.viewMedalFooter.showLoading(id, false)
-        Toaster.build(binding.viewMedalFooter, message.orEmpty())
+        Toaster.build(binding.root, message.orEmpty())
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
@@ -327,7 +327,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
             binding.toolbar.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 topMargin = insets.top
             }
-            binding.mainFlipper.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            binding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = insets.bottom
             }
             WindowInsetsCompat.CONSUMED
