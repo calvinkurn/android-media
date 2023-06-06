@@ -167,7 +167,7 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
         return DynamicAttachmentTextUiModel.Builder()
             .withResponseFromWs(pojo)
             .isSender(false)
-            .withMsgContent(dynamicStickyButton.helpfulQuestionFeedbackForm.feedbackForm.reason + "Eren Yeager")
+            .withMsgContent(dynamicStickyButton.helpfulQuestionFeedbackForm.feedbackForm.reason)
             .build()
     }
 
