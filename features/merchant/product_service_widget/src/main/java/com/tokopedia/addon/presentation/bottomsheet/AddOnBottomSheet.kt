@@ -10,7 +10,7 @@ import com.tokopedia.product_service_widget.databinding.BottomsheetAddonBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class AddOnBottomSheet(private val addOnId: String) : BottomSheetUnify() {
+class AddOnBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<BottomsheetAddonBinding>()
     private var productId: Long = 0L
