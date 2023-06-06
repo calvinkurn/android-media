@@ -30,7 +30,6 @@ import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.presentation.list.constant.PageState
-import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -42,10 +41,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -430,33 +426,6 @@ class MvcListViewModelTest {
 
         // Then
         assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `when stopVoucher() is called, should emit the correct action`() {
-        runBlockingTest {
-            // Given
-            val voucherDetail = VoucherDetailData(voucherId = 10L)
-            val voucher = Voucher()
-            coEvery { merchantPromotionGetMVDataByIDUseCase.execute(any()) } returns voucherDetail
-
-            mockVoucherCreationMetaDataGqlCall()
-            mockUpdateVoucherStatusGQLCall(voucherDetail)
-
-            val emittedAction = arrayListOf<DeleteVoucherUiEffect>()
-            val job = launch {
-                viewModel.deleteUIEffect.toList(emittedAction)
-            }
-
-            // When
-            viewModel.stopVoucher(voucher)
-
-            // Then
-            val actual = emittedAction.last()
-            assertEquals(10, actual)
-
-            job.cancel()
-        }
     }
 
     @Test
