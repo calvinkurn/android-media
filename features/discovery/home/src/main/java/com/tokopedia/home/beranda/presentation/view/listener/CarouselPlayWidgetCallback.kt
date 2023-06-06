@@ -26,7 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class CarouselPlayWidgetCallback(
     private val trackingQueue: TrackingQueue,
     private val userSession: UserSessionInterface,
-    lifecycleOwner: LifecycleOwner,
+    lifecycleOwner: LifecycleOwner
 ) : PlayWidgetInListAnalyticListener, BaseTrackerConst() {
 
     private val userId: String
@@ -81,7 +81,7 @@ class CarouselPlayWidgetCallback(
                 verticalWidgetPosition, /** widgetPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
-                mHomeChannelId,
+                mHomeChannelId
             ),
             promotions = listOf(
                 Promotion(
@@ -91,7 +91,7 @@ class CarouselPlayWidgetCallback(
                         verticalWidgetPosition,
                         "dynamic channel play home widget btf",
                         "banner",
-                        mHeaderTitle,
+                        mHeaderTitle
                     ),
                     creative = model.promotionsCreativeName,
                     position = channelPosition.toString()
@@ -99,10 +99,10 @@ class CarouselPlayWidgetCallback(
             )
         ).appendUserId(userId)
             .appendBusinessUnit(VAL_BUSINESS_UNIT)
-            .appendCurrentSite(VAL_CURRENT_SITE)
-            .appendCustomKeyValue(KEY_TRACKER_ID, "43568")
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendCustomKeyValue(TrackerId.KEY, "43568")
             .appendCustomKeyValue(KEY_SESSION_IRIS, irisSessionId)
-            .appendCustomKeyValue(KEY_CHANNEL_ID, mHomeChannelId)
+            .appendCustomKeyValue(ChannelId.KEY, mHomeChannelId)
             .build()
     }
 
@@ -130,7 +130,7 @@ class CarouselPlayWidgetCallback(
                 verticalWidgetPosition, /** widgetPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
-                mHomeChannelId,
+                mHomeChannelId
             ),
             promotions = listOf(
                 Promotion(
@@ -140,7 +140,7 @@ class CarouselPlayWidgetCallback(
                         verticalWidgetPosition,
                         "dynamic channel play home widget btf",
                         "banner",
-                        mHeaderTitle,
+                        mHeaderTitle
                     ),
                     creative = model.promotionsCreativeName,
                     position = channelPosition.toString()
@@ -148,10 +148,11 @@ class CarouselPlayWidgetCallback(
             )
         ).appendUserId(userId)
             .appendBusinessUnit(VAL_BUSINESS_UNIT)
-            .appendCurrentSite(VAL_CURRENT_SITE)
-            .appendCustomKeyValue(KEY_TRACKER_ID, "43569")
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendCustomKeyValue(CampaignCode.KEY, "homewidget_${item.channelId}")
+            .appendCustomKeyValue(TrackerId.KEY, "43569")
             .appendCustomKeyValue(KEY_SESSION_IRIS, irisSessionId)
-            .appendCustomKeyValue(KEY_CHANNEL_ID, mHomeChannelId)
+            .appendCustomKeyValue(ChannelId.KEY, mHomeChannelId)
             .build()
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -182,12 +183,12 @@ class CarouselPlayWidgetCallback(
                     verticalWidgetPosition, /** widgetPosition **/
                     "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                     item.recommendationType, /** recommendationType **/
-                    mHomeChannelId,
+                    mHomeChannelId
                 )
             )
-            .setCustomProperty(KEY_TRACKER_ID, "43572")
+            .setCustomProperty(TrackerId.KEY, "43572")
             .setBusinessUnit(VAL_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCurrentSite(CurrentSite.DEFAULT)
             .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
             .setUserId(userId)
             .build()
@@ -208,7 +209,7 @@ class CarouselPlayWidgetCallback(
         Tracker.Builder()
             .setEvent(EVENT_CLICK_CONTENT)
             .setEventAction("click - content mute button")
-            .setEventCategory("homepage-cmp")
+            .setEventCategory(model.category)
             .setEventLabel(
                 trackerMultiFields(
                     model.prefix, /** prefix **/
@@ -219,12 +220,12 @@ class CarouselPlayWidgetCallback(
                     verticalWidgetPosition, /** widgetPosition **/
                     "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                     item.recommendationType, /** recommendationType **/
-                    mHomeChannelId,
+                    mHomeChannelId
                 )
             )
-            .setCustomProperty(KEY_TRACKER_ID, "43574")
+            .setCustomProperty(TrackerId.KEY, "43574")
             .setBusinessUnit(VAL_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCurrentSite(CurrentSite.DEFAULT)
             .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
             .setUserId(userId)
             .build()
@@ -257,12 +258,12 @@ class CarouselPlayWidgetCallback(
                     verticalWidgetPosition, /** widgetPosition **/
                     "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                     item.recommendationType, /** recommendationType **/
-                    mHomeChannelId,
+                    mHomeChannelId
                 )
             )
-            .setCustomProperty(KEY_TRACKER_ID, "43576")
+            .setCustomProperty(TrackerId.KEY, "43576")
             .setBusinessUnit(VAL_BUSINESS_UNIT)
-            .setCurrentSite(VAL_CURRENT_SITE)
+            .setCurrentSite(CurrentSite.DEFAULT)
             .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
             .setUserId(userId)
             .build()
@@ -292,7 +293,7 @@ class CarouselPlayWidgetCallback(
             item.recommendationType,
             "",
             VAL_BUSINESS_UNIT,
-            mHeaderTitle,
+            mHeaderTitle
         )
 
         mapOf(
@@ -309,7 +310,7 @@ class CarouselPlayWidgetCallback(
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
                 mHomeChannelId,
-                product.id,
+                product.id
             ),
             "item_list" to itemList,
             "ecommerce" to mapOf(
@@ -327,11 +328,11 @@ class CarouselPlayWidgetCallback(
                     )
                 )
             ),
-            KEY_USER_ID to userId,
-            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            UserId.KEY to userId,
+            BusinessUnit.KEY to VAL_BUSINESS_UNIT,
+            CurrentSite.KEY to CurrentSite.DEFAULT,
             KEY_SESSION_IRIS to irisSessionId,
-            KEY_TRACKER_ID to "43577"
+            TrackerId.KEY to "43577"
         )
     }
 
@@ -358,7 +359,7 @@ class CarouselPlayWidgetCallback(
             item.recommendationType,
             "",
             VAL_BUSINESS_UNIT,
-            mHeaderTitle,
+            mHeaderTitle
         )
 
         val trackerMap = mapOf(
@@ -375,7 +376,7 @@ class CarouselPlayWidgetCallback(
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 item.recommendationType, /** recommendationType **/
                 mHomeChannelId,
-                product.id,
+                product.id
             ),
             "item_list" to itemList,
             "ecommerce" to mapOf(
@@ -395,11 +396,11 @@ class CarouselPlayWidgetCallback(
                     )
                 )
             ),
-            KEY_USER_ID to userId,
-            KEY_BUSINESS_UNIT to VAL_BUSINESS_UNIT,
-            KEY_CURRENT_SITE to VAL_CURRENT_SITE,
+            UserId.KEY to userId,
+            BusinessUnit.KEY to VAL_BUSINESS_UNIT,
+            CurrentSite.KEY to CurrentSite.DEFAULT,
             KEY_SESSION_IRIS to irisSessionId,
-            KEY_TRACKER_ID to "43578"
+            TrackerId.KEY to "43578"
         )
 
         trackingQueue.putEETracking(HashMap(trackerMap))
@@ -414,7 +415,7 @@ class CarouselPlayWidgetCallback(
     private fun impressProductInChannel(
         productId: String,
         channelId: String,
-        onNotImpressed: () -> Map<String, Any>,
+        onNotImpressed: () -> Map<String, Any>
     ) {
         val key = ProductInChannelKey(productId, channelId)
         if (productImpressions.contains(key)) return
@@ -427,19 +428,13 @@ class CarouselPlayWidgetCallback(
         private const val EVENT_PRODUCT_VIEW = "productView"
         private const val EVENT_PRODUCT_CLICK = "productClick"
 
-        private const val KEY_USER_ID = "userId"
-        private const val KEY_BUSINESS_UNIT = "businessUnit"
-        private const val KEY_CURRENT_SITE = "currentSite"
         private const val KEY_SESSION_IRIS = "sessionIris"
-        private const val KEY_TRACKER_ID = "trackerId"
-        private const val KEY_CHANNEL_ID = "channelId"
 
         private const val VAL_BUSINESS_UNIT = "play"
-        private const val VAL_CURRENT_SITE = "tokopediamarketplace"
     }
 
     private data class ProductInChannelKey(
         val channelId: String,
-        val productId: String,
+        val productId: String
     )
 }

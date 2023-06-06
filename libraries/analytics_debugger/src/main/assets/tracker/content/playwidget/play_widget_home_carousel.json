@@ -31,6 +31,7 @@
       "trackerId": "43569",
       "businessUnit": "play",
       "channelId": ".*",
+      "campaignCode": "homewidget_\\d+",
       "currentSite": "tokopediamarketplace",
       "promotions": [
         {
