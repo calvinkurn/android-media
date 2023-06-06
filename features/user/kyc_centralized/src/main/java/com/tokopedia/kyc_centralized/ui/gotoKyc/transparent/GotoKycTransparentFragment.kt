@@ -15,12 +15,13 @@ import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
@@ -28,6 +29,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -47,6 +49,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var oneKycSdk: OneKycSdk
+
+    private var isReVerify = false
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         kycSharedPreference.removeProjectId()
@@ -68,6 +72,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         oneKycSdk.init()
         val projectId = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID)
         val source = activity?.intent?.extras?.getString(ApplinkConstInternalUserPlatform.PARAM_SOURCE)
+        isReVerify = activity?.intent?.extras?.getBoolean(IS_RE_VERIFY).orFalse()
         kycSharedPreference.saveProjectId(projectId.toString())
         validationParameter(projectId = projectId, source = source)
         initObserver()
@@ -83,8 +88,12 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setProjectId(projectId)
             viewModel.setSource(source.orEmpty())
 
-            // please, make sure project id already set in viewModel
-            viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
+            if (isReVerify) {
+                viewModel.checkEligibility()
+            } else {
+                // please, make sure project id already set in viewModel
+                viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
+            }
         }
     }
 
@@ -101,7 +110,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         projectId = viewModel.projectId,
                         sourcePage = viewModel.source,
                         status = it.status,
-                        listReason = it.listReason,
+                        rejectionReason = it.rejectionReason,
                         waitMessage = it.waitMessage
                     )
                     gotoStatusSubmission(parameter)
@@ -114,7 +123,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     }
                 }
                 is ProjectInfoResult.Failed -> {
-                    showToaster(getString(R.string.goto_kyc_error_from_be))
+                    showToaster(it.throwable)
                     kycSharedPreference.removeProjectId()
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
@@ -130,8 +139,11 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 is CheckEligibilityResult.NonProgressive -> {
                     handleNonProgressiveFlow()
                 }
+                is CheckEligibilityResult.AwaitingApprovalGopay -> {
+                    handleAwaitingApprovalGopayFlow()
+                }
                 is CheckEligibilityResult.Failed -> {
-                    showToaster(getString(R.string.goto_kyc_error_from_be))
+                    showToaster(it.throwable)
                     kycSharedPreference.removeProjectId()
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
@@ -173,6 +185,19 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 source = viewModel.source,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true
             )
+        }
+    }
+
+    private fun handleAwaitingApprovalGopayFlow() {
+        if (viewModel.projectId == KYCConstant.PROJECT_ID_ACCOUNT) {
+            val parameter = GotoKycMainParam(
+                projectId = viewModel.projectId,
+                gotoKycType = KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY,
+                sourcePage = viewModel.source
+            )
+            gotoOnboardBenefit(parameter)
+        } else {
+            showAwaitingApprovalBottomSheet()
         }
     }
 
@@ -230,14 +255,34 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
 
-        onBoardNonProgressiveBottomSheet.setOnDismissListener {
+        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isAwaitingApprovalGopay ->
+            if (isAwaitingApprovalGopay) {
+                showAwaitingApprovalBottomSheet()
+            } else {
+                kycSharedPreference.removeProjectId()
+                activity?.setResult(Activity.RESULT_CANCELED)
+                activity?.finish()
+            }
+        }
+    }
+
+    private fun showAwaitingApprovalBottomSheet() {
+        val awaitingApprovalGopayBottomSheet = AwaitingApprovalGopayBottomSheet()
+
+        awaitingApprovalGopayBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_AWAITING_APPROVAL_GOPAY
+        )
+
+        awaitingApprovalGopayBottomSheet.setOnDismissListener {
             kycSharedPreference.removeProjectId()
             activity?.setResult(Activity.RESULT_CANCELED)
             activity?.finish()
         }
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(throwable: Throwable?) {
+        val message = throwable?.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
@@ -248,6 +293,8 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        const val IS_RE_VERIFY = "isReVerify"
+        private const val TAG_BOTTOM_SHEET_AWAITING_APPROVAL_GOPAY = "bottom_sheet_awaiting_approval_gopay"
         private const val TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE = "bottom_sheet_non_progressive"
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
 

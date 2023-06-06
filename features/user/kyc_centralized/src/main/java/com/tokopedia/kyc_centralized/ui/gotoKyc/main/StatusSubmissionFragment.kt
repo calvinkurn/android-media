@@ -6,6 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -14,6 +17,7 @@ import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,6 +27,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycStatusSubmissionBinding
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
+import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -39,7 +44,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var kycFlowType: String = ""
     private var sourcePage: String = ""
     private var status: String = ""
-    private var listReason: List<String> = emptyList()
+    private var rejectionReason: String = ""
     private var isAccountPage: Boolean = false
     //TODO: check are this code unused
     private var waitTimeInSeconds: Int = 0
@@ -47,6 +52,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var projectId: String = ""
 
     private var bottomSheetDetailBenefit: BenefitDetailBottomSheet? = null
+
+    private val startReVerifyKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        activity?.setResult(result.resultCode)
+        activity?.finish()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +68,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         kycFlowType = args.parameter.gotoKycType
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
-        listReason = args.parameter.listReason
+        rejectionReason = args.parameter.rejectionReason
         isAccountPage = args.parameter.projectId == KYCConstant.PROJECT_ID_ACCOUNT
         waitMessage = args.parameter.waitMessage
         projectId = args.parameter.projectId
@@ -71,6 +81,19 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         setUpView()
         initListener()
         initToolbar()
+        initBackPressedListener()
+    }
+
+    private fun initBackPressedListener() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    activity?.setResult(Activity.RESULT_OK)
+                    activity?.finish()
+                }
+            }
+        )
     }
 
     private fun initToolbar() {
@@ -119,7 +142,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 }
                 KycStatus.REJECTED.code.toString() -> {
                     GotoKycAnalytics.sendClickOnButtonVerifikasiUlangRejectPage(projectId)
-                    //Todo: direct to verifikasi ulang
+                    goToTransparentActivityToReVerify()
                 }
                 else -> {
                     activity?.setResult(Activity.RESULT_OK)
@@ -152,32 +175,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
             btnPrimary.text = getString(R.string.goto_kyc_status_rejected_button_primary)
             btnSecondary.text = getString(R.string.goto_kyc_status_rejected_button_secondary)
             tvTimer.hide()
-            cardReason.showWithCondition(listReason.isNotEmpty())
-
-            listReason.forEachIndexed { index, reason ->
-                when(index) {
-                    0 -> {
-                        icReason1.show()
-                        tvReason1.text = reason
-                        tvReason1.show()
-                    }
-                    1 -> {
-                        icReason2.show()
-                        tvReason2.text = reason
-                        tvReason2.show()
-                    }
-                    2 -> {
-                        icReason3.show()
-                        tvReason3.text = reason
-                        tvReason3.show()
-                    }
-                    3 -> {
-                        icReason4.show()
-                        tvReason4.text = reason
-                        tvReason4.show()
-                    }
-                }
-            }
+            cardReason.show()
+            tvReason.text = rejectionReason
         }
     }
 
@@ -347,6 +346,15 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private fun showBottomSheetDetailBenefit() {
         bottomSheetDetailBenefit = BenefitDetailBottomSheet()
         bottomSheetDetailBenefit?.show(childFragmentManager, TAG_BOTTOM_SHEET_DETAIL_BENEFIT)
+    }
+
+    private fun goToTransparentActivityToReVerify() {
+
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.GOTO_KYC).apply {
+            putExtra(GotoKycTransparentFragment.IS_RE_VERIFY, true)
+            putExtra(ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID, projectId)
+        }
+        startReVerifyKycForResult.launch(intent)
     }
 
     private fun goToTokopediaCare() {

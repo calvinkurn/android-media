@@ -2,15 +2,15 @@ package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
 sealed class ProjectInfoResult(
     val status: String = "",
-    val listReason: List<String> = emptyList(),
+    val rejectionReason: String = "",
     val isAccountLinked: Boolean = false,
     val waitMessage: String = "",
     val throwable: Throwable? = null
 ) {
     class TokoKyc() : ProjectInfoResult()
-    class StatusSubmission(status: String, listReason: List<String>, waitMessage: String) : ProjectInfoResult(
+    class StatusSubmission(status: String, rejectionReason: String, waitMessage: String) : ProjectInfoResult(
         status = status,
-        listReason = listReason,
+        rejectionReason = rejectionReason,
         waitMessage = waitMessage
     )
     class NotVerified(isAccountLinked: Boolean) : ProjectInfoResult(

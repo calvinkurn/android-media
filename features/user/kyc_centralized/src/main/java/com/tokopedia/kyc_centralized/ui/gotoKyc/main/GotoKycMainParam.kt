@@ -13,7 +13,7 @@ data class GotoKycMainParam (
     val isSelfieTaken: Boolean = false,
     val status: String = "",
     val sourcePage: String = "",
-    val listReason: List<String> = emptyList(),
+    val rejectionReason: String = "",
     val challengeId: String = "",
     val waitMessage: String = ""
 ): Parcelable

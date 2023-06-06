@@ -48,6 +48,9 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
     private var projectId = ""
     private var source = ""
     private var isAccountLinked = false
+    private var isWaitingApprovalGopay = false
+
+    private var dismissDialogWithDataListener: (Boolean) -> Unit = {}
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
@@ -60,6 +63,10 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
                 kycSharedPreference.removeProjectId()
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
+            }
+            KYCConstant.ActivityResult.AWAITING_APPROVAL_GOPAY -> {
+                isWaitingApprovalGopay = true
+                dismiss()
             }
             KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED -> {}
             else -> {
@@ -287,11 +294,16 @@ class OnboardNonProgressiveBottomSheet : BottomSheetUnify() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        dismissDialogWithDataListener(isWaitingApprovalGopay)
 
         GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
             projectId = projectId,
             kycFlowType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE
         )
+    }
+
+    fun setOnDismissWithDataListener(isAwaitingApprovalGopay: (Boolean) -> Unit) {
+        dismissDialogWithDataListener = isAwaitingApprovalGopay
     }
 
     companion object {

@@ -52,7 +52,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     gotoKycType = data?.gotoKycType.orEmpty(),
                     status = data?.status.orEmpty(),
                     sourcePage = data?.sourcePage.orEmpty(),
-                    listReason = data?.listReason.orEmpty(),
+                    rejectionReason = data?.rejectionReason.orEmpty(),
                     waitMessage = data?.waitMessage.orEmpty()
                 )
                 gotoStatusSubmission(parameter)

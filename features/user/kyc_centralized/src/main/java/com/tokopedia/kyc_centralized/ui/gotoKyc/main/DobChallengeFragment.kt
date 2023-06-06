@@ -23,6 +23,7 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -105,7 +106,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     showChallengeQuestion()
                 }
                 is GetChallengeResult.Failed -> {
-                    showToaster(getString(R.string.goto_kyc_error_from_be))
+                    showToaster(it.throwable)
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -148,7 +149,8 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     setButtonLoading(false)
                     binding?.fieldDob?.apply {
                         isInputError = true
-                        setMessage(getString(R.string.goto_kyc_error_from_be))
+                        val message = it.throwable.getGotoKycErrorMessage(requireContext())
+                        setMessage(message)
                     }
                 }
             }
@@ -267,7 +269,8 @@ class DobChallengeFragment : BaseDaggerFragment() {
         binding?.btnConfirmation?.isLoading = isLoading
     }
 
-    private fun showToaster(message: String) {
+    private fun showToaster(throwable: Throwable?) {
+        val message = throwable.getGotoKycErrorMessage(requireContext())
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 

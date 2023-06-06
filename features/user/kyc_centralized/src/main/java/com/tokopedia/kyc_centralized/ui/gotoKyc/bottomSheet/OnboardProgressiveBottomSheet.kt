@@ -29,6 +29,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.ui.gotoKyc.utils.getGotoKycErrorMessage
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -168,15 +169,13 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
                         sourcePage = source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        listReason = listOf(it.rejectionReason)
+                        rejectionReason = it.rejectionReason
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
                 is RegisterProgressiveResult.Failed -> {
                     setButtonLoading(false)
-                    showToasterError(
-                        getString(R.string.goto_kyc_error_from_be)
-                    )
+                    showToasterError(it.throwable)
                 }
             }
         }
@@ -200,7 +199,8 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         startKycForResult.launch(intent)
     }
 
-    private fun showToasterError(message: String) {
+    private fun showToasterError(throwable: Throwable?) {
+        val message = throwable.getGotoKycErrorMessage(requireContext())
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 

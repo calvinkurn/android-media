@@ -11,6 +11,7 @@ import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycOnboardBenefitBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
+import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.AwaitingApprovalGopayBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -64,10 +65,16 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
     }
 
     private fun showBottomSheet() {
-        if (args.parameter.gotoKycType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
-            showProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.encryptedName)
-        } else {
-            showNonProgressiveBottomSheet(args.parameter.projectId, args.parameter.sourcePage, args.parameter.isAccountLinked)
+        when (args.parameter.gotoKycType) {
+            KYCConstant.GotoKycFlow.PROGRESSIVE -> {
+                showProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.encryptedName)
+            }
+            KYCConstant.GotoKycFlow.NON_PROGRESSIVE -> {
+                showNonProgressiveBottomSheet(args.parameter.projectId, args.parameter.sourcePage, args.parameter.isAccountLinked)
+            }
+            KYCConstant.GotoKycFlow.AWAITING_APPROVAL_GOPAY -> {
+                showAwaitingApprovalBottomSheet()
+            }
         }
     }
 
@@ -95,6 +102,21 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
+
+        onBoardNonProgressiveBottomSheet.setOnDismissWithDataListener { isWaitingApprovalGopay ->
+            if (isWaitingApprovalGopay) {
+                showAwaitingApprovalBottomSheet()
+            }
+        }
+    }
+
+    private fun showAwaitingApprovalBottomSheet() {
+        val awaitingApprovalGopayBottomSheet = AwaitingApprovalGopayBottomSheet()
+
+        awaitingApprovalGopayBottomSheet.show(
+            childFragmentManager,
+            TAG_BOTTOM_SHEET_AWAITING_APPROVAL_GOPAY
+        )
     }
 
     override fun initInjector() {
@@ -102,6 +124,7 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
     }
 
     companion object {
+        private const val TAG_BOTTOM_SHEET_AWAITING_APPROVAL_GOPAY = "bottom_sheet_awaiting_approval_gopay"
         private const val TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE = "bottom_sheet_non_progressive"
         private const val TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE = "bottom_sheet_progressive"
     }

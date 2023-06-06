@@ -191,6 +191,7 @@
     <string name="uii_simple_button">Lanjut Isi Formulir</string>
 
     <string name="kyc_consent_text"><![CDATA[Saya setuju untuk bagikan data KTP & foto wajah ke Tokopedia sesuai Syarat & Ketentuan.]]></string>
+    <string name="error_code">Kode Error: %s</string>
 
 
     <!--  MIGRATE FROM USER_IDENTIFICATION_COMMON  -->
@@ -288,5 +289,10 @@
     <string name="goto_kyc_error_from_be">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="goto_kyc_permission_camera_denied">Akses lokasi sudah ditolak, aktifkan lewat pengaturan HP ya.</string>
     <string name="goto_kyc_permission_action_active">Aktifkan</string>
+    <string name="goto_kyc_timeout_title">Oops, waktunya habis</string>
+    <string name="goto_kyc_timeout_description">Kamu bisa coba lagi verifikasinya dan pastikan buat ikuti instruksinya, ya!</string>
+    <string name="goto_kyc_awaiting_approval_title">Tunggu ya, lagi ada proses verifikasi di GoPay</string>
+    <string name="goto_kyc_awaiting_approval_description">Prosesnya maks. 24 jam setelah kamu verifikasi di GoPay. Setelah selesai, kamu bisa verifikasi di Tokopedia.</string>
+    <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
 
 </resources>

@@ -76,108 +76,26 @@
             android:layout_height="wrap_content"
             android:layout_margin="12dp">
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/ic_reason_1"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginStart="8dp"
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_name="INFORMATION"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_dot"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_reason_1"
+                android:id="@+id/tv_reason"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                tools:text="Foto KTP atau selfie kamu buram, terpotong, gelap atau terlalu terang."
-                android:layout_marginStart="16dp"
+                tools:text="Setelah ditinjau lagi, selfie yang kamu upload berbeda dengan foto e-KTP di Dukcapil. Untuk bantuan, hubungi Tokopedia Care."
+                android:layout_marginStart="8dp"
                 app:typographyType="paragraph_2"
-                app:layout_constraintStart_toEndOf="@id/ic_reason_1"
+                app:layout_constraintStart_toEndOf="@id/ic_reason"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/ic_reason_2"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_reason_1"
-                app:srcCompat="@drawable/ic_dot"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_reason_2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:text="Selfie menggunakan aksesoris atau menutupi wajah."
-                android:layout_marginStart="16dp"
-                app:typographyType="paragraph_2"
-                android:layout_marginTop="4dp"
-                app:layout_constraintStart_toEndOf="@id/ic_reason_2"
-                app:layout_constraintTop_toBottomOf="@id/tv_reason_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/ic_reason_3"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_reason_2"
-                app:srcCompat="@drawable/ic_dot"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_reason_3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:text="Foto KTP atau selfie kamu buram, terpotong, gelap atau terlalu terang."
-                android:layout_marginStart="16dp"
-                app:typographyType="paragraph_2"
-                android:layout_marginTop="4dp"
-                app:layout_constraintStart_toEndOf="@id/ic_reason_3"
-                app:layout_constraintTop_toBottomOf="@id/tv_reason_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                tools:visibility="visible"/>
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/ic_reason_4"
-                android:layout_width="8dp"
-                android:layout_height="8dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_reason_3"
-                app:srcCompat="@drawable/ic_dot"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_reason_4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                tools:text="Foto KTP atau selfie kamu buram, terpotong, gelap atau terlalu terang."
-                android:layout_marginStart="16dp"
-                app:typographyType="paragraph_2"
-                android:layout_marginTop="4dp"
-                app:layout_constraintStart_toEndOf="@id/ic_reason_2"
-                app:layout_constraintTop_toBottomOf="@id/tv_reason_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
