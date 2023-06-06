@@ -1,4 +1,4 @@
-package com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate
+package com.tokopedia.purchase_platform.common.feature.addons.data.request
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
@@ -7,7 +7,9 @@ data class SaveAddOnStateRequest(
         @SerializedName("add_ons")
         var addOns: List<AddOnRequest> = emptyList(),
         @SerializedName("source")
-        var source: String = ""
+        var source: String = "",
+        @SerializedName("addon_service_flag")
+        var addOnServiceFlag: Boolean = false
 )
 
 data class AddOnRequest(
@@ -46,7 +48,13 @@ data class AddOnDataRequest(
         @SerializedName("add_on_qty")
         var addOnQty: Int = 0,
         @SerializedName("add_on_metadata")
-        var addOnMetadata: AddOnMetadataRequest = AddOnMetadataRequest()
+        var addOnMetadata: AddOnMetadataRequest = AddOnMetadataRequest(),
+        @SerializedName("add_on_unique_id")
+        var addOnUniqueId: String = "",
+        @SerializedName("add_on_type")
+        var addOnType: Int = 0,
+        @SerializedName("add_on_status")
+        var addOnStatus: Int = 0
 )
 
 data class AddOnMetadataRequest(

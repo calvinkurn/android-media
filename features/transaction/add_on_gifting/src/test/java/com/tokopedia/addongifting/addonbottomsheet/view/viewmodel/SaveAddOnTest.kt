@@ -1,9 +1,9 @@
 package com.tokopedia.addongifting.addonbottomsheet.view.viewmodel
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.DataProvider
 import com.tokopedia.addongifting.addonbottomsheet.view.UiEvent
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnProductData
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -88,5 +88,4 @@ class SaveAddOnTest : BaseAddOnTest() {
         assert(result.first().state == UiEvent.STATE_FAILED_SAVE_ADD_ON)
         job.cancel()
     }
-
 }

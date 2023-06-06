@@ -1,12 +1,12 @@
-package com.tokopedia.addongifting.addonbottomsheet.domain.usecase
+package com.tokopedia.purchase_platform.common.feature.addons.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateRequest
-import com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate.SaveAddOnStateResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
+import com.tokopedia.purchase_platform.common.feature.addons.data.response.SaveAddOnStateResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 

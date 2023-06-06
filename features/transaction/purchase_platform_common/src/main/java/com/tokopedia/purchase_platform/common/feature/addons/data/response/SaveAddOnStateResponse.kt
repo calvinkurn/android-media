@@ -1,4 +1,4 @@
-package com.tokopedia.addongifting.addonbottomsheet.data.saveaddonstate
+package com.tokopedia.purchase_platform.common.feature.addons.data.response
 
 import com.google.gson.annotations.SerializedName
 
