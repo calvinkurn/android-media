@@ -268,7 +268,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(R.string.feed_header_time_format),
+                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )

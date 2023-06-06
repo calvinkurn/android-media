@@ -35,7 +35,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXComments
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXLike
@@ -104,6 +103,7 @@ import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import java.net.URLEncoder
 import kotlin.math.round
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
@@ -521,7 +521,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         shareButton.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
 
-            val desc = context.getString(R.string.feed_share_default_text)
+            val desc = context.getString(com.tokopedia.content.common.R.string.feed_share_default_text)
             val url =
                 if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
                     feedXCard.media[feedXCard.lastCarouselIndex].webLink
@@ -689,14 +689,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         //region bind content sub info
         val contentSubInfoValue = if (isTopads) {
-            context.getString(R.string.feeds_ads_text)
+            context.getString(com.tokopedia.content.common.R.string.feeds_ads_text)
         } else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
             when (feedXCard.type) {
-                ASGC_NEW_PRODUCTS -> context.getString(R.string.feeds_asgc_new_product_text)
-                ASGC_RESTOCK_PRODUCTS -> context.getString(R.string.feeds_asgc_restock_text)
-                ASGC_DISCOUNT_TOKO -> context.getString(R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO -> context.getString(R.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL -> context.getString(R.string.feed_asgc_rilisan_special)
+                ASGC_NEW_PRODUCTS -> context.getString(com.tokopedia.content.common.R.string.feeds_asgc_new_product_text)
+                ASGC_RESTOCK_PRODUCTS -> context.getString(com.tokopedia.content.common.R.string.feeds_asgc_restock_text)
+                ASGC_DISCOUNT_TOKO -> context.getString(com.tokopedia.content.common.R.string.feed_asgc_diskon_toko)
+                ASGC_FLASH_SALE_TOKO -> context.getString(com.tokopedia.content.common.R.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(com.tokopedia.content.common.R.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
@@ -748,13 +748,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
         }
         val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
-            context.getString(R.string.kol_action_following_color)
+            context.getString(com.tokopedia.content.common.R.string.kol_action_following_color)
         } else {
-            context.getString(R.string.kol_action_follow_color)
+            context.getString(com.tokopedia.content.common.R.string.kol_action_follow_color)
         }
         if (!isFollowed || followers.transitionFollow) {
             this.authorFollowAction.text = MethodChecker.fromHtml(
-                "${context.getString(R.string.feed_header_separator)}$textFollowAction"
+                "${context.getString(com.tokopedia.content.common.R.string.feed_header_separator)}$textFollowAction"
 
             )
             this.authorFollowAction.setOnClickListener {
@@ -872,7 +872,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (like.isLiked) {
                     if (like.count == 1) {
                         likedText.text =
-                            context.getString(R.string.feed_component_liked_count_text_only_me)
+                            context.getString(com.tokopedia.content.common.R.string.feed_component_liked_count_text_only_me)
                     } else
                         likedText.text =
                             MethodChecker.fromHtml(
@@ -982,7 +982,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             val readMoreCaption = FeedCaption.ReadMore(
                 maxTrimChar = MAX_CHAR,
-                label = context.getString(R.string.feed_component_read_more_button),
+                label = context.getString(com.tokopedia.content.common.R.string.feed_component_read_more_button),
                 colorRes = MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N400
@@ -1045,7 +1045,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likeButton2.hide()
         }
         userImage.setImageUrl(profilePicture)
-        addCommentHint.hint = context.getString(R.string.feed_component_add_comment, name)
+        addCommentHint.hint = context.getString(com.tokopedia.content.common.R.string.feed_component_add_comment, name)
 
         var authId = ""
         if (authorType != 1)
@@ -1091,7 +1091,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
-            context.getString(R.string.feed_component_see_all_comments, comments.countFmt)
+            context.getString(com.tokopedia.content.common.R.string.feed_component_see_all_comments, comments.countFmt)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1638,7 +1638,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val spannableString =
             SpannableString(
                 String.format(
-                    context.getString(R.string.feed_header_time_new),
+                    context.getString(com.tokopedia.content.common.R.string.feed_header_time_new),
                     avatarDate
                 )
             )
@@ -1896,7 +1896,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun getCTAButtonText(card: FeedXCard) =
         if (card.isTypeProductHighlight) card.cta.text
-        else context.getString(R.string.feeds_cek_sekarang)
+        else context.getString(com.tokopedia.content.common.R.string.feeds_cek_sekarang)
 
     private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
 

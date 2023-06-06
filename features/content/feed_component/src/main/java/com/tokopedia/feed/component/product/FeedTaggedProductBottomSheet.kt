@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.databinding.BottomSheetFeedTaggedProductBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -64,7 +63,7 @@ class FeedTaggedProductBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetFeedTaggedProductBinding.inflate(inflater, container, false)
-        setTitle(getString(R.string.content_product_bs_title))
+        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title))
         setChild(binding.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
