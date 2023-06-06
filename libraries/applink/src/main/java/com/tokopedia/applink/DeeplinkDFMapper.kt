@@ -283,6 +283,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
+    const val DF_SHOP_SETTINGS_SELLER_APP = "df_shop_settings_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
     const val DF_TOKOPEDIA_NOW = "df_tokopedianow"
@@ -296,6 +297,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_SELLER_PERSONA = "df_seller_persona"
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
+    const val DF_SELLER_FEEDBACK = "df_seller_feedback"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -763,7 +765,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
     val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_BASE_SELLER_APP, R.string.shop_settings_title))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_SHOP_SETTINGS_SELLER_APP, R.string.shop_settings_title))
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_settings_title))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.WITHDRAW) }, DF_BASE_SELLER_APP, R.string.payment_title_withdraw))
             add(DFP({ it.startsWith(ApplinkConstInternalGlobal.AUTO_WITHDRAW_SETTING) }, DF_BASE_SELLER_APP, R.string.payment_title_auto_withdraw))
@@ -921,11 +923,27 @@ object DeeplinkDFMapper : CoroutineScope {
             }, DF_BASE_SELLER_APP, R.string.title_centralized_promo))
 
             // Power Merchant Subscribe
-            add(DFP({
-                    it.startsWith(SellerApp.POWER_MERCHANT_SUBSCRIBE) || it.startsWith(ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE) ||
-                        it.startsWith(SellerApp.PM_BENEFIT_PACKAGE) ||
-                        it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
-                }, DF_BASE_SELLER_APP, R.string.title_applink_pm_subscribe, { DFWebviewFallbackUrl.POWER_MERCHANT }))
+            add(
+                DFP(
+                    {
+                        it.startsWith(SellerApp.POWER_MERCHANT_SUBSCRIBE) || it.startsWith(
+                            ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+                        ) ||
+                                it.startsWith(SellerApp.PM_BENEFIT_PACKAGE) ||
+                                it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
+                    },
+                    DF_BASE_SELLER_APP,
+                    R.string.title_applink_pm_subscribe,
+                    { DFWebviewFallbackUrl.POWER_MERCHANT })
+            )
+
+            add(
+                DFP(
+                    { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
+                    DF_SELLER_FEEDBACK,
+                    R.string.title_seller_feedback
+                )
+            )
         }
     }
 

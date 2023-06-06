@@ -39,6 +39,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.analytics.TokoChatAnalytics
 import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
@@ -117,6 +118,9 @@ open class TokoChatFragment :
     @Inject
     lateinit var tokoChatAnalytics: TokoChatAnalytics
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var selfUiModel: TokoChatHeaderUiModel? = null
     private var firstTimeOpen = true
@@ -144,6 +148,13 @@ open class TokoChatFragment :
             baseBinding?.tokochatReplyBox?.composeArea
         )
         baseBinding?.tokochatReplyBox?.composeArea?.clearFocus()
+    }
+
+    override fun shouldShowAttachmentButton(): Boolean {
+        return remoteConfig.getBoolean(
+            TOKOCHAT_ATTACHMENT_MENU,
+            false
+        )
     }
 
     override fun onReplyAreaFocusChanged(isFocused: Boolean) {
@@ -1325,6 +1336,7 @@ open class TokoChatFragment :
 
     companion object {
         private const val TAG = "TokoChatFragment"
+        const val TOKOCHAT_ATTACHMENT_MENU = "android_show_attachment_menu_tokochat"
 
         fun getFragment(
             fragmentManager: FragmentManager,

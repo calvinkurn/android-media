@@ -275,6 +275,9 @@ open class ProductManageFragment :
                             isCarousel = true
                         )
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         }
@@ -1806,6 +1809,9 @@ open class ProductManageFragment :
 
                 getFiltersTab(withDelay = true)
             }
+            else -> {
+                // no op
+            }
         }
 
         if (result.failed.isEmpty()) {
@@ -2317,7 +2323,7 @@ open class ProductManageFragment :
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
-        goToPDP(productId = productId, showTopAdsSheet = true)
+        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
     }
 
     private fun goToDuplicateProduct(productId: String) {
@@ -2883,6 +2889,9 @@ open class ProductManageFragment :
                     }
                     renderCheckedView()
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -2908,6 +2917,9 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.productListFeaturedOnlyResult) {
             when (it) {
                 is Success -> productListFeaturedOnlySize = it.data
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -3583,6 +3595,8 @@ open class ProductManageFragment :
         private const val TICKER_MARGIN_TOP = 8
         private const val TEXT_LINK_LENGTH_START = 0
         private const val TEXT_LINK_LENGTH_END = 5
+
+        private const val TOPADS_PERFORMANCE_CURRENT_SITE = "tokopediaseller"
 
         const val SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK = "productMoreMenu"
         const val SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK = "flagStockAlert"
