@@ -22,7 +22,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycStatusSubmissionBinding
-import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -44,6 +44,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     //TODO: check are this code unused
     private var waitTimeInSeconds: Int = 0
     private var waitMessage: String = ""
+    private var projectId: String = ""
 
     private var bottomSheetDetailBenefit: BenefitDetailBottomSheet? = null
 
@@ -60,6 +61,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         listReason = args.parameter.listReason
         isAccountPage = args.parameter.projectId == KYCConstant.PROJECT_ID_ACCOUNT
         waitMessage = args.parameter.waitMessage
+        projectId = args.parameter.projectId
 
         return binding?.root
     }
@@ -81,12 +83,18 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private fun setUpView() {
         when(status) {
             KycStatus.REJECTED.code.toString() -> {
+                GotoKycAnalytics.sendViewRejectPage(projectId)
                 onRejected()
             }
             KycStatus.PENDING.code.toString() -> {
+                GotoKycAnalytics.sendViewPendingPage(
+                    processingTime = waitTimeInSeconds.toString(),
+                    projectId = projectId
+                )
                 onPending()
             }
             KycStatus.VERIFIED.code.toString() -> {
+                GotoKycAnalytics.sendViewSuccessPage(projectId)
                 if (kycFlowType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
                     onVerifiedProgressive()
                 } else {
@@ -110,7 +118,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     goToTokopediaCare()
                 }
                 KycStatus.REJECTED.code.toString() -> {
-
+                    GotoKycAnalytics.sendClickOnButtonVerifikasiUlangRejectPage(projectId)
+                    //Todo: direct to verifikasi ulang
                 }
                 else -> {
                     activity?.setResult(Activity.RESULT_OK)
@@ -365,14 +374,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun getScreenName(): String = SCREEN_NAME
+    override fun getScreenName(): String = ""
 
-    override fun initInjector() {
-        getComponent(GoToKycComponent::class.java).inject(this)
-    }
+    override fun initInjector() {}
 
     companion object {
-        private val SCREEN_NAME = StatusSubmissionFragment::class.java.simpleName
         private const val PATH_TOKOPEDIA_CARE = "help?lang=id?isBack=true"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
         private const val THREE = "3"

@@ -1,6 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -23,10 +24,12 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.LayoutGotoKycOnboardProgressiveBinding
 import com.tokopedia.kyc_centralized.di.DaggerGoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainActivity
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycMainParam
 import com.tokopedia.kyc_centralized.ui.gotoKyc.main.GotoKycRouterFragment
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -38,15 +41,20 @@ import javax.inject.Inject
 
 class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
     private var binding by autoClearedNullable<LayoutGotoKycOnboardProgressiveBinding>()
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         when (result.resultCode) {
             Activity.RESULT_OK -> {
+                kycSharedPreference.removeProjectId()
                 activity?.setResult(Activity.RESULT_OK)
                 activity?.finish()
             }
             KYCConstant.ActivityResult.RESULT_FINISH -> {
+                kycSharedPreference.removeProjectId()
                 activity?.setResult(Activity.RESULT_CANCELED)
                 activity?.finish()
             }
@@ -87,6 +95,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        GotoKycAnalytics.sendViewKycOnboardingPage(
+            projectId = projectId,
+            kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+        )
         initView()
         initListener()
         initObserver()
@@ -126,6 +138,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
+            GotoKycAnalytics.sendClickButtonPakaiKtpIni(
+                projectId = projectId,
+                kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+            )
             binding?.consentGotoKycProgressive?.submitConsent()
             viewModel.registerProgressiveUseCase(projectId)
         }
@@ -194,6 +210,10 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         spannable.setSpan(
             object : ClickableSpan() {
                 override fun onClick(view: View) {
+                    GotoKycAnalytics.sendClickOnButtonTokopediaCareOnboardingPage(
+                        projectId = projectId,
+                        kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+                    )
                     goToTokopediaCare()
                 }
 
@@ -228,6 +248,15 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
         DaggerGoToKycComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build().inject(this)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+
+        GotoKycAnalytics.sendClickOnButtonCloseOnboardingBottomSheet(
+            projectId = projectId,
+            kycFlowType = KYCConstant.GotoKycFlow.PROGRESSIVE
+        )
     }
 
     companion object {

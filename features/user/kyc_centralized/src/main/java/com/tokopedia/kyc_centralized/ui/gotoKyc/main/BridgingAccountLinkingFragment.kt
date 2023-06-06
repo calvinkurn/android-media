@@ -1,8 +1,13 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
+import android.Manifest
 import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
@@ -13,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
@@ -31,7 +37,9 @@ import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.CheckEligibilityResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -48,8 +56,23 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         ViewModelProvider(this, viewModelFactory)[BridgingAccountLinkingViewModel::class.java]
     }
 
+    @Inject
+    lateinit var kycSharedPreference: KycSharedPreference
+
     private val startAccountLinkingForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         viewModel.checkAccountLinkingStatus()
+    }
+
+    private val requestPermissionLocation = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) {
+            val parameter = CaptureKycDocumentsParam(
+                projectId = args.parameter.projectId,
+                source = args.parameter.source
+            )
+            gotoCaptureKycDocuments(parameter)
+        } else {
+            showPermissionRejected()
+        }
     }
 
     override fun onCreateView(
@@ -233,11 +256,17 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             if (viewModel.checkEligibility.value is CheckEligibilityResult.Progressive) {
                 viewModel.registerProgressiveUseCase(args.parameter.projectId)
             } else {
-                val parameter = CaptureKycDocumentsParam(
-                    projectId = args.parameter.projectId,
-                    source = args.parameter.source
-                )
-                gotoCaptureKycDocuments(parameter)
+                activity?.let {
+                    if (ContextCompat.checkSelfPermission(it, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissionLocation.launch(Manifest.permission.CAMERA)
+                    } else {
+                        val parameter = CaptureKycDocumentsParam(
+                            projectId = args.parameter.projectId,
+                            source = args.parameter.source
+                        )
+                        gotoCaptureKycDocuments(parameter)
+                    }
+                }
             }
         }
     }
@@ -302,6 +331,24 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
+    private fun showPermissionRejected() {
+        Toaster.build(
+            requireView().rootView,
+            getString(R.string.goto_kyc_permission_camera_denied),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            getString(R.string.goto_kyc_permission_action_active)
+        ) { goToApplicationDetailActivity() }.show()
+    }
+
+    private fun goToApplicationDetailActivity() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts(PACKAGE, requireActivity().packageName, null)
+        intent.data = uri
+        requireActivity().startActivity(intent)
+    }
+
     override fun getScreenName(): String = ""
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
@@ -311,5 +358,6 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         private const val BACK_BTN_APPLINK = "tokopedia://back"
         private const val TOKOPEDIA_CARE_PATH = "help"
         private const val TOKOPEDIA_CARE_STRING_FORMAT = "%s?url=%s"
+        private const val PACKAGE = "package"
     }
 }

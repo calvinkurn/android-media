@@ -10,6 +10,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycOnboardBenefitBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -46,10 +47,20 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnVerification?.setOnClickListener {
+            GotoKycAnalytics.sendClickOnButtonBenefit(
+                projectId = args.parameter.projectId,
+                kycFlowType = args.parameter.gotoKycType
+            )
             showBottomSheet()
         }
 
-        binding?.unifyToolbar?.setNavigationOnClickListener { activity?.finish() }
+        binding?.unifyToolbar?.setNavigationOnClickListener {
+            GotoKycAnalytics.sendClickOnButtonBackFromOnboardingPage(
+                projectId = args.parameter.projectId,
+                kycFlowType = args.parameter.gotoKycType
+            )
+            activity?.finish()
+        }
     }
 
     private fun showBottomSheet() {

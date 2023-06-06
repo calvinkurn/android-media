@@ -20,6 +20,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
+import com.tokopedia.kyc_centralized.ui.gotoKyc.analytics.GotoKycAnalytics
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -54,6 +55,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        GotoKycAnalytics.sendViewDobPage(projectId = args.parameter.projectId)
 
         viewModel.getChallenge(args.parameter.challengeId)
 
@@ -74,13 +76,17 @@ class DobChallengeFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
-        binding?.unifyToolbar?.setNavigationOnClickListener { activity?.finish() }
+        binding?.unifyToolbar?.setNavigationOnClickListener {
+            GotoKycAnalytics.sendClickOnButtonBackFromDobPage(args.parameter.projectId)
+            activity?.finish()
+        }
 
         binding?.fieldDob?.editText?.setOnClickListener {
             showDatePicker()
         }
 
         binding?.btnConfirmation?.setOnClickListener {
+            GotoKycAnalytics.sendClickButtonConfirmationDobPage(args.parameter.projectId)
             viewModel.submitChallenge(
                 challengeId = args.parameter.challengeId,
                 questionId = viewModel.getChallenge.value?.questionId.orEmpty(),
@@ -229,6 +235,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
 
     private fun showDobChallengeFailedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {
         val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
+            projectId = args.parameter.projectId,
             source = args.parameter.pageSource,
             cooldownTimeInSeconds = cooldownTimeInSeconds,
             maximumAttemptsAllowed = maximumAttemptsAllowed
@@ -273,7 +280,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
         )
     }
 
-    override fun getScreenName(): String = DobChallengeFragment::class.java.simpleName
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)

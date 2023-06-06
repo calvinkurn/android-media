@@ -1,7 +1,7 @@
 package com.tokopedia.kyc_centralized.ui.gotoKyc.domain
 
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
-import com.gojek.onekyc.OneKycSdk
+import com.gojek.OneKycSdk
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.network.exception.MessageErrorException

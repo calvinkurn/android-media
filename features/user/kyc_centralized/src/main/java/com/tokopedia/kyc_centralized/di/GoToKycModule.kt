@@ -1,22 +1,27 @@
 package com.tokopedia.kyc_centralized.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.gojek.OneKycSdk
 import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
-import com.gojek.kyc.plus.card.KycPlusDefaultCard
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
+import com.gojek.kyc.sdk.config.KycSdkAnalyticsConfig
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
+import com.gojek.kyc.sdk.config.KycSdkUserInfo
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
-import com.gojek.onekyc.OneKycSdk
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
+import com.tokopedia.kyc_centralized.util.KycSharedPreference
+import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -34,6 +39,19 @@ import java.util.concurrent.TimeUnit
 open class GoToKycModule {
 
     private val NET_RETRY = 3
+    private val sharedPreferenceName = "kyc_centralized"
+
+    @ActivityScope
+    @Provides
+    fun provideSharedPreference(
+        @ApplicationContext context: Context
+    ): SharedPreferences = context.getSharedPreferences(sharedPreferenceName, Context.MODE_PRIVATE)
+
+    @ActivityScope
+    @Provides
+    open fun provideKycPrefInterface(pref: SharedPreferences): KycSharedPreference {
+        return KycSharedPreferenceImpl(pref)
+    }
 
     @ActivityScope
     @Provides
@@ -43,9 +61,11 @@ open class GoToKycModule {
 
     @ActivityScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
+    fun provideTkpdAuthInterceptor(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
@@ -74,12 +94,13 @@ open class GoToKycModule {
 
     @ActivityScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
-                            tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            retryPolicy: OkHttpRetryPolicy,
-                            loggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor,
-                            gotoKycInterceptor: GotoKycInterceptor
+    fun provideOkHttpClient(
+        @ApplicationContext context: Context,
+        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        retryPolicy: OkHttpRetryPolicy,
+        loggingInterceptor: HttpLoggingInterceptor,
+        chuckerInterceptor: ChuckerInterceptor,
+        gotoKycInterceptor: GotoKycInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
@@ -98,20 +119,36 @@ open class GoToKycModule {
 
     @ActivityScope
     @Provides
-    fun provideKycSdkClientConfig(): KycSdkClientConfig = KycSdkClientConfig(partner = KycSdkPartner.TOKOPEDIA_CORE, clientId = "KycDemoApp", clientAppVersion =  "0.0.1")
+    fun provideKycSdkClientConfig(): KycSdkClientConfig = KycSdkClientConfig(
+        partner = KycSdkPartner.TOKOPEDIA_CORE,
+        clientAppId = GlobalConfig.APPLICATION_ID,
+        clientAppVersion = GlobalConfig.VERSION_NAME,
+        clientKey = GlobalConfig.PACKAGE_APPLICATION
+    )
+
+    @Provides
+    @ActivityScope
+    fun provideKycSdkUserInfo(
+        userSessionInterface: UserSessionInterface
+    ): KycSdkUserInfo {
+        return KycSdkUserInfo(
+            emailId = userSessionInterface.email,
+            userId = userSessionInterface.userId,
+            userName = userSessionInterface.name
+        )
+    }
 
     @Provides
     @ActivityScope
     fun provideKycSdkConfig(
-        userSessionInterface: UserSessionInterface,
+        kycSdkUserInfo: KycSdkUserInfo,
         kycSdkClientConfig: KycSdkClientConfig
     ): KycSdkConfig {
         return KycSdkConfig(
             isDebugMode = GlobalConfig.isAllowDebuggingTools(),
-            userId = userSessionInterface.userId,
-            userName = userSessionInterface.name,
             baseUrl = TokopediaUrl.getInstance().ACCOUNTS,
-            clientConfig = kycSdkClientConfig
+            clientConfig = kycSdkClientConfig,
+            userInfo = kycSdkUserInfo
         )
     }
 
@@ -130,7 +167,14 @@ open class GoToKycModule {
 
     @Provides
     @ActivityScope
-    fun provideKycPlusDefaultCard() = KycPlusDefaultCard()
+    fun provideKycPlusDefaultCard() = GotoKycDefaultCard()
+
+    @Provides
+    @ActivityScope
+    fun provideKycSdkAnalyticsConfig() = KycSdkAnalyticsConfig(
+        apiKey = "a1b3f286-bb73-4f02-b2bb-34781cceab6d",
+        url = "https://toko-raccoon-integration.gojekapi.com/api/v1/events"
+    )
 
     @ActivityScope
     @Provides
@@ -141,20 +185,20 @@ open class GoToKycModule {
         gotoKycErrorHandler: GotoKycErrorHandler,
         gotoKycImageLoader: GotoKycImageLoader,
         unifiedKycConfigsDefault: UnifiedKycConfigsDefault,
-        kycPlusDefaultCard: KycPlusDefaultCard,
+        kycPlusDefaultCard: GotoKycDefaultCard,
         okHttpClient: OkHttpClient,
         kycSdkConfig: KycSdkConfig
     ): OneKycSdk {
-        return OneKycSdk(
-            context = context,
-            remoteConfig = defaultRemoteConfigProvider,
-            eventTracker = gotoKycEventTrackingProvider,
-            kycSdkConfig = kycSdkConfig,
-            experimentProvider = unifiedKycConfigsDefault,
-            errorHandler = gotoKycErrorHandler,
-            okHttpClient = okHttpClient,
-            imageLoader = gotoKycImageLoader,
-            kycPlusCardFactory = kycPlusDefaultCard
+        return OneKycInstance.getOneKycSdk(
+            context,
+            defaultRemoteConfigProvider,
+            gotoKycEventTrackingProvider,
+            gotoKycErrorHandler,
+            gotoKycImageLoader,
+            unifiedKycConfigsDefault,
+            kycPlusDefaultCard,
+            okHttpClient,
+            kycSdkConfig
         )
     }
 
