@@ -10,7 +10,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Created By : Jonathan Darwin on June 27, 2022

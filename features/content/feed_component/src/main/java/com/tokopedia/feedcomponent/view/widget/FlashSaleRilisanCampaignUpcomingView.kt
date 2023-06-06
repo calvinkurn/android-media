@@ -18,7 +18,6 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
