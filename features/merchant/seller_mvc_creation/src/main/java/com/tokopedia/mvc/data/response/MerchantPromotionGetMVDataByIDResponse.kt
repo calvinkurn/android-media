@@ -121,7 +121,11 @@ data class MerchantPromotionGetMVDataByIDResponse(
             @SerializedName("voucher_lock_id")
             val voucherLockId: Long = 0,
             @SerializedName("product_ids")
-            val productIds: List<ProductId> = listOf()
+            val productIds: List<ProductId> = listOf(),
+            @SerializedName("label_voucher")
+            val labelVoucher: LabelVoucher = LabelVoucher(),
+            @SerializedName("subsidy_detail")
+            val subsidyDetail: SubsidyDetail = SubsidyDetail()
         ) {
             data class ProductId(
                 @SerializedName("parent_product_id")
@@ -129,6 +133,58 @@ data class MerchantPromotionGetMVDataByIDResponse(
                 @SuppressLint("Invalid Data Type")
                 @SerializedName("child_product_id")
                 val chilProductId: List<Long>? = listOf()
+            )
+        }
+
+        data class LabelVoucher(
+            @SerializedName("label_quota")
+            val labelQuota: Int = 0,
+            @SerializedName("label_quota_formatted")
+            val labelQuotaFormatted: String = "",
+            @SerializedName("label_quota_color_type")
+            val labelQuotaColorType: String = "default",
+            @SerializedName("label_creator")
+            val labelCreator: Int = 0,
+            @SerializedName("label_creator_formatted")
+            val labelCreatorFormatted: String = "",
+            @SerializedName("label_creator_color_type")
+            val labelCreatorColorType: String = "default",
+            @SerializedName("label_subsidy_info")
+            val labelSubsidyInfo: Int = 0,
+            @SerializedName("label_subsidy_info_formatted")
+            val labelSubsidyInfoFormatted: String = "",
+            @SerializedName("label_subsidy_info_color_type")
+            val labelSubsidyInfoColorType: String = "default",
+            @SerializedName("label_budgets_voucher")
+            val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
+        ) {
+            data class LabelBudgetVoucher(
+                @SerializedName("label_budget_voucher")
+                val labelBudgetVoucher: Int = 0,
+                @SerializedName("label_budget_voucher_formatted")
+                val labelBudgetVoucherFormatted: String = "",
+                @SerializedName("label_budget_voucher_value")
+                val labelBudgetVoucherValue: Int = 0
+            )
+        }
+
+        data class SubsidyDetail(
+            @SerializedName("program_detail")
+            val programDetail: ProgramDetail = ProgramDetail()
+        ) {
+            data class ProgramDetail(
+                @SerializedName("program_name")
+                val programName: String = "",
+                @SerializedName("program_status")
+                val programStatus: Int = 0,
+                @SerializedName("program_label")
+                val programLabel: String = "",
+                @SerializedName("program_label_detail")
+                val programLabelDetail: String = "",
+                @SerializedName("promotion_status")
+                val promotionStatus: Int = 0,
+                @SerializedName("promotion_label")
+                val promotionLabel: String = ""
             )
         }
 

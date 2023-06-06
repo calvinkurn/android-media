@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.domain.entity
 
+import android.os.Parcelable
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
@@ -7,6 +8,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS
 import com.tokopedia.utils.date.toDate
+import kotlinx.parcelize.Parcelize
 
 data class VoucherDetailData(
     val voucherId: Long = 0,
@@ -61,12 +63,58 @@ data class VoucherDetailData(
     val totalPeriod: Int = 0,
     val voucherLockType: String = "",
     val voucherLockId: Long = 0,
-    val productIds: List<ProductId> = listOf()
+    val productIds: List<ProductId> = listOf(),
+    val labelVoucher: LabelVoucher = LabelVoucher(),
+    val subsidyDetail: SubsidyDetail = SubsidyDetail()
 ) {
     data class ProductId(
         val parentProductId: Long = 0,
         val chilProductId: List<Long>? = listOf()
     )
+
+    @Parcelize
+    data class LabelVoucher(
+        val labelQuota: Int = 0,
+        val labelQuotaFormatted: String = "",
+        val labelQuotaColorType: String = "default",
+        val labelCreator: Int = 0,
+        val labelCreatorFormatted: String = "",
+        val labelCreatorColorType: String = "default",
+        val labelSubsidyInfo: Int = 0,
+        val labelSubsidyInfoFormatted: String = "",
+        val labelSubsidyInfoColorType: String = "default",
+        val labelBudgetsVoucher: List<LabelBudgetVoucher> = listOf()
+    ) : Parcelable {
+        @Parcelize
+        data class LabelBudgetVoucher(
+            val labelBudgetVoucher: Int = 0,
+            val labelBudgetVoucherFormatted: String = "",
+            val labelBudgetVoucherValue: Int = 0
+        ) : Parcelable
+    }
+
+    @Parcelize
+    data class SubsidyDetail(
+        val programDetail: ProgramDetail = ProgramDetail()
+    ) : Parcelable {
+        @Parcelize
+        data class ProgramDetail(
+            val programName: String = "",
+            val programStatus: Int = 0,
+            val programLabel: String = "",
+            val programLabelDetail: String = "",
+            val promotionStatus: Int = 0,
+            val promotionLabel: String = ""
+        ) : Parcelable
+
+        @Parcelize
+        data class QuotaSubsidized(
+            val voucherQuota: Int = 0,
+            val remainingQuota: Int = 0,
+            val bookedGlobalQuota: Int = 0,
+            val confirmedGlobalQuota: Int = 0
+        ) : Parcelable
+    }
 
     fun toVoucherConfiguration(): VoucherConfiguration {
         val selectedParentProductIds = productIds.map { parentProduct -> parentProduct.parentProductId }
