@@ -5,14 +5,8 @@ data class ExclusiveLaunchVoucher(
     val voucherName: String,
     val minimumPurchase: Long,
     val remainingQuota: Int,
-    val source: VoucherSource
-) {
-    /**
-     * Promo = Voucher need to be claimed first before use
-     * MerchantCreated = No need to claim voucher first before use
-     */
-    sealed class VoucherSource {
-        data class Promo(val categorySlug: String, val isClaimed: Boolean, val voucherCode: String): VoucherSource()
-        object MerchantCreated : VoucherSource()
-    }
-}
+    val slug: String,
+    val isDisabledButton: Boolean,
+    val couponCode: String,
+    val buttonStr: String
+)

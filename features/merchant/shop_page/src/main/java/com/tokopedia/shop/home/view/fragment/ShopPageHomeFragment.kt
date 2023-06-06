@@ -120,6 +120,8 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -526,8 +528,34 @@ open class ShopPageHomeFragment :
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         isLoadInitialData = true
+        //showVoucherListBottomsheet()
     }
 
+    private fun showVoucherListBottomsheet() {
+        //TODO: Replace with real shopId and category slugs from backend
+        val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
+            shopId = "1854168", //Unilever Official Store,
+            useDarkBackground = true,
+            slugs = listOf(
+                "ELTTS400JUN",
+                "ELTTS150JUN",
+                "CFDDJUN",
+                "KFSJUN",
+                "AUTO423",
+                "SHOPASHJUNE"
+            )
+        )
+        bottomSheet.setOnVoucherClaimSuccess {
+            //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
+        }
+        bottomSheet.setOnVoucherUseSuccess {
+            showToaster(
+                view ?: return@setOnVoucherUseSuccess,
+                context?.getString(R.string.shop_page_use_voucher_success).orEmpty()
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
     private fun observeLatestShopHomeWidgetLayoutData() {
         viewModel?.latestShopHomeWidgetLayoutData?.observe(viewLifecycleOwner) {
             when (it) {
