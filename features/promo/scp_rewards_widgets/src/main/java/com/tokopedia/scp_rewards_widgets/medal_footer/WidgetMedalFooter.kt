@@ -34,6 +34,7 @@ class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : Co
                 setOnClickListener {
                     isLoading = true
                     onButtonClick(footer)
+                    isLoading = false
                 }
             }
             this.list.add(button)
@@ -42,7 +43,7 @@ class WidgetMedalFooter(private val context: Context, attrs: AttributeSet?) : Co
         }
     }
 
-    fun showLoading(id: Int, isLoading: Boolean) {
+    fun showLoading(id: Int?, isLoading: Boolean) {
         list.find { it.id == id }?.isLoading = isLoading
     }
 

@@ -12,6 +12,7 @@ import com.tokopedia.scp_rewards.common.utils.launchCatchError
 import com.tokopedia.scp_rewards.detail.domain.CouponAutoApplyUseCase
 import com.tokopedia.scp_rewards.detail.domain.MedalDetailUseCase
 import com.tokopedia.scp_rewards.detail.domain.model.ScpRewardsCouponAutoApply
+import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import javax.inject.Inject
 
 class MedalDetailViewModel @Inject constructor(
@@ -49,31 +50,31 @@ class MedalDetailViewModel @Inject constructor(
         )
     }
 
-    fun applyCoupon(id: Int, shopId: Int? = null, couponCode: String) {
+    fun applyCoupon(footerData: FooterData, shopId: Int? = null, couponCode: String) {
         viewModelScope.launchCatchError(
             block = {
-                _autoApplyCoupon.postValue(AutoApplyState.Loading(id))
+                _autoApplyCoupon.postValue(AutoApplyState.Loading(footerData))
                 val response = couponAutoApplyUseCase.applyCoupon(shopId, couponCode)
                 if (response.data != null) {
                     if (response.data.couponAutoApply?.isSuccess == true) {
-                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponApplied(id, response.data))
+                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponApplied(footerData, response.data))
                     } else {
-                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponFailed(id, response.data))
+                        _autoApplyCoupon.postValue(AutoApplyState.SuccessCouponFailed(footerData, response.data))
                     }
                 } else {
                     throw Throwable()
                 }
             },
             onError = {
-                _autoApplyCoupon.postValue(AutoApplyState.Error(id, it))
+                _autoApplyCoupon.postValue(AutoApplyState.Error(footerData, it))
             }
         )
     }
 
     sealed class AutoApplyState {
-        data class Loading(val id: Int) : AutoApplyState()
-        data class SuccessCouponApplied(val id: Int, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
-        data class SuccessCouponFailed(val id: Int, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
-        data class Error(val id: Int, val throwable: Throwable) : AutoApplyState()
+        data class Loading(val footerData: FooterData) : AutoApplyState()
+        data class SuccessCouponApplied(val footerData: FooterData, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
+        data class SuccessCouponFailed(val footerData: FooterData, val data: ScpRewardsCouponAutoApply?) : AutoApplyState()
+        data class Error(val footerData: FooterData, val throwable: Throwable) : AutoApplyState()
     }
 }
