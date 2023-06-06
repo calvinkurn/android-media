@@ -20,6 +20,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -80,7 +81,6 @@ open class GoToKycModule {
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(AkamaiBotInterceptor(context))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -107,7 +107,7 @@ open class GoToKycModule {
             isDebugMode = GlobalConfig.isAllowDebuggingTools(),
             userId = userSessionInterface.userId,
             userName = userSessionInterface.name,
-            baseUrl = "https://accounts-staging.tokopedia.com",
+            baseUrl = TokopediaUrl.getInstance().ACCOUNTS,
             clientConfig = kycSdkClientConfig
         )
     }
