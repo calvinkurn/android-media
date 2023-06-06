@@ -106,18 +106,25 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private fun setUpView() {
         when(status) {
             KycStatus.REJECTED.code.toString() -> {
-                GotoKycAnalytics.sendViewRejectPage(projectId)
+                GotoKycAnalytics.sendViewStatusPage(
+                    status = GotoKycAnalytics.FAILED,
+                    errorReason = rejectionReason,
+                    projectId = projectId
+                )
                 onRejected()
             }
             KycStatus.PENDING.code.toString() -> {
-                GotoKycAnalytics.sendViewPendingPage(
-                    processingTime = waitTimeInSeconds.toString(),
+                GotoKycAnalytics.sendViewStatusPage(
+                    status = GotoKycAnalytics.PENDING,
                     projectId = projectId
                 )
                 onPending()
             }
             KycStatus.VERIFIED.code.toString() -> {
-                GotoKycAnalytics.sendViewSuccessPage(projectId)
+                GotoKycAnalytics.sendViewStatusPage(
+                    status = GotoKycAnalytics.SUCCESS,
+                    projectId = projectId
+                )
                 if (kycFlowType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
                     onVerifiedProgressive()
                 } else {
@@ -141,7 +148,10 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                     goToTokopediaCare()
                 }
                 KycStatus.REJECTED.code.toString() -> {
-                    GotoKycAnalytics.sendClickOnButtonVerifikasiUlangRejectPage(projectId)
+                    GotoKycAnalytics.sendClickOnButtonVerifikasiUlangRejectPage(
+                        errorMessage = rejectionReason,
+                        projectId = projectId
+                    )
                     goToTransparentActivityToReVerify()
                 }
                 else -> {

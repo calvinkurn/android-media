@@ -132,9 +132,16 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         }
 
         if (!isConnectionAvailable(requireContext())) {
-            GotoKycAnalytics.sendViewConnectionIssuePage(projectId = args.parameter.projectId)
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = ERROR_NO_CONNECTION,
+                projectId = args.parameter.projectId
+            )
             binding?.globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = FAILED_UPLOAD_DOCUMENT,
+                projectId = args.parameter.projectId
+            )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
         }
     }
@@ -153,5 +160,10 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
+    }
+
+    companion object {
+        private const val FAILED_UPLOAD_DOCUMENT = "failed upload document"
+        private const val ERROR_NO_CONNECTION = "no connection"
     }
 }

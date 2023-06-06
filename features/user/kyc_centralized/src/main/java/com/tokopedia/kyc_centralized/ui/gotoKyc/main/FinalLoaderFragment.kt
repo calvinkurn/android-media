@@ -134,13 +134,15 @@ class FinalLoaderFragment : BaseDaggerFragment() {
         binding?.globalError?.show()
         if (throwable != null) {
             val error = throwable.getGotoKycErrorMessage(requireContext())
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = error,
+                projectId = args.parameter.projectId
+            )
             when (throwable) {
                 is UnknownHostException, is ConnectException -> {
-                    GotoKycAnalytics.sendViewConnectionIssuePage(args.parameter.projectId)
                     binding?.globalError?.setType(GlobalError.NO_CONNECTION)
                 }
                 is SocketTimeoutException -> {
-                    GotoKycAnalytics.sendViewTimeoutPage(projectId = args.parameter.projectId)
                     binding?.globalError?.apply {
                     errorIllustration.loadImage(getString(R.string.img_url_goto_kyc_error_timeout))
 
@@ -158,6 +160,10 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 }
             }
         } else {
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = context?.getString(R.string.goto_kyc_error_from_be).toString(),
+                projectId = args.parameter.projectId
+            )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
         }
     }
