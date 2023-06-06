@@ -120,10 +120,12 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             when (result) {
                 is Success -> {
                     displayVouchers(result.data)
+                    binding?.recyclerView?.visible()
                     binding?.loader?.gone()
                 }
                 is Fail -> {
                     binding?.loader?.gone()
+                    binding?.recyclerView?.gone()
                     showToasterError(binding?.root ?: return@observe, result.throwable)
                 }
             }
@@ -176,7 +178,8 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     private fun handleRedeemVoucherSuccess(redeemResult: RedeemPromoVoucherResult) {
         if (redeemResult.redeemMessage.isNotEmpty()){
             binding?.loader?.visible()
-            viewModel.refreshVoucherClaimStatus(exclusiveLaunchAdapter.snapshot(), voucherSlugs)
+            binding?.recyclerView?.gone()
+            viewModel.getPromoVouchers(voucherSlugs)
         }
     }
 

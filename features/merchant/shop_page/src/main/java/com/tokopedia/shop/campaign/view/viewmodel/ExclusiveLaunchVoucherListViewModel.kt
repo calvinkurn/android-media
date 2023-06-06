@@ -33,39 +33,6 @@ class ExclusiveLaunchVoucherListViewModel @Inject constructor(
             }
         )
     }
-
-    fun refreshVoucherClaimStatus(
-        currentVouchers: List<ExclusiveLaunchVoucher>,
-        voucherSlugs: List<String>
-    ) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val latestVoucherStatus = getPromoVoucherListUseCase.execute(voucherSlugs)
-                val updatedVouchers = updateVoucherStatus(currentVouchers, latestVoucherStatus)
-                _vouchers.postValue(Success(updatedVouchers))
-            },
-            onError = { throwable ->
-                _vouchers.postValue(Fail(throwable))
-            }
-        )
-    }
-    private fun updateVoucherStatus(
-        currentVouchers: List<ExclusiveLaunchVoucher>,
-        latestVoucherStatus: List<ExclusiveLaunchVoucher>
-    ): List<ExclusiveLaunchVoucher> {
-        return currentVouchers.map { currentVoucher ->
-            val latestVoucher = latestVoucherStatus.find { latestVoucher -> currentVoucher.id == latestVoucher.id }
-
-            if (latestVoucher != null) {
-                //If found matching voucher, return latest voucher status from remote instead
-                latestVoucher
-            } else {
-                currentVoucher
-            }
-        }
-    }
-
 }
 
 
