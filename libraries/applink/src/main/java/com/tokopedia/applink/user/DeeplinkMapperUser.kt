@@ -8,11 +8,13 @@ import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 
 object DeeplinkMapperUser {
 
+    const val ROLLENCE_GOTO_KYC = "goto_kyc_apps"
     const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and_3"
 
     fun getRegisteredNavigationUser(context: Context, deeplink: String): String {
@@ -30,9 +32,23 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
             deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             deeplink == ApplinkConst.User.DSAR -> ApplinkConstInternalUserPlatform.DSAR
-            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) -> ApplinkConstInternalUserPlatform.GOTO_KYC
+            deeplink.startsWithPattern(ApplinkConst.GOTO_KYC) -> getApplinkGotoKyc()
             else -> deeplink
         }
+    }
+
+    fun getApplinkGotoKyc(): String {
+        return if (isRollenceGotoKycActivated() && !GlobalConfig.isSellerApp()) {
+            ApplinkConstInternalUserPlatform.GOTO_KYC
+        } else {
+            ApplinkConstInternalUserPlatform.KYC_INFO_BASE
+        }
+    }
+
+    private fun isRollenceGotoKycActivated(): Boolean {
+        return getAbTestPlatform()
+            .getString(ROLLENCE_GOTO_KYC)
+            .isNotEmpty()
     }
 
     private fun getApplinkPrivacyCenter(): String {
