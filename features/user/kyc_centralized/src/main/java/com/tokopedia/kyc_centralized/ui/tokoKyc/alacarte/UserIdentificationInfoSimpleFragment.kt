@@ -27,6 +27,7 @@ import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
@@ -133,6 +134,7 @@ class UserIdentificationInfoSimpleFragment : BaseDaggerFragment() {
             it.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_REDIRECT_URL, redirectUrl)
             })
+            Timber.d("redirectUrlFinal=$redirectUrl")
             it.finish()
         }
     }

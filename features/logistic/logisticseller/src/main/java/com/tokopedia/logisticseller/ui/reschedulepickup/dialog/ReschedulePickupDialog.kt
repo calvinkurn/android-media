@@ -1,11 +1,7 @@
 package com.tokopedia.logisticseller.ui.reschedulepickup.dialog
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -88,9 +84,9 @@ private fun ResultDialog(
                         )
                     )
                 }
-                NestButton(text = buttonText, modifier = Modifier.padding(top = 16.dp)) {
+                NestButton(text = buttonText, {
                     onDialogButtonClicked()
-                }
+                }, modifier = Modifier.padding(top = 16.dp))
             }
         }
     }

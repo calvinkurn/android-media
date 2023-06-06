@@ -8,10 +8,4 @@
         <item name="colorAccent">@color/Unify_G500</item>
     </style>
 
-    <!-- Moved here from purchase platform common since the only usage is on this module -->
-    <style name="TransactionToggleButton" parent="Theme.AppCompat.DayNight">
-        <item name="colorControlActivated">@color/Unify_G500</item>
-        <item name="colorSwitchThumbNormal">@color/Unify_N50</item>
-    </style>
-
 </resources>
