@@ -72,6 +72,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
+@Suppress("LateinitUsage")
 class PlayFragment @Inject constructor(
     viewModelFactory: PlayViewModel.Factory,
     private val pageMonitoring: PlayPltPerformanceCallback,
