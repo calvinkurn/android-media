@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.content.common.R as contentCommonR
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
@@ -35,7 +36,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private val itemDecoration: RecyclerView.ItemDecoration
 
     init {
-        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4))
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(contentCommonR.dimen.content_common_dp_4))
         init()
     }
 

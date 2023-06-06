@@ -78,7 +78,7 @@ class DiscoveryPageDataMapper(
 ) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
-        val componentList = getDiscoComponentListFromResponse(filterSaleTimer(components))
+        val componentList = getDiscoComponentListFromResponse(components)
         if (componentList.isNotEmpty() && targetCompId.isNotEmpty()) {
             componentList.forEach { item ->
                 if (item.id == targetCompId) {
@@ -92,29 +92,6 @@ class DiscoveryPageDataMapper(
             }
         }
         return componentList
-    }
-
-    private fun filterSaleTimer(componentList: List<ComponentsItem>): ArrayList<ComponentsItem> {
-        val listComponents: ArrayList<ComponentsItem> = ArrayList()
-        var itemIdTobeRemoved: String? = "0"
-        componentList.forEach {
-            if (it.name == ComponentNames.FlashSaleTimer.componentName || (itemIdTobeRemoved != "0" && it.id == itemIdTobeRemoved)) {
-                when {
-                    isSaleOver(parseFlashSaleDate(it.data?.firstOrNull()?.ongoingCampaignEndTime), TIMER_DATE_FORMAT) -> {
-                        itemIdTobeRemoved = it.data?.firstOrNull()?.flashTimerTargetComponent ?: "0"
-                    }
-                    it.id == itemIdTobeRemoved -> {
-                        itemIdTobeRemoved = "0"
-                    }
-                    else -> {
-                        listComponents.add(it)
-                    }
-                }
-            } else {
-                listComponents.add(it)
-            }
-        }
-        return listComponents
     }
 
     private fun getDiscoveryComponentList(components: List<ComponentsItem>): List<ComponentsItem> {

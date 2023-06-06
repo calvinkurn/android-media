@@ -502,7 +502,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _accountListState.value = accountList
 
         if (accountList.isNotEmpty()) {
-            updateSelectedAccount(
+            setSelectedAccount(
                 getSelectedAccount(
                     selectedType = selectedType,
                     cacheSelectedType = sharedPref.getLastSelectedAccountType(),
@@ -569,9 +569,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             setDurationConfig(configUiModel.durationConfig)
             setScheduleConfig(configUiModel.scheduleConfig)
 
-            setupShortEntryPoint(configUiModel)
-            setupPerformanceDashboardEntryPoint(configUiModel)
-
             broadcastTimer.setupDuration(
                 configUiModel.durationConfig.remainingDuration,
                 configUiModel.durationConfig.maxDuration
@@ -580,7 +577,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 configUiModel.durationConfig.pauseDuration
             )
 
-            updateSelectedAccount(selectedAccount)
+            setSelectedAccount(selectedAccount)
+
+            setupShortEntryPoint(configUiModel)
+            setupPerformanceDashboardEntryPoint(configUiModel)
+
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)
         }) {
             _observableConfigInfo.value = NetworkResult.Fail(it) { getBroadcasterAuthorConfig(selectedAccount) }
@@ -1759,7 +1760,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
+    private fun setSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _selectedAccount.update { selectedAccount }
         sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
