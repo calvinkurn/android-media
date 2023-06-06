@@ -16,26 +16,17 @@ class SubmitChallengeUseCase @Inject constructor(
 ) : CoroutineUseCase<SubmitChallengeParam, SubmitChallengeResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-          mutation submitKYCChallenge(
-            ${'$'}challengeID: String!,
-            ${'$'}answers: [kycSubmitGoToChallengeAnswer!]!
+          mutation kycSubmitGoToChallenge(
+            ${'$'}param: kycSubmitGoToChallengeRequest!
           ) {
-            submitKYCChallenge(
-              challengeID: ${'$'}challengeID,
-              answers: ${'$'}answers
+            kycSubmitGoToChallenge(
+              param: ${'$'}param
             ) {
-              isSuccess
+              cooldownTimeInSeconds
+              attemptsRemaining
+              maximumAttemptsAllowed
+              message
               errorMessages
-              data {
-                challengeID
-                questions {
-                  id
-                  questionType
-                  displayText
-                  hint
-                  type
-                }
-              }
             }
           }
         """.trimIndent()
@@ -45,21 +36,18 @@ class SubmitChallengeUseCase @Inject constructor(
             .request<SubmitChallengeParam, SubmitChallengeResponse>(graphqlQuery(), params)
             .submitKYCChallenge
 
-        return if (!response.isSuccess) {
-            val message = if (response.errorMessages.isNotEmpty()) {
-                response.errorMessages.first()
-            } else {
-                ""
-            }
-            SubmitChallengeResult.Failed(MessageErrorException(message))
+        return if (response.errorMessages.isNotEmpty()) {
+            SubmitChallengeResult.Failed(MessageErrorException(response.errorMessages.first()))
         } else {
-            when (response.submitStatus) {
+            when (response.message) {
                 KEY_WRONG_ANSWER -> {
-                    //TODO: change this value when BE was ready
-                    SubmitChallengeResult.WrongAnswer("Tanggal lahir nggak cocok. Sisa 2 kali coba lagi, ya.")
+                    SubmitChallengeResult.WrongAnswer(attemptsRemaining = response.attemptsRemaining)
                 }
                 KEY_EXHAUSTED -> {
-                    SubmitChallengeResult.Exhausted()
+                    SubmitChallengeResult.Exhausted(
+                        cooldownTimeInSeconds = response.cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = response.maximumAttemptsAllowed
+                    )
                 }
                 else -> {
                     SubmitChallengeResult.Success()

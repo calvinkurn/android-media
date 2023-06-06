@@ -41,6 +41,9 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
     private var status: String = ""
     private var listReason: List<String> = emptyList()
     private var isAccountPage: Boolean = false
+    //TODO: check are this code unused
+    private var waitTimeInSeconds: Int = 0
+    private var waitMessage: String = ""
 
     private var bottomSheetDetailBenefit: BenefitDetailBottomSheet? = null
 
@@ -55,7 +58,8 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         status = args.parameter.status
         sourcePage = args.parameter.sourcePage
         listReason = args.parameter.listReason
-        isAccountPage = args.parameter.sourcePage == KYCConstant.GotoKycSourceAccountPage
+        isAccountPage = args.parameter.projectId == KYCConstant.PROJECT_ID_ACCOUNT
+        waitMessage = args.parameter.waitMessage
 
         return binding?.root
     }
@@ -80,7 +84,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
                 onRejected()
             }
             KycStatus.PENDING.code.toString() -> {
-                onPending24Hours()
+                onPending()
             }
             KycStatus.VERIFIED.code.toString() -> {
                 if (kycFlowType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
@@ -199,7 +203,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
             tvDescription.text = getString(R.string.goto_kyc_status_verified_subtitle)
-            btnPrimary.text = getString(R.string.goto_kyc_back_to_source, sourcePage)
+            btnPrimary.text = if (sourcePage.isEmpty()) {
+                getString(R.string.goto_kyc_back_to_source)
+            } else {
+                getString(R.string.goto_kyc_status_pending_button, sourcePage)
+            }
             btnSecondary.hide()
             btnPrimary.showWithCondition(!isAccountPage)
             tvTimer.showWithCondition(!isAccountPage)
@@ -251,7 +259,11 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_verified_title)
             tvDescription.text = getString(R.string.goto_kyc_status_verified_subtitle)
-            btnPrimary.text = getString(R.string.goto_kyc_back_to_source, sourcePage)
+            btnPrimary.text = if (sourcePage.isEmpty()) {
+                getString(R.string.goto_kyc_back_to_source)
+            } else {
+                getString(R.string.goto_kyc_status_pending_button, sourcePage)
+            }
             btnSecondary.hide()
             tvTimer.hide()
         }
@@ -263,7 +275,7 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onPending24Hours() {
+    private fun onPending() {
         loadInitImage(
             imageUrl = getString(R.string.img_url_goto_kyc_status_submission_pending),
             usingLottie = true
@@ -271,10 +283,16 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
 
         binding?.layoutStatusSubmission?.apply {
             tvHeader.text = getString(R.string.goto_kyc_status_pending_title)
-            tvDescription.text = HtmlCompat.fromHtml(
-                    getString(R.string.goto_kyc_status_pending_subtitle_24_hours),
-                    HtmlCompat.FROM_HTML_MODE_COMPACT
-                )
+            tvDescription.text =
+                waitMessage.ifEmpty {
+                    HtmlCompat.fromHtml(
+                        getString(
+                            R.string.goto_kyc_status_pending_subtitle,
+                            convertTimePending(waitTimeInSeconds)
+                        ),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                }
             btnPrimary.text = getString(R.string.goto_kyc_status_pending_button, sourcePage)
             btnSecondary.hide()
             tvTimer.hide()
@@ -285,6 +303,36 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         binding?.layoutBenefitNonAccount?.root?.showWithCondition(!isAccountPage)
         binding?.layoutBenefitAccount?.root?.showWithCondition(isAccountPage)
         binding?.layoutBenefitAccount?.tvTitle?.text = getString(R.string.goto_kyc_benefit_account_title_pending)
+    }
+
+    private fun convertTimePending(totalSeconds: Int): String {
+        return if (totalSeconds == 0) {
+            getString(R.string.goto_kyc_status_pending_minutes, THREE)
+        } else {
+            val hours = totalSeconds / 3600
+            val minutes = (totalSeconds % 3600) / 60
+            val seconds = totalSeconds % 60
+
+            val textHours = if (hours != 0) {
+                "${getString(R.string.goto_kyc_status_pending_hours, hours.toString())} "
+            } else {
+                ""
+            }
+
+            val textMinutes = if (minutes != 0) {
+                "${getString(R.string.goto_kyc_status_pending_minutes, minutes.toString())} "
+            } else {
+                ""
+            }
+
+            val textSeconds = if (seconds != 0) {
+                getString(R.string.goto_kyc_status_pending_seconds, seconds.toString())
+            } else {
+                ""
+            }
+
+            textHours.plus(textMinutes).plus(textSeconds).trim()
+        }
     }
 
     private fun showBottomSheetDetailBenefit() {
@@ -327,5 +375,6 @@ class StatusSubmissionFragment : BaseDaggerFragment() {
         private val SCREEN_NAME = StatusSubmissionFragment::class.java.simpleName
         private const val PATH_TOKOPEDIA_CARE = "help?lang=id?isBack=true"
         private const val TAG_BOTTOM_SHEET_DETAIL_BENEFIT = "tag bottom sheet detail benefit"
+        private const val THREE = "3"
     }
 }

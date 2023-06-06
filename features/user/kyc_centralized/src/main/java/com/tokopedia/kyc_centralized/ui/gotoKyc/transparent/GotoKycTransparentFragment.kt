@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
@@ -71,7 +73,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             viewModel.setSource(source.orEmpty())
 
             // please, make sure project id already set in viewModel
-            viewModel.getProjectInfo(viewModel.projectId.toInt())
+            viewModel.getProjectInfo(viewModel.projectId.toIntSafely())
         }
     }
 
@@ -88,24 +90,16 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                         projectId = viewModel.projectId,
                         sourcePage = viewModel.source,
                         status = it.status,
-                        listReason = it.listReason
+                        listReason = it.listReason,
+                        waitMessage = it.waitMessage
                     )
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    if (!it.isAccountLinked) {
-                        val parameter = GotoKycMainParam(
-                            projectId = viewModel.projectId,
-                            sourcePage = viewModel.source
-                        )
-                        gotoBridgingAccountLinking(parameter)
-                    } else {
-                        viewModel.checkEligibility()
-                    }
+                    viewModel.checkEligibility()
                 }
                 is ProjectInfoResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -121,8 +115,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -131,8 +124,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun handleProgressiveFlow(encryptedName: String) {
-        if (viewModel.source == KYCConstant.GotoKycSourceAccountPage) {
+        if (viewModel.projectId == KYCConstant.PROJECT_ID_ACCOUNT) {
             val parameter = GotoKycMainParam(
+                projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                 encryptedName = encryptedName,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
@@ -148,8 +142,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun handleNonProgressiveFlow() {
-        if (viewModel.source == KYCConstant.GotoKycSourceAccountPage) {
+        if (viewModel.projectId == KYCConstant.PROJECT_ID_ACCOUNT) {
             val parameter = GotoKycMainParam(
+                projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
                 isKtpTaken = true,
@@ -158,18 +153,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             gotoOnboardBenefit(parameter)
         } else {
             showNonProgressiveBottomSheet(
+                projectId = viewModel.projectId,
                 source = viewModel.source,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                isKtpTaken = true
+                isKtpTaken = true,
+                isSelfieTaken = true
             )
         }
-    }
-
-    private fun gotoBridgingAccountLinking(parameter: GotoKycMainParam) {
-        val intent = Intent(activity, GotoKycMainActivity::class.java)
-        intent.putExtra(GotoKycRouterFragment.PARAM_REQUEST_PAGE, GotoKycRouterFragment.PAGE_BRIDGING_ACCOUNT_LINKING)
-        intent.putExtra(GotoKycRouterFragment.PARAM_DATA, parameter)
-        startKycForResult.launch(intent)
     }
 
     private fun gotoTokoKyc(projectId: String) {
@@ -196,7 +186,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
-        val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet(
+        val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = viewModel.projectId,
             source = source,
             encryptedName = encryptedName
@@ -213,11 +203,13 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNonProgressiveBottomSheet(source: String, isAccountLinked: Boolean, isKtpTaken: Boolean) {
-        val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet(
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean) {
+        val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
+            projectId = projectId,
             source = source,
             isAccountLinked = isAccountLinked,
-            isKtpTaken = isKtpTaken
+            isKtpTaken = isKtpTaken,
+            isSelfieTaken = isSelfieTaken
         )
 
         onBoardNonProgressiveBottomSheet.show(

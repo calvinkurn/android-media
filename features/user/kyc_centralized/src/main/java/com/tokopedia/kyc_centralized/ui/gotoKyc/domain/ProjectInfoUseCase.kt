@@ -30,7 +30,9 @@ class ProjectInfoUseCase @Inject constructor(
                 IsSelfie
                 DataSource
                 IsGotoKyc
-                AccountLinkingStatus
+                GoToLinked
+                AccountLinked
+                WaitMessage
               }
             }
         """.trimIndent()
@@ -39,18 +41,18 @@ class ProjectInfoUseCase @Inject constructor(
         val parameter = mapOf(PROJECT_ID to params)
         val response: ProjectInfoResponse = repository.request(graphqlQuery(), parameter)
         response.kycProjectInfo.apply {
-            return if (!isGoToKyc) {
+            return if (!isGotoKyc) {
                 ProjectInfoResult.TokoKyc()
             } else {
                 if (status == NOT_VERIFIED) {
                     ProjectInfoResult.NotVerified(
-                        isAccountLinked = accountLinkingStatus == ACCOUNT_LINKED
+                        isAccountLinked = accountLinked == ACCOUNT_LINKED
                     )
                 } else {
                     ProjectInfoResult.StatusSubmission(
                         status = status,
-                        dataSource = dataSource,
-                        listReason = reason
+                        listReason = reason,
+                        waitMessage = waitMessage
                     )
                 }
             }

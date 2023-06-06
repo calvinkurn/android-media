@@ -16,18 +16,16 @@ class GetChallengeUseCase @Inject constructor(
 ) : CoroutineUseCase<String, GetChallengeResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-            query getOneKYCChallenge(${'$'}challengeID: String) {
-              getOneKYCChallenge(challengeID: ${'$'}challengeID) {
+            query kycGetGoToChallenge(${'$'}challengeID: String) {
+              kycGetGoToChallenge(challengeID: ${'$'}challengeID) {
                 isSuccess
                 errorMessages
                 data {
-                  questions {
-                    id
-                    questionType
-                    displayText
-                    hint
-                    type
-                  }
+                  id
+                  questionType
+                  displayText
+                  hint
+                  type
                 }
               }
             }
@@ -39,19 +37,17 @@ class GetChallengeUseCase @Inject constructor(
             .request<Map<String, String>, GetChallengeResponse>(graphqlQuery(), parameter)
             .getOneKYCChallenge
 
-        return if (!response.isSuccess || response.data.questions.isEmpty()) {
-            val message = if (response.errorMessages.isNotEmpty()) {
-                response.errorMessages.first()
-            } else {
-                ""
-            }
-            GetChallengeResult.Failed(MessageErrorException(message))
+        val dobChallenge = response.data.find { it.questionType == QUESTION_TYPE_DOB }
+
+        return if (response.isSuccess && dobChallenge?.id?.isNotEmpty() == true) {
+            GetChallengeResult.Success(questionId = dobChallenge.id)
         } else {
-            GetChallengeResult.Success(questionId = response.data.questions.first().id)
+            GetChallengeResult.Failed(MessageErrorException(response.errorMessages.joinToString()))
         }
     }
 
     companion object {
+        private const val QUESTION_TYPE_DOB = "Date of Birth"
         private const val KEY_CHALLENGE_ID = "challengeID"
     }
 }

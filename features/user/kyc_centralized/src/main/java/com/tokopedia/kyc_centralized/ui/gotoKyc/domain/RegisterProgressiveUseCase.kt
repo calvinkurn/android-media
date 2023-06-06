@@ -16,12 +16,14 @@ class RegisterProgressiveUseCase @Inject constructor(
 ) : CoroutineUseCase<RegisterProgressiveParam, RegisterProgressiveResult>(dispatchers.io) {
     override fun graphqlQuery(): String =
         """
-            mutation registerProgressiveKYC(${'$'}projectID: Int!, ${'$'}challengeID: String) {
-              registerProgressiveKYC(projectID: ${'$'}projectID, challengeID: ${'$'}challengeID) {
-                isSuccess
+            mutation kycRegisterProgressive(${'$'}param: kycRegisterProgressiveRequest!) {
+              kycRegisterProgressive(param: ${'$'}param) {
                 errorMessages
                 data {
                   challengeID
+                  status
+                  rejectionReasonCode
+                  rejectionReasonMessage
                 }
               }
             }
@@ -34,14 +36,12 @@ class RegisterProgressiveUseCase @Inject constructor(
                 params
             ).registerProgressiveKYC
 
-        return if (!response.isSuccess) {
-            val errorMessage = response.errorMessages.first()
-            RegisterProgressiveResult.Failed(throwable = MessageErrorException(errorMessage))
+        return if (response.errorMessages.isNotEmpty()) {
+            RegisterProgressiveResult.Failed(throwable = MessageErrorException(response.errorMessages.first()))
         } else if (response.data.challengeID.isNotEmpty()) {
             RegisterProgressiveResult.RiskyUser(challengeId = response.data.challengeID)
         } else {
-            //TODO: change implementation when API ready
-            RegisterProgressiveResult.NotRiskyUser(isPending = false)
+            RegisterProgressiveResult.NotRiskyUser(status = response.data.status, rejectionReason = response.data.rejectionReasonMessage)
         }
     }
 }

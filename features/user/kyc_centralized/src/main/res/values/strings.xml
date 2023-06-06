@@ -213,11 +213,14 @@
     <string name="goto_kyc_benefit_account_title_pending">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
     <string name="goto_kyc_benefit_account_title_verified">Saatnya nikmatin beragam keuntungannya!</string>
     <string name="goto_kyc_status_pending_title">Makasih ya udah kirim dokumenmu!</string>
-    <string name="goto_kyc_status_pending_subtitle_24_hours">Sebentar ya, datamu diproses dalam <![CDATA[<b>24 jam</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_subtitle">Sebentar ya, datamu diproses dalam <![CDATA[<b>%s</b>]]>. Kamu bisa tutup dan kami kabarin saat selesai.</string>
+    <string name="goto_kyc_status_pending_hours">%s jam</string>
+    <string name="goto_kyc_status_pending_minutes">%s menit</string>
+    <string name="goto_kyc_status_pending_seconds">%s detik</string>
     <string name="goto_kyc_status_pending_button">Balik ke %s</string>
     <string name="goto_kyc_status_verified_title">Hore, dokumenmu berhasil terverifikasi!</string>
     <string name="goto_kyc_status_verified_subtitle">Tenang, data yang kamu berikan akan dijaga kerahasiannya dan disimpan di sistem kami.</string>
-    <string name="goto_kyc_back_to_source">Balik ke %s</string>
+    <string name="goto_kyc_back_to_source">Balik</string>
     <string name="goto_kyc_status_verified_timer">Meluncur otomatis dalam <![CDATA[<b>%s detik</b>]]>.</string>
     <string name="goto_kyc_status_blacklisted_title">Yaah, dokumen kamu nggak sesuai Syarat &amp; Ketentuan</string>
     <string name="goto_kyc_status_blacklisted_subtitle">Untuk informasi lebih lanjut, coba hubungi Tokopedia Care ya.</string>
@@ -242,8 +245,7 @@
     <string name="goto_kyc_benefit_detail_gopay_title_3">Nikmatin fitur menarik lainnya</string>
     <string name="goto_kyc_benefit_detail_gopay_subtitle_3">Transfer ke bank, tarik tunai dan bayar ke teman &amp; keluarga.</string>
     <string name="goto_kyc_benefit_detail_bottom_sheet_title">Keuntungan setelah verifikasi</string>
-    <string name="goto_kyc_onboard_non_progressive_title_account_page">Verifikasi dulu buat dapetin keuntungannya, ya! Gampang, lho~</string>
-    <string name="goto_kyc_onboard_non_progressive_title_not_account_page">Verifikasi buat jadi %s, yuk! Gampang banget, lho~</string>
+    <string name="goto_kyc_onboard_non_progressive_title">Verifikasi datamu dulu, yuk! Gampang banget, lho~</string>
     <string name="goto_kyc_onboard_non_progressive_button">Mulai Verifikasi</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_title">Sambungin akun Gojek</string>
     <string name="goto_kyc_onboard_non_progressive_item_account_linking_subtitle_unlinked">Tinggal konfirmasi nomor HP-mu dan akun langsung kesambung.</string>
@@ -252,10 +254,10 @@
     <string name="goto_kyc_onboard_non_progressive_item_ktp_subtitle_not_taken">Siapin KTP asli kamu dan pastikan masih berlaku, ya.</string>
     <string name="goto_kyc_onboard_non_progressive_item_ktp_view_image">Lihat Foto KTP</string>
     <string name="goto_kyc_onboard_non_progressive_item_selfie_title">Ambil selfie</string>
-    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
-    <string name="goto_kyc_onboard_progressive_title_account_page">Selangkah lagi buat dapetin keuntungannya!</string>
-    <string name="goto_kyc_onboard_progressive_title_not_account_page">Selangkah lagi buat jadi %s!</string>
-    <string name="goto_kyc_onboard_progressive_subtitle">Kamu udah terdaftar di GoPay, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
+    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_taken">Kamu udah ambil selfie, lanjutin yuk!</string>
+    <string name="goto_kyc_onboard_non_progressive_item_selfie_subtitle_not_taken">Siap-siap! Cari tempat yang terang, lepas kacamata atau masker kamu.</string>
+    <string name="goto_kyc_onboard_progressive_title">Selangkah lagi buat lanjut verifikasi!</string>
+    <string name="goto_kyc_onboard_progressive_subtitle">Kamu udah terdaftar di GoPay Plus, nih. Mau pakai KTP ini buat lanjut verifikasi?</string>
     <string name="goto_kyc_onboard_progressive_item_title">KTP di GoPay</string>
     <string name="goto_kyc_transparent_something_wrong">Terjadi kesalahan!</string>
     <string name="goto_kyc_onboard_benefit_title">Yuk, nikmatin keuntungan ini setelah verifikasi!</string>
@@ -274,10 +276,15 @@
     <string name="goto_kyc_dob_challenge_title">Konfirmasi pakai tanggal lahirmu</string>
     <string name="goto_kyc_dob_challenge_subtitle">Karena udah terdaftar di GoPay Plus, kamu tinggal konfirmasi tanggal lahirmu sesuai KTP.</string>
     <string name="goto_kyc_dob_challenge_choose_dob">Pilih tanggal lahir</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_message">Tanggal lahir nggak cocok. Sisa %s kali coba lagi, ya.</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_maximum_attempts_message">Kamu udah masukin tanggal lahir yang salah sebanyak %s kali.</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_waiting_date_message">Coba lagi pada %s ya.</string>
+    <string name="goto_kyc_dob_challenge_wrong_answer_waiting_seconds_message">Coba beberapa detik lagi.</string>
     <string name="goto_kyc_dob_failed_title">Yah, sisa coba kamu udah abis</string>
-    <string name="goto_kyc_dob_failed_subtitle">Kamu udah masukin tanggal lahir yang salah sebanyak 3 kali. Coba lagi dalam 24 jam, ya!</string>
+    <string name="goto_kyc_dob_failed_subtitle">Kamu udah masukin tanggal lahir yang salah sebanyak %s kali. Coba lagi pada %s ya.</string>
     <string name="goto_kyc_dob_challenge_confirmation">Konfirmasi</string>
     <string name="goto_kyc_loader_wait_a_moment">Tunggu sebentar, ya…</string>
     <string name="goto_kyc_loader_data_uploading">Datamu sedang di-upload.</string>
+    <string name="goto_kyc_error_from_be">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
 </resources>

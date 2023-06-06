@@ -43,10 +43,18 @@
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.BridgingAccountLinkingParam" />
         <action
             android:id="@+id/action_bridgingAccountLinkingFragment_to_dobChallengeFragment"
-            app:destination="@id/dobChallengeFragment" />
+            app:destination="@id/dobChallengeFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
         <action
             android:id="@+id/action_bridgingAccountLinkingFragment_to_statusSubmissionFragment"
-            app:destination="@id/statusSubmissionFragment" />
+            app:destination="@id/statusSubmissionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
     </fragment>
     <fragment
         android:id="@+id/dobChallengeFragment"
@@ -58,7 +66,11 @@
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.DobChallengeParam"/>
         <action
             android:id="@+id/action_dobChallengeFragment_to_finalLoaderFragment"
-            app:destination="@id/finalLoaderFragment" />
+            app:destination="@id/finalLoaderFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
     </fragment>
     <fragment
         android:id="@+id/onboardBenefitFragment"
@@ -79,10 +91,20 @@
             app:argType="com.tokopedia.kyc_centralized.ui.gotoKyc.main.FinalLoaderParam"/>
         <action
             android:id="@+id/action_finalLoaderFragment_to_statusSubmissionFragment"
-            app:destination="@id/statusSubmissionFragment" />
+            app:destination="@id/statusSubmissionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
         <action
             android:id="@+id/action_finalLoaderFragment_to_dobChallengeFragment"
-            app:destination="@id/dobChallengeFragment" />
+            app:destination="@id/dobChallengeFragment"
+            app:popUpTo="@+id/dobChallengeFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"/>
     </fragment>
 
 </navigation>

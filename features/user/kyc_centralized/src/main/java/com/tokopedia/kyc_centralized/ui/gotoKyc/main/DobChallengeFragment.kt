@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
@@ -16,13 +17,11 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.common.getMessage
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycDobChallengeBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
-import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardProgressiveBottomSheet
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.GetChallengeResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.SubmitChallengeResult
-import com.tokopedia.kyc_centralized.ui.gotoKyc.transparent.GotoKycTransparentFragment
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
@@ -33,6 +32,9 @@ class DobChallengeFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentGotoKycDobChallengeBinding>()
 
     private var selectedDate = ""
+    private var pickedDate = 0
+    private var pickedMonth = 0
+    private var pickedYear = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -97,8 +99,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
                     showChallengeQuestion()
                 }
                 is GetChallengeResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -109,26 +110,39 @@ class DobChallengeFragment : BaseDaggerFragment() {
             when (it) {
                 is SubmitChallengeResult.Loading -> {
                     setButtonLoading(true)
+                    binding?.fieldDob?.apply {
+                        isInputError = false
+                        setMessage(" ")
+                    }
                 }
                 is SubmitChallengeResult.Success -> {
                     setButtonLoading(false)
                     gotoFinalLoader()
                 }
                 is SubmitChallengeResult.WrongAnswer -> {
+                    setButtonLoading(false)
                     binding?.fieldDob?.apply {
                         isInputError = true
-                        setMessage(it.message)
+                        setMessage(
+                            getString(
+                                R.string.goto_kyc_dob_challenge_wrong_answer_message,
+                                it.attemptsRemaining
+                            )
+                        )
                     }
                 }
                 is SubmitChallengeResult.Exhausted -> {
-                    showDobChallengeFailedBottomSheet()
+                    setButtonLoading(false)
+                    showDobChallengeFailedBottomSheet(
+                        cooldownTimeInSeconds = it.cooldownTimeInSeconds,
+                        maximumAttemptsAllowed = it.maximumAttemptsAllowed
+                    )
                 }
                 is SubmitChallengeResult.Failed -> {
                     setButtonLoading(false)
-                    val message = it.throwable?.getMessage(requireContext())
                     binding?.fieldDob?.apply {
                         isInputError = true
-                        setMessage(message.orEmpty())
+                        setMessage(getString(R.string.goto_kyc_error_from_be))
                     }
                 }
             }
@@ -175,18 +189,27 @@ class DobChallengeFragment : BaseDaggerFragment() {
         val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
         val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
 
+        val defaultDate = if (pickedDate != 0 && pickedMonth != 0 && pickedYear != 0) {
+            GregorianCalendar(pickedYear, pickedMonth, pickedDate)
+        } else {
+            maxDate
+        }
+
         val datePicker = DateTimePickerUnify(
-            context = requireContext(), minDate = minDate, defaultDate = maxDate, maxDate = maxDate
+            context = requireContext(), minDate = minDate, defaultDate = defaultDate, maxDate = maxDate
         )
 
         datePicker.setTitle(getString(R.string.goto_kyc_dob_challenge_choose_dob))
 
         datePicker.datePickerButton.setOnClickListener {
             val selectedDatePicker = datePicker.getDate()
+            pickedDate = selectedDatePicker.get(Calendar.DAY_OF_MONTH)
+            pickedMonth = selectedDatePicker.get(Calendar.MONTH)
+            pickedYear = selectedDatePicker.get(Calendar.YEAR)
             val selectedDate = formatDateParam(
-                selectedDatePicker.get(Calendar.DAY_OF_MONTH),
-                selectedDatePicker.get(Calendar.MONTH) + 1,
-                selectedDatePicker.get(Calendar.YEAR)
+                dayOfMonth = pickedDate,
+                month = pickedMonth + 1,
+                year = pickedYear
             )
             this.selectedDate = selectedDate
             val date = DateFormatUtils.formatDate(
@@ -204,24 +227,33 @@ class DobChallengeFragment : BaseDaggerFragment() {
         datePicker.show(childFragmentManager, TAG_BOTTOM_SHEET_DATE_PICKER)
     }
 
-    private fun showDobChallengeFailedBottomSheet() {
-        val dobChallengeBottomSheet = DobChallengeBottomSheet(
-            source = args.parameter.pageSource
+    private fun showDobChallengeFailedBottomSheet(cooldownTimeInSeconds: String, maximumAttemptsAllowed: String) {
+        val dobChallengeExhaustedBottomSheet = DobChallengeExhaustedBottomSheet.newInstance(
+            source = args.parameter.pageSource,
+            cooldownTimeInSeconds = cooldownTimeInSeconds,
+            maximumAttemptsAllowed = maximumAttemptsAllowed
         )
 
-        dobChallengeBottomSheet.show(
+        dobChallengeExhaustedBottomSheet.show(
             childFragmentManager,
             TAG_BOTTOM_SHEET_DOB_CHALLENGE_FAILED
         )
 
-        dobChallengeBottomSheet.setOnDismissListener {
-            activity?.setResult(Activity.RESULT_CANCELED)
+        dobChallengeExhaustedBottomSheet.setOnDismissListener {
+            activity?.setResult(KYCConstant.RESULT_FINISH)
             activity?.finish()
         }
     }
 
     private fun gotoFinalLoader() {
-        //TODO: goto final loader
+        val parameter = FinalLoaderParam(
+            source = args.parameter.pageSource,
+            projectId = args.parameter.projectId,
+            challengeId = args.parameter.challengeId,
+            gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE
+        )
+        val toFinalLoaderPage = DobChallengeFragmentDirections.actionDobChallengeFragmentToFinalLoaderFragment(parameter)
+        view?.findNavController()?.navigate(toFinalLoaderPage)
     }
 
     private fun setButtonLoading(isLoading: Boolean) {
@@ -233,7 +265,12 @@ class DobChallengeFragment : BaseDaggerFragment() {
     }
 
     private fun formatDateParam(dayOfMonth: Int, month: Int, year: Int): String {
-        return String.format("%s-%s-%s", year.toString(), month.toString(), dayOfMonth.toString())
+        return String.format(
+            "%s-%s-%s",
+            year.toString(),
+            String.format("%02d", month),
+            String.format("%02d", dayOfMonth)
+        )
     }
 
     override fun getScreenName(): String = DobChallengeFragment::class.java.simpleName

@@ -4,12 +4,17 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
 data class SubmitChallengeParam (
+    @SerializedName("param")
+    val param: SubmitChallengeData = SubmitChallengeData()
+): GqlParam
+
+data class SubmitChallengeData (
     @SerializedName("challengeID")
     val challengeID: String = "",
 
     @SerializedName("answers")
     val answers: List<KycSubmitGoToChallengeAnswer> = listOf()
-): GqlParam
+)
 
 data class KycSubmitGoToChallengeAnswer (
     @SerializedName("questionId")

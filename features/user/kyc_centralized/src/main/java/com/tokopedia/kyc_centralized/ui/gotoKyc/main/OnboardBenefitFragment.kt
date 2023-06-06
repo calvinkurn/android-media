@@ -56,12 +56,12 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         if (args.parameter.gotoKycType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
             showProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.encryptedName)
         } else {
-            showNonProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.isAccountLinked, args.parameter.isKtpTaken)
+            showNonProgressiveBottomSheet(args.parameter.projectId, args.parameter.sourcePage, args.parameter.isAccountLinked, args.parameter.isKtpTaken, args.parameter.isSelfieTaken)
         }
     }
 
     private fun showProgressiveBottomSheet(source: String, encryptedName: String) {
-        val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet(
+        val onBoardProgressiveBottomSheet = OnboardProgressiveBottomSheet.newInstance(
             projectId = args.parameter.projectId,
             source = source,
             encryptedName = encryptedName
@@ -71,27 +71,21 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_PROGRESSIVE
         )
-
-        onBoardProgressiveBottomSheet.setOnDismissListener {
-            activity?.finish()
-        }
     }
 
-    private fun showNonProgressiveBottomSheet(source: String, isAccountLinked: Boolean, isKtpTaken: Boolean) {
-        val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet(
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean) {
+        val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
+            projectId = projectId,
             source = source,
             isAccountLinked = isAccountLinked,
-            isKtpTaken = isKtpTaken
+            isKtpTaken = isKtpTaken,
+            isSelfieTaken = isSelfieTaken
         )
 
         onBoardNonProgressiveBottomSheet.show(
             childFragmentManager,
             TAG_BOTTOM_SHEET_ONBOARD_NON_PROGRESSIVE
         )
-
-        onBoardNonProgressiveBottomSheet.setOnDismissListener {
-            activity?.finish()
-        }
     }
 
     override fun initInjector() {

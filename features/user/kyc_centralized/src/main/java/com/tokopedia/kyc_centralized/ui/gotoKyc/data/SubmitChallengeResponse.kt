@@ -3,17 +3,23 @@ package com.tokopedia.kyc_centralized.ui.gotoKyc.data
 import com.google.gson.annotations.SerializedName
 
 data class SubmitChallengeResponse(
-	@SerializedName("submitKYCChallenge")
+	@SerializedName("kycSubmitGoToChallenge")
 	val submitKYCChallenge: SubmitKYCChallenge
 )
 
 data class SubmitKYCChallenge(
-	@SerializedName("errorMessages")
-	val errorMessages: List<String>,
+    @SerializedName("cooldownTimeInSeconds")
+    val cooldownTimeInSeconds: String = "",
 
-	@SerializedName("isSuccess")
-	val isSuccess: Boolean,
+    @SerializedName("attemptsRemaining")
+    val attemptsRemaining: String = "",
 
-    //TODO: this is fake field, please change it when BE ready
-    val submitStatus: String = "KYC_CHALLENGE_ATTEMPTS_EXHAUSTED"
+    @SerializedName("maximumAttemptsAllowed")
+    val maximumAttemptsAllowed: String = "",
+
+    @SerializedName("message")
+    val message: String = "",
+
+    @SerializedName("errorMessages")
+	val errorMessages: List<String> = emptyList()
 )

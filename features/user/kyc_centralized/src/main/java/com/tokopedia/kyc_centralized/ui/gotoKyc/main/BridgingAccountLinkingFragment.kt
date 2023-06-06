@@ -96,8 +96,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     activity?.finish()
                 }
                 is AccountLinkingStatusResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -113,8 +112,7 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     handleNonProgressiveFlow()
                 }
                 is CheckEligibilityResult.Failed -> {
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                     activity?.setResult(Activity.RESULT_CANCELED)
                     activity?.finish()
                 }
@@ -137,16 +135,17 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                 is RegisterProgressiveResult.NotRiskyUser -> {
                     setButtonLoading(false)
                     val parameter = StatusSubmissionParam(
+                        projectId = args.parameter.projectId,
                         sourcePage = args.parameter.source,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
-                        status = "0"
+                        status = it.status.toString(),
+                        listReason = listOf(it.rejectionReason)
                     )
                     gotoStatusSubmissionPending(parameter)
                 }
                 is RegisterProgressiveResult.Failed -> {
                     setButtonLoading(false)
-                    val message = it.throwable?.getMessage(requireContext())
-                    showToaster(message.orEmpty())
+                    showToaster(getString(R.string.goto_kyc_error_from_be))
                 }
             }
         }
