@@ -37,8 +37,8 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.PROMOTIONS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.QUANTITY
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SCREEN_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.REGULAR
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SCREEN_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_ID
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_NAME
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.SHOP_TYPE
@@ -308,17 +308,16 @@ class DigitalPDPAnalytics {
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
     // Tracker ID: 43701
     fun clickInputOtp(
-        categoryName: String,
-        loyaltyStatus: String,
         userId: String,
         isLogin: Boolean
     ) {
         val data = DataLayer.mapOf(
-            TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_INPUT_OTP,
-            TrackAppUtils.EVENT_LABEL, "$categoryName - $loyaltyStatus",
-            TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_INPUT_OTP,
-            IS_LOGGEDIN_STATUS, isLogin,
-            SCREEN_NAME, "iframe-otp"
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_INPUT_OTP,
+            IS_LOGGEDIN_STATUS,
+            isLogin,
+            SCREEN_NAME,
+            "iframe-otp"
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -664,7 +663,6 @@ class DigitalPDPAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventDataLayer)
     }
 
-
     fun impressMCCMProductNew(
         productListName: String,
         categoryName: String,
@@ -686,7 +684,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
+                "$categoryName - $operatorName - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -776,7 +774,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
+                "$categoryName - $operatorName - ${(position + Int.ONE)} - ${denomData.id} - $loyaltyStatus"
             )
             putParcelableArrayList(
                 ITEMS,
@@ -859,7 +857,7 @@ class DigitalPDPAnalytics {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_CHEVRON_IN_PROMO_CARD)
             putString(ITEM_LIST, productListName)
-            putString(TrackAppUtils.EVENT_LABEL,  "${categoryName} - ${operatorName} - $loyaltyStatus")
+            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
             putString(TRACKER_ID, CLICK_CHEVRON_PROMOTION)
             putParcelableArrayList(
                 ITEMS,
@@ -1022,13 +1020,13 @@ class DigitalPDPAnalytics {
         categoryName: String,
         operatorName: String,
         loyaltyStatus: String,
-        userId: String,
-    ){
+        userId: String
+    ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_CHEVRON_SHOW_MORE)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - $loyaltyStatus"
+                "$categoryName - $operatorName - $loyaltyStatus"
             )
             putString(TRACKER_ID, CLICK_SHOW_MORE_PROMOTION)
         }
@@ -1042,17 +1040,17 @@ class DigitalPDPAnalytics {
         operatorName: String,
         loyaltyStatus: String,
         userId: String,
-        denomType: DenomWidgetEnum,
+        denomType: DenomWidgetEnum
     ) {
         val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-        ){
+        ) {
             MCCM
-        } else if(
+        } else if (
             denomType == DenomWidgetEnum.GRID_TYPE ||
             denomType == DenomWidgetEnum.FULL_TYPE
-        ){
+        ) {
             REGULAR
         } else {
             FLASH_SALE
@@ -1062,7 +1060,7 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_CLOSE_BUTTON_PRODUCT_DESC)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${recommendationLogic} - $loyaltyStatus"
+                "$categoryName - $operatorName - $recommendationLogic - $loyaltyStatus"
             )
             putString(TRACKER_ID, CLICK_CLOSE_PRODUCT_DESC)
         }
@@ -1084,12 +1082,12 @@ class DigitalPDPAnalytics {
         val recommendationLogic = if (denomType == DenomWidgetEnum.MCCM_GRID_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_TYPE ||
             denomType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
-        ){
+        ) {
             MCCM
-        } else if(
+        } else if (
             denomType == DenomWidgetEnum.GRID_TYPE ||
             denomType == DenomWidgetEnum.FULL_TYPE
-        ){
+        ) {
             REGULAR
         } else {
             FLASH_SALE
@@ -1099,7 +1097,7 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESS_PRODUCT_DESC)
             putString(
                 TrackAppUtils.EVENT_LABEL,
-                "${categoryName} - ${operatorName} - ${recommendationLogic} - $loyaltyStatus"
+                "$categoryName - $operatorName - $recommendationLogic - $loyaltyStatus"
             )
             putString(TRACKER_ID, IMPRESS_BOTTOM_SHEET_PRODUCT_DESC)
             putString(ITEM_LIST, productListTitle)
