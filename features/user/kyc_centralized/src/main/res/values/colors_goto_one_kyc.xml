@@ -18,4 +18,5 @@
     <bool name="kyc_plus_window_light_status_bar">true</bool>
     <color name="kyc_plus_icon_tint_color">@color/Unify_NN900</color>
     <color name="kyc_plus_icon_tint_inverted_color">@color/Unify_NN0</color>
+    <color name="kyc_plus_black">#000000</color>
 </resources>
