@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
-import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.KycStatusResult
+import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.ProjectInfoResult
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.RegisterProgressiveResult
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -51,6 +51,7 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 challengeId = args.parameter.challengeId
             )
         } else {
+            showScreenLoading(true)
             viewModel.kycStatus(args.parameter.projectId)
         }
     }
@@ -73,7 +74,8 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                         projectId = args.parameter.projectId,
                         gotoKycType = KYCConstant.GotoKycFlow.PROGRESSIVE,
                         status = it.status.toString(),
-                        sourcePage = args.parameter.source
+                        sourcePage = args.parameter.source,
+                        listReason = listOf(it.rejectionReason)
                     )
                     gotoStatusSubmission(parameter)
                 }
@@ -86,19 +88,17 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
         viewModel.kycStatus.observe(viewLifecycleOwner) {
             when (it) {
-                is KycStatusResult.Loading -> {
-                    showScreenLoading(true)
-                }
-                is KycStatusResult.Success -> {
+                is ProjectInfoResult.StatusSubmission -> {
                     val parameter = StatusSubmissionParam(
                         projectId = args.parameter.projectId,
                         gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                         status = it.status,
-                        sourcePage = args.parameter.source
+                        sourcePage = args.parameter.source,
+                        listReason = it.listReason
                     )
                     gotoStatusSubmission(parameter)
                 }
-                is KycStatusResult.Failed -> {
+                else -> {
                     showScreenLoading(false)
                     //TODO global error
                 }

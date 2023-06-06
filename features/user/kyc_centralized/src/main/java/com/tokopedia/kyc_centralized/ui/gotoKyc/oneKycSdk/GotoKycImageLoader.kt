@@ -5,8 +5,9 @@ import android.widget.ImageView
 import com.gojek.kyc.plus.image.KycSdkImageLoader
 import com.gojek.kyc.plus.image.KycSdkImageLoadingRequestListener
 import com.tokopedia.media.loader.loadImage
+import javax.inject.Inject
 
-class GotoKycImageLoader: KycSdkImageLoader {
+class GotoKycImageLoader @Inject constructor(): KycSdkImageLoader {
     override fun loadLocalImageInto(
         activity: Activity,
         imageView: ImageView,

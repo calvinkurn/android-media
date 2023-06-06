@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.gojek.jago.onekyc.configs.UnifiedKycConfigsDefault
+import com.gojek.kyc.plus.card.KycPlusDefaultCard
 import com.gojek.kyc.sdk.config.DefaultRemoteConfigProvider
 import com.gojek.kyc.sdk.config.KycSdkClientConfig
 import com.gojek.kyc.sdk.config.KycSdkConfig
@@ -12,11 +13,11 @@ import com.gojek.onekyc.OneKycSdk
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycImageLoader
+import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -77,10 +78,12 @@ open class GoToKycModule {
                             tkpdAuthInterceptor: TkpdAuthInterceptor,
                             retryPolicy: OkHttpRetryPolicy,
                             loggingInterceptor: HttpLoggingInterceptor,
-                            chuckerInterceptor: ChuckerInterceptor
+                            chuckerInterceptor: ChuckerInterceptor,
+                            gotoKycInterceptor: GotoKycInterceptor
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
+        builder.addInterceptor(gotoKycInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -123,19 +126,11 @@ open class GoToKycModule {
 
     @Provides
     @ActivityScope
-    fun provideGotoKycEventTrackingProvider() = GotoKycEventTrackingProvider()
-
-    @Provides
-    @ActivityScope
-    fun provideGotoKycErrorHandler() = GotoKycErrorHandler()
-
-    @Provides
-    @ActivityScope
-    fun provideGotoKycImageLoader() = GotoKycImageLoader()
-
-    @Provides
-    @ActivityScope
     fun provideUnifiedKycConfigsDefault() = UnifiedKycConfigsDefault()
+
+    @Provides
+    @ActivityScope
+    fun provideKycPlusDefaultCard() = KycPlusDefaultCard()
 
     @ActivityScope
     @Provides
@@ -146,6 +141,7 @@ open class GoToKycModule {
         gotoKycErrorHandler: GotoKycErrorHandler,
         gotoKycImageLoader: GotoKycImageLoader,
         unifiedKycConfigsDefault: UnifiedKycConfigsDefault,
+        kycPlusDefaultCard: KycPlusDefaultCard,
         okHttpClient: OkHttpClient,
         kycSdkConfig: KycSdkConfig
     ): OneKycSdk {
@@ -157,7 +153,8 @@ open class GoToKycModule {
             experimentProvider = unifiedKycConfigsDefault,
             errorHandler = gotoKycErrorHandler,
             okHttpClient = okHttpClient,
-            imageLoader = gotoKycImageLoader
+            imageLoader = gotoKycImageLoader,
+            kycPlusCardFactory = kycPlusDefaultCard
         )
     }
 

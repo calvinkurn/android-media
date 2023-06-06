@@ -26,4 +26,17 @@
     <color name="kyc_dms_overlay">#ae000000</color>
 
     <color name="kyc_dms_background_camera">#CC000000</color>
+
+    <!--One Kyc Sdk Color Customization-->
+    <color name="kyc_plus_typography_active">#00AA5B</color>
+    <color name="kyc_plus_typography_default_body">#6D7588</color>
+    <color name="kyc_plus_typography_default_caption">#494A4A</color>
+    <color name="kyc_plus_typography_default_title">#212121</color>
+    <color name="kyc_plus_typography_error">#F94D63</color>
+    <color name="kyc_plus_typography_inactive">#757575</color>
+    <color name="kyc_plus_typography_inverted">#FFFFFF</color>
+    <color name="kyc_plus_typography_static_black">#212121</color>
+    <color name="kyc_plus_typography_static_white">#FFFFFF</color>
+    <color name="kyc_plus_typography_warning">#A54703</color>
+
 </resources>

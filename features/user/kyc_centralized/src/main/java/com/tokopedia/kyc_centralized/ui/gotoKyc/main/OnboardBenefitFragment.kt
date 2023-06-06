@@ -56,7 +56,7 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         if (args.parameter.gotoKycType == KYCConstant.GotoKycFlow.PROGRESSIVE) {
             showProgressiveBottomSheet(args.parameter.sourcePage, args.parameter.encryptedName)
         } else {
-            showNonProgressiveBottomSheet(args.parameter.projectId, args.parameter.sourcePage, args.parameter.isAccountLinked, args.parameter.isKtpTaken, args.parameter.isSelfieTaken)
+            showNonProgressiveBottomSheet(args.parameter.projectId, args.parameter.sourcePage, args.parameter.isAccountLinked)
         }
     }
 
@@ -73,13 +73,11 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
         )
     }
 
-    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean) {
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked,
-            isKtpTaken = isKtpTaken,
-            isSelfieTaken = isSelfieTaken
+            isAccountLinked = isAccountLinked
         )
 
         onBoardNonProgressiveBottomSheet.show(

@@ -240,7 +240,7 @@ class DobChallengeFragment : BaseDaggerFragment() {
         )
 
         dobChallengeExhaustedBottomSheet.setOnDismissListener {
-            activity?.setResult(KYCConstant.RESULT_FINISH)
+            activity?.setResult(KYCConstant.ActivityResult.RESULT_FINISH)
             activity?.finish()
         }
     }

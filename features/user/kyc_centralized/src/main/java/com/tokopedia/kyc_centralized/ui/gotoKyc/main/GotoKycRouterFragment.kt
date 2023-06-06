@@ -64,6 +64,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     encryptedName = data?.encryptedName.orEmpty(),
                     isAccountLinked = data?.isAccountLinked.orFalse(),
                     isKtpTaken = data?.isKtpTaken.orFalse(),
+                    isSelfieTaken = data?.isSelfieTaken.orFalse(),
                     sourcePage = data?.sourcePage.orEmpty()
                 )
                 gotoOnboardBenefitGotoKyc(parameter)
@@ -82,6 +83,13 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
                     source = data?.sourcePage.orEmpty()
                 )
                 gotoBridgingAccountLinking(parameter)
+            }
+            PAGE_CAPTURE_KYC_DOCUMENTS -> {
+                val parameter = CaptureKycDocumentsParam(
+                    projectId = data?.projectId.orEmpty(),
+                    source = data?.sourcePage.orEmpty()
+                )
+                gotoCaptureKycDocuments(parameter)
             }
             else -> {
                 activity?.setResult(Activity.RESULT_CANCELED)
@@ -111,6 +119,11 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toBridgingAccountLinking)
     }
 
+    private fun gotoCaptureKycDocuments(parameter: CaptureKycDocumentsParam) {
+        val toCaptureKycDocuments = GotoKycRouterFragmentDirections.actionRouterFragmentToCaptureKycDocumentsFragment(parameter)
+        view?.findNavController()?.navigate(toCaptureKycDocuments)
+    }
+
     override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
@@ -119,6 +132,7 @@ class GotoKycRouterFragment : BaseDaggerFragment() {
 
     companion object {
         const val PARAM_REQUEST_PAGE = "request_page"
+        const val PAGE_CAPTURE_KYC_DOCUMENTS = "page_capture_kyc_documents"
         const val PAGE_ONBOARD_BENEFIT = "page_onboard_benefit"
         const val PAGE_STATUS_SUBMISSION = "page_status_submission"
         const val PAGE_BRIDGING_ACCOUNT_LINKING = "page_bridging_page"

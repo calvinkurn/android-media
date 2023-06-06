@@ -3,9 +3,10 @@ package com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk
 import android.app.Activity
 import android.widget.Toast
 import com.gojek.kyc.plus.utils.KycSdkErrorHandler
+import javax.inject.Inject
 
 //TODO: change implementation when OneKycSDK final was ready
-class GotoKycErrorHandler: KycSdkErrorHandler {
+class GotoKycErrorHandler  @Inject constructor(): KycSdkErrorHandler {
     override fun onUserAuthenticationFailed(activity: Activity) {
         Toast.makeText(activity.applicationContext, "Launch Login flow", Toast.LENGTH_SHORT).show()
     }

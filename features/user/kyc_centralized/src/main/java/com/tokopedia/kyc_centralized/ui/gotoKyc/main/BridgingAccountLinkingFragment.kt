@@ -26,7 +26,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycBridgingAccountLinkingBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.domain.AccountLinkingStatusResult
@@ -73,13 +72,15 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
     }
 
     private fun gotoAccountLinking() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
-            putExtra(
-                ApplinkConstInternalGlobal.PARAM_LD,
-                BACK_BTN_APPLINK
-            )
+        if (viewModel.accountLinkingStatus.value !is AccountLinkingStatusResult.Linked) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
+                putExtra(
+                    ApplinkConstInternalGlobal.PARAM_LD,
+                    BACK_BTN_APPLINK
+                )
+            }
+            startAccountLinkingForResult.launch(intent)
         }
-        startAccountLinkingForResult.launch(intent)
     }
 
     private fun initObserver() {
@@ -92,12 +93,12 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
                     viewModel.checkEligibility()
                 }
                 is AccountLinkingStatusResult.NotLinked -> {
-                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
                     activity?.finish()
                 }
                 is AccountLinkingStatusResult.Failed -> {
                     showToaster(getString(R.string.goto_kyc_error_from_be))
-                    activity?.setResult(Activity.RESULT_CANCELED)
+                    activity?.setResult(KYCConstant.ActivityResult.ACCOUNT_NOT_LINKED)
                     activity?.finish()
                 }
             }
@@ -177,6 +178,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             )
 
             tvSubtitle.text = getString(R.string.goto_kyc_bridging_done_gopay_subtitle)
+            tvTitle.show()
+            tvSubtitle.show()
+            ivBridgingAccountLinking.show()
+            btnConfirm.show()
+            unifyToolbar.show()
 
             layoutDoneGopay.root.show()
             layoutNotDoneGopay.root.hide()
@@ -200,6 +206,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             )
 
             tvSubtitle.text = getString(R.string.goto_kyc_bridging_not_done_gopay_subtitle)
+            tvSubtitle.show()
+            tvTitle.show()
+            ivBridgingAccountLinking.show()
+            btnConfirm.show()
+            unifyToolbar.show()
 
             layoutDoneGopay.root.hide()
             layoutNotDoneGopay.root.show()
@@ -222,7 +233,11 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
             if (viewModel.checkEligibility.value is CheckEligibilityResult.Progressive) {
                 viewModel.registerProgressiveUseCase(args.parameter.projectId)
             } else {
-                goToCaptureKycDocuments()
+                val parameter = CaptureKycDocumentsParam(
+                    projectId = args.parameter.projectId,
+                    source = args.parameter.source
+                )
+                gotoCaptureKycDocuments(parameter)
             }
         }
     }
@@ -278,8 +293,9 @@ class BridgingAccountLinkingFragment : BaseDaggerFragment() {
         view?.findNavController()?.navigate(toDobChallengePage)
     }
 
-    private fun goToCaptureKycDocuments() {
-
+    private fun gotoCaptureKycDocuments(parameter: CaptureKycDocumentsParam) {
+        val toCaptureKycDocuments = BridgingAccountLinkingFragmentDirections.actionBridgingAccountLinkingFragmentToCaptureKycDocumentsFragment(parameter)
+        view?.findNavController()?.navigate(toCaptureKycDocuments)
     }
 
     private fun showToaster(message: String) {

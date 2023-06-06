@@ -11,6 +11,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.gojek.onekyc.OneKycSdk
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -18,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.common.getMessage
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
 import com.tokopedia.kyc_centralized.ui.gotoKyc.bottomSheet.OnboardNonProgressiveBottomSheet
@@ -40,6 +40,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[GotoKycTransparentViewModel::class.java]
     }
+
+    @Inject
+    lateinit var oneKycSdk: OneKycSdk
 
     private val startKycForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         activity?.setResult(result.resultCode)
@@ -96,7 +99,11 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                     gotoStatusSubmission(parameter)
                 }
                 is ProjectInfoResult.NotVerified -> {
-                    viewModel.checkEligibility()
+                    if (it.isAccountLinked) {
+                        viewModel.checkEligibility()
+                    } else {
+                        handleNonProgressiveFlow()
+                    }
                 }
                 is ProjectInfoResult.Failed -> {
                     showToaster(getString(R.string.goto_kyc_error_from_be))
@@ -147,7 +154,6 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
                 projectId = viewModel.projectId,
                 gotoKycType = KYCConstant.GotoKycFlow.NON_PROGRESSIVE,
                 isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                isKtpTaken = true,
                 sourcePage = viewModel.source
             )
             gotoOnboardBenefit(parameter)
@@ -155,9 +161,7 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
             showNonProgressiveBottomSheet(
                 projectId = viewModel.projectId,
                 source = viewModel.source,
-                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true,
-                isKtpTaken = true,
-                isSelfieTaken = true
+                isAccountLinked = viewModel.projectInfo.value?.isAccountLinked == true
             )
         }
     }
@@ -203,13 +207,11 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean, isKtpTaken: Boolean, isSelfieTaken: Boolean) {
+    private fun showNonProgressiveBottomSheet(projectId: String, source: String, isAccountLinked: Boolean) {
         val onBoardNonProgressiveBottomSheet = OnboardNonProgressiveBottomSheet.newInstance(
             projectId = projectId,
             source = source,
-            isAccountLinked = isAccountLinked,
-            isKtpTaken = isKtpTaken,
-            isSelfieTaken = isSelfieTaken
+            isAccountLinked = isAccountLinked
         )
 
         onBoardNonProgressiveBottomSheet.show(

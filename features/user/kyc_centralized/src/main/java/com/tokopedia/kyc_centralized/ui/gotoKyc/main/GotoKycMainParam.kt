@@ -10,6 +10,7 @@ data class GotoKycMainParam (
     val encryptedName: String = "",
     val isAccountLinked: Boolean = false,
     val isKtpTaken: Boolean = false,
+    val isSelfieTaken: Boolean = false,
     val status: String = "",
     val sourcePage: String = "",
     val listReason: List<String> = emptyList(),
