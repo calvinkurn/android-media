@@ -321,8 +321,9 @@ class PlayExploreWidgetFragment @Inject constructor(
                 when (event) {
                     ExploreWidgetInitialState -> scrollListener.resetState()
                     is ShowInfoEvent -> {
-                        toaster.showToaster(
-                            message = getTextFromUiString(event.message)
+                        toaster.showToasterInView(
+                            message = getTextFromUiString(event.message),
+                            view = requireView()
                         )
                     }
                     else -> {}
