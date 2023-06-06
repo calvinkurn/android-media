@@ -23,4 +23,7 @@
     <declare-styleable name="ProductBundleWidgetView">
         <attr name="bundlewidget_title" format="string" />
     </declare-styleable>
+    <declare-styleable name="AddOnWidgetView">
+        <attr name="addonwidget_title" format="string" />
+    </declare-styleable>
 </resources>
