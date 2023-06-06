@@ -1,11 +1,11 @@
-package com.tokopedia.digital_product_detail.pulsa
+package com.tokopedia.digital_product_detail.dataplan
 
 import android.app.Activity
 import android.app.Instrumentation
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
-import com.tokopedia.digital_product_detail.pulsa.utils.DigitalPDPPulsaIndosatOTPMockConfig
+import com.tokopedia.digital_product_detail.dataplan.utils.DigitalPDPDataPlanIndosatOTPMockConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.core.IsNot
@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class DigitalPDPPulsaIndosatOTPCassavaTest : BaseDigitalPDPPulsaTest() {
+class DigitalPDPDataPlanIndosatOTPCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     override fun getApplink(): String = APPLINK
 
@@ -25,7 +25,7 @@ class DigitalPDPPulsaIndosatOTPCassavaTest : BaseDigitalPDPPulsaTest() {
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    override fun getMockModelConfig(): MockModelConfig = DigitalPDPPulsaIndosatOTPMockConfig()
+    override fun getMockModelConfig(): MockModelConfig = DigitalPDPDataPlanIndosatOTPMockConfig()
 
     @Before
     fun setUp() {
@@ -34,7 +34,6 @@ class DigitalPDPPulsaIndosatOTPCassavaTest : BaseDigitalPDPPulsaTest() {
 
     @Test
     fun validate_cassava() {
-        Thread.sleep(2000)
         interactWithCheckBalanceOTPWidget()
     }
 
@@ -52,6 +51,6 @@ class DigitalPDPPulsaIndosatOTPCassavaTest : BaseDigitalPDPPulsaTest() {
     }
 
     companion object {
-        const val APPLINK = "tokopedia://digital/form?category_id=1&menu_id=289&template=pulsav2"
+        const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
     }
 }

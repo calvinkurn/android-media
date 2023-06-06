@@ -6,6 +6,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -25,9 +26,15 @@ import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPers
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.dataplan.utils.DigitalPDPDataPlanMockConfig
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPDataPlanActivity
+import com.tokopedia.digital_product_detail.presentation.webview.RechargeCheckBalanceWebViewActivity
+import com.tokopedia.digital_product_detail.utils.CustomViewAction
+import com.tokopedia.digital_product_detail.utils.CustomViewAction.nestedScrollTo
 import com.tokopedia.recharge_component.model.InputNumberActionType
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeCheckBalanceDetailViewHolder
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.denom.DenomFullViewHolder
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
+import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.unifycomponents.R
 import org.hamcrest.CoreMatchers.allOf
@@ -45,7 +52,7 @@ abstract class BaseDigitalPDPDataPlanTest {
 
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            setupGraphqlMockResponse(DigitalPDPDataPlanMockConfig())
+            setupGraphqlMockResponse(getMockModelConfig())
         }
     }
 
@@ -71,6 +78,17 @@ abstract class BaseDigitalPDPDataPlanTest {
                 )
             ))
             .respondWith(intentResult_returnFavoriteNumber())
+    }
+
+    protected fun checkBalanceWebView_stubIntentResult() {
+        Intents.intending(
+            IntentMatchers.hasComponent(
+                ComponentNameMatchers.hasClassName(
+                    RechargeCheckBalanceWebViewActivity::class.java.name
+                )
+            )
+        )
+            .respondWith(intentResult_returnAccessToken())
     }
 
     private fun intentResult_returnContactNumber(): Instrumentation.ActivityResult {
@@ -102,6 +120,16 @@ abstract class BaseDigitalPDPDataPlanTest {
         return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
     }
 
+    private fun intentResult_returnAccessToken(): Instrumentation.ActivityResult {
+        val accessToken = "access_token"
+        val resultData = Intent()
+        resultData.putExtra(
+            TopupBillsPersoSavedNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER,
+            accessToken
+        )
+        return Instrumentation.ActivityResult(Activity.RESULT_OK, resultData)
+    }
+
     protected fun clientNumberWidget_typeNumber(number: String) {
         onView(withId(R.id.text_field_input)).perform(typeText(number))
     }
@@ -112,6 +140,14 @@ abstract class BaseDigitalPDPDataPlanTest {
 
     protected fun clientNumberWidget_clickContactIcon() {
         onView(withId(com.tokopedia.recharge_component.R.id.text_field_icon_2)).perform(click())
+    }
+
+    protected fun clientNumberWidget_clickCheckBalanceOTPWidget() {
+        onView(withId(com.tokopedia.recharge_component.R.id.check_balance_otp_title)).perform(click())
+    }
+
+    protected fun clientNumberWidget_clickCheckBalanceWidget() {
+        onView(withId(com.tokopedia.recharge_component.R.id.check_balance_rv)).perform(click())
     }
 
     protected fun favoriteChips_clickChip_withText(text: String) {
@@ -138,6 +174,9 @@ abstract class BaseDigitalPDPDataPlanTest {
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_full_card)).perform(
+            nestedScrollTo()
+        )
         onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_full)).perform(
             RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click()))
     }
@@ -151,8 +190,10 @@ abstract class BaseDigitalPDPDataPlanTest {
         )
     }
     protected fun denom_clickCard_withIndex(index: Int) {
+        onView(withId(com.tokopedia.recharge_component.R.id.tg_denom_full_widget_title)).perform(nestedScrollTo())
         onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_full_card)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click()))
+            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click())
+        )
     }
 
     protected fun denom_clickCardChevron_withIndex(index: Int) {
@@ -176,5 +217,24 @@ abstract class BaseDigitalPDPDataPlanTest {
         ).perform(click())
     }
 
+    protected fun checkBalanceOTPBottomSheet_clickButton() {
+        onView(withId(com.tokopedia.digital_product_detail.R.id.bottomsheet_otp_button)).perform(click())
+    }
+
+    protected fun checkBalanceBottomSheet_clickItem_withIndex(index: Int) {
+        onView(withId(com.tokopedia.digital_product_detail.R.id.recharge_check_balance_detail_rv))
+            .perform(RecyclerViewActions
+                .actionOnItemAtPosition<RechargeCheckBalanceDetailViewHolder>(
+                    index, CustomViewAction.clickChildViewWithId(com.tokopedia.digital_product_detail.R.id.check_balance_detail_buy_button)
+                )
+            )
+    }
+
+    protected fun checkBalanceBottomSheet_clickCloseIcon() {
+        onView(withId(com.tokopedia.digital_product_detail.R.id.bottom_sheet_close)).perform(click())
+    }
+
     abstract fun getApplink(): String
+
+    abstract fun getMockModelConfig(): MockModelConfig
 }

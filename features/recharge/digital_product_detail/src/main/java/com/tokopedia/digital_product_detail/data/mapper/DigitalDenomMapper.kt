@@ -61,7 +61,7 @@ class DigitalDenomMapper @Inject constructor() {
         )
     }
 
-    fun mapDigiPersoToMCCMProducts(data: PersoRecommendationData): DenomWidgetModel {
+    fun mapDigiPersoToMCCMProducts(data: DigitalPersoData): DenomWidgetModel {
         return if (!data.items.isNullOrEmpty()) {
             val firstProduct = data.items.first()
             val denomList: MutableList<DenomData> = mutableListOf()
@@ -212,7 +212,7 @@ class DigitalDenomMapper @Inject constructor() {
         }
     }
 
-    private fun digiPersoToMCCMItems(perso: PersoRecommendationItem): DenomData {
+    private fun digiPersoToMCCMItems(perso: DigitalPersoItem): DenomData {
         return perso.let {
             DenomData(
                 id = it.trackingData.productId,

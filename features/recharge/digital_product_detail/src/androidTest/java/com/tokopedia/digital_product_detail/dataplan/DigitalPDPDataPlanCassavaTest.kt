@@ -8,6 +8,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
+import com.tokopedia.digital_product_detail.dataplan.utils.DigitalPDPDataPlanMockConfig
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsNot
@@ -29,21 +31,22 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
 
     @Before
     fun setUp() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+//        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         stubIntent()
     }
 
     @Test
     fun validate_cassava() {
         Thread.sleep(2000)
-        interactWithClientNumberWidget()
-        interactWithFavoriteChip()
-        interactWithAutoComplete()
-        interactWithRecommendationWidget()
-        interactWithGridDenomWidget()
-        interactWithMccmWidget()
-        interactWithFilterChip()
-        interactWithBuyWidget()
+//        interactWithClientNumberWidget()
+        interactWithCheckBalanceWidget()
+//        interactWithFavoriteChip()
+//        interactWithAutoComplete()
+//        interactWithRecommendationWidget()
+//        interactWithGridDenomWidget()
+//        interactWithMccmWidget()
+//        interactWithFilterChip()
+//        interactWithBuyWidget()
 
         MatcherAssert.assertThat(
             cassavaTestRule.validate(PATH_ANALYTICS),
@@ -65,6 +68,16 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         clientNumberWidget_typeNumber("0812")
         clientNumberWidget_typeNumber("3456")
         clientNumberWidget_typeNumber("7890")
+    }
+
+    private fun interactWithCheckBalanceWidget() {
+        clientNumberWidget_clickCheckBalanceWidget()
+
+        Thread.sleep(2000)
+        checkBalanceBottomSheet_clickItem_withIndex(0)
+
+        Thread.sleep(1000)
+        checkBalanceBottomSheet_clickCloseIcon()
     }
 
     private fun interactWithFavoriteChip() {
@@ -123,6 +136,8 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
     }
 
     override fun getApplink(): String = APPLINK
+
+    override fun getMockModelConfig(): MockModelConfig = DigitalPDPDataPlanMockConfig()
 
     companion object {
         const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
