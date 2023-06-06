@@ -930,7 +930,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
 
             val readMoreCaption = FeedCaption.ReadMore(
                 maxTrimChar = MAX_CHAR,
-                label = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_read_more_button),
+                label = context.getString(commonR.string.feed_component_read_more_button),
                 colorRes = MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N400

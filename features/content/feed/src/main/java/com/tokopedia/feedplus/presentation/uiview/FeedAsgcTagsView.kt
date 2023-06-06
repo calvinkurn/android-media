@@ -47,12 +47,12 @@ class FeedAsgcTagsView(private val recyclerView: RecyclerView) {
     }
 
     private fun mapTypeToTag(type: String) = when (type) {
-        TYPE_FEED_ASGC_NEW_PRODUCTS -> getString(com.tokopedia.feedcomponent.R.string.feeds_asgc_new_product_text)
-        TYPE_FEED_ASGC_RESTOCK -> getString(com.tokopedia.feedcomponent.R.string.feeds_asgc_restock_text)
-        TYPE_FEED_ASGC_SHOP_DISCOUNT -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_diskon_toko)
-        TYPE_FEED_ASGC_SHOP_FLASH_SALE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_flash_sale_toko)
-        TYPE_FEED_ASGC_SPECIAL_RELEASE -> getString(com.tokopedia.feedcomponent.R.string.feed_asgc_rilisan_special)
-        TYPE_FEED_TOP_ADS -> getString(com.tokopedia.feedcomponent.R.string.feeds_ads_text)
+        TYPE_FEED_ASGC_NEW_PRODUCTS -> getString(com.tokopedia.content.common.R.string.feeds_asgc_new_product_text)
+        TYPE_FEED_ASGC_RESTOCK -> getString(com.tokopedia.content.common.R.string.feeds_asgc_restock_text)
+        TYPE_FEED_ASGC_SHOP_DISCOUNT -> getString(com.tokopedia.content.common.R.string.feed_asgc_diskon_toko)
+        TYPE_FEED_ASGC_SHOP_FLASH_SALE -> getString(com.tokopedia.content.common.R.string.feed_asgc_flash_sale_toko)
+        TYPE_FEED_ASGC_SPECIAL_RELEASE -> getString(com.tokopedia.content.common.R.string.feed_asgc_rilisan_special)
+        TYPE_FEED_TOP_ADS -> getString(com.tokopedia.content.common.R.string.feeds_ads_text)
         else -> ""
     }
 
