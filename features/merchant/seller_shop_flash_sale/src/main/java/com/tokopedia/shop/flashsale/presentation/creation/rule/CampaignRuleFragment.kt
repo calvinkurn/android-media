@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.Spanned
 import android.text.SpannedString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
@@ -28,6 +29,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_INTRO
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -293,9 +295,34 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val isShowOosSection = RemoteConfigUtil.isShowOutOfStockSection(context)
         if (isShowOosSection) {
             binding.viewGroupOosHandling.visible()
+            binding.radioOosOptionCanTransact.apply {
+                val txtOosWording: String = getText(R.string.campaign_rule_fs_out_of_stock_can_transact_option).toString()
+                text = getOosSpan(txtOosWording)
+                movementMethod = LinkMovementMethod.getInstance()
+            }
         } else {
             binding.viewGroupOosHandling.gone()
         }
+    }
+
+    private fun getOosSpan(spanString: String): CharSequence? {
+        val spannableString = SpannableString(spanString)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(p0: View) {
+                RouteManager.route(context, SELLER_MVC_INTRO)
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                ds.typeface = Typeface.DEFAULT_BOLD
+            }
+        }
+        val start = 65
+        val end = 80
+        spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableString
     }
 
     private fun observeSelectedPaymentMethod() {
