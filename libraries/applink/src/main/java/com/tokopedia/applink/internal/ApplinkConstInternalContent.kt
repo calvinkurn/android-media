@@ -52,10 +52,26 @@ object ApplinkConstInternalContent {
     const val EXTRA_FEED_TAB_POSITION = "FEED_TAB_POSITION"
     const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
 
+    /**
+     * Unified Feed
+     */
+    const val UF_TAB_POSITION_FOR_YOU = 0
+    const val UF_TAB_POSITION_FOLLOWING = 1
+    const val UF_EXTRA_FEED_RELEVANT_POST = "FEED_RELEVANT_POST"
+    const val UF_EXTRA_FEED_IS_JUST_LOGGED_IN = "FEED_IS_JUST_LOGGED_IN"
+    const val UF_EXTRA_FEED_ENTRY_POINT = "ARGS_FEED_ENTRY_POINT"
+
+    const val NAV_BUTTON_ENTRY_POINT = "Nav button"
+
     internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
 
     private val tokopediaUrl = TokopediaUrl.getInstance().WEB
     private val performanceDashboardUrl = tokopediaUrl + PLAY_LIVE
-    private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT = "${ApplinkConst.WEBVIEW}?pull_to_refresh=true&url=%s"
+    private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT = "" +
+        "${ApplinkConst.WEBVIEW}?" +
+        "titlebar=false" +
+        "&pull_to_refresh=true" +
+        "&url=%s" +
+        ""
     val PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK = String.format(PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT, performanceDashboardUrl)
 }

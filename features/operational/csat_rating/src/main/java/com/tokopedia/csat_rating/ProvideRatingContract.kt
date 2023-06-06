@@ -16,7 +16,7 @@ interface ProvideRatingContract {
         fun setMessage(message: String)
         fun setMessageColor(color: Int)
         fun setQuestion(question: String)
-        fun getSelectedEmoji(): Int
+        fun getSelectedEmoji(): Long
         fun clearEmoji()
         fun showErrorMessage(errorMessage: String)
         fun setFilterList(filterList: List<BadCsatReasonListItem>)
@@ -41,6 +41,5 @@ interface ProvideRatingContract {
         fun onFourthEmojiClick()
         fun onFifthEmojiClick()
         fun onSubmitClick()
-
     }
 }

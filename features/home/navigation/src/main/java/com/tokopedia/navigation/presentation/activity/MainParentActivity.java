@@ -55,6 +55,7 @@ import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.FragmentConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
@@ -138,7 +139,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int ACCOUNT_MENU = 4;
     public static final int RECOMENDATION_LIST = 5;
     public static final int REQUEST_CODE_LOGIN = 12137;
-    public static final String FEED_PAGE = "FeedPlusContainerFragment";
+    public static final String FEED_PAGE = "FeedIntermediaryFragment";
     public static final int UOH_MENU = 4;
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
@@ -377,7 +378,7 @@ public class MainParentActivity extends BaseActivity implements
         try {
             super.onRestoreInstanceState(savedInstanceState);
         } catch (Exception e) {
-            reloadPage(HOME_MENU);
+            reloadPage(HOME_MENU, false);
         }
     }
 
@@ -424,6 +425,20 @@ public class MainParentActivity extends BaseActivity implements
         Fragment fragment = fragmentList.get(tabPosition);
         if (fragment != null) {
             this.currentFragment = fragment;
+            if (fragment.getClass().getName().equalsIgnoreCase(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT)) {
+                try {
+                    Bundle oldArgs = fragment.getArguments();
+                    if (oldArgs == null) {
+                        oldArgs = new Bundle();
+                    }
+                    if (getIntent().getExtras() != null) {
+                        oldArgs.putAll(getIntent().getExtras());
+                    }
+                    fragment.setArguments(oldArgs);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                }
+            }
             selectFragment(fragment);
         }
     }
@@ -595,7 +610,7 @@ public class MainParentActivity extends BaseActivity implements
             if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
                 ft.show(frag); // only show fragment what you want to show
                 FragmentLifecycleObserver.INSTANCE.onFragmentSelected(frag);
-                if(!(frag instanceof HomeRevampFragment)){
+                if (!(frag instanceof HomeRevampFragment)) {
                     frag.setUserVisibleHint(true);
                 }
             } else {
@@ -667,7 +682,7 @@ public class MainParentActivity extends BaseActivity implements
                     }
                 }
             }
-            reloadPage(position);
+            reloadPage(position, true);
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
@@ -720,17 +735,38 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().onDestroy();
     }
 
-    private void reloadPage(int position) {
-        finish();
+    private void reloadPage(int position, boolean isJustLoggedIn) {
         getIntent().putExtra(ARGS_TAB_POSITION, position);
-        startActivity(getIntent());
+
+        boolean isPositionFeed = position == FEED_MENU;
+        getIntent().putExtra(
+                ApplinkConstInternalContent.UF_EXTRA_FEED_IS_JUST_LOGGED_IN,
+                isPositionFeed && isJustLoggedIn
+        );
+        recreate();
     }
 
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
 
         fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT, getIntent().getExtras()));
+
+        if (getSupportFragmentManager().findFragmentByTag(FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT) == null) {
+            fragmentList.add(
+                    RouteManager.instantiateFragment(
+                            this,
+                            FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT,
+                            getIntent().getExtras()
+                    )
+            );
+        } else {
+            fragmentList.add(
+                    getSupportFragmentManager().findFragmentByTag(
+                            FragmentConst.FEED_PLUS_CONTAINER_FRAGMENT
+                    )
+            );
+        }
+
         Bundle bundleSosDisco = getIntent().getExtras();
         if (bundleSosDisco == null) {
             bundleSosDisco = new Bundle();
@@ -811,7 +847,7 @@ public class MainParentActivity extends BaseActivity implements
         } else {
             doubleTapExit = true;
             try {
-                if(!isFinishing()) {
+                if (!isFinishing()) {
                     Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
                 }
                 new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
@@ -862,7 +898,7 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    protected InAppCallback getInAppCallback(){
+    protected InAppCallback getInAppCallback() {
         return new InAppCallback() {
             @Override
             public void onPositiveButtonInAppClicked(DetailUpdate detailUpdate) {
@@ -909,7 +945,7 @@ public class MainParentActivity extends BaseActivity implements
                     clipboard.setPrimaryClip(clip);
                 }
                 try {
-                    if(!isFinishing()) {
+                    if (!isFinishing()) {
                         Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
@@ -1127,6 +1163,8 @@ public class MainParentActivity extends BaseActivity implements
         } else if (pageTitle.equals(getResources().getString(R.string.official))) {
             pageName = PAGE_OS_HOMEPAGE;
         } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
+            getIntent().putExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT, ApplinkConstInternalContent.NAV_BUTTON_ENTRY_POINT);
+
             if (isFeedClickedFortheFirstTime) {
                 isFeedClickedFortheFirstTime = false;
                 globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
@@ -1143,12 +1181,11 @@ public class MainParentActivity extends BaseActivity implements
         }
         isFirstNavigationImpression = false;
 
-        if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed)) ) {
+        if (!menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
             isFeedClickedFortheFirstTime = true;
             Intent intent = new Intent(BROADCAST_VISIBLITY);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-        }
-        else{
+        } else {
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
             intent.putExtra(FEED_IS_VISIBLE, true);

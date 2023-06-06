@@ -940,16 +940,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 isCache
             )
         )
-        if (!isCache) {
-            trackingQueue?.putEETracking(
-                CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                    channel.grids.toList(),
-                    userSessionInterface?.userId ?: "",
-                    false,
-                    channel
-                ) as HashMap<String, Any>
-            )
-        }
+
         context?.let {
             HomeTrackingUtils.homeDiscoveryWidgetImpression(
                 it,

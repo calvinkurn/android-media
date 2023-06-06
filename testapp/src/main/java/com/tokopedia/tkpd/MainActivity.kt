@@ -180,3 +180,4 @@ class MainActivity : AppCompatActivity() {
         object APPLINK : HomeDestination
     }
 }
+
