@@ -69,19 +69,16 @@ class DynamicPreparationMenuView : FrameLayout {
     }
     fun getMenuView(
         menu: DynamicPreparationMenu.Menu,
-        menuView: (menuView: View?) -> Unit,
+        menuView: (menuView: View) -> Unit,
     ) {
         binding.rvMenu.addOneTimeGlobalLayoutListener {
             val menuIdx = adapter.getItems().indexOfFirst {
                 it.data.menu.id == menu.id
             }
-            if (menuIdx == -1) {
-                menuView.invoke(null)
-                return@addOneTimeGlobalLayoutListener
-            }
+            if (menuIdx == -1) return@addOneTimeGlobalLayoutListener
 
             val holder = binding.rvMenu.findViewHolderForAdapterPosition(menuIdx)
-            val menuItem = holder?.itemView?.findViewById<IconUnify>(R.id.ic_menu)
+            val menuItem = holder?.itemView?.findViewById<IconUnify>(R.id.ic_menu) ?: return@addOneTimeGlobalLayoutListener
             menuView.invoke(menuItem)
         }
     }

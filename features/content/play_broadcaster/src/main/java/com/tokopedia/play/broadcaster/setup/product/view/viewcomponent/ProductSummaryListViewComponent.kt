@@ -60,7 +60,7 @@ internal class ProductSummaryListViewComponent(
     }
 
     fun getProductCommissionCoachMark(
-        firstProductCommissionView: (view: View?) -> Unit,
+        firstProductCommissionView: (view: View) -> Unit,
     ) {
         view.addOneTimeGlobalLayoutListener {
             adapter.getItems().forEachIndexed { index, _ ->
@@ -69,7 +69,7 @@ internal class ProductSummaryListViewComponent(
                 if (view?.isVisible == true) {
                     firstProductCommissionView.invoke(view)
                     return@addOneTimeGlobalLayoutListener
-                } else firstProductCommissionView.invoke(null)
+                }
             }
         }
     }

@@ -498,7 +498,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.preparationMenu.getMenuView(
             menu = DynamicPreparationMenu.Menu.Product,
             menuView = { menuView ->
-                if (menuView == null) return@getMenuView
                 setupCoachMark(
                     CoachMark2Item(
                         menuView,
