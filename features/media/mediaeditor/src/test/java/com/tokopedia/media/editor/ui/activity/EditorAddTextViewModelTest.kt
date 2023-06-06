@@ -2,39 +2,21 @@ package com.tokopedia.media.editor.ui.activity
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.tokopedia.media.editor.data.repository.SaveImageRepository
-import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.picker.common.EditorParam
 import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Test
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.AddTextFilterRepository
-import com.tokopedia.media.editor.data.repository.BitmapCreationRepository
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.utils.getImageSize
-import com.tokopedia.media.editor.utils.getTokopediaCacheDir
-import com.tokopedia.picker.common.PICKER_URL_FILE_CODE
-import com.tokopedia.picker.common.types.EditorToolType
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.file.FileUtil
 import org.junit.Rule
-import io.mockk.Runs
 import io.mockk.every
-import io.mockk.just
-import io.mockk.mockkStatic
-import io.mockk.verify
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowBitmapFactory
 
 @RunWith(RobolectricTestRunner::class)
-class EditorAddTextViewModel {
+class EditorAddTextViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
