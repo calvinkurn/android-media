@@ -26,8 +26,7 @@ class MapperFeedModelToTrackerDataModel(
         FeedTrackerDataModel(
             activityId = model.id,
             authorId = if (model.author.type.isShop) {
-                model.products.firstOrNull()?.shopId
-                    ?: ""
+                model.products.firstOrNull()?.shopId.orEmpty()
             } else {
                 model.author.id
             },
@@ -56,8 +55,7 @@ class MapperFeedModelToTrackerDataModel(
         FeedTrackerDataModel(
             activityId = model.id,
             authorId = if (model.author.type.isShop) {
-                model.products.firstOrNull()?.shopId
-                    ?: ""
+                model.products.firstOrNull()?.shopId.orEmpty()
             } else {
                 model.author.id
             },
@@ -86,8 +84,7 @@ class MapperFeedModelToTrackerDataModel(
         FeedTrackerDataModel(
             activityId = model.id,
             authorId = if (model.author.type.isShop) {
-                model.products.firstOrNull()?.shopId
-                    ?: ""
+                model.products.firstOrNull()?.shopId.orEmpty()
             } else {
                 model.author.id
             },

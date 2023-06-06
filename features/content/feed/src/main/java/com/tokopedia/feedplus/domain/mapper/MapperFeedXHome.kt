@@ -5,7 +5,9 @@ import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.data.*
+import com.tokopedia.feedplus.data.FeedXAuthor
+import com.tokopedia.feedplus.data.FeedXCampaign
+import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_PLAY_LIVE
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_TOP_ADS
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLACEHOLDER
@@ -13,11 +15,39 @@ import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT
 import com.tokopedia.feedplus.data.FeedXCard.Companion.TYPE_MEDIA_VIDEO
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.data.FeedXComments
+import com.tokopedia.feedplus.data.FeedXFollow
+import com.tokopedia.feedplus.data.FeedXHomeEntity
+import com.tokopedia.feedplus.data.FeedXLike
+import com.tokopedia.feedplus.data.FeedXMedia
+import com.tokopedia.feedplus.data.FeedXProduct
+import com.tokopedia.feedplus.data.FeedXScore
+import com.tokopedia.feedplus.data.FeedXView
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignRestrictionModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCtaGradientModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCtaModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCommentItemModel
+import com.tokopedia.feedplus.presentation.model.FeedCommentModel
+import com.tokopedia.feedplus.presentation.model.FeedFollowModel
+import com.tokopedia.feedplus.presentation.model.FeedLikeModel
+import com.tokopedia.feedplus.presentation.model.FeedMediaModel
+import com.tokopedia.feedplus.presentation.model.FeedMediaTagging
+import com.tokopedia.feedplus.presentation.model.FeedModel
+import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
+import com.tokopedia.feedplus.presentation.model.FeedScoreModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
@@ -354,7 +384,7 @@ class MapperFeedXHome @Inject constructor(
                     add(
                         FeedMenuItem(
                             iconUnify = IconUnify.GRAPH,
-                            name = com.tokopedia.content.common.R.string.performance_see,
+                            name = contentCommonR.string.performance_see,
                             type = FeedMenuIdentifier.SeePerformance,
                             appLink = card.performanceSummaryPageLink,
                             contentData = contentData
@@ -365,7 +395,7 @@ class MapperFeedXHome @Inject constructor(
                     add(
                         FeedMenuItem(
                             iconUnify = IconUnify.GRAPH_REPORT,
-                            name = com.tokopedia.content.common.R.string.performance_learn_video_insight,
+                            name = contentCommonR.string.performance_learn_video_insight,
                             type = FeedMenuIdentifier.LearnVideoInsight,
                             appLink = card.insightSummaryPageLink,
                             contentData = contentData
@@ -385,7 +415,7 @@ class MapperFeedXHome @Inject constructor(
                 add(
                     FeedMenuItem(
                         iconUnify = IconUnify.WARNING,
-                        name = com.tokopedia.content.common.R.string.content_common_menu_report,
+                        name = contentCommonR.string.content_common_menu_report,
                         type = FeedMenuIdentifier.Report,
                         contentData = contentData
                     )
@@ -395,7 +425,7 @@ class MapperFeedXHome @Inject constructor(
                 add(
                     FeedMenuItem(
                         iconUnify = IconUnify.DELETE,
-                        name = com.tokopedia.content.common.R.string.content_common_menu_delete,
+                        name = contentCommonR.string.content_common_menu_delete,
                         type = FeedMenuIdentifier.Delete,
                         contentData = contentData
                     )

@@ -35,12 +35,12 @@ class FeedMenuViewHolder(
                 )
             )
 
-            val iconColorInt = when(item.type) {
+            val iconColorInt = when (item.type) {
                 FeedMenuIdentifier.Report, FeedMenuIdentifier.Delete -> {
                     unifyR.color.Unify_RN500
                 }
                 else -> {
-                    com.tokopedia.iconunify.R.color.icon_enable_default_color
+                    unifyR.color.Unify_NN900
                 }
             }
             val iconDrawable = getIconUnifyDrawable(
