@@ -2633,7 +2633,7 @@ open class DynamicProductDetailFragment :
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
         val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
-        val title = selectedChild?.subText.orEmpty().ifNullOrBlank { getVariantString() }
+        val title = selectedChild?.subText.ifNullOrBlank { getVariantString() }
 
         pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
