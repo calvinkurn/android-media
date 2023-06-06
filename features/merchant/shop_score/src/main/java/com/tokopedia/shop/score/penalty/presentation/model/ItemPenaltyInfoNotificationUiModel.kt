@@ -4,7 +4,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapterF
 
 data class ItemPenaltyInfoNotificationUiModel(
     val notificationCount: Int,
-    val shouldShowDot: Boolean
+    var shouldShowDot: Boolean,
+    val latestOngoingId: String?
 ): BasePenaltyPage {
 
     override fun type(typeFactory: PenaltyPageAdapterFactory): Int {

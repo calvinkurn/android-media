@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
 import com.tokopedia.shop.score.common.plt.ShopPenaltyMonitoringContract
 import com.tokopedia.shop.score.common.plt.ShopPenaltyPerformanceMonitoringListener
@@ -42,6 +43,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPe
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyCalculationBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyDateFilterBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyFilterBottomSheet
+import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.FilterTypePenaltyUiModelWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
@@ -75,6 +77,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
 
     @Inject
     lateinit var viewModelShopPenalty: ShopPenaltyViewModel
+
+    @Inject
+    lateinit var shopScoreSharedPrefManager: ShopScorePrefManager
 
     private val penaltyPageAdapterFactory by lazy {
         PenaltyPageAdapterFactory(
@@ -281,7 +286,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onPenaltySubsectionIconClicked() {
-        // TODO: Ask PM on what to do on click
+        showStatusPenaltyBottomSheet()
     }
 
     override fun onPenaltyPointsButtonClicked(uiModel: ItemPenaltyPointCardUiModel) {
@@ -294,7 +299,11 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         PenaltyCalculationBottomSheet.createInstance(cacheManager?.id.orEmpty()).show(childFragmentManager)
     }
 
-    override fun onNotYetPenaltyCardClicked() {
+    override fun onNotYetPenaltyCardClicked(latestOngoingPenaltyId: String?) {
+        latestOngoingPenaltyId?.let {
+            shopScoreSharedPrefManager.setLatestOngoingPenaltyId(it)
+        }
+        penaltyPageAdapter.removeRedDots()
         startActivity(
             Intent(activity, ShopPenaltyNotYetDeductedActivity::class.java)
         )
@@ -425,6 +434,11 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             removeShopPenaltyAllData()
             refreshSticky()
         }
+    }
+
+    private fun showStatusPenaltyBottomSheet() {
+        val bottomSheet = PenaltyStatusBottomSheet.newInstance()
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun List<ChipsFilterPenaltyUiModel>?.chipsPenaltyMapToItemSortFilter(): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {

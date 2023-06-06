@@ -23,7 +23,7 @@ class ItemPenaltyInfoNotificationViewHolder(
         )
         binding?.notifPenaltyInfoNotification?.showWithCondition(element.shouldShowDot)
         binding?.cardPenaltyInfoNotification?.setOnClickListener {
-            listener?.onNotYetPenaltyCardClicked()
+            listener?.onNotYetPenaltyCardClicked(element.latestOngoingId)
         }
     }
 

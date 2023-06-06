@@ -100,7 +100,11 @@ fun String.getNumberFormat(defaultNumber: Long): Long {
 }
 
 fun String.convertToFormattedDate(): String? {
-    return SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(this)?.let {
-        com.tokopedia.shop.score.common.format(it.time, PATTER_DATE_EDT, getLocale())
+    return try {
+        SimpleDateFormat(ShopScoreConstant.PATTERN_DATE_PARAM, getLocale()).parse(this)?.let {
+            com.tokopedia.shop.score.common.format(it.time, PATTER_DATE_EDT, getLocale())
+        }
+    } catch (ex: Exception) {
+        null
     }
 }

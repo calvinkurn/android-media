@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.common.convertToFormattedDate
 import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
@@ -29,7 +30,10 @@ import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiMo
 import javax.inject.Inject
 import kotlin.math.abs
 
-class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context?) {
+class PenaltyMapper @Inject constructor(
+    @ApplicationContext val context: Context?,
+    private val shopScorePrefManager: ShopScorePrefManager
+) {
 
     private val MAX_SHOWN_FILTER_CHIPS = 5
 
@@ -175,10 +179,14 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
     }
 
     private fun mapToNotYetDeductedItem(list: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>): ItemPenaltyInfoNotificationUiModel {
-        // TODO: check for cache for shouldShowDot
+        val latestPenaltyId = shopScorePrefManager.getLatestOngoingPenaltyId()
+        val isSharedPrefReady =
+            latestPenaltyId == null || latestPenaltyId != list.firstOrNull()?.shopPenaltyID
+        val shouldShowDot = isSharedPrefReady && list.size > Int.ZERO
         return ItemPenaltyInfoNotificationUiModel(
             notificationCount = list.size,
-            shouldShowDot = list.size > Int.ZERO
+            shouldShowDot = shouldShowDot,
+            latestOngoingId = list.firstOrNull()?.shopPenaltyID
         )
     }
 

@@ -14,6 +14,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.diffutil.ShopPenalt
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
@@ -136,6 +137,18 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }
     }
 
+    fun removeRedDots() {
+        val notificationUiModelIndex = visitables.indexOfFirst { it is ItemPenaltyInfoNotificationUiModel }
+        visitables.find { it is ItemPenaltyInfoNotificationUiModel }?.also {
+            if ((it as? ItemPenaltyInfoNotificationUiModel)?.shouldShowDot == true) {
+                (it as? ItemPenaltyInfoNotificationUiModel)?.shouldShowDot = false
+                if (notificationUiModelIndex != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(notificationUiModelIndex)
+                }
+            }
+        }
+    }
+
     override val stickyHeaderPosition: Int
         get() = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
 
@@ -175,7 +188,6 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
     }
 
     companion object {
-        const val PAYLOAD_DATE_FILTER = 408
         const val PAYLOAD_SELECTED_FILTER = 508
     }
 }

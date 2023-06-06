@@ -49,7 +49,7 @@ interface ItemPenaltyErrorListener {
 }
 
 interface ItemPenaltyInfoNotificationListener {
-    fun onNotYetPenaltyCardClicked()
+    fun onNotYetPenaltyCardClicked(latestOngoingPenaltyId: String?)
 }
 
 interface ItemSortFilterPenaltyListener {
