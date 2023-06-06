@@ -582,7 +582,6 @@ class UserProfileViewModel @AssistedInject constructor(
         }) { throwable ->
             toggleLikeDislikeStatus(review.feedbackID)
 
-            /** TODO: handle this */
             _uiEvent.emit(UserProfileUiEvent.ErrorLikeDislike(throwable))
         }
     }

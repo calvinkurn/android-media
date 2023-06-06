@@ -64,7 +64,7 @@ class UserProfileReviewFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(UserProfileActivity.EXTRA_USERNAME) ?: "",
+            requireArguments().getString(UserProfileActivity.EXTRA_USERNAME).orEmpty(),
         )
     }
 
