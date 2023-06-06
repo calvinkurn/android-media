@@ -13,7 +13,6 @@ object ApplinkConstInternalPayment {
     // TopPayActivity
     @JvmField
     val PAYMENT_CHECKOUT = "$INTERNAL_PAYMENT/checkout"
-    val CHECKOUT_TIMESTAMP = "checkout_timestamp"
 
     @JvmField
     val PAYMENT_SETTING = "$INTERNAL_PAYMENT/setting"
