@@ -1,9 +1,7 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +14,9 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -27,6 +24,7 @@ import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
+import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
@@ -45,7 +43,6 @@ import com.tokopedia.scp_rewards_widgets.task_progress.TaskProgress
 import com.tokopedia.unifycomponents.Toaster
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 class MedalDetailFragment : BaseDaggerFragment() {
@@ -103,25 +100,51 @@ class MedalDetailFragment : BaseDaggerFragment() {
             it?.let { safeResult ->
                 when (safeResult) {
                     is MedalDetailViewModel.AutoApplyState.Error -> {
-                        binding.viewMedalFooter.showLoading(safeResult.id, false)
+                        binding.viewMedalFooter.showLoading(safeResult.footerData.id, false)
+                        showToastAndNavigateToLink(
+                            safeResult.footerData.id,
+                            safeResult.throwable.localizedMessage,
+                            safeResult.footerData.appLink,
+                            safeResult.footerData.url
+                        )
                     }
 
                     is MedalDetailViewModel.AutoApplyState.Loading -> {
-                        binding.viewMedalFooter.showLoading(safeResult.id, true)
+                        binding.viewMedalFooter.showLoading(safeResult.footerData.id, true)
                     }
 
                     is MedalDetailViewModel.AutoApplyState.SuccessCouponApplied -> {
-                        binding.viewMedalFooter.showLoading(safeResult.id, false)
-                        Toaster.build(binding.viewMedalFooter, safeResult.data?.couponAutoApply?.infoMessage?.title.orEmpty()).show()
+                        showToastAndNavigateToLink(
+                            safeResult.footerData.id,
+                            safeResult.data?.couponAutoApply?.infoMessage?.title,
+                            safeResult.footerData.appLink,
+                            safeResult.footerData.url
+                        )
                     }
 
                     is MedalDetailViewModel.AutoApplyState.SuccessCouponFailed -> {
-                        binding.viewMedalFooter.showLoading(safeResult.id, false)
-                        Toaster.build(binding.viewMedalFooter, safeResult.data?.couponAutoApply?.infoMessage?.title.orEmpty()).show()
+                        showToastAndNavigateToLink(
+                            safeResult.footerData.id,
+                            safeResult.data?.couponAutoApply?.infoMessage?.title,
+                            safeResult.footerData.appLink,
+                            safeResult.footerData.url
+                        )
                     }
                 }
             }
         }
+    }
+
+    private fun showToastAndNavigateToLink(id: Int?, message: String?, appLink: String?, url: String?) {
+        binding.viewMedalFooter.showLoading(id, false)
+        Toaster.build(binding.viewMedalFooter, message.orEmpty())
+            .addCallback(object : Snackbar.Callback() {
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    requireContext().launchLink(appLink, url)
+                }
+            })
+            .show()
     }
 
     private fun observeBadgeData() {
@@ -168,16 +191,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
             ) { data ->
                 if (data.autoApply) {
                     medalDetailViewModel.applyCoupon(
-                        id = data.id ?: -1,
+                        footerData = data,
                         shopId = null,
                         couponCode = data.couponCode.orEmpty()
                     )
                 } else {
-                    if (TextUtils.isEmpty(data.appLink)) {
-                        RouteManager.route(requireContext(), String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(data.url)))
-                    } else {
-                        RouteManager.route(requireContext(), data.appLink)
-                    }
+                    requireContext().launchLink(data.appLink, data.url)
                 }
             }
         }
