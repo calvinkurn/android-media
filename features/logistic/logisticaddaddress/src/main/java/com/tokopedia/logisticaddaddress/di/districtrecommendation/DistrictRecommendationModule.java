@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.di;
+package com.tokopedia.logisticaddaddress.di.districtrecommendation;
 
 import android.content.Context;
 
@@ -7,39 +7,37 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ActivityScope;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.logisticCommon.data.converter.GeneratedHostConverter;
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery;
 import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.logisticaddaddress.data.repository.DistrictRecommendationRepository;
-import com.tokopedia.logisticaddaddress.data.repository.ShopAddressRepository;
 import com.tokopedia.logisticaddaddress.data.service.KeroApi;
-import com.tokopedia.logisticaddaddress.data.service.MyShopAddressApi;
 import com.tokopedia.logisticaddaddress.data.source.DistrictRecommendationDataStore;
-import com.tokopedia.logisticaddaddress.data.source.ShopAddressDataSource;
 import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider;
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider;
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationEntityMapper;
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictRecommendationMapper;
-import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecomToken;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRecommendation;
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomPresenter;
-import com.tokopedia.logisticCommon.data.converter.GeneratedHostConverter;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -63,13 +61,7 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
-    UserSessionInterface provideUserSession(@ApplicationContext Context context) {
-        return new UserSession(context);
-    }
-
-    @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return new OkHttpRetryPolicy(
                 NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY
@@ -77,20 +69,20 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         return (NetworkRouter) context.getApplicationContext();
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     FingerprintInterceptor provideFingerPrintInterceptor(NetworkRouter networkRouter,
                                                          UserSessionInterface userSessionInterface) {
         return new FingerprintInterceptor(networkRouter, userSessionInterface);
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
                                                    NetworkRouter networkRouter,
                                                    UserSessionInterface userSessionInterface) {
@@ -98,7 +90,7 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     OkHttpClient provideKeroOkHttpClient(@ApplicationContext Context context,
                                          OkHttpRetryPolicy okHttpRetryPolicy,
                                          TkpdAuthInterceptor tkpdAuthInterceptor,
@@ -123,7 +115,7 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     KeroApi provideKeroApi(Gson gson, OkHttpClient okHttpClient) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(TokopediaUrl.Companion.getInstance().getKERO())
@@ -139,35 +131,19 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
-    MyShopAddressApi provideMyShopAddressApi(Gson gson, OkHttpClient okHttpClient) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(TkpdBaseURL.Shop.URL_MY_SHOP_ADDRESS)
-                .addConverterFactory(new GeneratedHostConverter())
-                .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .build();
-
-        return retrofit.create(MyShopAddressApi.class);
-    }
-
-    @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     DistrictRecommendationDataStore provideDistrictRecommendationDataStore(KeroApi keroApi) {
         return new DistrictRecommendationDataStore(keroApi);
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     DistrictRecommendationEntityMapper provideEntityMapper() {
         return new DistrictRecommendationEntityMapper();
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     DistrictRecommendationRepository provideDistrictRecommendationRepository(
             DistrictRecommendationDataStore districtRecommendationDataStore,
             DistrictRecommendationEntityMapper districtRecommendationEntityMapper
@@ -177,7 +153,7 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     GetDistrictRequestUseCase provideGetDistrictRequestUseCase(
             DistrictRecommendationRepository districtRecommendationRepository
     ) {
@@ -185,27 +161,7 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
-    ShopAddressDataSource provideShopAddressDataStore(MyShopAddressApi myShopAddressApi) {
-        return new ShopAddressDataSource(myShopAddressApi);
-    }
-
-    @Provides
-    @DistrictRecommendationScope
-    ShopAddressRepository provideShopAddressRepository(ShopAddressDataSource shopAddressDataSource) {
-        return new ShopAddressRepository(shopAddressDataSource);
-    }
-
-    @Provides
-    @DistrictRecommendationScope
-    GetDistrictRecomToken provideGetDistrictRecomTokenUseCase(
-            ShopAddressRepository shopAddressRepository
-    ) {
-        return new GetDistrictRecomToken(shopAddressRepository);
-    }
-
-    @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     DiscomContract.Presenter provideDistrictRecommendationPresenter(
             GetDistrictRequestUseCase getDistrictRequestUseCase,
             RevGeocodeUseCase revGeocodeUseCase,
@@ -215,9 +171,17 @@ public class DistrictRecommendationModule {
     }
 
     @Provides
-    @DistrictRecommendationScope
+    @ActivityScope
     SchedulerProvider provideSchedulerProvider() {
         return new MainSchedulerProvider();
     }
+
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryConstant.GET_DISTRICT_RECOMMENDATION)
+    String provideQueryDiscom() {
+        return KeroLogisticQuery.INSTANCE.getDistrict_recommendation();
+    }
+
 
 }

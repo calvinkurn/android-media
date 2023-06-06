@@ -6,7 +6,6 @@
     <string name="title_post_code">Kode Pos</string>
     <string name="hint_district_recommendation_search">Tulis min 3 karakter</string>
     <string name="hint_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>
-    <string name="hint_search_address_no_result">Tidak menemukan data, harap mencari berdasarkan kota, kabupaten atau kecamatan Anda</string>
 
     <string name="title_activity_search_address">Kota atau kecamatan</string>
     <string name="message_advice_search_address">Untuk mempersingkat waktu, isi dengan kecamatan tujuan pengiriman</string>

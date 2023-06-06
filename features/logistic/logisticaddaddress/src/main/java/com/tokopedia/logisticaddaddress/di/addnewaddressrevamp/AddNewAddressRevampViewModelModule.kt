@@ -23,7 +23,7 @@ abstract class AddNewAddressRevampViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SearchPageViewModel::class)
-    internal abstract fun providesShopLocationViewModel(viewModel: SearchPageViewModel): ViewModel
+    internal abstract fun providesSearchPageViewModel(viewModel: SearchPageViewModel): ViewModel
 
     @ActivityScope
     @Binds

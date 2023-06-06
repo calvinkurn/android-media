@@ -32,24 +32,6 @@ object AddNewAddressAnalytics {
         )
     }
 
-    fun eventClickChipsKotaKecamatanChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
-        sendEventCategoryActionLabel(
-            CLICK_ADDRESS,
-            CART_CHANGE_ADDRESS_NEGATIVE,
-            CLICK_CHIPS_KOTA_KECAMATAN,
-            getAnalyticsLabel(isFullFlow, isLogisticLabel)
-        )
-    }
-
-    fun eventClickSuggestionKotaKecamatanChangeAddressNegative(isFullFlow: Boolean, isLogisticLabel: Boolean) {
-        sendEventCategoryActionLabel(
-            CLICK_ADDRESS,
-            CART_CHANGE_ADDRESS_NEGATIVE,
-            CLICK_SUGGESTION_KOTA_KECAMATAN,
-            getAnalyticsLabel(isFullFlow, isLogisticLabel)
-        )
-    }
-
     fun eventClickBackArrowOnNegativePage(isFullFlow: Boolean, isLogisticLabel: Boolean) {
         sendEventCategoryActionLabel(
             CLICK_ADDRESS,

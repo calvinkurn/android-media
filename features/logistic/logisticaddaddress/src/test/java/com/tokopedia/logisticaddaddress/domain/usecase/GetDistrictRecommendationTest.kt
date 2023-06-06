@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.domain.usecase
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
-import com.tokopedia.logisticaddaddress.di.RawQueryConstant
+import com.tokopedia.logisticaddaddress.di.districtrecommendation.RawQueryConstant
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
 import com.tokopedia.logisticaddaddress.helper.DiscomDummyProvider
@@ -21,7 +21,7 @@ class GetDistrictRecommendationTest {
     lateinit var usecaseUt: GetDistrictRecommendation
     val gqlUsecaseMock: GraphqlUseCase = mockk(relaxed = true)
     val queryMapMock: Map<String, String> = mockk()
-    val testSchedProvider = object: SchedulerProvider {
+    val testSchedProvider = object : SchedulerProvider {
         override fun io(): Scheduler {
             return Schedulers.trampoline()
         }
@@ -41,7 +41,8 @@ class GetDistrictRecommendationTest {
     fun `execute district response success return object response`() {
         val subscriber = TestSubscriber<DistrictRecommendationResponse>()
 
-        every { gqlUsecaseMock.getExecuteObservable(null)
+        every {
+            gqlUsecaseMock.getExecuteObservable(null)
         } answers {
             Observable.just(DiscomDummyProvider.getSuccessGqlResponse())
         }
@@ -53,4 +54,3 @@ class GetDistrictRecommendationTest {
         Assert.assertTrue(subscriber.onNextEvents[0].keroDistrictRecommendation.district.isNotEmpty())
     }
 }
-

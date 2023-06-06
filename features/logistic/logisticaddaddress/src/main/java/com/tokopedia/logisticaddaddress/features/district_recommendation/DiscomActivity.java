@@ -29,7 +29,6 @@ public class DiscomActivity extends BaseSimpleActivity
         implements HasComponent, DiscomFragment.ActionListener {
 
     private CheckoutAnalyticsChangeAddress analytics;
-    private FusedLocationProviderClient fusedLocationClient;
     private Boolean isLocalization = false;
 
     public static Intent newInstance(Activity activity, Token token, Boolean isLocalization) {

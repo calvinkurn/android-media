@@ -41,7 +41,7 @@ import com.tokopedia.logisticaddaddress.common.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.common.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.common.adapter.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
-import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
+import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
@@ -162,7 +162,7 @@ class DiscomBottomSheetRevamp :
     }
 
     private fun initInjector() {
-        DaggerDistrictRecommendationComponent.builder()
+        DaggerAddNewAddressRevampComponent.builder()
             .baseAppComponent((context?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
         presenter.attach(this)

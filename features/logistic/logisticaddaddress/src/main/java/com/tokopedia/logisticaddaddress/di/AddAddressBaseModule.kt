@@ -1,4 +1,4 @@
-package com.tokopedia.logisticaddaddress.di.pinpointwebview
+package com.tokopedia.logisticaddaddress.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -9,7 +9,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-object PinpointWebviewModule {
+object AddAddressBaseModule {
 
     @Provides
     @ActivityScope
