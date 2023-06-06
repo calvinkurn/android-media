@@ -75,7 +75,9 @@ data class DigitalPersoItem(
     @SerializedName("widgets")
     val widgets: List<DigitalPersoWidget>,
     @SerializedName("products")
-    val products: List<DigitalPersoProduct>
+    val products: List<DigitalPersoProduct>,
+    @SerializedName("descriptions")
+    val descriptions: List<String>,
 )
 
 data class DigitalPersoWidget(

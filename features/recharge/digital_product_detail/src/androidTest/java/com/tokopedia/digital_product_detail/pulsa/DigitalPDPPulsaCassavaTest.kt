@@ -69,6 +69,7 @@ class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
         clientNumberWidget_typeNumber("0812")
         clientNumberWidget_typeNumber("3456")
         clientNumberWidget_typeNumber("7890")
+        Espresso.closeSoftKeyboard()
     }
 
     private fun interactWithCheckBalanceWidget() {
@@ -76,6 +77,9 @@ class DigitalPDPPulsaCassavaTest : BaseDigitalPDPPulsaTest() {
 
         Thread.sleep(2000)
         checkBalanceBottomSheet_clickItem_withIndex(0)
+
+        Thread.sleep(1000)
+        checkBalanceBottomSheet_clickCloseIcon()
     }
 
     private fun interactWithFavoriteChip() {

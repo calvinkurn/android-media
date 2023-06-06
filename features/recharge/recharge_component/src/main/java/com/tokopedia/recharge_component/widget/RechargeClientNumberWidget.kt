@@ -383,41 +383,41 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     }
 
     fun showCheckBalanceOtpWidget() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.show()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalanceOtp.show()
     }
 
     fun hideCheckBalanceOtpWidget() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.hide()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalanceOtp.hide()
     }
 
     fun showCheckBalanceWidget() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.show()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.show()
     }
 
     fun hideCheckBalanceWidget() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hide()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hide()
     }
 
     fun showCheckBalanceWidgetShimmering() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showShimmering()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showShimmering()
     }
 
     fun hideCheckBalanceWidgetShimmering() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideShimmering()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideShimmering()
     }
 
     fun showCheckBalanceWidgetLocalLoad(onClick: () -> Unit) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showLocalLoad {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showLocalLoad {
             onClick.invoke()
         }
     }
 
     fun hideCheckBalanceWidgetLocalLoad() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideLocalLoad()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideLocalLoad()
     }
 
     fun renderCheckBalanceOTPWidget(checkBalanceOTPModel: RechargeCheckBalanceOTPModel) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalanceOtp.run {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalanceOtp.run {
             setTitle(checkBalanceOTPModel.subtitle)
             setNotificationLabel(checkBalanceOTPModel.label)
             setOnClickListener {
@@ -430,7 +430,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
         balanceInfo: List<RechargeCheckBalanceUnitModel>,
         balanceDetailBottomSheetModel: RechargeCheckBalanceDetailBottomSheetModel,
     ) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.run {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.run {
             setBalanceInfo(balanceInfo)
             if (balanceDetailBottomSheetModel.details.isNotEmpty()) {
                 setListener(object: RechargeCheckBalanceWidget.RechargeCheckBalanceWidgetListener {
@@ -443,13 +443,13 @@ class RechargeClientNumberWidget @JvmOverloads constructor(
     }
 
     fun showCheckBalanceWarning(message: String, iconUrl: String) {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.showWarningMessage(
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.showWarningMessage(
             message, iconUrl
         )
     }
 
     fun hideCheckBalanceWarning() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetCheckBalance.hideWarningMessage()
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetCheckBalance.hideWarningMessage()
     }
 
     fun removeClientNumberBottomPadding() {
