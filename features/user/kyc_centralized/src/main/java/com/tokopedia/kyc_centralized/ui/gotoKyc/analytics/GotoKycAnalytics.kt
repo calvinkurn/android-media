@@ -593,7 +593,7 @@ object GotoKycAnalytics {
 
     fun sendScanKtpImage(statusScan: String, projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_SCAN_KTP_IMAGE)
             .setEventCategory(CATEGORY_KTP_PAGE)
             .setEventLabel("$statusScan - $projectId")
@@ -746,7 +746,7 @@ object GotoKycAnalytics {
 
     fun sendScanSelfieImage(statusScan: String, projectId: String) {
         Tracker.Builder()
-            .setEvent("")
+            .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
             .setEventAction(ACTION_SCAN_SELFIE_IMAGE)
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel("$statusScan - $projectId")
