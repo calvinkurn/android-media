@@ -22,7 +22,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.compact.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_RED
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel.LabelGroup
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -31,11 +31,10 @@ import com.tokopedia.productcard.compact.R
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.LIGHT_GREEN
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TEXT_DARK_ORANGE
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TRANSPARENT_BLACK
-import com.tokopedia.productcard.compact.productcard.presentation.uimodel.TokoNowProductCardViewUiModel
+import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.productcard.compact.common.util.ViewUtil.getHexColorFromIdColor
 import com.tokopedia.productcard.compact.common.util.ViewUtil.safeParseColor
-import com.tokopedia.productcard.compact.similarproduct.presentation.activity.ProductCardCompactSimilarProductActivity
 import com.tokopedia.productcard.compact.databinding.LayoutProductCardCompactViewBinding
 
 class ProductCardCompactView @JvmOverloads constructor(
@@ -56,18 +55,15 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     private var productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
-    private var binding: LayoutProductCardCompactViewBinding
-
-    init {
-        binding = LayoutProductCardCompactViewBinding.inflate(
-            LayoutInflater.from(context),
-            this,
-            true
-        )
-    }
+    private var productCardCompactListener: ProductCardCompactListener? = null
+    private var binding: LayoutProductCardCompactViewBinding = LayoutProductCardCompactViewBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
     private fun LayoutProductCardCompactViewBinding.setupUi(
-        model: TokoNowProductCardViewUiModel
+        model: ProductCardCompactUiModel
     ) {
         initImageFilterView(
             imageUrl = model.imageUrl,
@@ -79,7 +75,8 @@ class ProductCardCompactView @JvmOverloads constructor(
             maxOrder = model.maxOrder,
             orderQuantity = model.orderQuantity,
             isOos = model.isOos(),
-            needToShowQuantityEditor = model.needToShowQuantityEditor
+            needToShowQuantityEditor = model.needToShowQuantityEditor,
+            hasBlockedAddToCart = model.hasBlockedAddToCart
         )
         initAssignedValueTypography(
             labelGroup = model.getAssignedValueLabelGroup()
@@ -143,9 +140,11 @@ class ProductCardCompactView @JvmOverloads constructor(
         maxOrder: Int,
         orderQuantity: Int,
         isOos: Boolean,
-        needToShowQuantityEditor: Boolean
+        needToShowQuantityEditor: Boolean,
+        hasBlockedAddToCart: Boolean
     ) {
         quantityEditor.showIfWithBlock(!isOos && needToShowQuantityEditor) {
+            quantityEditor.hasBlockedAddToCart = hasBlockedAddToCart
             quantityEditor.isVariant = isVariant
             quantityEditor.minQuantity = minOrder
             quantityEditor.maxQuantity = maxOrder
@@ -254,8 +253,7 @@ class ProductCardCompactView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                val intent = ProductCardCompactSimilarProductActivity.createNewIntent(context, productId, productCardCompactSimilarProductTrackerListener)
-                context.startActivity(intent)
+                productCardCompactListener?.onClickSimilarProduct(productId, productCardCompactSimilarProductTrackerListener)
             }
         }
     }
@@ -484,7 +482,7 @@ class ProductCardCompactView @JvmOverloads constructor(
         }
     }
 
-    fun setData(model: TokoNowProductCardViewUiModel) {
+    fun setData(model: ProductCardCompactUiModel) {
         if (model.usePreDraw) {
             binding.root.doOnPreDraw {
                 binding.setupUi(model)
@@ -497,13 +495,13 @@ class ProductCardCompactView @JvmOverloads constructor(
     fun setOnClickQuantityEditorListener(
         onClickListener: (Int) -> Unit
     ) {
-        binding.quantityEditor.onClickListener = onClickListener
+        binding.quantityEditor.onQuantityChangedListener = onClickListener
     }
 
     fun setOnClickQuantityEditorVariantListener(
         onClickVariantListener: (Int) -> Unit
     ) {
-        binding.quantityEditor.onClickVariantListener = onClickVariantListener
+        binding.quantityEditor.onClickAddVariantListener = onClickVariantListener
     }
 
     fun setSimilarProductTrackerListener(
@@ -513,8 +511,25 @@ class ProductCardCompactView @JvmOverloads constructor(
     }
 
     fun setWishlistButtonListener(
-        wishlistButtonListener: ProductCardCompactWishlistButtonView.TokoNowWishlistButtonListener
+        wishlistButtonListener: ProductCardCompactWishlistButtonView.WishlistButtonListener
     ) {
         binding.wishlistButton.setListener(wishlistButtonListener)
+    }
+
+    fun setOnBlockAddToCartListener(
+        onBlockAddToCartListener: () -> Unit
+    ) {
+        binding.quantityEditor.onBlockAddToCartListener = onBlockAddToCartListener
+    }
+
+    fun setListener(productCardCompactListener: ProductCardCompactListener?) {
+        this.productCardCompactListener = productCardCompactListener
+    }
+
+    interface ProductCardCompactListener {
+        fun onClickSimilarProduct(
+            productId: String,
+            similarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener?
+        )
     }
 }

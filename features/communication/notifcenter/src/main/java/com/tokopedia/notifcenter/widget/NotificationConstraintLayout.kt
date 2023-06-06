@@ -10,18 +10,23 @@ class NotificationConstraintLayout : ConstraintLayout {
 
     var onTouchUp: () -> Unit = {}
 
-    constructor(context: Context?) : super(context)
+    constructor(context: Context) : super(context)
     constructor(
-            context: Context?, attrs: AttributeSet?
+        context: Context,
+        attrs: AttributeSet?
     ) : super(context, attrs)
 
     constructor(
-            context: Context?, attrs: AttributeSet?, defStyleAttr: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int
     ) : super(context, attrs, defStyleAttr)
 
     constructor(
-            context: Context?, attrs: AttributeSet?,
-            defStyleAttr: Int, defStyleRes: Int
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+        defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     fun setOnTouchUpListener(upAction: () -> Unit) {

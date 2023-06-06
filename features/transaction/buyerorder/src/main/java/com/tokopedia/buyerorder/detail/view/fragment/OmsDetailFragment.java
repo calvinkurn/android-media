@@ -357,22 +357,27 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setConditionalInfo(ConditionalInfo conditionalInfo) {
-
-        conditionalInfoText.setVisibility(View.VISIBLE);
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(9);
-        if (!TextUtils.isEmpty(conditionalInfo.getColor().getBackground())) {
-            shape.setColor(Color.parseColor(conditionalInfo.getColor().getBackground()));
-        }
-        if (!TextUtils.isEmpty(conditionalInfo.getColor().getBorder())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.getColor().getBorder()));
-        }
-        conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
-        conditionalInfoText.setText(conditionalInfo.getText());
-        if (!TextUtils.isEmpty(conditionalInfo.getColor().getTextColor())) {
-            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.getColor().getTextColor()));
+        if (getContext() != null) {
+            conditionalInfoText.setVisibility(View.VISIBLE);
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(9);
+            if (!TextUtils.isEmpty(conditionalInfo.getColor().getBackground())) {
+                shape.setColor(Color.parseColor(conditionalInfo.getColor().getBackground()));
+            }
+            if (!TextUtils.isEmpty(conditionalInfo.getColor().getBorder())) {
+                shape.setStroke(getContext().getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.getColor().getBorder()));
+            }
+            conditionalInfoText.setBackground(shape);
+            conditionalInfoText.setPadding(
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
+            conditionalInfoText.setText(conditionalInfo.getText());
+            if (!TextUtils.isEmpty(conditionalInfo.getColor().getTextColor())) {
+                conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.getColor().getTextColor()));
+            }
         }
 
     }
@@ -416,106 +421,121 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPricing(Pricing pricing, Boolean isCategoryEvent) {
-        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
-        coupleTextView.setLabel(pricing.getLabel());
+        if (getContext() != null) {
+            HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+            coupleTextView.setLabel(pricing.getLabel());
 
-        String value = pricing.getValue();
-        if (pricing.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
-            value = getResources().getString(R.string.free_rupiah);
+            String value = pricing.getValue();
+            if (pricing.getValue().equalsIgnoreCase(getContext().getResources().getString(R.string.zero_rupiah)) && isCategoryEvent) {
+                value = getContext().getResources().getString(R.string.free_rupiah);
+            }
+
+            coupleTextView.setValue(value);
+            infoValue.addView(coupleTextView);
         }
-
-        coupleTextView.setValue(value);
-        infoValue.addView(coupleTextView);
     }
 
     @Override
     public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
-        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
-        coupleTextView.setLabel(paymentData.getLabel());
-        String value = paymentData.getValue();
-        if (paymentData.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
-            value = getResources().getString(R.string.free_rupiah);
-        }
-        coupleTextView.setValue(value);
-        if (!paymentData.getTextColor().equals("")) {
-            try {
-                coupleTextView.setValueColor(Color.parseColor(paymentData.getTextColor()));
-            }catch (Exception e){
-                e.printStackTrace();
+        if (getContext() != null) {
+            HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+            coupleTextView.setLabel(paymentData.getLabel());
+            String value = paymentData.getValue();
+            if (paymentData.getValue().equalsIgnoreCase(getContext().getResources().getString(R.string.zero_rupiah)) && isCategoryEvent) {
+                value = getContext().getResources().getString(R.string.free_rupiah);
             }
+            coupleTextView.setValue(value);
+            if (!paymentData.getTextColor().equals("")) {
+                try {
+                    coupleTextView.setValueColor(Color.parseColor(paymentData.getTextColor()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            totalPrice.addView(coupleTextView);
         }
-        totalPrice.addView(coupleTextView);
     }
 
     @Override
     public void setContactUs(final ContactUs contactUs, String helpLink) {
-        String text = getResources().getString(R.string.contact_us_text);
-        String clickableLink = getResources().getString(R.string.contact_us_clickable_text);
-        SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf(clickableLink);
-        if (startIndexOfLink != -1) {
-            spannableString.setSpan(new ClickableSpan() {
-                @Override
-                public void onClick(View view) {
-                    if (!TextUtils.isEmpty(helpLink)) {
-                        RouteManager.route(getContext(), helpLink);
-                    } else {
+        if (getContext() != null) {
+            String text = getContext().getResources().getString(R.string.contact_us_text);
+            String clickableLink = getContext().getResources().getString(R.string.contact_us_clickable_text);
+            SpannableString spannableString = new SpannableString(text);
+            int startIndexOfLink = text.indexOf(clickableLink);
+            if (startIndexOfLink != -1) {
+                spannableString.setSpan(new ClickableSpan() {
+                    @Override
+                    public void onClick(View view) {
+                        if (!TextUtils.isEmpty(helpLink)) {
+                            RouteManager.route(getContext(), helpLink);
+                        } else {
 
-                        Intent intent = null;
-                        try {
-                            intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
-                                    getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
+                            Intent intent = null;
+                            try {
+                                intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
+                                        getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                            startActivity(intent);
                         }
-                        startActivity(intent);
                     }
-                }
 
-                @Override
-                public void updateDrawState(TextPaint ds) {
-                    super.updateDrawState(ds);
-                    ds.setUnderlineText(false);
-                    ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
-                }
-            }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            helpLabel.setHighlightColor(Color.TRANSPARENT);
-            helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
+                    @Override
+                    public void updateDrawState(TextPaint ds) {
+                        super.updateDrawState(ds);
+                        ds.setUnderlineText(false);
+                        ds.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
+                    }
+                }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                helpLabel.setHighlightColor(Color.TRANSPARENT);
+                helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
 
-            helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
+                helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
+            }
         }
     }
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_24));
-        primaryActionBtn.setText(actionButton.getLabel());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
-        shape.setStroke(2, getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100));
-        primaryActionBtn.setBackground(shape);
-        if (isSingleButton) {
-            primaryActionBtn.setLayoutParams(params);
-        }
-        if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
-            primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+        if (getContext() != null) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_0),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_24)
+            );
+            primaryActionBtn.setText(actionButton.getLabel());
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(4);
+            shape.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            shape.setStroke(2, getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N100));
+            primaryActionBtn.setBackground(shape);
+            if (isSingleButton) {
+                primaryActionBtn.setLayoutParams(params);
+            }
+            if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
+                primaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+            }
         }
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        secondaryActionBtn.setText(actionButton.getLabel());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(4);
-        shape.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
-        secondaryActionBtn.setBackground(shape);
-        secondaryActionBtn.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
-        if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
-            secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+        if (getContext() != null) {
+            secondaryActionBtn.setText(actionButton.getLabel());
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(4);
+            shape.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
+            secondaryActionBtn.setBackground(shape);
+            secondaryActionBtn.setTextColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            if (!TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
+                secondaryActionBtn.setOnClickListener(getActionButtonClickListener(actionButton.getBody().getAppURL()));
+            }
         }
     }
 
@@ -569,17 +589,19 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent) {
-        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
-        coupleTextView.setLabel(payMethod.getLabel());
+        if (getContext() != null) {
+            HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+            coupleTextView.setLabel(payMethod.getLabel());
 
-        ///change value from Rp0 to Gratis
-        String value = payMethod.getValue();
-        if (payMethod.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
-            value = getResources().getString(R.string.free_rupiah);
+            ///change value from Rp0 to Gratis
+            String value = payMethod.getValue();
+            if (payMethod.getValue().equalsIgnoreCase(getContext().getResources().getString(R.string.zero_rupiah)) && isCategoryEvent) {
+                value = getContext().getResources().getString(R.string.free_rupiah);
+            }
+
+            coupleTextView.setValue(value);
+            paymentMethodInfo.addView(coupleTextView);
         }
-
-        coupleTextView.setValue(value);
-        paymentMethodInfo.addView(coupleTextView);
     }
 
     @Override
@@ -607,18 +629,20 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setActionButtons(List<ActionButton> actionButtons) {
-        actionButtonLayout.setVisibility(View.VISIBLE);
-        actionButtonText.setText(actionButtons.get(0).getLabel());
-        actionButtonLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON) && getContext() != null) {
-                    presenter.getActionButtonGql(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.tapactions), actionButtons, null, 0, false);
-                } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
-                    RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+        if (getContext() != null) {
+            actionButtonLayout.setVisibility(View.VISIBLE);
+            actionButtonText.setText(actionButtons.get(0).getLabel());
+            actionButtonLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_BUTTON) && getContext() != null) {
+                        presenter.getActionButtonGql(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.tapactions), actionButtons, null, 0, false);
+                    } else if (actionButtons.get(0).getControl().equalsIgnoreCase(KEY_REDIRECT)) {
+                        RouteManager.route(getContext(), actionButtons.get(0).getBody().getAppURL());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -739,8 +763,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                             }
                         });
                     }
-
-                    bannerMainTitle.setText(getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
+                    if (getContext() != null) {
+                        bannerMainTitle.setText(getContext().getResources().getString(R.string.banner_deals_main_title, userSession.getName()));
+                    }
                     if (!metaDataInfo.getCustomLinkLabel().isEmpty()) {
                         bannerSubTitle.setText(metaDataInfo.getCustomLinkLabel());
                     }
@@ -1008,24 +1033,26 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     private void addCoachmarkBannerDeals(){
-        CoachMarkItem coachMarkItem = new CoachMarkItem(bannerDeals,
-                getResources().getString(R.string.banner_deals_coachmark_title),
-                getResources().getString(R.string.banner_deals_coachmark_sub_title));
+        if (getContext() != null) {
+            CoachMarkItem coachMarkItem = new CoachMarkItem(bannerDeals,
+                    getContext().getResources().getString(R.string.banner_deals_coachmark_title),
+                    getContext().getResources().getString(R.string.banner_deals_coachmark_sub_title));
 
-        ArrayList<CoachMarkItem> listCoachMark = new ArrayList<>();
-        listCoachMark.add(coachMarkItem);
+            ArrayList<CoachMarkItem> listCoachMark = new ArrayList<>();
+            listCoachMark.add(coachMarkItem);
 
-        CoachMarkBuilder coachMarkBuilder = new CoachMarkBuilder();
-        CoachMark coachMark =  coachMarkBuilder.build();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                coachMark.show(getActivity(),"",listCoachMark);
-            }
-        }, DELAY_COACH_MARK_START);
+            CoachMarkBuilder coachMarkBuilder = new CoachMarkBuilder();
+            CoachMark coachMark = coachMarkBuilder.build();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    coachMark.show(getActivity(), "", listCoachMark);
+                }
+            }, DELAY_COACH_MARK_START);
 
-        localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY,false);
-        localCacheHandler.applyEditor();
+            localCacheHandler.putBoolean(SHOW_COACH_MARK_KEY, false);
+            localCacheHandler.applyEditor();
+        }
 
     }
 

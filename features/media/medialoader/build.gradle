@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'org.jetbrains.dokka'
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
@@ -46,6 +47,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+
+    implementation rootProject.ext.miscDependencies.exoPlayer
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
