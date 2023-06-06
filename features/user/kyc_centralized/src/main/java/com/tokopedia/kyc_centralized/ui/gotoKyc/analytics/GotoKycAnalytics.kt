@@ -266,18 +266,6 @@ object GotoKycAnalytics {
             .send()
     }
 
-    fun sendClickOkeSiapOnPendingBottomSheetOnboardingPage(projectId: String) {
-        Tracker.Builder()
-            .setEvent(EVENT_CLICK_ACCOUNT)
-            .setEventAction(ACTION_CLICK_OKE_SIAP)
-            .setEventCategory(CATEGORY_ONBOARDING_PAGE)
-            .setEventLabel(projectId)
-            .setBusinessUnit(VALUE_BUSINESS_UNIT)
-            .setCurrentSite(VALUE_CURRENT_SITE)
-            .build()
-            .send()
-    }
-
     //A6i or A6
     fun sendViewStatusPage(status: String, errorReason: String = "", projectId: String) {
         val finalStatus = if (errorReason.isNotEmpty()) {

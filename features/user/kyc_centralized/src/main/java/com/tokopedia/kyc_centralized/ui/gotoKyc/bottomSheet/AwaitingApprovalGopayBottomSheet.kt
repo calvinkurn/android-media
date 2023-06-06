@@ -47,7 +47,6 @@ class AwaitingApprovalGopayBottomSheet : BottomSheetUnify() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
-            GotoKycAnalytics.sendClickOkeSiapOnPendingBottomSheetOnboardingPage(projectId)
             dismiss()
         }
     }
