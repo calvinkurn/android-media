@@ -37,6 +37,7 @@ object DigitalPDPEventTracking {
         const val SHOP_ID = "shop_id"
         const val SHOP_NAME = "shop_name"
         const val SHOP_TYPE = "shop_type"
+        const val IFRAME_OTP = "iframe-otp"
     }
 
     object Event {

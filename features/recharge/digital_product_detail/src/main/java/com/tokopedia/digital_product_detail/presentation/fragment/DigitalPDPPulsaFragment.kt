@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -763,8 +762,6 @@ class DigitalPDPPulsaFragment :
                 getIndosatCheckBalance()
             }
         }
-        // TODO: [Misael] show local load error
-        Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
     private fun onLoadingGetCheckBalance() {

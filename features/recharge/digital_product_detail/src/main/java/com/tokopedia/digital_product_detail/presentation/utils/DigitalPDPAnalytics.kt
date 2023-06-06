@@ -24,6 +24,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.DIMENSION45
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.EMPTY_DISCOUNT_PRICE
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.FLASH_SALE
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.IFRAME_OTP
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.INDEX
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.IS_LOGGEDIN_STATUS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Additional.ITEMS
@@ -317,7 +318,7 @@ class DigitalPDPAnalytics {
             IS_LOGGEDIN_STATUS,
             isLogin,
             SCREEN_NAME,
-            "iframe-otp"
+            IFRAME_OTP
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -336,7 +337,7 @@ class DigitalPDPAnalytics {
             TrackAppUtils.EVENT_LABEL, "$categoryName - $loyaltyStatus",
             TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_CLOSE_OTP,
             IS_LOGGEDIN_STATUS, isLogin,
-            SCREEN_NAME, "iframe-otp"
+            SCREEN_NAME, IFRAME_OTP
         )
         data.clickDigitalItemList(userId)
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -371,15 +372,16 @@ class DigitalPDPAnalytics {
         loyaltyStatus: String,
         userId: String
     ) {
-        val eventDataLayer = Bundle().apply {
-            putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.CLICK_LIHAT_DETAIL_CHECK_BALANCE)
-            putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
-            putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.CLICK_LIHAT_DETAIL_CHECK_BALANCE)
-//            putParcelableArrayList(PROMOTIONS, mapperBannerToItemList("", "", ""))
-        }
-
-        eventDataLayer.clickGeneralItemList(userId)
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventDataLayer)
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION,
+            DigitalPDPEventTracking.Action.CLICK_LIHAT_DETAIL_CHECK_BALANCE,
+            TrackAppUtils.EVENT_LABEL,
+            "$categoryName - $operatorName - $loyaltyStatus",
+            TRACKER_ID,
+            DigitalPDPEventTracking.TrackerId.CLICK_LIHAT_DETAIL_CHECK_BALANCE
+        )
+        data.clickDigitalItemList(userId)
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3960
@@ -394,7 +396,16 @@ class DigitalPDPAnalytics {
             putString(TrackAppUtils.EVENT_ACTION, DigitalPDPEventTracking.Action.IMPRESSION_SHEET_ACTIVE_PACKAGE)
             putString(TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $loyaltyStatus")
             putString(TRACKER_ID, DigitalPDPEventTracking.TrackerId.IMPRESSION_SHEET_ACTIVE_PACKAGE)
-//            putParcelableArrayList(PROMOTIONS, mapperBannerToItemList(creativeUrl, categoryId, categoryName))
+            putParcelableArrayList(
+                ITEMS,
+                mapperCheckBalanceProductToItemList(
+                    categoryName,
+                    operatorName,
+                    "",
+                    "",
+                    ""
+                )
+            )
         }
         eventDataLayer.viewItem(userId)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventDataLayer)
@@ -440,7 +451,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putParcelableArrayList(
                 ITEMS,
-                mapperCheckBalanceProductToItemList(
+                mapperCheckBalanceProductToDimen40ItemList(
                     productListName,
                     index,
                     categoryName,
@@ -475,7 +486,7 @@ class DigitalPDPAnalytics {
             putString(ITEM_LIST, productListName)
             putParcelableArrayList(
                 ITEMS,
-                mapperCheckBalanceProductToItemList(
+                mapperCheckBalanceProductToDimen40ItemList(
                     productListName,
                     index,
                     categoryName,
@@ -1302,7 +1313,7 @@ class DigitalPDPAnalytics {
         return listItems
     }
 
-    fun mapperCheckBalanceProductToItemList(
+    fun mapperCheckBalanceProductToDimen40ItemList(
         title: String,
         index: Int,
         categoryName: String,
@@ -1316,6 +1327,27 @@ class DigitalPDPAnalytics {
             Bundle().apply {
                 putString(DIMENSION40, title)
                 putString(INDEX, index.toString())
+                putString(ITEM_BRAND, operatorName)
+                putString(ITEM_CATEGORY, categoryName)
+                putString(ITEM_ID, productId)
+                putString(ITEM_NAME, productName)
+                putString(ITEM_VARIANT, "")
+                putString(PRICE, price)
+            }
+        )
+        return listItems
+    }
+
+    fun mapperCheckBalanceProductToItemList(
+        categoryName: String,
+        operatorName: String,
+        productId: String,
+        productName: String,
+        price: String
+    ): ArrayList<Bundle> {
+        val listItems = ArrayList<Bundle>()
+        listItems.add(
+            Bundle().apply {
                 putString(ITEM_BRAND, operatorName)
                 putString(ITEM_CATEGORY, categoryName)
                 putString(ITEM_ID, productId)
