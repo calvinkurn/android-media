@@ -4,7 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
+import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignCarouselPlayWidgetViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignCarouselProductHighlightViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBannerTimerPlaceholderViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignDisplayBannerTimerViewHolder
@@ -31,6 +33,7 @@ import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT_HIGHLIGHT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
@@ -50,7 +53,7 @@ class ShopCampaignTabAdapterTypeFactory(
     private val shopCampaignDisplayBannerTimerWidgetListener: ShopHomeDisplayBannerTimerWidgetListener,
     private val shopCampaignCarouselProductListener: ShopCampaignCarouselProductListener,
     private val playWidgetCoordinator: PlayWidgetCoordinator,
-    private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener,
+    private val shopPlayWidgetListener: ShopHomePlayWidgetListener,
     private val multipleProductBundleListener: MultipleProductBundleListener,
     private val singleProductBundleListener: SingleProductBundleListener,
     private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener,
@@ -71,6 +74,7 @@ class ShopCampaignTabAdapterTypeFactory(
 
             SLIDER_SQUARE_BANNER -> getShopCampaignSliderSquareViewHolder(baseShopHomeWidgetUiModel)
             SLIDER_BANNER -> getShopCampaignSliderBannerViewHolder(baseShopHomeWidgetUiModel)
+            PLAY_CAROUSEL_WIDGET -> ShopCampaignCarouselPlayWidgetViewHolder.LAYOUT
             VIDEO -> getShopCampaignVideoViewHolder(baseShopHomeWidgetUiModel)
             SLIDER_BANNER_HIGHLIGHT -> getShopCampaignDisplaySliderBannerHighlight(
                 baseShopHomeWidgetUiModel
@@ -203,6 +207,10 @@ class ShopCampaignTabAdapterTypeFactory(
                 parent,
                 shopHomeDisplayWidgetListener,
                 shopCampaignInterface
+            )
+
+            ShopCampaignCarouselPlayWidgetViewHolder.LAYOUT -> ShopCampaignCarouselPlayWidgetViewHolder(
+                PlayWidgetViewHolder(parent, playWidgetCoordinator), shopPlayWidgetListener, shopCampaignInterface
             )
 
             ShopCampaignVideoPlaceholderViewHolder.LAYOUT -> ShopCampaignVideoPlaceholderViewHolder(

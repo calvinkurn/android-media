@@ -261,7 +261,7 @@ open class ShopPageHomeFragment :
         const val NPL_REMIND_ME_CAMPAIGN_ID = "NPL_REMIND_ME_CAMPAIGN_ID"
         const val FLASH_SALE_REMIND_ME_CAMPAIGN_ID = "FLASH_SALE_REMIND_ME_CAMPAIGN_ID"
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
-        private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
+        const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
         private const val MIN_BUNDLE_SIZE = 1
@@ -409,7 +409,7 @@ open class ShopPageHomeFragment :
 
     private val viewJob = SupervisorJob()
 
-    private val viewScope = object : CoroutineScope {
+    protected val viewScope = object : CoroutineScope {
         override val coroutineContext: CoroutineContext
             get() = viewJob + dispatcher.main
     }
@@ -417,6 +417,7 @@ open class ShopPageHomeFragment :
     private var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
+    //TODO need to move this one to viewmodel in the future
     var listWidgetLayout = mutableListOf<ShopPageWidgetUiModel>()
     var initialLayoutData = mutableListOf<ShopPageWidgetUiModel>()
     val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
@@ -1765,7 +1766,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun getPlayWidgetData() {
+    protected open fun getPlayWidgetData() {
         shopHomeAdapter?.getPlayWidgetUiModel()?.let {
             viewModel?.getPlayWidget(shopId, it)
         }
@@ -1785,11 +1786,11 @@ open class ShopPageHomeFragment :
         }
     }
 
-    protected fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
+    private fun isWidgetMvc(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == PROMO && data.widgetName == VOUCHER_STATIC
     }
 
-    private fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
+    protected fun isWidgetPlay(data: ShopPageWidgetUiModel): Boolean {
         return data.widgetType == DYNAMIC && data.widgetName == PLAY_CAROUSEL_WIDGET
     }
 
@@ -4190,7 +4191,7 @@ open class ShopPageHomeFragment :
         viewModel?.updatePlayWidgetReminder(channelId, isReminder)
     }
 
-    private fun observePlayWidget() {
+    protected open fun observePlayWidget() {
         viewModel?.playWidgetObservable?.observe(
             viewLifecycleOwner,
             Observer { carouselPlayWidgetUiModel ->
@@ -4240,7 +4241,7 @@ open class ShopPageHomeFragment :
         )
     }
 
-    private fun checkIsShouldShowPerformanceDashboardCoachMark() {
+    protected open fun checkIsShouldShowPerformanceDashboardCoachMark() {
         val isShownAlready = coachMarkSharedPref.hasBeenShown(Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
         if (isShownAlready) return
         val recyclerView = getRecyclerView(view)
@@ -4421,7 +4422,7 @@ open class ShopPageHomeFragment :
         viewModel?.deleteChannel(channelId)
     }
 
-    private fun showWidgetDeletedToaster() {
+    protected fun showWidgetDeletedToaster() {
         activity?.run {
             view?.let {
                 Toaster.build(
@@ -4434,7 +4435,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
+    protected fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
         shopPlayWidgetAnalytic.onImpressErrorDeleteChannel(
             channelId,
             reason.localizedMessage.orEmpty()
@@ -4455,7 +4456,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    private fun showWidgetTranscodeSuccessToaster() {
+    protected fun showWidgetTranscodeSuccessToaster() {
         activity?.run {
             view?.let {
                 Toaster.build(

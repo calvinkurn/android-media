@@ -8,11 +8,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
@@ -135,17 +138,20 @@ class ShopCampaignTabAdapter(
     }
 
     fun pauseSliderBannerAutoScroll() {
-        val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER
-        }
+        val listSliderBannerViewModel =
+            visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
+                it.name == WidgetName.SLIDER_BANNER
+            }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
         }
     }
+
     fun resumeSliderBannerAutoScroll() {
-        val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
-            it.name == WidgetName.SLIDER_BANNER
-        }
+        val listSliderBannerViewModel =
+            visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
+                it.name == WidgetName.SLIDER_BANNER
+            }
         listSliderBannerViewModel.forEach {
             (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
         }
@@ -169,6 +175,7 @@ class ShopCampaignTabAdapter(
                     is BaseShopHomeWidgetUiModel -> {
                         widgetContentData.key.first == it.widgetId
                     }
+
                     else -> {
                         false
                     }
@@ -179,8 +186,10 @@ class ShopCampaignTabAdapter(
                         null -> {
                             newList.removeAt(position)
                         }
+
                         is BaseShopHomeWidgetUiModel -> {
-                            (widgetContentData.value as BaseShopHomeWidgetUiModel).widgetState = WidgetState.FINISH
+                            (widgetContentData.value as BaseShopHomeWidgetUiModel).widgetState =
+                                WidgetState.FINISH
                             (widgetContentData.value as BaseShopHomeWidgetUiModel).isNewData = true
                             newList.setElement(position, widgetContentData.value)
                         }
@@ -222,4 +231,31 @@ class ShopCampaignTabAdapter(
             }
         submitList(newList)
     }
+
+    fun getPlayWidgetUiModel(): CarouselPlayWidgetUiModel? {
+        return visitables.filterIsInstance<CarouselPlayWidgetUiModel>().firstOrNull()
+    }
+
+    fun updatePlayWidget(playWidgetState: PlayWidgetState?) {
+        val newList = getNewVisitableItems()
+        newList.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+            if (position == -1) return@let
+            if (playWidgetState == null || playWidgetState.isLoading || isPlayWidgetEmpty(playWidgetState.model)) {
+                newList.removeAt(position)
+            } else {
+                (newList.getOrNull(position) as? CarouselPlayWidgetUiModel)?.copy(playWidgetState = playWidgetState)?.apply {
+                    widgetState = WidgetState.FINISH
+                    isNewData = true
+                }?.also {
+                    newList.setElement(position, it)
+                }
+            }
+        }
+        submitList(newList)
+    }
+
+    private fun isPlayWidgetEmpty(widget: PlayWidgetUiModel): Boolean {
+        return widget.items.isEmpty()
+    }
+
 }

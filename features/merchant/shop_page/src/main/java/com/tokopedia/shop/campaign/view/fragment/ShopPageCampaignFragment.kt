@@ -17,12 +17,20 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
+import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopCampaignTabTracker
@@ -60,11 +68,13 @@ import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
+import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
+import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
@@ -72,7 +82,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.min
 
 class ShopPageCampaignFragment :
     ShopPageHomeFragment(),
@@ -87,7 +99,7 @@ class ShopPageCampaignFragment :
 
     companion object {
         private const val KEY_SHOP_ID = "SHOP_ID"
-        private const val LOAD_WIDGET_ITEM_PER_PAGE = 30
+        private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
@@ -117,7 +129,7 @@ class ShopPageCampaignFragment :
             shopCampaignDisplayBannerTimerWidgetListener = this,
             shopCampaignCarouselProductListener = this,
             playWidgetCoordinator = playWidgetCoordinator,
-            shopHomePlayWidgetListener = this,
+            shopPlayWidgetListener = this,
             multipleProductBundleListener = this,
             singleProductBundleListener = this,
             bundlingParentListener = this,
@@ -257,6 +269,55 @@ class ShopPageCampaignFragment :
             }
             viewModelCampaign?.shopCampaignHomeWidgetContentDataError?.collect {
                 shopCampaignTabAdapter.removeShopHomeWidget(it)
+            }
+        }
+    }
+
+    override fun observePlayWidget() {
+        viewModel?.playWidgetObservable?.observe(viewLifecycleOwner) { carouselPlayWidgetUiModel ->
+            shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
+            shopCampaignTabAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.playWidgetState)
+
+            val widget = carouselPlayWidgetUiModel?.playWidgetState
+
+            if (widget?.model?.hasSuccessfulTranscodedChannel == true) showWidgetTranscodeSuccessToaster()
+
+            val parent = parentFragment
+            if (parent is InterfaceShopPageHeader) {
+                val recyclerView = getRecyclerView(view)
+
+                if (parent.isNewlyBroadcastSaved() == true) {
+                    parent.clearIsNewlyBroadcastSaved()
+                    recyclerView?.addOneTimeGlobalLayoutListener {
+                        viewScope.launch {
+                            parent.collapseAppBar()
+                            val widgetPosition =
+                                shopCampaignTabAdapter.list.orEmpty()
+                                    .indexOfFirst { it is CarouselPlayWidgetUiModel }
+                            val finalPosition = min(
+                                ShopUtil.getActualPositionFromIndex(widgetPosition),
+                                shopCampaignTabAdapter?.itemCount.orZero()
+                            )
+                            recyclerView.stepScrollToPositionWithDelay(
+                                finalPosition,
+                                PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY
+                            )
+                        }
+                    }
+                }
+            }
+
+            carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {
+                when (it) {
+                    is CarouselPlayWidgetUiModel.Action.Delete -> showWidgetDeletedToaster()
+                    is CarouselPlayWidgetUiModel.Action.DeleteFailed -> showWidgetDeleteFailedToaster(
+                        it.channelId,
+                        it.reason
+                    )
+
+                    else -> {
+                    }
+                }
             }
         }
     }
@@ -513,11 +574,40 @@ class ShopPageCampaignFragment :
                     if (firstCompletelyVisibleItemPosition > 0) {
                         showScrollToTopButton()
                     }
-                    //TODO need to add changes from play on home tab after PR #32199 merged
+                    checkIsShouldShowPerformanceDashboardCoachMark()
                 }
             }
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {}
+        }
+    }
+
+    override fun checkIsShouldShowPerformanceDashboardCoachMark() {
+        val isShownAlready = coachMarkSharedPref.hasBeenShown(ContentCoachMarkSharedPref.Key.PerformanceDashboardEntryPointShopPage, viewModel?.userSessionShopId.orEmpty())
+        if (isShownAlready) return
+        val recyclerView = getRecyclerView(view)
+        recyclerView?.addOneTimeGlobalLayoutListener {
+            val widgetPosition = shopCampaignTabAdapter.list.orEmpty().indexOfFirst { it is CarouselPlayWidgetUiModel }
+            val widgetViewHolder = recyclerView.findViewHolderForAdapterPosition(widgetPosition)
+            val ivAction = widgetViewHolder?.itemView?.findViewById<IconUnify>(com.tokopedia.play.widget.R.id.play_widget_iv_action)
+            if (ivAction?.isVisible == true) {
+                val coachMarkItems = mutableListOf<CoachMark2Item>()
+                val coachMark = CoachMark2(requireContext())
+                coachMarkItems.add(
+                    CoachMark2Item(
+                        anchorView = ivAction,
+                        title = getString(com.tokopedia.content.common.R.string.performance_dashboard_coachmark_title),
+                        description = getString(com.tokopedia.content.common.R.string.performance_dashboard_coachmark_subtitle),
+                        position = CoachMark2.POSITION_BOTTOM,
+                    )
+                )
+                coachMark.isOutsideTouchable = true
+                coachMark.showCoachMark(ArrayList(coachMarkItems))
+                coachMarkSharedPref.setHasBeenShown(
+                    ContentCoachMarkSharedPref.Key.PerformanceDashboardEntryPointShopPage,
+                    viewModel?.userSessionShopId.orEmpty()
+                )
+            }
         }
     }
 
@@ -538,9 +628,25 @@ class ShopPageCampaignFragment :
             val listWidgetLayoutToLoad = getListWidgetLayoutToLoad(position)
             shopCampaignTabAdapter.updateShopCampaignWidgetStateToLoading(listWidgetLayoutToLoad)
             checkLoadVoucherSliderData(listWidgetLayoutToLoad)
+            checkLoadPlayWidgetData(listWidgetLayoutToLoad)
             getWidgetContentData(listWidgetLayoutToLoad)
 
             listWidgetLayoutToLoad.clear()
+        }
+    }
+
+    private fun checkLoadPlayWidgetData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
+        listWidgetLayoutToLoad.firstOrNull {
+            isWidgetPlay(it)
+        }?.let {
+            listWidgetLayoutToLoad.remove(it)
+            getPlayWidgetData()
+        }
+    }
+
+    override fun getPlayWidgetData() {
+        shopCampaignTabAdapter.getPlayWidgetUiModel()?.let {
+            viewModel?.getPlayWidget(shopId, it)
         }
     }
 
