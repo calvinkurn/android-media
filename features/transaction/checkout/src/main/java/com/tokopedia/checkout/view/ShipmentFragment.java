@@ -2247,6 +2247,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             });
         } else {
             shipmentAdapter.updateCrossSell(checked, crossSellModel);
+            onNeedUpdateRequestData();
         }
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
