@@ -30,6 +30,8 @@ class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayShortsXAffiliateSuccessBinding
         get() = _binding!!
 
+    private var mListener: Listener? = null
+
     private val boldSpan = StyleSpan(Typeface.BOLD)
     private val colorSpan: ForegroundColorSpan
         get() = ForegroundColorSpan(
@@ -98,6 +100,10 @@ class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
         mUserName = userName
     }
 
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
     fun show(fragmentManager: FragmentManager) {
         if (!isAdded) showNow(fragmentManager, TAG)
     }
@@ -112,6 +118,10 @@ class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
         result.setSpanOnText(privacyPolicy, clickableLearnMore, boldSpan, colorSpan)
 
         return result
+    }
+
+    interface Listener {
+        fun onClickNext()
     }
 
     companion object {

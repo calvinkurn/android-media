@@ -15,7 +15,6 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.play.broadcaster.BuildConfig
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
@@ -109,9 +108,9 @@ class ProductChooserIdGenerator {
             maxProduct: Int,
             productSectionList: List<ProductTagSectionUiModel>,
             savedStateHandle: SavedStateHandle,
+            source: PlayBroPageSource,
             isEligibleForPin: Boolean,
-            source: PlayBroPageSource
-            fetchCommissionProduct: Boolean,
+            fetchCommissionProduct: Boolean
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
                 creationId = creationId,

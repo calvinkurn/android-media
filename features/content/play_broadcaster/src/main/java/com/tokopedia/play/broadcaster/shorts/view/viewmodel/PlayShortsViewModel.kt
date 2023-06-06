@@ -75,9 +75,6 @@ class PlayShortsViewModel @Inject constructor(
     val accountList: List<ContentAccountUiModel>
         get() = _accountList.value
 
-    val isAllowToSeePerformanceDashboard: Boolean
-        get() = selectedAccount.isShop
-
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
@@ -124,14 +121,14 @@ class PlayShortsViewModel @Inject constructor(
         _productSectionList
     ) { menuList, titleForm, coverForm, productSectionList ->
         menuList.map {
-            when (it.menuId) {
-                DynamicPreparationMenu.TITLE -> {
+            when (it.menu) {
+                DynamicPreparationMenu.Menu.Title -> {
                     it.copy(isChecked = titleForm.title.isNotEmpty())
                 }
-                DynamicPreparationMenu.PRODUCT -> {
+                DynamicPreparationMenu.Menu.Product -> {
                     it.copy(isChecked = productSectionList.isNotEmpty())
                 }
-                DynamicPreparationMenu.COVER -> {
+                DynamicPreparationMenu.Menu.Cover -> {
                     it.copy(
                         isChecked = coverForm.coverUri.isNotEmpty(),
                         isEnabled = isAllMandatoryMenuChecked
@@ -493,7 +490,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun checkIsUserAffiliate() {
-        if (!selectedAccount.isUser) {
+        if (selectedAccount.isShop) {
             _isAffiliate.update { false }
             return
         }

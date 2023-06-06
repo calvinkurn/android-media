@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.orUnknown
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key.ProductSummaryCommission
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -26,8 +27,9 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -35,6 +37,7 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
     private var mListener: Listener? = null
@@ -144,6 +147,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
                         productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin, viewModel.isNumerationShown)
+                        setupProductCommissionCoachMark()
 
                         if(state.productTagSectionList.isEmpty()) {
                             binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
@@ -243,9 +247,32 @@ class ProductSummaryBottomSheet @Inject constructor(
         mListener = listener
     }
 
+    private fun setupProductCommissionCoachMark() {
+        if (coachMarkSharedPref.hasBeenShown(ProductSummaryCommission)) return
+
+        mListener?.onProductSummaryCommissionShown()
+        productSummaryListView.getProductCommissionCoachMark { firstTextCommission ->
+            val coachMark = CoachMark2(requireContext())
+            val coachMarkItem = CoachMark2Item(
+                anchorView = firstTextCommission,
+                title = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_title),
+                description = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_subtitle),
+                position = CoachMark2.POSITION_BOTTOM,
+            )
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(DELAY_COACH_MARK_DURATION)
+                coachMark.showCoachMark(arrayListOf(coachMarkItem))
+            }
+
+            coachMarkSharedPref.setHasBeenShown(ProductSummaryCommission)
+        }
+    }
+
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
         private const val SCREEN_HEIGHT_DIVIDER = 0.85f
+        private const val DELAY_COACH_MARK_DURATION = 1000L
 
         fun getFragment(
             fragmentManager: FragmentManager,
@@ -268,6 +295,8 @@ class ProductSummaryBottomSheet @Inject constructor(
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
 
         fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet)
+
+        fun onProductSummaryCommissionShown() {}
 
         fun onFinish(bottomSheet: ProductSummaryBottomSheet)
     }
