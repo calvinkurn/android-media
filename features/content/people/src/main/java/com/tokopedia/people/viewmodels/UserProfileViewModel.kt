@@ -57,7 +57,7 @@ class UserProfileViewModel @AssistedInject constructor(
         get() = _profileInfo.value.name
 
     val firstName: String
-        get() = _profileInfo.value.name.trim().split(" ")[0]
+        get() = _profileInfo.value.name.trim().split(SPACE).firstOrNull().orEmpty()
 
     val profileUserID: String
         get() = _profileInfo.value.userID
@@ -740,5 +740,6 @@ class UserProfileViewModel @AssistedInject constructor(
         private const val FOLLOW_TYPE_BUYER = 3
         private const val DEFAULT_LIMIT = 10
         private const val DELAY_SHOW_REVIEW_ONBOARDING = 1000L
+        private const val SPACE = " "
     }
 }
