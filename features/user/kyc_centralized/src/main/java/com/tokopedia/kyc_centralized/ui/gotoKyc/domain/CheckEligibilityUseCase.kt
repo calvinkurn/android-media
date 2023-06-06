@@ -16,9 +16,7 @@ class CheckEligibilityUseCase @Inject constructor(
         return withContext(dispatchers.io) {
             val response = oneKycSdk.getOneKycNetworkRepository().getEligibilityStatus(partnerName = KycSdkPartner.TOKOPEDIA_CORE.name)
 
-            if (response.success == false) {
-                CheckEligibilityResult.Failed(MessageErrorException(response.errors?.first()?.message.orEmpty()))
-            } else {
+            if (response.success == true) {
                 when (response.data?.flow) {
                     KYCConstant.GotoKycFlow.PROGRESSIVE -> {
                         CheckEligibilityResult.Progressive(response.data?.details?.maskedName.orEmpty())
@@ -38,6 +36,8 @@ class CheckEligibilityUseCase @Inject constructor(
                         CheckEligibilityResult.Failed(Throwable(message = response.data?.flow.toString()))
                     }
                 }
+            } else {
+                CheckEligibilityResult.Failed(MessageErrorException(response.errors?.first()?.message.orEmpty()))
             }
         }
     }
