@@ -83,7 +83,7 @@ class ContentDetailPostTypeViewHolder @JvmOverloads constructor(
     private val seeAllCommentText: Typography = findViewById(R.id.see_all_comment_text)
     private val userImage: ImageUnify = findViewById(R.id.user_image)
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
-    private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
+    private val scrollHostCarousel: FeedNestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
