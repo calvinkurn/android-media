@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -624,7 +625,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             } else {
                 val intent = Intent()
                 intent.putExtra(
-                    ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE,
+                    ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE,
                     getString(R.string.bulk_review_submission_success_message, userName)
                 )
                 setResult(Activity.RESULT_OK, intent)
@@ -775,7 +776,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         source = ReviewInboxConstants.SOURCE_REVIEW_INBOX
                     ).apply {
                         if (message.isNotBlank()) {
-                            putExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE, message)
+                            putExtra(
+                                ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE,
+                                message
+                            )
                         }
                     }
                 )

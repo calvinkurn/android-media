@@ -93,10 +93,16 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.io.File
 import javax.inject.Inject
 
-class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
-    SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
-    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener,
-    ShareBottomsheetListener, CoachMarkListener {
+class OtherMenuFragment :
+    BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+    SettingTrackingListener,
+    OtherMenuAdapter.Listener,
+    OtherMenuViewHolder.Listener,
+    StatusBarCallback,
+    FragmentChangeCallback,
+    SellerHomeFragmentListener,
+    ShareBottomsheetListener,
+    CoachMarkListener {
 
     companion object {
         private const val TAB_PM_PARAM = "tab"
@@ -321,9 +327,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onSaldoClicked() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else {
+        } else {
             val intent = RouteManager.getIntent(
                 context,
                 ApplinkConstInternalGlobal.WEBVIEW,
@@ -344,7 +350,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             RouteManager.route(
                 context,
                 kreditTopadsClickedBundle,
-                ApplinkConst.SellerApp.TOPADS_CREDIT
+                ApplinkConst.SellerApp.TOPADS_ADD_CREDIT
             )
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
@@ -454,49 +460,54 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
-            type = LinkerData.SHOP_TYPE
-            uri = shopShareInfo?.coreUrl
-            id = userSession.shopId
-            //set and share in the Linker Data
-            feature = shareModel.feature
-            channel = shareModel.channel
-            campaign = shareModel.campaign
-            ogTitle = getShareBottomSheetOgTitle()
-            ogDescription = getShareBottomSheetOgDescription()
-            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                ogImageUrl = shareModel.ogImgUrl
-            }
-        })
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    checkUsingCustomBranchLinkDomain(linkerShareData)
-                    val shareString = activity?.getString(
-                        R.string.sah_new_other_share_text,
-                        userSession.shopName,
-                        linkerShareData?.shareContents
-                    ).orEmpty()
-                    shareModel.subjectName = userSession.shopName
-                    SharingUtil.executeShareIntent(
-                        shareModel,
-                        linkerShareData,
-                        activity,
-                        view,
-                        shareString
-                    )
-
-                    NewOtherMenuTracking.sendEventClickSharingChannel(
-                        shopId = userSession.shopId,
-                        userId = userSession.userId,
-                        channel = shareModel.channel.orEmpty()
-                    )
-
-                    universalShareBottomSheet?.dismiss()
+        val linkerShareData = DataMapper.getLinkerShareData(
+            LinkerData().apply {
+                type = LinkerData.SHOP_TYPE
+                uri = shopShareInfo?.coreUrl
+                id = userSession.shopId
+                // set and share in the Linker Data
+                feature = shareModel.feature
+                channel = shareModel.channel
+                campaign = shareModel.campaign
+                ogTitle = getShareBottomSheetOgTitle()
+                ogDescription = getShareBottomSheetOgDescription()
+                if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                    ogImageUrl = shareModel.ogImgUrl
                 }
+            }
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                0, linkerShareData,
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        val shareString = activity?.getString(
+                            R.string.sah_new_other_share_text,
+                            userSession.shopName,
+                            linkerShareData?.shareContents
+                        ).orEmpty()
+                        shareModel.subjectName = userSession.shopName
+                        SharingUtil.executeShareIntent(
+                            shareModel,
+                            linkerShareData,
+                            activity,
+                            view,
+                            shareString
+                        )
 
-                override fun onError(linkerError: LinkerError?) {}
-            })
+                        NewOtherMenuTracking.sendEventClickSharingChannel(
+                            shopId = userSession.shopId,
+                            userId = userSession.userId,
+                            channel = shareModel.channel.orEmpty()
+                        )
+
+                        universalShareBottomSheet?.dismiss()
+                    }
+
+                    override fun onError(linkerError: LinkerError?) {}
+                }
+            )
         )
     }
 
@@ -518,7 +529,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     override fun onTokoPlusClicked() {
         NewOtherMenuTracking.sendEventClickTokoPlus()
         RouteManager.route(
-            context, ApplinkConstInternalGlobal.WEBVIEW,
+            context,
+            ApplinkConstInternalGlobal.WEBVIEW,
             SellerMenuFreeShippingUrl.URL_PLUS_PAGE
         )
     }
@@ -727,8 +739,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
-    private fun observeIsTopAdsShopUsed(){
-        viewModel.isTopAdsShopUsed.observe(viewLifecycleOwner){
+    private fun observeIsTopAdsShopUsed() {
+        viewModel.isTopAdsShopUsed.observe(viewLifecycleOwner) {
             viewHolder?.setTopAdsShop(it)
             setTrackerTopAdsMenu()
         }
@@ -812,8 +824,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     Toaster.TYPE_NORMAL,
                     context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry)
                         .orEmpty()
-                )
-                {
+                ) {
                     viewModel.reloadErrorData()
                     viewModel.onShownMultipleError()
                     hasShownMultipleErrorToaster = false
@@ -875,7 +886,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
-    private fun setTrackerTopAdsMenu(){
+    private fun setTrackerTopAdsMenu() {
         val topAdsMenuData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
             it.onClickApplink == ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL || it.onClickApplink == ApplinkConstInternalTopAds.TOPADS_ONBOARDING
         }
@@ -945,7 +956,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                     show(fm, this@OtherMenuFragment)
 
                     NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
-                        userSession.shopId, userSession.userId
+                        userSession.shopId,
+                        userSession.userId
                     )
                 }
             }
@@ -955,11 +967,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private fun getShareBottomSheetOgTitle(): String {
         return shopShareInfo?.let {
             "${
-                joinStringWithDelimiter(
-                    userSession.shopName,
-                    it.location,
-                    delimiter = DELIMITER
-                )
+            joinStringWithDelimiter(
+                userSession.shopName,
+                it.location,
+                delimiter = DELIMITER
+            )
             } $TOKOPEDIA_SUFFIX"
         }.orEmpty()
     }
@@ -979,8 +991,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun checkUsingCustomBranchLinkDomain(linkerShareData: LinkerShareResult?) {
         val shopBranchLinkDomain = shopShareInfo?.branchLinkDomain.orEmpty()
-        if (shopBranchLinkDomain.isNotEmpty())
+        if (shopBranchLinkDomain.isNotEmpty()) {
             changeLinkerShareDataContent(linkerShareData, shopBranchLinkDomain)
+        }
     }
 
     private fun changeLinkerShareDataContent(
@@ -1013,8 +1026,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onViewReadyForCoachMark(menuName: String, targetView: View?) {
-        view?.post{
-            if(menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
+        view?.post {
+            if (menuName == context?.getString(R.string.setting_menu_iklan_topads)) {
                 showCoachMarkTopAdsMenuItem(menuName, targetView)
             }
         }
@@ -1046,6 +1059,4 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             }
         }
     }
-
 }
-
