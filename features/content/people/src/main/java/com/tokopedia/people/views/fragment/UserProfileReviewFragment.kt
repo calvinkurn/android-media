@@ -24,6 +24,7 @@ import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.people.databinding.FragmentUserProfileReviewBinding
 import com.tokopedia.people.utils.withCache
@@ -72,7 +73,7 @@ class UserProfileReviewFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(UserProfileActivity.EXTRA_USERNAME) ?: "",
+            requireArguments().getString(UserProfileActivity.EXTRA_USERNAME).orEmpty(),
         )
     }
 
@@ -185,6 +186,9 @@ class UserProfileReviewFragment @Inject constructor(
         if (value.reviewSettings.isEnabled) {
             when (value.reviewContent.status) {
                 UserReviewUiModel.Status.Loading -> {
+
+                    showMainLayout()
+
                     if (value.reviewContent.isLoading && value.reviewContent.reviewList.isEmpty()) {
                         adapter.setItemsAndAnimateChanges(
                             List(USER_REVIEW_SHIMMER_COUNT) { UserReviewAdapter.Model.Shimmer }
@@ -197,8 +201,7 @@ class UserProfileReviewFragment @Inject constructor(
                         return
                     }
 
-                    binding.layoutNoUserReview.root.hide()
-                    binding.rvReview.show()
+                    showMainLayout()
 
                     val mappedList = value.reviewContent.reviewList.map {
                         UserReviewAdapter.Model.Review(it)
@@ -219,6 +222,11 @@ class UserProfileReviewFragment @Inject constructor(
         }
     }
 
+    private fun showMainLayout() {
+        binding.layoutNoUserReview.root.hide()
+        binding.rvReview.show()
+    }
+
     private fun showNoReviewLayout() {
         if (viewModel.isSelfProfile) {
             binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_empty_title)
@@ -231,9 +239,10 @@ class UserProfileReviewFragment @Inject constructor(
             )
             binding.layoutNoUserReview.tvReviewHiddenDesc.movementMethod = LinkMovementMethod.getInstance()
         } else {
-            binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_hidden_title)
-            binding.layoutNoUserReview.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
+            binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_empty_title)
         }
+
+        binding.layoutNoUserReview.tvReviewHiddenDesc.showWithCondition(viewModel.isSelfProfile)
         binding.layoutNoUserReview.root.show()
         binding.rvReview.hide()
     }
@@ -253,6 +262,8 @@ class UserProfileReviewFragment @Inject constructor(
             binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_other_review_hidden_title)
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = getString(R.string.up_profile_other_review_hidden_desc, viewModel.firstName)
         }
+
+        binding.layoutNoUserReview.tvReviewHiddenDesc.show()
         binding.layoutNoUserReview.root.show()
         binding.rvReview.hide()
     }
