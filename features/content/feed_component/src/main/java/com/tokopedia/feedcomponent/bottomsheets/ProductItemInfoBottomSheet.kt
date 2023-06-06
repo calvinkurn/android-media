@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
@@ -69,7 +70,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = ItemPosttagBinding.inflate(inflater, container, false)
-        setTitle(getString(com.tokopedia.content.common.R.string.content_product_bs_title))
+        setTitle(getString(R.string.content_product_bs_title))
         setChild(binding.root)
 //        setChild(generateDynamicView())
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -212,7 +213,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagModelNew> {
         var postDescription = ""
         var adClickUrl = ""
-        val desc = context?.getString(com.tokopedia.content.common.R.string.feed_share_default_text)
+        val desc = context?.getString(R.string.feed_share_default_text)
         val itemList: MutableList<ProductPostTagModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
             postDescription = desc?.replace("%s", postTagItem.authorName).toString()
@@ -304,7 +305,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         view?.rootView?.let {
             context?.resources?.let { resource ->
                 Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(com.tokopedia.content.common.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
             }
             if (actionText?.isEmpty() == false) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)

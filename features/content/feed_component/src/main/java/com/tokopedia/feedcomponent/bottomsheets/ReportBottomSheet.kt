@@ -19,8 +19,6 @@ class ReportBottomSheet : BottomSheetUnify() {
     var onClosedClicked: (() -> Unit)? = null
     private var dismissedByClosing = false
 
-
-
     companion object {
         private const val SPAM = 1
         private const val ABUSE = 2
@@ -42,7 +40,7 @@ class ReportBottomSheet : BottomSheetUnify() {
     ): View? {
         val contentView = View.inflate(context, R.layout.bottomsheet_report, null)
         setChild(contentView)
-        setTitle(getString(com.tokopedia.content.common.R.string.feed_report_comment))
+        setTitle(getString(R.string.feed_report_comment))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -54,16 +52,16 @@ class ReportBottomSheet : BottomSheetUnify() {
     private fun getReason() {
         when (isClicked) {
             TYPE1 -> {
-                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_spam)
-                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_spam)
+                reasonType = getString(R.string.feed_common_reason_type_spam)
+                reasonDesc = getString(R.string.feed_common_reason_desc_spam)
             }
             TYPE2 -> {
-                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_abuse)
-                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_abuse)
+                reasonType = getString(R.string.feed_common_reason_type_abuse)
+                reasonDesc = getString(R.string.feed_common_reason_desc_abuse)
             }
             TYPE3 -> {
-                reasonType = getString(com.tokopedia.content.common.R.string.feed_common_reason_type_inappropriate)
-                reasonDesc = getString(com.tokopedia.content.common.R.string.feed_common_reason_desc_inappropriate)
+                reasonType = getString(R.string.feed_common_reason_type_inappropriate)
+                reasonDesc = getString(R.string.feed_common_reason_desc_inappropriate)
             }
         }
     }
@@ -94,8 +92,9 @@ class ReportBottomSheet : BottomSheetUnify() {
             dismiss()
         }
         setOnDismissListener {
-            if (!dismissedByClosing)
+            if (!dismissedByClosing) {
                 onDismiss?.invoke()
+            }
         }
     }
 
@@ -114,7 +113,7 @@ class ReportBottomSheet : BottomSheetUnify() {
         sendReport()
     }
 
-     fun setFinalView() {
+    fun setFinalView() {
         layout1?.gone()
         layout2?.gone()
         layout3.visible()
