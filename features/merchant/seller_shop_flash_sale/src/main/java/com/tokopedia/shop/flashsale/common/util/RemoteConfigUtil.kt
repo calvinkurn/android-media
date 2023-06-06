@@ -8,7 +8,7 @@ object RemoteConfigUtil {
 
     fun isShowOutOfStockSection(context: Context?): Boolean {
         return context?.let {
-            FirebaseRemoteConfigImpl(context).getBoolean(IS_SHOW_OUT_OF_STOCK_SECTION, false)
+            FirebaseRemoteConfigImpl(context).getBoolean(IS_SHOW_OUT_OF_STOCK_SECTION, true)
         } ?: false
     }
 
