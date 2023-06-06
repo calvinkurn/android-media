@@ -39,7 +39,8 @@ class ContentReportBottomSheet : BottomSheetUnify() {
         UserReportReasoningAdapter(object : UserReportReasoningViewHolder.Listener {
             override fun onItemCategoryClicked(item: PlayUserReportReasoningUiModel.Reasoning) {
                 mListener?.onItemReportClick(item)
-            }})
+            }
+        })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +80,7 @@ class ContentReportBottomSheet : BottomSheetUnify() {
         }
     }
 
-    fun updateList(result: Result<List<PlayUserReportReasoningUiModel>>){
+    fun updateList(result: Result<List<PlayUserReportReasoningUiModel>>) {
         when (result) {
             is Success -> {
                 val data = buildList {

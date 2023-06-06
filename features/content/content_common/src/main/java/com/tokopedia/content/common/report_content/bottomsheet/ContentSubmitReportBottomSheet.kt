@@ -27,7 +27,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
 
     private val errorFieldPrefix: String = "Isi"
 
-    private var minChar : Int = 0
+    private var minChar: Int = 0
 
     private lateinit var item: PlayUserReportReasoningUiModel.Reasoning
 
@@ -82,7 +82,8 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
         binding.headerContentReportSubmission.closeListener = View.OnClickListener {
             mListener?.onBackButtonListener()
         }
-        binding.tvUserReportFooter.text = MethodChecker.fromHtml(getString(commonR.string.content_user_report_footer))
+        binding.tvUserReportFooter.text =
+            MethodChecker.fromHtml(getString(commonR.string.content_user_report_footer))
         binding.tvUserReportFooter.setOnClickListener {
             mListener?.onFooterClicked()
         }
@@ -113,7 +114,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getFieldMessage(isError: Boolean) : String{
+    private fun getFieldMessage(isError: Boolean): String {
         val prefix = if (isError) errorFieldPrefix else ""
         return getString(commonR.string.content_user_report_text_area_min, prefix, minChar)
     }

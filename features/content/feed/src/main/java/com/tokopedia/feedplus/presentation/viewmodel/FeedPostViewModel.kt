@@ -40,6 +40,7 @@ import com.tokopedia.feedplus.presentation.util.common.FeedLikeAction
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
@@ -789,10 +790,12 @@ class FeedPostViewModel @Inject constructor(
         _selectedReport.value = item
     }
 
-    fun submitReport(desc: String) {
+    fun submitReport(desc: String, timestamp: Long, item: FeedCardVideoContentModel) {
         viewModelScope.launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-//                postReportUseCase.createParam()
+                postReportUseCase.createParam(
+                    channelId = item.playChannelId.toLongOrZero(), mediaUrl = item.media.firstOrNull()?.mediaUrl.orEmpty(), reasonId = selectedReport?.reasoningId.orZero(), timestamp = timestamp, reportDesc = desc, partnerId = item.author.id.toLongOrZero(), partnerType = PostUserReportUseCase.PartnerType.getTypeFromFeed(item.author.type), reporterId = userSession.userId.toLongOrZero()
+                )
                 postReportUseCase.executeOnBackground()
             }
             val isSuccess = response.submissionReport.status == "success"

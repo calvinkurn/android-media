@@ -45,6 +45,7 @@ import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedplus.analytics.FeedAnalytics
 import com.tokopedia.feedplus.analytics.FeedMVCAnalytics
+import com.tokopedia.feedplus.data.FeedXCard
 import com.tokopedia.feedplus.databinding.FragmentFeedImmersiveBinding
 import com.tokopedia.feedplus.di.FeedMainInjector
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -232,11 +233,6 @@ class FeedFragment :
         observeReminder()
 
         observeEvent()
-
-        /**
-         * TODO() Move to if post is PLAY
-         */
-        feedPostViewModel.getReport()
     }
 
     override fun onDestroyView() {
@@ -274,6 +270,10 @@ class FeedFragment :
             feedMenuSheet.setListener(this)
             feedMenuSheet.setData(getMenuItemData(editable, deletable, reportable, contentData), id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
+
+            if (trackerModel.type == FeedXCard.TYPE_FEED_X_CARD_PLAY || trackerModel.type == FeedXCard.TYPE_FEED_PLAY_CHANNEL || trackerModel.type == FeedXCard.TYPE_FEED_PLAY_SHORT_VIDEO || trackerModel.type == FeedXCard.TYPE_FEED_PLAY_LIVE) {
+                feedPostViewModel.getReport()
+            }
         }
     }
 
@@ -363,7 +363,22 @@ class FeedFragment :
     }
 
     override fun onSubmitReport(desc: String) {
-        feedPostViewModel.submitReport(desc)
+        val currentIndex = binding.rvFeedPost.currentItem
+        val item = adapter?.list?.get(currentIndex)
+        if (item !is FeedCardVideoContentModel) return
+        feedPostViewModel.submitReport(desc, getVideoTimeStamp(), item)
+    }
+
+    private fun getVideoTimeStamp(): Long {
+        val currentIndex = binding.rvFeedPost.currentItem
+        if (currentIndex >= (adapter?.list?.size ?: 0)) return 0
+        val item = adapter?.list?.get(currentIndex) ?: return 0
+
+        return when (item) {
+            is FeedCardVideoContentModel -> videoPlayerManager.occupy(item.id).getExoPlayer().currentPosition
+            is FeedCardLivePreviewContentModel -> videoPlayerManager.occupy(item.id).getExoPlayer().currentPosition
+            else -> 0
+        }
     }
 
     override fun onSharePostClicked(data: FeedShareModel, trackerModel: FeedTrackerDataModel) {
