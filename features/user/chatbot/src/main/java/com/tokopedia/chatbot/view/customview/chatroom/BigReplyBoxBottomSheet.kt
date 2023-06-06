@@ -47,7 +47,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         disableSendButton()
         bindClickListeners()
         setUpEditText()
-        getBindingView().ivChatMenu.showWithCondition(shouldShowAddAttachmentButton)
+        getBindingView().chatText.icon1.showWithCondition(shouldShowAddAttachmentButton)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -81,7 +81,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 dismissAllowingStateLoss()
             }
         }
-        getBindingView().ivChatMenu.setOnClickListener {
+        getBindingView().chatText.icon1.setOnClickListener {
             dismissAllowingStateLoss()
             replyBoxClickListener?.onAttachmentMenuClicked()
         }

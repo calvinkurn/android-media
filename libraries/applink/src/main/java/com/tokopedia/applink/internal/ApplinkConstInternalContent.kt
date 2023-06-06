@@ -67,6 +67,11 @@ object ApplinkConstInternalContent {
 
     private val tokopediaUrl = TokopediaUrl.getInstance().WEB
     private val performanceDashboardUrl = tokopediaUrl + PLAY_LIVE
-    private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT = "${ApplinkConst.WEBVIEW}?pull_to_refresh=true&url=%s"
+    private const val PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT = "" +
+        "${ApplinkConst.WEBVIEW}?" +
+        "titlebar=false" +
+        "&pull_to_refresh=true" +
+        "&url=%s" +
+        ""
     val PLAY_BROADCASTER_PERFORMANCE_DASHBOARD_APP_LINK = String.format(PERFORMANCE_DASHBOARD_URL_WEB_VIEW_FORMAT, performanceDashboardUrl)
 }

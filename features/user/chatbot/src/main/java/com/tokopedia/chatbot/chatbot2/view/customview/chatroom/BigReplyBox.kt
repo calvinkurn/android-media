@@ -18,6 +18,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
     private var addAttachmentMenu: ImageView? = null
     private var sendButton: ImageView? = null
     private var parentLayout: ConstraintLayout? = null
+    private var isSendButtonEnabled: Boolean = true
     private var replyBoxText: com.tokopedia.unifyprinciples.Typography? = null
 
     var sendButtonListener: ChatbotSendButtonListener? = null
@@ -25,7 +26,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
 
     init {
         initViewBindings()
-        disableSendButton()
+        enableSendButton()
         bindClickListeners()
     }
 
@@ -35,7 +36,7 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBox = findViewById(R.id.reply_box)
             parentLayout = findViewById(R.id.parent)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
-            sendButton = findViewById(R.id.send_but)
+            sendButton = findViewById(R.id.send_button)
             replyBoxText = findViewById(R.id.reply_box_text)
         }
     }
@@ -45,22 +46,38 @@ class BigReplyBox(context: Context, attributeSet: AttributeSet) :
             replyBoxClickListener?.onAttachmentMenuClicked()
         }
         replyBox?.setOnClickListener {
-            replyBoxClickListener?.goToBigReplyBoxBottomSheet()
+            replyBoxClickListener?.goToBigReplyBoxBottomSheet(isError = false)
+        }
+        sendButton?.setOnClickListener {
+            if (isSendButtonEnabled) {
+                replyBoxClickListener?.getMessageContentFromBottomSheet(replyBoxText?.text?.toString() ?: "")
+            } else {
+                replyBoxClickListener?.goToBigReplyBoxBottomSheet(isError = true)
+            }
         }
     }
 
-    private fun disableSendButton() {
+    fun handleAddAttachmentButton(state: Boolean) {
+        addAttachmentMenu?.showWithCondition(state)
+    }
+
+    fun disableSendButton() {
         sendButtonListener?.disableSendButton()
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        isSendButtonEnabled = false
     }
 
     fun enableSendButton() {
         sendButtonListener?.enableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        isSendButtonEnabled = true
     }
 
     fun setText(text: String) {
         replyBoxText?.text = text
+    }
+
+    fun getMessage(): String {
+        return replyBoxText?.text?.toString() ?: ""
     }
 
     fun shouldShowAddAttachmentButton(showAddAttachmentMenu: Boolean) {

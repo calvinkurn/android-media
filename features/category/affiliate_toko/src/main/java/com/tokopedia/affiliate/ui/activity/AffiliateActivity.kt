@@ -23,6 +23,7 @@ import com.tokopedia.affiliate.PAGE_SEGMENT_DISCO_PAGE_LIST
 import com.tokopedia.affiliate.PAGE_SEGMENT_EDU_PAGE
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.PAGE_SEGMENT_ONBOARDING
+import com.tokopedia.affiliate.PAGE_SEGMENT_PROMO_PAGE
 import com.tokopedia.affiliate.PAGE_SEGMENT_SSA_SHOP_LIST
 import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.SECOND_TAB
@@ -111,6 +112,10 @@ class AffiliateActivity :
 
                 it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
                     startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
+                }
+
+                it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
+                    selectItem(PROMO_MENU, R.id.menu_promo_affiliate, true)
                 }
 
                 it.contains(PAGE_SEGMENT_EDU_PAGE) || it.contains(PAGE_SEGMENT_HELP) -> {
@@ -283,6 +288,10 @@ class AffiliateActivity :
 
                 it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
                     selectedTab = INCOME_MENU
+                }
+
+                it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
+                    selectedTab = PROMO_MENU
                 }
 
                 it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
