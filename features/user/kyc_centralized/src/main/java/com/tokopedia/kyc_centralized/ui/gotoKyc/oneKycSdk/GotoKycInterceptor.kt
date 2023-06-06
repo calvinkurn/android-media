@@ -8,7 +8,7 @@ import okhttp3.Response
 import javax.inject.Inject
 
 @ActivityScope
-class ProjectIdInterceptor @Inject constructor(
+class GotoKycInterceptor @Inject constructor(
     private val kycSharedPreference: KycSharedPreference
 ) : Interceptor {
 

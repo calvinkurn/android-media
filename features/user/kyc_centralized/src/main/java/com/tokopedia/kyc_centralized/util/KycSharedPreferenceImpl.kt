@@ -9,8 +9,6 @@ class KycSharedPreferenceImpl @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ): KycSharedPreference {
 
-    private val KEY_PROJECT_ID = "projectId"
-
     override fun saveByteArrayCache(key: String, data: ByteArray) {
         val cacheString = data.toPreservedString
         sharedPreferences.edit()
@@ -63,6 +61,10 @@ class KycSharedPreferenceImpl @Inject constructor(
         get() {
             return String(this, Charsets.ISO_8859_1)
         }
+
+    companion object {
+        private const val KEY_PROJECT_ID = "projectId"
+    }
 }
 
 interface KycSharedPreference {
