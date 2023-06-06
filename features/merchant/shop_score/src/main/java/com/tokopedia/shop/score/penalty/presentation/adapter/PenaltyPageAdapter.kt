@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.score.penalty.presentation.adapter.diffutil.ShopPenaltyDiffUtilCallback
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.BasePenaltyPage
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyEmptyStateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltySubsectionUiModel
@@ -96,15 +96,15 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }
     }
 
-    fun setEmptyStatePenalty() {
-        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
-            visitables.add(EmptyModel())
+    fun setEmptyStatePenalty(pageType: String) {
+        if (visitables.getOrNull(lastIndex) !is ItemPenaltyEmptyStateUiModel) {
+            visitables.add(ItemPenaltyEmptyStateUiModel(pageType))
             notifyItemInserted(lastIndex)
         }
     }
 
     fun removeNotFoundPenalty() {
-        if (visitables.getOrNull(lastIndex) is EmptyModel) {
+        if (visitables.getOrNull(lastIndex) is ItemPenaltyEmptyStateUiModel) {
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         }

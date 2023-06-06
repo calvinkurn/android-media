@@ -35,6 +35,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyErrorLis
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyInfoNotificationListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyPointCardListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltySubsectionListener
+import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPenaltyTickerListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemPeriodDateFilterListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemSortFilterPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.adapter.PenaltyPageAdapter
@@ -70,6 +71,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     ItemPenaltySubsectionListener,
     ItemPenaltyPointCardListener,
     ItemPenaltyInfoNotificationListener,
+    ItemPenaltyTickerListener,
     ShopPenaltyMonitoringContract {
 
     @Inject
@@ -83,6 +85,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
 
     private val penaltyPageAdapterFactory by lazy {
         PenaltyPageAdapterFactory(
+            this,
             this,
             this,
             this,
@@ -309,6 +312,10 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         )
     }
 
+    override fun onDescriptionClicked() {
+        // TODO: Go To Edu
+    }
+
     override fun stopPreparePerformancePageMonitoring() {
         shopPenaltyPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
     }
@@ -419,7 +426,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     private fun onSuccessGetPenaltyListData(data: List<ItemPenaltyUiModel>, hasNext: Boolean) {
         val penaltyList = penaltyPageAdapter.list.filterIsInstance<ItemPenaltyUiModel>()
         if (penaltyList.isEmpty() && data.isEmpty()) {
-            penaltyPageAdapter.setEmptyStatePenalty()
+            penaltyPageAdapter.setEmptyStatePenalty(pageType)
         } else {
             penaltyPageAdapter.updatePenaltyListData(data)
         }

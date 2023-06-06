@@ -343,43 +343,129 @@ class PenaltyMapper @Inject constructor(
         notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
         typeId: Int
     ): Triple<List<BasePenaltyPage>, Boolean, Boolean> {
-        val visitablePenaltyPage = mutableListOf<BasePenaltyPage>()
 
-        visitablePenaltyPage.apply {
-            if (pageType == ShopPenaltyPageType.ONGOING) {
-                add(ItemPenaltyTickerUiModel)
-                if (notYetDeductedPenalties != null) {
-                    add(mapToNotYetDeductedItem(notYetDeductedPenalties))
-                }
-            }
-            add(mapToDetailPenaltyFilter(pageType, shopScorePenaltyDetailResponse))
-            if (pageType == ShopPenaltyPageType.ONGOING) {
-                shopScorePenaltySummaryWrapper.shopScorePenaltySummaryResponse?.result?.let {
-                    add(
-                        mapToCardShopPenalty(it, shopScorePenaltyDetailResponse)
-                    )
-                }
-            }
-            shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result?.let {
-                add(
-                    ItemSortFilterPenaltyUiModel(
-                        itemSortFilterWrapperList = mapToSortFilterPenalty(
-                            it,
-                            typeId
-                        )
-                    )
+        val visitablePenaltyPage =
+            when(pageType) {
+                ShopPenaltyPageType.ONGOING -> getMappedOngoingPenaltyVisitables(
+                    shopScorePenaltySummaryWrapper,
+                    shopScorePenaltyDetailResponse,
+                    notYetDeductedPenalties,
+                    typeId
+                )
+                ShopPenaltyPageType.HISTORY -> getMappedHistoryPenaltyVisitables(
+                    shopScorePenaltySummaryWrapper,
+                    shopScorePenaltyDetailResponse,
+                    typeId
+                )
+                else -> getMappedNotYetDeductedPenaltyVisitables(
+                    shopScorePenaltySummaryWrapper,
+                    shopScorePenaltyDetailResponse,
+                    typeId
                 )
             }
-
-            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
-            addAll(itemPenaltyFilterList)
-        }
 
         return Triple(
             visitablePenaltyPage,
             shopScorePenaltyDetailResponse.hasPrev,
             shopScorePenaltyDetailResponse.hasNext
         )
+    }
+
+    private fun getMappedOngoingPenaltyVisitables(
+        shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
+        shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
+        notYetDeductedPenalties: List<ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result>?,
+        typeId: Int
+    ): MutableList<BasePenaltyPage> {
+        return mutableListOf<BasePenaltyPage>().apply {
+            add(ItemPenaltyTickerUiModel)
+
+            if (notYetDeductedPenalties != null) {
+                add(mapToNotYetDeductedItem(notYetDeductedPenalties))
+            }
+
+            add(mapToDetailPenaltyFilter(ShopPenaltyPageType.ONGOING, shopScorePenaltyDetailResponse))
+
+            shopScorePenaltySummaryWrapper.shopScorePenaltySummaryResponse?.result?.let {
+                add(
+                    mapToCardShopPenalty(it, shopScorePenaltyDetailResponse)
+                )
+            }
+
+            val isNoPenalty = shopScorePenaltyDetailResponse.result.isEmpty()
+
+            if (!isNoPenalty) {
+                shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result?.let {
+                    add(
+                        ItemSortFilterPenaltyUiModel(
+                            itemSortFilterWrapperList = mapToSortFilterPenalty(
+                                it,
+                                typeId
+                            )
+                        )
+                    )
+                }
+            }
+
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
+            addAll(itemPenaltyFilterList)
+        }
+    }
+
+    private fun getMappedHistoryPenaltyVisitables(
+        shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
+        shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
+        typeId: Int
+    ): MutableList<BasePenaltyPage> {
+        return mutableListOf<BasePenaltyPage>().apply {
+
+            val isNoPenalty = shopScorePenaltyDetailResponse.result.isEmpty()
+
+            if (!isNoPenalty) {
+                shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result?.let {
+                    add(
+                        ItemSortFilterPenaltyUiModel(
+                            itemSortFilterWrapperList = mapToSortFilterPenalty(
+                                it,
+                                typeId
+                            )
+                        )
+                    )
+                }
+
+                add(mapToDetailPenaltyFilter(ShopPenaltyPageType.HISTORY, shopScorePenaltyDetailResponse))
+            }
+
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
+            addAll(itemPenaltyFilterList)
+        }
+    }
+
+    private fun getMappedNotYetDeductedPenaltyVisitables(
+        shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,
+        shopScorePenaltyDetailResponse: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail,
+        typeId: Int
+    ): MutableList<BasePenaltyPage> {
+        return mutableListOf<BasePenaltyPage>().apply {
+
+            val isNoPenalty = shopScorePenaltyDetailResponse.result.isEmpty()
+
+            if (!isNoPenalty) {
+                shopScorePenaltySummaryWrapper.shopScorePenaltyTypesResponse?.result?.let {
+                    add(
+                        ItemSortFilterPenaltyUiModel(
+                            itemSortFilterWrapperList = mapToSortFilterPenalty(
+                                it,
+                                typeId
+                            )
+                        )
+                    )
+                }
+            }
+
+            val itemPenaltyFilterList = mapToItemPenaltyList(shopScorePenaltyDetailResponse).first
+            addAll(itemPenaltyFilterList)
+        }
     }
 
     private fun mapToPenaltyFilterBottomSheet(

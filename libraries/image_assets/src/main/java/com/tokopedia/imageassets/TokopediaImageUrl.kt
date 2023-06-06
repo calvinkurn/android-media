@@ -364,4 +364,5 @@ object TokopediaImageUrl {
     const val IMG_TOKOCHAT_CONSENT = "https://images.tokopedia.net/img/android/communication/tokochat/tokochat_consent.png"
     const val IMG_SHOP_SCORE_PENALTY_GREEN = "https://images.tokopedia.net/img/android/shop_score/bg_shop_score_penalty_green.png"
     const val IMG_SHOP_SCORE_PENALTY_RED = "https://images.tokopedia.net/img/android/shop_score/bg_shop_score_penalty_red.png"
+    const val IMG_SHOP_SCORE_PENALTY_EMPTY = "https://images.tokopedia.net/img/android/shop_score/ic_shop_score_penalty_empty.png"
 }

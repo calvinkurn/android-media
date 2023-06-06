@@ -57,6 +57,10 @@ interface ItemSortFilterPenaltyListener {
     fun onChildSortFilterItemClick(sortFilterItem: SortFilterItem)
 }
 
+interface ItemPenaltyTickerListener {
+    fun onDescriptionClicked()
+}
+
 interface ItemPenaltySubsectionListener {
     fun onPenaltySubsectionIconClicked()
 }

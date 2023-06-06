@@ -70,7 +70,13 @@
     <string name="desc_shop_score_service">Tingkatkan terus kualitas tokomu supaya kamu punya kesempatan untuk naik ke level tertinggi, ya.</string>
     <string name="title_shop_performance_promo_creation">Yuk, gunakan fitur-fitur ini supaya tokomu makin berkembang!</string>
     <string name="title_empty_state_penalty">Hore, kamu tidak memiliki pelanggaran!</string>
+    <string name="title_empty_state_penalty_ongoing">Yay, belum ada penalti yang sedang berlangsung!</string>
+    <string name="title_empty_state_penalty_history">Yay, belum ada riwayat penalti!</string>
+    <string name="title_empty_state_penalty_not_yet_deducted">Yay, belum ada penalti yang belum berlangsung!</string>
     <string name="desc_empty_state_penalty">Ubah filter untuk melihat pelanggaran pada kriteria lain, ya.</string>
+    <string name="desc_empty_state_penalty_ongoing">Jika ada penalti, penalti yang sedang memotong skor Performa Toko-mu akan muncul di sini.</string>
+    <string name="desc_empty_state_penalty_history">Jika ada penalti, penalti yang sudah selesai akan muncul di sini.</string>
+    <string name="desc_empty_state_penalty_not_yet_deducted">Jika ada penalti, penalti yang belum memotong skor Performa Toko-mu akan muncul di sini.</string>
     <string name="total_penalty_text">Jumlah Pelanggaran</string>
     <string name="desc_no_penalty">Tidak ada pelanggaran yang sedang berlangsung</string>
     <string name="performance_point_deduction_text">Potongan Poin Performa</string>
@@ -187,19 +193,19 @@
     <string name="desc_status_penalty">Status memperlihatkan status dari setiap periode penaltimu.</string>
     <string name="title_my_shop">Tokomu</string>
 
-    <string name="title_point_have_not_been_deducted_bottom_sheet">Poin belum dipotong</string>
+    <string name="title_point_have_not_been_deducted_bottom_sheet">Belum Berlangsung</string>
     <string name="title_on_going_bottom_sheet">Sedang berlangsung</string>
     <string name="title_penalty_over_bottom_sheet">Penalti selesai</string>
 
     <string name="title_point_have_not_been_deducted">Poin belum &lt;br /&gt;dipotong</string>
-    <string name="desc_point_have_not_been_deducted">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
+    <string name="desc_point_have_not_been_deducted">Penalti yang belum berlangsung dan poin yang terkonversi baru akan memotong skor Performa Toko-mu di tanggal aktif.</string>
     <string name="desc_on_going_status_penalty">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
     <string name="desc_done_status_penalty">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
 
     <string name="title_on_going">Sedang &lt;br /&gt;berlangsung</string>
-    <string name="desc_on_going">Penalti saat ini sedang aktif dan poin pelanggaran akan dikenakan pada tokomu. Masa aktif penalti berlangsung selama 4 minggu dari tanggal aktif.</string>
+    <string name="desc_on_going">Penalti yang sedang berlangsung di mana poin yang telah terkonversi akan memotong skor Performa Toko-mu. Pemotongan skor akan berlangsung selama 4 minggu sejak tanggal penalti dimulai. </string>
     <string name="title_penalty_over">Penalti &lt;br /&gt;selesai</string>
-    <string name="desc_penalty_over">Penalti sudah tidak aktif dan tidak akan dikenakan poin pelanggaran.</string>
+    <string name="desc_penalty_over">Penalti sudah selesai dan tidak akan memotong skor Performa Toko-mu lagi.</string>
     <string name="example_desc_result_detail_penalty">Penalti belum aktif dan poin pelanggaran akan dikenakan mulai dari tanggal yang tertera.</string>
     <string name="example_title_faq_shop_score">Apa keuntungan skor Performa Toko yang baru bagi toko saya?</string>
     <string name="example_desc_faq_shop_score">Skor Performa Toko adalah standar penilaian Performa Toko berdasarkan kombinasi parameter yang digunakan untuk memberikan penilaian yang objektif bagi Seller.</string>
@@ -338,7 +344,7 @@
     
     <!-- Poena -->
     <string name="title_ticker_penalty">Perhitungan baru sistem Penalti Toko</string>
-    <string name="desc_ticker_penalty">Ada cara perhitungan baru sistem Penalti Toko yang mulai diterapkan pada 27 Juni 2023. Yuk, Pelajari Sekarang</string>
+    <string name="desc_ticker_penalty">Ada cara perhitungan baru sistem Penalti Toko yang mulai diterapkan pada 27 Juni 2023. Yuk, &lt;a href="#"&gt;Pelajari Sekarang&lt;a href="#"&gt;</string>
     <string name="title_card_penalty_point">Potongan Poin Performa</string>
     <string name="btn_card_penalty_point">Lihat Detail Hitungan</string>
     <string name="title_filter_penalty_date">Tanggal</string>

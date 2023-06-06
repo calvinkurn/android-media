@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyEmptyStateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyErrorUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyInfoNotificationUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyPointCardUiModel
@@ -21,4 +22,5 @@ interface PenaltyTypeFactory {
     fun type(itemPenaltyInfoNotificationUiModel: ItemPenaltyInfoNotificationUiModel): Int
     fun type(itemPenaltySubsectionUiModel: ItemPenaltySubsectionUiModel): Int
     fun type(itemPenaltyPointCardUiModel: ItemPenaltyPointCardUiModel): Int
+    fun type(itemPenaltyEmptyStateUiModel: ItemPenaltyEmptyStateUiModel): Int
 }
