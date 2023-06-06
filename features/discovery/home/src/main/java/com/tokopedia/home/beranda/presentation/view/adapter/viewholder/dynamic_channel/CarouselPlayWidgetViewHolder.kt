@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.listener.CarouselPlayWidgetCallback
 import com.tokopedia.home.databinding.HomeDcPlayBannerCarouselBinding
@@ -22,6 +23,7 @@ class CarouselPlayWidgetViewHolder(
     view: View,
     private val playWidgetViewHolder: PlayWidgetViewHolder,
     private val callback: CarouselPlayWidgetCallback,
+    private val homeCategoryListener: HomeCategoryListener
 ) : AbstractViewHolder<CarouselPlayWidgetDataModel>(view) {
 
     private var binding: HomeDcPlayBannerCarouselBinding? by viewBinding()
@@ -60,7 +62,12 @@ class CarouselPlayWidgetViewHolder(
     }
 
     private fun setChannelHeader(element: CarouselPlayWidgetDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.homeChannel, object : HeaderListener { })
+        binding?.homeComponentHeaderView?.setChannel(element.homeChannel, object : HeaderListener {
+            override fun onSeeAllClick(link: String) {
+                // add click view all tracker
+                homeCategoryListener.onDynamicChannelClicked(link)
+            }
+        })
     }
 
     companion object {
