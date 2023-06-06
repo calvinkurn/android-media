@@ -315,6 +315,102 @@
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "viewDigitalIris",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "impression check balance info",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43704",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "click lihat detail check balance",
+      "eventCategory": "digital - homepage",
+      "clientId": ".*",
+      "trackerId": "43705",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "view_item",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "impression sheet active package",
+      "eventCategory": "digital - homepage",
+      "clientId": ".*",
+      "trackerId": "43706",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "clickDigital",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "click close sheet active package",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43707",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "impression active package check balance",
+      "eventCategory": "digital - homepage",
+      "clientId": ".*",
+      "trackerId": "43708",
+      "item_list": ".*",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": "Paket Data"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "click beli lagi active package",
+      "eventCategory": "digital - homepage",
+      "clientId": ".*",
+      "trackerId": "43709",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": "Paket Data"
+        }
+      ]
     }
   ]
 }

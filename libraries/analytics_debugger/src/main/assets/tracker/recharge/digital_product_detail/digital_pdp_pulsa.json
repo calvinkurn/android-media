@@ -277,6 +277,17 @@
           "item_category": ".*"
         }
       ]
+    },
+    {
+      "event": "viewDigitalIris",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "impression check balance info",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43704",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
     }
   ]
 }
