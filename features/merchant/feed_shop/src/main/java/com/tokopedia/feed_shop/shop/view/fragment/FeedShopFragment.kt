@@ -635,7 +635,10 @@ class FeedShopFragment :
         context?.let {
             val menus =
                 createBottomMenu(
-                    it, deletable, reportable, editable,
+                    it,
+                    deletable,
+                    reportable,
+                    editable,
                     object : PostMenuListener {
                         override fun onDeleteClicked() {
                             createDeleteDialog(positionInFeed, postId)?.show()
@@ -743,7 +746,11 @@ class FeedShopFragment :
                     override fun onShareItemClicked(packageName: String) {
                     }
                 },
-                "", imageUrl, url, description, title
+                "",
+                imageUrl,
+                url,
+                description,
+                title
             )
         }.also {
             fragmentManager?.run {
@@ -887,7 +894,7 @@ class FeedShopFragment :
 //        val cdpAppLink = redirectLink
         val cdpAppLink = UriUtil.buildUri(
             ApplinkConst.INTERNAL_CONTENT_DETAIL,
-            postId,
+            postId
         )
         val finalAppLink = getUpdatedApplinkForContentDetailPage(cdpAppLink)
         onGoToLink(finalAppLink)
@@ -1362,5 +1369,15 @@ class FeedShopFragment :
         positionInFeed: Int,
         feedXCard: FeedXCard
     ) {
+    }
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        if (!isAdded) return
+        super.startActivityForResult(intent, requestCode)
+    }
+
+    override fun startActivity(intent: Intent?) {
+        if (!isAdded) return
+        super.startActivity(intent)
     }
 }
