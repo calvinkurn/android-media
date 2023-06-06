@@ -96,7 +96,7 @@ class ShopReputationView : BaseCustomView {
                     dialog.findViewById(com.tokopedia.review.inbox.R.id.reputation_point)
                 val pointText: String =
                     if (score.isZero()) context.getString(
-                        com.tokopedia.design.R.string.no_reputation_yet
+                        com.tokopedia.review.inbox.R.string.no_reputation_yet
                     ) else "$score " + context.getString(
                         R.string.point
                     )
