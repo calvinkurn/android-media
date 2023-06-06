@@ -18,6 +18,11 @@ class DynamicAttachmentTextUiModel(
             return self()
         }
 
+        fun isSender(isSender: Boolean): Builder {
+            this.isSender = isSender
+            return self()
+        }
+
         override fun build(): DynamicAttachmentTextUiModel {
             return DynamicAttachmentTextUiModel(
                 this

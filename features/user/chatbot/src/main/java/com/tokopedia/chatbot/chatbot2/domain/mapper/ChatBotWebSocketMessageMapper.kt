@@ -33,6 +33,7 @@ import com.tokopedia.chatbot.chatbot2.data.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.chatbot2.data.imageupload.ChatbotImageUploadAttributes
 import com.tokopedia.chatbot.chatbot2.data.invoicelist.websocket.InvoicesSelectionPojo
 import com.tokopedia.chatbot.chatbot2.data.quickreply.QuickReplyAttachmentAttributes
+import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasonsSend
 import com.tokopedia.chatbot.chatbot2.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.chatbot2.data.uploadsecure.ChatbotVideoUploadAttributes
@@ -101,6 +102,10 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
                             pojo,
                             dynamicAttachment
                         )
+                        ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON -> convertToDynamicAttachmentWithContentCode107(
+                            pojo,
+                            dynamicAttachment
+                        )
                         ChatbotConstant.DynamicAttachment.DYNAMIC_REJECT_REASON_SEND -> convertToDynamicAttachmentContentCode108(
                             pojo,
                             dynamicAttachment
@@ -161,7 +166,23 @@ class ChatBotWebSocketMessageMapper @Inject constructor(val gson: Gson) : Websoc
 
         return DynamicAttachmentTextUiModel.Builder()
             .withResponseFromWs(pojo)
+            .isSender(false)
             .withMsgContent(dynamicStickyButton.helpfulQuestionFeedbackForm.feedbackForm.reason + "Eren Yeager")
+            .build()
+    }
+
+    private fun convertToDynamicAttachmentWithContentCode107(
+        pojo: ChatSocketPojo,
+        dynamicAttachment: DynamicAttachment
+    ): DynamicAttachmentTextUiModel {
+        val dynamicStickyButton = gson.fromJson(
+            dynamicAttachment.dynamicAttachmentAttribute?.dynamicAttachmentBodyAttributes?.dynamicContent,
+            DynamicAttachmentRejectReasons::class.java
+        )
+
+        return DynamicAttachmentTextUiModel.Builder()
+            .withResponseFromWs(pojo)
+            .withMsgContent(dynamicStickyButton.helpfulQuestion.message + "Eren Yeager")
             .build()
     }
 

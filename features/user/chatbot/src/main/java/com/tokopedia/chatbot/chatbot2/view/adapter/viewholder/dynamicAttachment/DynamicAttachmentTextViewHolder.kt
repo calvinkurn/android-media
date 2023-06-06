@@ -44,7 +44,7 @@ class DynamicAttachmentTextViewHolder(
             uiModel,
             binding?.messageLayoutWithReply
         )
-        ChatBackground.bindBackground(binding?.chatLayoutContainer, true)
+        ChatBackground.bindBackground(binding?.chatLayoutContainer, uiModel.isSender)
 
         binding?.apply {
             messageLayoutWithReply.fxChat?.message?.text = uiModel.message
