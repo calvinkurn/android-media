@@ -52,6 +52,6 @@
         android:layout_marginBottom="16dp"
         android:enabled="false"
         android:layout_marginHorizontal="16dp"
-        android:text="@string/goto_kyc_onboard_non_progressive_button"/>
+        android:text="@string/goto_kyc_start_verification"/>
 
 </LinearLayout>

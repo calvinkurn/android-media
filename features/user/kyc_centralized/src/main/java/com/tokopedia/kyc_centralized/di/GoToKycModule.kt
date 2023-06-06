@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
@@ -26,6 +27,7 @@ import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycInterceptor
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,9 +39,6 @@ import java.util.concurrent.TimeUnit
 
 @Module
 open class GoToKycModule {
-
-    private val NET_RETRY = 3
-    private val sharedPreferenceName = "kyc_centralized"
 
     @ActivityScope
     @Provides
@@ -171,9 +170,24 @@ open class GoToKycModule {
 
     @Provides
     @ActivityScope
-    fun provideKycSdkAnalyticsConfig() = KycSdkAnalyticsConfig(
-        apiKey = "a1b3f286-bb73-4f02-b2bb-34781cceab6d",
-        url = "https://toko-raccoon-integration.gojekapi.com/api/v1/events"
+    fun provideRemoteConfig(
+        @ApplicationContext context: Context
+    ): FirebaseRemoteConfigImpl {
+        return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideKycSdkAnalyticsConfig(
+        @ApplicationContext context: Context
+    ) = KycSdkAnalyticsConfig(
+        apiKey = context.getString(com.tokopedia.keys.R.string.one_kyc_click_stream_api_key),
+        url = if (GlobalConfig.isAllowDebuggingTools()) {
+            KYCConstant.ONE_KYC_CLICKSTREAM_URL_STAGING
+        } else {
+            KYCConstant.ONE_KYC_CLICKSTREAM_URL_PRODUCTION
+        },
+        enableDebugLogs = GlobalConfig.isAllowDebuggingTools()
     )
 
     @ActivityScope
@@ -202,4 +216,8 @@ open class GoToKycModule {
         )
     }
 
+    companion object {
+        private const val NET_RETRY = 3
+        private const val sharedPreferenceName = "kyc_centralized"
+    }
 }

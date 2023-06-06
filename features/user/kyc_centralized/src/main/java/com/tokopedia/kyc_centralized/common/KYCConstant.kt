@@ -82,4 +82,7 @@ object KYCConstant {
         const val RESULT_FINISH = 99
         const val ACCOUNT_NOT_LINKED = 98
     }
+
+    const val ONE_KYC_CLICKSTREAM_URL_STAGING = "https://toko-raccoon-integration.gojekapi.com/api/v1/events"
+    const val ONE_KYC_CLICKSTREAM_URL_PRODUCTION = "https://toko-raccoon.gojekapi.com/api/v1/events"
 }
