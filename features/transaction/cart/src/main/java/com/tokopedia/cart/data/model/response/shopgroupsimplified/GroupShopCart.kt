@@ -8,5 +8,5 @@ data class GroupShopCart(
     @SerializedName("shop")
     val shop: Shop = Shop(),
     @SerializedName("cart_details")
-    val cartDetails: List<CartDetail> = emptyList(),
+    val cartDetails: List<CartDetail> = emptyList()
 )

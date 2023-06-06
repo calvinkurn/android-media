@@ -8,7 +8,5 @@ data class CartDetail(
     @SerializedName("bundle_detail")
     val bundleDetail: BundleDetail = BundleDetail(),
     @SerializedName("products")
-    val products: List<Product> = emptyList(),
-    @SerializedName("origin_warehouse_ids")
-    val originWarehouseIds: List<Long> = emptyList()
+    val products: List<Product> = emptyList()
 )

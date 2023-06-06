@@ -292,7 +292,7 @@ class CartItemViewHolder constructor(
                         if (!data.isError) {
                             if (adapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(adapterPosition, data)
-                                viewHolderListener?.onNeedToRefreshSingleShop(data)
+                                viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition)
                             }
                         }
                     }
@@ -328,14 +328,14 @@ class CartItemViewHolder constructor(
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (adapterPosition != RecyclerView.NO_POSITION) {
                             actionListener?.onBundleItemCheckChanged(data)
-                            viewHolderListener?.onNeedToRefreshSingleShop(data)
+                            viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition)
                         }
                     }
                 }
             }
         }
     }
-    
+
     private fun renderShopInfo(data: CartItemHolderData) {
         if (data.isShopShown) {
             binding.llShopHeader.visible()
@@ -352,12 +352,10 @@ class CartItemViewHolder constructor(
                 ImageHandler.loadImageWithoutPlaceholder(binding.imageShopBadge, shopHolderData.shopTypeInfo.shopBadge)
                 binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, shopHolderData.shopTypeInfo.title)
                 binding.imageShopBadge.show()
-            }
-            else {
+            } else {
                 binding.imageShopBadge.gone()
             }
-        }
-        else {
+        } else {
             binding.llShopHeader.gone()
         }
     }
@@ -950,7 +948,7 @@ class CartItemViewHolder constructor(
             if (data.isPreOrder) {
                 viewHolderListener?.onNeedToRefreshAllShop()
             } else {
-                viewHolderListener?.onNeedToRefreshSingleShop(data)
+                viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition, true)
             }
         } else if (data.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshWeight(data)
@@ -1052,8 +1050,8 @@ class CartItemViewHolder constructor(
         binding.textProductUnavailableAction.apply {
             text = action.message
             setOnClickListener {
-                if (data.shopId.isNotEmpty()) {
-                    actionListener?.onFollowShopClicked(data.shopId, data.errorType)
+                if (data.shopHolderData.shopId.isNotEmpty()) {
+                    actionListener?.onFollowShopClicked(data.shopHolderData.shopId, data.errorType)
                 }
             }
             setTextColor(
@@ -1100,7 +1098,7 @@ class CartItemViewHolder constructor(
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
 
-        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
+        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean = false)
 
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
 

@@ -26,7 +26,7 @@ class UpdateCartUseCase @Inject constructor(
 ) : CoroutineUseCase<UpdateCartWrapperRequest, UpdateCartData>(dispatcher.io) {
 
     companion object {
-        const val PARAM_UPDATE_CART_REQUEST = "PARAM_UPDATE_CART_REQUEST"
+        const val PARAM_UPDATE_CART_REQUEST = "carts"
 
         const val PARAM_KEY_SOURCE = "source"
 

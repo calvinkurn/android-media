@@ -11,5 +11,6 @@ import kotlinx.parcelize.Parcelize
 data class ShipmentButtonPaymentModel(
     val enable: Boolean = false,
     val totalPrice: String = "-",
+    val quantity: Int = 0,
     val loading: Boolean = false
 ) : Parcelable

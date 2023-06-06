@@ -52,4 +52,12 @@ object DataProvider {
     fun provideScheduleDeliveryRecommendedRatesResponse(): ScheduleDeliveryRatesResponse {
         return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/schedule_delivery_recommended_rates.json"), ScheduleDeliveryRatesResponse::class.java)
     }
+
+    fun provideShipmentAddressFormWithPlatformFeeEnabledResponse(): ShipmentAddressFormGqlResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_platform_fee_enabled.json"), ShipmentAddressFormGqlResponse::class.java)
+    }
+
+    fun provideShipmentAddressFormWithPlatformFeeDisabledResponse(): ShipmentAddressFormGqlResponse {
+        return GSON.fromJson(FILE_UTIL.getJsonFromAsset("assets/saf_with_platform_fee_disabled.json"), ShipmentAddressFormGqlResponse::class.java)
+    }
 }

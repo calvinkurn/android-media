@@ -5,7 +5,6 @@ import com.tokopedia.cart.data.model.response.promo.LastApplyPromoData
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoEligibility
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
@@ -19,7 +18,7 @@ import org.junit.Before
 import org.junit.Test
 
 class GenerateGetLastApplyRequestParamsTest {
-    
+
     private lateinit var cartFirstOrderList: MutableList<CartItemHolderData>
     private lateinit var cartSecondOrderList: MutableList<CartItemHolderData>
 
@@ -90,7 +89,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 2
                     ),
                     OrdersItem(
@@ -106,11 +104,11 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 1
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -131,7 +129,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -145,7 +142,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -209,7 +205,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 2
                     ),
                     OrdersItem(
@@ -225,11 +220,11 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 1
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -250,7 +245,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -264,7 +258,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -328,7 +321,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -349,7 +341,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -359,7 +350,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -380,7 +372,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -394,7 +385,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -408,7 +398,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -472,7 +461,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -493,7 +481,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -501,9 +488,10 @@ class GenerateGetLastApplyRequestParamsTest {
                         isPo = false,
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-                    ),
+                    )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -524,7 +512,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -538,7 +525,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -552,7 +538,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -566,9 +551,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-                    ),
+                    )
                 )
             )
         )
@@ -630,7 +614,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -651,7 +634,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -661,7 +643,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -682,7 +665,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -696,7 +678,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -710,7 +691,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -724,7 +704,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -738,7 +717,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
@@ -802,7 +780,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -823,7 +800,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -831,9 +807,10 @@ class GenerateGetLastApplyRequestParamsTest {
                         isPo = false,
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-                    ),
+                    )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -868,7 +845,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 0.0,
                     etaText = "",
-                    shippingMetadata = "",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -878,7 +854,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 0.0,
                     etaText = "",
-                    shippingMetadata = "",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -942,7 +917,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 2
                     ),
                     OrdersItem(
@@ -958,11 +932,11 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 1
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -995,7 +969,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "",
                     codes = mutableListOf("TESTCODE"),
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
@@ -1006,7 +979,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 0.0,
                     etaText = "",
-                    shippingMetadata = "",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -1070,7 +1042,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 0.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1091,7 +1062,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -1101,7 +1071,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -1144,7 +1115,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     codes = mutableListOf("TESTCODE"),
                     uniqueId = "000000-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
@@ -1155,7 +1125,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -1165,7 +1134,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -1229,7 +1197,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1250,7 +1217,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -1258,9 +1224,10 @@ class GenerateGetLastApplyRequestParamsTest {
                         isPo = false,
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-                    ),
+                    )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -1310,7 +1277,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     codes = mutableListOf("TESTCODE", "TESTMVC"),
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
@@ -1321,7 +1287,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     codes = mutableListOf("TESTMVC2"),
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
@@ -1386,7 +1351,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1407,7 +1371,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -1417,7 +1380,8 @@ class GenerateGetLastApplyRequestParamsTest {
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
 
@@ -1484,7 +1448,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "000000-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -1494,7 +1457,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "111111-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 ),
@@ -1504,7 +1466,6 @@ class GenerateGetLastApplyRequestParamsTest {
                     benefitClass = "",
                     shippingPrice = 15000.0,
                     etaText = "",
-                    shippingMetadata = "{\"order_shipping_price\":15000}",
                     uniqueId = "222222-KEY",
                     cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                 )
@@ -1568,7 +1529,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 2,
                         uniqueId = "222222-KEY",
                         boType = 1,
@@ -1589,7 +1549,6 @@ class GenerateGetLastApplyRequestParamsTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "{\"order_shipping_price\":15000}",
                         shopId = 1,
                         uniqueId = "111111-KEY",
                         boType = 1,
@@ -1597,12 +1556,13 @@ class GenerateGetLastApplyRequestParamsTest {
                         isPo = false,
                         poDuration = 0,
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
-                    ),
+                    )
                 )
-            ), getLastApplyPromoRequest
+            ),
+            getLastApplyPromoRequest
         )
     }
-    
+
 //
 //    @Test
 //    fun `WHEN generateGetLastApplyRequestParams with validateUsePromoData and BO should generate correct params`() {
@@ -1611,6 +1571,5 @@ class GenerateGetLastApplyRequestParamsTest {
 
     @After
     fun tearDown() {
-
     }
 }

@@ -84,18 +84,17 @@ class ExplicitProfileViewModel @Inject constructor(
 
             val result = saveMultipleAnswersUseCase(paramsInput)
             _saveAnswers.value = ExplicitProfileResult.Success(result)
-
         }, {
             _saveAnswers.value = ExplicitProfileResult.Failure(MessageErrorException(it.message))
         })
     }
 
-    private fun createStaticEmptyPage() : CategoryDataModel {
+    private fun createStaticEmptyPage(): CategoryDataModel {
         return CategoryDataModel(
             idCategory = EMPTY_PAGE_ID,
             name = EMPTY_PAGE_TITLE,
             imageEnabled = EMPTY_PAGE_ICON_ENABLE,
-            imageDisabled = EMPTY_PAGE_ICON_DISABLE,
+            imageDisabled = EMPTY_PAGE_ICON_DISABLE
         )
     }
 }

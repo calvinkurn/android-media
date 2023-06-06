@@ -121,7 +121,8 @@ class RatesDataConverter @Inject constructor() {
             weightActual = totalWeightActual.toDouble(),
             preOrderDuration = preOrderDuration,
             isFulfillment = shipmentCartItemModel.isFulfillment,
-            shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier
+            shopTier = shipmentCartItemModel.shopTypeInfoData.shopTier,
+            groupType = shipmentCartItemModel.groupType
         )
     }
 

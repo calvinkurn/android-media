@@ -73,5 +73,7 @@ data class ShipmentAddressFormDataResponse(
     @SerializedName("coachmark")
     val coachmark: CoachmarkPlusResponse = CoachmarkPlusResponse(),
     @SerializedName("dynamic_data_passing")
-    val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing()
+    val dynamicDataPassing: ShipmentDynamicDataPassing = ShipmentDynamicDataPassing(),
+    @SerializedName("platform_fee")
+    val shipmentPlatformFee: ShipmentPlatformFee = ShipmentPlatformFee()
 )

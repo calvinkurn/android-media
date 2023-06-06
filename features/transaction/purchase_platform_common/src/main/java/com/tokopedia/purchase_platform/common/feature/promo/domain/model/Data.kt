@@ -19,5 +19,5 @@ data class Data(
     val additionalInfo: AdditionalInfo = AdditionalInfo(),
 
     @SerializedName("success")
-    val success: Boolean = false,
+    val success: Boolean = false
 )

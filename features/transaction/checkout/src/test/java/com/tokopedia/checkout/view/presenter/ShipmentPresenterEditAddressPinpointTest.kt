@@ -128,7 +128,7 @@ class ShipmentPresenterEditAddressPinpointTest : BaseShipmentPresenterTest() {
         )
 
         every {
-            view.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+            view.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         } returns errorMessage
 
         // When

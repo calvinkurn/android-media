@@ -55,7 +55,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
             view.setHasRunningApiCall(true)
             view.hideLoading()
             view.setHasRunningApiCall(false)
-            view.activity
+            view.getStringResource(any())
             view.showToastNormal(any())
             view.renderChangeAddressSuccess(true)
         }
@@ -83,7 +83,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
             view.setHasRunningApiCall(true)
             view.hideLoading()
             view.setHasRunningApiCall(false)
-            view.activity
+            view.getStringResource(any())
             view.showToastError(any())
             view.renderChangeAddressFailed(any())
         }
@@ -162,7 +162,7 @@ class ShipmentPresenterChangeShippingAddressTest : BaseShipmentPresenterTest() {
             view.setHasRunningApiCall(true)
             view.hideLoading()
             view.setHasRunningApiCall(false)
-            view.activity
+            view.getStringResource(any())
             view.showToastNormal(any())
             view.renderChangeAddressSuccess(true)
         }

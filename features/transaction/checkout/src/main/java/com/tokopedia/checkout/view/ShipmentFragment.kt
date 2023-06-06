@@ -11,9 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -51,10 +49,11 @@ import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBo
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper.mapUnavailableBottomSheetProductLevelData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeResponse
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorApplyBo
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorCheckout
 import com.tokopedia.checkout.view.CheckoutLogger.logOnErrorLoadCheckoutPage
@@ -75,6 +74,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity.Companion.newInstance
@@ -196,14 +196,10 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorStrin
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.time.TimeHelper.timeBetweenRFC3339
 import com.tokopedia.utils.time.TimeHelper.timeSinceNow
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import rx.Emitter
 import rx.Observable
 import rx.Subscription
 import rx.subjects.PublishSubject
-import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -893,28 +889,28 @@ class ShipmentFragment :
     }
 
     private fun delayScrollToFirstShop() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                delay(1_000)
-                if (isActive) {
-                    if (binding?.rvShipment?.layoutManager != null) {
-                        val linearSmoothScroller: LinearSmoothScroller =
-                            object : LinearSmoothScroller(
-                                binding?.rvShipment!!.context
-                            ) {
-                                override fun getVerticalSnapPreference(): Int {
-                                    return SNAP_TO_START
-                                }
-                            }
-                        linearSmoothScroller.targetPosition =
-                            shipmentAdapter.firstShopPosition
-                        binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            try {
+//                delay(1_000)
+//                if (isActive) {
+//                    if (binding?.rvShipment?.layoutManager != null) {
+//                        val linearSmoothScroller: LinearSmoothScroller =
+//                            object : LinearSmoothScroller(
+//                                binding?.rvShipment!!.context
+//                            ) {
+//                                override fun getVerticalSnapPreference(): Int {
+//                                    return SNAP_TO_START
+//                                }
+//                            }
+//                        linearSmoothScroller.targetPosition =
+//                            shipmentAdapter.firstShopPosition
+//                        binding?.rvShipment?.layoutManager?.startSmoothScroll(linearSmoothScroller)
+//                    }
+//                }
+//            } catch (t: Throwable) {
+//                Timber.d(t)
+//            }
+//        }
     }
     // endregion
 
@@ -1505,6 +1501,14 @@ class ShipmentFragment :
         }
         shipmentDetailData.isTradein = isTradeIn
         return shipmentDetailData
+    }
+
+    internal fun getStringResource(resId: Int): String {
+        return activity?.getString(resId) ?: ""
+    }
+
+    internal fun getStringResourceWithArgs(resId: Int, vararg formatArgs: Any): String {
+        return activity?.getString(resId, formatArgs) ?: ""
     }
     // endregion
 
@@ -2357,6 +2361,7 @@ class ShipmentFragment :
             val shipmentCartItemModel =
                 shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition)
             if (shipmentCartItemModel != null) {
+                shipmentLoadingIndex = -1
                 shipmentCartItemModel.isStateLoadingCourierState = false
                 if (isTradeInDropOff) {
                     shipmentCartItemModel.isStateHasLoadCourierTradeInDropOffState = true
@@ -2790,15 +2795,7 @@ class ShipmentFragment :
                     ),
                     shipmentPresenter.cartDataForRates,
                     false,
-                    shipmentCartItemModel.fulfillmentId.toString(),
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                        shipmentPresenter.getGroupProductsForRatesRequest(
-                            shipmentCartItemModel
-                        )
-                    } else {
-                        emptyList()
-                    }
+                    shipmentCartItemModel.fulfillmentId.toString()
                 )
             }
         }
@@ -2862,15 +2859,7 @@ class ShipmentFragment :
                     shipmentCartItemModel.cartStringGroup,
                     isTradeInByDropOff,
                     shipmentAdapter.addressShipmentData,
-                    skipMvc,
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                        shipmentPresenter.getGroupProductsForRatesRequest(
-                            shipmentCartItemModel
-                        )
-                    } else {
-                        emptyList()
-                    }
+                    skipMvc
                 )
             }
         }
@@ -2915,15 +2904,7 @@ class ShipmentFragment :
                 shipmentPresenter.getProductForRatesRequest(shipmentCartItemModel),
                 shipmentCartItemModel.cartStringGroup,
                 isTradeInDropOff,
-                shipmentAdapter.addressShipmentData,
-                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                    shipmentPresenter.getGroupProductsForRatesRequest(
-                        shipmentCartItemModel
-                    )
-                } else {
-                    emptyList()
-                }
+                shipmentAdapter.addressShipmentData
             )
         }
     }
@@ -3890,18 +3871,18 @@ class ShipmentFragment :
 
     // region epharmacy
     private fun delayEpharmacyProcess(uploadPrescriptionUiModel: UploadPrescriptionUiModel?) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                delay(1_000)
-                if (isActive && activity != null) {
-                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
-                        shipmentPresenter.fetchEpharmacyData()
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.d(t)
-            }
-        }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            try {
+//                delay(1_000)
+//                if (isActive && activity != null) {
+//                    if (uploadPrescriptionUiModel?.consultationFlow == true) {
+//                        shipmentPresenter.fetchEpharmacyData()
+//                    }
+//                }
+//            } catch (t: Throwable) {
+//                Timber.d(t)
+//            }
+//        }
     }
 
     fun showCoachMarkEpharmacy(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
@@ -4074,6 +4055,108 @@ class ShipmentFragment :
     }
     // endregion
 
+    override fun checkPlatformFee() {
+        if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
+            val platformFeeModel = shipmentPresenter.shipmentCostModel.value.dynamicPlatformFee
+            if (shipmentPresenter.shipmentCostModel.value.totalPrice > platformFeeModel.minRange &&
+                shipmentPresenter.shipmentCostModel.value.totalPrice < platformFeeModel.maxRange
+            ) {
+                shipmentAdapter.setPlatformFeeData(platformFeeModel)
+                updateCost()
+            } else {
+                getPaymentFee()
+            }
+        }
+    }
+
+    private fun updateCost() {
+//        if (rvShipment!!.isComputingLayout) {
+//            rvShipment!!.post {
+//                shipmentAdapter.updateShipmentCostModel()
+//                shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
+//            }
+//        } else {
+//            shipmentAdapter.updateShipmentCostModel()
+//            shipmentAdapter.updateItemAndTotalCost(shipmentAdapter.getShipmentCostItemIndex())
+//        }
+    }
+
+    override fun showPlatformFeeTooltipInfoBottomSheet(platformFeeModel: ShipmentPaymentFeeModel) {
+//        val childView = View.inflate(context, R.layout.bottom_sheet_platform_fee_info, null)
+//        val tvPlatformFeeInfo: Typography = childView.findViewById(R.id.tv_platform_fee_info)
+//        tvPlatformFeeInfo.text = platformFeeModel.tooltip
+//        val bottomSheetUnify = BottomSheetUnify()
+//        bottomSheetUnify.setTitle(getString(R.string.platform_fee_title_info, platformFeeModel.title))
+//        bottomSheetUnify.showCloseIcon = true
+//        bottomSheetUnify.setChild(childView)
+//        bottomSheetUnify.show(childFragmentManager, null)
+//        checkoutAnalyticsCourierSelection.eventClickPlatformFeeInfoButton(
+//            userSessionInterface.userId,
+//            removeDecimalSuffix(convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false))
+//        )
+    }
+
+    private fun getPaymentFee() {
+        val paymentFeeCheckoutRequest = PaymentFeeCheckoutRequest()
+        paymentFeeCheckoutRequest.gatewayCode = ""
+        paymentFeeCheckoutRequest.profileCode = shipmentPresenter.getShipmentPlatformFeeData().profileCode
+        paymentFeeCheckoutRequest.paymentAmount = shipmentPresenter.shipmentCostModel.value.totalPrice
+        paymentFeeCheckoutRequest.additionalData = shipmentPresenter.getShipmentPlatformFeeData().additionalData
+        shipmentPresenter.getDynamicPaymentFee(paymentFeeCheckoutRequest)
+    }
+
+    fun showPaymentFeeData(platformFeeData: PaymentFeeResponse) {
+        val platformFeeModel = ShipmentPaymentFeeModel()
+        for (paymentFee in platformFeeData.data) {
+            if (paymentFee.code.equals(PLATFORM_FEE_CODE, ignoreCase = true)) {
+                platformFeeModel.title = paymentFee.title
+                platformFeeModel.fee = paymentFee.fee
+                platformFeeModel.minRange = paymentFee.minRange
+                platformFeeModel.maxRange = paymentFee.maxRange
+                platformFeeModel.isShowTooltip = paymentFee.showTooltip
+                platformFeeModel.tooltip = paymentFee.tooltipInfo
+                platformFeeModel.isShowSlashed = paymentFee.showSlashed
+                platformFeeModel.slashedFee = paymentFee.slashedFee.toDouble()
+            }
+        }
+        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        hideLoaderTotalPayment()
+        updateCost()
+        checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
+            userSessionInterface.userId,
+            convertPriceValueToIdrFormat(platformFeeModel.fee.toLong(), false).removeDecimalSuffix()
+        )
+    }
+
+    fun showPaymentFeeSkeletonLoading() {
+        val platformFeeModel = ShipmentPaymentFeeModel()
+        platformFeeModel.isLoading = true
+        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        showLoaderTotalPayment()
+        updateCost()
+    }
+
+    fun showLoaderTotalPayment() {
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
+//        shipmentButtonPaymentModel.isLoading = true
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+    }
+
+    fun hideLoaderTotalPayment() {
+        val shipmentButtonPaymentModel = shipmentPresenter.shipmentButtonPayment.value
+//        shipmentButtonPaymentModel.isLoading = false
+        onNeedUpdateViewItem(shipmentAdapter.itemCount - 1)
+    }
+
+    fun showPaymentFeeTickerFailedToLoad(ticker: String) {
+        val platformFeeModel = ShipmentPaymentFeeModel()
+        platformFeeModel.isShowTicker = true
+        platformFeeModel.ticker = ticker
+        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        hideLoaderTotalPayment()
+        updateCost()
+    }
+
     companion object {
         private const val REQUEST_CODE_EDIT_ADDRESS = 11
         private const val REQUEST_CODE_COURIER_PINPOINT = 13
@@ -4084,6 +4167,7 @@ class ShipmentFragment :
         private const val ADD_ON_STATUS_ACTIVE = 1
         private const val ADD_ON_STATUS_DISABLE = 2
         private const val SHIPMENT_TRACE = "mp_shipment"
+        private const val PLATFORM_FEE_CODE = "platform_fee"
         private const val KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids"
         const val ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT"
         const val ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID"

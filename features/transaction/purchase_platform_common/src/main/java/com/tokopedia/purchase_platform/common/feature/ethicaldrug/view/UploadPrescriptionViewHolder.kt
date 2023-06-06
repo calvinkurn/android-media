@@ -1,13 +1,12 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug.view
 
-import com.tokopedia.imageassets.TokopediaImageUrl
-
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.imageassets.TokopediaImageUrl
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

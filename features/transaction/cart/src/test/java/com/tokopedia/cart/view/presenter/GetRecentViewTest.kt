@@ -105,7 +105,7 @@ class GetRecentViewTest : BaseCartTest() {
             val recommendationWidget = Gson().fromJson(recommendationWidgetStringData, RecommendationWidget::class.java)
             add(recommendationWidget)
         }
-        
+
         coEvery { getRecentViewUseCase.getData(any()) } returns response
 
         cartListPresenter.detachView()

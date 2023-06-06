@@ -18,16 +18,15 @@ import org.junit.Before
 import org.junit.Test
 
 class GenerateClearBoParamTest {
-    
+
     private lateinit var cartFirstOrderList: MutableList<CartItemHolderData>
     private lateinit var cartSecondOrderList: MutableList<CartItemHolderData>
-    
+
     @Before
     fun setup() {
         cartFirstOrderList = PromoRequestMapperTestHelper.getFirstCartOrder()
         cartSecondOrderList = PromoRequestMapperTestHelper.getSecondCartOrder()
     }
-    
 
     @Test
     fun `WHEN promoData is null should generate correct params`() {
@@ -139,7 +138,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -153,7 +151,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -167,7 +164,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -181,7 +177,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                     )
                 )
@@ -316,7 +311,7 @@ class GenerateClearBoParamTest {
                         poDuration = "0",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
                         codes = mutableListOf("TESTBO2")
-                    ),
+                    )
                 )
             ),
             clearPromoOrderData
@@ -340,7 +335,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -354,7 +348,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751269-KEY_OWOC"
                     ),
                     VoucherOrders(
@@ -368,7 +361,6 @@ class GenerateClearBoParamTest {
                         benefitClass = "",
                         shippingPrice = 15000.0,
                         etaText = "",
-                        shippingMetadata = "",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC"
                     )
                 )
@@ -660,7 +652,7 @@ class GenerateClearBoParamTest {
                         poDuration = "0",
                         cartStringGroup = "_-0-9466960-169751270-KEY_OWOC",
                         codes = mutableListOf()
-                    ),
+                    )
                 )
             ),
             clearPromoOrderData

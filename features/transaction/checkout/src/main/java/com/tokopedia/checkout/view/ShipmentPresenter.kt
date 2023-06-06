@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -42,10 +41,13 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
-import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop.Companion.GROUP_TYPE_OWOC
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentPlatformFeeData
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeCheckoutRequest
+import com.tokopedia.checkout.domain.model.platformfee.PaymentFeeGqlResponse
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressRequest
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
+import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -60,7 +62,6 @@ import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper.getFirstPr
 import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
 import com.tokopedia.checkout.view.helper.ShipmentValidatePromoHolderData
-import com.tokopedia.checkout.view.subscriber.ReleaseBookingStockSubscriber
 import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
@@ -94,8 +95,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
-import com.tokopedia.logisticcart.shipping.model.GroupProduct
-import com.tokopedia.logisticcart.shipping.model.GroupProductItem
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesParam
@@ -168,6 +167,8 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -191,6 +192,7 @@ class ShipmentPresenter @Inject constructor(
     private val prescriptionIdsUseCase: GetPrescriptionIdsUseCaseCoroutine,
     private val epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
     private val updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
+    private val getPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase,
     private val checkoutGqlUseCase: CheckoutUseCase,
     private val shipmentDataConverter: ShipmentDataConverter,
     private val shippingCourierConverter: ShippingCourierConverter,
@@ -282,6 +284,8 @@ class ShipmentPresenter @Inject constructor(
 
     private var dynamicDataParam: DynamicDataPassingParamRequest = DynamicDataPassingParamRequest()
 
+    private var shipmentPlatformFeeData: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
+
     var dynamicData = ""
 
     var isOneClickShipment: Boolean = false
@@ -315,6 +319,7 @@ class ShipmentPresenter @Inject constructor(
         eligibleForAddressUseCase.cancelJobs()
         epharmacyUseCase.cancelJobs()
         updateDynamicDataPassingUseCase.cancelJobs()
+        getPaymentFeeCheckoutUseCase.cancelJobs()
         ratesQueue.clear()
         promoQueue.clear()
         view = null
@@ -908,6 +913,7 @@ class ShipmentPresenter @Inject constructor(
         }
         isUsingDdp = cartShipmentAddressFormData.isUsingDdp
         dynamicData = cartShipmentAddressFormData.dynamicData
+        shipmentPlatformFeeData = cartShipmentAddressFormData.shipmentPlatformFee
     }
 
     internal fun initializePresenterData(cartShipmentAddressFormData: CartShipmentAddressFormData) {
@@ -1006,7 +1012,7 @@ class ShipmentPresenter @Inject constructor(
             var errorMessage = throwable.message
             if (errorMessage == null) {
                 errorMessage =
-                    view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
+                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown_short)
             }
             view?.showToastError(errorMessage)
         }, AddressConstant.ANA_REVAMP_FEATURE_ID)
@@ -1082,8 +1088,7 @@ class ShipmentPresenter @Inject constructor(
                                 )
                             } else {
                                 val defaultErrorMessage =
-                                    v.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
-                                        ?: ""
+                                    v.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
                                 v.renderCheckoutCartError(defaultErrorMessage)
                                 v.logOnErrorCheckout(
                                     MessageErrorException(defaultErrorMessage),
@@ -1118,7 +1123,7 @@ class ShipmentPresenter @Inject constructor(
         } else {
             view?.hideLoading()
             view?.setHasRunningApiCall(false)
-            view?.showToastError(view?.activity?.getString(R.string.message_error_checkout_empty))
+            view?.showToastError(view?.getStringResource(R.string.message_error_checkout_empty))
         }
     }
 
@@ -1465,13 +1470,11 @@ class ShipmentPresenter @Inject constructor(
         cartString: String?
     ) {
         if (promoQueue.isEmpty()) {
-            Log.i("qwertyuiop", "call final validate ${Exception().stackTraceToString().substringBefore("kotlin")}")
             isValidatingFinalPromo = true
             couponStateChanged = true
             updateShipmentButtonPaymentModel(loading = true)
             viewModelScope.launch(dispatchers.immediate) {
                 try {
-                    Log.i("qwertyuiop", "do final validate")
                     if (promoQueue.isNotEmpty()) {
                         // ignore if there is still a promo in queue
                         return@launch
@@ -1534,7 +1537,6 @@ class ShipmentPresenter @Inject constructor(
                         checkUnCompletedPublisher()
                         isValidatingFinalPromo = false
                         updateShipmentButtonPaymentModel(loading = false)
-                        Log.i("qwertyuiop", "done final validate")
                     }
                 } catch (e: Throwable) {
                     Timber.d(e)
@@ -1555,33 +1557,38 @@ class ShipmentPresenter @Inject constructor(
                         checkUnCompletedPublisher()
                         isValidatingFinalPromo = false
                         updateShipmentButtonPaymentModel(loading = false)
-                        Log.i("qwertyuiop", "done final validate")
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun awaitPromoQueue() {
+        if (promoQueue.size == 1) {
+            consumePromoQueue()
         } else {
-            Log.i("qwertyuiop", "call final validate with promo quota exist")
+            withContext(dispatchers.default) {
+                while (promoQueue.isNotEmpty()) {
+                    // wait until promo queue is empty
+                }
+            }
         }
     }
 
     private suspend fun consumePromoQueue() {
-        Log.i("qwertyuiop", "consume promo queue ${Exception().stackTraceToString().substringBefore("kotlin")}")
         withContext(dispatchers.immediate) {
             var itemToProcess = promoQueue.peek()
             loopProcess@ while (isActive && itemToProcess != null) {
                 updateShipmentButtonPaymentModel(loading = true)
-                Log.i("qwertyuiop", "promo queue = $promoQueue")
                 val shipmentValidatePromoHolderData = itemToProcess
                 if (promoQueue.filter { it.cartString == shipmentValidatePromoHolderData.cartString }.size > 1) {
                     // ignore this, because there is a new one in the queue
-                    Log.i("qwertyuiop", "skip promo queue 1")
                     promoQueue.remove()
                     itemToProcess = promoQueue.peek()
                     continue@loopProcess
                 }
                 if (shipmentValidatePromoHolderData.validateUsePromoRequest != null) {
                     // do validate
-                    Log.i("qwertyuiop", "do validate promo queue")
                     try {
                         val validateUsePromoRevampUiModel = withContext(dispatchers.io) {
                             setValidateUseBoCodeInOneOrderOwoc(shipmentValidatePromoHolderData.validateUsePromoRequest)
@@ -1592,32 +1599,26 @@ class ShipmentPresenter @Inject constructor(
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.validateUsePromoRequest != null }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "skip promo queue 2")
                             continue@loopProcess
                         }
                         onValidatePromoSuccess(shipmentValidatePromoHolderData, validateUsePromoRevampUiModel)
-                        Log.i("qwertyuiop", "success consume promo queue done")
                     } catch (t: Throwable) {
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "skip promo queue 3")
                             continue@loopProcess
                         }
                         onValidatePromoError(shipmentValidatePromoHolderData, t)
-                        Log.i("qwertyuiop", "error consume promo queue done")
                     }
                 } else {
                     // do clear
-                    Log.i("qwertyuiop", "do clear promo queue")
                     val shipmentCartItem = shipmentCartItemModelList.first { it is ShipmentCartItemModel && it.cartStringGroup == shipmentValidatePromoHolderData.cartString }
                     if ((shipmentCartItem as ShipmentCartItemModel).voucherLogisticItemUiModel?.code != shipmentValidatePromoHolderData.promoCode) {
                         // skip due to clear on non-applied promo, this is due to the queuing system
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, null)
-                        Log.i("qwertyuiop", "skip cancel due to queuing")
                         continue@loopProcess
                     }
                     try {
@@ -1638,21 +1639,17 @@ class ShipmentPresenter @Inject constructor(
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString && it.clearPromoOrder != null }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "skip promo queue 4")
                             continue@loopProcess
                         }
                         onCancelPromoSuccess(shipmentValidatePromoHolderData, responseData)
-                        Log.i("qwertyuiop", "success consume promo queue cancel done")
                     } catch (t: Throwable) {
                         promoQueue.remove()
                         itemToProcess = promoQueue.peek()
                         if (promoQueue.any { it.cartString == shipmentValidatePromoHolderData.cartString }) {
                             // ignore this, because there is a new one in the queue
-                            Log.i("qwertyuiop", "consume promo queue 5")
                             continue@loopProcess
                         }
                         onCancelPromoError(shipmentValidatePromoHolderData)
-                        Log.i("qwertyuiop", "error consume promo queue cancel done")
                     }
                 }
                 updateShipmentButtonPaymentModel(loading = false)
@@ -2078,7 +2075,8 @@ class ShipmentPresenter @Inject constructor(
     }
 
     private fun validateBBO(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
-        for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
+        val updatedCartStringGroup: ArrayList<String> = arrayListOf<String>()
+        voucherLoop@for (voucherOrder in validateUsePromoRevampUiModel.promoUiModel.voucherOrderUiModels) {
             if (voucherOrder.type.equals(
                     "logistic",
                     ignoreCase = true
@@ -2090,6 +2088,7 @@ class ShipmentPresenter @Inject constructor(
                 for (shipmentCartItemModel in shipmentCartItemModelList) {
                     if (shipmentCartItemModel is ShipmentCartItemModel && shipmentCartItemModel.cartStringGroup == voucherOrder.cartStringGroup) {
                         if (view != null) {
+                            updatedCartStringGroup.add(voucherOrder.cartStringGroup)
                             view!!.resetCourier(shipmentCartItemModel)
                             view!!.logOnErrorApplyBo(
                                 MessageErrorException(
@@ -2098,10 +2097,16 @@ class ShipmentPresenter @Inject constructor(
                                 shipmentCartItemModel,
                                 voucherOrder.code
                             )
-                            break
+                            break@voucherLoop
                         }
                     }
                 }
+            } else if (voucherOrder.type.equals("logistic", ignoreCase = true) && voucherOrder.messageUiModel.state.equals(
+                    "green",
+                    ignoreCase = true
+                )
+            ) {
+                updatedCartStringGroup.add(voucherOrder.cartStringGroup)
             }
         }
         // if not voucher order found for attempted apply BO order,
@@ -2110,7 +2115,7 @@ class ShipmentPresenter @Inject constructor(
         for (shipmentCartItemModel in shipmentCartItemModelList) {
             if (shipmentCartItemModel is ShipmentCartItemModel) {
                 val code = shipmentCartItemModel.voucherLogisticItemUiModel?.code
-                if (!code.isNullOrEmpty() && view != null) {
+                if (!code.isNullOrEmpty() && view != null && !updatedCartStringGroup.contains(shipmentCartItemModel.cartStringGroup)) {
                     view!!.resetCourier(shipmentCartItemModel)
                     view!!.logOnErrorApplyBo(
                         MessageErrorException("voucher order not found"),
@@ -2287,24 +2292,24 @@ class ShipmentPresenter @Inject constructor(
         promoCode: String,
         uniqueId: String
     ) {
-        val globalCodes: List<String> = ArrayList()
-        val clearOrders: MutableList<ClearPromoOrder> = ArrayList()
-        val promoCodes: MutableList<String> = ArrayList()
-        promoCodes.add(promoCode)
-        clearOrders.add(
-            ClearPromoOrder(
-                uniqueId,
-                shipmentCartItemModel.shipmentCartData.boMetadata.boType,
-                promoCodes,
-                shipmentCartItemModel.shopId,
-                shipmentCartItemModel.isProductIsPreorder,
-                shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
-                shipmentCartItemModel.fulfillmentId,
-                shipmentCartItemModel.cartStringGroup
-            )
-        )
         viewModelScope.launch(dispatchers.immediate) {
             try {
+                val globalCodes: List<String> = ArrayList()
+                val clearOrders: MutableList<ClearPromoOrder> = ArrayList()
+                val promoCodes: MutableList<String> = ArrayList()
+                promoCodes.add(promoCode)
+                clearOrders.add(
+                    ClearPromoOrder(
+                        uniqueId,
+                        shipmentCartItemModel.shipmentCartData.boMetadata.boType,
+                        promoCodes,
+                        shipmentCartItemModel.shopId,
+                        shipmentCartItemModel.isProductIsPreorder,
+                        shipmentCartItemModel.cartItemModels[0].preOrderDurationDay.toString(),
+                        shipmentCartItemModel.fulfillmentId,
+                        shipmentCartItemModel.cartStringGroup
+                    )
+                )
                 val params = ClearPromoRequest(
                     ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                     false,
@@ -2417,18 +2422,14 @@ class ShipmentPresenter @Inject constructor(
         cartString: String?,
         isTradeInDropOff: Boolean,
         recipientAddressModel: RecipientAddressModel?,
-        skipMvc: Boolean,
-        cartStringGroup: String,
-        groupProducts: List<GroupProduct>
+        skipMvc: Boolean
     ) {
         val shippingParam = getShippingParam(
             shipmentDetailData,
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel,
-            cartStringGroup,
-            groupProducts
+            recipientAddressModel
         )
         val counter = codData?.counterCod ?: -1
         val cornerId = this.recipientAddressModel.isCornerAddress
@@ -2666,18 +2667,14 @@ class ShipmentPresenter @Inject constructor(
         products: ArrayList<Product>,
         cartString: String?,
         isTradeInDropOff: Boolean,
-        recipientAddressModel: RecipientAddressModel?,
-        cartStringGroup: String,
-        groupProducts: List<GroupProduct>
+        recipientAddressModel: RecipientAddressModel?
     ) {
         val shippingParam = getShippingParam(
             shipmentDetailData,
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel,
-            cartStringGroup,
-            groupProducts
+            recipientAddressModel
         )
         val counter = codData?.counterCod ?: -1
         val cornerId = this.recipientAddressModel.isCornerAddress
@@ -2910,24 +2907,10 @@ class ShipmentPresenter @Inject constructor(
                                                                     shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
                                                             }
                                                         }
-                                                        val shipmentCartItemModelLists =
-                                                            shipmentCartItemModelList.filterIsInstance(
-                                                                ShipmentCartItemModel::class.java
-                                                            )
-                                                        if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                                for (order in validateUsePromoRequest.orders) {
-                                                                    if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                                    ) {
-                                                                        order.codes.remove(
-                                                                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                        )
-                                                                        order.boCode = ""
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
+                                                        removeInvalidBoCodeFromPromoRequest(
+                                                            shipmentGetCourierHolderData,
+                                                            validateUsePromoRequest
+                                                        )
                                                         promoQueue.offer(
                                                             ShipmentValidatePromoHolderData(
                                                                 validateUsePromoRequest,
@@ -2937,15 +2920,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3064,24 +3039,10 @@ class ShipmentPresenter @Inject constructor(
                                                                     shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
                                                             }
                                                         }
-                                                        val shipmentCartItemModelLists =
-                                                            shipmentCartItemModelList.filterIsInstance(
-                                                                ShipmentCartItemModel::class.java
-                                                            )
-                                                        if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                                for (order in validateUsePromoRequest.orders) {
-                                                                    if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                                    ) {
-                                                                        order.codes.remove(
-                                                                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                        )
-                                                                        order.boCode = ""
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
+                                                        removeInvalidBoCodeFromPromoRequest(
+                                                            shipmentGetCourierHolderData,
+                                                            validateUsePromoRequest
+                                                        )
                                                         promoQueue.offer(
                                                             ShipmentValidatePromoHolderData(
                                                                 validateUsePromoRequest,
@@ -3091,15 +3052,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3174,24 +3127,10 @@ class ShipmentPresenter @Inject constructor(
                                                             shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
                                                     }
                                                 }
-                                                val shipmentCartItemModelLists =
-                                                    shipmentCartItemModelList.filterIsInstance(
-                                                        ShipmentCartItemModel::class.java
-                                                    )
-                                                if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                    for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                        for (order in validateUsePromoRequest.orders) {
-                                                            if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                            ) {
-                                                                order.codes.remove(
-                                                                    tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                )
-                                                                order.boCode = ""
-                                                            }
-                                                        }
-                                                    }
-                                                }
+                                                removeInvalidBoCodeFromPromoRequest(
+                                                    shipmentGetCourierHolderData,
+                                                    validateUsePromoRequest
+                                                )
                                                 promoQueue.offer(
                                                     ShipmentValidatePromoHolderData(
                                                         validateUsePromoRequest,
@@ -3201,15 +3140,7 @@ class ShipmentPresenter @Inject constructor(
                                                         courierItemData
                                                     )
                                                 )
-                                                if (promoQueue.size == 1) {
-                                                    consumePromoQueue()
-                                                } else {
-                                                    withContext(dispatchers.default) {
-                                                        while (promoQueue.isNotEmpty()) {
-                                                            // wait until promo queue is empty
-                                                        }
-                                                    }
-                                                }
+                                                awaitPromoQueue()
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
@@ -3346,24 +3277,10 @@ class ShipmentPresenter @Inject constructor(
                                                                     shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
                                                             }
                                                         }
-                                                        val shipmentCartItemModelLists =
-                                                            shipmentCartItemModelList.filterIsInstance(
-                                                                ShipmentCartItemModel::class.java
-                                                            )
-                                                        if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                                for (order in validateUsePromoRequest.orders) {
-                                                                    if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                                    ) {
-                                                                        order.codes.remove(
-                                                                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                        )
-                                                                        order.boCode = ""
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
+                                                        removeInvalidBoCodeFromPromoRequest(
+                                                            shipmentGetCourierHolderData,
+                                                            validateUsePromoRequest
+                                                        )
                                                         promoQueue.offer(
                                                             ShipmentValidatePromoHolderData(
                                                                 validateUsePromoRequest,
@@ -3373,15 +3290,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3498,24 +3407,10 @@ class ShipmentPresenter @Inject constructor(
                                                                     shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
                                                             }
                                                         }
-                                                        val shipmentCartItemModelLists =
-                                                            shipmentCartItemModelList.filterIsInstance(
-                                                                ShipmentCartItemModel::class.java
-                                                            )
-                                                        if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                                for (order in validateUsePromoRequest.orders) {
-                                                                    if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                        !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                                    ) {
-                                                                        order.codes.remove(
-                                                                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                        )
-                                                                        order.boCode = ""
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
+                                                        removeInvalidBoCodeFromPromoRequest(
+                                                            shipmentGetCourierHolderData,
+                                                            validateUsePromoRequest
+                                                        )
                                                         promoQueue.offer(
                                                             ShipmentValidatePromoHolderData(
                                                                 validateUsePromoRequest,
@@ -3525,15 +3420,7 @@ class ShipmentPresenter @Inject constructor(
                                                                 courierItemData
                                                             )
                                                         )
-                                                        if (promoQueue.size == 1) {
-                                                            consumePromoQueue()
-                                                        } else {
-                                                            withContext(dispatchers.default) {
-                                                                while (promoQueue.isNotEmpty()) {
-                                                                    // wait until promo queue is empty
-                                                                }
-                                                            }
-                                                        }
+                                                        awaitPromoQueue()
                                                         ratesQueue.remove()
                                                         itemToProcess = ratesQueue.peek()
                                                         continue@loopProcess
@@ -3607,24 +3494,10 @@ class ShipmentPresenter @Inject constructor(
                                                             shipmentGetCourierHolderData.shipmentCartItemModel.validationMetadata
                                                     }
                                                 }
-                                                val shipmentCartItemModelLists =
-                                                    shipmentCartItemModelList.filterIsInstance(
-                                                        ShipmentCartItemModel::class.java
-                                                    )
-                                                if (shipmentCartItemModelLists.isNotEmpty() && !shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
-                                                    for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
-                                                        for (order in validateUsePromoRequest.orders) {
-                                                            if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
-                                                                !tmpShipmentCartItemModel.isFreeShippingPlus
-                                                            ) {
-                                                                order.codes.remove(
-                                                                    tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
-                                                                )
-                                                                order.boCode = ""
-                                                            }
-                                                        }
-                                                    }
-                                                }
+                                                removeInvalidBoCodeFromPromoRequest(
+                                                    shipmentGetCourierHolderData,
+                                                    validateUsePromoRequest
+                                                )
                                                 promoQueue.offer(
                                                     ShipmentValidatePromoHolderData(
                                                         validateUsePromoRequest,
@@ -3634,15 +3507,7 @@ class ShipmentPresenter @Inject constructor(
                                                         courierItemData
                                                     )
                                                 )
-                                                if (promoQueue.size == 1) {
-                                                    consumePromoQueue()
-                                                } else {
-                                                    withContext(dispatchers.default) {
-                                                        while (promoQueue.isNotEmpty()) {
-                                                            // wait until promo queue is empty
-                                                        }
-                                                    }
-                                                }
+                                                awaitPromoQueue()
                                                 ratesQueue.remove()
                                                 itemToProcess = ratesQueue.peek()
                                                 continue@loopProcess
@@ -3907,9 +3772,7 @@ class ShipmentPresenter @Inject constructor(
         products: List<Product>?,
         cartString: String?,
         isTradeInDropOff: Boolean,
-        recipientAddressModel: RecipientAddressModel?,
-        cartStringGroup: String,
-        groupProducts: List<GroupProduct>
+        recipientAddressModel: RecipientAddressModel?
     ): ShippingParam {
         val shippingParam = ShippingParam(
             originDistrictId = shipmentDetailData!!.shipmentCartData!!.originDistrictId,
@@ -3952,8 +3815,7 @@ class ShipmentPresenter @Inject constructor(
             shippingParam.destinationLongitude =
                 shipmentDetailData.shipmentCartData!!.destinationLongitude
         }
-        shippingParam.cartStringGroup = cartStringGroup
-        shippingParam.groupProducts = groupProducts
+        shippingParam.groupType = shipmentDetailData.shipmentCartData!!.groupType
         return shippingParam
     }
 
@@ -3991,15 +3853,7 @@ class ShipmentPresenter @Inject constructor(
                     products,
                     cartString,
                     isTradeInDropOff,
-                    recipientAddressModel,
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) shipmentCartItemModel.cartStringGroup else "",
-                    if (shipmentCartItemModel.groupType == GROUP_TYPE_OWOC) {
-                        getGroupProductsForRatesRequest(
-                            shipmentCartItemModel
-                        )
-                    } else {
-                        emptyList()
-                    }
+                    recipientAddressModel
                 )
                 val counter = if (codData == null) -1 else codData!!.counterCod
                 val cornerId = recipientAddressModel.isCornerAddress
@@ -4156,15 +4010,7 @@ class ShipmentPresenter @Inject constructor(
                                                         courierItemData
                                                     )
                                                 )
-                                                if (promoQueue.size == 1) {
-                                                    consumePromoQueue()
-                                                } else {
-                                                    withContext(dispatchers.default) {
-                                                        while (promoQueue.isNotEmpty()) {
-                                                            // wait until promo queue is empty
-                                                        }
-                                                    }
-                                                }
+                                                awaitPromoQueue()
                                                 continue@loopProcess
                                             }
                                         }
@@ -4239,40 +4085,6 @@ class ShipmentPresenter @Inject constructor(
                     product.isFreeShippingTc = cartItemModel.isFreeShippingExtra
                     products.add(product)
                 }
-            }
-        }
-        return products
-    }
-
-    fun getGroupProductsForRatesRequest(shipmentCartItemModel: ShipmentCartItemModel?): ArrayList<GroupProduct> {
-        val products = ArrayList<GroupProduct>()
-        if (shipmentCartItemModel?.cartItemModels != null) {
-            val cartItemByOrder = shipmentCartItemModel.cartItemModelsGroupByOrder
-            for ((key, value) in cartItemByOrder) {
-                var totalOrderValue = 0L
-                var totalWeight = 0.0
-                val items = value.map {
-                    val weight = (it.quantity * it.weight) / WEIGHT_DIVIDER_TO_KG
-                    val orderValue = (it.quantity * it.price).toLong()
-                    totalOrderValue += orderValue
-                    totalWeight += weight
-                    GroupProductItem(
-                        productId = it.productId,
-                        orderValue = orderValue,
-                        weight = weight.toString(),
-                        warehouseIds = it.originWarehouseIds
-                    )
-                }
-                products.add(
-                    GroupProduct(
-                        shopId = value.first().shopId.toLongOrZero(),
-                        warehouseId = value.first().warehouseId.toLongOrZero(),
-                        uniqueId = key,
-                        totalOrderValue = totalOrderValue,
-                        totalWeight = totalWeight.toString(),
-                        products = items
-                    )
-                )
             }
         }
         return products
@@ -4440,7 +4252,7 @@ class ShipmentPresenter @Inject constructor(
                         } else {
                             if (messageError.isEmpty()) {
                                 messageError =
-                                    view?.activity?.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
+                                    view?.getStringResource(com.tokopedia.abstraction.R.string.default_request_error_unknown)
                                         ?: ""
                             }
                             view?.navigateToSetPinpoint(messageError, locationPass)
@@ -4548,7 +4360,7 @@ class ShipmentPresenter @Inject constructor(
                     view!!.setHasRunningApiCall(false)
                     if (setShippingAddressData.isSuccess) {
                         if (setShippingAddressData.messages.isEmpty()) {
-                            view!!.showToastNormal(view!!.activity?.getString(R.string.label_change_address_success) ?: "")
+                            view!!.showToastNormal(view!!.getStringResource(R.string.label_change_address_success))
                         } else {
                             view!!.showToastNormal(setShippingAddressData.messages[0])
                         }
@@ -4565,7 +4377,7 @@ class ShipmentPresenter @Inject constructor(
                                 view!!.renderChangeAddressFailed(reloadCheckoutPage)
                             }
                         } else {
-                            view!!.showToastError(view!!.activity?.getString(R.string.label_change_address_failed))
+                            view!!.showToastError(view!!.getStringResource(R.string.label_change_address_failed))
                             if (isHandleFallback) {
                                 view!!.renderChangeAddressFailed(reloadCheckoutPage)
                             }
@@ -4609,14 +4421,19 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun releaseBooking() {
         // As deals product is using OCS, the shipment should only contain 1 product
         val productId =
             getFirstProductId(shipmentCartItemModelList.filterIsInstance(ShipmentCartItemModel::class.java))
         if (productId != 0L) {
-            releaseBookingUseCase
-                .execute(productId)
-                .subscribe(ReleaseBookingStockSubscriber())
+            GlobalScope.launch {
+                try {
+                    releaseBookingUseCase(productId)
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+            }
         }
     }
     // endregion
@@ -4735,7 +4552,7 @@ class ShipmentPresenter @Inject constructor(
                                                                                 true
                                                                         }
                                                                         shipmentCartItemModel.errorTitle =
-                                                                            view?.activity?.getString(
+                                                                            view?.getStringResourceWithArgs(
                                                                                 R.string.checkout_error_unblocking_message,
                                                                                 shipmentCartItemModel.cartItemModels.size
                                                                             ) ?: ""
@@ -4799,7 +4616,7 @@ class ShipmentPresenter @Inject constructor(
                                 shipmentCartItemModel.firstProductErrorIndex =
                                     firstProductErrorIndex
                                 shipmentCartItemModel.unblockingErrorMessage =
-                                    view?.activity?.getString(
+                                    view?.getStringResourceWithArgs(
                                         R.string.checkout_error_unblocking_message,
                                         productErrorCount
                                     ) ?: ""
@@ -4911,7 +4728,7 @@ class ShipmentPresenter @Inject constructor(
                                                                     itemModel.isShopError = true
                                                                 }
                                                                 shipmentCartItemModel.errorTitle =
-                                                                    view?.activity?.getString(
+                                                                    view?.getStringResourceWithArgs(
                                                                         R.string.checkout_error_unblocking_message,
                                                                         shipmentCartItemModel.cartItemModels.size
                                                                     ) ?: ""
@@ -4972,7 +4789,7 @@ class ShipmentPresenter @Inject constructor(
                             shipmentCartItemModel.isHasUnblockingError = true
                             shipmentCartItemModel.firstProductErrorIndex = firstProductErrorIndex
                             shipmentCartItemModel.unblockingErrorMessage =
-                                view?.activity?.getString(
+                                view?.getStringResourceWithArgs(
                                     R.string.checkout_error_unblocking_message,
                                     productErrorCount
                                 ) ?: ""
@@ -5510,19 +5327,38 @@ class ShipmentPresenter @Inject constructor(
         }
     }
 
-    private fun setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest: ValidateUsePromoRequest) {
+    private fun removeInvalidBoCodeFromPromoRequest(
+        shipmentGetCourierHolderData: ShipmentGetCourierHolderData,
+        validateUsePromoRequest: ValidateUsePromoRequest
+    ) {
+        if (!shipmentGetCourierHolderData.shipmentCartItemModel.isFreeShippingPlus) {
+            val shipmentCartItemModelLists =
+                shipmentCartItemModelList.filterIsInstance(
+                    ShipmentCartItemModel::class.java
+                )
+            for (tmpShipmentCartItemModel in shipmentCartItemModelLists) {
+                for (order in validateUsePromoRequest.orders) {
+                    if (shipmentGetCourierHolderData.shipmentCartItemModel.cartStringGroup != tmpShipmentCartItemModel.cartStringGroup && tmpShipmentCartItemModel.cartStringGroup == order.cartStringGroup && tmpShipmentCartItemModel.selectedShipmentDetailData != null && tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier != null &&
+                        !tmpShipmentCartItemModel.isFreeShippingPlus
+                    ) {
+                        order.codes.remove(
+                            tmpShipmentCartItemModel.selectedShipmentDetailData!!.selectedCourier!!.selectedShipper.logPromoCode
+                        )
+                        order.boCode = ""
+                    }
+                }
+            }
+        }
+    }
+
+    internal fun setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest: ValidateUsePromoRequest) {
         validateUsePromoRequest.orders.filter { it.cartStringGroup != it.uniqueId }
             .groupBy { it.cartStringGroup }.filterValues { it.size > 1 }.values
             .forEach { ordersItems ->
                 val boCode = ordersItems.first().boCode
                 if (boCode.isNotEmpty()) {
-                    val existingAppliedUniqueId = validateUsePromoRevampUiModel?.promoUiModel?.voucherOrderUiModels?.firstOrNull { it.code == boCode && it.cartStringGroup == ordersItems.first().cartStringGroup }?.uniqueId ?: ""
                     ordersItems.forEachIndexed { index, ordersItem ->
-                        if (existingAppliedUniqueId.isNotEmpty()) {
-                            if (ordersItem.uniqueId != existingAppliedUniqueId) {
-                                ordersItem.codes.remove(boCode)
-                            }
-                        } else if (index > 0) {
+                        if (index > 0) {
                             ordersItem.codes.remove(boCode)
                         }
                     }
@@ -5631,6 +5467,34 @@ class ShipmentPresenter @Inject constructor(
         return promoRequest
     }
     // endregion
+
+    fun getDynamicPaymentFee(request: PaymentFeeCheckoutRequest?) {
+        view?.showPaymentFeeSkeletonLoading()
+
+        getPaymentFeeCheckoutUseCase.setParams(request!!)
+        getPaymentFeeCheckoutUseCase.execute(
+            { (platformFeeData): PaymentFeeGqlResponse ->
+                if (view != null) {
+                    if (platformFeeData.success) {
+                        view?.showPaymentFeeData(platformFeeData)
+                    } else {
+                        view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+                    }
+                }
+                Unit
+            }
+        ) { throwable: Throwable ->
+            Timber.d(throwable)
+            if (view != null) {
+                view?.showPaymentFeeTickerFailedToLoad(shipmentPlatformFeeData.errorWording)
+            }
+            Unit
+        }
+    }
+
+    fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
+        return shipmentPlatformFeeData
+    }
 
     companion object {
         private const val LAST_THREE_DIGIT_MODULUS: Long = 1000

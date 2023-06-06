@@ -30,5 +30,6 @@ class ShipmentCartData(
     val preOrderDuration: Int = 0,
     val isFulfillment: Boolean = false,
     val shopTier: Int = 0,
-    val boMetadata: BoMetadata = BoMetadata()
+    val boMetadata: BoMetadata = BoMetadata(),
+    val groupType: Int = 0
 ) : Parcelable

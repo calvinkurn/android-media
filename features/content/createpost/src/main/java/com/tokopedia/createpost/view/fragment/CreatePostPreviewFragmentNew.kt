@@ -6,20 +6,19 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
-import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.View
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.GestureDetector
 import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
@@ -38,31 +37,28 @@ import com.tokopedia.createpost.view.activity.ProductTagActivity
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.PageControl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Runnable
-import kotlin.math.round
 
 /**
  * @author by shruti on 30/08/21.
@@ -87,6 +83,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private var productVideoJob: Job? = null
     private val scope = CoroutineScope(Dispatchers.Main)
     var isMute = true
+
+    private lateinit var productTagBottomSheet: ContentCreationProductTagBottomSheet
 
     private val productAdapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
@@ -151,6 +149,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             MenuManager.MENU_ITEM_ID -> {
@@ -280,70 +279,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                         findViewById<CardView>(R.id.product_tagging_button_parent).showWithCondition(
                             products.isNotEmpty()
                         )
-                        val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
-                        bindImage(feedMedia, index)
-
-                        val gd = GestureDetector(
-                            context,
-                            object : GestureDetector.SimpleOnGestureListener() {
-                                override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                                    val bitmap = postImage.drawable.toBitmap()
-                                    val greyX = calculateGreyAreaY(layout, bitmap)
-                                    val greyY = calculateGreyAreaX(layout, bitmap)
-
-                                    if (e.x < greyX || e.x > (layout.width - greyX) || e.y < greyY || e.y > (layout.height - greyY)) {
-                                        return false
-                                    }
-
-                                    createPostAnalytics.eventClickOnImageToTag(feedMedia.type)
-                                    removeExtraTagListElement(feedMedia)
-
-                                    val x = e.x
-                                    val y = e.y
-                                    val posX = round((x / imageItem.width) * 1000) / 1000
-                                    val posY = round((y / imageItem.height) * 1000) / 1000
-                                    val tagIndex = createPostModel.completeImageList[index].tags.size
-                                    createPostModel.completeImageList[index].tags.add(
-                                        FeedXMediaTagging(
-                                            tagIndex = tagIndex,
-                                            posX = posX,
-                                            posY = posY,
-                                            X = e.x,
-                                            Y = e.y,
-                                            rawX = e.rawX,
-                                            rawY = e.rawY,
-                                            mediaIndex = createPostModel.currentCorouselIndex
-                                        )
-                                    )
-
-                                    if (getLatestTotalProductCount() < MAX_PRODUCT_TAG) {
-                                        openProductTaggingScreen()
-                                    }
-                                    return true
-                                }
-
-                                override fun onDown(e: MotionEvent): Boolean {
-                                    return true
-                                }
-
-                                override fun onDoubleTap(e: MotionEvent): Boolean {
-                                    return true
-                                }
-
-                                override fun onLongPress(e: MotionEvent) {
-                                    super.onLongPress(e)
-                                }
-
-                                override fun onDoubleTapEvent(e: MotionEvent): Boolean {
-                                    return true
-                                }
-                            }
-                        )
-
-                        setOnTouchListener { v, event ->
-                            gd.onTouchEvent(event)
-                            true
-                        }
+                        bindImage(feedMedia)
                     }
                     addItem(imageItem)
                 } else {
@@ -444,7 +380,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                     override fun onInitialStateLoading() {
                     }
 
-                    override fun onVideoReadyToPlay() {
+                    override fun onVideoReadyToPlay(isPlaying: Boolean) {
+
                     }
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
@@ -468,14 +405,18 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun openBottomSheet(productList: List<RelatedProductItem>, mediaType: String) {
         createPostAnalytics.eventOpenProductTagBottomSheet(mediaType)
-        val contentProductTagBS = ContentCreationProductTagBottomSheet()
-        contentProductTagBS.show(
-            Bundle.EMPTY,
-            childFragmentManager,
-            productList,
-            this,
-            mediaType = mediaType
-        )
+        if (!::productTagBottomSheet.isInitialized) {
+            productTagBottomSheet = ContentCreationProductTagBottomSheet()
+        }
+        if (!productTagBottomSheet.isVisible) {
+            productTagBottomSheet.show(
+                Bundle.EMPTY,
+                childFragmentManager,
+                productList,
+                this,
+                mediaType = mediaType
+            )
+        }
     }
 
     fun deleteAllProducts() {
@@ -487,11 +428,8 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 cvProductTaggingParent.hide()
             } else {
                 it.imageView?.run {
-                    val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
                     val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
-
                     lihatProductTagView.hide()
-                    layout.removeAllViews()
                 }
             }
         }
@@ -576,21 +514,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
     }
 
-    override fun clickProductTagBubbleAnalytics(mediaType: String, productId: String) {
-        createPostAnalytics.eventClickProductTagBubble(mediaType, productId)
-    }
-
-    override fun updateTaggingInfoInViewModel(
-        feedXMediaTagging: FeedXMediaTagging
-    ) {
-        val tags = createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags
-        if (tags.size > feedXMediaTagging.tagIndex) {
-            createPostModel.completeImageList[feedXMediaTagging.mediaIndex].tags[feedXMediaTagging.tagIndex] =
-                feedXMediaTagging
-            updateResultIntent()
-        }
-    }
-
     override fun clickContinueOnTaggingPage() {
     }
 
@@ -648,10 +571,11 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             if (mediaModel.type == MediaType.VIDEO) {
                 bindVideo(mediaModel)
             } else {
-                bindImage(mediaModel, createPostModel.currentCorouselIndex)
+                bindImage(mediaModel)
+                openBottomSheet(mediaModel.products, MediaType.IMAGE)
             }
+            updateResultIntent()
         }
-        updateResultIntent()
     }
 
     private fun mapResultToRelatedProductItem(data: Intent?): RelatedProductItem {
@@ -694,64 +618,22 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val imageItem = media.imageView
 
         imageItem?.run {
-            val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
             val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
-
             lihatProductTagView.showWithCondition(products.isNotEmpty())
-
-            for (view in layout.children) {
-                if (view.tag == productId) layout.removeView(view)
-            }
         }
     }
 
-    private fun bindImage(media: MediaModel, mediaIndex: Int) {
+    private fun bindImage(media: MediaModel) {
         val products = media.products
         val imageItem = media.imageView
-        val listener = this
 
         removeExtraTagListElement(media)
 
         imageItem?.run {
             val lihatProductTagView = findViewById<CardView>(R.id.product_tagging_button_parent)
-            val postImage = findViewById<ImageUnify>(R.id.content_creation_post_image)
-
             lihatProductTagView.showWithCondition(products.isNotEmpty())
-
             lihatProductTagView.setOnClickListener {
                 openBottomSheet(createPostModel.completeImageList[createPostModel.currentCorouselIndex].products, MediaType.IMAGE)
-            }
-            val layout = findViewById<ConstraintLayout>(R.id.product_tagging_parent_layout)
-            layout.removeAllViews()
-
-            media.tags.forEachIndexed { index, feedXMediaTagging ->
-                val tagViewProvider = TagViewProvider()
-                val view = tagViewProvider.getTagView(
-                    context,
-                    products,
-                    index,
-                    listener,
-                    feedXMediaTagging,
-                    layout
-                )
-                if (view != null) {
-                    try {
-                        Handler().postDelayed(
-                            Runnable {
-                                val bitmap = postImage?.drawable?.toBitmap()
-                                tagViewProvider.addViewToParent(
-                                    view,
-                                    layout,
-                                    feedXMediaTagging,
-                                    bitmap
-                                )
-                            },
-                            DEFAULT_DELAY
-                        )
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }
             }
         }
     }
@@ -788,6 +670,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
         return isAdded
     }
+
     fun detach() {
         if (videoPlayer != null) {
             videoPlayer?.pause()
@@ -796,6 +679,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             videoPlayer = null
         }
     }
+
     private fun calculateGreyAreaX(parent: ConstraintLayout, bitmap: Bitmap): Int {
         return if (bitmap.width > bitmap.height) {
             val newBitmapHeight = (parent.height * bitmap.height) / bitmap.width
@@ -813,6 +697,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             0
         }
     }
+
     private fun setMediaWidthAndHeight() {
         val mediaModel = createPostModel.completeImageList[0]
         try {

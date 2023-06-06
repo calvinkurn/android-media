@@ -623,6 +623,57 @@ class ShipmentPresenterClearPromoTest : BaseShipmentPresenterTest() {
     }
 
     @Test
+    fun `GIVEN clear promo failed WHEN hit clear all BO with cart list with valid voucher logistic promo THEN call clear cache auto apply use case`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "111-111-111",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST1"
+                ),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(
+                        boType = 1
+                    )
+                ),
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "111-111-111",
+                        preOrderDurationDay = 10
+                    )
+                )
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "222-222-222",
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel(
+                    code = "TEST2"
+                ),
+                shipmentCartData = ShipmentCartData(
+                    boMetadata = BoMetadata(
+                        boType = 1
+                    )
+                ),
+                cartItemModels = listOf(
+                    CartItemModel(
+                        cartStringGroup = "222-222-222",
+                        preOrderDurationDay = 10
+                    )
+                )
+            )
+        )
+
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } throws IOException()
+
+        // When
+        presenter.hitClearAllBo()
+
+        // Then
+        coVerify {
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+        }
+    }
+
+    @Test
     fun `WHEN hit clear all BO with invalid cart item THEN don't call clear cache auto apply use case`() {
         // Given
         // Test negative branch

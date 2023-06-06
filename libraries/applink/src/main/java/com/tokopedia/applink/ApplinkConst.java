@@ -17,6 +17,7 @@ public interface ApplinkConst {
     String FEED = "tokopedia://feed";
     String FEED_EXPLORE = "tokopedia://feed/explore";
     String FEED_VIDEO = "tokopedia://feed/video";
+    String FEED_FOLLOWING = "tokopedia://feed/following";
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
@@ -86,7 +87,7 @@ public interface ApplinkConst {
     String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
 
-    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create/";
+    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String REVIEW_REMINDER_PREVIOUS = "tokopedia://review-reminder";
@@ -110,6 +111,7 @@ public interface ApplinkConst {
     String RECHARGE = "tokopedia://recharge";
     String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
+    String DISCOVERY_PAGE_SOS = "tokopedia://discovery/sos";
     String REACT_DISCOVERY_PAGE = "tokopedia://reactDiscovery/{page_id}";
     String DISCOVERY_NEW_USER = "tokopedia://discovery/pengguna-baru";
     String HOME_EXPLORE = "tokopedia://jump";
@@ -285,6 +287,7 @@ public interface ApplinkConst {
     String SELLER_CUSTOM_PRODUCT_LOGISTIC = "tokopedia://seller/setting/custom-product-logistic";
     String SELLER_COD_ACTIVATION = "tokopedia://seller/setting/cod-activation";
     String SELLER_WAREHOUSE_DATA = "tokopedia://seller/setting/shop-address";
+    String SELLER_SHOP_OPERATIONAL = "tokopedia://seller/setting/operational-hours";
     String CONTACT_US = "tokopedia://contact-us";
     String CONTACT_US_NATIVE = "tokopedia://contactus";
     String RESOLUTION_SUCCESS = "tokopedia://resolution/success-create?url={redirect_url}";
@@ -346,6 +349,7 @@ public interface ApplinkConst {
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
+    String INTERNAL_CONTENT_DETAIL = "tokopedia-android-internal://content/post-detail/{post_id}";
 
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_NO_PARAM = "tokopedia://productpickerfromshop";
     String AFFILIATE_PRODUCT_PICKER_FROM_SHOP_HOST = "productpickerfromshop";
@@ -419,6 +423,7 @@ public interface ApplinkConst {
     String AFFILIATE_TOKO_DISCO_PAGE_LIST = "tokopedia://affiliate/discopage-list";
     String AFFILIATE_TOKO_EDU_PAGE = "tokopedia://affiliate/edu-page";
     String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_TOKO_PROMO_PAGE = "tokopedia://affiliate/promosikan";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
@@ -563,7 +568,12 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
+
         String SELLER_TOKOPEDIA_FLASH_SALE = "sellerapp://tokopedia-flash-sale";
+        String SELLER_TOKOPEDIA_FLASH_SALE_UPCOMING = "sellerapp://tokopedia-flash-sale/upcoming";
+        String SELLER_TOKOPEDIA_FLASH_SALE_REGISTERED = "sellerapp://tokopedia-flash-sale/registered";
+        String SELLER_TOKOPEDIA_FLASH_SALE_ONGOING = "sellerapp://tokopedia-flash-sale/ongoing";
+        String SELLER_TOKOPEDIA_FLASH_SALE_FINISHED = "sellerapp://tokopedia-flash-sale/finished";
         String SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "sellerapp://tokopedia-flash-sale/campaign-detail/{campaign_id}";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
@@ -591,6 +601,7 @@ public interface ApplinkConst {
         String SELLER_PERSONA = "sellerapp://seller-persona";
         String STOCK_REMINDER = "sellerapp://stock-reminder/{productId}/{isVariant}";
 
+        String SELLER_SHOP_HOUR = "sellerapp://shop/operational-hours";
     }
 
     interface TokopediaNow {

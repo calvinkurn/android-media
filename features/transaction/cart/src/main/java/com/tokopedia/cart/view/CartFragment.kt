@@ -76,6 +76,7 @@ import com.tokopedia.cart.view.mapper.RecentViewMapper
 import com.tokopedia.cart.view.mapper.WishlistMapper
 import com.tokopedia.cart.view.uimodel.CartBundlingBottomSheetData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewHolderData
@@ -86,7 +87,6 @@ import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
 import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
@@ -2219,11 +2219,10 @@ class CartFragment :
             }
         }
         if (cartGroupHolderData.cartShopGroupTicker.enableBoAffordability) {
-            // TODO: fix tracker
-//            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
-//                cartGroupHolderData.cartShopGroupTicker.cartIds,
-//                cartGroupHolderData.shopId
-//            )
+            cartPageAnalytics.eventClickArrowInBoTickerToReachShopPage(
+                cartGroupHolderData.cartShopGroupTicker.cartIds,
+                cartGroupHolderData.shop.shopId
+            )
         }
     }
 
@@ -2237,12 +2236,11 @@ class CartFragment :
     }
 
     override fun onViewCartShopGroupTicker(cartGroupHolderData: CartGroupHolderData) {
-        // TODO: Fix tracker
-//        cartPageAnalytics.eventViewBoTickerWording(
-//            cartGroupHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
-//            cartGroupHolderData.cartShopGroupTicker.cartIds,
-//            cartGroupHolderData.shopId
-//        )
+        cartPageAnalytics.eventViewBoTickerWording(
+            cartGroupHolderData.cartShopGroupTicker.state == CartShopGroupTickerState.SUCCESS_AFFORD,
+            cartGroupHolderData.cartShopGroupTicker.cartIds,
+            cartGroupHolderData.shop.shopId
+        )
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -2401,12 +2399,15 @@ class CartFragment :
         }
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
         val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
                 onNeedToUpdateViewItem(index)
+            }
+            if (isQuantityChanged) {
+                onNeedToUpdateViewItem(itemPosition)
             }
             val shopBottomData = groupData.last()
             if (shopBottomData is CartShopBottomHolderData) {
@@ -4400,11 +4401,10 @@ class CartFragment :
     override fun onExpandAvailableItem(index: Int) {
         val cartShopBottomHolderData = cartAdapter.getCartShopBottomHolderDataFromIndex(index)
         if (cartShopBottomHolderData != null) {
-            // TODO: Fix Tracker
             if (cartShopBottomHolderData.shopData.productUiModelList.size > TOKONOW_SEE_OTHERS_OR_ALL_LIMIT) {
-//                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
+                cartPageAnalytics.eventClickLihatOnPlusLainnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
             } else {
-//                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shopId)
+                cartPageAnalytics.eventClickLihatSelengkapnyaOnNowProduct(cartShopBottomHolderData.shopData.shop.shopId)
             }
             cartShopBottomHolderData.shopData.isCollapsed = false
             cartAdapter.addItems(index, cartShopBottomHolderData.shopData.productUiModelList)
@@ -4420,21 +4420,20 @@ class CartFragment :
             false
         )
         if (shopIndex >= 0) {
-            val cartShopHolderData = groupData.first()
+            val cartGroupHolderData = groupData.first()
             val cartShopBottomHolderData = groupData.last()
-            if (cartShopHolderData is CartGroupHolderData && cartShopBottomHolderData is CartShopBottomHolderData) {
-                // TODO: Fix Tracker
-//                cartPageAnalytics.eventClickCollapsedProductImage(cartShopHolderData.shopId)
-                cartShopHolderData.isCollapsed = false
-                cartShopHolderData.clickedCollapsedProductIndex = index
-                cartAdapter.addItems(shopIndex + 1, cartShopHolderData.productUiModelList)
+            if (cartGroupHolderData is CartGroupHolderData && cartShopBottomHolderData is CartShopBottomHolderData) {
+                cartPageAnalytics.eventClickCollapsedProductImage(cartGroupHolderData.shop.shopId)
+                cartGroupHolderData.isCollapsed = false
+                cartGroupHolderData.clickedCollapsedProductIndex = index
+                cartAdapter.addItems(shopIndex + 1, cartGroupHolderData.productUiModelList)
                 onNeedToUpdateViewItem(shopIndex)
                 onNeedToInsertMultipleViewItem(
                     shopIndex + 1,
-                    cartShopHolderData.productUiModelList.size
+                    cartGroupHolderData.productUiModelList.size
                 )
-                val bottomIndex = shopIndex + 1 + cartShopHolderData.productUiModelList.size
-                cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(cartShopHolderData)
+                val bottomIndex = shopIndex + 1 + cartGroupHolderData.productUiModelList.size
+                cartAdapter.getData()[bottomIndex] = CartShopBottomHolderData(cartGroupHolderData)
                 onNeedToUpdateViewItem(bottomIndex)
                 val layoutManager: RecyclerView.LayoutManager? = binding?.rvCart?.layoutManager
                 if (layoutManager is LinearLayoutManager) {

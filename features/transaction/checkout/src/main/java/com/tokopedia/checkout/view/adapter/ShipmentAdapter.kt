@@ -26,6 +26,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
@@ -1255,16 +1256,24 @@ class ShipmentAdapter @Inject constructor(
             shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position, cartItem)
+                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
             notifyItemChanged(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
             notifyItemChanged(position)
             shipmentAdapterActionListener.onPurchaseProtectionLogicError()
+        } else {
+            shipmentCartItem.cartItemModels =
+                shipmentCartItem.cartItemModels.toMutableList().apply {
+                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                }
+            shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
+            notifyItemChanged(shipmentCartItemPosition)
+            shipmentDataList[position] = cartItem
         }
-        shipmentAdapterActionListener.onNeedUpdateRequestData()
         shipmentAdapterActionListener.onPurchaseProtectionChangeListener(position)
+        shipmentAdapterActionListener.onNeedUpdateRequestData()
     }
 
     override fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel) {
@@ -1327,6 +1336,20 @@ class ShipmentAdapter @Inject constructor(
     ) {
         shipmentDataList[position] = shipmentCartItemModel
         notifyItemChanged(position)
+    }
+
+    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
+        if (shipmentCostModel != null) {
+            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
+        }
+    }
+
+    fun getShipmentCostItemIndex(): Int {
+        var index = 0
+        if (shipmentCostModel != null) {
+            index = shipmentDataList.indexOf(shipmentCostModel!!)
+        }
+        return index
     }
 
     override fun onCheckboxAddonProductListener(addOnProductDataItemModel: AddOnProductDataItemModel) {

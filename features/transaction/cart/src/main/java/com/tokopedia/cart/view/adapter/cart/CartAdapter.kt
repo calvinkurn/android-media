@@ -24,6 +24,7 @@ import com.tokopedia.cart.view.adapter.recentview.CartRecentViewAdapter
 import com.tokopedia.cart.view.adapter.wishlist.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
+import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
@@ -32,9 +33,7 @@ import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.cart.view.uimodel.CartSectionHeaderHolderData
 import com.tokopedia.cart.view.uimodel.CartSelectAllHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBottomHolderData
-import com.tokopedia.cart.view.uimodel.CartGroupHolderData
 import com.tokopedia.cart.view.uimodel.CartShopGroupTickerState
-import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.cart.view.uimodel.CartTopAdsHeadlineData
 import com.tokopedia.cart.view.uimodel.CartWishlistHolderData
 import com.tokopedia.cart.view.uimodel.DisabledAccordionHolderData
@@ -42,6 +41,7 @@ import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.viewholder.CartChooseAddressViewHolder
 import com.tokopedia.cart.view.viewholder.CartEmptyViewHolder
+import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartItemViewHolder
 import com.tokopedia.cart.view.viewholder.CartLoadingViewHolder
 import com.tokopedia.cart.view.viewholder.CartRecentViewViewHolder
@@ -49,7 +49,6 @@ import com.tokopedia.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.cart.view.viewholder.CartSectionHeaderViewHolder
 import com.tokopedia.cart.view.viewholder.CartSelectAllViewHolder
 import com.tokopedia.cart.view.viewholder.CartShopBottomViewHolder
-import com.tokopedia.cart.view.viewholder.CartGroupViewHolder
 import com.tokopedia.cart.view.viewholder.CartTickerErrorViewHolder
 import com.tokopedia.cart.view.viewholder.CartTopAdsHeadlineViewHolder
 import com.tokopedia.cart.view.viewholder.CartWishlistViewHolder
@@ -1390,21 +1389,30 @@ class CartAdapter constructor(
         return false
     }
 
-    fun setAllAvailableItemCheck(cheked: Boolean) {
+    fun setAllAvailableItemCheck(checked: Boolean) {
         val indices = ArraySet<Int>()
         getData().forEachIndexed { index, data ->
             when (data) {
                 is CartGroupHolderData -> {
-                    if (data.isAllSelected != cheked) {
-                        data.isAllSelected = cheked
+                    if (!data.isError && data.isAllSelected != checked) {
+                        data.isAllSelected = checked
                         data.isPartialSelected = false
+                        if (data.isCollapsed) {
+                            data.productUiModelList.forEach { product ->
+                                if (product.isSelected != checked) {
+                                    product.isSelected = checked
+                                }
+                            }
+                        }
                         notifyItemChanged(index)
+                    } else {
+                        return@forEachIndexed
                     }
                 }
                 is CartItemHolderData -> {
                     if (!data.isError) {
-                        if (data.isSelected != cheked) {
-                            data.isSelected = cheked
+                        if (data.isSelected != checked) {
+                            data.isSelected = checked
                             notifyItemChanged(index)
                         }
                     } else {
@@ -1475,9 +1483,9 @@ class CartAdapter constructor(
         cartItemActionListener.onNeedToRecalculate()
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
         cartItemActionListener.onNeedToRecalculate()
-        cartItemActionListener.onNeedToRefreshSingleShop(cartItemHolderData)
+        cartItemActionListener.onNeedToRefreshSingleShop(cartItemHolderData, itemPosition, isQuantityChanged)
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {

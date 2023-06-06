@@ -4,6 +4,7 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
@@ -43,6 +44,9 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
     fun `GIVEN cart with shipment courier WHEN generate validate use request THEN should set courier correctly`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(
+                cartStringGroup = "123"
+            ),
             ShipmentCartItemModel(
                 cartStringGroup = "123",
                 cartItemModels = listOf(
@@ -184,6 +188,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
     fun `GIVEN previous validate use request without courier & bo and cart with shipment courier & bo WHEN generate validate use request THEN should set courier & bo correctly`() {
         // Given
         presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(cartStringGroup = "123"),
             ShipmentCartItemModel(
                 cartStringGroup = "123",
                 cartItemModels = listOf(
@@ -193,7 +198,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
             )
         )
         presenter.generateValidateUsePromoRequest()
-        (presenter.shipmentCartItemModelList[0] as ShipmentCartItemModel).apply {
+        (presenter.shipmentCartItemModelList[1] as ShipmentCartItemModel).apply {
             selectedShipmentDetailData = ShipmentDetailData(
                 selectedCourier = CourierItemData(
                     shipperProductId = 1,
@@ -205,6 +210,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
 
         // When
         val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+        presenter.setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
 
         // Then
         assertEquals(1, validateUsePromoRequest.orders[0].spId)
@@ -213,7 +219,7 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
         assertEquals(true, presenter.bboPromoCodes.contains("code"))
         assertEquals(1, validateUsePromoRequest.orders[1].spId)
         assertEquals(true, validateUsePromoRequest.orders[1].freeShippingMetadata.isNotEmpty())
-        assertEquals(true, validateUsePromoRequest.orders[1].codes.contains("code"))
+        assertEquals(false, validateUsePromoRequest.orders[1].codes.contains("code"))
     }
 
     @Test
@@ -238,10 +244,150 @@ class ShipmentPresenterPromoTest : BaseShipmentPresenterTest() {
 
         // When
         val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+        presenter.setValidateUseBoCodeInOneOrderOwoc(validateUsePromoRequest)
 
         // Then
         assertEquals(true, validateUsePromoRequest.codes.contains("global_code"))
         assertEquals(true, validateUsePromoRequest.orders[0].codes.contains("1"))
         assertEquals(true, validateUsePromoRequest.orders[1].codes.isEmpty())
+    }
+
+    @Test
+    fun `GIVEN trade in WHEN generate validate use request THEN should set trade in`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.isTradeIn = true
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals(1, validateUsePromoRequest.isTradeIn)
+        assertEquals(0, validateUsePromoRequest.isTradeInDropOff)
+    }
+
+    @Test
+    fun `GIVEN trade in dropoff WHEN generate validate use request THEN should set trade in dropoff`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals(1, validateUsePromoRequest.isTradeIn)
+        assertEquals(1, validateUsePromoRequest.isTradeInDropOff)
+    }
+
+    @Test
+    fun `GIVEN ocs WHEN generate validate use request THEN should set ocs`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.isOneClickShipment = true
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals("ocs", validateUsePromoRequest.cartType)
+    }
+
+    @Test
+    fun `GIVEN trade in WHEN generate validate use request with last request THEN should set trade in`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.generateValidateUsePromoRequest()
+        presenter.isTradeIn = true
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals(1, validateUsePromoRequest.isTradeIn)
+        assertEquals(0, validateUsePromoRequest.isTradeInDropOff)
+    }
+
+    @Test
+    fun `GIVEN trade in dropoff WHEN generate validate use request with last request THEN should set trade in dropoff`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.generateValidateUsePromoRequest()
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals(1, validateUsePromoRequest.isTradeIn)
+        assertEquals(1, validateUsePromoRequest.isTradeInDropOff)
+    }
+
+    @Test
+    fun `GIVEN ocs WHEN generate validate use request with last request THEN should set ocs`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "123",
+                cartItemModels = listOf(
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "1"),
+                    CartItemModel(cartStringGroup = "123", cartStringOrder = "2")
+                )
+            )
+        )
+        presenter.generateValidateUsePromoRequest()
+        presenter.isOneClickShipment = true
+
+        // When
+        val validateUsePromoRequest = presenter.generateValidateUsePromoRequest()
+
+        // Then
+        assertEquals("ocs", validateUsePromoRequest.cartType)
     }
 }

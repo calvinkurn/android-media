@@ -22,7 +22,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
@@ -31,12 +33,13 @@ import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
-import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -133,106 +136,107 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
     private fun setDriverTipLayout(logisticDriverModel: LogisticDriverModel) {
         when (logisticDriverModel.status) {
             OPEN -> {
-                setTitle(getString(com.tokopedia.logisticorder.R.string.title_prepayment_tipping))
-                binding.paymentTippingLayout.visibility = View.VISIBLE
-                binding.resultTippingLayout.visibility = View.GONE
-                binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_payment)
-
-                val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
-
-                ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
-                tippingValueAdapter = TippingValueAdapter(this)
-                tippingValueAdapter?.tippingValueList = logisticDriverModel.prepayment.presetAmount.toMutableList()
-
-                binding.rvChipsTip.apply {
-                    layoutManager = chipsLayoutManagerTipping
-                    adapter = tippingValueAdapter
-                    addItemDecoration(object : SpacingItemDecoration(TIPPING_SPACING, TIPPING_SPACING) {
-                        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-                            super.getItemOffsets(outRect, view, parent, state)
-                            val itemWidth = parent.measuredWidth / TIPPING_WIDTH_DIVIDER
-                            view.layoutParams.width = itemWidth.toInt()
-                        }
-                    })
-                }
-
-                binding.tickerTippingGojek.apply {
-                    descriptionView.elevation = 2f
-                    description = setTippingDescription(logisticDriverModel.prepayment.info)
-                }
-                binding.etNominalTip.run {
-                    setMessage(
-                        getString(
-                            R.string.nominal_tip_message,
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
-                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
-                        )
-                    )
-                    editText.addTextChangedListener(
-                        setWrapperWatcherTipping(
-                            binding.etNominalTip.textInputLayout,
-                            logisticDriverModel.prepayment.minAmount,
-                            logisticDriverModel.prepayment.maxAmount
-                        )
-                    )
-                    counterView?.visibility = View.GONE
-                }
-
-                binding.btnTipping.setOnClickListener {
-                    val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace(
-                        "{{amount}}",
-                        binding.etNominalTip.editText.text.toString()
-                    )
-
-                    RouteManager.route(
-                        context,
-                        paymentApplink
-                    )
-                }
+                setInputTippingLayout(logisticDriverModel)
             }
             WAITING_PAYMENT -> {
             }
-            SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> {
-                binding.resultTippingLayout.visibility = View.VISIBLE
-                binding.paymentTippingLayout.visibility = View.GONE
-                binding.btnTipping.run {
-                    text = getString(com.tokopedia.logisticorder.R.string.button_tipping_done)
-                    isEnabled = true
-                    setOnClickListener {
-                        dismiss()
-                    }
-                }
-
-                binding.apply {
-                    imgTipDriver.urlSrc = "https://images.tokopedia.net/img/android/tipping/illus-tipping-success (1).png"
-                    tvTipResult.text =
-                        getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
-                    tvTipResultDesc.text =
-                        MethodChecker.fromHtml(getString(com.tokopedia.logisticorder.R.string.tipping_result_desc))
-                    tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
-                    tvDriverNameValue.text = logisticDriverModel.lastDriver.name
-                    tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
-                    tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
-                    if (logisticDriverModel.payment.methodIcon.isNotEmpty()) {
-                        tippingMethod.setImageUrl(logisticDriverModel.payment.methodIcon)
-                    } else {
-                        tippingMethod.visibility = View.GONE
-                    }
-                    tippingValue.run {
-                        text = MethodChecker.fromHtml(
-                            String.format(
-                                getString(R.string.payment_value),
-                                logisticDriverModel.payment.method,
-                                logisticDriverModel.payment.amountFormatted
-                            )
-                        )
-                        setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
-                    }
-                }
+            SUCCESS_PAYMENT, SUCCESS_TIPPING -> {
+                setTippingSuccessLayout(logisticDriverModel)
             }
+        }
+    }
+
+    private fun setTippingSuccessLayout(logisticDriverModel: LogisticDriverModel) {
+        binding.resultTippingLayout.visible()
+        binding.paymentTippingLayout.gone()
+        binding.btnTipping.run {
+            text = getString(com.tokopedia.logisticorder.R.string.button_tipping_done)
+            isEnabled = true
+            setOnClickListener {
+                dismiss()
+            }
+        }
+
+        binding.apply {
+            imgTipDriver.urlSrc = IMG_SUCCESS_TIPPING
+            tvTipResult.text = getString(if (logisticDriverModel.status == SUCCESS_PAYMENT) com.tokopedia.logisticorder.R.string.tipping_success_payment_text else com.tokopedia.logisticorder.R.string.tipping_success_to_gojek_text)
+            tvTipResultDesc.text = HtmlLinkHelper(this.root.context, getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)).spannedString
+            tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
+            tvInvoiceValue.text = orderId
+            tvDriverNameValue.text = logisticDriverModel.lastDriver.name
+            tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
+            tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
+            if (logisticDriverModel.payment.methodIcon.isNotEmpty()) {
+                tippingMethod.setImageUrl(logisticDriverModel.payment.methodIcon)
+            } else {
+                tippingMethod.visibility = View.GONE
+            }
+            tippingValue.run {
+                text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
+                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+            }
+        }
+    }
+
+    private fun setInputTippingLayout(logisticDriverModel: LogisticDriverModel) {
+        setTitle(getString(com.tokopedia.logisticorder.R.string.title_prepayment_tipping))
+        binding.paymentTippingLayout.visible()
+        binding.resultTippingLayout.gone()
+        binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_payment)
+
+        val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
+            .setOrientation(ChipsLayoutManager.HORIZONTAL)
+            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+            .build()
+
+        ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
+        tippingValueAdapter = TippingValueAdapter(this)
+        tippingValueAdapter?.tippingValueList = logisticDriverModel.prepayment.presetAmount.toMutableList()
+
+        binding.rvChipsTip.apply {
+            layoutManager = chipsLayoutManagerTipping
+            adapter = tippingValueAdapter
+            addItemDecoration(object : SpacingItemDecoration(TIPPING_SPACING, TIPPING_SPACING) {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    val itemWidth = parent.measuredWidth / TIPPING_WIDTH_DIVIDER
+                    view.layoutParams.width = itemWidth.toInt()
+                }
+            })
+        }
+
+        binding.tickerTippingGojek.apply {
+            descriptionView.elevation = 2f
+            description = setTippingDescription(logisticDriverModel.prepayment.info)
+        }
+        binding.etNominalTip.run {
+            setMessage(
+                getString(
+                    R.string.nominal_tip_message,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.minAmount),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(logisticDriverModel.prepayment.maxAmount)
+                )
+            )
+            editText.addTextChangedListener(
+                setWrapperWatcherTipping(
+                    binding.etNominalTip.textInputLayout,
+                    logisticDriverModel.prepayment.minAmount,
+                    logisticDriverModel.prepayment.maxAmount
+                )
+            )
+            counterView?.visibility = View.GONE
+        }
+
+        binding.btnTipping.setOnClickListener {
+            val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace(
+                "{{amount}}",
+                binding.etNominalTip.editText.text.toString()
+            )
+
+            RouteManager.route(
+                context,
+                paymentApplink
+            )
         }
     }
 
@@ -256,7 +260,7 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.editText.text.toString()
-                if (s.isNotEmpty() && text.toIntSafely() < minAmount) {
+                if (text.toIntSafely() < minAmount) {
                     setWrapperError(
                         wrapper,
                         getString(
@@ -325,5 +329,6 @@ class DriverTippingBottomSheet : BottomSheetUnify(), HasComponent<TrackingPageCo
         private const val TIPPING_SPACING = 8
         private const val TIPPING_WIDTH_DIVIDER = 3.2
         private const val TIPPING_DESCRIPTION_BULLET_GAP_WIDTH = 16
+        private const val IMG_SUCCESS_TIPPING = "https://images.tokopedia.net/img/android/tipping/illus-tipping-success (1).png"
     }
 }

@@ -34,6 +34,7 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Observable
+import java.io.IOException
 
 class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
 
@@ -195,6 +196,36 @@ class ShipmentPresenterBoPromoTest : BaseShipmentPresenterTest() {
                     tickerMessage = ""
                 )
             )
+
+        // When
+        presenter.doUnapplyBo(cartStringGroup, uniqueId, promoCode)
+
+        // Then
+        coVerifyOrder {
+            view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any())
+            view.getShipmentCartItemModel(any())
+            view.resetCourier(any<Int>())
+            clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground()
+            view.onNeedUpdateViewItem(any())
+        }
+    }
+
+    @Test
+    fun `GIVEN clear BO error WHEN unapply BO promo cart item found THEN do unapply BO promo`() {
+        // Given
+        val cartStringGroup = "-111-111"
+        val uniqueId = "111-111-111"
+        val promoCode = "BOCODE"
+
+        every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 0
+        every { view.getShipmentCartItemModel(any()) } returns ShipmentCartItemModel(
+            cartStringGroup = "-111-111",
+            cartItemModels = listOf(CartItemModel(cartStringGroup = "-111-111", cartStringOrder = uniqueId)),
+            shipmentCartData = ShipmentCartData(
+                boMetadata = BoMetadata(boType = 1)
+            )
+        )
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } throws IOException()
 
         // When
         presenter.doUnapplyBo(cartStringGroup, uniqueId, promoCode)

@@ -413,7 +413,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val errorWording = "error wording"
-        every { view.activity?.getString(any(), any()) } returns errorWording
+        every { view.getStringResourceWithArgs(any(), any()) } returns errorWording
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -1540,7 +1540,7 @@ class ShipmentPresenterPrescriptionIdsTest : BaseShipmentPresenterTest() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByCartStringGroup(any()) } returns 1
         val errorWording = "error wording"
-        every { view.activity?.getString(any(), any()) } returns errorWording
+        every { view.getStringResourceWithArgs(any(), any()) } returns errorWording
         val result = arrayListOf(
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "123",

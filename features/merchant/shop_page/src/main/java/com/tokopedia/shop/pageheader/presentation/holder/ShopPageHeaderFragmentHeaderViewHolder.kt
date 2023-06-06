@@ -130,7 +130,11 @@ class ShopPageHeaderFragmentHeaderViewHolder(
         shopPageHeaderAdapter?.setPlayWidgetData(shopPageHeaderDataModel)
     }
 
-    fun updateShopTicker(headerTickerData: ShopPageHeaderTickerData, isMyShop: Boolean) {
+    fun updateShopTicker(
+        headerTickerData: ShopPageHeaderTickerData,
+        isMyShop: Boolean,
+        tickerVisibilityState: (tickerState: Int) -> Unit
+    ) {
         when {
             shouldShowShopStatusTicker(headerTickerData.shopInfo.statusInfo.statusTitle, headerTickerData.shopInfo.statusInfo.statusMessage) -> {
                 showShopStatusTicker(headerTickerData.shopInfo, isMyShop)
@@ -142,6 +146,16 @@ class ShopPageHeaderFragmentHeaderViewHolder(
                 hideShopStatusTicker()
             }
         }
+        tickerVisibilityState(tickerShopStatus?.visibility.orZero())
+        tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
+
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+            }
+
+            override fun onDismiss() {
+                tickerVisibilityState(tickerShopStatus.visibility.orZero())
+            }
+        })
     }
 
     private fun shouldShowShopStatusTicker(title: String, message: String): Boolean {

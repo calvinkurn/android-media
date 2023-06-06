@@ -39,7 +39,7 @@ data class VoucherOrdersItem(
 
     @field:SerializedName("invoice_description")
     val invoiceDescription: String = "",
-    
+
     @field:SerializedName("cart_string_group")
     val cartStringGroup: String = ""
 )

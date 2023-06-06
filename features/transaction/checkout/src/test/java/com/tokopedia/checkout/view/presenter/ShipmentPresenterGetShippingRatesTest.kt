@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
@@ -77,7 +78,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -133,7 +134,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -192,12 +193,76 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
         verify {
             view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates success with ui hidden and no bo promo THEN should render failed`() {
+        // Given
+        val response = DataProvider.provideRatesV3Response()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.apply {
+            productData.isUiRatesHidden = true
+            serviceData.selectedShipperProductId = 0
+        }
+
+        every { getRatesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
         }
     }
 
@@ -251,7 +316,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -323,7 +388,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -407,13 +472,13 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         val isTradeInByDropOff = false
         every { view.isTradeInByDropOff } returns isTradeInByDropOff
         presenter.recipientAddressModel = RecipientAddressModel()
-        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemTopModel(cartStringGroup = "111"), shipmentCartItemModel)
 
         // When
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -501,7 +566,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -589,7 +654,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -663,7 +728,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -736,7 +801,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -804,12 +869,84 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
         verify {
             view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates for trade in indopaket success with ui hidden and no bo promo THEN should render failed`() {
+        // Given
+        val response = DataProvider.provideRatesV3apiResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().apply {
+            productData.isUiRatesHidden = true
+            serviceData.selectedShipperProductId = 0
+        }
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val isInitialLoad = true
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            locationDataModel = LocationDataModel().apply {
+                district = "1"
+                postalCode = "1"
+                latitude = "1"
+                longitude = "1"
+            }
+        }
+        val isForceReload = false
+        val skipMvc = true
+
+        // When
+        presenter.processGetCourierRecommendation(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
         }
     }
 
@@ -870,7 +1007,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -934,7 +1071,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -1005,7 +1142,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendation(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, "", emptyList()
+            recipientAddressModel
         )
 
         // Then
@@ -1069,12 +1206,81 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
         verify {
             view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates with mvc success with ui hidden and no bo promo THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val response = DataProvider.provideRatesV3Response()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels[3].shippingCourierViewModelList.first { it.productData.shipperProductId == 1 }.apply {
+            productData.isUiRatesHidden = true
+            serviceData.selectedShipperProductId = 0
+        }
+
+        every { getRatesUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = false
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(itemPosition, isTradeInDropOff, any())
+            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
         }
     }
 
@@ -1135,7 +1341,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1196,7 +1402,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1257,7 +1463,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1321,12 +1527,81 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
         verify {
             view.renderCourierStateSuccess(any(), itemPosition, isTradeInDropOff)
+        }
+    }
+
+    @Test
+    fun `WHEN get shipping rates api with mvc success with ui hidden and no promo code THEN should render failed`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel =
+            ValidateUsePromoCheckoutMapper
+                .mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+
+        val response = DataProvider.provideRatesV3apiResponse()
+        val shippingRecommendationData = shippingDurationConverter.convertModel(response.ratesData)
+        shippingRecommendationData.shippingDurationUiModels.first().shippingCourierViewModelList.first().apply {
+            productData.isUiRatesHidden = true
+            serviceData.selectedShipperProductId = 0
+        }
+
+        every { getRatesApiUseCase.execute(any()) } returns Observable.just(
+            shippingRecommendationData
+        )
+
+        val shipperId = 1
+        val spId = 1
+        val itemPosition = 1
+        val shipmentDetailData = ShipmentDetailData().apply {
+            shopId = "1"
+            isBlackbox = true
+            preorder = false
+            shipmentCartData = ShipmentCartData(
+                originDistrictId = "1",
+                originPostalCode = "1",
+                originLatitude = "1",
+                originLongitude = "1",
+                destinationDistrictId = "1",
+                destinationPostalCode = "1",
+                destinationLatitude = "1",
+                destinationLongitude = "1",
+                token = "1",
+                ut = "1",
+                insurance = 1,
+                productInsurance = 1,
+                orderValue = 1,
+                categoryIds = "",
+                preOrderDuration = 0,
+                isFulfillment = false
+            )
+        }
+        val shipmentCartItemModel = ShipmentCartItemModel(cartStringGroup = "")
+        val shopShipmentList = ArrayList<ShopShipment>()
+        val products = ArrayList<Product>()
+        val cartString = "123-abc"
+        val isTradeInDropOff = true
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        val skipMvc = false
+
+        // When
+        presenter.processGetCourierRecommendationMvc(
+            shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
+            shopShipmentList, products, cartString, isTradeInDropOff,
+            recipientAddressModel, skipMvc
+        )
+
+        // Then
+        verify {
+            view.renderCourierStateFailed(any(), isTradeInDropOff, false)
+            view.logOnErrorLoadCourier(match { it.message == "rates ui hidden but no promo" }, any(), any())
         }
     }
 
@@ -1387,7 +1662,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1448,7 +1723,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1509,7 +1784,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1568,7 +1843,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1635,7 +1910,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
         presenter.processGetCourierRecommendationMvc(
             shipperId, spId, itemPosition, shipmentDetailData, shipmentCartItemModel,
             shopShipmentList, products, cartString, isTradeInDropOff,
-            recipientAddressModel, skipMvc, "", emptyList()
+            recipientAddressModel, skipMvc
         )
 
         // Then
@@ -1704,9 +1979,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel,
-            "",
-            emptyList()
+            recipientAddressModel
         )
 
         itemPosition++
@@ -1722,9 +1995,7 @@ class ShipmentPresenterGetShippingRatesTest : BaseShipmentPresenterTest() {
             products,
             cartString,
             isTradeInDropOff,
-            recipientAddressModel,
-            "",
-            emptyList()
+            recipientAddressModel
         )
 
         // Then

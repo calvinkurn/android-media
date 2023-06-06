@@ -10,8 +10,8 @@ import com.tokopedia.cart.databinding.ItemGroupBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
-import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -116,8 +116,8 @@ class CartGroupViewHolder(
     private fun renderGroupName(cartGroupHolderData: CartGroupHolderData) {
         binding.tvShopName.text = Utils.getHtmlFormat(cartGroupHolderData.groupName)
         if (cartGroupHolderData.isError) {
-            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopId
-            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopName
+            val shopId = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopId
+            val shopName = cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopName
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartShopNameClicked(
                     shopId,
@@ -125,13 +125,14 @@ class CartGroupViewHolder(
                     cartGroupHolderData.isTokoNow
                 )
             }
-        }
-        else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
+        } else if (cartGroupHolderData.groupAppLink.isNotEmpty()) {
             binding.tvShopName.setOnClickListener {
                 actionListener.onCartGroupNameClicked(
-                    cartGroupHolderData.groupAppLink,
+                    cartGroupHolderData.groupAppLink
                 )
             }
+        } else {
+            binding.tvShopName.setOnClickListener(null)
         }
     }
 
@@ -141,8 +142,7 @@ class CartGroupViewHolder(
             val contentDescription = if (cartGroupHolderData.isTypeOWOC()) cartGroupHolderData.groupName else cartGroupHolderData.productUiModelList.getOrNull(0)?.shopHolderData?.shopTypeInfo?.title
             binding.imageShopBadge.contentDescription = itemView.context.getString(com.tokopedia.purchase_platform.common.R.string.pp_cd_image_shop_badge_with_shop_type, contentDescription)
             binding.imageShopBadge.show()
-        }
-        else {
+        } else {
             binding.imageShopBadge.gone()
         }
     }
@@ -390,8 +390,7 @@ class CartGroupViewHolder(
                         cartGroupHolderData.addOnId
                     )
                 } else if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_EPHARMACY) {
-                    // TODO: Fix Tracker 
-//                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shopId, cartGroupHolderData.productUiModelList)
+                    actionListener.onClickEpharmacyInfoCart(cartGroupHolderData.enablerLabel, cartGroupHolderData.shop.shopId, cartGroupHolderData.productUiModelList)
                 }
             }
             if (cartGroupHolderData.addOnType == CartGroupHolderData.ADD_ON_GIFTING) {

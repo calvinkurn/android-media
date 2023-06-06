@@ -408,6 +408,9 @@ public interface ShipmentOldContract {
 //        boolean isUsingDynamicDataPassing();
 //
 //        void updateDynamicData(DynamicDataPassingParamRequest dynamicDataPassingParamRequest, boolean isFireAndForget);
+//void getDynamicPaymentFee(PaymentFeeCheckoutRequest paymentFeeCheckoutRequest);
+
+//    ShipmentPlatformFeeData getShipmentPlatformFeeData();
 //    }
 
 }

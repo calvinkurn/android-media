@@ -1060,6 +1060,32 @@ class ShipmentPresenterLoadShipmentAddressFormTest : BaseShipmentPresenterTest()
     }
 
     @Test
+    fun `GIVEN detached view WHEN load checkout page THEN should do nothing`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        coEvery { getShipmentAddressFormV4UseCase(any()) } returns
+            CartShipmentAddressFormData(
+                groupAddress = listOf(groupAddress)
+            )
+        presenter.detachView()
+
+        // When
+        presenter.processInitialLoadCheckoutPage(
+            true,
+            false,
+            false
+        )
+
+        // Then
+        verify(inverse = true) {
+            view.showLoading()
+            view.hideLoading()
+        }
+    }
+
+    @Test
     fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
         // When
         presenter.detachView()

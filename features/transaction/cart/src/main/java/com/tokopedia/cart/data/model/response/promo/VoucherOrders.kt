@@ -44,12 +44,9 @@ data class VoucherOrders(
 
     @SerializedName("eta_txt")
     val etaText: String = "",
-    
+
     @SerializedName("cart_string_group")
-    val cartStringGroup: String = "",
-    
-    @SerializedName("shipping_metadata")
-    val shippingMetadata: String = ""
+    val cartStringGroup: String = ""
 ) {
     companion object {
         private const val TYPE_LOGISTIC = "logistic"

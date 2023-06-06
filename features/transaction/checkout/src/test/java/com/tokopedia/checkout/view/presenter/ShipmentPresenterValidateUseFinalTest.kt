@@ -8,6 +8,7 @@ import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartData
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemTopModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
@@ -15,6 +16,7 @@ import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ErrorDetailUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
@@ -164,6 +166,37 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         // Then
         verifyOrder {
             view.showToastError(message)
+            view.resetCourier(shipmentCartItemModel)
+            view.updateButtonPromoCheckout(promoUiModel, false)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use success but has no applied BBO response THEN should reset courier and show error message`() {
+        // Given
+        val tmpCartString = "123-abc"
+        val code = "code"
+        val shipmentCartItemModel = ShipmentCartItemModel(
+            cartStringGroup = tmpCartString,
+            voucherLogisticItemUiModel = VoucherLogisticItemUiModel(code = code)
+        )
+        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+            add(shipmentCartItemModel)
+        }
+        val message = "error"
+        val promoUiModel = PromoUiModel()
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verifyOrder {
             view.resetCourier(shipmentCartItemModel)
             view.updateButtonPromoCheckout(promoUiModel, false)
         }
@@ -330,52 +363,31 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         }
     }
 
-//    @Test
-//    fun `WHEN validate use success and clashing THEN should update promo button and reload rates`() {
-//        // Given
-//        val promoUiModel = PromoUiModel(
-//            voucherOrderUiModels = listOf(
-//                PromoCheckoutVoucherOrdersItemUiModel(
-//                    type = "logistic",
-//                    messageUiModel = MessageUiModel(state = "green")
-//                )
-//            ),
-//            clashingInfoDetailUiModel = ClashingInfoDetailUiModel(
-//                clashMessage = "clash message",
-//                clashReason = "clash reason",
-//                options = ArrayList<PromoClashOptionUiModel>().apply {
-//                    add(
-//                        PromoClashOptionUiModel(
-//                            voucherOrders = ArrayList<PromoClashVoucherOrdersUiModel>().apply {
-//                                add(PromoClashVoucherOrdersUiModel(code = "123"))
-//                            }
-//                        )
-//                    )
-//                }
-//            )
-//        )
-//        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
-//            ValidateUsePromoRevampUiModel(
-//                status = "OK",
-//                errorCode = "200",
-//                promoUiModel = promoUiModel
-//            )
-//        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
-//            ClearPromoUiModel()
-//
-//        // When
-//        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
-//
-//        // Then
-//        verifySequence {
-//            view.updateButtonPromoCheckout(promoUiModel, false)
-//            view.showLoading()
-//            view.setHasRunningApiCall(true)
-//            view.hideLoading()
-//            view.setHasRunningApiCall(false)
-//            view.showToastNormal("Ada perubahan pada promo yang kamu pakai")
-//        }
-//    }
+    @Test
+    fun `WHEN validate use success with red state global coupon THEN should hit tracker`() {
+        // Given
+        val errorMessage = "error global promo"
+        val promoUiModel = PromoUiModel(
+            codes = listOf("code"),
+            messageUiModel = MessageUiModel(state = "red", text = errorMessage)
+        )
+        coEvery { validateUsePromoRevampUseCase.setParam(any()).executeOnBackground() } returns
+            ValidateUsePromoRevampUiModel(
+                status = "OK",
+                errorCode = "200",
+                promoUiModel = promoUiModel
+            )
+        coEvery { clearCacheAutoApplyStackUseCase.setParams(any()).executeOnBackground() } returns
+            ClearPromoUiModel()
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verify {
+            shipmentAnalyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(errorMessage)
+        }
+    }
 
     @Test
     fun `WHEN validate use status get error THEN should render error and reset promo benefit`() {
@@ -619,5 +631,94 @@ class ShipmentPresenterValidateUseFinalTest : BaseShipmentPresenterTest() {
         assertEquals(1, couponListRecommendationRequest.isTradeIn)
         assertEquals(1, couponListRecommendationRequest.isTradeInDropOff)
         assertEquals(1, couponListRecommendationRequest.orders[0].spId)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request without trade in dropoff courier THEN should return without trade in dropoff courier`() {
+        // Given
+        presenter.isTradeIn = true
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            selectedTabIndex = 1
+        }
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(1, couponListRecommendationRequest.isTradeIn)
+        assertEquals(1, couponListRecommendationRequest.isTradeInDropOff)
+        assertEquals(0, couponListRecommendationRequest.orders[0].spId)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request ocs THEN should return cart type ocs`() {
+        // Given
+        presenter.isOneClickShipment = true
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals("ocs", couponListRecommendationRequest.cartType)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with last apply THEN should return with global promo codes`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData()
+            )
+        )
+        val codes = listOf("code")
+        presenter.lastApplyData.value = LastApplyUiModel(codes = codes)
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(codes, couponListRecommendationRequest.codes)
+    }
+
+    @Test
+    fun `WHEN generate coupon list recommendation request with insurance THEN should return with insurance price true`() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemTopModel(
+                cartStringGroup = "234"
+            ),
+            ShipmentCartItemModel(
+                cartStringGroup = "234",
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata(1)),
+                cartItemModels = listOf(CartItemModel(cartStringGroup = "234", cartStringOrder = "1")),
+                selectedShipmentDetailData = ShipmentDetailData(),
+                isInsurance = true
+            )
+        )
+
+        // When
+        val couponListRecommendationRequest = presenter.generateCouponListRecommendationRequest()
+
+        // Then
+        assertEquals(1, couponListRecommendationRequest.orders.first().isInsurancePrice)
     }
 }

@@ -70,7 +70,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.C
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.GetLastApplyPromoUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -125,7 +124,6 @@ class CartListPresenter @Inject constructor(
     private val seamlessLoginUsecase: SeamlessLoginUsecase,
     private val updateCartCounterUseCase: UpdateCartCounterUseCase,
     private val updateCartAndGetLastApplyUseCase: UpdateCartAndGetLastApplyUseCase,
-    private val getLastApplyPromoUseCase: GetLastApplyPromoUseCase,
     private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
     private val followShopUseCase: FollowShopUseCase,
     private val cartShopGroupTickerAggregatorUseCase: CartShopGroupTickerAggregatorUseCase,
@@ -939,21 +937,25 @@ class CartListPresenter @Inject constructor(
                     val addCartToWishlistRequest = AddCartToWishlistRequest()
                     addCartToWishlistRequest.cartIds = listOf(cartId)
                     val data = addCartToWishlistUseCase(addCartToWishlistRequest)
-                    view?.let { cartListView ->
-                        if (data.status == STATUS_OK) {
-                            if (data.success == 1) {
-                                cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                    withContext(dispatchers.main) {
+                        view?.let { cartListView ->
+                            if (data.status == STATUS_OK) {
+                                if (data.success == 1) {
+                                    cartListView.onAddCartToWishlistSuccess(data.message, productId, cartId, isLastItem, source, forceExpandCollapsedUnavailableItems)
+                                } else {
+                                    cartListView.showToastMessageRed(data.message)
+                                }
                             } else {
                                 cartListView.showToastMessageRed(data.message)
                             }
-                        } else {
-                            cartListView.showToastMessageRed(data.message)
                         }
                     }
                 } catch (t: Throwable) {
-                    view?.let { cartListView ->
-                        Timber.e(t)
-                        cartListView.showToastMessageRed(t)
+                    withContext(dispatchers.main) {
+                        view?.let { cartListView ->
+                            Timber.e(t)
+                            cartListView.showToastMessageRed(t)
+                        }
                     }
                 }
             }
@@ -1008,9 +1010,9 @@ class CartListPresenter @Inject constructor(
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemHolderData.quantity)
-            setShopId(cartItemHolderData.shopId)
-            setShopType(cartItemHolderData.shopTypeInfoData.titleFmt)
-            setShopName(cartItemHolderData.shopName)
+            setShopId(cartItemHolderData.shopHolderData.shopId)
+            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
+            setShopName(cartItemHolderData.shopHolderData.shopName)
             setCategoryId(cartItemHolderData.categoryId)
             setAttribution(
                 cartItemHolderData.trackerAttribution.ifBlank {
@@ -1396,9 +1398,9 @@ class CartListPresenter @Inject constructor(
             )
             setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setQty(cartItemHolderData.quantity)
-            setShopId(cartItemHolderData.shopId)
-            setShopType(cartItemHolderData.shopTypeInfoData.titleFmt)
-            setShopName(cartItemHolderData.shopName)
+            setShopId(cartItemHolderData.shopHolderData.shopId)
+            setShopType(cartItemHolderData.shopHolderData.shopTypeInfo.titleFmt)
+            setShopName(cartItemHolderData.shopHolderData.shopName)
             setCategoryId(cartItemHolderData.categoryId)
             setWarehouseId(cartItemHolderData.warehouseId)
             setProductWeight(cartItemHolderData.productWeight.toString())
@@ -1776,19 +1778,23 @@ class CartListPresenter @Inject constructor(
         launch(dispatchers.io) {
             try {
                 val model = addToCartExternalUseCase(Pair(productId.toString(), userSessionInterface.userId))
-                view?.let { cartListView ->
-                    cartListView.hideProgressLoading()
-                    if (model.message.isNotEmpty()) {
-                        cartListView.showToastMessageGreen(model.message[0])
+                withContext(dispatchers.main) {
+                    view?.let { cartListView ->
+                        cartListView.hideProgressLoading()
+                        if (model.message.isNotEmpty()) {
+                            cartListView.showToastMessageGreen(model.message[0])
+                        }
+                        cartListView.refreshCartWithSwipeToRefresh()
                     }
-                    cartListView.refreshCartWithSwipeToRefresh()
                 }
             } catch (t: Throwable) {
                 Timber.d(t)
-                view?.let {
-                    it.hideProgressLoading()
-                    it.showToastMessageRed(t)
-                    it.refreshCartWithSwipeToRefresh()
+                withContext(dispatchers.main) {
+                    view?.let {
+                        it.hideProgressLoading()
+                        it.showToastMessageRed(t)
+                        it.refreshCartWithSwipeToRefresh()
+                    }
                 }
             }
         }
@@ -1880,25 +1886,35 @@ class CartListPresenter @Inject constructor(
                             getLastApplyPromoRequest = promoRequest
                         )
                         val updateCartDataResponse = updateCartAndGetLastApplyUseCase(updateCartWrapperRequest)
-                        updateCartDataResponse.updateCartData?.let { updateCartData ->
-                            if (updateCartData.isSuccess) {
-                                updateCartDataResponse.promoUiModel?.let { promoUiModel ->
-                                    syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
-                                    setLastApplyNotValid()
-                                    setValidateUseLastResponse(ValidateUsePromoRevampUiModel(promoUiModel = promoUiModel))
-                                    setUpdateCartAndGetLastApplyLastResponse(updateCartDataResponse)
-                                    view?.updatePromoCheckoutStickyButton(promoUiModel)
+                        withContext(dispatchers.main) {
+                            updateCartDataResponse.updateCartData?.let { updateCartData ->
+                                if (updateCartData.isSuccess) {
+                                    updateCartDataResponse.promoUiModel?.let { promoUiModel ->
+                                        syncCartGroupShopBoCodeWithPromoUiModel(promoUiModel)
+                                        setLastApplyNotValid()
+                                        setValidateUseLastResponse(
+                                            ValidateUsePromoRevampUiModel(
+                                                promoUiModel = promoUiModel
+                                            )
+                                        )
+                                        setUpdateCartAndGetLastApplyLastResponse(
+                                            updateCartDataResponse
+                                        )
+                                        view?.updatePromoCheckoutStickyButton(promoUiModel)
+                                    }
                                 }
                             }
                         }
                     } catch (t: Throwable) {
-                        if (t is AkamaiErrorException) {
-                            doClearAllPromo()
-                            if (!promoTicker.enable) {
-                                view?.showToastMessageRed(t)
+                        withContext(dispatchers.main) {
+                            if (t is AkamaiErrorException) {
+                                doClearAllPromo()
+                                if (!promoTicker.enable) {
+                                    view?.showToastMessageRed(t)
+                                }
                             }
+                            view?.renderPromoCheckoutButtonActiveDefault(emptyList())
                         }
-                        view?.renderPromoCheckoutButtonActiveDefault(emptyList())
                     }
                 }
             } else {
@@ -2016,16 +2032,20 @@ class CartListPresenter @Inject constructor(
         launch(dispatchers.io) {
             try {
                 val data = followShopUseCase(shopId)
-                view?.let {
-                    it.hideProgressLoading()
-                    it.showToastMessageGreen(data.followShop?.message ?: "")
-                    processInitialGetCartData("0", false, false)
+                withContext(dispatchers.main) {
+                    view?.let {
+                        it.hideProgressLoading()
+                        it.showToastMessageGreen(data.followShop?.message ?: "")
+                        processInitialGetCartData("0", false, false)
+                    }
                 }
             } catch (t: Throwable) {
-                view?.let {
-                    Timber.e(t)
-                    it.hideProgressLoading()
-                    it.showToastMessageRed(t)
+                withContext(dispatchers.main) {
+                    view?.let {
+                        Timber.e(t)
+                        it.hideProgressLoading()
+                        it.showToastMessageRed(t)
+                    }
                 }
             }
         }
@@ -2077,18 +2097,15 @@ class CartListPresenter @Inject constructor(
                     destinationLongitude = lca?.long
                     destinationLatitude = lca?.lat
                     destinationPostalCode = lca?.postal_code
-                    // TODO: Fix Param
-//                    originDistrictId = cartGroupHolderData.districtId
-//                    originLongitude = cartGroupHolderData.longitude
-//                    originLatitude = cartGroupHolderData.latitude
-//                    originPostalCode = cartGroupHolderData.postalCode
+                    originDistrictId = cartGroupHolderData.districtId
+                    originLongitude = cartGroupHolderData.longitude
+                    originLatitude = cartGroupHolderData.latitude
+                    originPostalCode = cartGroupHolderData.postalCode
                     weightInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     weightActualInKilograms = shopTotalWeight / BO_AFFORDABILITY_WEIGHT_KILO
                     orderValue = subtotalPrice
-                    // TODO: Fix Param
-//                    shopId = cartGroupHolderData.shopId
-//                    shopTier = cartGroupHolderData.shopTypeInfo.shopTier
-                    // TODO: replace uniqueId
+                    shopId = cartGroupHolderData.shop.shopId
+                    shopTier = cartGroupHolderData.shop.shopTypeInfo.shopTier
                     uniqueId = cartGroupHolderData.cartString
                     isFulfillment = cartGroupHolderData.isFulfillment
                     boMetadata = cartGroupHolderData.boMetadata
