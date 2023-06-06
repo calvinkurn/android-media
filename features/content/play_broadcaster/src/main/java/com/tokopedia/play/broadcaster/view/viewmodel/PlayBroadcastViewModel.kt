@@ -1975,6 +1975,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 throw Exception("Something went wrong")
             }
         }) { throwable ->
+            delay(ERROR_EVENT_DELAY)
             updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
             _uiEvent.emit(
                 PlayBroadcastEvent.BeautificationDownloadAssetFailed(throwable, preset)
@@ -2327,6 +2328,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
         private const val SAVE_BEAUTIFICATION_DELAY = 500L
+        private const val ERROR_EVENT_DELAY = 500L
 
         private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_enable_beautification"
     }
