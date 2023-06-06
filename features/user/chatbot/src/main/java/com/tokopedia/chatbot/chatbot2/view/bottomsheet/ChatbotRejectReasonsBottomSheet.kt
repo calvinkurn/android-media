@@ -19,7 +19,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private var reasonsAdapter: ChatbotRejectReasonsAdapter? = null
     private var listener: ChatbotRejectReasonsListener? = null
     init {
-        isFullpage = true
+        isFullpage = false
         clearContentPadding = false
         showCloseIcon = true
     }

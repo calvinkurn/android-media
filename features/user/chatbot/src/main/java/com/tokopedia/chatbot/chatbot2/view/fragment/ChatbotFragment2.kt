@@ -1492,6 +1492,7 @@ class ChatbotFragment2 :
     override fun onQuickReplyClicked(model: QuickReplyUiModel, isFromDynamicAttachment: Boolean) {
         if (isFromDynamicAttachment) {
             if (model.action == DYNAMIC_REPLY_CSAT_YES) {
+                handleQuickReply(model)
             } else if (model.action == DYNAMIC_REPLY_CSAT_NO) {
                 openRejectReasonsBottomSheet()
             }
