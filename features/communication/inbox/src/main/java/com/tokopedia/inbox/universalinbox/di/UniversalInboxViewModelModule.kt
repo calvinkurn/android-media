@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.inbox.universalinbox.view.viewmodel.UniversalInboxViewModel
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -24,5 +25,13 @@ abstract class UniversalInboxViewModelModule {
     @ViewModelKey(UniversalInboxViewModel::class)
     internal abstract fun bindUniversalInboxViewModel(
         viewModel: UniversalInboxViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(TopAdsHeadlineViewModel::class)
+    internal abstract fun bindTopAdsHeadlineViewModel(
+        viewModel: TopAdsHeadlineViewModel
     ): ViewModel
 }

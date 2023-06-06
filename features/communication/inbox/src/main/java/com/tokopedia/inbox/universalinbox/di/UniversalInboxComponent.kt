@@ -9,6 +9,7 @@ import dagger.Component
 @Component(
     modules = [
         UniversalInboxModule::class,
+        UniversalInboxUseCaseModule::class,
         UniversalInboxViewModelModule::class
     ],
     dependencies = [BaseAppComponent::class]

@@ -40,7 +40,7 @@ object DeeplinkMapperCommunication {
                 .getInstance()
                 .abTestPlatform.getString(
                     key,
-                    key //""
+                    key
                 ) == key
         } catch (throwable: Throwable) {
             true

@@ -1,9 +1,11 @@
 package com.tokopedia.inbox.universalinbox.util
 
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.unifycomponents.toPx
 
 object UniversalInboxViewUtil {
 
+    val EIGHT_DP = 8.toPx()
     const val ICON_PERCENTAGE_X_POSITION = 0.85f
     const val ICON_PERCENTAGE_Y_POSITION = -0.45f
 
