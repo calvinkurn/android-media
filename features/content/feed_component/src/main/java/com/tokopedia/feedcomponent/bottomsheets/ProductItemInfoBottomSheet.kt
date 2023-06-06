@@ -304,7 +304,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         view?.rootView?.let {
             context?.resources?.let { resource ->
                 Toaster.toasterCustomBottomHeight =
-                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+                    resource.getDimensionPixelSize(com.tokopedia.content.common.R.dimen.feed_bottomsheet_toaster_margin_bottom)
             }
             if (actionText?.isEmpty() == false) {
                 Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)

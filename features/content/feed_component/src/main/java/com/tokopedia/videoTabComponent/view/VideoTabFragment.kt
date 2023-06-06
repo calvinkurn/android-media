@@ -30,7 +30,8 @@ import com.tokopedia.play.widget.ui.PlayWidgetJumboView
 import com.tokopedia.play.widget.ui.PlayWidgetLargeView
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
-import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -40,7 +41,10 @@ import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import com.tokopedia.videoTabComponent.callback.PlaySlotTabCallback
 import com.tokopedia.videoTabComponent.di.DaggerVideoTabComponent
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
-import com.tokopedia.videoTabComponent.domain.model.data.*
+import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
+import com.tokopedia.videoTabComponent.domain.model.data.PlaySlotTabMenuUiModel
+import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
+import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.util.PlayFeedSharedPrefsUtil.clearTabMenuPosition
 import com.tokopedia.videoTabComponent.view.coordinator.PlayWidgetCoordinatorVideoTab
 import com.tokopedia.videoTabComponent.view.custom.FeedPlayStickyHeaderRecyclerView
@@ -165,7 +169,7 @@ class VideoTabFragment :
                                 )
                             } else {
                                 it.throwable.message
-                                    ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                                    ?: getString(com.tokopedia.content.common.R.string.feed_video_tab_error_reminder)
                             }
                             showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
@@ -454,9 +458,9 @@ class VideoTabFragment :
     private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
         showToast(
             if (playWidgetFeedReminderInfoData.reminderType.reminded) {
-                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_add_reminder)
+                getString(com.tokopedia.content.common.R.string.feed_video_tab_success_add_reminder)
             } else {
-                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder)
+                getString(com.tokopedia.content.common.R.string.feed_video_tab_success_remove_reminder)
             },
             Toaster.TYPE_NORMAL
         )
