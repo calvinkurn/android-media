@@ -11,10 +11,13 @@ import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
 import com.tokopedia.mvc.data.response.GetTargetedTickerResponse
 import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.data.response.ShopBasicDataResponse
+import com.tokopedia.mvc.data.response.UpdateStatusVoucherDataModel
 import com.tokopedia.mvc.domain.entity.ShareComponentMetaData
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadataWithRemoteTickerMessage
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
+import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.UpdateVoucherAction
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.CancelVoucherUseCase
@@ -27,6 +30,7 @@ import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.presentation.list.constant.PageState
+import com.tokopedia.mvc.presentation.list.model.DeleteVoucherUiEffect
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -38,7 +42,10 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -426,6 +433,33 @@ class MvcListViewModelTest {
     }
 
     @Test
+    fun `when stopVoucher() is called, should emit the correct action`() {
+        runBlockingTest {
+            // Given
+            val voucherDetail = VoucherDetailData(voucherId = 10L)
+            val voucher = Voucher()
+            coEvery { merchantPromotionGetMVDataByIDUseCase.execute(any()) } returns voucherDetail
+
+            mockVoucherCreationMetaDataGqlCall()
+            mockUpdateVoucherStatusGQLCall(voucherDetail)
+
+            val emittedAction = arrayListOf<DeleteVoucherUiEffect>()
+            val job = launch {
+                viewModel.deleteUIEffect.toList(emittedAction)
+            }
+
+            // When
+            viewModel.stopVoucher(voucher)
+
+            // Then
+            val actual = emittedAction.last()
+            assertEquals(10, actual)
+
+            job.cancel()
+        }
+    }
+
+    @Test
     fun `when generateShareComponentMetaData() is called, should set the data accordingly`() {
         runBlocking {
             // Given
@@ -537,5 +571,13 @@ class MvcListViewModelTest {
         val result =
             remoteTickerMapper.map(GetTargetedTickerResponse(getTargetedTicker = GetTargetedTickerResponse.GetTargetedTicker()))
         coEvery { getTargetedTickerUseCase.execute(any()) } returns result
+    }
+
+    private fun mockUpdateVoucherStatusGQLCall(data: VoucherDetailData) {
+        val voucherId = 10
+        val result = UpdateStatusVoucherDataModel()
+        val couponStatus = if (data.voucherStatus == VoucherStatus.NOT_STARTED) UpdateVoucherAction.DELETE else UpdateVoucherAction.STOP
+
+        coEvery { cancelVoucherUseCase.execute(voucherId, couponStatus, "token") } returns result
     }
 }
