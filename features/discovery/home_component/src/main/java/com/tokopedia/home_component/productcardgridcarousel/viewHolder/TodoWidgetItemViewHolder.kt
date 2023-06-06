@@ -1,7 +1,9 @@
 package com.tokopedia.home_component.productcardgridcarousel.viewHolder
 
+import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -10,8 +12,8 @@ import com.tokopedia.home_component.model.HomeComponentCta
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselTodoWidgetDataModel
 import com.tokopedia.home_component.util.TodoWidgetUtil
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
@@ -35,18 +37,18 @@ class TodoWidgetItemViewHolder(
 
     private fun setLayout(element: CarouselTodoWidgetDataModel) {
         binding?.run {
-            cardContainerTodoWidget.animateOnPress = if (element.cardInteraction) {
-                CardUnify2.ANIMATE_OVERLAY_BOUNCE
-            } else {
-                CardUnify2.ANIMATE_OVERLAY
-            }
+            cardContainerTodoWidget.setInteraction(element)
 
             icCloseTodoWidget.setOnClickListener {
-                element.todoWidgetDismissListener.dismiss(element, absoluteAdapterPosition)
+                element.todoWidgetDismissListener.dismiss(element, element.cardPosition)
             }
 
             cardContainerTodoWidget.addOnImpressionListener(element) {
-                element.todoWidgetComponentListener.onTodoImpressed(element, absoluteAdapterPosition)
+                element.todoWidgetComponentListener.onTodoImpressed(element)
+            }
+
+            cardContainerTodoWidget.setOnClickListener {
+                element.todoWidgetComponentListener.onTodoCardClicked(element)
             }
 
             setLayoutWidth(element)
@@ -59,27 +61,14 @@ class TodoWidgetItemViewHolder(
         binding?.run {
             titleTodoWidget.text = element.title
             imageTodoWidget.setImageUrl(element.imageUrl)
-
-            if (element.dueDate.isNotEmpty()) {
-                dueDateTodoWidget.visible()
-                dueDateTodoWidget.text = element.dueDate
-            } else {
-                dueDateTodoWidget.gone()
+            dueDateTodoWidget.renderData(element.dueDate)
+            descTodoWidget.renderData(element.contextInfo)
+            priceTodoWidget.renderData(element.price)
+            slashedPriceTodoWidget.apply {
+                renderData(element.slashedPrice)
+                paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
-
-            if (element.contextInfo.isNotEmpty()) {
-                descTodoWidget.visible()
-                descTodoWidget.text = element.contextInfo
-            } else {
-                descTodoWidget.gone()
-            }
-
-            if (element.price.isNotEmpty()) {
-                priceTodoWidget.visible()
-                priceTodoWidget.text = element.price
-            } else {
-                priceTodoWidget.gone()
-            }
+            labelDiscountTodoWidget.renderData(element.discountPercentage)
         }
     }
 
@@ -104,15 +93,12 @@ class TodoWidgetItemViewHolder(
 
             visibility = if (element.ctaText.isEmpty()) {
                 View.GONE
+                return
             } else {
                 View.VISIBLE
             }
-            var mode = HomeComponentCta.CTA_MODE_MAIN
-            var type = HomeComponentCta.CTA_TYPE_FILLED
-
-            if (element.ctaMode.isNotEmpty()) mode = element.ctaMode
-
-            if (element.ctaType.isNotEmpty()) type = element.ctaType
+            val mode = element.ctaMode.ifEmpty { HomeComponentCta.CTA_MODE_MAIN }
+            val type = element.ctaType.ifEmpty { HomeComponentCta.CTA_TYPE_FILLED }
 
             when (type) {
                 HomeComponentCta.CTA_TYPE_FILLED -> buttonVariant = UnifyButton.Variant.FILLED
@@ -131,8 +117,25 @@ class TodoWidgetItemViewHolder(
             text = element.ctaText
 
             setOnClickListener {
-                element.todoWidgetComponentListener.onTodoCTAClicked(element, absoluteAdapterPosition)
+                element.todoWidgetComponentListener.onTodoCTAClicked(element)
             }
+        }
+    }
+
+    private fun CardUnify2.setInteraction(element: CarouselTodoWidgetDataModel) {
+        animateOnPress = if (element.cardInteraction) {
+            CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        } else {
+            CardUnify2.ANIMATE_OVERLAY
+        }
+    }
+
+    private fun TextView.renderData(data: String) {
+        if (data.isNotEmpty()) {
+            text = data
+            show()
+        } else {
+            hide()
         }
     }
 }

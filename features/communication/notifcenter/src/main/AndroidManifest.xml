@@ -22,6 +22,23 @@
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".presentation.activity.NotificationAffiliateActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_notif_center"
+                    android:pathPattern="@string/path_notification_affiliate"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <service
             android:name=".service.MarkAsSeenService"
             android:enabled="true"
