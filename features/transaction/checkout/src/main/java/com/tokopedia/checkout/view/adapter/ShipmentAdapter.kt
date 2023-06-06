@@ -1255,16 +1255,24 @@ class ShipmentAdapter @Inject constructor(
             shipmentCartItem.selectedShipmentDetailData?.useDropshipper = false
             shipmentCartItem.cartItemModels =
                 shipmentCartItem.cartItemModels.toMutableList().apply {
-                    set(position, cartItem)
+                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
                 }
             shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
             notifyItemChanged(shipmentCartItemPosition)
             shipmentDataList[position] = cartItem
             notifyItemChanged(position)
             shipmentAdapterActionListener.onPurchaseProtectionLogicError()
+        } else {
+            shipmentCartItem.cartItemModels =
+                shipmentCartItem.cartItemModels.toMutableList().apply {
+                    set(position + shipmentCartItem.cartItemModels.size - shipmentCartItemPosition, cartItem)
+                }
+            shipmentDataList[shipmentCartItemPosition] = shipmentCartItem
+            notifyItemChanged(shipmentCartItemPosition)
+            shipmentDataList[position] = cartItem
         }
-        shipmentAdapterActionListener.onNeedUpdateRequestData()
         shipmentAdapterActionListener.onPurchaseProtectionChangeListener(position)
+        shipmentAdapterActionListener.onNeedUpdateRequestData()
     }
 
     override fun onClickPurchaseProtectionTooltip(cartItem: CartItemModel) {

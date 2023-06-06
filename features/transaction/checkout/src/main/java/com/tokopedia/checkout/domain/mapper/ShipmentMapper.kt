@@ -13,6 +13,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentPlatformFee
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
@@ -1139,12 +1140,12 @@ class ShipmentMapper @Inject constructor() {
         )
     }
 
-    private fun mapPlatformFee(platformFee: com.tokopedia.checkout.data.model.response.platformfee.ShipmentPlatformFee): ShipmentPlatformFeeData {
+    private fun mapPlatformFee(platformFee: ShipmentPlatformFee): ShipmentPlatformFeeData {
         return ShipmentPlatformFeeData(
-                isEnable = platformFee.isEnable,
-                errorWording = platformFee.errorWording,
-                additionalData = platformFee.additionalData,
-                profileCode = platformFee.profileCode
+            isEnable = platformFee.isEnable,
+            errorWording = platformFee.errorWording,
+            additionalData = platformFee.additionalData,
+            profileCode = platformFee.profileCode
         )
     }
 

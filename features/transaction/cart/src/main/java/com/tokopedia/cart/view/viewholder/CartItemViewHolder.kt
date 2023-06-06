@@ -292,7 +292,7 @@ class CartItemViewHolder constructor(
                         if (!data.isError) {
                             if (adapterPosition != RecyclerView.NO_POSITION) {
                                 actionListener?.onCartItemCheckChanged(adapterPosition, data)
-                                viewHolderListener?.onNeedToRefreshSingleShop(data)
+                                viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition)
                             }
                         }
                     }
@@ -328,7 +328,7 @@ class CartItemViewHolder constructor(
                     if (isChecked == prevIsChecked && isChecked != data.isSelected) {
                         if (adapterPosition != RecyclerView.NO_POSITION) {
                             actionListener?.onBundleItemCheckChanged(data)
-                            viewHolderListener?.onNeedToRefreshSingleShop(data)
+                            viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition)
                         }
                     }
                 }
@@ -933,7 +933,7 @@ class CartItemViewHolder constructor(
             if (data.isPreOrder) {
                 viewHolderListener?.onNeedToRefreshAllShop()
             } else {
-                viewHolderListener?.onNeedToRefreshSingleShop(data)
+                viewHolderListener?.onNeedToRefreshSingleShop(data, adapterPosition, true)
             }
         } else if (data.shouldValidateWeight) {
             viewHolderListener?.onNeedToRefreshWeight(data)
@@ -1083,7 +1083,7 @@ class CartItemViewHolder constructor(
 
         fun onNeedToRefreshSingleProduct(childPosition: Int)
 
-        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData)
+        fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean = false)
 
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
 

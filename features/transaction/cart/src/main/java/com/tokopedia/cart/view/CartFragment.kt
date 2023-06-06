@@ -2399,12 +2399,15 @@ class CartFragment :
         }
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
         val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
                 onNeedToUpdateViewItem(index)
+            }
+            if (isQuantityChanged) {
+                onNeedToUpdateViewItem(itemPosition)
             }
             val shopBottomData = groupData.last()
             if (shopBottomData is CartShopBottomHolderData) {
