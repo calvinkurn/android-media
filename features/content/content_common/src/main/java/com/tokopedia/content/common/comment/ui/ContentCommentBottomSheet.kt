@@ -469,8 +469,7 @@ class ContentCommentBottomSheet @Inject constructor(
             height = newHeight
         }
 
-        val avatar =
-            if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
+        val avatar = if (viewModel.userInfo.isShopAdmin) viewModel.userInfo.shopAvatar else viewModel.userInfo.profilePicture
         binding.ivUserPhoto.loadImage(avatar)
     }
 
@@ -499,8 +498,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.DELETE -> deleteCommentChecker()
-            FeedMenuIdentifier.LAPORKAN -> {
+            FeedMenuIdentifier.Delete -> deleteCommentChecker()
+            FeedMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
             }
@@ -518,7 +517,7 @@ class ContentCommentBottomSheet @Inject constructor(
     override fun onReportPost(feedReportRequestParamModel: FeedComplaintSubmitReportUseCase.Param) {
         analytics?.clickReportReason(feedReportRequestParamModel.reason)
         viewModel.submitAction(
-            CommentAction.ReportComment(
+            CommentAction.ReportComment (
                 feedReportRequestParamModel.copy(
                     reportType = FeedComplaintSubmitReportUseCase.VALUE_REPORT_TYPE_COMMENT
                 )
@@ -534,28 +533,18 @@ class ContentCommentBottomSheet @Inject constructor(
         if (item.isOwner || viewModel.isCreator) {
             add(
                 FeedMenuItem(
-                    name = getString(R.string.content_common_menu_delete),
-                    drawable = getIconUnifyDrawable(
-                        context = requireContext(),
-                        iconId = IconUnify.DELETE
-                    ),
-                    type = FeedMenuIdentifier.DELETE
+                    name = R.string.content_common_menu_delete,
+                    iconUnify = IconUnify.DELETE,
+                    type = FeedMenuIdentifier.Delete
                 )
             )
         }
         if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.WARNING,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(R.string.content_common_menu_report),
-                    type = FeedMenuIdentifier.LAPORKAN
+                    iconUnify = IconUnify.WARNING,
+                    name = R.string.content_common_menu_report,
+                    type = FeedMenuIdentifier.Report
                 )
             )
         }
