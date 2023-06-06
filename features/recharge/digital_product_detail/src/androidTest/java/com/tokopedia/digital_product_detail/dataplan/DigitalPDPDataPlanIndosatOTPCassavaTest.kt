@@ -5,9 +5,10 @@ import android.app.Instrumentation
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital_product_detail.dataplan.utils.DigitalPDPDataPlanIndosatOTPMockConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.hamcrest.MatcherAssert
 import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
@@ -35,6 +36,11 @@ class DigitalPDPDataPlanIndosatOTPCassavaTest : BaseDigitalPDPDataPlanTest() {
     @Test
     fun validate_cassava() {
         interactWithCheckBalanceOTPWidget()
+
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(PATH_ANALYTICS),
+            hasAllSuccess()
+        )
     }
 
     private fun interactWithCheckBalanceOTPWidget() {
@@ -52,5 +58,6 @@ class DigitalPDPDataPlanIndosatOTPCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     companion object {
         const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
+        const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_check_balance.json"
     }
 }
