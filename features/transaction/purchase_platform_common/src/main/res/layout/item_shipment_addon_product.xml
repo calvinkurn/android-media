@@ -41,7 +41,7 @@
         app:typographyWeight="reguler"
         app:typographyType="display_3"
         android:textColor="@color/Unify_GN500"
-        tools:text="Lihat Semua"/>
+        android:text="Lihat Semua"/>
 
     <LinearLayout
         android:id="@+id/ll_addon_product_items"
@@ -50,7 +50,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_title_addon_product"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="3dp"
         android:orientation="vertical"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

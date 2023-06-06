@@ -419,18 +419,23 @@ class ShipmentCartItemViewHolder(
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
         val addOnProduct = cartItemModel.addOnProduct
         if (addOnProduct.listAddOnProductData.isEmpty()) {
-            binding.llAddonProduct.visibility = View.GONE
+            binding.llAddonProduct.gone()
         } else {
+            binding.llAddonProduct.visible()
+            binding.itemShipmentAddonProduct.llAddonProductItems.removeAllViews()
+            binding.itemShipmentAddonProduct.apply {
+                tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
+                if (cartItemModel.addOnProduct.bottomsheet.isShown) {
+                    tvSeeAllAddonProduct.visible()
+                } else {
+                    tvSeeAllAddonProduct.gone()
+                }
+            }
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.addOnDataName.isEmpty()) {
-                    binding.llAddonProduct.visibility = View.GONE
+                    binding.itemShipmentAddonProduct.llAddonProductItems.visibility = View.GONE
                 } else {
-                    binding.itemShipmentAddonProduct.apply {
-                        tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
-                        if (cartItemModel.addOnProduct.bottomsheet.isShown) {
-                            
-                        }
-                    }
+                    binding.itemShipmentAddonProduct.llAddonProductItems.visible()
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     val addOnName = addOnView.tvShipmentAddOnName
                     addOnName.text = addon.addOnDataName
@@ -438,16 +443,15 @@ class ShipmentCartItemViewHolder(
                     addOnPrice.text = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
                             .removeDecimalSuffix()
-                    addOnView.cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
-                        listener?.onCheckboxAddonProductListener(addon)
+                    addOnView.apply {
+                        cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
+                            listener?.onCheckboxAddonProductListener(addon)
+                        }
+                        icProductAddonInfo.setOnClickListener {
+                            listener?.onClickAddonProductInfoIcon()
+                        }
                     }
-                    addOnView.icProductAddonInfo.setOnClickListener {
-                        listener?.onClickAddonProductInfoIcon()
-                    }
-                    binding.llAddonProduct.apply {
-                        addView(addOnView.root)
-                        visibility = View.VISIBLE
-                    }
+                    binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
                 }
             }
         }
