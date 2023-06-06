@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
-
-    <style name="NavigationMenuItemTextAppearance">
-        <item name="android:ellipsize">end</item>
-    </style>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="SellerHomeTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -13,12 +9,6 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="CentralizedPromoTheme" parent="Theme.WhiteUnify">
-        <item name="toolbarTheme">@style/Toolbar.SellerHome</item>
-        <item name="android:windowBackground">@color/Unify_N0</item>
-        <item name="titleTextAppearance">@style/TitleTextAppearance.SellerHome</item>
-    </style>
-
     <style name="Toolbar.SellerHome" parent="Base.Toolbar.Theme">
         <item name="android:background">@color/Unify_N0</item>
         <item name="actionModeBackground">@color/Unify_N0</item>
@@ -26,11 +16,6 @@
         <item name="android:textColorPrimary">@color/Unify_N700_96</item>
         <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
         <item name="android:textColorSecondary">@color/Unify_N700_96</item>
-    </style>
-
-    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <style name="MenuSettingStyle" parent="Base.Theme">

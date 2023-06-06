@@ -18,13 +18,14 @@ ext {
             internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
+            catalogLibrary                  : ":features:category:catalog_library",
             commonTradein                   : ":features:category:common_tradein",
-            affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
+            affiliateSDK                    : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
             kategori                        : ":features:category:kategori",
             categoryLevels                  : ":features:category:category_levels",
             agerestriction                  : ":features:category:age_restriction",
-            affiliateToko                  : ":features:category:affiliate_toko",
+            affiliateToko                   : ":features:category:affiliate_toko",
             ePharmacy                       : ":features:category:epharmacy",
             commonEPharmacy                 : ":features:category:common_epharmacy",
             tradeIn                         : ":features:category:tradein",
@@ -161,6 +162,7 @@ ext {
             cmHomeWidget                    : ":features:im:cm_home_widget",
 
             tokopediaNow                    : ":features:tokopedianow",
+			centralizedPromo				: ":features:merchant:centralized_promo",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewCommon                    : ":features:merchant:review_common",
@@ -187,8 +189,6 @@ ext {
             feedShop                        : ":features:merchant:feed_shop",
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
-            officialStore                  : ":features:merchant:official_store",
-            voucherCreation                 : ":features:merchant:voucher_creation",
             sellerShopFlashSale             : ":features:merchant:seller_shop_flash_sale",
             sellerTokopediaFlashSale        : ":features:merchant:seller_tokopedia_flash_sale",
             brandlist                       : ":features:merchant:brandlist",
@@ -207,8 +207,6 @@ ext {
             pms                             : ":features:payment:pms",
             goPayKyc                        : ":features:payment:gopay.kyc",
             withdraw                        : ":features:payment:withdraw",
-
-            gallery                         : ":features:merchant:gallery",
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",
@@ -307,6 +305,7 @@ ext {
             customer_mid_app                : ":customer_mid_app",
             telephony_masking               : ":features:user:telephony_masking",
             watch                           : ":features:watch",
-            tokofood                        : ":features:tokofood"
+            tokofood                        : ":features:tokofood",
+            samples                         : ":features:samples",
     ]
 }

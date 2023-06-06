@@ -25,7 +25,7 @@
     <string name="play_upcoming_description_read_more">Selengkapnya</string>
 
     <!--Floating Window / PiP-->
-    <string name="play_pip_permission_rationale_title">Mau perkecil layar Live?</string>
+    <string name="play_pip_permission_rationale_title">Mau perkecil layar %1s?</string>
     <string name="play_pip_permission_rationale_desc">Dengan aktifkan akses mode ini, kamu tetap bisa nonton sambil jelajahi aplikasi Tokopedia, lho.</string>
     <string name="play_pip_activate">Aktifkan</string>
     <string name="play_pip_cancel">Batal</string>
@@ -89,7 +89,7 @@
 
     <!--Kebab Menu-->
     <string name="play_kebab_report_title">Laporkan Video</string>
-    <string name="play_kebab_pip">Picture in Picture</string>
+    <string name="play_kebab_pip">Perkecil Layar</string>
     <string name="play_kebab_chromecast">Chromecast</string>
     <string name="play_kebab_watch_mode">Mode Nonton</string>
     <string name="play_kebab_see_performance">Lihat Performa</string>

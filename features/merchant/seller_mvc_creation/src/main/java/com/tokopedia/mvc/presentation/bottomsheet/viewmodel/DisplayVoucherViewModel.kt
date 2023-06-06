@@ -1,11 +1,13 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.ImageRatio
@@ -46,7 +48,7 @@ class DisplayVoucherViewModel @Inject constructor(
                     parentProductIds,
                     imageRatio
                 )
-                _couponImage.postValue(result)
+                _couponImage.postValue(BitmapFactory.decodeByteArray(result, Int.ZERO, result.size))
             },
             onError = {
                 _error.postValue(it)

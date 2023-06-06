@@ -1,8 +1,8 @@
 package com.tokopedia.logisticseller.ui.findingnewdriver.fragment
 
+import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_FIRST_USER
 import android.app.Activity.RESULT_OK
-import android.app.Activity.RESULT_CANCELED
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -113,7 +113,8 @@ class FindingNewDriverFragment :
             title = getString(R.string.title_failed_find_new_driver),
             description = getString(
                 R.string.description_failed_find_new_driver,
-                invoice, message
+                invoice,
+                message
             ).parseAsHtml(),
             primaryCtaText = getString(R.string.btn_understand),
             imageIcon = R.drawable.ic_logisticseller_reschedulepickup_fail,
