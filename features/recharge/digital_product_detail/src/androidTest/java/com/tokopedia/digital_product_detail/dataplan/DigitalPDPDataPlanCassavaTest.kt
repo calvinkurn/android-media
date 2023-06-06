@@ -17,7 +17,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
+class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
@@ -31,22 +31,22 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
 
     @Before
     fun setUp() {
-//        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestUser1()
         stubIntent()
     }
 
     @Test
     fun validate_cassava() {
         Thread.sleep(2000)
-//        interactWithClientNumberWidget()
+        interactWithClientNumberWidget()
         interactWithCheckBalanceWidget()
-//        interactWithFavoriteChip()
-//        interactWithAutoComplete()
-//        interactWithRecommendationWidget()
-//        interactWithGridDenomWidget()
-//        interactWithMccmWidget()
-//        interactWithFilterChip()
-//        interactWithBuyWidget()
+        interactWithFavoriteChip()
+        interactWithAutoComplete()
+        interactWithRecommendationWidget()
+        interactWithGridDenomWidget()
+        interactWithMccmWidget()
+        interactWithFilterChip()
+        interactWithBuyWidget()
 
         MatcherAssert.assertThat(
             cassavaTestRule.validate(PATH_ANALYTICS),
