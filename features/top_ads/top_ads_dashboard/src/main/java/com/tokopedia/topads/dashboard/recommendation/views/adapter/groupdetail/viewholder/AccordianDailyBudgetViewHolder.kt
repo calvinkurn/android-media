@@ -2,10 +2,14 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 
-class AccordianDailyBudgetViewHolder(private val view: View) :
+class AccordianDailyBudgetViewHolder(
+    private val view: View,
+    onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+) :
     AbstractViewHolder<AccordianDailyBudgetUiModel>(view) {
 
     private val currentBudget : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.currentBudget)

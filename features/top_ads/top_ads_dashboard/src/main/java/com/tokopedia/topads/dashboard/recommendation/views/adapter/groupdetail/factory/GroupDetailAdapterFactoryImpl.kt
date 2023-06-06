@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
@@ -32,7 +33,8 @@ class GroupDetailAdapterFactoryImpl(
     private val onChipClick: (Int) -> Unit,
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?,
-    private val onAccordianItemClick: ((clickedItem: Int) -> Unit)
+    private val onAccordianItemClick: ((clickedItem: Int) -> Unit),
+    private val onInsightAction:(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {
@@ -84,12 +86,12 @@ class GroupDetailAdapterFactoryImpl(
             InsightTypeChipsViewHolder.LAYOUT -> InsightTypeChipsViewHolder(view, onInsightTypeChipClick)
             PerformanceWidgetViewHolder.LAYOUT -> PerformanceWidgetViewHolder(view)
             GroupDetailChipsViewHolder.LAYOUT -> GroupDetailChipsViewHolder(view, onChipClick)
-            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick, onInsightTypeChipClick, onAccordianItemClick)
-            AccordianKataKunciViewHolder.LAYOUT -> AccordianKataKunciViewHolder(view)
-            AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view)
-            AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view)
-            AccordianDailyBudgetViewHolder.LAYOUT -> AccordianDailyBudgetViewHolder(view)
-            AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view)
+            GroupInsightsViewHolder.LAYOUT -> GroupInsightsViewHolder(view, onChipClick, onInsightTypeChipClick, onAccordianItemClick, onInsightAction)
+            AccordianKataKunciViewHolder.LAYOUT -> AccordianKataKunciViewHolder(view,onInsightAction)
+            AccordianKeywordBidViewHolder.LAYOUT -> AccordianKeywordBidViewHolder(view, onInsightAction)
+            AccordianGroupBidViewHolder.LAYOUT -> AccordianGroupBidViewHolder(view, onInsightAction)
+            AccordianDailyBudgetViewHolder.LAYOUT -> AccordianDailyBudgetViewHolder(view, onInsightAction)
+            AccordianNegativeKeywordViewHolder.LAYOUT -> AccordianNegativeKeywordViewHolder(view,onInsightAction)
             GroupDetailInsightListViewHolder.LAYOUT -> GroupDetailInsightListViewHolder(view, onInsightItemClick)
             GroupDetailEmptyStateViewHolder.LAYOUT -> GroupDetailEmptyStateViewHolder(view)
             else -> super.createViewHolder(view, type)

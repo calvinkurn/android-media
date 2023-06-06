@@ -42,7 +42,9 @@ data class TopAdsBatchGroupInsightResponse(
                     @SerializedName("suggestionBid")
                     val suggestionBid: Int = 0,
                     @SerializedName("suggestionBidSource")
-                    val suggestionBidSource: String = ""
+                    val suggestionBidSource: String = "",
+
+                    var isSelected: Boolean = false
                 )
                 data class NewNegativeKeywordsRecom(
                     @SerializedName("keywordSource")
@@ -56,7 +58,9 @@ data class TopAdsBatchGroupInsightResponse(
                     @SerializedName("potentialSavings")
                     val potentialSavings: Int = 0,
                     @SerializedName("predictedImpression")
-                    val predictedImpression: String = ""
+                    val predictedImpression: String = "",
+
+                    var isSelected: Boolean = false
                 )
 
                 data class NewPositiveKeywordsRecom(
@@ -75,7 +79,9 @@ data class TopAdsBatchGroupInsightResponse(
                     @SerializedName("suggestionBid")
                     val suggestionBid: Int = 0,
                     @SerializedName("totalSearch")
-                    val totalSearch: String = ""
+                    val totalSearch: String = "",
+
+                    var isSelected: Boolean = false
                 )
             }
         }

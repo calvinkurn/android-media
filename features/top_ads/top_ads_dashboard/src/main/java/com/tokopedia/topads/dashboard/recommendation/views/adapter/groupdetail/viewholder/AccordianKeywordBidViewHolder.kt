@@ -8,18 +8,24 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topads.common.data.response.KeywordEditInput
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
 
-class AccordianKeywordBidViewHolder(private val itemView: View) :
+class AccordianKeywordBidViewHolder(
+    private val itemView: View,
+    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+) :
     AbstractViewHolder<AccordianKeywordBidUiModel>(itemView) {
 
     inner class BiayaKataKunciItemsAdapter :
         RecyclerView.Adapter<BiayaKataKunciItemsAdapter.BiayaKataKunciItemsViewHolder>() {
         var biayaKataKunciItemList: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom> = mutableListOf()
         inner class BiayaKataKunciItemsViewHolder(val itemView: View) : RecyclerView.ViewHolder(itemView) {
+            private val checkbox : com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.checkbox)
             private val title : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.title)
             private val keywordState: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.keyword_state_type)
             private val currentCost: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.current_cost_value)
@@ -27,6 +33,8 @@ class AccordianKeywordBidViewHolder(private val itemView: View) :
             private val potentialValue: com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.show_potential_value)
 
             fun bind(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom) {
+                checkbox.setOnCheckedChangeListener(null)
+                checkbox.isChecked = element.isSelected
                 title.text = element.keywordTag
                 currentCost.text = String.format("Rp%d/klik",element.currentBid)
                 recommendedValue.text = String.format("Rp%d/klik",element.suggestionBid)
@@ -37,6 +45,17 @@ class AccordianKeywordBidViewHolder(private val itemView: View) :
                 } else {
                     keywordState.text = getString(R.string.specific)
                     keywordState.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_BN100))
+                }
+                checkbox.setOnCheckedChangeListener { btn, isChecked ->
+                    element.isSelected = isChecked
+                    if(isChecked){
+                        addTopadsManagePromoGroupProductInput(element)
+                    } else {
+                        topadsManagePromoGroupProductInput.keywordOperation = topadsManagePromoGroupProductInput.keywordOperation?.filter { it?.keyword?.id != element.keywordID }
+                    }
+                    onInsightAction.invoke(topadsManagePromoGroupProductInput,
+                        RecommendationConstants.TYPE_POSITIVE_KEYWORD
+                    )
                 }
             }
         }
@@ -58,10 +77,18 @@ class AccordianKeywordBidViewHolder(private val itemView: View) :
         override fun getItemCount(): Int {
             return biayaKataKunciItemList.count()
         }
+
+        fun updateList(list : List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom>){
+            biayaKataKunciItemList = list
+            notifyDataSetChanged()
+        }
+
     }
 
     private val adapter by lazy { BiayaKataKunciItemsAdapter() }
     private val biayaKataKunciRv: RecyclerView = itemView.findViewById(R.id.biayaKataKunciRv)
+    private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
+    private val topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
 
     override fun bind(element: AccordianKeywordBidUiModel?) {
         biayaKataKunciRv.layoutManager =
@@ -74,9 +101,56 @@ class AccordianKeywordBidViewHolder(private val itemView: View) :
         biayaKataKunciRv.addItemDecoration(
             DividerItemDecoration(
                 itemView.context,
-                DividerItemDecoration.VERTICAL
+                DividerItemDecoration.VERTICAL,
             )
         )
+
+        selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
+            if(isChecked) {
+                val list = mutableListOf<KeywordEditInput>()
+                element?.existingKeywordsBidRecom?.forEach { list.add(
+                    KeywordEditInput(
+                    RecommendationConstants.ACTION_EDIT_PARAM,
+                    keyword = KeywordEditInput.Keyword(
+                        type = it.keywordType,
+                        status = it.keywordStatus,
+                        tag = it.keywordTag,
+                        suggestionPriceBid = it.suggestionBid.toDouble(),
+                        price_bid = it.currentBid.toDouble(),
+                        source = it.suggestionBidSource,
+                        id = it.keywordID
+                    )
+                )
+                ) }
+                topadsManagePromoGroupProductInput.keywordOperation = list
+            } else {
+                topadsManagePromoGroupProductInput.keywordOperation = listOf()
+            }
+            element?.existingKeywordsBidRecom?.forEach { it.isSelected = isChecked }
+            element?.existingKeywordsBidRecom?.let {
+                adapter.updateList(it)
+            }
+            onInsightAction.invoke(topadsManagePromoGroupProductInput,
+                RecommendationConstants.TYPE_KEYWORD_BID
+            )
+        }
+    }
+
+    fun addTopadsManagePromoGroupProductInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom){
+        val list = topadsManagePromoGroupProductInput.keywordOperation?.toMutableList()
+        list?.add(KeywordEditInput(
+            RecommendationConstants.ACTION_CREATE_PARAM,
+            keyword = KeywordEditInput.Keyword(
+                type = element.keywordType,
+                status = element.keywordStatus,
+                tag = element.keywordTag,
+                suggestionPriceBid = element.suggestionBid.toDouble(),
+                price_bid = element.currentBid.toDouble(),
+                source = element.suggestionBidSource,
+                id = element.keywordID
+            )
+        ))
+        topadsManagePromoGroupProductInput.keywordOperation = list
     }
 
     companion object {

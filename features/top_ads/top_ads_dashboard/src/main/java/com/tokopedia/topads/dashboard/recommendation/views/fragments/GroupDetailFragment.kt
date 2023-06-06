@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.views.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,6 +24,11 @@ import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.DEFAULT_SELECTED_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -37,6 +44,8 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.G
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
@@ -46,6 +55,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var adGroupId: String? = ""
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
+    private var saveButton: UnifyButton? = null
     private var groupChipsLayout: View? = null
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
@@ -53,7 +63,8 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 onChipClick,
                 onInsightItemClick,
                 ::onInsightTypeChipClick,
-                onAccordianItemClick
+                onAccordianItemClick,
+                onInsightAction
             )
         )
     }
@@ -197,6 +208,30 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailsRecyclerView = view?.findViewById(R.id.groupDetailsRecyclerView)
         groupDetailChipsRv = view?.findViewById(R.id.groupDetailChipsRv)
         groupChipsLayout = view?.findViewById(R.id.groupChipsLayout)
+        saveButton = view?.findViewById(R.id.saveButton)
+
+        saveButton?.setOnClickListener {
+            var dialog =
+                DialogUnify(
+                    requireContext(),
+                    DialogUnify.HORIZONTAL_ACTION,
+                    DialogUnify.WITH_ILLUSTRATION
+                )
+            dialog.setImageUrl("https://pakar.co.id/storage/2021/07/tokopedia-logo-7AC053EC2E-seeklogo.com_.png")
+            dialog.setDescription(
+                "5 kata kunci akan ditambahkan ke grup Cuci Gudang Agustus 2022 - Atasan Wanita."
+            )
+            dialog.setTitle("Terapkan perubahan ini untuk iklanmu?")
+            dialog.setPrimaryCTAText("Ya, Terapkan")
+            dialog.setSecondaryCTAText("batal")
+            dialog.setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
     }
 
     private val onChipClick: (Int) -> Unit = {
@@ -265,11 +300,32 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
     }
 
-    val onClickInsightItems: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput) -> Unit =
-        {
-
-            // do operation when insight is clicked
+    val onInsightAction = { input: TopadsManagePromoGroupProductInput, type: Int ->
+        if(input.keywordOperation.isNullOrEmpty()){
+            saveButton?.visibility = View.GONE
+        } else {
+            saveButton?.visibility = View.VISIBLE
         }
+        when(type){
+            TYPE_POSITIVE_KEYWORD -> {
+                saveButton?.text = String.format(getString(R.string.topads_insight_positive_keywords_cta_text_format), input.keywordOperation?.size)
+            }
+            TYPE_KEYWORD_BID -> {
+                saveButton?.text = String.format(getString(R.string.topads_insight_existing_keywords_cta_text_format), input.keywordOperation?.size)
+            }
+            TYPE_GROUP_BID -> {
+                saveButton?.text = getString(R.string.topads_insight_biaya_iklan_cta_text)
+            }
+            TYPE_DAILY_BUDGET -> {
+                saveButton?.text = getString(R.string.topads_insight_daily_budget_cta_text)
+            }
+            TYPE_NEGATIVE_KEYWORD_BID -> {
+                saveButton?.text = String.format(getString(R.string.topads_insight_negative_keywords_cta_text_format), input.keywordOperation?.size)
+            }
+            else -> {}
+        }
+        viewModel.updateTopadsManagePromoGroupProductInput(input, type)
+    }
 
     private fun applyInsights(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput) {
         viewModel.applyInsight2(topAdsManagePromoGroupProductInput)

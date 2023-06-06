@@ -39,6 +39,10 @@ class GroupDetailViewModel @Inject constructor(
     val detailPageLiveData: LiveData<TopAdsListAllInsightState<Map<Int, GroupDetailDataModel>>>
         get() = _detailPageLiveData
 
+    private val _topadsManagePromoGroupProductInput = MutableLiveData<Pair<TopadsManagePromoGroupProductInput, Int>>()
+    val topadsManagePromoGroupProductInput : LiveData<Pair<TopadsManagePromoGroupProductInput, Int>>
+        get() = _topadsManagePromoGroupProductInput
+
     fun loadDetailPage(
         adGroupType: Int,
         groupId: String
@@ -148,5 +152,9 @@ class GroupDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             topAdsCreateUseCase.execute(requestParams)
         }, onError = {})
+    }
+
+    fun updateTopadsManagePromoGroupProductInput(input : TopadsManagePromoGroupProductInput, type: Int){
+        _topadsManagePromoGroupProductInput.value = Pair(input, type)
     }
 }

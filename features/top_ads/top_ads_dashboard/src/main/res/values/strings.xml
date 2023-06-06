@@ -561,5 +561,10 @@
     <string name="topads_insight_performance_info_heading">Perhitungan dari persentase jumlah tampil teratas dibagi total tampil.</string>
     <string name="wide">Luas</string>
     <string name="specific">Spesifik</string>
+    <string name="topads_insight_biaya_iklan_cta_text">Terapkan Biaya yang Disarankan</string>
+    <string name="topads_insight_daily_budget_cta_text">Terapkan Anggaran Harian</string>
+    <string name="topads_insight_positive_keywords_cta_text_format">Tambah %d Kata Kunci</string>
+    <string name="topads_insight_existing_keywords_cta_text_format">Terapkan %d Biaya Kata Kunci</string>
+    <string name="topads_insight_negative_keywords_cta_text_format">Tambah %d Kata Kunci Negatif</string>
 </resources>
 

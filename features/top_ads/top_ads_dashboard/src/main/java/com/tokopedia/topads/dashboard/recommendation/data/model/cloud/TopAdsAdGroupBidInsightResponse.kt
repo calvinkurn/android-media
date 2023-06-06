@@ -17,7 +17,7 @@ data class TopAdsAdGroupBidInsightResponse(
         ) {
         data class Group(
             @SerializedName("data")
-            val adGroupBidInsightData: AdGroupBidInsightData = AdGroupBidInsightData()
+            val adGroupBidInsightData: AdGroupBidInsightData = AdGroupBidInsightData(),
         ) {
             data class AdGroupBidInsightData(
                 @SerializedName("currentBidSettings")
@@ -27,7 +27,9 @@ data class TopAdsAdGroupBidInsightResponse(
                 @SerializedName("predictedTotalImpression")
                 val predictedTotalImpression: String = "",
                 @SerializedName("suggestionBidSettings")
-                val suggestionBidSettings: List<Any> = listOf()
+                val suggestionBidSettings: List<Any> = listOf(),
+
+                var isSelected : Boolean = false
             )
         }
     }
