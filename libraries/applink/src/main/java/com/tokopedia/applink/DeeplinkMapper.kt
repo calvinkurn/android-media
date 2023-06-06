@@ -109,7 +109,6 @@ import com.tokopedia.tokopedia_applink_annotation.start.StartMatcher
  * tokopedia://product/add and tokopedia://product/{id}
  * tokopedia://product/add will be mapped to tokopedia-android-internal:// to prevent conflict.
  */
-@HostMatcher(ApplinkConst.INBOX_HOST, ApplinkConsInternalHome.HOME_INBOX)
 @ExactMatcher(ApplinkConst.SHOP_PENALTY, ApplinkConstInternalMarketplace.SHOP_PENALTY)
 @MatchPatternMatcher(ApplinkConst.SHOP_OPERATIONAL_HOUR, ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET)
 @MatchPatternMatcher(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT, ApplinkConstInternalMarketplace.SHOP_MVC_LOCKED_TO_PRODUCT)
@@ -634,7 +633,8 @@ object DeeplinkMapper {
         DLP.exact(ApplinkConst.PRIVACY_CENTER) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
         DLP.startWith(ApplinkConst.TOKO_CHAT) { ctx, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationTokoChat(ctx, deeplink) },
         DLP.exact(ApplinkConst.TOPCHAT_BUBBLE_ACTIVATION) { _, _, deeplink, _ -> DeeplinkMapperCommunication.getRegisteredNavigationBubbleActivation(deeplink) },
-        DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) }
+        DLP.exact(ApplinkConst.User.DSAR) { ctx, _, deeplink, _ -> DeeplinkMapperUser.getRegisteredNavigationUser(ctx, deeplink) },
+        DLP.exact(ApplinkConst.INBOX) {_, _, _, _ -> DeeplinkMapperCommunication.getRegisteredNavigationInbox()}
     ).apply {
         addAll(TokopediaAppLinkMapper.listCustomerAppMappedAppLink())
     }
