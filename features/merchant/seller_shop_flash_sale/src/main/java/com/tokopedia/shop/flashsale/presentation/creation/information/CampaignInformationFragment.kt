@@ -749,7 +749,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val paymentType = viewModel.getPaymentType()
         val remainingQuota = viewModel.getRemainingQuota()
         val vpsPackageId = viewModel.getSelectedVpsPackage()?.packageId.orZero()
-        val isEnableTransactionOos = viewModel.
+        val isEnableOosTransaction = viewModel.getOosState()
 
         return CampaignInformationViewModel.Selection(
             campaignName = binding?.tauCampaignName?.editText?.text.toString(),
@@ -762,7 +762,7 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             paymentType = paymentType,
             remainingQuota = remainingQuota,
             vpsPackageId = vpsPackageId,
-            isOosImprovement = isEnableTransactionOos
+            isOosImprovement = isEnableOosTransaction
         )
     }
 
