@@ -874,7 +874,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     widget = data,
                     metadata = RecommendationWidgetMetadata(
                         pageSource = RecommendationWidgetSource.PDP.xSourceValue,
-                        pageName = data.pageName,
+                        pageName = data.pageName
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
                         androidPageName = RecommendationWidgetSource.PDP.trackingValue
@@ -895,20 +895,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateVariantData(processedVariant: List<VariantCategory>?) {
+    /**
+     * this function should call when first render variant and update from vbs only
+     */
+    fun updateVariantData(title: String, processedVariant: List<VariantCategory>?) {
         updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
             val variantLvlOne = processedVariant?.firstOrNull()
+            productSingleVariant?.title = title
             productSingleVariant?.variantLevelOne = doRetainImpressOfVariantOptions(variantLvlOne)
-        }
-    }
-
-    fun updateVariantSelected(variantId: String, variantKey: String) {
-        updateData(ProductDetailConstant.MINI_VARIANT_OPTIONS) {
-            productSingleVariant?.let {
-                val copyMap: MutableMap<String, String> = it.mapOfSelectedVariant.toMutableMap()
-                copyMap[variantKey] = variantId
-                it.mapOfSelectedVariant = copyMap
-            }
         }
     }
 

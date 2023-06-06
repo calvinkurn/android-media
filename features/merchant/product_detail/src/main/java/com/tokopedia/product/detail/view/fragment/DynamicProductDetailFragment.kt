@@ -148,6 +148,7 @@ import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
+import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.showImmediately
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
@@ -2632,8 +2633,9 @@ open class DynamicProductDetailFragment :
     ) {
         val singleVariant = pdpUiUpdater?.productSingleVariant
         val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
+        val title = selectedChild?.subText.orEmpty().ifNullOrBlank { getVariantString() }
 
-        pdpUiUpdater?.updateVariantData(variantProcessedData)
+        pdpUiUpdater?.updateVariantData(title = title, processedVariant = variantProcessedData)
         pdpUiUpdater?.updateMediaScrollPosition(selectedChild?.optionIds?.firstOrNull())
 
         updateProductInfoOnVariantChanged(selectedChild)
@@ -2704,7 +2706,10 @@ open class DynamicProductDetailFragment :
     private fun updateThumbnailVariantDataAndUi(singleVariant: ProductSingleVariantDataModel?) {
         val selectedChild = viewModel.getChildOfVariantSelected(singleVariant = singleVariant)
         val optionId = selectedChild?.optionIds?.firstOrNull().orEmpty()
-        pdpUiUpdater?.updateSingleVariant(singleVariant)
+        val title = selectedChild?.subText.ifNullOrBlank { getVariantString() }
+        val singleVariantUpdated = singleVariant?.copy(title = title)
+
+        pdpUiUpdater?.updateSingleVariant(singleVariantUpdated)
         pdpUiUpdater?.updateMediaScrollPosition(optionId)
 
         // store the product id to this variable to open vbs later
@@ -2769,7 +2774,13 @@ open class DynamicProductDetailFragment :
                 return@observe
             }
             val listOfVariantLevelOne = listOf(variantCategory)
-            pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
+            val landingSubText = viewModel.variantData?.landingSubText.ifNullOrBlank {
+                getVariantString()
+            }
+            pdpUiUpdater?.updateVariantData(
+                title = landingSubText,
+                processedVariant = listOfVariantLevelOne
+            )
             updateUi()
         }
     }
@@ -5317,8 +5328,8 @@ open class DynamicProductDetailFragment :
         return trackingQueue
     }
 
-    override fun getVariantString(): String {
-        return viewModel.variantData?.getVariantCombineIdentifier() ?: ""
+    private fun getVariantString(): String {
+        return viewModel.variantData?.getVariantCombineIdentifier().orEmpty()
     }
 
     private fun navAbTestCondition(navMainApp: () -> Unit = {}, navSellerApp: () -> Unit = {}) {

@@ -57,7 +57,7 @@ class ProductSingleVariantViewHolder(
             showError(element)
         } else {
             element.variantLevelOne?.let {
-                binding.txtVariantIdentifierTitle.text = pdpListener.getVariantString()
+                binding.txtVariantIdentifierTitle.text = element.title
                 binding.rvSingleVariant.adapter = containerAdapter
                 binding.rvSingleVariant.itemAnimator = null
                 binding.rvSingleVariant.layoutManager = layoutManager

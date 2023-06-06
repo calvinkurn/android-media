@@ -37,7 +37,6 @@ interface DynamicProductDetailListener {
     fun refreshPage()
     fun isNavOld(): Boolean
     fun getFragmentTrackingQueue(): TrackingQueue?
-    fun getVariantString(): String
     fun getParentViewModelStoreOwner(): ViewModelStore
     fun getParentLifeCyclerOwner(): LifecycleOwner
     fun getRemoteConfigInstance(): RemoteConfig?
