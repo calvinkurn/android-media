@@ -159,6 +159,31 @@ class CarouselPlayWidgetCallback(
     }
 
     // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3947
+    // Tracker ID: 43571
+    fun onClickChevron(
+        verticalWidgetPosition: Int
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_CONTENT)
+            .setEventAction("click - chevron video widget")
+            .setEventCategory(model.category)
+            .setEventLabel(
+                trackerMultiFields(
+                    model.prefix, /** prefix **/
+                    verticalWidgetPosition, /** widgetPosition **/
+                    mHomeChannelId
+                )
+            )
+            .setCustomProperty(TrackerId.KEY, "43571")
+            .setBusinessUnit(VAL_BUSINESS_UNIT)
+            .setCurrentSite(CurrentSite.DEFAULT)
+            .setCustomProperty(KEY_SESSION_IRIS, irisSessionId)
+            .setUserId(userId)
+            .build()
+            .send()
+    }
+
+    // Tracker URL: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3947
     // Tracker ID: 43572
     override fun onClickPartnerName(
         view: PlayWidgetCarouselView,

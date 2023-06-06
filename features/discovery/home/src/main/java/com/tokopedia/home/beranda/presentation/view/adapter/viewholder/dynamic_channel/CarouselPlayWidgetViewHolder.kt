@@ -62,12 +62,16 @@ class CarouselPlayWidgetViewHolder(
     }
 
     private fun setChannelHeader(element: CarouselPlayWidgetDataModel) {
-        binding?.homeComponentHeaderView?.setChannel(element.homeChannel, object : HeaderListener {
-            override fun onSeeAllClick(link: String) {
-                // add click view all tracker
-                homeCategoryListener.onDynamicChannelClicked(link)
+        binding?.homeComponentHeaderView?.setChannel(
+            element.homeChannel,
+            object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+                    // add click view all tracker
+                    callback.onClickChevron(verticalWidgetPosition = absoluteAdapterPosition)
+                    homeCategoryListener.onDynamicChannelClicked(link)
+                }
             }
-        })
+        )
     }
 
     companion object {

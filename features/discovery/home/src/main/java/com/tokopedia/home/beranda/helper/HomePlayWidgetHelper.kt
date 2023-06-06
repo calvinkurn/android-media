@@ -10,16 +10,14 @@ class HomePlayWidgetHelper @Inject constructor() {
 
     private val carouselLayoutType = listOf(
         DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_NO_PRODUCT,
-        DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT,
+        DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT
     )
 
     fun isCarousel(layout: String): Boolean {
         return layout in carouselLayoutType
-//        return true //todo("uncomment above logic")
     }
 
     fun isCarouselVariantWithProduct(layout: String): Boolean {
         return layout == DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_NEW_WITH_PRODUCT
-//        return true
     }
 }

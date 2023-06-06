@@ -47,6 +47,17 @@
     },
     {
       "event": "clickContent",
+      "eventAction": "click - chevron video widget",
+      "eventCategory": "homepage-cmp",
+      "eventLabel": "HOME - \\d+ - .*",
+      "trackerId": "43571",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
       "eventAction": "click - creator name",
       "eventCategory": "homepage-cmp",
       "eventLabel": "HOME - .* - \\d+ - \\d+ - \\d+ - \\d+ - is autoplay (true|false) - .* - .*",
