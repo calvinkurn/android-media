@@ -21,15 +21,15 @@ private val handler by lazy(LazyThreadSafetyMode.NONE) {
 }
 
 // convert String to Uri
-fun String.toUri(): Uri? {
+internal fun String.toUri(): Uri? {
     return Uri.parse(this)
 }
 
-fun String.isValidUrl(): Boolean {
+internal fun String.isValidUrl(): Boolean {
     return this.isNotEmpty() && (this.contains("https") || this.contains("http"))
 }
 
-fun Properties.generateUrl(): Any {
+internal fun Properties.generateUrl(): Any {
     val data = data.toString()
 
     if (isSecure.not()) {
@@ -48,7 +48,7 @@ fun Properties.generateUrl(): Any {
     )
 }
 
-fun <T> GlideRequest<T>.mediaLoad(properties: Properties): GlideRequest<T> {
+internal fun <T> GlideRequest<T>.mediaLoad(properties: Properties): GlideRequest<T> {
     return if (properties.data is String) {
         load(properties.generateUrl())
     } else {
@@ -56,7 +56,7 @@ fun <T> GlideRequest<T>.mediaLoad(properties: Properties): GlideRequest<T> {
     }
 }
 
-fun <T> GlideRequest<T>.delayInto(imageView: ImageView, properties: Properties) {
+internal fun <T> GlideRequest<T>.delayInto(imageView: ImageView, properties: Properties) {
     // render image
     if (properties.renderDelay <= 0L) {
         into(imageView)

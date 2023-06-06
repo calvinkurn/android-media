@@ -11,7 +11,7 @@ import java.net.InetAddress
 import java.net.URL
 import java.net.UnknownHostException
 
-object RemoteCdnUtil {
+internal object RemoteCdnUtil {
 
     @Throws(UnknownHostException::class, SecurityException::class)
     suspend fun fetchServerInfo(urlRemote: String): InetAddress {
