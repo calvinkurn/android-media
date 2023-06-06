@@ -11,7 +11,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst.INTERNAL_CONTENT_DETAIL
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.people.R
 import com.tokopedia.people.analytic.UserFeedPostImpressCoordinator
@@ -170,14 +172,28 @@ class UserProfileFeedFragment @Inject constructor(
         }
     }
 
-    override fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String, ) {
+    override fun onFeedPostsClick(
+        appLink: String,
+        itemID: String,
+        imageUrl: String,
+        position: Int,
+        mediaType: String,
+    ) {
         userProfileTracker.clickPost(
             viewModel.profileUserID,
             viewModel.isSelfProfile,
             itemID,
             mediaType,
         )
-        val intent = RouteManager.getIntent(requireContext(), appLink)
+
+        /** temporary solution by hardcoding the url to cdp **/
+//        val intent = RouteManager.getIntent(requireContext(), appLink)
+        val intent = RouteManager.getIntent(
+            requireContext(), UriUtil.buildUri(
+                INTERNAL_CONTENT_DETAIL,
+                viewModel.profileUserID
+            )
+        )
         intent.putExtra(KEY_ENTRY_POINT, VAL_ENTRY_POINT)
         intent.putExtra(KEY_POSITION, position)
         intent.putExtra(KEY_VISITED_USER_ID, viewModel.profileUserID)

@@ -8,9 +8,10 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_coupon_large_image"
         android:layout_width="0dp"
-        android:layout_height="109dp"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,3:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -23,9 +24,10 @@
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iu_coupon_small_image"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:visibility="gone"
+        app:layout_constraintDimensionRatio="H,2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
