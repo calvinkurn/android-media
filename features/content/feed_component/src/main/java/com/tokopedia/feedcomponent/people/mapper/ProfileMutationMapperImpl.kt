@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.people.mapper
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.people.model.ProfileDoFollowModelBase
 import com.tokopedia.feedcomponent.people.model.ProfileDoUnFollowModelBase
@@ -16,7 +17,7 @@ class ProfileMutationMapperImpl @Inject constructor(
         return with(response.profileFollowers) {
             if(errorCode.isEmpty()) MutationUiModel.Success()
             else MutationUiModel.Error(
-                messages.firstOrNull() ?: context.getString(com.tokopedia.content.common.R.string.up_error_follow)
+                messages.firstOrNull() ?: context.getString(R.string.up_error_follow)
             )
         }
     }
@@ -25,7 +26,7 @@ class ProfileMutationMapperImpl @Inject constructor(
         return with(response.profileFollowers) {
             if(data.isSuccess == SUCCESS_UNFOLLOW_CODE) MutationUiModel.Success()
             else MutationUiModel.Error(
-                messages.firstOrNull() ?: context.getString(com.tokopedia.content.common.R.string.up_error_unfollow)
+                messages.firstOrNull() ?: context.getString(R.string.up_error_unfollow)
             )
         }
     }

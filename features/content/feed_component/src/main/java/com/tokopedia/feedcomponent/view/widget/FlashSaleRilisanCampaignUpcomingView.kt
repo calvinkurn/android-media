@@ -69,10 +69,10 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
                     mFeedXCard?.campaign?.campaignId ?: 0
                 )
             ) {
-                text = context.getString(com.tokopedia.content.common.R.string.btn_asgc_flash_remind_btn_text_disabled)
+                text = context.getString(R.string.btn_asgc_flash_remind_btn_text_disabled)
                 buttonType = UnifyButton.Type.ALTERNATE
             } else {
-                text = context.getString(com.tokopedia.content.common.R.string.btn_asgc_flash_remind_btn_text)
+                text = context.getString(R.string.btn_asgc_flash_remind_btn_text)
                 buttonType = UnifyButton.Type.MAIN
 
             }
