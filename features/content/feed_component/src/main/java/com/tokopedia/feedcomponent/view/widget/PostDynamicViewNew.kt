@@ -702,10 +702,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(R.string.feed_header_follow_count_text),
+                    context.getString(com.tokopedia.content.common.R.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-            } else context.getString(R.string.feed_header_follow_count_less_text)
+            } else context.getString(com.tokopedia.content.common.R.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
             shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
