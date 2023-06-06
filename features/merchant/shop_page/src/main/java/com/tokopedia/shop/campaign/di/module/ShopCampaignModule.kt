@@ -1,7 +1,6 @@
 package com.tokopedia.shop.campaign.di.module
 
 import android.content.Context
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.shop.campaign.di.scope.ShopCampaignScope
 import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.user.session.UserSession

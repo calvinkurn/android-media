@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.campaign.di.scope.ShopCampaignScope
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
-import com.tokopedia.shop.campaign.view.viewmodel.PromoVoucherDetailViewModel
+import com.tokopedia.shop.campaign.view.viewmodel.VoucherDetailViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,6 +25,6 @@ abstract class ShopCampaignViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PromoVoucherDetailViewModel::class)
-    internal abstract fun providePromoVoucherDetailViewModel(viewModel: PromoVoucherDetailViewModel): ViewModel
+    @ViewModelKey(VoucherDetailViewModel::class)
+    internal abstract fun provideVoucherDetailViewModel(viewModel: VoucherDetailViewModel): ViewModel
 }

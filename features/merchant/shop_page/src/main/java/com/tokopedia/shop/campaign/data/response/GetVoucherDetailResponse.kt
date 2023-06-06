@@ -3,7 +3,7 @@ package com.tokopedia.shop.campaign.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GetPromoVoucherDetailResponse(
+data class GetVoucherDetailResponse(
     @SerializedName("hachikoCatalogDetail")
     val hachikoCatalogDetail: HackhikoCatalogDetail
 ) {

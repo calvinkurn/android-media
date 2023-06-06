@@ -22,7 +22,7 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imgVoucher"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -157,31 +157,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/webViewTnc" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/labelHowToUse"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/shop_page_how_to_use"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider2"
-                app:typographyType="display_1"
-                app:typographyWeight="bold" />
-
-            <com.tokopedia.webview.TkpdWebView
-                android:id="@+id/webViewHowToUse"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/labelHowToUse" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
@@ -200,7 +175,7 @@
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btnUseVoucher"
+                android:id="@+id/btnUsePromoVoucher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -219,17 +194,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/btnClaimVoucher"
-                app:layout_constraintEnd_toStartOf="@+id/btnClaimVoucher"
+                app:layout_constraintBottom_toBottomOf="@+id/btnClaimPromoVoucher"
+                app:layout_constraintEnd_toStartOf="@+id/btnClaimPromoVoucher"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btnClaimVoucher"
+                app:layout_constraintTop_toTopOf="@+id/btnClaimPromoVoucher"
                 app:typographyType="display_1"
                 app:typographyWeight="bold"
                 tools:text="Gratis" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/btnClaimVoucher"
+                android:id="@+id/btnClaimPromoVoucher"
                 android:layout_width="96dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -241,7 +216,6 @@
                 app:unifyButtonSize="large"
                 app:unifyButtonType="transaction"
                 tools:text="@string/shop_page_claim" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

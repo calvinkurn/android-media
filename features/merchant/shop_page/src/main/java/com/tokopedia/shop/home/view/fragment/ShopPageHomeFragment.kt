@@ -123,7 +123,6 @@ import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.data.model.*
-import com.tokopedia.shop.common.extension.isOnDarkMode
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
@@ -529,17 +528,21 @@ open class ShopPageHomeFragment :
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         isLoadInitialData = true
-//        showVoucherListBottomsheet()
+        //showVoucherListBottomsheet()
     }
 
     private fun showVoucherListBottomsheet() {
-        //TODO: Replace with real category slugs from backend
+        //TODO: Replace with real shopId and category slugs from backend
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
-            useDarkBackground = false,
-            promoVouchersCategorySlugs = listOf(
-                "HPTEKNOMAY", "ACCTEKNOMAY", "ELTEKNO100MAY", "ELTEKNO350MAY", "MEGAEL12MAY",
-                "MEGAEL8MAY", "ELCPC523", "MEGAEL1JTMAY",
-                "MEGAEL150MAY"
+            shopId = "1854168", //Unilever Official Store,
+            useDarkBackground = true,
+            slugs = listOf(
+                "ELTTS400JUN",
+                "ELTTS150JUN",
+                "CFDDJUN",
+                "KFSJUN",
+                "AUTO423",
+                "SHOPASHJUNE"
             )
         )
         bottomSheet.setOnVoucherClaimSuccess {

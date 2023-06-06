@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.campaign.data.response.UsePromoVoucherResponse
 import javax.inject.Inject
 
@@ -18,7 +19,10 @@ class UsePromoVoucherUseCase @Inject constructor(
 ) : GraphqlUseCase<Boolean>(repository) {
 
     companion object {
-        private const val REQUEST_PARAM_KEY_PROMO_CODE= "promoCode"
+        private const val REQUEST_PARAM_KEY_SERVICE_ID = "serviceID"
+        private const val REQUEST_PARAM_KEY_PROMO_CODE = "promoCode"
+        private const val REQUEST_PARAM_KEY_SHOP_ID = "shopID"
+        private const val PHYSICAL_GOODS_SERVICE_ID = "marketplace"
     }
 
     init {
@@ -27,10 +31,10 @@ class UsePromoVoucherUseCase @Inject constructor(
 
 
     private val mutation = object : GqlQueryInterface {
-        private val OPERATION_NAME = "save_cache_auto_apply"
+        private val OPERATION_NAME = "saveCacheAutoApplyStack"
         private val MUTATION =
-            """mutation save_cache_auto_apply(${'$'}promoCode: String) {
-  save_cache_auto_apply(promoCode: ${'$'}promoCode) {
+            """mutation saveCacheAutoApplyStack(${'$'}serviceID: String!, ${'$'}promoCode: String!, ${'$'}shopID: Int!) {
+  saveCacheAutoApplyStack(serviceID: ${'$'}serviceID, promoCode: ${'$'}promoCode, shopID: ${'$'}shopID) {
     Success
   }
 }
@@ -42,15 +46,19 @@ class UsePromoVoucherUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(promoCode: String): Boolean {
-        val request = buildRequest(promoCode)
+    suspend fun execute(param: Param): Boolean {
+        val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<UsePromoVoucherResponse>()
-        return data.saveCacheAutoReply.success
+        return data.saveCacheAutoApplyStack.success
     }
 
-    private fun buildRequest(promoCode: String): GraphqlRequest {
-        val params = mapOf(REQUEST_PARAM_KEY_PROMO_CODE to promoCode)
+    private fun buildRequest(param: Param): GraphqlRequest {
+        val params = mapOf(
+            REQUEST_PARAM_KEY_SERVICE_ID to PHYSICAL_GOODS_SERVICE_ID,
+            REQUEST_PARAM_KEY_PROMO_CODE to param.promoCode,
+            REQUEST_PARAM_KEY_SHOP_ID to param.shopId.toIntOrZero()
+        )
 
         return GraphqlRequest(
             mutation,
@@ -59,6 +67,6 @@ class UsePromoVoucherUseCase @Inject constructor(
         )
     }
 
-
+    data class Param(val shopId: String, val promoCode: String)
 
 }

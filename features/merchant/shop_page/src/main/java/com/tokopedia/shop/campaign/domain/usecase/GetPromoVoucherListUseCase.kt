@@ -86,18 +86,18 @@ class GetPromoVoucherListUseCase @Inject constructor(
     }
 
 
-    suspend fun execute(param: Param): List<ExclusiveLaunchVoucher> {
-        val request = buildRequest(param.categorySlug, param.categorySlugs)
+    suspend fun execute(voucherSlugs: List<String>): List<ExclusiveLaunchVoucher> {
+        val request = buildRequest(voucherSlugs)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetPromoVoucherListMapperResponse>()
 
         return mapper.map(data)
     }
 
-    private fun buildRequest(categorySlug: String, categorySlugs: List<String>): GraphqlRequest {
+    private fun buildRequest(voucherSlugs: List<String>): GraphqlRequest {
         val params = mapOf(
-            REQUEST_PARAM_KEY_CATEGORY_SLUG to categorySlug,
-            REQUEST_PARAM_KEY_CATEGORY_SLUGS to categorySlugs
+            REQUEST_PARAM_KEY_CATEGORY_SLUG to "",
+            REQUEST_PARAM_KEY_CATEGORY_SLUGS to voucherSlugs
         )
 
         return GraphqlRequest(
@@ -106,11 +106,5 @@ class GetPromoVoucherListUseCase @Inject constructor(
             params
         )
     }
-
-
-    data class Param(
-        val categorySlug: String,
-        val categorySlugs: List<String>
-    )
 
 }

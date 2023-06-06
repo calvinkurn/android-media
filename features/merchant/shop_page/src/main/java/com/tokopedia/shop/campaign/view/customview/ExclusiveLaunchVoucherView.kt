@@ -1,7 +1,6 @@
 package com.tokopedia.shop.campaign.view.customview
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
@@ -34,9 +33,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
         binding?.tpgMinPurchase?.text = text
     }
 
-    fun setRemainingQuota(remainingQuota: Int) {
-        binding?.tpgRemainingQuota?.text =
-            context.getString(R.string.shop_page_placeholder_remaining_quota, remainingQuota)
+    fun setRemainingQuota(remainingQuota: String) {
+        binding?.tpgRemainingQuota?.text = remainingQuota
     }
 
     fun setOnPrimaryCtaClick(onClick: () -> Unit) {
@@ -61,8 +59,8 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
     fun useLightBackground() {
         binding?.run {
             rootLayout.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_light)
-            tpgBenefitName.setTextColorCompat(R.color.Unify_NN950)
-            tpgMinPurchase.setTextColorCompat(R.color.Unify_NN950)
+            tpgBenefitName.setTextColorCompat(R.color.clr_dms_voucher_title)
+            tpgMinPurchase.setTextColorCompat(R.color.clr_dms_voucher_min_purchase)
             tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
             tpgClaim.setTextColorCompat(R.color.Unify_GN500)
         }
