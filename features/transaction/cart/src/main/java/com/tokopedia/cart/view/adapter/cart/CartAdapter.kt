@@ -1292,27 +1292,6 @@ class CartAdapter constructor(
         return null
     }
 
-    fun getFirstShopAndShopCountWithIterateFunction(func: (CartShopHolderData) -> Unit): Pair<Int, Int> {
-        var firstIndex = 0
-        var count = 0
-        cartDataList.forEachIndexed { index, any ->
-            when (any) {
-                is CartShopHolderData -> {
-                    count++
-                    if (firstIndex == 0) {
-                        firstIndex = index
-                    }
-                    func(any)
-                }
-                is DisabledItemHeaderHolderData, is ShipmentSellerCashbackModel, is CartSectionHeaderHolderData -> {
-                    return@forEachIndexed
-                }
-            }
-        }
-
-        return Pair(firstIndex, count)
-    }
-
     fun setLastItemAlwaysSelected(): Boolean {
         var cartItemCount = 0
         getData().forEach outer@{ any ->
@@ -1477,10 +1456,5 @@ class CartAdapter constructor(
 
     override fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData) {
         cartItemActionListener.onNeedToRefreshWeight(cartItemHolderData)
-    }
-
-    override fun onNeedToRefreshAllShop() {
-        cartItemActionListener.onNeedToRefreshMultipleShop()
-        cartItemActionListener.onNeedToRecalculate()
     }
 }

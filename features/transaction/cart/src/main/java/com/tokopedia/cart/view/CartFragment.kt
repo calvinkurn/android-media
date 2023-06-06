@@ -2413,13 +2413,6 @@ class CartFragment :
         }
     }
 
-    override fun onNeedToRefreshMultipleShop() {
-        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
-            checkCartShopGroupTicker(it)
-        }
-        onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
-    }
-
     override fun onNeedToRecalculate() {
         dPresenter.reCalculateSubTotal(cartAdapter.allAvailableShopGroupDataList)
     }

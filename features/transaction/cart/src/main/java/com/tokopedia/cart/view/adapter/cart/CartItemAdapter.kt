@@ -76,7 +76,6 @@ class CartItemAdapter/*(private val actionListener: ActionListener) : RecyclerVi
         fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String)
         fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean)
         fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData)
-        fun onNeedToRefreshMultipleShop()
         fun onNeedToRecalculate()
         fun onCartItemQuantityChanged(cartItemHolderData: CartItemHolderData, newQuantity: Int)
         fun onCartItemShowRemainingQty(productId: String)
