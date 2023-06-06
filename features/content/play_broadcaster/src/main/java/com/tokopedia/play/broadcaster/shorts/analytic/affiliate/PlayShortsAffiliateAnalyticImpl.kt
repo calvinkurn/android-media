@@ -39,15 +39,6 @@ class PlayShortsAffiliateAnalyticImpl @Inject constructor(
         )
     }
 
-    /** row 4 **/
-    override fun sendImpressionProductCommissionEvent(partnerId: String) {
-        sendGeneralViewEvent(
-            eventAction = "impression - produk ada komisi",
-            eventLabel = "$partnerId - user",
-            trackerId = "41409",
-        )
-    }
-
     /** row 5 **/
     override fun sendClickNextCreateContentEvent(partnerId: String) {
         sendGeneralClickEvent(
@@ -72,15 +63,6 @@ class PlayShortsAffiliateAnalyticImpl @Inject constructor(
             eventAction = "impression - tag product komisi",
             eventLabel = "$partnerId - user",
             trackerId = "42842",
-        )
-    }
-
-    /** row 8 **/
-    override fun sendImpressionAffiliateLinkFailEvent(partnerId: String) {
-        sendGeneralViewEvent(
-            eventAction = "impression - affiliate link gagal dimuat",
-            eventLabel = "$partnerId - user",
-            trackerId = "42953",
         )
     }
 

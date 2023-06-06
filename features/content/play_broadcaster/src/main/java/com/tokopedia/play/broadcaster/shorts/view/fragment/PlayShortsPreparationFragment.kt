@@ -213,7 +213,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
 
                     override fun onProductSummaryCommissionShown() {
-                        analytic.sendImpressionProductCommissionEvent(viewModel.selectedAccount.id)
+                        analytic.sendImpressionTagProductCommissionEvent(viewModel.selectedAccount.id)
                     }
                 })
             }
