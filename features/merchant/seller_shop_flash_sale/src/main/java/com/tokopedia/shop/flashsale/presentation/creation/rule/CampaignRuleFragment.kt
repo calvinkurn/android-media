@@ -319,8 +319,8 @@ class CampaignRuleFragment : BaseDaggerFragment(),
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
         }
-        val start = 65
-        val end = 80
+        val start = (spanString.length - 15)
+        val end = spanString.length
         spannableString.setSpan(clickableSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spannableString
     }
