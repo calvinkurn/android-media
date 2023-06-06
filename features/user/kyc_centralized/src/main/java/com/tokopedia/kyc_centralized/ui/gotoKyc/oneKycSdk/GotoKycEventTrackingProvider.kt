@@ -201,6 +201,9 @@ class GotoKycEventTrackingProvider @Inject constructor(
             SELFIE_PREPARE_SCREEN_VIEWED -> {
                 GotoKycAnalytics.sendViewGuideSelfiePage(projectId)
             }
+            CLICK_SELFIE_NEED_TIME -> {
+                GotoKycAnalytics.sendClickNeedTimeGuideSelfiePage(projectId)
+            }
             SELFIE_PREPARE_READY_CLICKED -> {
                 GotoKycAnalytics.sendClickOnStartSelfie(projectId)
             }
@@ -337,6 +340,7 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val CLOSE_BUTTON_CLICKED = "GP KYC Close Button Clicked"
         private const val IMAGE_CAPTURE_MODE_BACK_PRESSED = "GP KYC Image Capture Mode Back Button Pressed"
         private const val SELFIE_PREPARE_SCREEN_VIEWED = "GP KYC Selfie Prepare Screen Viewed"
+        private const val CLICK_SELFIE_NEED_TIME = "GP KYC Selfie Prepare Need Time CTA Clicked"
         private const val SELFIE_PREPARE_READY_CLICKED = "GP KYC Selfie Prepare Ready CTA Clicked"
         private const val PREVIEW_ALL_DOCUMENT_VIEWED = "GP KYC All Documents Viewed"
         private const val PREVIEW_ALL_DOCUMENT_CTA_CLICKED = "GP KYC View Document CTA Clicked"

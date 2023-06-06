@@ -58,6 +58,8 @@ object GotoKycAnalytics {
     private const val ACTION_CLICK_SELFIE_IMAGE = "click on selfie image"
     private const val ACTION_CLICK_KIRIM_ULANG = "click on button kirim ulang"
     private const val ACTION_CLICK_CLOSE_PENDING_PAGE = "click on close button gopay pending"
+    private const val ACTION_CLICK_OKE_SIAP = "click on oke button"
+    private const val ACTION_CLICK_COUNTDOWN_SELFIE = "click on countdown selfie"
     private const val ACTION_VIEW_MANUAL_FOTO_QUESTION = "view on manual foto question"
     private const val ACTION_VIEW_STATUS_PAGE = "view on kyc status page"
     private const val ACTION_VIEW_PENDING_PAGE = "view on kyc pending page"
@@ -258,6 +260,18 @@ object GotoKycAnalytics {
             .setEventCategory(CATEGORY_ONBOARDING_PAGE)
             .setEventLabel(projectId)
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43631)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT)
+            .setCurrentSite(VALUE_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    fun sendClickOkeSiapOnPendingBottomSheetOnboardingPage(projectId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_ACCOUNT)
+            .setEventAction(ACTION_CLICK_OKE_SIAP)
+            .setEventCategory(CATEGORY_ONBOARDING_PAGE)
+            .setEventLabel(projectId)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -738,6 +752,18 @@ object GotoKycAnalytics {
             .setEventCategory(CATEGORY_SELFIE_PAGE)
             .setEventLabel(projectId)
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43334)
+            .setBusinessUnit(VALUE_BUSINESS_UNIT)
+            .setCurrentSite(VALUE_CURRENT_SITE)
+            .build()
+            .send()
+    }
+
+    fun sendClickNeedTimeGuideSelfiePage(projectId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_ACCOUNT)
+            .setEventAction(ACTION_CLICK_COUNTDOWN_SELFIE)
+            .setEventCategory(CATEGORY_SELFIE_PAGE)
+            .setEventLabel(projectId)
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
