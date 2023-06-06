@@ -46,7 +46,7 @@ class BridgingAccountLinkingViewModel @Inject constructor(
     fun checkEligibility() {
         launchCatchError(
             block = {
-                _checkEligibility.value = checkEligibilityUseCase(Unit)
+                _checkEligibility.value = checkEligibilityUseCase.invoke()
             }, onError = {
                 _checkEligibility.value = CheckEligibilityResult.Failed(it)
             }
