@@ -78,12 +78,12 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
                 }
             })
             if(!quickFilterViewModel.getSyncPageLiveData().hasObservers()) {
-                quickFilterViewModel.getSyncPageLiveData().observe(it, { item ->
+                quickFilterViewModel.getSyncPageLiveData().observe(it) { item ->
                     if (item) {
                         (fragment as DiscoveryFragment).reSync()
                         quickFilterViewModel.fetchQuickFilters()
                     }
-                })
+                }
             }
 
             quickFilterViewModel.productCountLiveData.observe(it, { count ->
@@ -120,9 +120,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         componentName = quickFilterViewModel.getTargetComponent()?.name
         val prop = quickFilterViewModel.components.properties
         if (prop?.fullFilterType == Constant.FullFilterType.CATEGORY) {
-            dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
-                sortFilterItems.add(createSemuaKategoriFilterItem(filter))
-            }
+                sortFilterItems.add(createSemuaKategoriFilterItem())
         }
         for (filter in filters) {
             if(filter.options.size == 1)
@@ -139,6 +137,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
             if (prop?.chipSize == Constant.ChipSize.LARGE) {
                 it.filterSize = SortFilter.SIZE_LARGE
                 setScrollListener()
+                it.sortFilterHorizontalScrollView.scrollX = 0
             } else
                 it.filterSize = SortFilter.SIZE_DEFAULT
             it.prefixText =
@@ -210,10 +209,12 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) :
         return item
     }
 
-    private fun createSemuaKategoriFilterItem(filter: Filter): SortFilterItem {
+    private fun createSemuaKategoriFilterItem(): SortFilterItem {
         val item = SortFilterItem(fragment.getString(R.string.semua_kategori))
         item.listener = {
-            openGeneralFilterForCategory(filter)
+            dynamicFilterModel?.data?.filter?.firstOrNull()?.let { filter ->
+                openGeneralFilterForCategory(filter)
+            }
         }
         return item
     }
