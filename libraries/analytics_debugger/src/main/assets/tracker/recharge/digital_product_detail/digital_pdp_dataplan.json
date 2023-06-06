@@ -48,131 +48,6 @@
       ]
     },
     {
-      "eventAction": "view favorite number chip",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "viewDigitalIris",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*",
-      "userId":".*"
-    },
-    {
-      "eventAction": "view favorite contact chip",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "viewDigitalIris",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "eventAction": "click favorite number chip",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "eventAction": "click favorite contact chip",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "eventAction": "click autocomplete fav contact",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "eventAction": "click autocomplete fav number",
-      "eventLabel": ".*_.*_.*",
-      "eventCategory": "digital - homepage",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "eventAction": "impression last transaction icon",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "view_item_list",
-      "clientId": ".*",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": ".*"
-        }
-      ]
-    },
-    {
-      "eventAction": "click last transaction icon",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "select_content",
-      "clientId": ".*",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "item_list": ".*",
-      "userId": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": ".*"
-        }
-      ]
-    },
-    {
-      "eventAction": "input manual number",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "input from favorite number",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
       "eventAction": "impression pdp banner",
       "eventLabel": ".*_.*",
       "eventCategory": "digital - homepage",
@@ -212,46 +87,6 @@
           "item_category": ".*"
         }
       ]
-    },
-    {
-      "eventAction": "click on contact icon",
-      "eventLabel": ".*",
-      "eventCategory": "digital - homepage",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "click x on input number",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "click chevron on total bayar",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "input from contact",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
     },
     {
       "eventAction": "click promo card",
@@ -297,120 +132,34 @@
       "sessionIris": ".*"
     },
     {
-      "eventAction": "click filter chip",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "impression filter chip",
+      "eventAction": "input manual number",
       "eventCategory": "digital - homepage",
       "eventLabel": ".*_.*",
-      "event": "viewDigitalIris",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "viewDigitalIris",
-      "eventLabel": ".* - .* - .* - .*",
-      "eventAction": "impression check balance info",
-      "eventCategory": "digital - homepage",
-      "trackerId": "43704",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "select_content",
-      "eventLabel": ".* - .* - .*",
-      "eventAction": "click lihat detail check balance",
-      "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43705",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "view_item",
-      "eventLabel": ".* - .* - .*",
-      "eventAction": "impression sheet active package",
-      "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43706",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
       "event": "clickDigital",
-      "eventLabel": ".* - .* - .*",
-      "eventAction": "click close sheet active package",
-      "eventCategory": "digital - homepage",
-      "trackerId": "43707",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
     },
     {
-      "event": "view_item_list",
-      "eventLabel": ".* - .* - .* - .*",
-      "eventAction": "impression active package check balance",
+      "eventAction": "input from contact",
       "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43708",
-      "item_list": ".*",
+      "eventLabel": ".*_.*",
+      "event": "clickDigital",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "dimension40": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": "Paket Data"
-        }
-      ]
+      "sessionIris": ".*"
     },
     {
-      "event": "select_content",
-      "eventLabel": ".* - .* - .* - .*",
-      "eventAction": "click beli lagi active package",
+      "eventAction": "click on contact icon",
+      "eventLabel": ".*",
       "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43709",
+      "event": "clickDigital",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
-      "item_list": ".*",
       "userId": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "dimension40": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": "Paket Data"
-        }
-      ]
+      "sessionIris": ".*"
     }
   ]
 }
