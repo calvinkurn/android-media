@@ -618,7 +618,7 @@ class HomeAdapterFactory(
             CarouselPlayWidgetViewHolder.LAYOUT -> {
                 val playWidgetView = view.findViewById<View>(R.id.playWidgetView)
                 viewHolder = if (playWidgetView != null) {
-                    CarouselPlayWidgetViewHolder(view, PlayWidgetViewHolder(playWidgetView, playWidgetCoordinator), carouselPlayWidgetCallback)
+                    CarouselPlayWidgetViewHolder(view, PlayWidgetViewHolder(playWidgetView, playWidgetCoordinator), carouselPlayWidgetCallback, listener)
                 } else {
                     super.createViewHolder(view, type)
                 }
