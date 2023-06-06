@@ -47,7 +47,7 @@ class OnboardBenefitFragment: BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnVerification?.setOnClickListener {
-            GotoKycAnalytics.sendClickOnButtonAmbilKeuntungan(
+            GotoKycAnalytics.sendClickOnButtonBenefit(
                 projectId = args.parameter.projectId,
                 kycFlowType = args.parameter.gotoKycType
             )
