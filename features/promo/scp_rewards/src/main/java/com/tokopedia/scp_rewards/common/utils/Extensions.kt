@@ -11,6 +11,7 @@ import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -134,7 +135,6 @@ suspend fun Context.downloadImage(url: String?) =
             }).submit()
     }
 
-
 fun Activity.setTransparentSystemBar() {
     if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP || Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP_MR1) {
         window.apply {
@@ -155,24 +155,26 @@ fun Activity.setTransparentSystemBar() {
     }
 }
 
-fun Long?.isNullOrZero(defaultValue:Long) : Long{
-    if(this == null || this == 0L) return defaultValue
+fun Long?.isNullOrZero(defaultValue: Long): Long {
+    if (this == null || this == 0L) return defaultValue
     return this
 }
 
-fun Int?.isNullOrZero(defaultValue:Int) : Int{
-    if(this == null || this == 0) return defaultValue
+fun Int?.isNullOrZero(defaultValue: Int): Int {
+    if (this == null || this == 0) return defaultValue
     return this
 }
 
-fun View.show(){
-    if(visibility == View.GONE)
+fun View.show() {
+    if (visibility == View.GONE) {
         visibility = View.VISIBLE
+    }
 }
 
-fun View.hide(){
-    if(visibility == View.VISIBLE)
+fun View.hide() {
+    if (visibility == View.VISIBLE) {
         visibility = View.GONE
+    }
 }
 
 fun ImageView.grayscale() {
@@ -184,4 +186,12 @@ fun ImageView.grayscale() {
 
 fun launchWeblink(context: Context, webLink: String) {
     RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(webLink)))
+}
+
+fun Context.launchLink(appLink: String? = null, webLink: String? = null) {
+    if (TextUtils.isEmpty(appLink)) {
+        launchWeblink(this, webLink.orEmpty())
+    } else {
+        RouteManager.route(this, appLink)
+    }
 }
