@@ -577,12 +577,10 @@ class UserProfileViewModel @AssistedInject constructor(
                 likeStatus = review.likeDislike.switchLikeStatus()
             )
 
-            val selectedReview = _reviewContent.value.reviewList.find {
-                it.feedbackID == review.feedbackID
-            } ?: return@launchCatchError
+            val selectedReview = _reviewContent.value.reviewList.first { it.feedbackID == review.feedbackID }
 
             if (response.isLike != selectedReview.likeDislike.isLike) {
-                throw Exception()
+                throw Exception("like response is not expected.")
             }
         }) { throwable ->
             toggleLikeDislikeStatus(review.feedbackID)
