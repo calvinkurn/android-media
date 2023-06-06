@@ -20,15 +20,15 @@ import com.tokopedia.unifycomponents.UnifyButton
 class PlayUserReportSubmissionViewComponent(
     container: ViewGroup,
     private val listener: Listener
-) : ViewComponent(container, R.id.cl_user_report_submission_sheet) {
+) : ViewComponent(container, commonR.id.cl_user_report_submission_sheet) {
 
-    private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close) //change R
+    private val btnBack: IconUnify = findViewById(commonR.id.iv_sheet_close)
 
-    private val tvTitle: TextView = findViewById(R.id.tv_user_report_title)
-    private val tvDesc: TextView = findViewById(R.id.tv_user_report_desc)
-    private val etSubmission: TextAreaUnify2 = findViewById(R.id.et_detail_report)
-    private val btnSubmit: UnifyButton = findViewById(R.id.btn_action)
-    private val tvFooter: TextView = findViewById(R.id.tv_user_report_footer)
+    private val tvTitle: TextView = findViewById(commonR.id.tv_user_report_title)
+    private val tvDesc: TextView = findViewById(commonR.id.tv_user_report_desc)
+    private val etSubmission: TextAreaUnify2 = findViewById(commonR.id.et_detail_report)
+    private val btnSubmit: UnifyButton = findViewById(commonR.id.btn_action)
+    private val tvFooter: TextView = findViewById(commonR.id.tv_user_report_footer)
 
     private val errorFieldPrefix: String = "Isi"
 
