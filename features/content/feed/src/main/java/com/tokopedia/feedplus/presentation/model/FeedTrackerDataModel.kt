@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.presentation.model
 
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
+
 /**
  * Created By : Muhammad Furqan on 18/04/23
  */
@@ -9,7 +11,7 @@ data class FeedTrackerDataModel(
     val tabType: String,
     val typename: String,
     val type: String,
-    val authorType: Int,
+    val authorType: AuthorType,
     val mediaType: String,
     val isFollowing: Boolean,
     val contentScore: String,

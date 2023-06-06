@@ -1,10 +1,16 @@
 package com.tokopedia.feedplus.domain.mapper
 
+import com.tokopedia.content.common.report_content.model.FeedContentData
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
 import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaModel
 import com.tokopedia.feedplus.presentation.model.FeedMediaTagging
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -30,12 +36,11 @@ object MapperTopAdsXFeed {
 
         val feedAuthor = FeedAuthorModel(
             id = data?.cpm?.cpmShop?.id.orEmpty(),
-            type = FeedAuthorModel.TYPE_SHOP,
+            type = AuthorType.Shop,
             name = authorName,
-            description = data?.cpm?.decription.orEmpty(),
             badgeUrl = data?.cpm?.badges?.firstOrNull()?.imageUrl.orEmpty(),
             logoUrl = data?.cpm?.cpmImage?.fullEcs.orEmpty(),
-            applink = data?.applinks.orEmpty(),
+            appLink = data?.applinks.orEmpty(),
             encryptedUserId = "",
             isLive = false
         )
@@ -73,7 +78,18 @@ object MapperTopAdsXFeed {
             totalProducts = productList?.size.orZero(),
             media = mediaList.orEmpty(),
             followers = followers,
-            reportable = false,
+            menuItems = listOf(
+                FeedMenuItem(
+                    iconUnify = IconUnify.VISIBILITY,
+                    name = R.string.feed_watch_mode,
+                    type = FeedMenuIdentifier.WatchMode,
+                    contentData = FeedContentData(
+                        data?.cpm?.cpmShop?.slogan.orEmpty(),
+                        data?.id.orEmpty(),
+                        feedAuthor.id
+                    )
+                )
+            ),
             adViewUri = data?.cpm?.uri.orEmpty(),
             adViewUrl = data?.cpm?.cpmImage?.fullUrl.orEmpty(),
             share = currentModel.share.copy(

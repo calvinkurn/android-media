@@ -3,20 +3,23 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateAnnouncementDataV2
 import com.tokopedia.affiliate.model.response.AffiliateDiscoveryCampaignResponse
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
+import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
@@ -26,6 +29,7 @@ import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
+import okio.IOException
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,6 +39,7 @@ class AffiliatePromoViewModel @Inject constructor(
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase,
+    private val affiliateSSAShopUseCase: AffiliateSSAShopUseCase,
     private val graphqlRepository: GraphqlRepository
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
@@ -44,12 +49,12 @@ class AffiliatePromoViewModel @Inject constructor(
     private var affiliateAnnouncement = MutableLiveData<AffiliateAnnouncementDataV2>()
     private var discoBanners = MutableLiveData<AffiliateDiscoveryCampaignResponse>()
     private var tokoNowBottomSheetData = MutableLiveData<GenerateAffiliateLinkEligibility?>()
+    private val ssaShopList = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
 
-    fun isAffiliateSSAShopEnabled() =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AFFILIATE_SSA_SHOP,
-            ""
-        ) == AFFILIATE_SSA_SHOP
+    companion object {
+        private const val SUCCESS = 1
+        private const val DEFAULT_SSA_PAGE_SIZE = 7
+    }
 
     fun getSearch(productLink: String) {
         progressBar.value = true
@@ -153,6 +158,32 @@ class AffiliatePromoViewModel @Inject constructor(
         }
     }
 
+    fun fetchSSAShopList() {
+        viewModelScope.launch {
+            try {
+                affiliateSSAShopUseCase.getSSAShopList(
+                    Int.ZERO,
+                    DEFAULT_SSA_PAGE_SIZE
+                ).getSSAShopList?.let {
+                    if (it.data?.status == SUCCESS) {
+                        ssaShopList.value =
+                            it.data.shopData?.mapNotNull { ssaShop ->
+                                AffiliateSSAShopUiModel(
+                                    ssaShop,
+                                    true
+                                )
+                            }
+                    } else {
+                        errorMessage.value = it.data?.error?.message.orEmpty()
+                    }
+                }
+            } catch (e: IOException) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    fun getSSAShopList(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> = ssaShopList
     fun setValidateUserType(onRegistered: String) {
         validateUserState.value = onRegistered
     }

@@ -13,6 +13,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsTripleEntryPointsModel
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
@@ -129,7 +130,8 @@ object RechargeHomepageSectionMapper {
     fun mapHomepageSections(
         sections: List<RechargeHomepageSections.Section>,
         tickerList: RechargeTickerHomepageModel,
-        platformId: Int
+        platformId: Int,
+        isTripleEntryPointLoaded: Boolean
     ): List<Visitable<*>> {
         return sections.mapNotNull {
             val id = it.id
@@ -207,6 +209,7 @@ object RechargeHomepageSectionMapper {
                     SECTION_OFFERING_WIDGET -> RechargeHomepageOfferingWidgetModel(it)
                     SECTION_MY_BILLS_WIDGET -> RechargeHomepageMyBillsWidgetModel(it)
                     SECTION_MY_BILLS_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsEntryPointModel(it)
+                    SECTION_MY_BILLS_TRIPLE_ENTRYPOINT_WIDGET -> RechargeHomepageMyBillsTripleEntryPointsModel(it, isTripleEntryPointLoaded)
                     else -> null
                 }
             }
