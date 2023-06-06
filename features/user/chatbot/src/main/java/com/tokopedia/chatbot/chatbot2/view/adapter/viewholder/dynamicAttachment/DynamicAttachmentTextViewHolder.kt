@@ -1,9 +1,9 @@
 package com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.dynamicAttachment
 
 import android.graphics.drawable.Drawable
-import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
@@ -11,6 +11,8 @@ import com.tokopedia.chatbot.chatbot2.view.adapter.viewholder.BaseChatBotViewHol
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.toMessageUiModel
 import com.tokopedia.chatbot.chatbot2.view.util.ChatBackground
+import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
+import com.tokopedia.chatbot.chatbot2.view.util.generateRightMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode106Binding
@@ -49,7 +51,7 @@ class DynamicAttachmentTextViewHolder(
         binding?.apply {
             messageLayoutWithReply.fxChat?.message?.text = uiModel.message
             messageLayoutWithReply.replyBubbleContainer?.hide()
-            messageLayoutWithReply.background = bindBackground()
+            messageLayoutWithReply.background = bindBackground(uiModel)
             messageLayoutWithReply.fxChat?.setOnLongClickListener {
                 replyBubbleListener.showReplyOption(
                     uiModel.toMessageUiModel(),
@@ -64,19 +66,35 @@ class DynamicAttachmentTextViewHolder(
         }
     }
 
-    private fun bindBackground(): Drawable? {
-        return ViewUtil.generateBackgroundWithShadow(
-            binding?.messageLayoutWithReply,
-            R.color.chatbot_dms_right_chat_message_bg,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_0,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
-        )
+    private fun bindBackground(uiModel: DynamicAttachmentTextUiModel): Drawable? {
+        setUpGuideline(uiModel)
+        return if (uiModel.isSender) {
+            generateRightMessageBackground(
+                binding?.messageLayoutWithReply
+            )
+        } else {
+            generateLeftMessageBackground(
+                binding?.messageLayoutWithReply
+            )
+        }
+    }
+
+    private fun setUpGuideline(uiModel: DynamicAttachmentTextUiModel) {
+        if (uiModel.isSender) {
+            val params1 = binding?.guidelineStart?.layoutParams as ConstraintLayout.LayoutParams
+            params1.guidePercent = 0.2f
+            val params2 = binding?.guidelineEnd?.layoutParams as ConstraintLayout.LayoutParams
+            params2.guidePercent = 1f
+            binding?.guidelineStart?.layoutParams = params1
+            binding?.guidelineEnd?.layoutParams = params2
+        } else {
+            val params1 = binding?.guidelineStart?.layoutParams as ConstraintLayout.LayoutParams
+            params1.guidePercent = 0f
+            val params2 = binding?.guidelineEnd?.layoutParams as ConstraintLayout.LayoutParams
+            params2.guidePercent = 0.8f
+            binding?.guidelineStart?.layoutParams = params1
+            binding?.guidelineEnd?.layoutParams = params2
+        }
     }
 
     companion object {
