@@ -549,7 +549,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent[] intentArray = new Intent[0];
             if(getContext() != null){
                 intentArray = new Intent[1];
-                Intent mediaPickerIntent =  WebViewHelper.INSTANCE.getMediaPickerIntent(getContext());
+                Intent mediaPickerIntent = WebViewHelper.INSTANCE.getMediaPickerIntent(
+                    getContext(),
+                    hasVideo(fileChooserParams)
+                );
                 intentArray[0] = mediaPickerIntent;
             }
 
@@ -560,6 +563,22 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivityForResult(chooserIntent, ATTACH_FILE_REQUEST);
             return true;
 
+        }
+
+        private boolean hasVideo(WebChromeClient.FileChooserParams fileChooserParams) {
+            String[] acceptTypes = fileChooserParams.getAcceptTypes();
+            boolean hasVideo = false;
+
+            if (acceptTypes != null) {
+                for (String type : acceptTypes) {
+                    if (type != null && type.contains("video")) {
+                        hasVideo = true;
+                        break;
+                    }
+                }
+            }
+
+            return hasVideo;
         }
 
         @Override
@@ -637,6 +656,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     class MyWebViewClient extends WebViewClient {
         @Override
+        public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+            super.doUpdateVisitedHistory(view, url, isReload);
+            Activity activityInstance = getActivity();
+            if (activityInstance instanceof BaseSimpleWebViewActivity) {
+                ((BaseSimpleWebViewActivity) activityInstance).updateToolbarVisibility(url);
+            }
+        }
+
+        @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             String title = view.getTitle();
@@ -702,7 +730,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String requestUrl) {
-            if (hasCheckOverrideAtInitialization(requestUrl)) return false;
+            if (hasCheckOverrideAtInitialization(requestUrl) && !isHelpUrl(requestUrl)) return false;
             boolean overrideUrl = BaseWebViewFragment.this.shouldOverrideUrlLoading(view, requestUrl);
             checkActivityFinish();
             return overrideUrl;
@@ -810,6 +838,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (uri.getHost() == null) {
             return false;
         }
+
+        if(webView != null && isHelpUrl(url)){
+            launchWebviewForNewUrl(url);
+            return true;
+        }
+
         if (isBriIntent(uri)) {
             return handlingBriIntent(url);
         }
@@ -824,7 +858,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
-        if (uri.getPath().endsWith(".pdf") && url.startsWith("http")) {
+        if (handlePdfUri(uri)) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
                     , "application/pdf");
@@ -938,6 +972,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean handlePdfUri(Uri uri) {
+        // Handle e-pharmacy pdf & regular pdf url
+        return (uri.getPath().endsWith(".pdf") || url.endsWith(".pdf")) && url.startsWith("http");
     }
 
     private boolean handleWebUrlLogin(Uri uri) {
@@ -1144,6 +1183,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
         if (globalError != null) {
             globalError.setVisibility(View.GONE);
+        }
+        if(isHelpUrl(url)){
+            launchWebviewForNewUrl(url);
+            return;
         }
         webView.reload();
     }

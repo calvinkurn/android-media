@@ -24,6 +24,6 @@ class RegisterCheckUseCase @Inject constructor(
     }
 
     fun getRequestParams(id: String): Map<String, Any?> = mapOf(
-            PARAM_ID to id
+        PARAM_ID to id
     )
 }

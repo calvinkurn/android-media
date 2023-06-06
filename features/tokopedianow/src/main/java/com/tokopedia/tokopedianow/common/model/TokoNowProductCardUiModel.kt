@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.common.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardAdapter.*
+import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowProductCardAdapter.*
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.util.VariantUtil.isVariant
 
