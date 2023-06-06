@@ -27,9 +27,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -59,9 +56,6 @@ class ProductSummaryBottomSheet @Inject constructor(
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
-
-    private val job = SupervisorJob()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     override fun onProductDeleteClicked(product: ProductUiModel) {
         analytic.clickDeleteProductOnProductSetup(productId = product.id)
@@ -258,7 +252,6 @@ class ProductSummaryBottomSheet @Inject constructor(
 
         mListener?.onProductSummaryCommissionShown()
         productSummaryListView.getProductCommissionCoachMark { firstTextCommission ->
-            if (firstTextCommission == null) return@getProductCommissionCoachMark
             val coachMark = CoachMark2(requireContext())
             val coachMarkItem = CoachMark2Item(
                 anchorView = firstTextCommission,
@@ -267,7 +260,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                 position = CoachMark2.POSITION_BOTTOM,
             )
 
-            scope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
                 delay(DELAY_COACH_MARK_DURATION)
                 coachMark.showCoachMark(arrayListOf(coachMarkItem))
             }
