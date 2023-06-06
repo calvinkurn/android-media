@@ -555,7 +555,7 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
 
     fun addEmptyShowcaseResultState() {
         val newList = getNewVisitableItems()
-        visitables.add(ShopProductEmptyShowcaseUiModel())
+        newList.add(ShopProductEmptyShowcaseUiModel())
         submitList(newList)
         mapDataModel()
     }
