@@ -39,10 +39,14 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_total_payment"
-        android:layout_width="120dp"
+        android:layout_width="0dp"
         android:layout_height="20dp"
-        app:loader_type="rect"
-        android:visibility="gone"/>
+        android:maxWidth="120dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/barrier_btn_payment"
+        app:layout_constraintStart_toStartOf="@id/tv_total_payment_header"
+        app:layout_constraintTop_toBottomOf="@id/tv_total_payment_header"
+        app:loader_type="rect" />
 
     <!--    <LinearLayout-->
     <!--        android:layout_width="0dp"-->
