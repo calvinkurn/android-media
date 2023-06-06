@@ -295,6 +295,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
+    const val DF_STATISTIC = "df_statistic"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -873,7 +874,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
                 regexMatcherExternalAppLink.matches(it)
             }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
-            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
@@ -967,6 +967,16 @@ object DeeplinkDFMapper : CoroutineScope {
                     { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
                     DF_SELLER_FEEDBACK,
                     R.string.title_seller_feedback
+                )
+            )
+            add(
+                DFP(
+                    {
+                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) ||
+                        it.startsWithPattern(MERCHANT_STATISTIC_DASHBOARD)
+                    },
+                    DF_STATISTIC,
+                    R.string.title_statistic
                 )
             )
         }
