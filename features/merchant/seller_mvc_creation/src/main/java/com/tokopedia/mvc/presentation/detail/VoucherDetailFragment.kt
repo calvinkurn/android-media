@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.disable
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -31,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.setTextColorCompat
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toCalendar
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -260,6 +262,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
             }
         }
+        setupTicker(data.voucherDetail)
         setupHeaderSection(data.voucherDetail)
         setupVoucherTypeSection(data.voucherDetail)
         setupVoucherInfoSection(data.voucherDetail)
@@ -267,6 +270,16 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         setupProductListSection(data.voucherDetail)
         setupSpendingEstimationSection(data.voucherDetail)
         setupButtonSection(data.voucherDetail, data.creationMetadata.discountActive)
+    }
+
+    private fun setupTicker(voucherDetail: VoucherDetailData) {
+        binding?.run {
+            ticker.apply {
+                showWithCondition(voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty())
+                tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
+                setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
+            }
+        }
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -308,11 +321,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setPackage(data: VoucherDetailData) {
         headerBinding?.run {
-            if (data.isVps == FALSE && data.isSubsidy == FALSE) {
-                labelVoucherSource.invisible()
-                tpgVpsPackage.gone()
-            } else {
-                setPackageName(data)
+//            if (data.isVps == FALSE && data.isSubsidy == FALSE) {
+//                labelVoucherSource.invisible()
+//                tpgVpsPackage.gone()
+//            } else {
+//                setPackageName(data)
+//            }
+            labelVoucherSource.apply {
+                text = data.labelVoucher.labelSubsidyInfoFormatted
+                showWithCondition(data.labelVoucher.labelSubsidyInfoFormatted.isNotEmpty())
             }
         }
     }
@@ -377,7 +394,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         headerBinding?.run {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
-                    btnUbahKupon.visible()
+                    btnUbahKupon.apply {
+                        visible()
+                        if (data.isEditable) enable()
+                        else disable()
+                    }
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }

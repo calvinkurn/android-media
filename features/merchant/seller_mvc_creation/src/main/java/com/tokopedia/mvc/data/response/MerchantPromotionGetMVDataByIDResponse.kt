@@ -124,6 +124,8 @@ data class MerchantPromotionGetMVDataByIDResponse(
             val productIds: List<ProductId> = listOf(),
             @SerializedName("label_voucher")
             val labelVoucher: LabelVoucher = LabelVoucher(),
+            @SerializedName("is_editable")
+            val isEditable: Boolean = false,
             @SerializedName("subsidy_detail")
             val subsidyDetail: SubsidyDetail = SubsidyDetail()
         ) {

@@ -368,10 +368,10 @@
     <string name="smvc_canceled_voucher_confirmation_body_dialog">Dengan menghentikan kupon %s, calon pembeli tidak dapat menggunakan kupon ini, lho!</string>
     <string name="smvc_yes_deleted_voucher">Ya, Batalkan</string>
     <string name="smvc_yes_canceled_voucher">Ya, Hentikan</string>
-    <string name="smvc_cannot_deleted_call_tokopedia_care_title_dialog">Kupon dari Tokopedia tidak bisa dibatalkan sendiri</string>
-    <string name="smvc_cannot_deleted_call_tokopedia_care_desc_dialog">Kalau mau batalkan kupon ini, coba hubungi Tokopedia Care, ya.</string>
-    <string name="smvc_cannot_canceled_call_tokopedia_care_title_dialog">Kupon dari Tokopedia tidak bisa dihentikan sendiri</string>
-    <string name="smvc_cannot_canceled_call_tokopedia_care_desc_dialog">Kalau mau hentikan kupon ini, coba hubungi Tokopedia Care, ya.</string>
+    <string name="smvc_cannot_deleted_call_tokopedia_care_title_dialog">Kupon yang telah didaftarkan untuk partisipasi campaign tidak bisa dibatalkan</string>
+    <string name="smvc_cannot_deleted_call_tokopedia_care_desc_dialog">Jika kamu tetap ingin membatalkan kupon ini, hubungi Tokopedia Care, ya.</string>
+    <string name="smvc_cannot_canceled_call_tokopedia_care_title_dialog">Kupon yang telah didaftarkan untuk partisipasi campaign tidak bisa dibatalkan</string>
+    <string name="smvc_cannot_canceled_call_tokopedia_care_desc_dialog">Jika kamu tetap ingin membatalkan kupon ini, hubungi Tokopedia Care, ya.</string>
     <string name="smvc_call_tokopedia_care">Hubungi Tokopedia Care</string>
     <string name="smvc_failed_to_deleted_voucher">Kupon %s gagal dibatalkan.</string>
     <string name="smvc_success_to_deleted_voucher">Kupon %s berhasil dibatalkan.</string>

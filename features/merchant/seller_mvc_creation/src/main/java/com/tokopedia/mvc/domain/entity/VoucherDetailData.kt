@@ -65,6 +65,7 @@ data class VoucherDetailData(
     val voucherLockId: Long = 0,
     val productIds: List<ProductId> = listOf(),
     val labelVoucher: LabelVoucher = LabelVoucher(),
+    val isEditable: Boolean = false,
     val subsidyDetail: SubsidyDetail = SubsidyDetail()
 ) {
     data class ProductId(

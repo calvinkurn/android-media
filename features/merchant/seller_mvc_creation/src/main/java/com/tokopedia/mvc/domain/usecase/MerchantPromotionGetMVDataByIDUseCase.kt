@@ -128,6 +128,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                           promotion_status
                           promotion_label
                         }
+                      }
                     }
                   }
                 }
