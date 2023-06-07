@@ -518,7 +518,7 @@ class CampaignRuleViewModel @Inject constructor(
     ): DoSellerCampaignCreationUseCase.Param {
         val campaignRelations = getCampaignRelationIds(campaignId)
         val selectedPaymentType = selectedPaymentType.value ?: campaignData.paymentType
-        val isEnableOosTransaction = selectedOosState.value ?: campaignData.isOosImprovement // The default value should assigned to true
+        val isEnableOosTransaction = selectedOosState.value ?: true // The default value should assigned to true -> It's aligned with the UI, if the user didn't do anything, the default selection will be true or can transact if the campaign is out of stock
         val isCampaignRuleSubmit = isTNCConfirmed.value == true
         return DoSellerCampaignCreationUseCase.Param(
             action = action,
