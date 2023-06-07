@@ -42,10 +42,10 @@ class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?
     fun bindData(taskProgress: TaskProgress) {
         binding.tvProgress.text = taskProgress.title
         taskProgress.progress?.let {
-            binding.tvProgressValue.text = String.format(Locale.getDefault(), context.getString(com.tokopedia.scp_rewards_widgets.R.string.progress_percent), it)
+            binding.tvProgressPercent.text = String.format(Locale.getDefault(), context.getString(com.tokopedia.scp_rewards_widgets.R.string.progress_percent), it)
             binding.progressBar.setValue(it)
         } ?: run {
-            binding.tvProgressValue.gone()
+            binding.tvProgressPercent.gone()
             binding.progressBar.gone()
         }
 

@@ -11,6 +11,7 @@ data class TaskProgress(
 data class Task(
     val title: String? = null,
     val isCompleted: Boolean? = false,
-) : Visitable<TasksViewTypeFactory>{
+    val progressInfo: String? = null,
+) : Visitable<TasksViewTypeFactory> {
     override fun type(typeFactory: TasksViewTypeFactory): Int = typeFactory.type(this)
 }

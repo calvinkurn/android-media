@@ -253,7 +253,8 @@ class MedalDetailFragment : BaseDaggerFragment() {
                     tasks = safeMission.task?.map {
                         Task(
                             title = it.title,
-                            isCompleted = it.isCompleted
+                            isCompleted = it.isCompleted,
+                            progressInfo = it.progressInfo,
                         )
                     }
                 )
