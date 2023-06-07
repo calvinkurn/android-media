@@ -14,7 +14,6 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOUR
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_KEY
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSeparatorUiModel
@@ -188,10 +187,14 @@ class UniversalInboxMenuMapper @Inject constructor(
     }
 
     private fun getVariant(): VariantType {
-        val variantAB = abTestPlatform.getString(ROLLENCE_KEY, ROLLENCE_TYPE_A)
-        return if (variantAB == ROLLENCE_TYPE_A) {
-            VariantType.INBOX_VAR_A
-        } else {
+        return try {
+            val variantAB = abTestPlatform.getString(ROLLENCE_KEY, ROLLENCE_TYPE_A)
+            if (variantAB == ROLLENCE_TYPE_A) {
+                VariantType.INBOX_VAR_A
+            } else {
+                VariantType.INBOX_VAR_B
+            }
+        } catch (throwable: Throwable) {
             VariantType.INBOX_VAR_B
         }
     }

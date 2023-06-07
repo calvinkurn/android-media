@@ -19,20 +19,6 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
-import com.tokopedia.topads.sdk.utils.PARAM_EP
-import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.PARAM_ITEM
-import com.tokopedia.topads.sdk.utils.PARAM_PAGE
-import com.tokopedia.topads.sdk.utils.PARAM_SRC
-import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
-import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
-import com.tokopedia.topads.sdk.utils.UrlParamHelper
-import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
-import com.tokopedia.topads.sdk.utils.VALUE_EP
-import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
-import com.tokopedia.topads.sdk.utils.VALUE_ITEM
-import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -56,8 +42,8 @@ class UniversalInboxViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
 
-    private val _inboxMenu = MutableLiveData<Result<List<Any>>>()
-    val inboxMenu: LiveData<Result<List<Any>>>
+    private val _inboxMenu = MutableLiveData<List<Any>>()
+    val inboxMenu: LiveData<List<Any>>
         get() = _inboxMenu
 
     private val _widget = MutableLiveData<UniversalInboxWidgetMetaUiModel>()
@@ -78,7 +64,7 @@ class UniversalInboxViewModel @Inject constructor(
 
     fun generateStaticMenu() {
         val staticMenuList = inboxMenuMapper.getStaticMenu(userSession)
-        _inboxMenu.postValue(Success(staticMenuList))
+        _inboxMenu.postValue(staticMenuList)
     }
 
     fun loadWidgetMetaAndCounter() {
@@ -88,11 +74,16 @@ class UniversalInboxViewModel @Inject constructor(
                     val widgetMetaResponse = getWidgetMeta()
                     val allCounterResponse = getAllCounter()
                     val result = inboxMenuMapper.mapWidgetMetaToUiModel(
-                        widgetMetaResponse, allCounterResponse
+                        widgetMetaResponse,
+                        allCounterResponse
                     )
                     _widget.postValue(result)
                 } catch (throwable: Throwable) {
-                    _widget.postValue(inboxMenuMapper.mapWidgetMetaToUiModel())
+                    _widget.postValue(
+                        UniversalInboxWidgetMetaUiModel(
+                            isError = true
+                        )
+                    )
                 }
             }
         }
@@ -196,20 +187,5 @@ class UniversalInboxViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    fun getHeadlineAdsParam(topAdsHeadLinePage: Int): String {
-        return UrlParamHelper.generateUrlParamString(
-            mutableMapOf(
-                PARAM_DEVICE to VALUE_DEVICE,
-                PARAM_PAGE to topAdsHeadLinePage,
-                PARAM_EP to VALUE_EP,
-                PARAM_HEADLINE_PRODUCT_COUNT to VALUE_HEADLINE_PRODUCT_COUNT,
-                PARAM_ITEM to VALUE_ITEM,
-                PARAM_SRC to PAGE_NAME,
-                PARAM_TEMPLATE_ID to VALUE_TEMPLATE_ID,
-                PARAM_USER_ID to userSession.userId
-            )
-        )
     }
 }
