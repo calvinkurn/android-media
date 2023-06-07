@@ -522,7 +522,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             )
     }
 
-
     @Test
     fun `when removing product to cart, request should be failed`() = runTest {
         // mock data
