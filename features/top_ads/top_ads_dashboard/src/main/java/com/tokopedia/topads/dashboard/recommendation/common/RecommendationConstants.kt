@@ -23,5 +23,8 @@ object RecommendationConstants {
     const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
     const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
     const val INVALID_INSIGHT_TYPE = -1
-    const val INVALID_INSIGHT_TYPE2 = -1
+
+    const val KEY_AD_GROUP_TYPES = "adGroupTypes"
+    const val TAB_NAME_PRODUCT = "Iklan Produk"
+    const val TAB_NAME_SHOP = "Iklan Toko"
 }
