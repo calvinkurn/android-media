@@ -27,7 +27,7 @@ class CouponImageView @JvmOverloads constructor(
     companion object{
         private const val EDGE_RADIUS_MULTIPLIER = 10f
     }
-    var circularEdgeColor = ContextCompat.getColor(context,R.color.white)
+    var circularEdgeColor = ContextCompat.getColor(context,R.color.Unify_NN0)
         set(value) {
             field = value
             refresh()
