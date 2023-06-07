@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/info_bs_img"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="paragraph_2"
         tools:text="Barang dikirim oleh toko ini dari lokasi yam oleh toko ini dari lokasi yam oleh toko ini dari lokasi yang stoknya tersedia untukmu. Mungkin akan ada perubahan harga, ya." />
 
     <androidx.constraintlayout.widget.Barrier
