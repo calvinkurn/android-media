@@ -19,7 +19,7 @@ import com.tokopedia.media.loader.internal.NetworkManager
 import timber.log.Timber
 import java.io.InputStream
 
-class AdaptiveImageSizeLoader constructor(
+internal class AdaptiveImageSizeLoader constructor(
     private val context: Context,
     loader: ModelLoader<GlideUrl, InputStream>,
     cache: ModelCache<String, GlideUrl?>
