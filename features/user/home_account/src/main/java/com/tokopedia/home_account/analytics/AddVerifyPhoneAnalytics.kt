@@ -2,8 +2,9 @@ package com.tokopedia.home_account.analytics
 
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.track.builder.Tracker
+import javax.inject.Inject
 
-class AddVerifyPhoneAnalytics {
+class AddVerifyPhoneAnalytics @Inject constructor() {
 
     private fun generateTracker(): Tracker.Builder {
         return Tracker.Builder()

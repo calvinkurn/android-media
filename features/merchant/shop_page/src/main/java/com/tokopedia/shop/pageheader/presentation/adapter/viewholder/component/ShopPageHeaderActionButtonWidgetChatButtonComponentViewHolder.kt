@@ -5,6 +5,7 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.LayoutShopActionButtonWidgetChatButtonComponentBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopPageHeaderButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopPageHeaderWidgetUiModel
@@ -19,6 +20,7 @@ class ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_action_button_widget_chat_button_component
+        private const val BUTTON_SIZE_FOLD_ABLE = 4
     }
 
     interface Listener {
@@ -42,6 +44,9 @@ class ShopPageHeaderActionButtonWidgetChatButtonComponentViewHolder(
             lp.flexGrow = 1.0f
         }
         buttonChat?.apply {
+            if(ShopUtil.isFoldable){
+                buttonChat.buttonSize = UnifyButton.Size.SMALL
+            }
             text = model.label
             setOnClickListener {
                 shopActionButtonWidgetChatButtonComponentListener.onButtonChatClicked(
