@@ -54,6 +54,7 @@ import com.tokopedia.videoTabComponent.viewmodel.PlayFeedVideoTabViewModel
 import com.tokopedia.videoTabComponent.viewmodel.VideoTabAdapter
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 class VideoTabFragment :
     PlayWidgetListener,
@@ -165,11 +166,11 @@ class VideoTabFragment :
                             val errorMsg = if (it.throwable is CustomUiMessageThrowable) {
                                 getString(
                                     (it.throwable as? CustomUiMessageThrowable)?.errorMessageId
-                                        ?: com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder
+                                        ?: contentCommonR.string.feed_video_tab_error_reminder
                                 )
                             } else {
                                 it.throwable.message
-                                    ?: getString(com.tokopedia.content.common.R.string.feed_video_tab_error_reminder)
+                                    ?: getString(contentCommonR.string.feed_video_tab_error_reminder)
                             }
                             showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
@@ -458,9 +459,9 @@ class VideoTabFragment :
     private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
         showToast(
             if (playWidgetFeedReminderInfoData.reminderType.reminded) {
-                getString(com.tokopedia.content.common.R.string.feed_video_tab_success_add_reminder)
+                getString(contentCommonR.string.feed_video_tab_success_add_reminder)
             } else {
-                getString(com.tokopedia.content.common.R.string.feed_video_tab_success_remove_reminder)
+                getString(contentCommonR.string.feed_video_tab_success_remove_reminder)
             },
             Toaster.TYPE_NORMAL
         )

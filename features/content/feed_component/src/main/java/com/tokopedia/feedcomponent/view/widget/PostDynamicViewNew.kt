@@ -521,7 +521,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         shareButton.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
 
-            val desc = context.getString(com.tokopedia.content.common.R.string.feed_share_default_text)
+            val desc = context.getString(contentCommonR.string.feed_share_default_text)
             val url =
                 if (feedXCard.isTopAds && feedXCard.media.size > feedXCard.lastCarouselIndex) {
                     feedXCard.media[feedXCard.lastCarouselIndex].webLink
@@ -689,23 +689,23 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         //region bind content sub info
         val contentSubInfoValue = if (isTopads) {
-            context.getString(com.tokopedia.content.common.R.string.feeds_ads_text)
+            context.getString(contentCommonR.string.feeds_ads_text)
         } else if (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT) {
             when (feedXCard.type) {
-                ASGC_NEW_PRODUCTS -> context.getString(com.tokopedia.content.common.R.string.feeds_asgc_new_product_text)
-                ASGC_RESTOCK_PRODUCTS -> context.getString(com.tokopedia.content.common.R.string.feeds_asgc_restock_text)
-                ASGC_DISCOUNT_TOKO -> context.getString(com.tokopedia.content.common.R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO -> context.getString(com.tokopedia.content.common.R.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL -> context.getString(com.tokopedia.content.common.R.string.feed_asgc_rilisan_special)
+                ASGC_NEW_PRODUCTS -> context.getString(contentCommonR.string.feeds_asgc_new_product_text)
+                ASGC_RESTOCK_PRODUCTS -> context.getString(contentCommonR.string.feeds_asgc_restock_text)
+                ASGC_DISCOUNT_TOKO -> context.getString(contentCommonR.string.feed_asgc_diskon_toko)
+                ASGC_FLASH_SALE_TOKO -> context.getString(contentCommonR.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(contentCommonR.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
             if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(com.tokopedia.content.common.R.string.feed_header_follow_count_text),
+                    context.getString(contentCommonR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
-            } else context.getString(com.tokopedia.content.common.R.string.feed_header_follow_count_less_text)
+            } else context.getString(contentCommonR.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
             shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
@@ -748,13 +748,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
             sendHeaderTopadsEvent(positionInFeed, author.appLink, cpmData, true)
         }
         val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
-            context.getString(com.tokopedia.content.common.R.string.kol_action_following_color)
+            context.getString(contentCommonR.string.kol_action_following_color)
         } else {
-            context.getString(com.tokopedia.content.common.R.string.kol_action_follow_color)
+            context.getString(contentCommonR.string.kol_action_follow_color)
         }
         if (!isFollowed || followers.transitionFollow) {
             this.authorFollowAction.text = MethodChecker.fromHtml(
-                "${context.getString(com.tokopedia.content.common.R.string.feed_header_separator)}$textFollowAction"
+                "${context.getString(contentCommonR.string.feed_header_separator)}$textFollowAction"
 
             )
             this.authorFollowAction.setOnClickListener {
@@ -828,7 +828,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likedText.text =
                 MethodChecker.fromHtml(
                     context.getString(
-                        R.string.feed_component_viewed_count_text,
+                        contentCommonR.string.feed_component_viewed_count_text,
                         view.count.productThousandFormatted(1)
                     )
                 )
@@ -872,12 +872,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 if (like.isLiked) {
                     if (like.count == 1) {
                         likedText.text =
-                            context.getString(com.tokopedia.content.common.R.string.feed_component_liked_count_text_only_me)
+                            context.getString(contentCommonR.string.feed_component_liked_count_text_only_me)
                     } else
                         likedText.text =
                             MethodChecker.fromHtml(
                                 context.getString(
-                                    R.string.feed_component_liked_by_text_me,
+                                    contentCommonR.string.feed_component_liked_by_text_me,
                                     (like.count - 1).productThousandFormatted(1)
                                 )
                             )
@@ -885,14 +885,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     likedText.text =
                         MethodChecker.fromHtml(
                             context.getString(
-                                R.string.feed_component_liked_count_text,
+                                contentCommonR.string.feed_component_liked_count_text,
                                 like.count.productThousandFormatted(1)
                             )
                         )
             } else {
                 likedText.text = MethodChecker.fromHtml(
                     context.getString(
-                        R.string.feed_component_liked_by_text,
+                        contentCommonR.string.feed_component_liked_by_text,
                         getLikedByText(like.likedBy),
                         like.count.productThousandFormatted(1)
                     )
@@ -982,7 +982,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             val readMoreCaption = FeedCaption.ReadMore(
                 maxTrimChar = MAX_CHAR,
-                label = context.getString(com.tokopedia.content.common.R.string.feed_component_read_more_button),
+                label = context.getString(contentCommonR.string.feed_component_read_more_button),
                 colorRes = MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N400
@@ -1045,7 +1045,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             likeButton2.hide()
         }
         userImage.setImageUrl(profilePicture)
-        addCommentHint.hint = context.getString(com.tokopedia.content.common.R.string.feed_component_add_comment, name)
+        addCommentHint.hint = context.getString(contentCommonR.string.feed_component_add_comment, name)
 
         var authId = ""
         if (authorType != 1)
@@ -1091,7 +1091,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
-            context.getString(com.tokopedia.content.common.R.string.feed_component_see_all_comments, comments.countFmt)
+            context.getString(contentCommonR.string.feed_component_see_all_comments, comments.countFmt)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1638,7 +1638,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val spannableString =
             SpannableString(
                 String.format(
-                    context.getString(com.tokopedia.content.common.R.string.feed_header_time_new),
+                    context.getString(contentCommonR.string.feed_header_time_new),
                     avatarDate
                 )
             )
@@ -1896,7 +1896,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun getCTAButtonText(card: FeedXCard) =
         if (card.isTypeProductHighlight) card.cta.text
-        else context.getString(com.tokopedia.content.common.R.string.feeds_cek_sekarang)
+        else context.getString(contentCommonR.string.feeds_cek_sekarang)
 
     private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
 
