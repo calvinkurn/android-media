@@ -3,28 +3,35 @@ package com.tokopedia.inbox.universalinbox.view
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.inbox.databinding.UniversalInboxActivityBinding
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxActivityComponentFactory
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
 import com.tokopedia.inbox.R
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_PERCENTAGE_X_POSITION
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_DEFAULT_PERCENTAGE_X_POSITION
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_MAX_PERCENTAGE_X_POSITION
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.ICON_PERCENTAGE_Y_POSITION
-import com.tokopedia.inbox.universalinbox.util.UniversalInboxViewUtil.getStringCounter
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.NotificationUnify
-import com.tokopedia.unifycomponents.toPx
 
 class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxComponent> {
 
     private var universalInboxComponent: UniversalInboxComponent? = null
     private var viewBinding: UniversalInboxActivityBinding? = null
+    private var toolbarNotificationIcon: IconNotification? = null
+
+    var listener: UniversalInboxCounterListener? = null
 
     override fun getNewFragment(): Fragment {
         return UniversalInboxFragment.getFragment(
@@ -74,20 +81,15 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
     private fun setupToolbar() {
         val mInflater = LayoutInflater.from(this)
         val toolbarCustomView = mInflater.inflate(R.layout.universal_inbox_toolbar, null)
-        toolbarCustomView.findViewById<IconNotification>(R.id.inbox_icon_notif).apply {
-            val strCounter = getStringCounter(100)
-            notificationRef.showWithCondition(strCounter.isNotEmpty())
-            setNotifXY(
-                ICON_PERCENTAGE_X_POSITION,
-                ICON_PERCENTAGE_Y_POSITION
-            )
-            notificationRef.setNotification(
-                notif = strCounter,
-                notificationType = NotificationUnify.COUNTER_TYPE,
-                colorType = NotificationUnify.COLOR_PRIMARY
-            )
+        toolbarNotificationIcon = toolbarCustomView.findViewById<IconNotification>(
+            R.id.inbox_icon_notif
+        ).apply {
+            notificationRef.hide()
             setImageWithUnifyIcon(IconUnify.BELL)
             notificationGravity = Gravity.TOP or Gravity.END
+            setOnClickListener {
+                goToNotifCenter()
+            }
         }
         viewBinding?.inboxToolbar?.apply {
             isShowShadow = true
@@ -109,5 +111,36 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
             .createUniversalInboxComponent(application).also {
                 universalInboxComponent = it
             }
+    }
+
+    private fun goToNotifCenter() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.NOTIFICATION)
+        notifCenterResultLauncher.launch(intent)
+    }
+
+    private val notifCenterResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+       listener?.refreshCounter()
+    }
+
+    fun updateNotificationCounter(strCounter: String) {
+        toolbarNotificationIcon?.apply {
+            notificationRef.showWithCondition(strCounter.isNotEmpty())
+            notificationRef.setNotification(
+                notif = strCounter,
+                notificationType = NotificationUnify.COUNTER_TYPE,
+                colorType = NotificationUnify.COLOR_PRIMARY
+            )
+            val xPosition = if (strCounter.length > 2) {
+                ICON_DEFAULT_PERCENTAGE_X_POSITION
+            } else {
+                ICON_MAX_PERCENTAGE_X_POSITION
+            }
+            setNotifXY(
+                xPosition,
+                ICON_PERCENTAGE_Y_POSITION
+            )
+        }
     }
 }

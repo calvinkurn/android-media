@@ -26,4 +26,8 @@ object UniversalInboxValueUtil {
     // Wishlist
     const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
     const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
+
+    // Review
+    const val PAGE_SOURCE_KEY: String = "pageSource"
+    const val PAGE_SOURCE_REVIEW_INBOX = "review inbox"
 }

@@ -5,9 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.viewholder.UniversalInboxMenuItemViewHolder
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 
-class UniversalInboxMenuItemDelegate:
+class UniversalInboxMenuItemDelegate(
+    private val listener: UniversalInboxMenuListener
+):
     TypedAdapterDelegate<UniversalInboxMenuUiModel, Any, UniversalInboxMenuItemViewHolder>(
         UniversalInboxMenuItemViewHolder.LAYOUT
     ) {
@@ -24,7 +27,7 @@ class UniversalInboxMenuItemDelegate:
         parent: ViewGroup,
         basicView: View
     ): UniversalInboxMenuItemViewHolder {
-        return UniversalInboxMenuItemViewHolder(basicView)
+        return UniversalInboxMenuItemViewHolder(basicView, listener)
     }
 
 }
