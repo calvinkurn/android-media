@@ -30,6 +30,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
+import com.tokopedia.content.common.R as contentCommonR
 
 class FeedVODViewHolder @JvmOverloads constructor(
     context: Context,
@@ -344,7 +345,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
                     if (view.count != 0) {
                         val viewText = MethodChecker.fromHtml(
                             context.getString(
-                                R.string.feed_component_viewed_count_text,
+                                contentCommonR.string.feed_component_viewed_count_text,
                                 it.productThousandFormatted(1)
                             )
                         )
