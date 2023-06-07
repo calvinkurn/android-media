@@ -11,7 +11,7 @@
     android:paddingBottom="14dp"
     android:layout_marginBottom="16dp"
     android:background="@drawable/bg_addon_info_rounded_grey">
-    
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_product_addon"
         android:layout_width="14dp"
@@ -19,7 +19,20 @@
         app:icon_name="PRODUCT_ADD"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tv_title_addon_product"
-        app:layout_constraintTop_toTopOf="@id/tv_title_addon_product"/>
+        app:layout_constraintTop_toTopOf="@id/tv_title_addon_product"
+        android:visibility="visible"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_ic_product_addon"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ll_addon_product_items"
+        app:loader_type="rect"
+        android:visibility="gone"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="4dp"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title_addon_product"
@@ -31,6 +44,17 @@
         tools:text="Tambahan"
         app:typographyType="display_3"
         app:typographyWeight="bold"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_tv_title"
+        android:layout_width="56dp"
+        android:layout_height="8dp"
+        app:layout_constraintTop_toTopOf="@id/loader_ic_product_addon"
+        app:layout_constraintBottom_toBottomOf="@id/loader_ic_product_addon"
+        app:layout_constraintStart_toEndOf="@id/loader_ic_product_addon"
+        android:layout_marginStart="8dp"
+        app:loader_type="rect"
+        android:visibility="gone"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_see_all_addon_product"
@@ -52,5 +76,16 @@
         app:layout_constraintTop_toBottomOf="@id/tv_title_addon_product"
         android:layout_marginTop="3dp"
         android:orientation="vertical"/>
+
+    <LinearLayout
+        android:id="@+id/ll_addon_product_loaders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loader_ic_product_addon"
+        android:layout_marginTop="3dp"
+        android:orientation="vertical"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

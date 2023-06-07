@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductLoaderBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -417,6 +418,14 @@ class ShipmentCartItemViewHolder(
     }
 
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
+        binding.itemShipmentAddonProduct.apply {
+            loaderIcProductAddon.gone()
+            loaderTvTitle.gone()
+            llAddonProductLoaders.gone()
+            icProductAddon.visible()
+            tvTitleAddonProduct.visible()
+            llAddonProductItems.visible()
+        }
         val addOnProduct = cartItemModel.addOnProduct
         if (addOnProduct.listAddOnProductData.isEmpty()) {
             binding.llAddonProduct.gone()
@@ -445,6 +454,7 @@ class ShipmentCartItemViewHolder(
                             .removeDecimalSuffix()
                     addOnView.apply {
                         cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
+                            showLoaderAddOnProduct(cartItemModel)
                             listener?.onCheckboxAddonProductListener(addon)
                         }
                         icProductAddonInfo.setOnClickListener {
@@ -454,6 +464,23 @@ class ShipmentCartItemViewHolder(
                     binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
                 }
             }
+        }
+    }
+
+    private fun showLoaderAddOnProduct(cartItemModel: CartItemModel) {
+        binding.itemShipmentAddonProduct.apply {
+            icProductAddon.gone()
+            tvTitleAddonProduct.gone()
+            tvSeeAllAddonProduct.gone()
+            llAddonProductItems.gone()
+            loaderIcProductAddon.visible()
+            loaderTvTitle.visible()
+            llAddonProductLoaders.visible()
+        }
+        binding.itemShipmentAddonProduct.llAddonProductLoaders.removeAllViews()
+        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+            val loaderView = ItemShipmentAddonProductLoaderBinding.inflate(layoutInflater, null, false)
+            binding.itemShipmentAddonProduct.llAddonProductLoaders.addView(loaderView.root)
         }
     }
 
