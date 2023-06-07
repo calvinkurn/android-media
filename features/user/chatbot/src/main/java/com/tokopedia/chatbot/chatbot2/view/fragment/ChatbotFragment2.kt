@@ -139,6 +139,7 @@ import com.tokopedia.chatbot.chatbot2.view.listener.SmoothScroller
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.chatbot2.view.uimodel.dynamicattachment.DynamicAttachmentTextUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.ChatOptionListUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyListUiModel
@@ -332,6 +333,8 @@ class ChatbotFragment2 :
 
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
     private var dynamicAttachmentRejectReasons: DynamicAttachmentRejectReasons? = null
+    private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
+    private var quickReplyList: kotlin.collections.List<QuickReplyUiModel> = emptyList()
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
@@ -999,8 +1002,6 @@ class ChatbotFragment2 :
         viewModel.dynamicAttachmentRejectReasonState.observe(viewLifecycleOwner) {
             when (it) {
                 is ChatbotRejectReasonsState.ChatbotRejectReasonData -> {
-                    // TODO add the quick reply here
-                    // On clicking that quick reply open the Bottom Sheet
                     getViewState()?.handleQuickReplyFromDynamicAttachment(true, it.rejectReasons)
                     dynamicAttachmentRejectReasons = it.rejectReasons
                 }
@@ -1278,6 +1279,7 @@ class ChatbotFragment2 :
     ) {
         processDynamicAttachmentFromHistoryForContentCode100(chatroomViewModel)
         processDynamicAttachmentFromHistoryForContentCode101(chatroomViewModel)
+        processDynamicAttachmentFromHistoryForContentCode107(chatroomViewModel)
         val list = filterChatList(chatroomViewModel)
 
         updateViewData(chatroomViewModel)
@@ -1372,6 +1374,18 @@ class ChatbotFragment2 :
                     return
                 }
             }
+        }
+    }
+
+    private fun processDynamicAttachmentFromHistoryForContentCode107(chatroom: ChatroomViewModel) {
+        chatroom.listChat.forEach {
+            if (it !is DynamicAttachmentTextUiModel) {
+                return
+            }
+            if (it.attachmentType != DYNAMIC_ATTACHMENT) {
+                return
+            }
+            it.rejectReasons?.let { data -> viewModel.handleDynamicAttachmentRejectReasons(data) }
         }
     }
 
@@ -1523,6 +1537,9 @@ class ChatbotFragment2 :
 
             reasonsBottomSheet.show(childFragmentManager, "")
         }
+
+        reasonsBottomSheet?.setUpListener(this)
+        reasonsBottomSheet?.show(childFragmentManager, "")
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String, isSecure: Boolean) {

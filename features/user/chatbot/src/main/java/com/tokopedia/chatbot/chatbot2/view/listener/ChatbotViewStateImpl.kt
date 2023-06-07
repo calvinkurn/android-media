@@ -39,6 +39,7 @@ import com.tokopedia.chatbot.chatbot2.view.uimodel.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.chatbot2.view.uimodel.videoupload.VideoUploadUiModel
+import com.tokopedia.chatbot.chatbot2.view.util.helper.toQuickReplyUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TextAreaUnify2
@@ -444,19 +445,13 @@ class ChatbotViewStateImpl(
         showQuickReply(list, true)
     }
 
-    private fun DynamicAttachmentRejectReasons.toQuickReplyUiModel(): List<QuickReplyUiModel> {
-        return this.helpfulQuestion.newQuickRepliesList.map {
-            it.toQuickReplyUiModel()
-        }
+    override fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        quickReplyUiModel: List<QuickReplyUiModel>
+    ) {
+        showQuickReply(quickReplyUiModel, true)
     }
 
-    private fun DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion.RejectReasonNewQuickReply.toQuickReplyUiModel(): QuickReplyUiModel {
-        return QuickReplyUiModel(
-            this.text,
-            this.value,
-            this.action
-        )
-    }
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view
     }

@@ -98,4 +98,9 @@ interface ChatbotViewState : BaseChatViewState {
         toShow: Boolean,
         rejectReasons: DynamicAttachmentRejectReasons
     )
+
+    fun handleQuickReplyFromDynamicAttachment(
+        toShow: Boolean,
+        quickReplyUiModel: List<QuickReplyUiModel>
+    )
 }

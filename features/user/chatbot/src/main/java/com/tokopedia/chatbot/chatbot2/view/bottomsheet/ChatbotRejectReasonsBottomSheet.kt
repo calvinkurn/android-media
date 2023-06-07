@@ -86,7 +86,9 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        fun newInstance(rejectReasonFeedbackForm: DynamicAttachmentRejectReasons): ChatbotRejectReasonsBottomSheet {
+        fun newInstance(
+            rejectReasonFeedbackForm: DynamicAttachmentRejectReasons? = null
+        ): ChatbotRejectReasonsBottomSheet {
             return ChatbotRejectReasonsBottomSheet().apply {
                 this.rejectReasonFeedbackForm = rejectReasonFeedbackForm
             }

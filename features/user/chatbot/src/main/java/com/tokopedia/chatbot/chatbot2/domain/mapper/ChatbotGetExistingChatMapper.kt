@@ -163,6 +163,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             .withResponseFromGQL(pojo)
             .isSender(false)
             .withMsg(dynamicStickyButton.helpfulQuestion.message)
+            .withRejectReasons(dynamicStickyButton)
             .build()
     }
 

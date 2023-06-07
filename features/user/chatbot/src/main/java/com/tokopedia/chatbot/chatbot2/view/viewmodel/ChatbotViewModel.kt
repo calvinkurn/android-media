@@ -1187,7 +1187,7 @@ class ChatbotViewModel @Inject constructor(
         }
     }
 
-    private fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {
+    fun handleDynamicAttachmentRejectReasons(rejectReasonData: DynamicAttachmentRejectReasons) {
         _dynamicAttachmentRejectReasonState.postValue(
             ChatbotRejectReasonsState.ChatbotRejectReasonData(
                 rejectReasonData
