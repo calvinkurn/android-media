@@ -44,39 +44,39 @@ inline fun <T> Iterable<T>.getWithIndex(predicate: (T) -> Boolean): Pair<Int, T>
     return null
 }
 
-fun <T1, T2, T3, T4, T5> combineFifth(
+fun <T1, T2, T3, T4, T5> combine(
         f1: LiveData<T1>,
         f2: LiveData<T2>,
         f3: LiveData<T3>,
         f4: LiveData<T4>,
         f5: LiveData<T5>
-): MediatorLiveData<Fifth<T1?, T2?, T3?, T4?, T5?>>
-        = MediatorLiveData<Fifth<T1?, T2?, T3?, T4?, T5?>>().also { mediator ->
-    mediator.value = Fifth(f1.value, f2.value, f3.value, f4.value, f5.value)
+): MediatorLiveData<Combination<T1?, T2?, T3?, T4?, T5?>>
+        = MediatorLiveData<Combination<T1?, T2?, T3?, T4?, T5?>>().also { mediator ->
+    mediator.value = Combination(f1.value, f2.value, f3.value, f4.value, f5.value)
 
     mediator.addSource(f1) { t1: T1? ->
         val (_, t2, t3, t4, t5) = mediator.value!!
-        mediator.value = Fifth(t1, t2, t3, t4, t5)
+        mediator.value = Combination(t1, t2, t3, t4, t5)
     }
 
     mediator.addSource(f2) { t2: T2? ->
         val (t1, _, t3, t4, t5) = mediator.value!!
-        mediator.value = Fifth(t1, t2, t3, t4, t5)
+        mediator.value = Combination(t1, t2, t3, t4, t5)
     }
 
     mediator.addSource(f3) { t3: T3? ->
         val (t1, t2, _, t4, t5) = mediator.value!!
-        mediator.value = Fifth(t1, t2, t3, t4, t5)
+        mediator.value = Combination(t1, t2, t3, t4, t5)
     }
 
     mediator.addSource(f4) { t4: T4? ->
         val (t1, t2, t3, _, t5) = mediator.value!!
-        mediator.value = Fifth(t1, t2, t3, t4, t5)
+        mediator.value = Combination(t1, t2, t3, t4, t5)
     }
 
     mediator.addSource(f5) { t5: T5? ->
         val (t1, t2, t3, t4, _) = mediator.value!!
-        mediator.value = Fifth(t1, t2, t3, t4, t5)
+        mediator.value = Combination(t1, t2, t3, t4, t5)
     }
 }
 

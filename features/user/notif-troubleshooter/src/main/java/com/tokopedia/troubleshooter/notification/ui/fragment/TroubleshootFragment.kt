@@ -41,7 +41,7 @@ import com.tokopedia.troubleshooter.notification.ui.viewmodel.TroubleshootViewMo
 import com.tokopedia.troubleshooter.notification.util.CacheManager.saveLastCheckedDate
 import com.tokopedia.troubleshooter.notification.util.ClearCacheUtil.showClearCache
 import com.tokopedia.troubleshooter.notification.util.TroubleshooterDialog.showInformationDialog
-import com.tokopedia.troubleshooter.notification.util.combineFifth
+import com.tokopedia.troubleshooter.notification.util.combine
 import com.tokopedia.troubleshooter.notification.util.isNotNull
 import com.tokopedia.troubleshooter.notification.util.isTrue
 import com.tokopedia.troubleshooter.notification.util.prefixToken
@@ -162,7 +162,7 @@ class TroubleshootFragment : BaseDaggerFragment(), ConfigItemListener, FooterLis
     }
 
     private fun troubleshooterStatus() {
-        combineFifth(
+        combine(
                 viewModel.token,
                 viewModel.notificationSetting,
                 viewModel.deviceSetting,

@@ -2,7 +2,7 @@ package com.tokopedia.troubleshooter.notification.util
 
 import java.io.Serializable
 
-data class Fifth<out A, out B, out C, out D, out E>(
+data class Combination<out A, out B, out C, out D, out E>(
         val first: A,
         val second: B,
         val third: C,
