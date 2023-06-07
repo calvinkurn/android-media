@@ -69,13 +69,13 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                     this@PlayWidgetCardCarouselChannelView,
                     mModel,
                     product,
-                    viewHolder.absoluteAdapterPosition,
+                    viewHolder.absoluteAdapterPosition
                 )
             }
 
             override fun onClicked(
                 viewHolder: PlayWidgetCarouselProductAdapter.ViewHolder,
-                product: PlayWidgetProduct,
+                product: PlayWidgetProduct
             ) {
                 if (!::mModel.isInitialized) return
 
@@ -83,7 +83,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                     this@PlayWidgetCardCarouselChannelView,
                     mModel,
                     product,
-                    viewHolder.absoluteAdapterPosition,
+                    viewHolder.absoluteAdapterPosition
                 )
             }
         }
@@ -164,7 +164,9 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.viewPlayWidgetCaption.root.text = model.title
         binding.viewPlayWidgetCaption.root.showWithCondition(!model.isWithProductNoCaptionVariant)
 
-        binding.rvProducts.showWithCondition(model.isWithProductNoCaptionVariant)
+        binding.scrollableHostProducts.showWithCondition(
+            model.isWithProductNoCaptionVariant && model.products.isNotEmpty()
+        )
         adapter.setNewItems(model.products)
 
         setMuted(model.isMuted)
@@ -199,8 +201,11 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
     }
 
     fun setMuted(shouldMuted: Boolean, animate: Boolean = false) {
-        if (shouldMuted) setMuteLottie(animate)
-        else setUnMuteLottie(animate)
+        if (shouldMuted) {
+            setMuteLottie(animate)
+        } else {
+            setUnMuteLottie(animate)
+        }
 
         mPlayer?.mute(shouldMuted)
 
@@ -208,7 +213,7 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mListener?.onMuteButtonClicked(
                 this,
                 mModel,
-                !shouldMuted,
+                !shouldMuted
             )
         }
     }
@@ -268,9 +273,8 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                 binding.viewPlayWidgetActionButton.lottieAction.show()
                 binding.viewPlayWidgetActionButton.lottieAction.removeAllAnimatorListeners()
                 binding.viewPlayWidgetActionButton.lottieAction.addAnimatorListener(
-                    object: Animator.AnimatorListener {
+                    object : Animator.AnimatorListener {
                         override fun onAnimationStart(animator: Animator) {
-
                         }
 
                         override fun onAnimationEnd(animator: Animator) {
@@ -278,11 +282,9 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
                         }
 
                         override fun onAnimationCancel(animator: Animator) {
-
                         }
 
                         override fun onAnimationRepeat(animator: Animator) {
-
                         }
                     }
                 )
@@ -320,26 +322,26 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         fun onMuteButtonClicked(
             view: PlayWidgetCardCarouselChannelView,
             item: PlayWidgetChannelUiModel,
-            shouldMute: Boolean,
+            shouldMute: Boolean
         )
 
         fun onProductImpressed(
             view: PlayWidgetCardCarouselChannelView,
             item: PlayWidgetChannelUiModel,
             product: PlayWidgetProduct,
-            position: Int,
+            position: Int
         )
 
         fun onProductClicked(
             view: PlayWidgetCardCarouselChannelView,
             item: PlayWidgetChannelUiModel,
             product: PlayWidgetProduct,
-            position: Int,
+            position: Int
         )
 
         fun onPartnerClicked(
             view: PlayWidgetCardCarouselChannelView,
-            item: PlayWidgetChannelUiModel,
+            item: PlayWidgetChannelUiModel
         )
     }
 }
