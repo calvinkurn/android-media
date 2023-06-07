@@ -18,13 +18,12 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.scp_rewards_widgets.R
 
-
 class CouponImageView @JvmOverloads constructor(
-    context:Context,
-    attrs:AttributeSet? = null,
-    defStyleAttr:Int = 0
-): AppCompatImageView(context,attrs,defStyleAttr) {
-    companion object{
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : AppCompatImageView(context, attrs, defStyleAttr) {
+    companion object {
         private const val EDGE_RADIUS_MULTIPLIER = 10f
     }
     var circularEdgeColor = ContextCompat.getColor(context,R.color.Unify_NN0)
@@ -34,7 +33,7 @@ class CouponImageView @JvmOverloads constructor(
         }
     private var circularEdgePaint: Paint = Paint()
     private var path = Path()
-    private var shimmerPlaceholder : AnimatedVectorDrawableCompat? = null
+    private var shimmerPlaceholder: AnimatedVectorDrawableCompat? = null
 
     init {
         circularEdgePaint.apply {
@@ -44,7 +43,7 @@ class CouponImageView @JvmOverloads constructor(
         }
     }
 
-    private fun refresh(){
+    private fun refresh() {
         circularEdgePaint.color = circularEdgeColor
         shimmerPlaceholder = null
         invalidate()
@@ -57,12 +56,12 @@ class CouponImageView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if(shimmerPlaceholder==null){
+        if (shimmerPlaceholder == null) {
             val edgeRadius = height / EDGE_RADIUS_MULTIPLIER
             val leftCx = 0f
             val rightCx = width.toFloat()
-            val leftCy = height/2f
-            val rightCy = height/2f
+            val leftCy = height / 2f
+            val rightCy = height / 2f
             canvas?.drawCircle(
                 leftCx,
                 leftCy,
@@ -80,27 +79,33 @@ class CouponImageView @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        val rect = RectF(0f,0f,w.toFloat(),h.toFloat())
+        val rect = RectF(0f, 0f, w.toFloat(), h.toFloat())
         path.reset()
         val radius = resources.getDimensionPixelSize(R.dimen.coupon_image_corner_radius).toFloat()
         path.addRoundRect(
             rect,
-            radius,radius,Path.Direction.CW
+            radius,
+            radius,
+            Path.Direction.CW
         )
     }
 
-    fun setCouponToLockedState(){
+    fun setCouponToLockedState() {
         val matrix = ColorMatrix()
-        matrix.setSaturation(0f) //0 means grayscale
+        matrix.setSaturation(0f) // 0 means grayscale
         colorFilter = ColorMatrixColorFilter(matrix)
     }
 
-    fun setImageUrl(url:String){
+    fun setCouponToActiveState() {
+        clearColorFilter()
+    }
+
+    fun setImageUrl(url: String) {
         initLoading()
         Glide.with(context)
             .asDrawable()
             .load(url)
-            .into(object: CustomTarget<Drawable>(){
+            .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,
                     transition: Transition<in Drawable>?
@@ -113,7 +118,7 @@ class CouponImageView @JvmOverloads constructor(
             })
     }
 
-    private fun initLoading(){
+    private fun initLoading() {
         shimmerPlaceholder = AnimatedVectorDrawableCompat.create(
             context,
             com.tokopedia.unifycomponents.R.drawable.unify_loader_shimmer
@@ -122,7 +127,7 @@ class CouponImageView @JvmOverloads constructor(
         applyLoopingAnimatedVectorDrawable()
     }
 
-    private fun clearLoading(){
+    private fun clearLoading() {
         background = null
         shimmerPlaceholder?.stop()
         shimmerPlaceholder?.clearAnimationCallbacks()
@@ -131,13 +136,13 @@ class CouponImageView @JvmOverloads constructor(
 
     private fun applyLoopingAnimatedVectorDrawable() {
         shimmerPlaceholder?.registerAnimationCallback(object :
-            Animatable2Compat.AnimationCallback() {
-            override fun onAnimationEnd(drawable: Drawable?) {
-                post {
-                    shimmerPlaceholder?.start()
+                Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    post {
+                        shimmerPlaceholder?.start()
+                    }
                 }
-            }
-        })
+            })
         shimmerPlaceholder?.start()
     }
 
@@ -145,5 +150,4 @@ class CouponImageView @JvmOverloads constructor(
         clearLoading()
         super.onDetachedFromWindow()
     }
-
 }

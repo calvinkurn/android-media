@@ -17,10 +17,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
+import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.scp_rewards.common.data.Error
 import com.tokopedia.scp_rewards.common.data.Loading
 import com.tokopedia.scp_rewards.common.data.Success
@@ -55,6 +59,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     var viewModelFactory: ViewModelFactory? = null
 
     private var medaliSlug = ""
+    private var sourceName = ""
 
     private val medalDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory!!)[MedalDetailViewModel::class.java]
@@ -68,6 +73,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         activity?.intent?.let {
             medaliSlug = it.data?.pathSegments?.last() ?: ""
+            sourceName = it.extras?.getString(
+                ApplinkConstInternalPromo.SOURCE_PARAM,
+                TrackerConstants.General.SOURCE_OTHER_PAGE
+            ) ?: TrackerConstants.General.SOURCE_OTHER_PAGE
         }
     }
 
@@ -87,7 +96,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
         setTopBottomMargin()
         setupScrollListener()
         setupViewModelObservers()
-        medalDetailViewModel.getMedalDetail(medaliSlug)
+        medalDetailViewModel.getMedalDetail(
+            medaliSlug = medaliSlug,
+            sourceName = sourceName
+        )
     }
 
     private fun setupViewModelObservers() {
@@ -354,7 +366,10 @@ class MedalDetailFragment : BaseDaggerFragment() {
     private fun resetPage() {
         binding.mainFlipper.displayedChild = 0
         binding.loadContainer.loaderFlipper.displayedChild = 0
-        medalDetailViewModel.getMedalDetail()
+        medalDetailViewModel.getMedalDetail(
+            medaliSlug = medaliSlug,
+            sourceName = sourceName
+        )
         setToolbarBackButtonTint(R.color.Unify_NN0)
     }
 

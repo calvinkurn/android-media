@@ -140,14 +140,14 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             try {
                 val map = mutableMapOf<String, Bitmap?>()
 
-                val image0 = async { context.downloadImage(data.frameMaskUrl) }
+//                val image0 = async { context.downloadImage(data.frameMaskUrl) }
                 val image1 = async { context.downloadImage(data.shimmerUrl) }
                 val image2 = async { context.downloadImage(data.frameUrl) }
 //                val image3 = async { context.downloadImage(data.maskingShapeUrl) }
                 val image4 = async { context.downloadImage(data.shutterUrl) }
                 val image5 = async { context.downloadImage(data.medalUrl) }
 
-                map["image_0"] = image0.await()
+//                map["image_0"] = image0.await()
                 map["image_1"] = image1.await()
                 map["image_2"] = image2.await()
 //                The lottie doesn't work properly when masking shape image is download from server

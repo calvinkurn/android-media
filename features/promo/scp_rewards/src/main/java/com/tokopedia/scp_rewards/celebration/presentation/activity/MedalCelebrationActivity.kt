@@ -10,7 +10,7 @@ import com.tokopedia.scp_rewards.celebration.di.DaggerCelebrationComponent
 import com.tokopedia.scp_rewards.celebration.presentation.fragment.MedalCelebrationFragment
 import com.tokopedia.unifyprinciples.Typography
 
-class MedalCelebrationActivity : BaseSimpleActivity(),HasComponent<CelebrationComponent> {
+class MedalCelebrationActivity : BaseSimpleActivity(), HasComponent<CelebrationComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,13 +20,8 @@ class MedalCelebrationActivity : BaseSimpleActivity(),HasComponent<CelebrationCo
     override fun getNewFragment() = MedalCelebrationFragment()
 
     override fun getComponent(): CelebrationComponent {
-       return DaggerCelebrationComponent.builder().baseAppComponent(
-           (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerCelebrationComponent.builder().baseAppComponent(
+            (application as BaseMainApplication).baseAppComponent
+        ).build()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Typography.isFontTypeOpenSauceOne = false
-    }
-
 }

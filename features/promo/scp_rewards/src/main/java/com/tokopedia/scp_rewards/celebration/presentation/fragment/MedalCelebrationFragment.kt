@@ -30,8 +30,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.celebration.analytics.CelebrationAnalytics
 import com.tokopedia.scp_rewards.celebration.di.CelebrationComponent
@@ -709,7 +709,15 @@ class MedalCelebrationFragment : BaseDaggerFragment() {
     }
 
     private fun redirectToMedaliDetail() {
-        RouteManager.route(context, ApplinkConst.ScpRewards.MEDAL_DETAIL, medaliSlug)
+        (medalCelebrationViewModel.badgeLiveData.value as Success<ScpRewardsCelebrationModel>).data.apply {
+            val args = Bundle().apply {
+                putString(
+                    ApplinkConstInternalPromo.SOURCE_PARAM,
+                    scpRewardsCelebrationPage?.celebrationPage?.redirectSourceName ?: ""
+                )
+            }
+            RouteManager.route(context, args, scpRewardsCelebrationPage?.celebrationPage?.redirectAppLink)
+        }
         activity?.finish()
     }
 

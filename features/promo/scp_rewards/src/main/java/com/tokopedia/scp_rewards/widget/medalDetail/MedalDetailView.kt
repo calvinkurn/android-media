@@ -17,12 +17,12 @@ class MedalDetailView(private val context: Context, attrs: AttributeSet?) :
 
     fun bindData(data: MedalDetail) {
         with(binding) {
-            data.sponsorText?.let {
+            if (!data.sponsorText.isNullOrEmpty()) {
                 cvSponsor.show()
-                tvBrand.text = it
+                tvBrand.text = data.sponsorText
                 tvBrand.setTextColor(parseColor(data.sponsorTextColor) ?: Color.WHITE)
                 cvSponsor.setCardBackgroundColor(parseColor(data.sponsorBackgroundColor) ?: Color.BLACK)
-            } ?: run {
+            } else {
                 cvSponsor.hide()
             }
             tvMedalTitle.text = data.medalTitle

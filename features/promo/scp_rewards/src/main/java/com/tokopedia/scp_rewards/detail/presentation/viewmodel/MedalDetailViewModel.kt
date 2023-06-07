@@ -30,13 +30,13 @@ class MedalDetailViewModel @Inject constructor(
     private val _autoApplyCoupon: MutableLiveData<AutoApplyState> = MutableLiveData()
     val autoApplyCoupon: LiveData<AutoApplyState> = _autoApplyCoupon
 
-    fun getMedalDetail(medaliSlug: String = "", sourceName: String = "", pageName: String = "") {
+    fun getMedalDetail(medaliSlug: String = "", sourceName: String, pageName: String = "") {
         viewModelScope.launchCatchError(
             block = {
                 val response = medalDetailUseCase.getMedalDetail(
-                    medaliSlug = "INJECT_BADGE_1",
-                    sourceName = "celebration_page",
-                    pageName = ""
+                    medaliSlug = medaliSlug,
+                    sourceName = sourceName,
+                    pageName = "medali_detail_page"
                 )
                 if (response.detail?.resultStatus?.code == SUCCESS_CODE) {
                     _badgeLiveData.postValue(Success(response))
