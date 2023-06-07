@@ -790,6 +790,7 @@ class ShopPageCampaignFragment :
         carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?,
         productUiModel: ShopHomeProductUiModel?
     ) {
+        goToPDP(productUiModel?.productUrl.orEmpty())
     }
 
     override fun onCampaignCarouselProductItemImpression(
@@ -801,6 +802,9 @@ class ShopPageCampaignFragment :
     }
 
     override fun onCtaClicked(carouselProductWidgetUiModel: ShopCampaignWidgetCarouselProductUiModel?) {
+        context?.let {
+            RouteManager.route(it, carouselProductWidgetUiModel?.header?.ctaLink)
+        }
     }
 
     override fun onCampaignCarouselProductWidgetImpression(
@@ -813,7 +817,6 @@ class ShopPageCampaignFragment :
         model: ExclusiveLaunchVoucher,
         position: Int
     ) {
-//        TODO("Not yet implemented")
     }
 
     override fun onCampaignVoucherSliderItemClick(model: ExclusiveLaunchVoucher, position: Int) {
