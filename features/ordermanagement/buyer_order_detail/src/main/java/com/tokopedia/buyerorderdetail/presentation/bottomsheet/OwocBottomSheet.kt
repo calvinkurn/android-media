@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.OwocBottomsheetBinding
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
@@ -25,7 +26,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class OwocBottomSheet : BottomSheetUnify(), OwocSectionGroupListener,
+class OwocBottomSheet :
+    BottomSheetUnify(),
+    OwocSectionGroupListener,
     OwocProductListHeaderListener {
 
     @Inject
@@ -86,6 +89,7 @@ class OwocBottomSheet : BottomSheetUnify(), OwocSectionGroupListener,
     }
 
     override fun goToOtherBomDetail(orderId: String) {
+        BuyerOrderDetailTracker.sendClickViewDetailOnOrderGroupDetail(orderId)
         navigator?.goToBomDetailPage(orderId)
         dismiss()
     }

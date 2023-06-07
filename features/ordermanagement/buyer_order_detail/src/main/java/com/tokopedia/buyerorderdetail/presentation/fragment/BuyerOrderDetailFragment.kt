@@ -832,6 +832,7 @@ open class BuyerOrderDetailFragment :
     }
 
     override fun onOwocInfoClicked(txId: String) {
+        BuyerOrderDetailTracker.sendClickOnOrderGroupWidget(viewModel.getOrderId())
         val owocBottomSheet = OwocBottomSheet.newInstance(viewModel.getOrderId(), txId)
         owocBottomSheet.show(childFragmentManager)
     }
