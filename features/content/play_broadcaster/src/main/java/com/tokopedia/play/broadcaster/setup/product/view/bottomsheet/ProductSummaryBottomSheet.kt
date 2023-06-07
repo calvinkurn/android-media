@@ -249,6 +249,7 @@ class ProductSummaryBottomSheet @Inject constructor(
 
     private fun setupProductCommissionCoachMark() {
         if (coachMarkSharedPref.hasBeenShown(ProductSummaryCommission)) return
+        coachMarkSharedPref.setHasBeenShown(ProductSummaryCommission)
 
         mListener?.onProductSummaryCommissionShown()
         productSummaryListView.getProductCommissionCoachMark { firstTextCommission ->
@@ -262,10 +263,9 @@ class ProductSummaryBottomSheet @Inject constructor(
 
             viewLifecycleOwner.lifecycleScope.launch {
                 delay(DELAY_COACH_MARK_DURATION)
+                coachMark.isOutsideTouchable = true
                 coachMark.showCoachMark(arrayListOf(coachMarkItem))
             }
-
-            coachMarkSharedPref.setHasBeenShown(ProductSummaryCommission)
         }
     }
 
