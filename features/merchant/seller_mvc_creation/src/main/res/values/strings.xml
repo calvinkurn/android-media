@@ -245,6 +245,12 @@
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
     <string name="smvc_voucher_type_editing_disabled">Jenis kupon tidak bisa diubah.</string>
+    <string name="smvc_voucher_performance_title_label">Performa Kupon</string>
+    <string name="smvc_used_quota_label">Total Kuota Terpakai</string>
+    <string name="smvc_used_quota_detail_label">Detail Kuota Terpakai</string>
+    <string name="smvc_quota_from_subsidy_label">Quota dari subsidy</string>
+    <string name="smvc_quota_non_subsidy_label">Quota non subsidy</string>
+    <string name="smvc_placeholder_total_used_quota">%d/%2d</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>

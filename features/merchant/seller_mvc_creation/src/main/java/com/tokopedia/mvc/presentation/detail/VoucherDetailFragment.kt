@@ -5,6 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.transition.AutoTransition
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -22,6 +26,7 @@ import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
@@ -48,6 +53,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState3Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailHeaderSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailPerformanceSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailProductSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
@@ -119,6 +125,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     // binding
     private var binding by autoClearedNullable<SmvcFragmentVoucherDetailBinding>()
     private var headerBinding by autoClearedNullable<SmvcVoucherDetailHeaderSectionBinding>()
+    private var performanceBinding by autoClearedNullable<SmvcVoucherDetailPerformanceSectionBinding>()
     private var voucherTypeBinding by autoClearedNullable<SmvcVoucherDetailVoucherTypeSectionBinding>()
     private var voucherInfoBinding by autoClearedNullable<SmvcVoucherDetailVoucherInfoSectionBinding>()
     private var voucherSettingBinding by autoClearedNullable<SmvcVoucherDetailVoucherSettingSectionBinding>()
@@ -199,6 +206,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     setupView(result.data)
                 }
+
                 is Fail -> {
                     showGlobalError()
                 }
@@ -211,6 +219,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     redirectToVoucherListPage()
                 }
+
                 is Fail -> {
                     binding?.layoutButtonGroup.showToasterError(result.throwable)
                 }
@@ -225,6 +234,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 is Success -> {
                     displayShareBottomSheet(result.data)
                 }
+
                 is Fail -> {
                     binding?.nsvContent.showToasterError(result.throwable)
                 }
@@ -249,6 +259,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             layoutHeader.setOnInflateListener { _, view ->
                 headerBinding = SmvcVoucherDetailHeaderSectionBinding.bind(view)
             }
+            layoutPerformance.setOnInflateListener { _, view ->
+                performanceBinding = SmvcVoucherDetailPerformanceSectionBinding.bind(view)
+            }
             layoutVoucherType.setOnInflateListener { _, view ->
                 voucherTypeBinding = SmvcVoucherDetailVoucherTypeSectionBinding.bind(view)
             }
@@ -264,6 +277,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
         setupTicker(data.voucherDetail)
         setupHeaderSection(data.voucherDetail)
+        setupPerformanceSection(data.voucherDetail)
         setupVoucherTypeSection(data.voucherDetail)
         setupVoucherInfoSection(data.voucherDetail)
         setupVoucherSettingSection(data.voucherDetail)
@@ -365,6 +379,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
                 }
+
                 VoucherStatus.ONGOING -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
@@ -372,6 +387,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
                 }
+
                 VoucherStatus.STOPPED -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_stopped_label)
@@ -379,6 +395,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
                 }
+
                 else -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ended_label)
@@ -402,17 +419,20 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }
+
                 VoucherStatus.ONGOING -> {
                     btnUbahKupon.invisible()
                     timer.visible()
                     tpgPeriodStop.invisible()
                     startTimer(data.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601))
                 }
+
                 VoucherStatus.ENDED -> {
                     btnUbahKupon.invisible()
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }
+
                 else -> {
                     val stoppedDate =
                         data.updateTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
@@ -443,6 +463,44 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
             timer.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             timer.targetDate = endDate.toCalendar()
+        }
+    }
+
+    private fun setupPerformanceSection(data: VoucherDetailData) {
+        binding?.run {
+            if (data.voucherStatus == VoucherStatus.ONGOING) return
+            if (layoutPerformance.parent != null) {
+                layoutPerformance.inflate()
+            }
+            performanceBinding?.run {
+                iconChevron.setOnClickListener {
+                    if (clParentExpandedCard.isVisible) {
+                        TransitionManager.beginDelayedTransition(
+                            clParentExpandedCard,
+                            AutoTransition()
+                        )
+                        clParentExpandedCard.gone()
+                        iconChevron.setImage(IconUnify.CHEVRON_DOWN)
+                    } else {
+                        TransitionManager.beginDelayedTransition(
+                            cardParentPerformance,
+                            AutoTransition()
+                        )
+                        clParentExpandedCard.visible()
+                        iconChevron.setImage(IconUnify.CHEVRON_UP)
+                    }
+                }
+                val usedQuota = data.voucherQuota - data.remainingQuota
+                tpgUsedQuota.text = getString(
+                    R.string.smvc_placeholder_total_used_quota,
+                    usedQuota,
+                    data.voucherQuota
+                )
+                tpgQuotaFromSubsidy.text =
+                    data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toString()
+                tpgQuotaNonSubsidy.text =
+                    data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota.toString()
+            }
         }
     }
 
@@ -518,6 +576,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             setDeductionAmount(data)
             setMaxPriceDeduction(data)
             tpgVoucherQuota.text = data.voucherQuota.toString()
+            setSubsidyQuota(data)
             tpgVoucherMinimumBuy.text = data.voucherDiscountAmountMin.getCurrencyFormatted()
             tpgVoucherTargetBuyer.setTargetBuyer(data)
         }
@@ -552,6 +611,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         getString(R.string.smvc_nominal_free_shipping_label)
                     tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                 }
+
                 PromoType.CASHBACK -> {
                     when (data.voucherDiscountType) {
                         BenefitType.NOMINAL -> {
@@ -560,6 +620,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getCurrencyFormatted()
                         }
+
                         else -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_percentage_cashback_label)
@@ -576,6 +637,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         }
                     }
                 }
+
                 else -> {
                     when (data.voucherDiscountType) {
                         BenefitType.NOMINAL -> {
@@ -584,6 +646,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getCurrencyFormatted()
                         }
+
                         else -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_percentage_discount_label)
@@ -602,6 +665,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 PromoType.FREE_SHIPPING -> {
                     llVoucherMaxPriceDeduction.gone()
                 }
+
                 else -> {
                     when (data.voucherDiscountType) {
                         BenefitType.PERCENTAGE -> {
@@ -609,12 +673,26 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                             tpgVoucherMaxPriceDeduction.text =
                                 data.voucherDiscountAmountMax.getCurrencyFormatted()
                         }
+
                         else -> {
                             llVoucherMaxPriceDeduction.gone()
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun setSubsidyQuota(data: VoucherDetailData) {
+        voucherSettingBinding?.run {
+            if (data.isSubsidy == FALSE) return
+            val wording =
+                if (data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toLong() == data.voucherQuota) {
+                    "(Semua quota disubsidi)"
+                } else {
+                    "(${data.subsidyDetail.quotaSubsidized.bookedGlobalQuota} quota disubsidi)"
+                }
+            tpgVoucherQuotaSubsidyLabel.text = wording
         }
     }
 
@@ -682,6 +760,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         layoutButton.inflate()
                     }
                 }
+
                 VoucherStatus.ONGOING -> {
                     layoutButton.setOnInflateListener { _, view ->
                         stateButtonShareBinding =
@@ -693,6 +772,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         layoutButton.inflate()
                     }
                 }
+
                 else -> {
                     layoutButton.setOnInflateListener { _, view ->
                         stateButtonDuplicateBinding =
@@ -775,6 +855,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 voucherDetailTracker.sendClickTNCEvent(data)
                 openTncPage()
             }
+
             else -> deleteOrStopVoucher(data)
         }
     }
