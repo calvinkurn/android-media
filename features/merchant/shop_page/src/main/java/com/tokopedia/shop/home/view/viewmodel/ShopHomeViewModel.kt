@@ -1330,7 +1330,7 @@ class ShopHomeViewModel @Inject constructor(
                 //TODO need to change this implementation on prod
 //                shopIds = listOf(shopId)
                 //need to be hardcoded for staging
-                productIds = listOf("2150818324"),
+                productIds = listOf("2150849620"),
                 pageName = "shop_comparison_test"
             )
         )
