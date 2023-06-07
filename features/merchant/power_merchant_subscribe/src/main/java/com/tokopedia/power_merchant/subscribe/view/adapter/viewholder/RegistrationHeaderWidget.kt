@@ -139,6 +139,9 @@ class RegistrationHeaderWidget(
             is RegistrationTermUiModel.ActiveProduct -> powerMerchantTracking.sendEventClickAddProduct()
             is RegistrationTermUiModel.ShopScore -> powerMerchantTracking.sendEventClickLearnMoreShopPerformance()
             is RegistrationTermUiModel.Kyc -> powerMerchantTracking.sendEventClickKycDataVerification()
+            else -> {
+                // no op
+            }
         }
     }
 

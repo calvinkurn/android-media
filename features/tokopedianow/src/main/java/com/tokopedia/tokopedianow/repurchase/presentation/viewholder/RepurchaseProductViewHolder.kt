@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.productcard.compact.productcard.presentation.customview.ProductCardCompactWishlistButtonView
 import com.tokopedia.productcard.compact.similarproduct.presentation.listener.ProductCardCompactSimilarProductTrackerListener
@@ -16,8 +17,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 class RepurchaseProductViewHolder(
     itemView: View,
     private val listener: RepurchaseProductCardListener? = null,
-    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null
-): AbstractViewHolder<RepurchaseProductUiModel>(itemView), ProductCardCompactWishlistButtonView.TokoNowWishlistButtonListener {
+    private val productCardCompactSimilarProductTrackerListener: ProductCardCompactSimilarProductTrackerListener? = null,
+    private val productCardCompactListener: ProductCardCompactView.ProductCardCompactListener? = null,
+): AbstractViewHolder<RepurchaseProductUiModel>(itemView), ProductCardCompactWishlistButtonView.WishlistButtonListener {
 
     companion object {
         @LayoutRes
@@ -44,10 +46,15 @@ class RepurchaseProductViewHolder(
             setWishlistButtonListener(
                 wishlistButtonListener = this@RepurchaseProductViewHolder
             )
+            setSimilarProductTrackerListener(
+                productCardCompactSimilarProductTrackerListener = productCardCompactSimilarProductTrackerListener
+            )
+            setListener(
+                productCardCompactListener = productCardCompactListener
+            )
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)
             }
-            setSimilarProductTrackerListener(productCardCompactSimilarProductTrackerListener)
         }
     }
 

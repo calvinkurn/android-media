@@ -145,6 +145,9 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                             setScheduleBottomSheet(it.data.scheduleDate)
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )
@@ -180,6 +183,9 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                             }
                         }
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         )
@@ -204,6 +210,9 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         val intent = RouteManager.getIntent(this, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    }
+                    else -> {
+                        // no op
                     }
                 }
             }

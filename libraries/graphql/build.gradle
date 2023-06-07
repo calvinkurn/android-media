@@ -41,6 +41,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
     implementation projectOrAar(rootProject.ext.libraries.logger)
+    implementation rootProject.ext.firebase.config
     api rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -59,6 +60,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
     /*
     1. ContraintLayout is required, because fakeresponse is has impl of constraintLayout
     And without adding ContraintLayout, we will get error in assembleRelease of Graphql

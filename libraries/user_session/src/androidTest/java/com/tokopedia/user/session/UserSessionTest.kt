@@ -1,62 +1,96 @@
 package com.tokopedia.user.session
 
 import android.content.Context
-import androidx.test.core.app.ApplicationProvider
-import com.tokopedia.utils.MockTimber
+import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.utils.RawAccessPreference
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Assert.assertEquals
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.not
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import timber.log.Timber
 
 const val LEGACY_SESSION = "LOGIN_SESSION"
+const val V2_SESSION = LEGACY_SESSION + "_v2"
 
 class UserSessionTest {
 
-    private lateinit var sut: UserSession
-    private lateinit var timber: MockTimber
-    private lateinit var context: Context
+    lateinit var sut: UserSession
+    lateinit var context: Context
 
     @Before
-    fun setup() {
-        sut = UserSession(ApplicationProvider.getApplicationContext())
-        context = ApplicationProvider.getApplicationContext()
-        timber = MockTimber()
-        Timber.plant(timber)
+    fun clearAll() {
+        UserSessionMap.map.clear()
+        context = InstrumentationRegistry.getInstrumentation().context
+        val sharedPrefs = context.applicationContext.getSharedPreferences(
+            "LOGIN_SESSION_v2",
+            Context.MODE_PRIVATE
+        )
+        sharedPrefs.edit().clear().commit()
+        val sharedPrefs2 =
+            context.applicationContext.getSharedPreferences("LOGIN_SESSION", Context.MODE_PRIVATE)
+        sharedPrefs2.edit().clear().commit()
+        sut = UserSession(context)
     }
 
     @Test
-    fun withMultipleDefaultValue_testMigration_shouldRemovePreviousUserSession() {
-        val defaultValueTests = listOf(null, "Bearer", "", "0")
-        val keyName = "REFRESH_TOKEN"
-        val v = "foobar"
-        // save using old key and value : for example login_session
-        defaultValueTests.forEach { toTest ->
-            cleanUp()
-            Timber.d("Executing test for $toTest")
-            val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
-            sharedPrefs.edit().putString(keyName, v).apply()
-            val token = sut.getAndTrimOldString(LEGACY_SESSION, keyName, toTest)
-            assertEquals(v, token)
-
-            val none = "none"
-            // old value should be removed by now
-            val oldValue = sharedPrefs.getString(keyName, none)
-            assertEquals(none, oldValue)
-
-            UserSessionMap.map.clear()
-            val secondToken = sut.getAndTrimOldString(LEGACY_SESSION, keyName, toTest)
-            assertEquals(v, secondToken)
-            // old value should be still removed
-            val oldValue2 = sharedPrefs.getString(keyName, none)
-            assertEquals(none, oldValue2)
-            val cleaningLogs = timber.logs.filter { it.message.contains("cleaning") }
-            assertEquals(1, cleaningLogs.size)
+    fun setAndGetStressTest() {
+        val start = System.currentTimeMillis()
+        repeat(1_000) {
+            sut.email = "foo-$it@bar.com"
+            sut.name = "Foo bar $it"
+            Timber.d("Getting user session, name: ${sut.name} email: ${sut.email}")
         }
+        Timber.i("Took ${System.currentTimeMillis() - start} ms")
+    }
+
+    @Test
+    fun basicGetAndSet_stringValue() {
+        val userSession = UserSession(context)
+        assertEquals(userSession.email, "")
+        var email = "noiz354@gmail.com"
+        userSession.email = email
+        assertEquals(userSession.email, email)
+
+        // clear cache
+        UserSessionMap.map.clear()
+
+        // still return same value
+        var givenEmail = userSession.email
+        assertEquals(givenEmail, email)
+
+        // changes one more time
+        email = "foo@gmail.com"
+        userSession.email = email
+        givenEmail = userSession.email
+        assertEquals(givenEmail, email)
+
+        // clear cache
+        UserSessionMap.map.clear()
+
+        // still return same value
+        givenEmail = userSession.email
+        assertEquals(givenEmail, email)
+    }
+
+    @Test
+    fun basecSetAndGet_boolValue() {
+        val userSession = UserSession(context)
+        assertEquals(false, userSession.isShopOwner)
+
+        userSession.setIsShopOwner(true)
+        assertEquals(true, userSession.isShopOwner)
+    }
+
+    @Test
+    fun basicSetAndGet_longValue() {
+        val userSession = UserSession(context)
+        assertEquals(0, userSession.fcmTimestamp)
+
+        userSession.setFcmTimestamp()
+        assertTrue((System.currentTimeMillis() - userSession.fcmTimestamp) < 100)
     }
 
     @Test
@@ -64,32 +98,8 @@ class UserSessionTest {
         val test = "test@tokopedia.com"
         sut.email = test
 
-        val actual = RawAccessPreference(context, LEGACY_SESSION + "_v2")
-            .getRawValue("EMAIL_v2").toString()
+        val actual = RawAccessPreference(context, V2_SESSION).getRawValue("EMAIL_v2").toString()
 
         assertThat(actual, not(equalTo(test)))
-    }
-
-    @Ignore("Strange case where the value is empty")
-    @Test
-    fun whenMigratingWithEmptyValue_shouldBeMigrated() {
-        val empty = ""
-        val key = "TOKEN_TYPE"
-        val sharedPrefs = context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putString(key, empty).apply()
-
-        var userId = sut.tokenType
-        assertThat(userId, equalTo(empty))
-
-        UserSessionMap.map.clear()
-        userId = sut.tokenType
-        assertThat(userId, equalTo(empty))
-
-    }
-
-    private fun cleanUp() {
-        context.getSharedPreferences(LEGACY_SESSION, Context.MODE_PRIVATE).edit().clear().apply()
-        UserSessionMap.map.clear()
-        timber.logs.clear()
     }
 }

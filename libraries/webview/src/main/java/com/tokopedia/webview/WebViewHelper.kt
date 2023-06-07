@@ -4,12 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.net.Uri
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
+import com.tokopedia.webview.data.model.WhiteListedFintechPath
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
 import com.tokopedia.webview.ext.encodeQueryNested
@@ -28,6 +33,9 @@ object WebViewHelper {
     private const val KEY_PARAM_URL: String = "url"
     private const val PARAM_APPCLIENT_ID = "appClientId"
     private const val HOST_TOKOPEDIA = "tokopedia"
+    private const val APP_WHITELISTED_DOMAINS_URL = "ANDROID_WEBVIEW_WHITELIST_DOMAIN"
+    var whiteListedDomains = WhiteListedDomains()
+    var whiteListedFintechPath = WhiteListedFintechPath()
 
     private const val ANDROID_WEBVIEW_JS_ENCODE = "android_webview_js_encode"
 
@@ -37,12 +45,59 @@ object WebViewHelper {
             val urlSeamless = getUrlSeamless(url)
             if (!urlSeamless.isNullOrEmpty()) isUrlValid(urlSeamless) else false
         } else {
-            val domain = getDomainName(url)
-            (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN)
+            isTokopediaDomain(url)
         }
     }
 
-    private fun getDomainName(url: String): String {
+    fun isTokopediaDomain(url: String): Boolean {
+        val domain = getDomainName(url)
+        return (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN)
+    }
+
+    private fun isDomainWhitelisted(context: Context, domain: String): Boolean {
+        if (domain.isEmpty()) {
+            return false
+        }
+        if (domain.endsWith(SUFFIX_PATTERN) || domain == DOMAIN_PATTERN) {
+            return true
+        }
+        if (whiteListedDomains.domains.isEmpty()) {
+            whiteListedDomains = getWhiteListedDomains(context.applicationContext)
+        }
+        if (whiteListedDomains.isEnabled) {
+            whiteListedDomains.domains.forEach {
+                if (domain.endsWith(it)) {
+                    return true
+                }
+            }
+            return false
+        }
+        return false
+    }
+
+    @JvmStatic
+    fun isUrlWhitelisted(context: Context, url: String): Boolean {
+        return isDomainWhitelisted(context, getDomainName(url))
+    }
+
+    fun getWhiteListedDomains(context: Context):WhiteListedDomains {
+        return try {
+            val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            val whiteListedDomainsCsv = firebaseRemoteConfig.getString(APP_WHITELISTED_DOMAINS_URL)
+            if (whiteListedDomainsCsv.isNotBlank()) {
+                Gson().fromJson(whiteListedDomainsCsv, WhiteListedDomains::class.java)
+            } else {
+                WhiteListedDomains()
+            }
+        } catch (e: Exception) {
+            if (!GlobalConfig.isAllowDebuggingTools()) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+            WhiteListedDomains()
+        }
+    }
+
+    fun getDomainName(url: String): String {
         val domain = Uri.parse(url).host
         return if (domain != null) {
             if (domain.startsWith(PREFIX_PATTERN)) domain.substring(4) else domain
@@ -366,11 +421,43 @@ object WebViewHelper {
         }
     }
 
-    fun getMediaPickerIntent(context: Context): Intent {
+    fun getMediaPickerIntent(context: Context, hasVideo: Boolean = false): Intent {
         return MediaPicker.intent(context) {
             pageSource(PageSource.WebView)
-            modeType(ModeType.IMAGE_ONLY)
+            modeType(if (hasVideo) ModeType.COMMON else ModeType.IMAGE_ONLY)
             singleSelectionMode()
         }
     }
+
+    fun isWhiteListedFintechPathEnabled(context: Context): Boolean {
+        if (whiteListedFintechPath.path.isEmpty()) {
+            getWhitelistFintechPrefixUrl(context)
+        }
+        return whiteListedFintechPath.isEnabled
+    }
+
+    private fun getWhitelistFintechPrefixUrl(context: Context) {
+        try {
+            val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
+            val whitelistedFintechPrefixes = remoteConfig.getString(RemoteConfigKey.FINTECH_WEBVIEW_HIDE_TOOLBAR)
+            if (whitelistedFintechPrefixes.isNotBlank()) {
+                whiteListedFintechPath = Gson().fromJson(
+                    whitelistedFintechPrefixes,
+                    WhiteListedFintechPath::class.java
+                )
+            }
+        } catch (exception: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        }
+    }
+
+    fun isFintechUrlPathWhiteList(path: String): Boolean {
+        whiteListedFintechPath.path.forEach {
+            if (path.startsWith(it)) {
+                return true
+            }
+        }
+        return false
+    }
+
 }

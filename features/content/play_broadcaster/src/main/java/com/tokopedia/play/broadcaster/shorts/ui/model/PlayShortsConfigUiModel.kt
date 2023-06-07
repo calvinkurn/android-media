@@ -9,10 +9,11 @@ data class PlayShortsConfigUiModel(
     val shortsId: String,
     val shortsAllowed: Boolean,
     val isBanned: Boolean,
+    val hasContent: Boolean,
     val tncList: List<TermsAndConditionUiModel>,
     val maxTitleCharacter: Int,
     val maxTaggedProduct: Int,
-    val shortsVideoSourceId: String
+    val shortsVideoSourceId: String,
 ) {
     companion object {
 
@@ -21,6 +22,7 @@ data class PlayShortsConfigUiModel(
                 shortsId = "",
                 shortsAllowed = false,
                 isBanned = false,
+                hasContent = false,
                 tncList = emptyList(),
                 maxTitleCharacter = 0,
                 maxTaggedProduct = 0,

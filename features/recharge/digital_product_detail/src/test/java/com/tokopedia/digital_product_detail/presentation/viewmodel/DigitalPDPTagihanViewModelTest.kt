@@ -1,20 +1,20 @@
 package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
-import com.tokopedia.common.topupbills.favoritepdp.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
+class DigitalPDPTagihanViewModelTest : DigitalPDPTagihanViewModelTestFixture() {
 
     private val dataFactory = TagihanDataFactory()
     private val mapAtcFactory = DigitalAtcMapper()
@@ -150,7 +150,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val response = mapAtcFactory.mapAtcToResult(dataFactory.getAddToCartData())
         onGetAddToCart_thenReturn(response)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
     }
@@ -162,7 +162,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -174,7 +174,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val errorMessageException = MessageErrorException(errorMessage)
         onGetAddToCart_thenReturn(errorResponseException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartError(errorMessageException)
     }
@@ -184,7 +184,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         val errorMessageException = MessageErrorException()
         onGetAddToCart_thenReturn(errorMessageException)
 
-        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        viewModel.addToCart(RequestBodyIdentifier(), "")
         verifyAddToCartRepoGetCalled()
         verifyAddToCartErrorExceptions(errorMessageException)
     }
@@ -199,7 +199,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given empty validator when validateClientNumber should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupEmptyValData()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -213,7 +213,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given non-empty validator when validateClientNumber with valid number should set isEligibleToBuy true`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupData()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -227,7 +227,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given non-empty validator when validateClientNumber with non-valid number should set isEligibleToBuy false`() =
-        testCoroutineRule.runBlockingTest {
+        runTest {
             val response = dataFactory.getOperatorSelectGroupData()
             onGetOperatorSelectGroup_thenReturn(response)
 
@@ -241,7 +241,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `given validateClientNumber running when cancelValidatorJob called, the job should be cancelled`() {
-        testCoroutineRule.runBlockingTest {
+        runTest {
             viewModel.validateClientNumber(TagihanDataFactory.VALID_CLIENT_NUMBER)
             viewModel.cancelValidatorJob()
             verifyValidatorJobIsCancelled()
@@ -268,7 +268,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         viewModel.getTagihanProduct(MENU_ID, TagihanDataFactory.VALID_CLIENT_NUMBER, "")
         viewModel.updateCheckoutPassData(
             TagihanDataFactory.IDEM_POTENCY_KEY,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
+            TagihanDataFactory.VALID_CLIENT_NUMBER
         )
         val expectedResult = dataFactory.getCheckoutPassData()
         verifyCheckoutPassDataUpdated(expectedResult)
@@ -288,7 +288,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
         viewModel.updateCheckoutPassData(
             TagihanDataFactory.IDEM_POTENCY_KEY,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
+            TagihanDataFactory.VALID_CLIENT_NUMBER
         )
         verifyCheckoutPassDataNotUpdated(expectedResult)
     }
@@ -301,7 +301,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         viewModel.getTagihanProduct(MENU_ID, TagihanDataFactory.VALID_CLIENT_NUMBER, "")
         viewModel.updateCheckoutPassData(
             TagihanDataFactory.IDEM_POTENCY_KEY,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
+            TagihanDataFactory.VALID_CLIENT_NUMBER
         )
         verifyCheckoutPassDataNotUpdated(expectedResult)
     }
@@ -315,7 +315,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
         viewModel.getTagihanProduct(MENU_ID, TagihanDataFactory.VALID_CLIENT_NUMBER, "")
         viewModel.updateCheckoutPassData(
             TagihanDataFactory.IDEM_POTENCY_KEY,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
+            TagihanDataFactory.VALID_CLIENT_NUMBER
         )
         verifyCheckoutPassDataUpdated(expectedResult)
     }
@@ -352,8 +352,8 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     @Test
     fun `when getting listInfo should run and give success result`() {
         val response = dataFactory.getOperatorSelectGroupData()
-        val expectedlistInfo = response.response.operatorGroups?.first()?.
-        operators?.first()?.attributes?.operatorDescriptions ?: listOf()
+        val expectedlistInfo = response.response.operatorGroups?.first()
+            ?.operators?.first()?.attributes?.operatorDescriptions ?: listOf()
         onGetOperatorSelectGroup_thenReturn(response)
 
         viewModel.getOperatorSelectGroup(DigitalPDPTokenListrikViewModelTest.MENU_ID)
