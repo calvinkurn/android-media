@@ -4,13 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst.INBOX_TICKET
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxtickets.view.inbox.InboxContactUsFragment.Companion.FLAG_FROM_TOKOPEDIA_HELP
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.media.loader.utils.toUri
 
 class InboxContactUsActivity : BaseSimpleActivity() {
 
