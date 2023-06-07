@@ -1,0 +1,122 @@
+[
+  {
+    "data": {
+      "getHomeIconV2": {
+        "icons": [
+          {
+            "id": 1377,
+            "url": "",
+            "name": "Home",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/0e606cb1-3ba0-42b7-a11d-ce28169e484d.png.webp",
+            "buIdentifier": "PG_PG_Home",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_360"
+          },
+          {
+            "id": 1378,
+            "url": "",
+            "name": "[menu 1 mock] - Perawatan Tubu ",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/fd6eceec-5b9b-4375-975c-9029fe5371a7.png.webp",
+            "buIdentifier": "PG_PG_Perawatan Tubuh",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_362"
+          },
+          {
+            "id": 1379,
+            "url": "",
+            "name": "[menu 2 mock] - Makanan \u0026 Minuman",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/43675e1b-f2e5-4063-9a65-0bdb10ee0c3e.png.webp",
+            "buIdentifier": "PG_PG_Makanan \u0026 Minuman",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_363"
+          },
+          {
+            "id": 1380,
+            "url": "",
+            "name": "[menu 3 mock] - Kebutuhan Keluarga",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/5d2eed57-6d47-4de7-b5f2-38f666ea12a8.png.webp",
+            "buIdentifier": "PG_PG_Kebutuhan Keluarga",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_364"
+          },
+          {
+            "id": 1381,
+            "url": "",
+            "name": "Elektronik \u0026 Gadget",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/feb4dff7-1de3-4352-9372-2733f05b4d7a.png.webp",
+            "buIdentifier": "PG_PG_Elektronik \u0026 Gadget",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_365"
+          },
+          {
+            "id": 1492,
+            "url": "",
+            "name": "Pakaian \u0026 Hobi",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/b53b0ec5-b73f-42fb-b0c8-cfeba0d41963.png.webp",
+            "buIdentifier": "PG_PG_Pakaian \u0026 Hobi",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_366"
+          },
+          {
+            "id": 1493,
+            "url": "",
+            "name": "Otomotif \u0026 Lainnya",
+            "page": "",
+            "persona": "",
+            "brandID": "",
+            "applinks": "tokopedia://",
+            "imageUrl": "https://images.tokopedia.net/img/cache/100-square/iEWsxH/2023/4/18/7aac9f30-1ee3-400f-856f-95b5d4db5040.png.webp",
+            "buIdentifier": "PG_PG_Otomotif \u0026 Lainnya",
+            "campaignCode": "",
+            "withBackground": false,
+            "categoryPersona": "",
+            "galaxyAttribution": "PG",
+            "feParam": "anchor_indentifier\u003dchannelgroupid_367"
+          }
+        ]
+      }
+    }
+  }
+]

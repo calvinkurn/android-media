@@ -1,0 +1,59 @@
+package com.tokopedia.dilayanitokopedia
+
+import android.content.Intent
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.rule.ActivityTestRule
+import com.tokopedia.dilayanitokopedia.ui.home.DtHomeActivity
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+import java.util.regex.Pattern.matches
+
+fun dtHomepage(func: DtHomepageRobot.() -> Unit) = DtHomepageRobot().apply(func)
+
+class DtHomepageRobot {
+
+    fun launch(mActivityTestRule: ActivityTestRule<DtHomeActivity>) {
+        mActivityTestRule.launchActivity(Intent())
+        waitForData(5000)
+    }
+
+    fun clickFirstItemInFirstWidget() {
+        Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPosition(0))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        Espresso.onView(RecyclerViewMatcher(R.id.rv_home).atPositionOnView(1, R.id.rv_product))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+
+        waitForData(5000)
+
+//        Espresso.onView(RecyclerViewMatcher(R.id.rv_product).atPosition(0))
+//            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+//            .perform(ViewActions.click())
+
+//        Espresso.onView(
+//            allOf(
+//                isDescendantOfA(
+//                    allOf(
+//                        withId(R.id.contentRootLayout),
+//                        hasDescendant(withText("title text"))
+//                    )
+//                ),
+//                isDescendantOfA(withId(R.id.rv_product)).
+//
+//            )
+//        )
+
+//            .perform(ViewActions.click())
+    }
+
+    private fun waitForData(millis: Long = 500L) {
+        Thread.sleep(millis)
+    }
+
+    infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
+        return ResultRobot.apply(func)
+    }
+}

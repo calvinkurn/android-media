@@ -76,7 +76,7 @@ object DtHomepageAnalytics : BaseTrackerConst() {
             )
         )
 
-        val itemList = "/product - dilayani tokopedia"
+        val itemList = "/product - homepage dilayani tokopedia"
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_CLICK_PRODUCT_CARD_DT,
             action = ACTION_CLICK_PRODUCT_CARD_DT,
