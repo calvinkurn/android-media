@@ -7,14 +7,13 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/Unify_Background"
-    android:paddingTop="@dimen/content_common_space_16"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/content_common_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:clipToPadding="false"
         android:orientation="horizontal"
         android:paddingEnd="@dimen/content_common_space_16"

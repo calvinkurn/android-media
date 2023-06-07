@@ -61,7 +61,6 @@ import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
@@ -69,7 +68,6 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
-import com.tokopedia.play_common.model.result.map
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -345,14 +343,15 @@ class PlayViewModel @AssistedInject constructor(
         } ?: products
     }.flowOn(dispatchers.computation)
 
-    private val _explore = combine(_status, _bottomInsets, _exploreWidget, _categoryWidget) {
-            status, bottomInsets, widgets, category ->
+    private val _explore = combine(_status, _bottomInsets, _exploreWidget, _categoryWidget, _channelDetail) {
+            status, bottomInsets, widgets, category, channel ->
         ExploreWidgetUiState(
             shouldShow = !bottomInsets.isAnyShown &&
                 status.channelStatus.statusType.isActive &&
                 !videoPlayer.isYouTube && isExploreWidget,
             data = widgets,
-            category = category
+            category = category,
+            config = channel.exploreWidgetConfig
         )
     }.flowOn(dispatchers.computation)
 

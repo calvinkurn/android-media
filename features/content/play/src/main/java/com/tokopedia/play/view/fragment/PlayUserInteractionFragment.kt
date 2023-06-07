@@ -914,7 +914,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 handleStatus(cachedState)
                 handleAutoSwipe(cachedState)
                 renderEngagement(prevState?.engagement, state.engagement)
-                if (cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
+                renderExploreView(cachedState)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
                     prevState?.tagItems?.voucher != state.tagItems.voucher
@@ -2049,8 +2049,11 @@ class PlayUserInteractionFragment @Inject constructor(
      * Explore Widget
      */
 
-    private fun renderExploreView(shouldShow: Boolean) {
-        exploreView?.setupVisibility(shouldShow)
+    private fun renderExploreView(state: CachedState<PlayViewerNewUiState>) {
+        if (state.isChanged { it.exploreWidget.shouldShow }) {
+            exploreView?.setupVisibility(state.value.exploreWidget.shouldShow)
+            exploreView?.setText(state.value.exploreWidget.config.categoryName)
+        }
     }
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {

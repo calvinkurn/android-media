@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play.R
 import com.tokopedia.play_common.util.addImpressionListener
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author by astidhiyaa on 28/11/22
@@ -16,6 +17,8 @@ class ExploreWidgetViewComponent(
 ) : ViewComponent(container, R.id.view_explore_widget) {
 
     private val impressHolder = ImpressHolder()
+
+    private val title = findViewById<Typography>(R.id.tv_explore)
 
     init {
         rootView.setOnClickListener {
@@ -28,6 +31,10 @@ class ExploreWidgetViewComponent(
 
     fun setupVisibility(shouldShow: Boolean) {
         rootView.showWithCondition(shouldShow)
+    }
+
+    fun setText(value: String) {
+        title.text = value
     }
 
     interface Listener {

@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.ExploreWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.WarehouseInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.ExploreWidgetConfig
 import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
@@ -16,7 +17,6 @@ import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 
 /**
@@ -162,6 +162,7 @@ data class ExploreWidgetUiState(
     val shouldShow: Boolean,
     val data: ExploreWidgetUiModel,
     val category: CategoryWidgetUiModel,
+    val config: ExploreWidgetConfig,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
@@ -169,6 +170,7 @@ data class ExploreWidgetUiState(
                 shouldShow = false,
                 data = ExploreWidgetUiModel.Empty,
                 category = CategoryWidgetUiModel.Empty,
+                config = ExploreWidgetConfig(),
             )
     }
 }
