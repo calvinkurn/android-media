@@ -39,10 +39,6 @@ class GroupDetailViewModel @Inject constructor(
     val detailPageLiveData: LiveData<TopAdsListAllInsightState<Map<Int, GroupDetailDataModel>>>
         get() = _detailPageLiveData
 
-    private val _topadsManagePromoGroupProductInput = MutableLiveData<Pair<TopadsManagePromoGroupProductInput?, Int?>>()
-    val topadsManagePromoGroupProductInput : LiveData<Pair<TopadsManagePromoGroupProductInput?, Int?>>
-        get() = _topadsManagePromoGroupProductInput
-
     fun loadDetailPage(
         adGroupType: Int,
         groupId: String
@@ -60,9 +56,9 @@ class GroupDetailViewModel @Inject constructor(
         })
     }
 
-    fun reOrganiseData(clickedItem: Int = INVALID_INSIGHT_TYPE) {
+    fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE) {
         _detailPageLiveData.value =
-            TopAdsListAllInsightState.Success(groupDetailMapper.reArrangedDataMap(clickedItem))
+            TopAdsListAllInsightState.Success(groupDetailMapper.reSyncDetailPageData(adGroupType, clickedItem))
     }
 
     fun loadInsightTypeChips(
@@ -128,11 +124,7 @@ class GroupDetailViewModel @Inject constructor(
         return groupDetailMapper.detailPageDataMap[TYPE_CHIPS] != null
     }
 
-    fun selectDefaultChips(insightType: Int, adType: String?) {
-        if (adType == "headline") {
-            groupDetailMapper.detailPageDataMap.remove(TYPE_CHIPS)
-            return
-        }
+    fun selectDefaultChips(insightType: Int) {
         chipsList.forEachIndexed { index, groupDetailChipsItemUiModel ->
             groupDetailChipsItemUiModel.isSelected = (index == insightType)
         }
@@ -150,9 +142,5 @@ class GroupDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             topAdsCreateUseCase.execute(requestParams)
         }, onError = {})
-    }
-
-    fun updateTopadsManagePromoGroupProductInput(input : TopadsManagePromoGroupProductInput?, type: Int?){
-        _topadsManagePromoGroupProductInput.value = Pair(input, type)
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.recommendation.data.model.cloud
 
-
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.topads.common.data.response.Error
 
 data class TopAdsBatchGroupInsightResponse(
     @SerializedName("topAdsBatchGetKeywordInsightByGroupIDV3")
@@ -9,7 +9,9 @@ data class TopAdsBatchGroupInsightResponse(
 ) {
     data class TopAdsBatchGetKeywordInsightByGroupIDV3(
         @SerializedName("groups")
-        val groups: List<Group> = listOf()
+        val groups: List<Group> = listOf(),
+        @SerializedName("error")
+        val error: Error = Error()
     ) {
         data class Group(
             @SerializedName("data")

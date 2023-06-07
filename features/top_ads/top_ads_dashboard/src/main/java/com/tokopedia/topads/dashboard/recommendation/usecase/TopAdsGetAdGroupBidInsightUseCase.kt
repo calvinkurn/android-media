@@ -59,6 +59,11 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
                     predictedTotalImpression
                   }
                 }
+                error{
+                  code
+                  detail
+                  title
+                }
               }
             }
         """.trimIndent()

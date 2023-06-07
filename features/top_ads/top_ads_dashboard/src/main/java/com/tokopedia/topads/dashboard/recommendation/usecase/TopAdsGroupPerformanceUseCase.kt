@@ -1,6 +1,5 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,8 +12,7 @@ import javax.inject.Inject
 
 class TopAdsGroupPerformanceUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-    private val userSession: UserSessionInterface,
-    private val dispatchers: CoroutineDispatchers
+    private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsSellerGroupPerformanceResponse>(graphqlRepository) {
 
     init {

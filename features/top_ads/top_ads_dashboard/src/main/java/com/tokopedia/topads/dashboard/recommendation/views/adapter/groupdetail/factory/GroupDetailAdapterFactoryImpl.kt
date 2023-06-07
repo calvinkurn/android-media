@@ -33,8 +33,8 @@ class GroupDetailAdapterFactoryImpl(
     private val onChipClick: (Int) -> Unit,
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?,
-    private val onAccordianItemClick: ((clickedItem: Int) -> Unit),
-    private val onInsightAction:(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput?, type: Int?) -> Unit
+    private val onAccordianItemClick: ((element: GroupInsightsUiModel) -> Unit),
+    private val onInsightAction:(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {

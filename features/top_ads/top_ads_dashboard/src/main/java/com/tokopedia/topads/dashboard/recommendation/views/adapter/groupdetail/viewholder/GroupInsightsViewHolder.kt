@@ -19,8 +19,8 @@ class GroupInsightsViewHolder(
     private val view: View,
     private val onChipClick: (Int) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)? = null,
-    private val onAccordianItemClick: (clickedItem: Int) -> Unit,
-    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput?, type: Int?) -> Unit
+    private val onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit,
+    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
 ) :
     AbstractViewHolder<GroupInsightsUiModel>(view) {
 
@@ -40,7 +40,7 @@ class GroupInsightsViewHolder(
             addGroup(accordionUnifyData)
             onItemClick = { _, isExpanded ->
                 element.isExpanded = isExpanded
-                onAccordianItemClick.invoke(element.type)
+                onAccordianItemClick.invoke(element)
             }
         }
     }

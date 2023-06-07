@@ -62,7 +62,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                         groupDetailMapper.detailPageDataMap[8] = GroupDetailEmptyStateUiModel(
                             EmptyStateData.getData()
                         )
-                        return@coroutineScope groupDetailMapper.reArrangedDataMap()
+                        return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)
                     }
                 }
                 is TopAdsListAllInsightState.Fail -> {
@@ -169,7 +169,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 }
                 else -> {}
             }
-            return@coroutineScope groupDetailMapper.reArrangedDataMap()
+            return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)
         }
     }
 

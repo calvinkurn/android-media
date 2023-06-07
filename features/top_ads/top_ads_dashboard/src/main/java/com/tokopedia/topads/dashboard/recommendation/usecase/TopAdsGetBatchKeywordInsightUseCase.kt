@@ -21,13 +21,12 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
         TopAdsListAllInsightState<TopAdsBatchGroupInsightResponse> {
         setRequestParams(createRequestParam(groupId).parameters)
         val data = executeOnBackground()
-        return TopAdsListAllInsightState.Success(data)
-//        return when {
-//            data.error.title.isNullOrEmpty() -> {
-//                TopAdsListAllInsightState.Success(data)
-//            }
-//            else -> TopAdsListAllInsightState.Fail(Throwable(data.error.title))
-//        }
+        return when {
+            data.topAdsBatchGetKeywordInsightByGroupIDV3.error.title.isNullOrEmpty() -> {
+                TopAdsListAllInsightState.Success(data)
+            }
+            else -> TopAdsListAllInsightState.Fail(Throwable(data.topAdsBatchGetKeywordInsightByGroupIDV3.error.title))
+        }
     }
 
     private fun createRequestParam(groupId: String): RequestParams {
@@ -78,6 +77,11 @@ class TopAdsGetBatchKeywordInsightUseCase @Inject constructor(
                       keywordSource
                     }
                   }
+                }
+                error {
+                  code
+                  detail
+                  title
                 }
               }
             }
