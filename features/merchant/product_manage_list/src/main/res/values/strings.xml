@@ -115,6 +115,7 @@
     <string name="product_manage_edit_products_inactive_button">Ya, Nonaktifkan</string>
     <string name="product_manage_edit_products_inactive_success">%d produk berhasil dinonaktifkan.</string>
     <string name="product_manage_delete_products_success">%d produk berhasil dihapus.</string>
+    <string name="product_manage_delete_products_failed">%2$d produk gagal dihapus karena sedang dijadwalkan untuk campaign.</string>
     <string name="product_manage_delete_products_retry">%2$d produk gagal dihapus karena sedang dijadwalkan untuk campaign.</string>
     <string name="product_manage_edit_products_inactive_retry">%1$d produk berhasil dinonaktifkan, %2$d gagal dinonaktifkan.</string>
     <string name="product_manage_edit_products_retry">%1$d produk berhasil diubah, %2$d gagal diubah.</string>
