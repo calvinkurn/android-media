@@ -4,8 +4,8 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPe
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapterFactory
 
 data class PenaltyFilterDateUiModel(
-    val startDate: String,
-    val endDate: String,
+    var startDate: String,
+    var endDate: String,
     var defaultStartDate: String,
     var defaultEndDate: String,
     var completeDate: String

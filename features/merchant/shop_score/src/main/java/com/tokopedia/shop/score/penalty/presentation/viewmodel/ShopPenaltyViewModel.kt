@@ -6,8 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getHistoryPenaltyTimeStamp
+import com.tokopedia.shop.score.common.getNotYetDeductedPenaltyTimeStamp
 import com.tokopedia.shop.score.common.getNowTimeStamp
 import com.tokopedia.shop.score.common.getPastDaysPenaltyTimeStamp
 import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
@@ -30,6 +33,7 @@ import dagger.Lazy
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class ShopPenaltyViewModel @Inject constructor(
@@ -74,9 +78,8 @@ class ShopPenaltyViewModel @Inject constructor(
     private val _sortTypeFilterData = MutableLiveData<Pair<Int, Int>>()
     private val _dateFilterData = MutableLiveData<Pair<String, String>>()
 
-    private var startDate =
-        format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
-    private var endDate = format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    private var startDate = String.EMPTY
+    private var endDate = String.EMPTY
     private var maxStartDate: String? = null
     private var maxEndDate: String? = null
     private var startDateSummary =
@@ -131,6 +134,12 @@ class ShopPenaltyViewModel @Inject constructor(
 
     fun getDataPenalty(@ShopPenaltyPageType pageType: String = ShopPenaltyPageType.ONGOING) {
         launchCatchError(block = {
+            startDate = getInitialStartDate(pageType)
+            endDate = getInitialEndDate(pageType)
+
+            startDateSummary = getInitialStartDate(pageType)
+            endDateSummary = getInitialEndDate(pageType)
+
             val penaltyDetailMergeDeffered =
                 withContext(dispatchers.io) {
                     async {
@@ -292,9 +301,28 @@ class ShopPenaltyViewModel @Inject constructor(
                     }
                 }
             }
-            // TODO: Reset date filter
             _resetFilterResult.value = Success(penaltyFilterUiModel)
         }
+    }
+
+    private fun getInitialStartDate(@ShopPenaltyPageType pageType: String): String {
+        val timeStamp =
+            when(pageType) {
+                ShopPenaltyPageType.ONGOING -> getPastDaysPenaltyTimeStamp()
+                ShopPenaltyPageType.HISTORY -> getHistoryPenaltyTimeStamp()
+                else -> getNotYetDeductedPenaltyTimeStamp()
+            }
+        return format(timeStamp.time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+    }
+
+    private fun getInitialEndDate(@ShopPenaltyPageType pageType: String): String {
+        val timeStamp =
+            if (pageType == ShopPenaltyPageType.HISTORY) {
+                getPastDaysPenaltyTimeStamp()
+            } else {
+                Date(getNowTimeStamp())
+            }
+        return format(timeStamp.time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     }
 }
 

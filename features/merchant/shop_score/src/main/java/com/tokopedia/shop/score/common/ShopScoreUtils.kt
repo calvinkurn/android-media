@@ -62,9 +62,22 @@ fun getPastDaysPenaltyTimeStamp(): Date {
     return date.time
 }
 
+fun getHistoryPenaltyTimeStamp(): Date {
+    val date = Calendar.getInstance(getLocale())
+    val totalDays = ShopScoreConstant.TWELVE_WEEKS + ShopScoreConstant.FOUR_WEEKS
+    date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - totalDays)
+    return date.time
+}
+
+fun getNotYetDeductedPenaltyTimeStamp(): Date {
+    val date = Calendar.getInstance(getLocale())
+    date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - getNPastDaysPenalty())
+    return date.time
+}
+
 fun getNPastDaysPenalty(): Int {
     val calendar = Calendar.getInstance(getLocale())
-    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - ShopScoreConstant.FOUR_WEEKS)
+    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR))
     return when (calendar.get(Calendar.DAY_OF_WEEK)) {
         Calendar.SATURDAY -> ShopScoreConstant.SIX_NUMBER
         Calendar.FRIDAY -> ShopScoreConstant.FIVE_NUMBER
