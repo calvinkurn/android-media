@@ -58,7 +58,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
@@ -68,7 +67,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.InfoDilayaniTokopediaBottomSheet
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_PRODUCT_NAME
@@ -262,9 +260,11 @@ open class ProductManageFragment :
                     is SellerFeatureUiModel.FeaturedProductFeatureWithDataUiModel -> goToSellerAppProductManageThenAddAsFeatured(
                         item.data as ProductUiModel
                     )
+
                     is SellerFeatureUiModel.StockReminderFeatureWithDataUiModel -> goToSellerAppSetStockReminder(
                         item.data as ProductUiModel
                     )
+
                     is SellerFeatureUiModel.ProductManageSetVariantFeatureWithDataUiModel -> goToSellerAppAddProduct()
                     is SellerFeatureUiModel.BroadcastChatProductManageUiModel -> {
                         val product = item.data as ProductUiModel
@@ -275,6 +275,7 @@ open class ProductManageFragment :
                             isCarousel = true
                         )
                     }
+
                     else -> {
                         // no op
                     }
@@ -1345,10 +1346,12 @@ open class ProductManageFragment :
             itemsChecked.isEmpty() -> {
                 resetSelectAllCheckBox()
             }
+
             itemsChecked.size == adapter.data.size -> {
                 checkBoxSelectAll?.isChecked = true
                 checkBoxSelectAll?.setIndeterminate(false)
             }
+
             checkBoxSelectAll?.getIndeterminate() == false -> {
                 checkBoxSelectAll?.isChecked = true
                 checkBoxSelectAll?.setIndeterminate(true)
@@ -1515,7 +1518,8 @@ open class ProductManageFragment :
         val productManageAccess =
             viewModel.productManageAccess.value as? Success<ProductManageAccess>
         val hasMultiSelectAccess = productManageAccess?.data?.multiSelect == true
-        val shouldShow = productNotEmpty && ProductManageConfig.IS_SELLER_APP && hasMultiSelectAccess
+        val shouldShow =
+            productNotEmpty && ProductManageConfig.IS_SELLER_APP && hasMultiSelectAccess
 
         multiSelectContainer?.showWithCondition(productNotEmpty)
         textMultipleSelect?.showWithCondition(shouldShow)
@@ -1766,11 +1770,11 @@ open class ProductManageFragment :
 
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
-                val retryLabel =
-                    getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+                val okeLabel =
+                    getString(R.string.label_oke)
                 val retryMessage = getRetryMessage(context, result)
 
-                showErrorToast(retryMessage, retryLabel) { retryMultiEditProducts(result) }
+                showErrorToast(retryMessage, okeLabel)
             } else if (result.success.isNotEmpty()) {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
@@ -1809,6 +1813,7 @@ open class ProductManageFragment :
 
                 getFiltersTab(withDelay = true)
             }
+
             else -> {
                 // no op
             }
@@ -1935,6 +1940,7 @@ open class ProductManageFragment :
             is MessageErrorException ->
                 throwable.message
                     ?: getString(R.string.product_manage_failed_set_featured_product)
+
             else -> ErrorHandler.getErrorMessage(context, throwable)
         }
 
@@ -2082,9 +2088,11 @@ open class ProductManageFragment :
             product.isViolation() -> {
                 goToProductViolationHelpPage()
             }
+
             product.isPending() -> {
                 showViolationReasonBottomSheet(product.id)
             }
+
             product.isSuspend() -> {
                 showSuspendReasonBottomSheet(product.id)
             }
@@ -2165,14 +2173,17 @@ open class ProductManageFragment :
                 goToPDP(productId)
                 ProductManageTracking.eventSettingsPreview(productId)
             }
+
             is Duplicate -> {
                 clickDuplicateProduct(productId)
                 ProductManageTracking.eventSettingsDuplicate(productId)
             }
+
             is StockReminder -> {
                 onSetStockReminderClicked(product)
                 ProductManageTracking.eventSettingsReminder(productId)
             }
+
             is Delete -> {
                 if (product.isDTInbound) {
                     showInfoNotAllowedToDeleteProductDT(
@@ -2184,22 +2195,27 @@ open class ProductManageFragment :
                 }
                 ProductManageTracking.eventSettingsDelete(productId)
             }
+
             is SetTopAds -> {
                 onPromoTopAdsClicked(product.id)
                 ProductManageTracking.eventSettingsTopads(productId)
             }
+
             is SeeTopAds -> {
                 onSeeTopAdsClicked(product.id)
                 ProductManageTracking.eventSettingsTopadsDetail(productId)
             }
+
             is SetFeaturedProduct -> {
                 onSetFeaturedProductClicked(product.isFeatured ?: false, product.id)
                 ProductManageTracking.eventSettingsFeatured(productId)
             }
+
             is RemoveFeaturedProduct -> {
                 onRemoveFeaturedProductClicked(product)
                 ProductManageTracking.eventSettingsFeatured(productId)
             }
+
             is CreateBroadcastChat -> {
                 goToCreateBroadCastChat(product)
                 ProductManageTracking.eventClickBroadcastChat(
@@ -2208,6 +2224,7 @@ open class ProductManageFragment :
                     isCarousel = false
                 )
             }
+
             is CreateProductCoupon -> {
                 goToCreateProductCoupon(product)
                 ProductManageTracking.eventClickCreateProductCoupon(userSession.shopId)
@@ -2256,6 +2273,7 @@ open class ProductManageFragment :
                         }
                         dialogFeaturedProduct?.show()
                     }
+
                     MIN_FEATURED_PRODUCT -> {
                         setDialogFeaturedProduct(
                             ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
@@ -2272,6 +2290,7 @@ open class ProductManageFragment :
                         dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                         dialogFeaturedProduct?.show()
                     }
+
                     else -> {
                         addFeaturedProduct(productId)
                     }
@@ -2322,7 +2341,12 @@ open class ProductManageFragment :
     }
 
     private fun onSeeTopAdsClicked(productId: String) {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,productId, TOPADS_PERFORMANCE_CURRENT_SITE)
+        RouteManager.route(
+            context,
+            ApplinkConstInternalTopAds.TOPADS_SEE_ADS_PERFORMANCE,
+            productId,
+            TOPADS_PERFORMANCE_CURRENT_SITE
+        )
     }
 
     private fun goToDuplicateProduct(productId: String) {
@@ -2512,6 +2536,7 @@ open class ProductManageFragment :
                         )
                     }
                 }
+
                 REQUEST_CODE_ETALASE -> {
                     if (resultCode == Activity.RESULT_OK) {
                         val shopId = userSession.shopId
@@ -2534,11 +2559,13 @@ open class ProductManageFragment :
                         startActivity(shopShowcaseIntent)
                     }
                 }
+
                 REQUEST_CODE_STOCK_REMINDER -> {
                     if (resultCode == Activity.RESULT_OK) {
                         onSetStockReminderResult()
                     }
                 }
+
                 REQUEST_CODE_CAMPAIGN_STOCK -> {
                     when (resultCode) {
                         Activity.RESULT_OK -> {
@@ -2581,23 +2608,20 @@ open class ProductManageFragment :
                                     .show()
                             }
                         }
+
                         Activity.RESULT_CANCELED -> {
                             val errorMessage = intent.getStringExtra(EXTRA_UPDATE_MESSAGE)
                                 ?: getString(com.tokopedia.product.manage.common.R.string.product_manage_campaign_stock_error_toast)
                             constraintLayout?.let { view ->
-                                Toaster.build(
-                                    view,
-                                    errorMessage,
-                                    Snackbar.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR
-                                )
-                                    .show()
+                                showErrorToast(errorMessage, getString(R.string.label_oke))
                             }
                         }
+
                         else -> {
                         }
                     }
                 }
+
                 else -> {
                     super.onActivityResult(requestCode, resultCode, intent)
                 }
@@ -2711,6 +2735,7 @@ open class ProductManageFragment :
                     it.data.price,
                     it.data.productName
                 )
+
                 is Fail -> {
                     onErrorEditPrice(it.throwable as EditPriceResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -2734,6 +2759,7 @@ open class ProductManageFragment :
                         onSuccessEditStock(productId, productName, stock, status)
                     }
                 }
+
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -2824,13 +2850,24 @@ open class ProductManageFragment :
 
     private fun showEditDTProductsInActiveConfirmationDialog() {
         context?.let { it ->
+            val htmlText = HtmlLinkHelper(
+                it,
+                getString(R.string.product_manage_confirm_inactive_dt_product_desc)
+            )
+
+            htmlText.urlList.getOrNull(Int.ZERO)?.apply {
+                setOnClickListener {
+                    RouteManager.route(it,this.linkUrl)
+                }
+            }
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
                         R.string.product_manage_confirm_inactive_dt_product_title
                     )
                 )
-                setDescription(getString(R.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml())
+
+                setDescription(htmlText.spannedString.toString())
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
@@ -2853,6 +2890,7 @@ open class ProductManageFragment :
                         renderMultiSelectProduct()
                     }
                 }
+
                 is Fail -> {
                     showGetListError(it.throwable)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -2888,6 +2926,7 @@ open class ProductManageFragment :
                     }
                     renderCheckedView()
                 }
+
                 else -> {
                     // no op
                 }
@@ -3078,6 +3117,7 @@ open class ProductManageFragment :
                     ).orEmpty()
                     showMessageToast(message)
                 }
+
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -3104,6 +3144,7 @@ open class ProductManageFragment :
                     updateVariantStock(it.data)
                     showMessageToast(message)
                 }
+
                 is Fail -> {
                     showErrorMessageToast(it)
                     ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -3143,6 +3184,7 @@ open class ProductManageFragment :
                         showNoAccessPage()
                     }
                 }
+
                 is Fail -> showErrorPage()
             }
         }
@@ -3295,9 +3337,11 @@ open class ProductManageFragment :
                 view.id == R.id.ivLabelGuaranteed && !conditionNotShowCoachmarkAvailable -> {
                     showCoachMarkLabelGuarantee(view)
                 }
+
                 view.id == R.id.imageStockReminder && !conditionNotShowCoachmarkReminder -> {
                     showCoachProductWithStockReminder(view)
                 }
+
                 view.id == R.id.btnMoreOptions && !conditionNotShowMoreMenu -> {
                     if (ProductManageConfig.IS_SELLER_APP) {
                         showCoachMoreOptionMenu(
@@ -3307,6 +3351,7 @@ open class ProductManageFragment :
                         )
                     }
                 }
+
                 else -> Unit
             }
         }
