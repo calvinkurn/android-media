@@ -30,7 +30,7 @@ class AddOnBottomSheet: BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTitle(getString(R.string.gifting_title_bottomsheet))
+        setTitle(getString(R.string.addon_bottomsheet_title))
         childFragmentManager.beginTransaction()
             .replace(R.id.parent_view,
                 AddOnFragment.newInstance(
