@@ -1,7 +1,8 @@
 package com.tokopedia.people.di
 
+import com.tokopedia.people.analytic.tracker.UserProfileGeneralTracker
+import com.tokopedia.people.analytic.tracker.UserProfileGeneralTrackerImpl
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
-import com.tokopedia.people.analytic.tracker.UserProfileTrackerImpl
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserFollowRepositoryImpl
 import com.tokopedia.people.data.UserProfileRepository
@@ -31,5 +32,5 @@ abstract class UserProfileBindModule {
 
     @Binds
     @UserProfileScope
-    abstract fun bindUserProfileTracker(userProfileTracker: UserProfileTrackerImpl): UserProfileTracker
+    abstract fun bindUserProfileGeneralTracker(userProfileGeneralTracker: UserProfileGeneralTrackerImpl): UserProfileGeneralTracker
 }
