@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.webkit.CookieManager
 import android.webkit.CookieSyncManager
@@ -36,8 +35,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.core.gcm.NotificationModHandler
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.logger.ServerLogger.log
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
 import com.tokopedia.logout.domain.usecase.LogoutUseCase
@@ -51,11 +48,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
-import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.file.FileUtil
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -207,11 +201,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         clearTemporaryTokenForSeamless()
         instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
-        userSession.clearToken()
         userSession.logoutSession()
         TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
-        clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
 
         if (isReturnToHome) {
@@ -230,22 +222,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         } else {
             setResult(Activity.RESULT_OK)
             finish()
-        }
-    }
-
-    private fun clearDataStore() {
-        if (dataStorePreference.isDataStoreEnabled()) {
-            GlobalScope.launch {
-                try {
-                    userSessionDataStore.logoutSession()
-                } catch (e: Exception) {
-                    val data = mapOf(
-                        "method" to "logout_activity",
-                        "error" to Log.getStackTraceString(e).take(MAX_STACKTRACE_LENGTH)
-                    )
-                    log(Priority.P2, DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG, data)
-                }
-            }
         }
     }
 
@@ -356,8 +332,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         private const val KEY_PROFILE_PICTURE = "profile_picture"
         private const val CHOOSE_ADDRESS_PREF = "local_choose_address"
         private const val INVALID_TOKEN = "Token tidak valid."
-
-        private const val MAX_STACKTRACE_LENGTH = 1000
 
         const val GOTO_SEAMLESS_PREF = "goto_seamless_pref"
         const val KEY_TEMPORARY = "temporary_key"
