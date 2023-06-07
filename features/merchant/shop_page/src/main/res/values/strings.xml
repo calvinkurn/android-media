@@ -202,6 +202,8 @@
     <string name="shop_page_claim">Klaim</string>
     <string name="shop_page_use">Pakai</string>
     <string name="shop_page_claimed">Diklaim</string>
+    <string name="shop_page_voucher_background">Voucher background</string>
+    <string name="shop_page_view_all_voucher">Lihat voucher lainnya</string>
     <string name="shop_page_placeholder_minimal_purchase_million">Min. belanja Rp%s jt</string>
     <string name="shop_page_placeholder_minimal_purchase_thousand">Min. belanja Rp%s rb</string>
     <string name="shop_page_placeholder_minimal_purchase">Min. belanja Rp%s</string>

@@ -134,6 +134,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     private fun displayVouchers(vouchers: List<ExclusiveLaunchVoucher>) {
         exclusiveLaunchAdapter.submit(vouchers)
+        binding?.recyclerView?.applyPaddingToLastItem()
     }
 
     private fun setupView() {
@@ -145,7 +146,6 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(activity)
             adapter = exclusiveLaunchAdapter
             itemAnimator = null
-            applyPaddingToLastItem()
         }
 
         exclusiveLaunchAdapter.apply {

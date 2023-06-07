@@ -4,9 +4,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="88dp"
     android:layout_height="68dp"
-    android:background="@drawable/bg_view_all_voucher_dark"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <ImageView
+        android:id="@+id/imgBackground"
+        android:layout_width="match_parent"
+        android:layout_height="68dp"
+        android:contentDescription="@string/shop_page_view_all_voucher"
+        android:background="@drawable/bg_view_all_voucher_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgText"
