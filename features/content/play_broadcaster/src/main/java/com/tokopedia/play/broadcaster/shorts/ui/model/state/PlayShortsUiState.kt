@@ -28,7 +28,6 @@ data class PlayShortsUiState(
     val tags: NetworkResult<Set<PlayTagUiModel>>,
     val uploadState: PlayShortsUploadUiState,
     val isAffiliate: Boolean,
-
     val bannerPreparation: List<PlayBroadcastPreparationBannerModel>,
 )
 
