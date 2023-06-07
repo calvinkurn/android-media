@@ -100,6 +100,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         quantity: Int,
         layoutType: CategoryLayoutType
     ) {
+        super.updateProductCartQuantity(productId, quantity, layoutType)
         layout.updateProductQuantity(
             productId = productId,
             quantity = quantity,
