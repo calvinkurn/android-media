@@ -86,7 +86,6 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -212,7 +211,6 @@ class ProductManageViewModel @Inject constructor(
     private var warehouseId: String = ""
     private var totalProductCount = 0
 
-
     init {
         initGetUploadStatus()
     }
@@ -272,7 +270,6 @@ class ProductManageViewModel @Inject constructor(
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
-
                 val warehouseResponse = async {
                     getShopWarehouse.execute(userSessionInterface.shopId.toLongOrZero())
                 }.await()
@@ -296,17 +293,17 @@ class ProductManageViewModel @Inject constructor(
                 response.results?.filter { !it.isSuccess() && it.result?.header?.reason != REASON_DT_FOR_BULK_EDIT }
                     .orEmpty()
             val failedDilayaniTokopediProduct = response.results?.filter {
-                !it.isSuccess()
-                    && it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
+                !it.isSuccess() &&
+                    it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
             }.orEmpty()
 
             _multiEditProductResult.value =
                 Success(EditByStatus(status, success, failed, failedDilayaniTokopediProduct))
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+                hideProgressDialog()
+            })
     }
 
     fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
@@ -314,7 +311,6 @@ class ProductManageViewModel @Inject constructor(
             showProgressDialog()
 
             val response = withContext(dispatchers.io) {
-
                 val shopParam = ShopParam(userSessionInterface.shopId)
                 val menuParam = MenuParam(menuId, menuName)
 
@@ -333,9 +329,9 @@ class ProductManageViewModel @Inject constructor(
             _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
-            _multiEditProductResult.value = Fail(it)
-            hideProgressDialog()
-        })
+                _multiEditProductResult.value = Fail(it)
+                hideProgressDialog()
+            })
     }
 
     fun getProductList(
@@ -348,7 +344,6 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-
             val productResponse = withContext(dispatchers.io) {
                 if (withDelay) {
                     delay(REQUEST_DELAY)
@@ -375,7 +370,6 @@ class ProductManageViewModel @Inject constructor(
                 }
 
                 getProductList.await().productList to maxStockDeffered.await()
-
             }
             _refreshList.value = isRefresh
 
@@ -386,12 +380,12 @@ class ProductManageViewModel @Inject constructor(
             showTicker()
             hideProgressDialog()
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            hideProgressDialog()
-            _productListResult.value = Fail(it)
-        }).let { getProductListJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                hideProgressDialog()
+                _productListResult.value = Fail(it)
+            }).let { getProductListJob = it }
     }
 
     fun getProductVariants(productId: String) {
@@ -430,9 +424,9 @@ class ProductManageViewModel @Inject constructor(
 
             hideLoadingDialog()
         }, onError = {
-            _getProductVariantsResult.value = Fail(it)
-            hideLoadingDialog()
-        })
+                _getProductVariantsResult.value = Fail(it)
+                hideLoadingDialog()
+            })
     }
 
     fun getTickerData() {
@@ -447,11 +441,11 @@ class ProductManageViewModel @Inject constructor(
                 result.getTargetedTicker?.tickers.orEmpty()
             )
         }, onError = {
-            _tickerData.value = tickerStaticDataProvider.getTickers(
-                isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty()
-            )
-        })
+                _tickerData.value = tickerStaticDataProvider.getTickers(
+                    isMultiLocationShop,
+                    _shopStatus.value?.shopStatus.orEmpty()
+                )
+            })
     }
 
     fun getFiltersTab(withDelay: Boolean = false) {
@@ -474,11 +468,11 @@ class ProductManageViewModel @Inject constructor(
                 value = Success(data)
             }
         }, onError = {
-            if (it is CancellationException) {
-                return@launchCatchError
-            }
-            _productFiltersTab.value = Fail(it)
-        }).let { getFilterTabJob = it }
+                if (it is CancellationException) {
+                    return@launchCatchError
+                }
+                _productFiltersTab.value = Fail(it)
+            }).let { getFilterTabJob = it }
     }
 
     fun getProductManageAccess() {
@@ -533,8 +527,8 @@ class ProductManageViewModel @Inject constructor(
 
             productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
         }, onError = {
-            _productListFeaturedOnlyResult.value = Fail(it)
-        })
+                _productListFeaturedOnlyResult.value = Fail(it)
+            })
     }
 
     fun editPrice(productId: String, price: String, productName: String) {
@@ -690,7 +684,8 @@ class ProductManageViewModel @Inject constructor(
             },
             onError = {
                 _getPopUpResult.value = Fail(it)
-            })
+            }
+        )
     }
 
     fun deleteSingleProduct(productName: String, productId: String) {
@@ -763,8 +758,8 @@ class ProductManageViewModel @Inject constructor(
                 )
             )
         }, onError = { throwable ->
-            _setFeaturedProductResult.postValue(Fail(throwable))
-        })
+                _setFeaturedProductResult.postValue(Fail(throwable))
+            })
     }
 
     fun showHideOptionsMenu() {
@@ -896,7 +891,10 @@ class ProductManageViewModel @Inject constructor(
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                userSessionInterface.shopId, productId, warehouseId, stock.toString()
+                userSessionInterface.shopId,
+                productId,
+                warehouseId,
+                stock.toString()
             )
             val response = editStockUseCase.execute(requestParams)
             val productStatus = response.getProductStatus() ?: status
@@ -933,7 +931,9 @@ class ProductManageViewModel @Inject constructor(
                 ProductStock(it.id, it.stock.toString())
             }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
-                userSessionInterface.shopId, warehouseId, productList
+                userSessionInterface.shopId,
+                warehouseId,
+                productList
             )
             editStockUseCase.execute(requestParams)
             Success(result)
