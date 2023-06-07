@@ -1106,7 +1106,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
                 _isBottomSheetsShown.update { false }
             }
-            EmptyPageWidget -> handleEmptyExplore()
+            is EmptyPageWidget -> handleEmptyExplore(action.type)
             is SelectReason -> handleSelectedReason(action.reasonId)
             is CommentVisibilityAction -> {
                 _isBottomSheetsShown.update { action.isOpen }
@@ -2903,7 +2903,7 @@ class PlayViewModel @AssistedInject constructor(
         }) {}
     }
 
-    private fun updateCategoryWidget(isRefresh: Boolean) {
+    private fun updateCategoryWidget(isRefresh: Boolean) { //isRefresh = initial state / first page
         viewModelScope.launchCatchError(block = {
             _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
 
@@ -2915,7 +2915,8 @@ class PlayViewModel @AssistedInject constructor(
                 sourceId = param.sourceId,
                 cursor = cursor
             )
-            _categoryWidget.update { widget -> widget.copy(data = response.getChannelBlocks.getChannelCards, state = ExploreWidgetState.Success, pagingConfig = response.getConfig) }
+            val data = response.getChannelBlocks.getChannelCards
+            _categoryWidget.update { widget -> widget.copy(data = data, state = if (isRefresh && data.isEmpty()) ExploreWidgetState.Empty else ExploreWidgetState.Success, pagingConfig = response.getConfig) }
         }) {
                 exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception)) }
         }
@@ -3061,10 +3062,16 @@ class PlayViewModel @AssistedInject constructor(
             _channelDetail.update { it.copy(commentConfig = response) }
         }){}
     }
-    private fun handleEmptyExplore() {
-        val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
-        val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
-        handleClickChip(_exploreWidget.value.chips.items[finalPosition])
+    private fun handleEmptyExplore(type: ExploreWidgetType) {
+        if (type == ExploreWidgetType.Category) {
+            viewModelScope.launch {
+                _uiEvent.emit(ExploreWidgetNextTab)
+            }
+        } else {
+            val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
+            val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
+            handleClickChip(_exploreWidget.value.chips.items[finalPosition])
+        }
     }
 
     private fun handleSelectedReason(id: Int) {

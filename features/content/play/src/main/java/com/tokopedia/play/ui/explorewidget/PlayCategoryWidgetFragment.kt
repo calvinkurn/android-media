@@ -1,12 +1,18 @@
 package com.tokopedia.play.ui.explorewidget
 
 import android.os.Bundle
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.R
 import com.tokopedia.play.databinding.FragmentPlayCategoryWidgetBinding
@@ -18,13 +24,16 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.BasePlayFragment
 import com.tokopedia.play.view.uimodel.ExploreWidgetState
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
+import com.tokopedia.play.view.uimodel.action.EmptyPageWidget
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.action.RefreshWidget
+import com.tokopedia.play.view.uimodel.event.ExploreWidgetNextTab
 import com.tokopedia.play.view.uimodel.getCategoryShimmering
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -58,6 +67,19 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         creator = { PlayToaster(requireView(), viewLifecycleOwner) }
     )
 
+    private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
+        object : ClickableSpan() {
+            override fun updateDrawState(tp: TextPaint) {
+                tp.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                tp.isUnderlineText = false
+            }
+
+            override fun onClick(widget: View) {
+                viewModel.submitAction(EmptyPageWidget(ExploreWidgetType.Category))
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,11 +94,25 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
 
         setupView()
         observeState()
+        observeEvent()
     }
 
     private fun setupView() {
         binding.rvPlayCategoryWidget.addOnScrollListener(scrollListener)
         binding.rvPlayCategoryWidget.adapter = categoryAdapter
+
+        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.text =
+            buildSpannedString {
+                append(getString(R.string.play_empty_desc_explore_widget))
+                append(
+                    getString(R.string.play_explore_widget_empty),
+                    clickableSpan,
+                    Spanned.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+
+        binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
+            LinkMovementMethod.getInstance()
 
         //TODO() temp
         viewModel.submitAction(
@@ -92,10 +128,25 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         }
     }
 
+    private fun observeEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiEvent.collectLatest { event ->
+                when (event) {
+                    ExploreWidgetNextTab -> {
+                        goToNextPage()
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderCards(state: CachedState<PlayViewerNewUiState>) {
         if (state.isNotChanged { it.exploreWidget.category }) return
 
         val result = state.value.exploreWidget.category
+        showEmpty(result.state is ExploreWidgetState.Empty)
+
         when (result.state) {
             is ExploreWidgetState.Success -> categoryAdapter.setItemsAndAnimateChanges(result.data)
             ExploreWidgetState.Loading -> categoryAdapter.setItemsAndAnimateChanges(getCategoryShimmering)
@@ -112,6 +163,16 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
             }
             else -> {}
         }
+    }
+
+    private fun showEmpty(needToShow: Boolean) {
+        binding.rvPlayCategoryWidget.showWithCondition(!needToShow)
+        binding.viewExploreWidgetEmpty.root.showWithCondition(needToShow)
+    }
+
+    private fun goToNextPage() {
+        if (requireParentFragment() !is PlayExploreWidget) return
+        (requireParentFragment() as  PlayExploreWidget).moveTab(1)
     }
 
     override fun onDestroyView() {

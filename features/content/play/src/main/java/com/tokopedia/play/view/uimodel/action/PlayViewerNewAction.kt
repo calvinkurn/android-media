@@ -113,12 +113,12 @@ object OpenCart: PlayViewerNewAction()
 /**
  * Explore Widget
  */
-data class FetchWidgets(val type: ExploreWidgetType): PlayViewerNewAction() //TODO() add param widget type
+data class FetchWidgets(val type: ExploreWidgetType): PlayViewerNewAction()
 data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()
 object NextPageWidgets : PlayViewerNewAction() //TODO() add param widget type
 object RefreshWidget : PlayViewerNewAction() //TODO() add param widget type
 data class UpdateReminder(val channelId : String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()
 object DismissExploreWidget : PlayViewerNewAction()
-object EmptyPageWidget : PlayViewerNewAction() //TODO() add param widget type
+data class EmptyPageWidget(val type: ExploreWidgetType) : PlayViewerNewAction()
 
 data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction ()

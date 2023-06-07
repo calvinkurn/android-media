@@ -142,7 +142,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
 
             override fun onClick(widget: View) {
-                viewModel.submitAction(EmptyPageWidget)
+                viewModel.submitAction(EmptyPageWidget(ExploreWidgetType.Default))
             }
         }
     }

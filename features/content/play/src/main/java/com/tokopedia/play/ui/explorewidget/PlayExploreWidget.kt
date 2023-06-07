@@ -91,6 +91,10 @@ class PlayExploreWidget @Inject constructor(
         binding.tabPlayExploreWidget.showWithCondition(tabs.size.isMoreThanZero())
     }
 
+    fun moveTab(position: Int) {
+        binding.vpPlayExploreWidget.setCurrentItem(position, true)
+    }
+
     override fun onResume() {
         super.onResume()
 
