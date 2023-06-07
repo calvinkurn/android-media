@@ -139,7 +139,7 @@ class AccordianKeywordBidViewHolder(
     fun addTopadsManagePromoGroupProductInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.ExistingKeywordsBidRecom){
         val list = topadsManagePromoGroupProductInput.keywordOperation?.toMutableList()
         list?.add(KeywordEditInput(
-            RecommendationConstants.ACTION_CREATE_PARAM,
+            RecommendationConstants.ACTION_EDIT_PARAM,
             keyword = KeywordEditInput.Keyword(
                 type = element.keywordType,
                 status = element.keywordStatus,

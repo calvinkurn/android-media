@@ -39,8 +39,8 @@ class GroupDetailViewModel @Inject constructor(
     val detailPageLiveData: LiveData<TopAdsListAllInsightState<Map<Int, GroupDetailDataModel>>>
         get() = _detailPageLiveData
 
-    private val _topadsManagePromoGroupProductInput = MutableLiveData<Pair<TopadsManagePromoGroupProductInput, Int>>()
-    val topadsManagePromoGroupProductInput : LiveData<Pair<TopadsManagePromoGroupProductInput, Int>>
+    private val _topadsManagePromoGroupProductInput = MutableLiveData<Pair<TopadsManagePromoGroupProductInput?, Int?>>()
+    val topadsManagePromoGroupProductInput : LiveData<Pair<TopadsManagePromoGroupProductInput?, Int?>>
         get() = _topadsManagePromoGroupProductInput
 
     fun loadDetailPage(
@@ -55,9 +55,7 @@ class GroupDetailViewModel @Inject constructor(
                 groupId
             )
             _detailPageLiveData.value = TopAdsListAllInsightState.Success(data)
-            Log.d("svfjbv", "getSellerPerformance: $data")
         }, {
-            Log.d("svfjbv", "getSellerPerformance: ${it.message}")
             _detailPageLiveData.value = TopAdsListAllInsightState.Fail(it)
         })
     }
@@ -154,7 +152,7 @@ class GroupDetailViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun updateTopadsManagePromoGroupProductInput(input : TopadsManagePromoGroupProductInput, type: Int){
+    fun updateTopadsManagePromoGroupProductInput(input : TopadsManagePromoGroupProductInput?, type: Int?){
         _topadsManagePromoGroupProductInput.value = Pair(input, type)
     }
 }

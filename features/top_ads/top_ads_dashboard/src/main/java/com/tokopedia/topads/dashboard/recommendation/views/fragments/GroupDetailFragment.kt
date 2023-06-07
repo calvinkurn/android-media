@@ -101,6 +101,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         setUpRecyclerView()
         setUpChipsRecyclerView()
         observeLiveData()
+        handlingViewsListeners()
     }
 
     private fun retrieveInitialData() {
@@ -131,12 +132,41 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                             adGroupId = ((this as? InsightTypeChipsUiModel)?.adGroupList?.firstOrNull() as? AdGroupUiModel)?.adGroupID
                         }
                     }
-                    Toast.makeText(context, "fejrfberf", Toast.LENGTH_SHORT).show()
                 }
                 is TopAdsListAllInsightState.Fail -> {
                 }
                 is TopAdsListAllInsightState.Loading -> {
                 }
+            }
+        }
+
+        viewModel.topadsManagePromoGroupProductInput.observe(viewLifecycleOwner) {
+            when (it.second) {
+                TYPE_POSITIVE_KEYWORD -> {
+                    saveButton?.text = String.format(
+                        getString(R.string.topads_insight_positive_keywords_cta_text_format),
+                        it.first?.keywordOperation?.size
+                    )
+                }
+                TYPE_KEYWORD_BID -> {
+                    saveButton?.text = String.format(
+                        getString(R.string.topads_insight_existing_keywords_cta_text_format),
+                        it.first?.keywordOperation?.size
+                    )
+                }
+                TYPE_GROUP_BID -> {
+                    saveButton?.text = getString(R.string.topads_insight_biaya_iklan_cta_text)
+                }
+                TYPE_DAILY_BUDGET -> {
+                    saveButton?.text = getString(R.string.topads_insight_daily_budget_cta_text)
+                }
+                TYPE_NEGATIVE_KEYWORD_BID -> {
+                    saveButton?.text = String.format(
+                        getString(R.string.topads_insight_negative_keywords_cta_text_format),
+                        it.first?.keywordOperation?.size
+                    )
+                }
+                else -> {}
             }
         }
     }
@@ -209,7 +239,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailChipsRv = view?.findViewById(R.id.groupDetailChipsRv)
         groupChipsLayout = view?.findViewById(R.id.groupChipsLayout)
         saveButton = view?.findViewById(R.id.saveButton)
+    }
 
+    private fun handlingViewsListeners(){
         saveButton?.setOnClickListener {
             var dialog =
                 DialogUnify(
@@ -300,30 +332,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
     }
 
-    val onInsightAction = { input: TopadsManagePromoGroupProductInput, type: Int ->
-        if(input.keywordOperation.isNullOrEmpty()){
-            saveButton?.visibility = View.GONE
-        } else {
-            saveButton?.visibility = View.VISIBLE
-        }
-        when(type){
-            TYPE_POSITIVE_KEYWORD -> {
-                saveButton?.text = String.format(getString(R.string.topads_insight_positive_keywords_cta_text_format), input.keywordOperation?.size)
-            }
-            TYPE_KEYWORD_BID -> {
-                saveButton?.text = String.format(getString(R.string.topads_insight_existing_keywords_cta_text_format), input.keywordOperation?.size)
-            }
-            TYPE_GROUP_BID -> {
-                saveButton?.text = getString(R.string.topads_insight_biaya_iklan_cta_text)
-            }
-            TYPE_DAILY_BUDGET -> {
-                saveButton?.text = getString(R.string.topads_insight_daily_budget_cta_text)
-            }
-            TYPE_NEGATIVE_KEYWORD_BID -> {
-                saveButton?.text = String.format(getString(R.string.topads_insight_negative_keywords_cta_text_format), input.keywordOperation?.size)
-            }
-            else -> {}
-        }
+    val onInsightAction = { input: TopadsManagePromoGroupProductInput?, type: Int? ->
         viewModel.updateTopadsManagePromoGroupProductInput(input, type)
     }
 
