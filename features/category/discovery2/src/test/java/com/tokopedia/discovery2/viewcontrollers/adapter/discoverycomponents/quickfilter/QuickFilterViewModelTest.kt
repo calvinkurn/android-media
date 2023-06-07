@@ -4,7 +4,13 @@ import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
-import com.tokopedia.discovery2.data.*
+import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.data.ComponentAdditionalInfo
+import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.DiscoveryResponse
+import com.tokopedia.discovery2.data.Properties
+import com.tokopedia.discovery2.data.TotalProductData
 import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
@@ -14,7 +20,16 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.user.session.UserSession
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.OfTypeMatcher
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkConstructor
+import io.mockk.mockkStatic
+import io.mockk.spyk
+import io.mockk.unmockkConstructor
+import io.mockk.unmockkStatic
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -312,6 +327,72 @@ class QuickFilterViewModelTest {
                 componentsItem.pageEndPoint
             )
         } returns arrayListOf(filter)
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
+    }
+
+    @Test
+    fun `test for selected filters flow in addFilterOptions() when chipSize small or not present`(){
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val quickFilterRepository: QuickFilterRepository = mockk(relaxed = true)
+
+        viewModel.quickFilterRepository = quickFilterRepository
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf()
+
+        every { componentsItem.data } returns null
+
+        val filter = mockk<Filter>()
+        every { filter.options } returns listOf(mockk())
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf(filter)
+        val mockProp = mockk<Properties>()
+        every { componentsItem.properties} returns mockProp
+        every { mockProp.chipSize } returns Constant.ChipSize.SMALL
+        viewModel.fetchQuickFilters()
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
+        assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
+    }
+
+    @Test
+    fun `test for selected filters flow in addFilterOptions() when chipSize is Large and no pre selected quick filter`(){
+        val componentsItem: ComponentsItem = mockk(relaxed = true)
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val quickFilterRepository: QuickFilterRepository = mockk(relaxed = true)
+
+        viewModel.quickFilterRepository = quickFilterRepository
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf()
+
+        every { componentsItem.data } returns null
+
+        val filter = mockk<Filter>()
+        every { filter.options } returns listOf(mockk())
+        coEvery {
+            quickFilterRepository.getQuickFilterData(
+                componentsItem.id,
+                componentsItem.pageEndPoint
+            )
+        } returns arrayListOf(filter)
+        val mockProp = mockk<Properties>()
+        every { componentsItem.properties} returns mockProp
+        every { mockProp.chipSize } returns Constant.ChipSize.LARGE
         viewModel.fetchQuickFilters()
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).first() === filter)
