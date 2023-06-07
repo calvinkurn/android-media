@@ -8,8 +8,8 @@ data class SaveAddOnStateRequest(
         var addOns: List<AddOnRequest> = emptyList(),
         @SerializedName("source")
         var source: String = "",
-        @SerializedName("addon_service_flag")
-        var addOnServiceFlag: Boolean = false
+        @SerializedName("feature_type")
+        var featureType: Int = 0
 )
 
 data class AddOnRequest(

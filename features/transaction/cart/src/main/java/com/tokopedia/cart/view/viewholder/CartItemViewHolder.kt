@@ -488,10 +488,10 @@ class CartItemViewHolder constructor(
     }
 
     private fun renderProductAddOns(data: CartItemHolderData) {
-        if (data.addOnProductList.isNotEmpty() && data.addOnProductWidget.wording.isNotEmpty()) {
+        if (data.addOnsProduct.listData.isNotEmpty() && data.addOnsProduct.widget.wording.isNotEmpty()) {
             binding.itemAddonCart.apply {
                 root.show()
-                this.descAddon.text = data.addOnProductWidget.wording
+                this.descAddon.text = data.addOnsProduct.widget.wording
                 root.setOnClickListener {
                     actionListener?.onProductAddOnClicked(data)
                 }

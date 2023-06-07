@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
 import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductItemBinding
+import com.tokopedia.purchase_platform.common.databinding.ItemShipmentAddonProductLoaderBinding
 import com.tokopedia.purchase_platform.common.feature.addons.data.model.AddOnProductDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingWordingModel
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -417,20 +418,33 @@ class ShipmentCartItemViewHolder(
     }
 
     private fun renderAddOnProduct(cartItemModel: CartItemModel) {
+        binding.itemShipmentAddonProduct.apply {
+            loaderIcProductAddon.gone()
+            loaderTvTitle.gone()
+            llAddonProductLoaders.gone()
+            icProductAddon.visible()
+            tvTitleAddonProduct.visible()
+            llAddonProductItems.visible()
+        }
         val addOnProduct = cartItemModel.addOnProduct
         if (addOnProduct.listAddOnProductData.isEmpty()) {
-            binding.llAddonProduct.visibility = View.GONE
+            binding.llAddonProduct.gone()
         } else {
+            binding.llAddonProduct.visible()
+            binding.itemShipmentAddonProduct.llAddonProductItems.removeAllViews()
+            binding.itemShipmentAddonProduct.apply {
+                tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
+                if (cartItemModel.addOnProduct.bottomsheet.isShown) {
+                    tvSeeAllAddonProduct.visible()
+                } else {
+                    tvSeeAllAddonProduct.gone()
+                }
+            }
             cartItemModel.addOnProduct.listAddOnProductData.forEach { addon ->
                 if (addon.addOnDataName.isEmpty()) {
-                    binding.llAddonProduct.visibility = View.GONE
+                    binding.itemShipmentAddonProduct.llAddonProductItems.visibility = View.GONE
                 } else {
-                    binding.itemShipmentAddonProduct.apply {
-                        tvTitleAddonProduct.text = cartItemModel.addOnProduct.title
-                        if (cartItemModel.addOnProduct.bottomsheet.isShown) {
-                            
-                        }
-                    }
+                    binding.itemShipmentAddonProduct.llAddonProductItems.visible()
                     val addOnView = ItemShipmentAddonProductItemBinding.inflate(layoutInflater, null, false)
                     val addOnName = addOnView.tvShipmentAddOnName
                     addOnName.text = addon.addOnDataName
@@ -438,18 +452,35 @@ class ShipmentCartItemViewHolder(
                     addOnPrice.text = CurrencyFormatUtil
                             .convertPriceValueToIdrFormat(addon.addOnDataPrice.toLong(), false)
                             .removeDecimalSuffix()
-                    addOnView.cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
-                        listener?.onCheckboxAddonProductListener(addon)
+                    addOnView.apply {
+                        cbAddonItem.setOnCheckedChangeListener { compoundButton, b ->
+                            showLoaderAddOnProduct(cartItemModel)
+                            listener?.onCheckboxAddonProductListener(addon)
+                        }
+                        icProductAddonInfo.setOnClickListener {
+                            listener?.onClickAddonProductInfoIcon()
+                        }
                     }
-                    addOnView.icProductAddonInfo.setOnClickListener {
-                        listener?.onClickAddonProductInfoIcon()
-                    }
-                    binding.llAddonProduct.apply {
-                        addView(addOnView.root)
-                        visibility = View.VISIBLE
-                    }
+                    binding.itemShipmentAddonProduct.llAddonProductItems.addView(addOnView.root)
                 }
             }
+        }
+    }
+
+    private fun showLoaderAddOnProduct(cartItemModel: CartItemModel) {
+        binding.itemShipmentAddonProduct.apply {
+            icProductAddon.gone()
+            tvTitleAddonProduct.gone()
+            tvSeeAllAddonProduct.gone()
+            llAddonProductItems.gone()
+            loaderIcProductAddon.visible()
+            loaderTvTitle.visible()
+            llAddonProductLoaders.visible()
+        }
+        binding.itemShipmentAddonProduct.llAddonProductLoaders.removeAllViews()
+        cartItemModel.addOnProduct.listAddOnProductData.forEach {
+            val loaderView = ItemShipmentAddonProductLoaderBinding.inflate(layoutInflater, null, false)
+            binding.itemShipmentAddonProduct.llAddonProductLoaders.addView(loaderView.root)
         }
     }
 

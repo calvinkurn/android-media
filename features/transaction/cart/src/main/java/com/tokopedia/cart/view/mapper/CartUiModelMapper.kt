@@ -11,6 +11,7 @@ import com.tokopedia.cart.data.model.response.promo.PromoErrorDetail
 import com.tokopedia.cart.data.model.response.promo.PromoMessageInfo
 import com.tokopedia.cart.data.model.response.promo.VoucherOrders
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOn
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDetail
@@ -20,9 +21,13 @@ import com.tokopedia.cart.data.model.response.shopgroupsimplified.Product
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.PromoSummary
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Shop
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopShipment
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShoppingSummary
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.UnavailableSection
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
+import com.tokopedia.cart.view.uimodel.CartAddOnData
+import com.tokopedia.cart.view.uimodel.CartAddOnProductData
+import com.tokopedia.cart.view.uimodel.CartAddOnWidgetData
 import com.tokopedia.cart.view.uimodel.CartChooseAddressHolderData
 import com.tokopedia.cart.view.uimodel.CartEmptyHolderData
 import com.tokopedia.cart.view.uimodel.CartGroupHolderData
@@ -56,11 +61,14 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlin.math.min
 
 object CartUiModelMapper {
 
     private const val BUNDLE_NO_VARIANT_CONST = -1
+    private const val QTY_ADDON_REPLACE = "{{qty}}"
 
     fun mapTickerAnnouncementUiModel(ticker: Ticker): TickerAnnouncementHolderData {
         return TickerAnnouncementHolderData(
@@ -592,8 +600,29 @@ object CartUiModelMapper {
             campaignId = product.campaignId
             warehouseId = product.warehouseId
             bundleIds = product.bundleIds
-            addOnProductList = product.listAddOnsData
-            addOnProductWidget = product.listAddOnsWidget
+            addOnsProduct = mapCartAddOnData(product.addOn)
+        }
+    }
+
+    private fun mapCartAddOnData(addOn: AddOn): CartAddOnData {
+        val arrayListAddOnProduct = ArrayList<CartAddOnProductData>()
+        addOn.addOnData.forEach {
+            val cartAddOnProductData = CartAddOnProductData(
+                    id = it.addonId,
+                    uniqueId = it.uniqueId,
+                    status = it.status,
+                    type = it.type,
+                    price = it.price
+            )
+            arrayListAddOnProduct.add(cartAddOnProductData)
+        }
+        return CartAddOnData().apply {
+            listData = arrayListAddOnProduct
+            widget = CartAddOnWidgetData(
+                    wording = addOn.addOnWidget.wording,
+                    leftIconUrl = addOn.addOnWidget.leftIconUrl,
+                    rightIconUrl = addOn.addOnWidget.rightIconUrl
+            )
         }
     }
 
@@ -747,7 +776,40 @@ object CartUiModelMapper {
             paymentTotalWording = cartData.shoppingSummary.paymentTotalWording
             promoWording = cartData.shoppingSummary.promoWording
             sellerCashbackWording = cartData.shoppingSummary.sellerCashbackWording
+            listSummaryAddOns = mapSummariesAddOns(cartData.shoppingSummary.summaryAddOnList, cartData.availableSection.availableGroupGroups)
         }
+    }
+
+    private fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
+        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
+        summaryItemList@ for (summaryItem in summariesItemList) {
+            var qtyAddOn = 0
+            var totalPriceAddOn = 0.0
+            shopLoop@ for (groupShop in availableGroupGroups) {
+                groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
+                    cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
+                        productLoop@ for (product in cartDetail.products) {
+                            addOnLoop@ for (addon in product.addOn.addOnData) {
+                                if (addon.type == summaryItem.type && addon.status == 1) {
+                                    qtyAddOn += 1
+                                    totalPriceAddOn = qtyAddOn * addon.price
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (qtyAddOn > 0) {
+                val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
+                        wording = summaryItem.wording.replace(QTY_ADDON_REPLACE, "$qtyAddOn"),
+                        type = summaryItem.type,
+                        priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPriceAddOn, false).removeDecimalSuffix()
+                )
+                summaryAddOnList.add(summaryAddOn)
+            }
+        }
+
+        return summaryAddOnList
     }
 
     fun mapPromoSummaryUiModel(promoSummary: PromoSummary): PromoSummaryData {
