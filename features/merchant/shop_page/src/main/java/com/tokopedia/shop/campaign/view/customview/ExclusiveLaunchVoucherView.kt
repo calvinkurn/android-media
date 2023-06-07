@@ -48,7 +48,7 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
 
     fun useDarkBackground() {
         binding?.run {
-            rootLayout.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_dark)
+            imgBackground.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_dark)
             tpgBenefitName.setTextColorCompat(R.color.Unify_Static_White)
             tpgMinPurchase.setTextColorCompat(R.color.Unify_Static_White)
             tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
@@ -58,7 +58,7 @@ class ExclusiveLaunchVoucherView @JvmOverloads constructor(
 
     fun useLightBackground() {
         binding?.run {
-            rootLayout.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_light)
+            imgBackground.setBackgroundResource(R.drawable.bg_exclusive_launch_voucher_light)
             tpgBenefitName.setTextColorCompat(R.color.clr_dms_voucher_title)
             tpgMinPurchase.setTextColorCompat(R.color.clr_dms_voucher_min_purchase)
             tpgRemainingQuota.setTextColorCompat(R.color.Unify_RN500)
