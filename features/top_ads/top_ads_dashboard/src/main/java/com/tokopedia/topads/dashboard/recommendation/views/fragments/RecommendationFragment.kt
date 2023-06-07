@@ -310,10 +310,10 @@ class RecommendationFragment : BaseDaggerFragment() {
             saranAdsTypeTab?.hide()
         }
         if (data.isProduct) {
-            list.add(FragmentTabItem(TAB_NAME_PRODUCT, SaranTabsFragment(TYPE_PRODUCT_VALUE)))
+            list.add(FragmentTabItem(TAB_NAME_PRODUCT, SaranTabsFragment.createInstance(TYPE_PRODUCT_VALUE)))
         }
         if (data.isHeadline) {
-            list.add(FragmentTabItem(TAB_NAME_SHOP, SaranTabsFragment(TYPE_SHOP_VALUE)))
+            list.add(FragmentTabItem(TAB_NAME_SHOP, SaranTabsFragment.createInstance(TYPE_SHOP_VALUE)))
         }
     }
 

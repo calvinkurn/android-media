@@ -33,7 +33,7 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendatio
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import javax.inject.Inject
 
-class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
+class SaranTabsFragment : BaseDaggerFragment() {
 
     private var chipsRecyclerView: RecyclerView? = null
     private var groupCardRecyclerView: RecyclerView? = null
@@ -84,7 +84,7 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setPageState(tabType)
+        setPageState(getTabType())
         getFirstPageData()
         observeViewModel()
 
@@ -104,6 +104,10 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         groupCardRecyclerView?.addItemDecoration(itemDecoration)
         groupCardRecyclerView?.adapter = insightListAdapter
         groupCardRecyclerView?.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun getTabType(): Int {
+        return this.arguments?.getInt("adType") ?: TYPE_PRODUCT_VALUE
     }
 
     private fun setPageState(tabType: Int) {
@@ -220,10 +224,21 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
         }
 
     private fun getFirstPageData() {
+        val tabType = getTabType()
         viewModel.getFirstPageData(
             adGroupType = if (tabType == TYPE_PRODUCT_VALUE) RecommendationConstants.PRODUCT_KEY else RecommendationConstants.HEADLINE_KEY,
             insightType = if (tabType == TYPE_PRODUCT_VALUE) 0 else 5,
             mapper = mapper
         )
+    }
+
+    companion object {
+        fun createInstance(adType: Int): SaranTabsFragment {
+            val fragment = SaranTabsFragment()
+            val bundle = Bundle()
+            bundle.putInt("adType", adType)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
