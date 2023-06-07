@@ -290,7 +290,7 @@ class CampaignRuleViewModel @Inject constructor(
 //    }
 
     fun setOosStatus(isEnableTransaction: Boolean) {
-        this.isEnableTransactionWhenOos = isEnableTransaction
+        _selectedOosState.value = isEnableTransaction
     }
 
     fun onRegularPaymentMethodSelected() {
