@@ -38,6 +38,8 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     private val interactor = KycSdkStatusPublisher.get()
 
+    private var errorMessage = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,6 +58,10 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.globalError?.setActionClickListener {
+            GotoKycAnalytics.sendClickOnButtonKirimUlangErrorPageEvent(
+                errorMessage = errorMessage,
+                projectId = args.parameter.projectId
+            )
             onUploadingDocuments()
             oneKycSdk.submitKycDocuments()
         }
@@ -132,14 +138,16 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         }
 
         if (!isConnectionAvailable(requireContext())) {
+            errorMessage = ERROR_NO_CONNECTION
             GotoKycAnalytics.sendViewOnErrorPageEvent(
-                errorMessage = ERROR_NO_CONNECTION,
+                errorMessage = errorMessage,
                 projectId = args.parameter.projectId
             )
             binding?.globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
+            errorMessage = FAILED_UPLOAD_DOCUMENT
             GotoKycAnalytics.sendViewOnErrorPageEvent(
-                errorMessage = FAILED_UPLOAD_DOCUMENT,
+                errorMessage = errorMessage,
                 projectId = args.parameter.projectId
             )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)

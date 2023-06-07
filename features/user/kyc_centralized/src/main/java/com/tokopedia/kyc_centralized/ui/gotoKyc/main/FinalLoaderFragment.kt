@@ -41,6 +41,8 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
     private val args: FinalLoaderFragmentArgs by navArgs()
 
+    private var errorMessage = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -133,9 +135,9 @@ class FinalLoaderFragment : BaseDaggerFragment() {
     private fun handleGlobalError(throwable: Throwable?) {
         binding?.globalError?.show()
         if (throwable != null) {
-            val error = throwable.getGotoKycErrorMessage(requireContext())
+            errorMessage = throwable.getGotoKycErrorMessage(requireContext())
             GotoKycAnalytics.sendViewOnErrorPageEvent(
-                errorMessage = error,
+                errorMessage = errorMessage,
                 projectId = args.parameter.projectId
             )
             when (throwable) {
@@ -155,13 +157,14 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 else -> {
                     binding?.globalError?.apply {
                         setType(GlobalError.MAINTENANCE)
-                        errorDescription.text = error
+                        errorDescription.text = errorMessage
                     }
                 }
             }
         } else {
+            errorMessage = context?.getString(R.string.goto_kyc_error_from_be).toString()
             GotoKycAnalytics.sendViewOnErrorPageEvent(
-                errorMessage = context?.getString(R.string.goto_kyc_error_from_be).toString(),
+                errorMessage = errorMessage,
                 projectId = args.parameter.projectId
             )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
