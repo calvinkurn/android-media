@@ -87,7 +87,7 @@ public interface ApplinkConst {
     String REVIEW_DETAIL = "tokopedia://review/detail/{feedback_id}";
     String PRODUCT_CREATE_REVIEW = "tokopedia://product-review/create/";
 
-    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create/";
+    String PRODUCT_BULK_CREATE_REVIEW = "tokopedia://product-review/bulk-create";
     String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
     String SELLER_REVIEW = "tokopedia://seller-review-detail";
     String REVIEW_REMINDER_PREVIOUS = "tokopedia://review-reminder";
@@ -423,6 +423,7 @@ public interface ApplinkConst {
     String AFFILIATE_TOKO_DISCO_PAGE_LIST = "tokopedia://affiliate/discopage-list";
     String AFFILIATE_TOKO_EDU_PAGE = "tokopedia://affiliate/edu-page";
     String AFFILIATE_TOKO_ONBOARDING = "tokopedia://affiliate/onboarding";
+    String AFFILIATE_TOKO_PROMO_PAGE = "tokopedia://affiliate/promosikan";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";

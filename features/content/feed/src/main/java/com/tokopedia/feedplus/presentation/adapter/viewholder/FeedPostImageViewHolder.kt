@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -25,29 +24,15 @@ import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloads
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
-import com.tokopedia.feedplus.presentation.model.FeedLikeModel
-import com.tokopedia.feedplus.presentation.model.FeedMediaModel
-import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
-import com.tokopedia.feedplus.presentation.uiview.FeedAsgcTagsView
-import com.tokopedia.feedplus.presentation.uiview.FeedAuthorInfoView
-import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonView
-import com.tokopedia.feedplus.presentation.uiview.FeedCaptionView
-import com.tokopedia.feedplus.presentation.uiview.FeedCommentButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductButtonView
-import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
+import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.uiview.*
 import com.tokopedia.feedplus.presentation.util.animation.FeedLikeAnimationComponent
 import com.tokopedia.feedplus.presentation.util.animation.FeedSmallLikeIconAnimationComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.math.abs
 
 /**
@@ -210,31 +195,21 @@ class FeedPostImageViewHolder(
                 bindAsgcTags(data)
                 bindCampaignRibbon(data)
 
+                val trackerData = trackerDataModel ?: trackerMapper.transformImageContentToTrackerModel(data)
+
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable,
-                        FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
-                        ),
-                        trackerDataModel
-                            ?: trackerMapper.transformImageContentToTrackerModel(data)
-
+                        data.menuItems.map {
+                            it.copy(
+                                contentData = it.contentData?.copy(rowNumber = absoluteAdapterPosition)
+                            )
+                        },
+                        trackerData
                     )
                 }
                 shareButton.setOnClickListener {
-                    listener.onSharePostClicked(
-                        id = data.id,
-                        authorName = data.author.name,
-                        applink = data.applink,
-                        weblink = data.weblink,
-                        imageUrl = data.media.firstOrNull()?.mediaUrl ?: ""
-                    )
+                    listener.onSharePostClicked(getShareModel(data), trackerData)
                 }
 
                 btnDisableClearMode.setOnClickListener {
@@ -543,6 +518,27 @@ class FeedPostImageViewHolder(
                     binding.rvFeedPostImageContent.smoothScrollToPosition(PRODUCT_COUNT_ZERO)
                 }
             }
+        }
+    }
+
+    private fun getShareModel(data: FeedCardImageContentModel): FeedShareModel {
+        return if (data.isTopAds) {
+            val selectedImagePosition = layoutManager.findFirstVisibleItemPosition()
+            // intentionally, get data from 'products' instead of 'medias'
+            // as long as products value === medias value (please check the MapperTopAdsFeed.kt)
+            // todo: differentiate TopAds model with the rest
+            val productLink = if (data.products.size > selectedImagePosition) {
+                val productItem = data.products[selectedImagePosition]
+                Pair(productItem.applink, productItem.weblink)
+            } else {
+                Pair(data.share.appLink, data.share.webLink)
+            }
+            return data.share.copy(
+                appLink = productLink.first,
+                webLink = productLink.second
+            )
+        } else {
+            data.share
         }
     }
 

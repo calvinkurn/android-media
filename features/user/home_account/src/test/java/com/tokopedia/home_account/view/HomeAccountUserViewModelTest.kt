@@ -7,12 +7,37 @@ import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.ResultBalanceAndPoint
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.data.model.UserProfileSettingResponse
-import com.tokopedia.home_account.data.model.*
+import com.tokopedia.home_account.data.model.BalanceAndPointDataModel
+import com.tokopedia.home_account.data.model.CentralizedUserAssetConfig
+import com.tokopedia.home_account.data.model.CentralizedUserAssetDataModel
+import com.tokopedia.home_account.data.model.CoBrandCCBalanceDataModel
+import com.tokopedia.home_account.data.model.OfferInterruptResponse
+import com.tokopedia.home_account.data.model.ProfileDataView
+import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
+import com.tokopedia.home_account.data.model.SafeModeParam
+import com.tokopedia.home_account.data.model.SaldoBalanceDataModel
+import com.tokopedia.home_account.data.model.SetUserProfileSetting
+import com.tokopedia.home_account.data.model.SetUserProfileSettingResponse
+import com.tokopedia.home_account.data.model.ShortcutResponse
+import com.tokopedia.home_account.data.model.TokopointsBalanceDataModel
+import com.tokopedia.home_account.data.model.UserAccountDataModel
+import com.tokopedia.home_account.data.model.WalletappGetAccountBalance
 import com.tokopedia.home_account.data.pref.AccountPreference
-import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.domain.usecase.GetBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetCentralizedUserAssetConfigUseCase
+import com.tokopedia.home_account.domain.usecase.GetCoBrandCCBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.GetSafeModeUseCase
+import com.tokopedia.home_account.domain.usecase.GetSaldoBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.GetTokopointsBalanceAndPointUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
+import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
+import com.tokopedia.home_account.domain.usecase.OfferInterruptUseCase
+import com.tokopedia.home_account.domain.usecase.SaveAttributeOnLocalUseCase
+import com.tokopedia.home_account.domain.usecase.UpdateSafeModeUseCase
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
+import com.tokopedia.home_account.view.mapper.ProfileWithDataStoreMapper
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
@@ -20,8 +45,11 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.ocl.OclPreference
+import com.tokopedia.sessioncommon.data.ocl.OclStatus
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetOclStatusUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
@@ -38,7 +66,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -71,6 +101,8 @@ class HomeAccountUserViewModelTest {
     private val tokopediaPlusUseCase = mockk<TokopediaPlusUseCase>(relaxed = true)
     private val offerInterruptUseCase = mockk<OfferInterruptUseCase>(relaxed = true)
     private val refreshProfileUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
+    private val getOclStatusUseCase = mockk<GetOclStatusUseCase>(relaxed = true)
+    private val oclPreference = mockk<OclPreference>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -82,6 +114,7 @@ class HomeAccountUserViewModelTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val accountPref = mockk<AccountPreference>(relaxed = true)
     private val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
+    private val dataStoreMapper = mockk<ProfileWithDataStoreMapper>(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: HomeAccountUserViewModel
@@ -120,6 +153,9 @@ class HomeAccountUserViewModelTest {
             saveAttributeOnLocal,
             offerInterruptUseCase,
             refreshProfileUseCase,
+            dataStoreMapper,
+            getOclStatusUseCase,
+            oclPreference,
             dispatcher
         )
 
@@ -161,16 +197,18 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Execute getBuyerData Success`() {
         /* When */
+        val profileDataView = ProfileDataView()
         coEvery { homeAccountUserUsecase(Unit) } returns responseResult
         coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
         coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
+        coEvery { dataStoreMapper.invoke(any()) } returns profileDataView
 
         viewModel.getBuyerData()
 
         responseResult.linkStatus = linkStatusResult.response
 
-        assertEquals(viewModel.buyerAccountDataData.value, Success(responseResult))
+        assertEquals(viewModel.buyerAccountDataData.value, Success(profileDataView))
     }
 
     @Test
@@ -750,7 +788,7 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFingerprintStatus()
 
-        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == errorMsg)
     }
 
     @Test
@@ -766,7 +804,7 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFingerprintStatus()
 
-        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == "Gagal")
+        assert((viewModel.checkFingerprintStatus.value as Fail).throwable.message == errorMsg)
     }
 
     @Test
@@ -838,6 +876,20 @@ class HomeAccountUserViewModelTest {
         } throws Exception()
 
         viewModel.refreshUserProfile()
+    }
+
+    @Test
+    fun `getOclStatus - success`() {
+        val resp = OclStatus(true)
+        coEvery { getOclStatusUseCase(any()) } returns resp
+        viewModel.getOclStatus()
+        assert(viewModel.getOclStatus.value == resp)
+    }
+
+    @Test
+    fun `getOclStatus - exception`() {
+        coEvery { getOclStatusUseCase(any()) } throws Exception()
+        viewModel.getOclStatus()
     }
 
     companion object {
