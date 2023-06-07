@@ -561,6 +561,14 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
+    val exploreWidgetTabs: List<String>
+        get() {
+            return buildList {
+                add(_channelDetail.value.exploreWidgetConfig.categoryName)
+                add(DEFAULT_TAB)
+            }
+        }
+
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
@@ -3144,5 +3152,8 @@ class PlayViewModel @AssistedInject constructor(
          * Cart
          */
         private const val DELAY_UPDATE_CART_AFTER_BUY = 500L
+
+        //Explore Widget
+        private const val DEFAULT_TAB = "Eksplor"
     }
 }

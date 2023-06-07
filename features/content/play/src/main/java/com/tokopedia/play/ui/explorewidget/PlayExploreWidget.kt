@@ -16,7 +16,6 @@ import com.google.android.material.sidesheet.SideSheetBehavior
 import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
@@ -46,15 +45,11 @@ class PlayExploreWidget @Inject constructor(
         PlayCategoryWidgetFragment(router) //TODO() dont pass via constructor use lateint
     }
 
-    private val tabs = mapOf<String, Fragment>(
-        "Category" to fgCategory,
-        "Eksplor" to PlayExploreWidgetFragment(router, trackingQueue, analyticFactory),
-    )
+    private val tabs = mutableMapOf<String, Fragment>()
 
     private val vpAdapter by lazyThreadSafetyNone {
         Adapter(childFragmentManager, lifecycle, tabs)
     }
-
 
     private val sheetCallback by lazyThreadSafetyNone {
         object : SideSheetCallback() {
@@ -82,13 +77,11 @@ class PlayExploreWidget @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
-
-        //TODO() move to onAttached
-        setupTab()
     }
 
-    fun setupTab() {
-        binding.tabPlayExploreWidget.showWithCondition(tabs.size.isMoreThanZero())
+    fun setupTab(categories: List<String>) {
+        tabs[categories.first()] = fgCategory
+        tabs[categories.last()] = fgExplore
     }
 
     fun moveTab(position: Int) {
@@ -119,6 +112,7 @@ class PlayExploreWidget @Inject constructor(
         ) { tab, position ->
             tab.setCustomText(tabs.keys.elementAt(position)) //TODO(): handle null or else
         }
+        binding.tabPlayExploreWidget.showWithCondition(tabs.size > 1)
         val sheetBehavior = SideSheetBehavior.from(binding.clSheetExploreWidget)
         sheetBehavior.addCallback(sheetCallback)
         sheetBehavior.state = SideSheetBehavior.STATE_EXPANDED

@@ -430,6 +430,9 @@ class PlayUserInteractionFragment @Inject constructor(
                     )
                 )
             }
+            is PlayExploreWidget -> {
+                childFragment.setupTab(playViewModel.exploreWidgetTabs)
+            }
         }
     }
 
