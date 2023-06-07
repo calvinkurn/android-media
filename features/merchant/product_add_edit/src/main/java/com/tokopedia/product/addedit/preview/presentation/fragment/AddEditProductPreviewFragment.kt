@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -34,7 +35,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
@@ -135,7 +135,6 @@ import com.tokopedia.seller_migration_common.presentation.model.SellerFeatureUiM
 import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCarousel
 import com.tokopedia.shop.common.constant.SellerHomePermissionGroup
 import com.tokopedia.shop.common.constant.admin_roles.AdminPermissionUrl
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -600,11 +599,17 @@ class AddEditProductPreviewFragment :
     private fun setupStatusViews() {
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
+            val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
+
+            if (productInputModel.isCampaignActive) {
+                showToasterErrorSetStatusCampaignActive(isChecked)
+                return@setOnClickListener
+            }
 
             if (isChecked && viewModel.isVariantEmpty.value == false) {
-                viewModel.productInputModel.value?.variantInputModel?.getStockStatus()?.let {
-                    activateVariantStatusConfirmation(it)
-                }
+                activateVariantStatusConfirmation(productInputModel.variantInputModel.getStockStatus())
+            } else if (!isChecked && productInputModel.hasDTStock) {
+                deactivateProductStatusConfirmation()
             } else {
                 viewModel.updateProductStatus(isChecked)
                 viewModel.setIsDataChanged(true)
@@ -1745,6 +1750,29 @@ class AddEditProductPreviewFragment :
         }.show()
     }
 
+    private fun deactivateProductStatusConfirmation() {
+        viewModel.updateProductStatus(true)
+        productStatusSwitch?.isChecked = true
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = MethodChecker
+            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
+            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setPrimaryCTAClickListener {
+                productStatusSwitch?.isChecked = false
+                viewModel.updateProductStatus(false)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
+    }
+
     private fun moveToLocationPicker() {
         activity?.let {
             if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
@@ -1772,6 +1800,20 @@ class AddEditProductPreviewFragment :
                 getString(R.string.label_for_toaster_success_set_shop_location),
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
+                getString(R.string.label_for_action_text_toaster_success_set_shop_location)
+            ).show()
+        }
+    }
+
+    private fun showToasterErrorSetStatusCampaignActive(isChecked: Boolean) {
+        viewModel.updateProductStatus(!isChecked)
+        productStatusSwitch?.isChecked = !isChecked
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.product_add_edit_text_toaster_campaign_deactivate),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
                 getString(R.string.label_for_action_text_toaster_success_set_shop_location)
             ).show()
         }
