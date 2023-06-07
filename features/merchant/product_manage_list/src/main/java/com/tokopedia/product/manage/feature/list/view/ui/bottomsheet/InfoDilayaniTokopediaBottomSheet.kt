@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageStockInformationBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -53,7 +52,7 @@ class InfoDilayaniTokopediaBottomSheet(
     }
 
     private fun setupView() {
-        val title = context?.getString(R.string.product_manage_propduct_dilayani_tokopedia_title).orEmpty()
+        val title = context?.getString(com.tokopedia.product.manage.R.string.product_manage_propduct_dilayani_tokopedia_title).orEmpty()
         setTitle(title)
 
         val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_propduct_dilayani_tokopedia)
