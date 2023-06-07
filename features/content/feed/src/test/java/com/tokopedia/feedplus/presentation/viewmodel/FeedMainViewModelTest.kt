@@ -29,6 +29,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,6 +53,9 @@ class FeedMainViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = coroutineTestRule.dispatchers
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val scope = TestScope(testDispatcher.io)
     private val onBoardingPreferences: OnboardingPreferences = mockk()
     private val userSession: UserSessionInterface = mockk()
     private val uiEventManager: UiEventManager<FeedMainEvent> = mockk()
@@ -82,9 +87,21 @@ class FeedMainViewModelTest {
         // given
         val name = "Muhammad Furqan"
         coEvery { userSession.name } returns name
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { onBoardingPreferences.setHasShownSwipeOnboarding() } coAnswers {}
+        coEvery { uiEventManager.emitEvent(any()) } coAnswers {}
 
         // when
-        val displayName = viewModel.displayName
+        val mViewModel = FeedMainViewModel(
+            feedXHeaderUseCase,
+            submitReportUseCase,
+            deletePostCacheUseCase,
+            testDispatcher,
+            onBoardingPreferences,
+            userSession,
+            uiEventManager
+        )
+        val displayName = mViewModel.displayName
 
         // then
         assert(displayName == name)
@@ -172,6 +189,21 @@ class FeedMainViewModelTest {
 
         // when 2
         viewModel.changeCurrentTabByType("following")
+        // then 2
+        assert(viewModel.currentTabIndex.value == 1)
+    }
+
+    @Test
+    fun onChangeCurrentTabByIndex_whenTabsSuccess_shouldChangeCurrentTabsIndex() {
+        // given
+
+        // when 1
+        viewModel.changeCurrentTabByIndex(0)
+        // then 1
+        assert(viewModel.currentTabIndex.value == 0)
+
+        // when 2
+        viewModel.changeCurrentTabByIndex(1)
         // then 2
         assert(viewModel.currentTabIndex.value == 1)
     }
@@ -462,6 +494,7 @@ class FeedMainViewModelTest {
         assert(creationData[2].type == CreateContentType.CREATE_LIVE)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun onConsumeEvent_shouldClearEvent() {
         // given
@@ -472,6 +505,11 @@ class FeedMainViewModelTest {
 
         // then
         coVerify(exactly = 1) { uiEventManager.clearEvent(event.id) }
+        scope.launch {
+            viewModel.uiEvent.collect {
+                assert(it == null || it.id != event.id)
+            }
+        }
     }
 
     @Test
