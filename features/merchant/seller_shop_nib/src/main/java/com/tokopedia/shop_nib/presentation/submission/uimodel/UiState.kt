@@ -10,7 +10,8 @@ data class UiState(
     val selectedDate: Date? = null,
     val fileState: FileState = FileState.NotSelected,
     val isInputValid: Boolean = false,
-    val error: Throwable? = null
+    val error: Throwable? = null,
+    val isDatePickerCurrentlyDisplayed: Boolean = false
 ) {
     sealed class FileState {
         object NotSelected: FileState()

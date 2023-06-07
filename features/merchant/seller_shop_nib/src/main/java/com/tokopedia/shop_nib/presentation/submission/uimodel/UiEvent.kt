@@ -9,6 +9,7 @@ sealed class UiEvent {
     data class ConfirmFile(val fileUri: String, val fileExtension: String, val fileSizeBytes: Long) : UiEvent()
     object UnselectFile : UiEvent()
     object TapChangeDate : UiEvent()
+    object DatePickerDismissed : UiEvent()
     data class ConfirmDate(val newDate: Date) : UiEvent()
     object SubmitFile : UiEvent()
 }

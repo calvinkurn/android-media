@@ -24,7 +24,8 @@ class NibDatePicker @Inject constructor(private val param: Param) {
     fun show(
         context: Context,
         fragmentManager: FragmentManager,
-        onDateSelected: (Date) -> Unit
+        onDateSelected: (Date) -> Unit,
+        onDatePickerDismissed : () -> Unit
     ) {
         val dateTimePicker = DateTimePickerUnify(
             context,
@@ -35,6 +36,11 @@ class NibDatePicker @Inject constructor(private val param: Param) {
             DateTimePickerUnify.TYPE_DATEPICKER
         )
 
+        dateTimePicker.overlayClickDismiss = false
+        dateTimePicker.setCloseClickListener {
+            onDatePickerDismissed()
+            dateTimePicker.dismiss()
+        }
         dateTimePicker.apply {
             setTitle(param.title)
             setInfoVisible(true)
