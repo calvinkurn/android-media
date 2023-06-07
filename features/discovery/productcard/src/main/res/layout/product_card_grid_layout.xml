@@ -9,6 +9,18 @@
     tools:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
+    <ImageView
+        android:id="@+id/imageRibbonArch"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        tools:layout_marginTop="6.2dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/product_card_ribbon_arch_red"
+        tools:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/cardViewProductCard"
         app:cardCornerRadius="8dp"
@@ -90,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="8dp"
                 android:paddingTop="4dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
@@ -224,7 +236,7 @@
             <com.tokopedia.unifycomponents.ProgressBarUnify
                 android:id="@+id/progressBarTopStockBar"
                 android:layout_width="40dp"
-                android:layout_height="18dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toTopOf="@id/bgTopStockBarView"
@@ -424,16 +436,4 @@
                 app:layout_goneMarginTop="8dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.tokopedia.unifycomponents.CardUnify2>
-
-    <ImageView
-        android:id="@+id/imageRibbonArch"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginTop="11dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/product_card_ribbon_arch_red"
-        android:elevation="4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
 </merge>

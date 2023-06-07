@@ -69,6 +69,9 @@ internal const val EXTRA_CHAR_SPACE_REPOSITION = 0
 internal const val LABEL_VARIANT_TAG = "label_variant_tag"
 
 internal const val WORDING_SEGERA_HABIS = "Segera Habis"
+internal const val WORDING_TINGGAL_DIKIT = "Tinggal Dikit!"
+internal const val WORDING_LAGI_POPULER = "Lagi Populer"
+internal const val WORDING_TERBATAS = "Terbatas!"
 
 @DimenRes
 internal val FIRE_WIDTH = dp_12

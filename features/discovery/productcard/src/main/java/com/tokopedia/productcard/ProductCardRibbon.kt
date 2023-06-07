@@ -2,14 +2,13 @@ package com.tokopedia.productcard
 
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.utils.GOLD
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 internal fun View.renderProductCardRibbon(
@@ -21,7 +20,10 @@ internal fun View.renderProductCardRibbon(
     val textView = findViewById<Typography?>(R.id.textRibbon)
 
     if (productCardModel.showRibbon) {
-        if (isProductCardGrid) setArchMargin(productCardModel, archView)
+        if (isProductCardGrid) {
+            setArchMargin(productCardModel, archView)
+            setArchElevation(productCardModel, archView)
+        }
 
         archView?.show()
         contentView?.show()
@@ -48,10 +50,26 @@ private fun setArchMargin(
     archView: ImageView
 ) {
     val archMarginTop =
-        if (productCardModel.cardType == CardUnify2.TYPE_SHADOW) 17.toPx()
-        else 11.toPx()
+        when(productCardModel.cardType) {
+            CardUnify2.TYPE_SHADOW -> 12.7f.toPx().toInt()
+            CardUnify2.TYPE_CLEAR -> 6.15f.toPx().toInt()
+            else -> 6.8f.toPx().toInt()
+        }
 
     archView.setMargin(0, archMarginTop, 0, 0)
+}
+
+private fun setArchElevation(
+    productCardModel: ProductCardModel,
+    archView: ImageView
+) {
+    val archElevation =
+        when(productCardModel.cardType) {
+            CardUnify2.TYPE_CLEAR -> 0f
+            else -> 4f
+        }
+
+    archView.elevation = archElevation.toPx()
 }
 
 private fun getRibbonBackground(type: String): Pair<Int, Int> {

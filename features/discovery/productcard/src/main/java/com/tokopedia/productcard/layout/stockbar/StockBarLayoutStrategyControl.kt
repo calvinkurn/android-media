@@ -30,6 +30,10 @@ internal class StockBarLayoutStrategyControl: StockBarLayoutStrategy {
         progressBarStockTop?.hide()
         textViewStockLabelTop?.hide()
 
-        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
+        renderStockBar(
+            progressBarStock,
+            textViewStockLabel,
+            productCardModel
+        )
     }
 }
