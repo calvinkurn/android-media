@@ -21,14 +21,9 @@ class SuggestionActivityTest:
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_suggestion)
 
-        val autoCompleteComponent = DaggerAutoCompleteComponent.builder()
-            .baseAppComponent(getBaseAppComponent())
-            .build()
-
         val component = DaggerSuggestionTestComponent
             .builder()
             .baseAppComponent(getBaseAppComponent())
-            .autoCompleteComponent(autoCompleteComponent)
             .suggestionViewListenerModule(SuggestionViewListenerModule(this))
             .build()
 

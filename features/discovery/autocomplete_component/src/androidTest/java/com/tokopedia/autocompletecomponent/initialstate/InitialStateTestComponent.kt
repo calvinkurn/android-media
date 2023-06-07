@@ -20,8 +20,5 @@ import dagger.Component
     InitialStateTrackingTestModule::class,
     InitialStatePresenterModule::class,
     InitialStateViewListenerModule::class,
-], dependencies = [
-    BaseAppComponent::class,
-    AutoCompleteComponent::class,
-])
+], dependencies = [BaseAppComponent::class])
 interface InitialStateTestComponent: InitialStateComponent

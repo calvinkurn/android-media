@@ -17,10 +17,7 @@ import dagger.Component
     InitialStateTrackingModule::class,
     InitialStatePresenterModule::class,
     InitialStateViewListenerModule::class,
-], dependencies = [
-    BaseAppComponent::class,
-    AutoCompleteComponent::class,
-])
+], dependencies = [BaseAppComponent::class])
 interface InitialStateComponent {
 
     fun inject(fragment: InitialStateFragment)

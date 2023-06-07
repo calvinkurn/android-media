@@ -18,8 +18,5 @@ import dagger.Component
     SuggestionTrackingTestModule::class,
     SuggestionPresenterModule::class,
     SuggestionViewListenerModule::class
-], dependencies = [
-    BaseAppComponent::class,
-    AutoCompleteComponent::class,
-])
+], dependencies = [BaseAppComponent::class])
 interface SuggestionTestComponent: SuggestionComponent
