@@ -30,7 +30,8 @@ class KycUploadViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val kycSharedPreference: KycSharedPreference,
     private val cryptoFactory: CipherProvider,
-    private val serverLogger: KycServerLogger
+    private val serverLogger: KycServerLogger,
+    private val imageEncryptionUtil: ImageEncryptionUtil
 ) : BaseViewModel(dispatcher.main) {
 
     private val _kycResponse = MutableLiveData<Result<KycData>>()
@@ -164,9 +165,9 @@ class KycUploadViewModel @Inject constructor(
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val encryptedImagePath =
-                    ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
+                    imageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
                 val aes = cryptoFactory.initAesEncrypt()
-                //save the Ktp IV for decrypt
+                // save the Ktp IV for decrypt
                 kycSharedPreference.saveByteArrayCache(ivCache, aes.iv)
                 val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
                 _encryptImage.postValue(Success(createdFile))
@@ -179,13 +180,13 @@ class KycUploadViewModel @Inject constructor(
                 )
             }
         }, onError = {
-            _encryptImage.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on encrypt $originalFilePath; error: ${it.message}")))
-            Timber.d(
-                "$LIVENESS_TAG: Failed encrypting %s, %s",
-                originalFilePath.substringAfterLast("/"),
-                ivCache
-            )
-        })
+                _encryptImage.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on encrypt $originalFilePath; error: ${it.message}")))
+                Timber.d(
+                    "$LIVENESS_TAG: Failed encrypting %s, %s",
+                    originalFilePath.substringAfterLast("/"),
+                    ivCache
+                )
+            })
     }
 
     fun writeEncryptedResult(
@@ -193,15 +194,15 @@ class KycUploadViewModel @Inject constructor(
         encryptedImagePath: String,
         aes: Cipher
     ): String {
-        ImageEncryptionUtil.writeEncryptedImage(originalFilePath, encryptedImagePath, aes)
+        imageEncryptionUtil.writeEncryptedImage(originalFilePath, encryptedImagePath, aes)
         return deleteAndRenameResult(originalFilePath, encryptedImagePath)
     }
 
     private fun deleteAndRenameResult(originalFilePath: String, resultFilePath: String): String {
-        //Delete original file
-        ImageEncryptionUtil.deleteFile(originalFilePath)
-        //Rename encrypted image file to original name
-        return ImageEncryptionUtil.renameImageToOriginalFileName(resultFilePath)
+        // Delete original file
+        imageEncryptionUtil.deleteFile(originalFilePath)
+        // Rename encrypted image file to original name
+        return imageEncryptionUtil.renameImageToOriginalFileName(resultFilePath)
     }
 
     fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
@@ -211,10 +212,10 @@ class KycUploadViewModel @Inject constructor(
             ivCache,
             iv
         )
-        val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
+        val decryptedFilePath = imageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
         val aes = cryptoFactory.initAesDecrypt(iv)
         val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
-        //delete the IV
+        // delete the IV
         kycSharedPreference.removeCache(ivCache)
         return resultPath
     }
@@ -224,7 +225,7 @@ class KycUploadViewModel @Inject constructor(
         decryptedFilePath: String,
         aes: Cipher
     ): String {
-        ImageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
+        imageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
         return deleteAndRenameResult(originalFilePath, decryptedFilePath)
     }
 
