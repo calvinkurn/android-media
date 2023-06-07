@@ -37,8 +37,8 @@ class InfoDilayaniTokopediaBottomSheet(
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupView()
         super.onViewCreated(view, savedInstanceState)
+        setupView()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
