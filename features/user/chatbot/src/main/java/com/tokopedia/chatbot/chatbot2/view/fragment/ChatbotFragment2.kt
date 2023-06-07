@@ -1496,7 +1496,6 @@ class ChatbotFragment2 :
             } else if (model.action == DYNAMIC_REPLY_CSAT_NO) {
                 openRejectReasonsBottomSheet()
             }
-            getViewState()?.hideQuickReplyOnClick()
         } else {
             handleQuickReply(model)
         }
@@ -2850,6 +2849,7 @@ class ChatbotFragment2 :
         reasonText: String,
         helpfulQuestion: DynamicAttachmentRejectReasons.RejectReasonHelpfulQuestion?
     ) {
+        getViewState()?.hideQuickReplyOnClick()
         val list = mutableListOf<Long>()
         selectedReasons.forEach {
             list.add(it.code)

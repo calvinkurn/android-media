@@ -14,7 +14,6 @@ import com.tokopedia.chatbot.chatbot2.view.util.ChatBackground
 import com.tokopedia.chatbot.chatbot2.view.util.generateLeftMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.generateRightMessageBackground
 import com.tokopedia.chatbot.chatbot2.view.util.helper.ChatbotMessageViewHolderBinder
-import com.tokopedia.chatbot.chatbot2.view.util.view.ViewUtil
 import com.tokopedia.chatbot.databinding.ItemChatbotDynamicContentCode106Binding
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
@@ -82,16 +81,16 @@ class DynamicAttachmentTextViewHolder(
     private fun setUpGuideline(uiModel: DynamicAttachmentTextUiModel) {
         if (uiModel.isSender) {
             val params1 = binding?.guidelineStart?.layoutParams as ConstraintLayout.LayoutParams
-            params1.guidePercent = 0.2f
+            params1.guidePercent = GUIDELINE_2
             val params2 = binding?.guidelineEnd?.layoutParams as ConstraintLayout.LayoutParams
-            params2.guidePercent = 1f
+            params2.guidePercent = GUIDELINE_4
             binding?.guidelineStart?.layoutParams = params1
             binding?.guidelineEnd?.layoutParams = params2
         } else {
             val params1 = binding?.guidelineStart?.layoutParams as ConstraintLayout.LayoutParams
-            params1.guidePercent = 0f
+            params1.guidePercent = GUIDELINE_1
             val params2 = binding?.guidelineEnd?.layoutParams as ConstraintLayout.LayoutParams
-            params2.guidePercent = 0.8f
+            params2.guidePercent = GUIDELINE_3
             binding?.guidelineStart?.layoutParams = params1
             binding?.guidelineEnd?.layoutParams = params2
         }
@@ -100,5 +99,9 @@ class DynamicAttachmentTextViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_chatbot_dynamic_content_code_106
+        const val GUIDELINE_1 = 0f
+        const val GUIDELINE_2 = 0.2f
+        const val GUIDELINE_3 = 0.8f
+        const val GUIDELINE_4 = 1f
     }
 }
