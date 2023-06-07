@@ -101,7 +101,7 @@ class PromoListItemViewHolder(
     ) {
         viewBinding.cardPromoItem.setOnClickListener {
             adapterPosition.takeIf { it != RecyclerView.NO_POSITION }?.let {
-                if (element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled &&
+                if (!element.uiData.hasClashingPromo && element.uiState.isParentEnabled &&
                     !element.uiState.isDisabled && !element.uiState.isLoading
                 ) {
                     listener.onClickPromoListItem(element, adapterPosition)
@@ -111,10 +111,10 @@ class PromoListItemViewHolder(
     }
 
     private fun getState(element: PromoListItemUiModel): Int {
-        return if (element.uiState.isLoading) {
+        return if (element.uiState.isLoading && !element.uiState.isSelected) {
             STATE_LOADING
         } else {
-            if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
+            if (element.uiState.isParentEnabled && !element.uiData.hasClashingPromo) {
                 if (element.uiState.isDisabled) {
                     STATE_DISABLED
                 } else {
@@ -450,7 +450,14 @@ class PromoListItemViewHolder(
         element: PromoListItemUiModel
     ) {
         with(viewBinding) {
-            textPromoItemTitle.text = element.uiData.title
+            textPromoItemTitle.text = if (element.uiData.secondaryCoupons.isNotEmpty() && element.uiData.currentClashingPromo.isNotEmpty()) {
+                val nonClashingSecondaryPromo = element.uiData.secondaryCoupons.firstOrNull {
+                    it.clashingInfos.all { clashingInfo -> !element.uiData.currentClashingPromo.contains(clashingInfo.code) }
+                }
+                nonClashingSecondaryPromo?.title ?: element.uiData.title
+            } else {
+                element.uiData.title
+            }
             val textPromoItemTitleLayoutParam =
                 textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
             val topBanner =

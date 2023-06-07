@@ -168,6 +168,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                 }
                 currentClashingPromo = tmpCurrentClashingPromoList
+                currentClashingSecondaryPromo = ArrayList()
 
                 if (tmpErrorMessage.isEmpty()) {
                     tmpErrorMessage.append(couponItem.message)

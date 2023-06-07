@@ -1665,7 +1665,7 @@ class PromoCheckoutViewModel @Inject constructor(
         var usedPromoCount = 0
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiState.isParentEnabled &&
-                it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSelected
+                it.uiData.currentClashingPromo.isEmpty() && it.uiState.isSelected
             ) {
                 totalBenefit += it.uiData.benefitAmount
                 usedPromoCount++
@@ -1724,7 +1724,7 @@ class PromoCheckoutViewModel @Inject constructor(
         return hasAnyPromoSellected
     }
 
-    private fun showLoading(selectedItem: PromoListItemUiModel) {
+    private fun showLoadingForMvcSection(selectedItem: PromoListItemUiModel) {
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode &&
                 !it.uiState.isDisabled && it.uiData.shopId > 0
@@ -1801,6 +1801,35 @@ class PromoCheckoutViewModel @Inject constructor(
                 }
             }
         }
+        // Check for secondary promo clashing when secondary promo is not empty
+        if (promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()) {
+            // Check whether secondary promo is clashing
+            val secondaryPromoWithClashing = promoListItemUiModel.uiData.secondaryCoupons
+                .firstOrNull { it.clashingInfos.map { it.code }.contains(selectedItem.uiData.promoCode) }
+            if (secondaryPromoWithClashing != null) {
+                if (promoListItemUiModel.uiData.currentClashingSecondaryPromo.contains(selectedItem.uiData.promoCode)) {
+                    promoListItemUiModel.uiData.currentClashingSecondaryPromo.remove(selectedItem.uiData.promoCode)
+                    if (promoListItemUiModel.uiData.currentClashingSecondaryPromo.isNotEmpty()) {
+                        val errorMessageBuilder = StringBuilder()
+                        promoListItemUiModel.uiData.currentClashingSecondaryPromo.forEach { promoCode ->
+                            val tmpClashingInfo =
+                                secondaryPromoWithClashing.clashingInfos
+                                    .firstOrNull { tmpClashingInfo -> tmpClashingInfo.code == promoCode }
+                            if (tmpClashingInfo != null) {
+                                errorMessageBuilder.append(tmpClashingInfo.message)
+                                return@forEach
+                            }
+                        }
+                        promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
+                    } else {
+                        promoListItemUiModel.uiData.errorMessage = ""
+                        if (promoListItemUiModel.uiState.isParentEnabled) {
+                            promoListItemUiModel.uiState.isDisabled = false
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun checkAndSetClashOnSelectionEvent(
@@ -1812,34 +1841,51 @@ class PromoCheckoutViewModel @Inject constructor(
             promoListItemUiModel.uiData.clashingInfos
                 .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
         if (primaryClashingInfo != null) {
-            if (promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()) {
-                val secondaryCouponWithClashingInfo = promoListItemUiModel.uiData.secondaryCoupons
-                    .firstOrNull { secondaryCoupon -> secondaryCoupon.clashingInfos.any { it.code == selectedItem.uiData.promoCode } }
-                if (secondaryCouponWithClashingInfo != null) {
-                    val secondaryCouponClashingInfo = secondaryCouponWithClashingInfo.clashingInfos
-                        .firstOrNull { it.code == selectedItem.uiData.promoCode }
-                    if (secondaryCouponClashingInfo != null && !promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                        promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                        val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
+            if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
+                val errorMessageBuilder =
+                    StringBuilder(promoListItemUiModel.uiData.errorMessage)
+                if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
+                    errorMessageBuilder.clear()
+                }
+                errorMessageBuilder.append(primaryClashingInfo.message)
+                promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
+                clashResult = true
+            }
+        }
+        // Check for secondary promo clashing when secondary promo is not empty
+        if (promoListItemUiModel.uiData.secondaryCoupons.isNotEmpty()) {
+            // Check whether secondary promo is clashing
+            val secondaryPromoWithClashing = promoListItemUiModel.uiData.secondaryCoupons
+                .firstOrNull { it.clashingInfos.map { clashingInfo -> clashingInfo.code }.contains(selectedItem.uiData.promoCode) }
+            if (secondaryPromoWithClashing != null) {
+                // There's clashing in secondary promo, disable the promo
+                val secondaryClashingInfo = secondaryPromoWithClashing.clashingInfos
+                    .firstOrNull { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode }
+                if (secondaryClashingInfo != null) {
+                    if (!promoListItemUiModel.uiData.currentClashingSecondaryPromo.contains(selectedItem.uiData.promoCode)) {
+                        promoListItemUiModel.uiData.currentClashingSecondaryPromo.add(selectedItem.uiData.promoCode)
+                        val errorMessageBuilder =
+                            StringBuilder(promoListItemUiModel.uiData.errorMessage)
                         if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
                             errorMessageBuilder.clear()
                         }
-                        errorMessageBuilder.append(secondaryCouponClashingInfo.message)
+                        errorMessageBuilder.append(secondaryClashingInfo.message)
                         promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                         clashResult = true
                     }
                 }
             } else {
-                if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                    promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                    val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
-                    if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
-                        errorMessageBuilder.clear()
-                    }
-                    errorMessageBuilder.append(primaryClashingInfo.message)
-                    promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
-                    clashResult = true
+                // There's no clashing in secondary promo, adjust the promo and inform user
+                promoListItemUiModel.uiData.errorMessage = ""
+                if (promoListItemUiModel.uiState.isParentEnabled) {
+                    promoListItemUiModel.uiState.isDisabled = false
                 }
+                fragmentUiModel.value?.let {
+                    it.uiData.benefitAdjustmentMessage = promoListItemUiModel.uiData.benefitAdjustmentMessage
+                    _fragmentUiModel.value = it
+                }
+                clashResult = false
             }
         }
         return clashResult

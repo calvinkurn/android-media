@@ -50,6 +50,7 @@ data class PromoListItemUiModel(
         var clashingInfos: List<ClashingInfo> = emptyList(),
         // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
         var currentClashingPromo: MutableList<String> = mutableListOf(),
+        var currentClashingSecondaryPromo: MutableList<String> = mutableListOf(),
         var promoInfos: List<PromoInfo> = emptyList(),
         var remainingPromoCount: Int = 0,
         var tabId: String = "",
@@ -67,7 +68,15 @@ data class PromoListItemUiModel(
         // Store BO promo data
         // When user choose BO promo, get unique id and promo code from here
         var boAdditionalData: List<AdditionalBoData> = emptyList()
-    )
+    ) {
+
+        val hasClashingPromo: Boolean
+            get() = if (secondaryCoupons.isNotEmpty()) {
+                currentClashingSecondaryPromo.isNotEmpty()
+            } else {
+                currentClashingPromo.isNotEmpty()
+            }
+    }
 
     data class UiState(
         var isParentEnabled: Boolean = false,
