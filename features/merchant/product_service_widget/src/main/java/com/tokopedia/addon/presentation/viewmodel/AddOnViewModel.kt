@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,6 +22,9 @@ class AddOnViewModel @Inject constructor(
     val getAddOnResult = Transformations.map(mGetAddOnResult) {
         AddOnMapper.mapAddOnWithSelectedIds(it, selectedAddonIds)
     }
+
+    private val mGetEduUrlResult = MutableLiveData<String>()
+    val getEduUrlResult: LiveData<String> get() = mGetEduUrlResult
 
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
@@ -45,5 +49,9 @@ class AddOnViewModel @Inject constructor(
 
     fun setSelectedAddOn(selectedAddonIds: List<String>) {
         this.selectedAddonIds = selectedAddonIds
+    }
+
+    fun getEduUrl(addOnUIModel: AddOnUIModel) {
+        mGetEduUrlResult.value = AddOnMapper.mapAddonUiToType(addOnUIModel)
     }
 }

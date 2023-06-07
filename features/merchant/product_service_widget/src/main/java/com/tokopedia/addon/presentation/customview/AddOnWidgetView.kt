@@ -11,7 +11,10 @@ import com.tokopedia.addon.di.DaggerAddOnComponent
 import com.tokopedia.addon.presentation.adapter.AddOnAdapter
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_service_widget.R
@@ -23,7 +26,7 @@ class AddOnWidgetView : BaseCustomView {
 
     @Inject
     lateinit var viewModel: AddOnViewModel
-    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener)
+    private var addonAdapter: AddOnAdapter = AddOnAdapter(::onAddonClickListener, ::onHelpClickListener)
     private var tfTitle: Typography? = null
     private var listener: AddOnComponentListener? = null
 
@@ -52,6 +55,14 @@ class AddOnWidgetView : BaseCustomView {
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
                 this@AddOnWidgetView.isVisible = !it
+            }
+            viewModel.getEduUrlResult.observe(this) {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalFintech.INSURANCE_INFO)
+                intent.putExtra(
+                    ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
+                    it
+                )
+                context.startActivity(intent)
             }
         }
     }
@@ -98,6 +109,11 @@ class AddOnWidgetView : BaseCustomView {
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
+    }
+
+    private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
+        listener?.onAddonHelpClick(position, addOnUIModel)
+        viewModel.getEduUrl(addOnUIModel)
     }
 
     fun setTitleText(text: String) {

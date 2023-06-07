@@ -1,6 +1,7 @@
 package com.tokopedia.addon.presentation.listener
 
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 
 interface AddOnComponentListener {
 
@@ -11,6 +12,8 @@ interface AddOnComponentListener {
         indexChild: Int,
         addOnGroupUIModels: List<AddOnGroupUIModel>
     )
+
+    fun onAddonHelpClick(position: Int, addOnUIModel: AddOnUIModel) {}
 
     fun onDataEmpty()
 }

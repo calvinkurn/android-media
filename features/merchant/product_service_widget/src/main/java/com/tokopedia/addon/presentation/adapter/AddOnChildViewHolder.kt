@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemAddonChildBinding
-import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.utils.view.binding.viewBinding
 
 class AddOnChildViewHolder(
     itemView: View,
-    onClickListener: (index: Int, isChecked: Boolean) -> Unit
+    onClickListener: (index: Int, isChecked: Boolean) -> Unit,
+    onHelpClickListener: (index: Int) -> Unit
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -29,6 +29,9 @@ class AddOnChildViewHolder(
             }
             cuAddon.setOnClickListener {
                 onClickListener(bindingAdapterPosition, cuAddon.isChecked)
+            }
+            icEdu.setOnClickListener {
+                onHelpClickListener(bindingAdapterPosition)
             }
         }
     }

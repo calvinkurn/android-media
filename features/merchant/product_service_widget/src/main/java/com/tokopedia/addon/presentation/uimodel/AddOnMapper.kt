@@ -5,24 +5,30 @@ import com.tokopedia.product.detail.common.getCurrencyFormatted
 
 object AddOnMapper {
 
+    private fun String.convertToAddonEnum(): AddOnType {
+        return AddOnType.values().find { it.value == this }
+            ?: AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE
+    }
+
     fun mapAddonToUiModel(response: GetAddOnByProductResponse): List<AddOnGroupUIModel> {
         val addons = response.getAddOnByProduct.addOnByProductResponse.firstOrNull()?.addons
             ?.groupBy {
                 it.basic.metadata.infoURL.title
             }
 
-        return addons?.map {
-            val infoUrl = it.value.firstOrNull()?.basic?.metadata?.infoURL
-            val addonsUi = it.value.map {
+        return addons?.map { addon ->
+            val infoUrl = addon.value.firstOrNull()?.basic?.metadata?.infoURL
+            val addonsUi = addon.value.map {
                 AddOnUIModel(
                     id = it.basic.basicId,
                     name = it.basic.name,
                     priceFormatted = it.inventory.price.getCurrencyFormatted(),
-                    isSelected = it.basic.rules.autoSelect
+                    isSelected = it.basic.rules.autoSelect,
+                    addOnType = it.basic.addOnType.convertToAddonEnum()
                 )
             }
             AddOnGroupUIModel(
-                title = it.key,
+                title = addon.key,
                 iconUrl = infoUrl?.iconURL.orEmpty(),
                 iconDarkmodeUrl = infoUrl?.iconDarkURL.orEmpty(),
                 addon = addonsUi
@@ -40,5 +46,14 @@ object AddOnMapper {
             }
         }
         return addonGroupList
+    }
+
+    fun mapAddonUiToType(addOnUIModel: AddOnUIModel): String {
+        return when(addOnUIModel.addOnType) {
+            AddOnType.INSTALLATION_TYPE -> "" // webpage not ready yet
+            AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE -> "" // webpage not ready yet
+            else -> ""
+        }
+
     }
 }
