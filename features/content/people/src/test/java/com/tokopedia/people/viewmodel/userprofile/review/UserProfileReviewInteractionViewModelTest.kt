@@ -209,6 +209,27 @@ class UserProfileReviewInteractionViewModelTest {
         }
     }
 
+    /** Click Product Info */
+    @Test
+    fun `ClickProductInfo - should emit event to open pdp page`() {
+        val selectedIdx = 0
+
+        UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        ).start {
+            setup {
+                viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
+            } recordEvent {
+                viewModel.submitAction(UserProfileAction.ClickProductInfo(review = mockReviewContentUnlike.reviewList[selectedIdx]))
+            } andThen {
+                last().assertEvent(UserProfileUiEvent.OpenProductDetailPage(mockReviewContentUnlike.reviewList[selectedIdx].product.productID))
+            }
+        }
+    }
+
     /** Click Review Media */
     @Test
     fun `ClickReviewMedia - emit event open review media gallery page`() {
