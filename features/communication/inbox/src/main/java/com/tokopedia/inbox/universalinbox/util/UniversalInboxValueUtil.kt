@@ -46,4 +46,7 @@ object UniversalInboxValueUtil {
     // Wishlist
     const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
     const val WISHLIST_STATUS_IS_WISHLIST = "isWishlist"
+
+    // Widget
+    const val WIDGET_PAGE_NAME = "inbox_pre-purchase"
 }

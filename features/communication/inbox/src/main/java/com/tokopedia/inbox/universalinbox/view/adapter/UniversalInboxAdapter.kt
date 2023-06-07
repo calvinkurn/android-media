@@ -8,6 +8,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxMe
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationLoaderDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationTitleDelegate
+import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxRecommendationWidgetDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsBannerDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxTopAdsHeadlineDelegate
 import com.tokopedia.inbox.universalinbox.view.adapter.delegate.UniversalInboxWidgetMetaDelegate
@@ -41,6 +42,7 @@ class UniversalInboxAdapter(
         delegatesManager.addDelegate(
             UniversalInboxTopAdsBannerDelegate(tdnBannerResponseListener, topAdsClickListener)
         )
+        delegatesManager.addDelegate(UniversalInboxRecommendationWidgetDelegate())
         delegatesManager.addDelegate(UniversalInboxRecommendationTitleDelegate())
         delegatesManager.addDelegate(UniversalInboxRecommendationDelegate(recommendationListener))
         delegatesManager.addDelegate(UniversalInboxRecommendationLoaderDelegate())
