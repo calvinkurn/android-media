@@ -53,9 +53,9 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
         getBindingView().subMessageDescription.let {
             when (campaignStatus) {
                 FeedXCampaign.UPCOMING -> it.text =
-                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
+                    getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
                 FeedXCampaign.ONGOING -> it.text =
-                    getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
+                    getString(com.tokopedia.content.common.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
             }
         }
     }

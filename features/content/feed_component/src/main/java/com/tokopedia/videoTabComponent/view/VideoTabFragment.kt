@@ -169,7 +169,7 @@ class VideoTabFragment :
                                 )
                             } else {
                                 it.throwable.message
-                                    ?: getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder)
+                                    ?: getString(com.tokopedia.content.common.R.string.feed_video_tab_error_reminder)
                             }
                             showToast(errorMsg, Toaster.TYPE_ERROR)
                         }
@@ -458,9 +458,9 @@ class VideoTabFragment :
     private fun onSuccessReminderSet(playWidgetFeedReminderInfoData: PlayWidgetFeedReminderInfoData) {
         showToast(
             if (playWidgetFeedReminderInfoData.reminderType.reminded) {
-                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_add_reminder)
+                getString(com.tokopedia.content.common.R.string.feed_video_tab_success_add_reminder)
             } else {
-                getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_success_remove_reminder)
+                getString(com.tokopedia.content.common.R.string.feed_video_tab_success_remove_reminder)
             },
             Toaster.TYPE_NORMAL
         )
