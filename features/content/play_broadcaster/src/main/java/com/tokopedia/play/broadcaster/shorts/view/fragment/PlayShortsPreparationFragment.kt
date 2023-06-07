@@ -437,8 +437,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                         showSwitchAccountBottomSheet()
                     }
                     is PlayShortsUiEvent.ErrorOnboardAffiliate -> {
+                        if (event.error == null) return@collect
                         val currentBottomSheet = getShortsAffiliateTncBottomSheet()
-                        if (event.error != null) currentBottomSheet.showErrorToast(event.error)
+                        currentBottomSheet.showErrorToast(event.error)
                     }
                     is PlayShortsUiEvent.SuccessOnboardAffiliate -> {
                         val currentBottomSheet = getShortsAffiliateTncBottomSheet()
