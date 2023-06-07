@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
@@ -13,8 +13,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatc
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.EmptyStateData
-import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -56,12 +54,10 @@ class TopAdsGroupDetailUseCase @Inject constructor(
 
             when (groupWithInsight) {
                 is TopAdsListAllInsightState.Success -> {
-                    if (groupWithInsight.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight == 0) {
-                        (groupDetailMapper.detailPageDataMap[TYPE_CHIPS] as GroupDetailChipsUiModel).isChipsAvailable =
-                            false
-                        groupDetailMapper.detailPageDataMap[8] = GroupDetailEmptyStateUiModel(
-                            EmptyStateData.getData()
-                        )
+                    val totalInsight =
+                        groupWithInsight.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
+                    if (totalInsight.isZero()) {
+                        groupDetailMapper.mapEmptyState()
                         return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)
                     }
                 }
@@ -75,41 +71,15 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 is TopAdsListAllInsightState.Success -> {
                     val groupData =
                         batchKeyword.data.topAdsBatchGetKeywordInsightByGroupIDV3.groups.firstOrNull()?.groupData
-                    groupDetailMapper.detailPageDataMap[TYPE_POSITIVE_KEYWORD] =
-                        GroupInsightsUiModel(
-                            TYPE_POSITIVE_KEYWORD,
-                            "Kata Kunci",
-                            "Kunjungan pembeli menurun. Pakai kata kunci...",
-                            !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
-//                            false,
-                            AccordianKataKunciUiModel(
-                                "Kata Kunci",
-                                groupData?.newPositiveKeywordsRecom
-                            )
-                        )
-                    groupDetailMapper.detailPageDataMap[TYPE_KEYWORD_BID] = GroupInsightsUiModel(
-                        TYPE_KEYWORD_BID,
-                        "Biaya Kata Kunci",
-                        "Kunjungan pembeli menurun. Pakai kata kunci...",
-                        !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
-//                        false,
-                        AccordianKeywordBidUiModel(
-                            "Biaya Kata Kunci",
-                            groupData?.existingKeywordsBidRecom
-                        )
-                    )
-                    groupDetailMapper.detailPageDataMap[TYPE_NEGATIVE_KEYWORD_BID] =
-                        GroupInsightsUiModel(
-                            TYPE_NEGATIVE_KEYWORD_BID,
-                            "Kata Kunci Negatif",
-                            "Kunjungan pembeli menurun. Pakai kata kunci...",
-                            !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
-//                            false,
-                            AccordianNegativeKeywordUiModel(
-                                "Kata Kunci Negatif",
-                                groupData?.newNegativeKeywordsRecom
-                            )
-                        )
+                    val kataKuchimodel =
+                        groupDetailMapper.convertToAccordianKataKunciUiModel(groupData)
+                    val keywordBidUiModel =
+                        groupDetailMapper.convertToAccordianKeywordBidUiModel(groupData)
+                    val negativeKeywordModel =
+                        groupDetailMapper.convertToAccordianNegativeKeywordUiModel(groupData)
+                    groupDetailMapper.detailPageDataMap[TYPE_POSITIVE_KEYWORD] = kataKuchimodel
+                    groupDetailMapper.detailPageDataMap[TYPE_KEYWORD_BID] = keywordBidUiModel
+                    groupDetailMapper.detailPageDataMap[TYPE_NEGATIVE_KEYWORD_BID] = negativeKeywordModel
                 }
                 is TopAdsListAllInsightState.Fail -> {
                     throw batchKeyword.throwable
@@ -118,20 +88,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
             }
             when (groupBidInsight) {
                 is TopAdsListAllInsightState.Success -> {
-                    val data =
-                        groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID.groups.firstOrNull()?.adGroupBidInsightData
-                    groupDetailMapper.detailPageDataMap[TYPE_GROUP_BID] =
-                        GroupInsightsUiModel(
-                            TYPE_GROUP_BID,
-                            "Biaya Iklan",
-                            "Kunjungan pembeli menurun. Pakai kata kunci...",
-                            !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
-//                            false,
-                            AccordianGroupBidUiModel(
-                                text = "Biaya Iklan",
-                                groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
-                            )
-                        )
+                    val groupBidUiModel = groupDetailMapper.convertToAccordianGroupBidUiModel(groupBidInsight)
+                    groupDetailMapper.detailPageDataMap[TYPE_GROUP_BID] = groupBidUiModel
                 }
                 is TopAdsListAllInsightState.Fail -> {
                     throw groupBidInsight.throwable
@@ -140,18 +98,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
             }
             when (sellerInsightData) {
                 is TopAdsListAllInsightState.Success -> {
-                    val data = sellerInsightData.data.getSellerInsightData.sellerInsightData
-                    groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
-                        TYPE_DAILY_BUDGET,
-                        "Anggaran harian",
-                        "Kunjungan embellish menurun. Pakai kata kunci...",
-                        data.dailyBudgetData.isNotEmpty(),
-//                            false,
-                        AccordianDailyBudgetUiModel(
-                            text = "Biaya Iklan",
-                            data
-                        )
-                    )
+                    val dailyBudgetUiModel = groupDetailMapper.convertToAccordianDailyBudgetUiModel(sellerInsightData)
+                    groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = dailyBudgetUiModel
                 }
                 is TopAdsListAllInsightState.Fail -> {
 //                    throw sellerInsightData.throwable
