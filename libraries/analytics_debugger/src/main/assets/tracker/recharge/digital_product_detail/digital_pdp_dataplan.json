@@ -76,16 +76,6 @@
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
-    },
-    {
-      "eventAction": "click on contact icon",
-      "eventLabel": ".*",
-      "eventCategory": "digital - homepage",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
     }
   ]
 }
