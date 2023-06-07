@@ -11,14 +11,13 @@ import com.tokopedia.mediauploader.data.repository.LogRepository
 import com.tokopedia.mediauploader.data.repository.LogRepositoryImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 
 @Module
 object MediaUploaderDebugModule {
 
-    @Binds
+    @Provides
     @MediaUploaderTestScope
     fun provideLogRepository(
         @ApplicationContext context: Context,
