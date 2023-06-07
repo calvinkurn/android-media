@@ -44,12 +44,14 @@ class NibSubmissionViewModel @Inject constructor(
             is UiEvent.TapSelectFile -> _uiEffect.tryEmit(UiEffect.ShowFilePicker)
             is UiEvent.ConfirmFile -> handleConfirmFile(event.fileUri, event.fileExtension, event.fileSizeBytes)
             UiEvent.UnselectFile -> handleUnselectFile()
-            is UiEvent.TapChangeDate -> _uiEffect.tryEmit(UiEffect.ShowDatePicker(currentState.selectedDate))
+            is UiEvent.TapChangeDate -> handleChangeDate()
             is UiEvent.ConfirmDate -> handleConfirmDate(event.newDate)
+            UiEvent.DatePickerDismissed -> handleDatePickerDismissed()
             UiEvent.SubmitFile -> handleSubmitFile()
             UiEvent.RecordImpression -> handleRecordImpression()
         }
     }
+
 
     private fun handleConfirmFile(fileUri: String, fileExtension: String, fileSizeBytes: Long) {
         _uiState.update {
@@ -66,9 +68,24 @@ class NibSubmissionViewModel @Inject constructor(
         }
     }
 
+    private fun handleChangeDate() {
+        if (!currentState.isDatePickerCurrentlyDisplayed) {
+            _uiEffect.tryEmit(UiEffect.ShowDatePicker(currentState.selectedDate))
+            _uiState.update {
+                it.copy(isDatePickerCurrentlyDisplayed = true)
+            }
+        }
+    }
+
     private fun handleConfirmDate(newDate: Date) {
         val isInputValid = validateInput(newDate, currentState.fileState)
-        _uiState.update { it.copy(selectedDate = newDate, isInputValid = isInputValid) }
+        _uiState.update {
+            it.copy(
+                selectedDate = newDate,
+                isInputValid = isInputValid,
+                isDatePickerCurrentlyDisplayed = false
+            )
+        }
     }
 
     private fun handleUnselectFile() {
@@ -144,6 +161,10 @@ class NibSubmissionViewModel @Inject constructor(
     private fun isValidFileExtension(fileExtension: String): Boolean {
         val allowedFileExtensions = listOf("png", "jpeg", "jpg", "pdf")
         return fileExtension in allowedFileExtensions
+    }
+
+    private fun handleDatePickerDismissed() {
+        _uiState.update { it.copy(isDatePickerCurrentlyDisplayed = false) }
     }
 
     private fun isValidFileSize(fileSizeBytes: Long): Boolean {
