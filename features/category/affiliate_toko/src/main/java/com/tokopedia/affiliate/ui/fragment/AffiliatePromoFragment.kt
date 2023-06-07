@@ -53,7 +53,6 @@ import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiModel
@@ -250,6 +249,9 @@ class AffiliatePromoFragment :
             ) == AFFILIATE_DISCO_PROMO
         ) {
             affiliatePromoViewModel.getDiscoBanners(page = 0, limit = 7)
+        }
+        if (isAffiliateNCEnabled()) {
+            affiliatePromoViewModel.fetchUnreadNotificationCount()
         }
     }
 
