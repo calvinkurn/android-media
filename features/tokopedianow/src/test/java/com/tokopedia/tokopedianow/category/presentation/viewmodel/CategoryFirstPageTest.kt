@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
@@ -90,12 +91,20 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
 
         verifyCategoryDetail()
         verifyTargetedTicker()
+        viewModel.openScreenTracker
+            .verifyValueEquals(
+                CategoryOpenScreenTrackerModel(
+                    id = categoryDetailResponse.categoryDetail.data.id,
+                    name= categoryDetailResponse.categoryDetail.data.name,
+                    url=categoryDetailResponse.categoryDetail.data.url
+                )
+            )
         viewModel.categoryPage
             .verifyValueEquals(resultList)
     }
 
     @Test
-    fun `getFirstPage should return result even though one of showcase failed to be fetched`() {
+    fun `getFirstPage should return result even though one of showcases failed to be fetched`() {
         val isLoggedIn = false
         val userId = "12223"
         val deviceId = "11111"
@@ -175,6 +184,14 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
 
         verifyCategoryDetail()
         verifyTargetedTicker()
+        viewModel.openScreenTracker
+            .verifyValueEquals(
+                CategoryOpenScreenTrackerModel(
+                    id = categoryDetailResponse.categoryDetail.data.id,
+                    name= categoryDetailResponse.categoryDetail.data.name,
+                    url=categoryDetailResponse.categoryDetail.data.url
+                )
+            )
         viewModel.categoryPage
             .verifyValueEquals(resultList)
     }

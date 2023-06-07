@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -72,6 +73,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
     protected val targetedTickerResponse = "category/targeted-ticker.json".jsonToObject<GetTargetedTickerResponse>()
     protected val addToCartGqlResponse = "category/add-to-cart-product.json".jsonToObject<AddToCartGqlResponse>()
     protected val updateProductInCartResponse = "category/update-product-in-cart.json".jsonToObject<UpdateCartGqlResponse>()
+    protected val removeProductFromCartResponse = "category/remove-product-from-cart.json".jsonToObject<RemoveFromCartData>()
 
     protected val categoryProductResponseMap = mapOf(
         "4859" to categoryProductResponse1,
@@ -249,6 +251,14 @@ open class TokoNowCategoryMainViewModelTestFixture {
         }
     }
 
+    protected fun onAddToCart_thenThrows(exception: Exception) {
+        coEvery {
+            addToCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Exception) -> Unit>().invoke(exception)
+        }
+    }
+
     protected fun onUpdateProductInCart_thenReturns() {
         coEvery {
             updateCartUseCase.execute(any(), any())
@@ -256,6 +266,31 @@ open class TokoNowCategoryMainViewModelTestFixture {
             firstArg<(UpdateCartV2Data) -> Unit>().invoke(updateProductInCartResponse.updateCartData)
         }
     }
+
+    protected fun onUpdateProductInCart_thenThrows(exception: Exception) {
+        every {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Exception) -> Unit>().invoke(exception)
+        }
+    }
+
+    protected fun onRemoveProductFromCart_thenReturns() {
+        coEvery {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(RemoveFromCartData) -> Unit>().invoke(removeProductFromCartResponse)
+        }
+    }
+
+    protected fun onRemoveProductFromCart_thenThrows(exception: Exception) {
+        every {
+            deleteCartUseCase.execute(any(), any())
+        } answers {
+            secondArg<(Exception) -> Unit>().invoke(exception)
+        }
+    }
+
 
     protected fun onGetMiniCart_thenReturns() {
         coEvery {
