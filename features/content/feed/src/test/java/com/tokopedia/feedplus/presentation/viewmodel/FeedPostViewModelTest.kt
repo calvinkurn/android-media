@@ -32,6 +32,7 @@ import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.mvcwidget.ResultStatus
@@ -531,13 +532,16 @@ class FeedPostViewModelTest {
         assert((viewModel.feedHome.value as Fail).throwable.message == "Failed")
     }
 
+    private fun getAuthorModelDefault() =
+        FeedAuthorModel("", AuthorType.User, "", "", "", "", "", false)
+
     private fun getDummyFeedModel() = FeedModel(
         items = listOf(
             FeedCardImageContentModel(
                 "activity id",
                 "FeedProductHighlight",
                 "Dummy Type",
-                FeedAuthorModel(),
+                getAuthorModelDefault(),
                 "Title",
                 "Subtitle",
                 "Caption",
@@ -557,11 +561,9 @@ class FeedPostViewModelTest {
                 FeedViewModel(),
                 FeedLikeModel(),
                 FeedCommentModel(),
-                FeedShareModel("", FeedAuthorModel(), "", "", ""),
+                FeedShareModel("", getAuthorModelDefault(), "", "", ""),
                 FeedFollowModel(),
-                true,
-                true,
-                true,
+                emptyList(),
                 emptyList(),
                 "",
                 0,
@@ -575,7 +577,7 @@ class FeedPostViewModelTest {
                 "activity id",
                 "FeedPlay",
                 "Dummy Type",
-                FeedAuthorModel(),
+                getAuthorModelDefault(),
                 "Title",
                 "Subtitle",
                 "Caption",
@@ -593,11 +595,9 @@ class FeedPostViewModelTest {
                 FeedViewModel(),
                 FeedLikeModel(),
                 FeedCommentModel(),
-                FeedShareModel("", FeedAuthorModel(), "", "", ""),
+                FeedShareModel("", getAuthorModelDefault(), "", "", ""),
                 FeedFollowModel(),
-                true,
-                true,
-                true,
+                emptyList(),
                 emptyList(),
                 "",
                 ""
