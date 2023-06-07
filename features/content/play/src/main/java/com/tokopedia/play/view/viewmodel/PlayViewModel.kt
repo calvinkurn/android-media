@@ -2916,11 +2916,11 @@ class PlayViewModel @AssistedInject constructor(
             _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
 
             val cursor = if (!isRefresh) _categoryWidget.value.pagingConfig.cursor else ""
-            val param = _channelDetail.value.exploreWidgetConfig //TODO(): change to category
+            val param = _channelDetail.value.exploreWidgetConfig
             val response = repo.getWidgets(
-                group = param.group,
-                sourceType = param.sourceType,
-                sourceId = param.sourceId,
+                group = param.categoryGroup,
+                sourceType = param.categorySourceType,
+                sourceId = param.categorySourceId,
                 cursor = cursor
             )
             val data = response.getChannelBlocks.getChannelCards

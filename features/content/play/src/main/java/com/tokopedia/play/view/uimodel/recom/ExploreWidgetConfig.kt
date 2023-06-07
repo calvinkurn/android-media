@@ -12,4 +12,6 @@ data class ExploreWidgetConfig(
     val categoryGroup: String = "",
     val hasCategory: Boolean = false,
     val categoryName: String = "",
+    val categorySourceType: String = "",
+    val categorySourceId: String = "",
 )

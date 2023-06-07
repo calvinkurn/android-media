@@ -330,7 +330,14 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig,
         categoryConfig: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
     ) = ExploreWidgetConfig(
-       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId, categoryGroup = categoryConfig.group, hasCategory = categoryConfig.hasCategory, categoryName = categoryConfig.categoryName.ifBlank { "Eksplor" },
+       group = config.group,
+        sourceType = config.sourceType,
+        sourceId = config.sourceId,
+        categoryGroup = categoryConfig.group,
+        hasCategory = categoryConfig.hasCategory,
+        categoryName = categoryConfig.categoryName.ifBlank { "Eksplor" },
+        categorySourceType = categoryConfig.sourceType,
+        categorySourceId = categoryConfig.sourceId,
     )
 
     private fun mapArchived(archiveData: ChannelDetailsWithRecomResponse.ArchivedData) = with(archiveData) {
