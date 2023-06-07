@@ -26,6 +26,6 @@ data class FragmentUiModel(
         var hasPreAppliedBo: Boolean = false,
         var hasFailedToLoad: Boolean = false,
         var shouldShowTickerBoClashing: Boolean = false,
-        var hasSeenBenefitAdjustmentMessage: Boolean = false
+        var shouldShowToasterBenefitAdjustmentMessage: Boolean = true
     )
 }

@@ -807,7 +807,9 @@ class PromoCheckoutFragment :
             renderLoadPromoFailed(fragmentUiModel)
         }
 
-        if (!fragmentUiModel.uiState.hasSeenBenefitAdjustmentMessage && fragmentUiModel.uiData.benefitAdjustmentMessage.isNotBlank()) {
+        if (fragmentUiModel.uiState.shouldShowToasterBenefitAdjustmentMessage &&
+            fragmentUiModel.uiData.benefitAdjustmentMessage.isNotBlank()
+        ) {
             view?.let {
                 Toaster.build(
                     it,
@@ -815,7 +817,7 @@ class PromoCheckoutFragment :
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL
                 ).show()
-                viewModel.setHasSeenBenefitAdjustment()
+                viewModel.setShouldShowToasterBenefitAdjustmentMessage(false)
             }
         }
     }

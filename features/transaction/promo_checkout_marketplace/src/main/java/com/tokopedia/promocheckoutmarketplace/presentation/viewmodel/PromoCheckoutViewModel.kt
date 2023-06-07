@@ -1425,7 +1425,7 @@ class PromoCheckoutViewModel @Inject constructor(
                     updateHeaderAndSiblingState(promoItem, element)
 
                     // Show artificial loading for MVC section then calculate clash
-                    showLoading(promoItem)
+                    showLoadingForMvcSection(promoItem)
                     delay(CLASH_LOADING_MILLISECONDS)
 
                     // Perform clash calculation
@@ -1745,12 +1745,9 @@ class PromoCheckoutViewModel @Inject constructor(
                     if (it.uiData.clashingInfos.isNotEmpty()) {
                         val tmpClashResult = checkAndSetClashOnSelectionEvent(it, selectedItem)
                         if (!clashResult) clashResult = tmpClashResult
-                        it.uiState.isLoading = false
-                        _tmpUiModel.value = Update(it)
-                    } else {
-                        it.uiState.isLoading = false
-                        _tmpUiModel.value = Update(it)
                     }
+                    it.uiState.isLoading = false
+                    _tmpUiModel.value = Update(it)
                 }
             }
         } else {
@@ -1759,12 +1756,9 @@ class PromoCheckoutViewModel @Inject constructor(
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
                     if (it.uiData.clashingInfos.isNotEmpty()) {
                         checkAndSetClashOnUnSelectionEvent(it, selectedItem)
-                        it.uiState.isLoading = false
-                        _tmpUiModel.value = Update(it)
-                    } else {
-                        it.uiState.isLoading = false
-                        _tmpUiModel.value = Update(it)
                     }
+                    it.uiState.isLoading = false
+                    _tmpUiModel.value = Update(it)
                 }
             }
         }
@@ -1855,9 +1849,9 @@ class PromoCheckoutViewModel @Inject constructor(
         _promoTabUiModel.value = promoTabUiModel
     }
 
-    fun setHasSeenBenefitAdjustment() {
+    fun setShouldShowToasterBenefitAdjustmentMessage(shouldShow: Boolean) {
         fragmentUiModel.value?.let {
-            it.uiState.hasSeenBenefitAdjustmentMessage = true
+            it.uiState.shouldShowToasterBenefitAdjustmentMessage = shouldShow
             _fragmentUiModel.value = it
         }
     }

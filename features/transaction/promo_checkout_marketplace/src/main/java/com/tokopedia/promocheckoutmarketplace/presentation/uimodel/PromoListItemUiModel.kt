@@ -56,6 +56,8 @@ data class PromoListItemUiModel(
         var shippingOptions: String = "",
         var paymentOptions: String = "",
         var benefitDetail: BenefitDetail = BenefitDetail(),
+        var benefitAdjustmentMessage: String = "",
+        var secondaryCoupons: List<SecondaryCoupon> = emptyList(),
 
         // fields related to bebas ongkir promo
 
@@ -64,9 +66,7 @@ data class PromoListItemUiModel(
         var boClashingInfos: List<BoClashingInfo> = emptyList(),
         // Store BO promo data
         // When user choose BO promo, get unique id and promo code from here
-        var boAdditionalData: List<AdditionalBoData> = emptyList(),
-        var benefitAdjustmentMessage: String = "",
-        var secondaryCoupons: List<SecondaryCoupon> = emptyList()
+        var boAdditionalData: List<AdditionalBoData> = emptyList()
     )
 
     data class UiState(
