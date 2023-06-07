@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.digital_product_detail.dataplan.utils.DigitalPDPDataPlanMockConfig
@@ -19,10 +18,12 @@ import org.junit.Test
 
 class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
+
+    override fun getApplink(): String = APPLINK
+
+    override fun getMockModelConfig(): MockModelConfig = DigitalPDPDataPlanMockConfig()
 
     private fun stubIntent() {
         Intents.intending(IsNot.not(IntentMatchers.isInternal()))
@@ -39,8 +40,6 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
     fun validate_interact_with_check_balance_otp() {
         Thread.sleep(2000)
         interactWithCheckBalanceWidget()
-//        interactWithMccmWidget()
-
         MatcherAssert.assertThat(
             cassavaTestRule.validate(PATH_ANALYTICS_OTP),
             hasAllSuccess()
@@ -92,12 +91,7 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
     fun validate_interact_with_input_manual_number() {
         Thread.sleep(4000)
         clientNumberWidget_clickClearIcon()
-        clientNumberWidget_typeNumber("0")
-        clientNumberWidget_typeNumber("8")
-        clientNumberWidget_typeNumber("1")
-        clientNumberWidget_typeNumber("2")
-        clientNumberWidget_typeNumber("2")
-        clientNumberWidget_typeNumber("8")
+        clientNumberWidget_typeNumber("081228")
         Thread.sleep(4000)
         MatcherAssert.assertThat(
             cassavaTestRule.validate(PATH_ANALYTICS_INPUT_MANUAL),
@@ -162,15 +156,6 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         buyWidget_clickChevron()
     }
 
-    private fun interactWithMccmWidget() {
-        Thread.sleep(2000)
-        mccm_clickCard_withIndex(0)
-        mccm_clickCardChevron_withIndex(0)
-
-        Thread.sleep(1000)
-        productDetailBottomSheet_clickClose()
-    }
-
     private fun interactWithFullDenomWidget() {
         scroll_to_bottom_data_plan()
         Thread.sleep(2000)
@@ -186,13 +171,8 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         filterChip_clickChip_withText("< 1GB")
     }
 
-    override fun getApplink(): String = APPLINK
-
-    override fun getMockModelConfig(): MockModelConfig = DigitalPDPDataPlanMockConfig()
-
     companion object {
         const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
-        const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_dataplan.json"
         const val PATH_ANALYTICS_OTP = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_otp.json"
         const val PATH_ANALYTICS_RECOMMENDATION = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_recommendation.json"
         const val PATH_ANALYTICS_FAVORITE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_favorite.json"

@@ -48,14 +48,29 @@
       ]
     },
     {
-      "eventAction": "click chevron in promo section",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*_.*",
-      "event": "clickDigital",
       "businessUnit": "recharge",
+      "clientId": ".+",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43960",
       "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "event": "select_content",
       "userId": ".*",
-      "sessionIris": ".*"
+      "eventAction": "click chevron in promo card",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "mccm",
+          "item_category": ".+"
+        }
+      ],
+      "eventLabel": ".* - .* - .*"
     }
   ]
 }

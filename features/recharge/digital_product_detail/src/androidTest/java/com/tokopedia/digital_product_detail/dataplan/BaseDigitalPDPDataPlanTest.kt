@@ -173,9 +173,6 @@ abstract class BaseDigitalPDPDataPlanTest {
     }
 
     protected fun mccm_clickCard_withIndex(index: Int) {
-        onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_full_card)).perform(
-            nestedScrollTo()
-        )
         onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_full)).perform(
             RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click()))
     }
