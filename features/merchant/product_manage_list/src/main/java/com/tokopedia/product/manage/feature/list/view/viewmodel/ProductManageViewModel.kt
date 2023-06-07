@@ -123,6 +123,7 @@ class ProductManageViewModel @Inject constructor(
         // Currently update data on server is not realtime.
         // Client need to add request delay in order to receive updated data.
         const val REQUEST_DELAY = 1000L
+        private const val REASON_DT_FOR_BULK_EDIT = "FORBIDDEN_DT_PRODUCT_DELETION"
     }
 
     val viewState: LiveData<ViewState>
@@ -292,11 +293,11 @@ class ProductManageViewModel @Inject constructor(
 
             val success = response.results?.filter { it.isSuccess() }.orEmpty()
             val failed =
-                response.results?.filter { !it.isSuccess() && it.result?.header?.reason != "FORBIDDEN_DT_PRODUCT_DELETION" }
+                response.results?.filter { !it.isSuccess() && it.result?.header?.reason != REASON_DT_FOR_BULK_EDIT }
                     .orEmpty()
             val failedDilayaniTokopediProduct = response.results?.filter {
                 !it.isSuccess()
-                    && it.result?.header?.reason == "FORBIDDEN_DT_PRODUCT_DELETION"
+                    && it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
             }.orEmpty()
 
             _multiEditProductResult.value =
