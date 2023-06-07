@@ -34,6 +34,7 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
+import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
@@ -227,7 +228,7 @@ class UniversalInboxFragment :
                     if (activity is UniversalInboxActivity) {
                         val notifUnread = it.data.notifCenterUnread.notifUnread
                         if (notifUnread.toIntOrZero() > Int.ZERO) {
-                            (activity  as UniversalInboxActivity).updateNotificationCounter(
+                            (activity as UniversalInboxActivity).updateNotificationCounter(
                                 it.data.notifCenterUnread.notifUnread
                             )
                         }
@@ -394,6 +395,9 @@ class UniversalInboxFragment :
 
     override fun onMenuClicked(item: UniversalInboxMenuUiModel) {
         if (item.applink.isEmpty()) return
+        if (item.type == MenuItemType.DISCUSSION) {
+            analytics.sendNewPageInboxTalkTracking(userSession.userId, item.counter.toString())
+        }
         context?.let {
             val intent = RouteManager.getIntent(it, item.applink)
             inboxMenuResultLauncher.launch(intent)
