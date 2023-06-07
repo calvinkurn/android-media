@@ -3,70 +3,6 @@
   "mode": "exact",
   "query": [
     {
-      "eventAction": "impression product cluster",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "view_item_list",
-      "clientId": ".*",
-      "userId": ".*",
-      "currentSite": "tokopediadigitalRecharge",
-      "businessUnit": "recharge",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": ".*"
-        }
-      ]
-    },
-    {
-      "eventAction": "click product cluster",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*_.*",
-      "event": "select_content",
-      "clientId": ".*",
-      "userId": ".*",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "item_list": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": ".*"
-        }
-      ]
-    },
-    {
-      "eventAction": "impression pdp banner",
-      "eventLabel": ".*_.*",
-      "eventCategory": "digital - homepage",
-      "event": "view_item",
-      "businessUnit": "recharge",
-      "clientId": ".*",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*",
-      "promotions": [
-        {
-          "creative_name": ".*",
-          "creative_slot": ".*",
-          "item_id": ".*",
-          "item_name": ".*"
-        }
-      ]
-    },
-    {
       "eventAction": "view promo card",
       "eventCategory": "digital - homepage",
       "eventLabel": ".*_.*_.*_.*",
@@ -110,16 +46,6 @@
           "item_category": ".*"
         }
       ]
-    },
-    {
-      "eventAction": "click chevron in product cluster",
-      "eventLabel": ".*_.*_.*",
-      "eventCategory": "digital - homepage",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
     },
     {
       "eventAction": "click chevron in promo section",

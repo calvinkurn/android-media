@@ -155,6 +155,11 @@ abstract class BaseDigitalPDPDataPlanTest {
             )
         )
     }
+
+    protected fun scroll_to_bottom_data_plan() {
+        onView(withId(com.tokopedia.digital_product_detail.R.id.recharge_pdp_paket_data_sv_container))
+            .perform(swipeUp())
+    }
     protected fun denom_clickCard_withIndex(index: Int) {
         onView(withId(com.tokopedia.recharge_component.R.id.tg_denom_full_widget_title)).perform(nestedScrollTo())
         onView(withId(com.tokopedia.recharge_component.R.id.rv_denom_full_card))
