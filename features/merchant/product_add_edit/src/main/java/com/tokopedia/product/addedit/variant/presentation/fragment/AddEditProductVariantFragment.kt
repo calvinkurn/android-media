@@ -63,6 +63,7 @@ import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.RemoteConfig
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.getValueOrDefault
 import com.tokopedia.product.addedit.common.util.setDefaultMaxWidth
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductVariantBinding
@@ -449,6 +450,14 @@ class AddEditProductVariantFragment :
         titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
     }
 
+    override fun onVariantTypeDisabledSelected(adapterPosition: Int) {
+        showDTProductNotAllowedDeleteDialog()
+    }
+
+    override fun onVariantTypeDisabledDeselected(adapterPosition: Int) {
+        showDTProductNotAllowedDeleteDialog()
+    }
+
     private fun deselectVariantType(
         layoutPosition: Int,
         adapterPosition: Int,
@@ -696,7 +705,6 @@ class AddEditProductVariantFragment :
         } else {
             val variantData = viewModel.getVariantData(layoutPosition)
             val variantId = variantData.variantID
-            viewModel.productInputModel.value
             viewModel.removeSelectedVariantUnitValue(layoutPosition, removedUnitValue)
             viewModel.removeCombinations(position, layoutPosition)
 
@@ -921,6 +929,11 @@ class AddEditProductVariantFragment :
                 editVariantType(editedIndex, variantDetail)
             }
 
+            bottomSheet.setHasDTStock(viewModel.hasDTStock.value.orFalse())
+            bottomSheet.setOnHasDTStockListener {
+                showDTProductNotAllowedDeleteDialog()
+            }
+
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
                 deleteVariantType(deletedIndex, variantDetail)
                 showToaster(getString(R.string.label_cvt_message_variant_deleted))
@@ -932,9 +945,6 @@ class AddEditProductVariantFragment :
     }
 
     private fun setupButtonAddVariantType() {
-        buttonAddVariantType.setOnDisabledClickListener {
-            showToaster(getString(R.string.label_cvt_message_variant_cannot_add))
-        }
         buttonAddVariantType.setOnClickListener {
             val bottomSheet = CustomVariantInputBottomSheet(
                 selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty(),
@@ -1086,7 +1096,7 @@ class AddEditProductVariantFragment :
     private fun observeGetVariantCategoryCombinationResult() {
         // start network PLT monitoring
         startNetworkRequestPerformanceMonitoring()
-        viewModel.getVariantCategoryCombinationResult.observe(viewLifecycleOwner, { result ->
+        viewModel.getVariantCategoryCombinationResult.observe(viewLifecycleOwner) { result ->
             // highlight variant type feature
             showCoachmarkCustomVariantType()
             // clear adapter before rendering
@@ -1118,11 +1128,12 @@ class AddEditProductVariantFragment :
                     }
                 }
             }
-        })
+            observeHasDTStock()
+        }
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, { productInputModel ->
+        viewModel.productInputModel.observe(viewLifecycleOwner) { productInputModel ->
             // extract selected variant details
             val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
             // set selected variant details
@@ -1133,11 +1144,11 @@ class AddEditProductVariantFragment :
                 it.variantId != Int.ZERO.toString()
             }
             categoryId?.run { viewModel.getVariantCategoryCombination(this, selections) }
-        })
+        }
     }
 
     private fun observeSizechartUrl() {
-        viewModel.variantSizechart.observe(viewLifecycleOwner, {
+        viewModel.variantSizechart.observe(viewLifecycleOwner) {
             if (it.urlOriginal.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
@@ -1154,11 +1165,11 @@ class AddEditProductVariantFragment :
 
             // display sizechart image (use server image if exist)
             ivSizechart.setImage(it.urlOriginal, 0F)
-        })
+        }
     }
 
     private fun observeInputStatus() {
-        viewModel.isInputValid.observe(viewLifecycleOwner, {
+        viewModel.isInputValid.observe(viewLifecycleOwner) {
             tvDeleteAll?.isEnabled = it
             if (viewModel.isRemovingVariant.value == true) {
                 buttonSave.isEnabled =
@@ -1166,38 +1177,54 @@ class AddEditProductVariantFragment :
             } else {
                 buttonSave.isEnabled = it
             }
-        })
+        }
     }
 
     private fun observeIsEditMode() {
-        viewModel.isEditMode.observe(viewLifecycleOwner, { isEditMode ->
+        viewModel.isEditMode.observe(viewLifecycleOwner) { isEditMode ->
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
-        })
+        }
     }
 
     private fun observeVariantPhotosVisibility() {
-        viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner, { isVisible ->
+        viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner) { isVisible ->
             if (isVisible) variantPhotoLayout.show()
             else variantPhotoLayout.hide()
-        })
+        }
     }
 
     private fun observeSizechartVisibility() {
-        viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner, {
+        viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner) {
             layoutSizechart.root.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        }
     }
 
     private fun observeIsRemovingVariant() {
-        viewModel.isRemovingVariant.observe(viewLifecycleOwner, {
+        viewModel.isRemovingVariant.observe(viewLifecycleOwner) {
             buttonSave.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
             } else {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_next)
             }
-        })
+        }
+    }
+
+    private fun observeHasDTStock() {
+        viewModel.hasDTStock.observe(viewLifecycleOwner) {
+            variantTypeAdapter?.setEnabledSelection(!it)
+            buttonAddVariantType.isEnabled = !it
+            if (it) {
+                buttonAddVariantType.setOnDisabledClickListener {
+                    showDTProductNotAllowedDeleteDialog()
+                }
+            } else {
+                buttonAddVariantType.setOnDisabledClickListener {
+                    showToaster(getString(R.string.label_cvt_message_variant_cannot_add))
+                }
+            }
+        }
     }
 
     private fun showToaster(message: String) {
@@ -1263,7 +1290,10 @@ class AddEditProductVariantFragment :
         variantUnitPickerLayout.setLayoutPosition(layoutPosition)
         variantUnitPickerLayout.setSelectedVariantUnit(selectedVariantUnit)
         variantUnitPickerLayout.setOnVariantUnitPickListener(this)
-        variantUnitPickerLayout.setupVariantUnitPicker(variantData.units)
+        variantUnitPickerLayout.setupVariantUnitPicker(
+            variantData.units,
+            viewModel.hasDTStock.getValueOrDefault(false)
+        )
         variantUnitPickerLayout.setHasSelectedValues(hasSelectedValues)
         variantUnitPicker?.setCloseClickListener {
             variantUnitPicker?.dismiss()
@@ -1375,8 +1405,20 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.product_add_edit_text_variant_product_dt_can_not_delete))
-            setDefaultMaxWidth()
-            setDescription(getString(R.string.product_add_edit_text_descroption_variant_product_dt_can_not_delete))
+            setDescription(getString(R.string.product_add_edit_text_description_variant_product_dt_can_not_delete))
+            setPrimaryCTAText(getString(R.string.action_oke))
+            setPrimaryCTAClickListener {
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
+    }
+
+    private fun showDTProductNotAllowedDeleteDialog() {
+        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_product_dt_can_not_delete))
+            setDescription(getString(R.string.product_add_edit_text_description_product_dt_can_not_delete))
             setPrimaryCTAText(getString(R.string.action_oke))
             setPrimaryCTAClickListener {
                 dialog.dismiss()
@@ -1863,16 +1905,10 @@ class AddEditProductVariantFragment :
             }
             actionTextView?.setOnClickListener {
                 val product = viewModel.productInputModel.value
-                val totalOfSelectedType = variantTypeAdapter?.getSelectedCount()
-                val totalItemType = variantTypeAdapter?.getItems()?.size
-                if (totalOfSelectedType == totalItemType) {
-                    if (product?.hasDTStock.orTrue()) {
-                        showDTNotAllowedDeleteDialog()
-                    } else {
-                        showRemoveVariantDialog()
-                    }
+                if (product?.hasDTStock.orFalse()) {
+                    showDTNotAllowedDeleteDialog()
                 } else {
-
+                    showRemoveVariantDialog()
                 }
             }
             actionTextView?.text = getString(R.string.action_variant_delete)

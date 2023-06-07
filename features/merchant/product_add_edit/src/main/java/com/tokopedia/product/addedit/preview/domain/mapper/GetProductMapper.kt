@@ -53,7 +53,8 @@ class GetProductMapper @Inject constructor() {
         mapShipmentInputModel(product),
         mapVariantInputModel(product.variant),
         itemSold = product.txStats.itemSold,
-        hasDTStock = product.hasDTStock
+        hasDTStock = product.hasDTStock,
+        isCampaignActive = product.campaign.isActive
     )
 
     fun convertToGram(weight: Int, unit: String): Int {

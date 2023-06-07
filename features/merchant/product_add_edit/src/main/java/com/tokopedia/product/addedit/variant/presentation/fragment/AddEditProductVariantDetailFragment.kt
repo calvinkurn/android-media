@@ -12,9 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -166,12 +168,14 @@ class AddEditProductVariantDetailFragment :
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val variantInputModel = viewModel.productInputModel.value?.variantInputModel
+        val hasDTStock = viewModel.productInputModel.value?.hasDTStock.orFalse()
         multipleVariantEditSelectBottomSheet.setData(variantInputModel)
 
         variantDetailFieldsAdapter = VariantDetailFieldsAdapter(
             VariantDetailInputTypeFactoryImpl(
                 this,
-                this
+                this,
+                !hasDTStock
             )
         )
         recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
@@ -260,6 +264,10 @@ class AddEditProductVariantDetailFragment :
 
     override fun onCoachmarkDismissed() {
         setFirstTimeWeightPerVariant(activity, false)
+    }
+
+    override fun onDisabledVariantStatusChanged(position: Int) {
+        showDTNotAllowedChangeStatusDialog(position)
     }
 
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
@@ -481,6 +489,27 @@ class AddEditProductVariantDetailFragment :
         val bottomSheet = SelectVariantMainBottomSheet(this)
         bottomSheet.setData(variantInputModel)
         bottomSheet.show(childFragmentManager)
+    }
+
+    private fun showDTNotAllowedChangeStatusDialog(position: Int) {
+        val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        val descriptionText = MethodChecker
+            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
+        dialog.apply {
+            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setDescription(descriptionText)
+            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
+            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setPrimaryCTAClickListener {
+                viewModel.updateSwitchStatus(false, position)
+                variantDetailFieldsAdapter?.deactivateVariantStatus(position)
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+            }
+        }
+        dialog.show()
     }
 
     private fun submitVariantInput() {

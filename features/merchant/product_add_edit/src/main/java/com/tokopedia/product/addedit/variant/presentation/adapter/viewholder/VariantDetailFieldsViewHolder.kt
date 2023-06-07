@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -27,7 +28,8 @@ import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
 class VariantDetailFieldsViewHolder(
     itemView: View?,
-    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
+    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener,
+    private val enableVariantStatusChange: Boolean
 ) : AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface VariantDetailFieldsViewHolderListener {
@@ -37,6 +39,7 @@ class VariantDetailFieldsViewHolder(
         fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int)
         fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
         fun onCoachmarkDismissed()
+        fun onDisabledVariantStatusChanged(position: Int)
     }
 
     private var unitValueLabel: AppCompatTextView? = null
@@ -137,6 +140,11 @@ class VariantDetailFieldsViewHolder(
     private fun setupStatusSwitchListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
+            // put back last state if isChecked value
+            if (!isChecked && !enableVariantStatusChange) {
+                statusSwitch?.isChecked = true
+                variantDetailFieldsViewHolderListener.onDisabledVariantStatusChanged(visitablePosition)
+            }
             variantDetailFieldsViewHolderListener.onStatusSwitchChanged(isChecked, visitablePosition)
         }
     }

@@ -19,6 +19,5 @@ class DateFilterDividerViewHolder(itemView: View) :
     }
 
     override fun bind(element: DateFilterItem.Divider?) {
-
     }
 }

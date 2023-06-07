@@ -6,10 +6,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.shopdiscount.databinding.ShopDiscountSetupProductItemLayoutBinding
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.ALL_ABUSIVE_ERROR
@@ -17,6 +15,7 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.R2_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ErrorType.Companion.VALUE_ERROR
+import com.tokopedia.shopdiscount.utils.formatter.RangeFormatterUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
@@ -223,9 +222,11 @@ class ShopDiscountSetupProductItemViewHolder(
                 )
             }
         }
-        binding.labelTotalDiscountedVariant.shouldShowWithAction(!totalDiscountedVariant.isZero() &&
+        binding.labelTotalDiscountedVariant.shouldShowWithAction(
+            !totalDiscountedVariant.isZero() &&
                 isProductDiscounted &&
-                !isError(errorType)) {
+                !isError(errorType)
+        ) {
             binding.labelTotalDiscountedVariant.apply {
                 text = String.format(
                     getString(R.string.shop_discount_manage_discount_total_discounted_variant_format),
@@ -251,9 +252,11 @@ class ShopDiscountSetupProductItemViewHolder(
         }
         val formattedDisplayedPrice = RangeFormatterUtil.getFormattedRangeString(
             minDisplayedPrice,
-            maxDisplayedPrice, {
+            maxDisplayedPrice,
+            {
                 it.getCurrencyFormatted()
-            }, { min, max ->
+            },
+            { min, max ->
                 String.format(
                     getString(R.string.shop_discount_manage_discount_displayed_price_format),
                     min.getCurrencyFormatted(),
@@ -271,9 +274,11 @@ class ShopDiscountSetupProductItemViewHolder(
     ) {
         val formattedOriginalPrice = RangeFormatterUtil.getFormattedRangeString(
             uiModel.minOriginalPrice,
-            uiModel.maxOriginalPrice, {
+            uiModel.maxOriginalPrice,
+            {
                 it.getCurrencyFormatted()
-            }, { min, max ->
+            },
+            { min, max ->
                 String.format(
                     getString(R.string.shop_discount_manage_discount_original_price_format),
                     min.getCurrencyFormatted(),
@@ -296,12 +301,14 @@ class ShopDiscountSetupProductItemViewHolder(
     ) {
         val formattedDiscountPercentage = RangeFormatterUtil.getFormattedRangeString(
             uiModel.minDiscountPercentage,
-            uiModel.maxDiscountPercentage, {
+            uiModel.maxDiscountPercentage,
+            {
                 String.format(
                     getString(R.string.shop_discount_manage_discount_percent_format_non_range),
                     it
                 )
-            }, { min, max ->
+            },
+            { min, max ->
                 String.format(
                     getString(R.string.shop_discount_manage_discount_percent_format_range),
                     min.thousandFormatted(),

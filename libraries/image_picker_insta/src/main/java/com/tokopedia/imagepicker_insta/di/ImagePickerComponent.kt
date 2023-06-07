@@ -1,7 +1,9 @@
 package com.tokopedia.imagepicker_insta.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.imagepicker_insta.di.module.DispatcherModule
+import com.tokopedia.imagepicker_insta.di.module.FragmentFactoryModule
 import com.tokopedia.imagepicker_insta.di.module.ImagePickerModule
 import com.tokopedia.imagepicker_insta.fragment.FeedVideoDepreciationBottomSheet
 import com.tokopedia.imagepicker_insta.fragment.ImagePickerInstaMainFragment
@@ -10,7 +12,15 @@ import dagger.Component
 import javax.inject.Scope
 
 @ImagePickerScope
-@Component(modules = [DispatcherModule::class, ImagePickerModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+        DispatcherModule::class,
+        ImagePickerModule::class,
+        UGCOnboardingModule::class,
+        FragmentFactoryModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
 interface ImagePickerComponent {
     fun inject(viewModel: PickerViewModel)
 

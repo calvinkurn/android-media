@@ -5,7 +5,7 @@ import java.util.*
 
 object GqlQueryParser {
 
-    val QUERY_PATTERN = Regex("""(\w+)\s*(\(.+)""")
+    val QUERY_PATTERN = Regex("""(\w+)\s*(\(?.*)""")
 
     /**
      * A utils method to parse query from graphql request(s). Support multiple request and

@@ -1,5 +1,7 @@
 package com.tokopedia.sellerhomecommon.common
 
+import com.tokopedia.kotlin.extensions.view.asLowerCase
+
 /**
  * Created By @ilhamsuaib on 21/05/20
  */
@@ -22,12 +24,13 @@ object WidgetType {
     const val MILESTONE = "milestone"
     const val CALENDAR = "calendar"
     const val UNIFICATION = "navigationTab"
+    const val RICH_LIST = "richList"
 
     fun isValidWidget(widgetType: String): Boolean {
-        return getWidgetList().contains(widgetType)
+        return getWidgetList().any { it.asLowerCase() == widgetType.asLowerCase() }
     }
 
-    fun getWidgetList(): List<String> {
+    private fun getWidgetList(): List<String> {
         return listOf(
             CARD,
             CAROUSEL,
@@ -44,7 +47,8 @@ object WidgetType {
             RECOMMENDATION,
             MILESTONE,
             CALENDAR,
-            UNIFICATION
+            UNIFICATION,
+            RICH_LIST
         )
     }
 }

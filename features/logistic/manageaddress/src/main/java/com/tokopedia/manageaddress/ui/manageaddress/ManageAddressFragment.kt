@@ -64,9 +64,6 @@ class ManageAddressFragment :
     }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel: ManageAddressViewModel by lazy {
@@ -109,9 +106,22 @@ class ManageAddressFragment :
         observeTickerState()
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
+            showLoading(true)
             viewModel.doValidateShareAddress()
         } else {
             bindView()
+        }
+    }
+
+    private fun showLoading(active: Boolean) {
+        binding?.run {
+            if (active) {
+                llMainView.gone()
+                progressBar.visible()
+            } else {
+                llMainView.visible()
+                progressBar.gone()
+            }
         }
     }
 
@@ -180,18 +190,8 @@ class ManageAddressFragment :
                     }
                     bindView()
                 }
-                is ValidateShareAddressState.Loading -> {
-                    binding?.apply {
-                        if (it.isShowLoading) {
-                            llMainView.gone()
-                            progressBar.visible()
-                        } else {
-                            llMainView.visible()
-                            progressBar.gone()
-                        }
-                    }
-                }
             }
+            showLoading(false)
         }
     }
 
