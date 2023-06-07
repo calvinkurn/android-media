@@ -212,7 +212,8 @@ class ProductManageFilterMapper {
                         FilterOption.FilterByCondition.StockAlertOnly.id -> FilterOption.FilterByCondition.StockAlertOnly
                         FilterOption.FilterByCondition.NotifyMeOnly.id -> FilterOption.FilterByCondition.NotifyMeOnly
                         FilterOption.FilterByCondition.StockAvailableOnly.id -> FilterOption.FilterByCondition.StockAvailableOnly
-                        FilterOption.FilterByCondition.ProductArchival.id -> FilterOption.FilterByCondition.ProductArchival
+                        FilterOption.FilterByCondition.ProductArchivedStatus.id -> FilterOption.FilterByCondition.ProductArchivedStatus
+                        FilterOption.FilterByCondition.ProductPotentialArchivedStatus.id -> FilterOption.FilterByCondition.ProductPotentialArchivedStatus
                         else -> FilterOption.FilterByCondition.FeaturedOnly
                     }
                     selectedData.add(mappedData)
