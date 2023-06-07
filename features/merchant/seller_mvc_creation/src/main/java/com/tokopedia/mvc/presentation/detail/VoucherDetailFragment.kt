@@ -565,6 +565,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                                 getString(R.string.smvc_percentage_cashback_label)
                             tpgVoucherNominal.text =
                                 data.voucherDiscountAmount.getPercentFormatted()
+                            if (data.isSubsidy == TRUE) {
+                                llParentInitialCashback.visible()
+                                llParentAdditionalSubsidy.visible()
+                                tpgInitialCashback.text =
+                                    data.labelVoucher.labelBudgetsVoucher.last().labelBudgetVoucherValue.getPercentFormatted()
+                                tpgAdditionalSubsidy.text =
+                                    data.labelVoucher.labelBudgetsVoucher.first().labelBudgetVoucherValue.getPercentFormatted()
+                            }
                         }
                     }
                 }
