@@ -47,7 +47,6 @@ class ShopCampaignVoucherSliderViewHolder(
             voucherSliderMoreItemListener
         )
     }
-//    private var merchantVoucherUiModel: ShopHomeVoucherUiModel? = null
     private var textReload: Typography? = binding?.voucherSliderReload?.textReload
     private var imageReload: ImageView? = binding?.voucherSliderReload?.imageReload
     private var textReloadDesc: Typography? = binding?.voucherSliderReload?.textReloadDesc

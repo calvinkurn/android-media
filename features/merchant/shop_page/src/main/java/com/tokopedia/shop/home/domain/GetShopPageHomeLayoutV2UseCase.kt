@@ -231,7 +231,6 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
             }
 
     """.trimIndent()
-    // need to add this field to request when BE is ready
 
     var params = mapOf<String, Any>()
 
