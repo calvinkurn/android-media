@@ -156,6 +156,24 @@ abstract class BaseDigitalPDPDataPlanTest {
         )
     }
 
+    protected fun mccm_vertical_clickCard_withIndex(index: Int) {
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_vertical_full)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(index, click()))
+    }
+
+    protected fun mccm_vertical_clickCardChevron_withIndex(index: Int) {
+        onView(withId(com.tokopedia.recharge_component.R.id.rv_mccm_vertical_full)).perform(
+            RecyclerViewActions.actionOnItemAtPosition<DenomFullViewHolder>(
+                index,
+                clickChildViewWithId(com.tokopedia.recharge_component.R.id.icon_cheveron_denom_full)
+            )
+        )
+    }
+
+    protected fun mccm_vertical_clickShowMore() {
+        onView(withId(com.tokopedia.recharge_component.R.id.tg_mccm_see_more)).perform(click())
+    }
+
     protected fun scroll_to_bottom_data_plan() {
         onView(withId(com.tokopedia.digital_product_detail.R.id.recharge_pdp_paket_data_sv_container))
             .perform(swipeUp())
