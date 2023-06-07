@@ -39,7 +39,6 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
     fun validate_interact_with_check_balance_otp() {
         Thread.sleep(2000)
         interactWithCheckBalanceWidget()
-//        interactWithGridDenomWidget()
 //        interactWithMccmWidget()
 
         MatcherAssert.assertThat(
@@ -81,6 +80,7 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
     @Test
     fun validate_interact_with_filter_and_buy() {
         interactWithFilterChip()
+        interactWithFullDenomWidget()
         interactWithBuyWidget()
         MatcherAssert.assertThat(
             cassavaTestRule.validate(PATH_ANALYTICS_FILTER_BUY_WIDGET),
@@ -153,7 +153,8 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         productDetailBottomSheet_clickClose()
     }
 
-    private fun interactWithGridDenomWidget() {
+    private fun interactWithFullDenomWidget() {
+        scroll_to_bottom_data_plan()
         Thread.sleep(2000)
         denom_clickCard_withIndex(0)
         denom_clickCardChevron_withIndex(0)
