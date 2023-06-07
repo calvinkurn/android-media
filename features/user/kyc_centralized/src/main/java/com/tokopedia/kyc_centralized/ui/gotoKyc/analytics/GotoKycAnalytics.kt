@@ -14,7 +14,7 @@ object GotoKycAnalytics {
     private const val CATEGORY_SELFIE_PAGE = "goto kyc selfie page"
     private const val CATEGORY_REVIEW_PAGE = "goto kyc review page"
     private const val CATEGORY_REVIEW_KTP_PAGE = "goto kyc review ktp page"
-    private const val CATEGORY_REVIEW_SELFIE_PAGE = "view on kyc review selfie page"
+    private const val CATEGORY_REVIEW_SELFIE_PAGE = "goto kyc review selfie page"
     private const val ACTION_VIEW_KTP_PAGE = "view on kyc ktp page"
     private const val ACTION_VIEW_ONBOARDING_PAGE = "view kyc onboarding page"
     private const val ACTION_CLICK_BUTTON_AMBIL_KEUNTUNGAN = "click on button ambil keuntungannya"
