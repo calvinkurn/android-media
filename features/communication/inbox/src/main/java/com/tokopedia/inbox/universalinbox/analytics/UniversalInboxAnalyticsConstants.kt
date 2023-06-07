@@ -2,6 +2,10 @@ package com.tokopedia.inbox.universalinbox.analytics
 
 object UniversalInboxAnalyticsConstants {
     const val INBOX_PAGE = "inbox page"
+    const val SCREEN_NAME = "screenName"
+    const val CURRENT_SITE = "currentSite"
+    const val USER_ID = "userId"
+    const val BUSINESS_UNIT = "businessUnit"
 
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
@@ -14,9 +18,11 @@ object UniversalInboxAnalyticsConstants {
     const val PRODUCT_VIEW = "productView"
     const val CLICK_INBOX = "clickInbox"
     const val PRODUCT_CLICK = "productClick"
+    const val CLICK_PDP = "clickPDP"
 
     // Event Action
     const val CLICK_ON_PRODUCT_RECOMMENDATION = "click on product recommendation"
+    const val CLICK_DISKUSI = "click - Diskusi"
 
     // Ecommerce
     const val NAME = "name"
@@ -42,4 +48,9 @@ object UniversalInboxAnalyticsConstants {
     const val REGEX_NUMBER = "[^0-9]"
 
     const val IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation"
+
+    // Others
+    const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
+    const val INBOX_TALK = "/inbox - talk"
+    const val PG = "physical goods"
 }
