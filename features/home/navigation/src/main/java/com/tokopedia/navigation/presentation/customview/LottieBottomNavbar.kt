@@ -611,7 +611,7 @@ class LottieBottomNavbar : LinearLayout {
         invalidate()
     }
 
-    private fun isDeviceAnimationDisabled() = getAnimationScale(mDarkModeContext) == 0f
+    private fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
 
     private fun getAnimationScale(context: Context): Float {
         return Settings.System.getFloat(
