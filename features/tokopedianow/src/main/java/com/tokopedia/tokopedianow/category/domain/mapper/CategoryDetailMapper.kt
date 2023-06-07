@@ -4,6 +4,8 @@ import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailRespons
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
+import com.tokopedia.unifycomponents.ticker.TickerData
 
 internal object CategoryDetailMapper {
     fun CategoryDetailResponse.mapToHeaderSpace(space: Int): CategoryHeaderSpaceUiModel = CategoryHeaderSpaceUiModel(
@@ -17,6 +19,13 @@ internal object CategoryDetailMapper {
 
     fun CategoryDetailResponse.mapToCategoryTitle(): CategoryTitleUiModel = CategoryTitleUiModel(
         title = categoryDetail.data.name,
+        backgroundColor = categoryDetail.data.color
+    )
+
+    fun CategoryDetailResponse.mapToTicker(
+        tickerData: Pair<Boolean, List<TickerData>>
+    ) = TokoNowTickerUiModel(
+        tickers = tickerData.second,
         backgroundColor = categoryDetail.data.color
     )
 }

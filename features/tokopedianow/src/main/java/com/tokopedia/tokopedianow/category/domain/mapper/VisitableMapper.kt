@@ -1,30 +1,26 @@
 package com.tokopedia.tokopedianow.category.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToCategoryTitle
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToHeaderSpace
+import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
+import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
+import com.tokopedia.tokopedianow.category.domain.mapper.ProgressBarMapper.createProgressBar
 import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
-import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProgressBarUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
@@ -68,12 +64,7 @@ internal object VisitableMapper {
         tickerData: Pair<Boolean, List<TickerData>>?
     ): Boolean  {
         return if (tickerData != null) {
-            add(
-                TokoNowTickerUiModel(
-                    tickers = tickerData.second,
-                    backgroundColor = detailResponse.categoryDetail.data.color
-                )
-            )
+            add(detailResponse.mapToTicker(tickerData))
             tickerData.first
         } else {
             false
@@ -105,21 +96,7 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addProductRecommendation(categoryId: List<String>) {
-        add(
-            TokoNowProductRecommendationUiModel(
-                id = CategoryLayoutType.PRODUCT_RECOMMENDATION.name,
-                requestParam = GetRecommendationRequestParam(
-                    queryParam = TOKONOW_CLP,
-                    pageName = TOKONOW_CLP,
-                    categoryIds = categoryId,
-                    xSource = RECOM_WIDGET,
-                    isTokonow = true,
-                    pageNumber = PAGE_NUMBER_RECOM_WIDGET,
-                    xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE
-                ),
-                tickerPageSource = GetTargetedTickerUseCase.CATEGORY_PAGE
-            )
-        )
+        add(createProductRecommendation(categoryId))
     }
 
     /**
@@ -174,8 +151,8 @@ internal object VisitableMapper {
      * -- Progressbar Section --
      */
 
-    fun MutableList<Visitable<*>>.addRecipeProgressBar() {
-        add(TokoNowProgressBarUiModel(CategoryLayoutType.MORE_PROGRESS_BAR.name))
+    fun MutableList<Visitable<*>>.addProgressBar() {
+        add(createProgressBar())
     }
 
     /**

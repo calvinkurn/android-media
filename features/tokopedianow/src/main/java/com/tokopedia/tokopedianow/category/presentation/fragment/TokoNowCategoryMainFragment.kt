@@ -172,10 +172,8 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
     }
 
     private fun observeScrollNotNeeded() {
-        viewModel.scrollNotNeeded.observe(viewLifecycleOwner) { isNotNeeded ->
-            if (isNotNeeded) {
-                binding?.rvCategory?.removeOnScrollListener(onScrollListener)
-            }
+        viewModel.scrollNotNeeded.observe(viewLifecycleOwner) {
+            binding?.rvCategory?.removeOnScrollListener(onScrollListener)
         }
     }
 

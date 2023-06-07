@@ -21,7 +21,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCate
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addChooseAddress
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addHeaderSpace
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProductRecommendation
-import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addRecipeProgressBar
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addProgressBar
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCategoryShowcase
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
@@ -73,7 +73,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     addressData = addressData,
     dispatchers = dispatchers
 ) {
-    private companion object {
+    companion object {
         const val BATCH_SHOWCASE_TOTAL = 3
         const val NO_WAREHOUSE_ID = "0"
     }
@@ -85,13 +85,13 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
     private val _categoryHeader = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _categoryPage = MutableLiveData<List<Visitable<*>>>()
-    private val _scrollNotNeeded = MutableLiveData<Boolean>()
+    private val _scrollNotNeeded = MutableLiveData<Unit>()
     private val _refreshState = MutableLiveData<Unit>()
     private val _oosState = MutableLiveData<Unit>()
 
     val categoryHeader: LiveData<Result<List<Visitable<*>>>> = _categoryHeader
     val categoryPage: LiveData<List<Visitable<*>>> = _categoryPage
-    val scrollNotNeeded: LiveData<Boolean> = _scrollNotNeeded
+    val scrollNotNeeded: LiveData<Unit> = _scrollNotNeeded
     val refreshState: LiveData<Unit> = _refreshState
     val oosState: LiveData<Unit> = _oosState
 
@@ -161,6 +161,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     private suspend fun getBatchShowcase(
         hasAdded: Boolean
     ) {
+        layout.addProgressBar()
+        _categoryPage.postValue(layout)
+
         categoryL2Models.take(BATCH_SHOWCASE_TOTAL).map { categoryL2Model ->
             getCategoryShowcaseAsync(
                 categoryL2Model = categoryL2Model,
@@ -168,7 +171,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             ).await()
         }
 
-        layout.addRecipeProgressBar()
+        layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
+        _categoryPage.postValue(layout)
     }
 
     private fun addCategoryShowcases(
@@ -201,10 +205,6 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             getBatchShowcase(
                 hasAdded = false
             )
-
-            layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
-
-            _categoryPage.postValue(layout)
         }
     }
 
@@ -273,8 +273,6 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             getBatchShowcase(
                 hasAdded = true
             )
-
-            _categoryPage.postValue(layout)
         }
     }
 
@@ -282,10 +280,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         isAtTheBottomOfThePage: Boolean
     ) {
         if (isAtTheBottomOfThePage && categoryL2Models.isEmpty()) {
-            _scrollNotNeeded.value = true
+            _scrollNotNeeded.value = Unit
 
             categoryRecommendation?.let { categoryMenu ->
-                layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
                 layout.addCategoryMenu(categoryMenu)
                 categoryRecommendation = null
 
