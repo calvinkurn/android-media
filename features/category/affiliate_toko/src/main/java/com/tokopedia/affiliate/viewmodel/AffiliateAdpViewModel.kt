@@ -51,7 +51,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
-class AffiliateHomeViewModel @Inject constructor(
+class AffiliateAdpViewModel @Inject constructor(
     private val userSessionInterface: UserSessionInterface,
     private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
@@ -235,7 +235,7 @@ class AffiliateHomeViewModel @Inject constructor(
                         )
                     }
                 }
-            } else if (page == PAGE_ZERO && items.isEmpty()) {
+            } else if (page == PAGE_ZERO) {
                 tempList.add(AffiliateNoPromoItemFoundModel(lastSelectedChip?.name))
             } else {
                 noMoreDataAvailable.value = true

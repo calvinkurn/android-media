@@ -44,7 +44,7 @@ import org.robolectric.annotation.Config
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.P])
-class AffiliateHomeViewModelTest {
+class AffiliateAdpViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
@@ -55,8 +55,8 @@ class AffiliateHomeViewModelTest {
     private val getUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val dispatchers: CoroutineDispatchers = mockk()
     private val affiliateSSE: AffiliateSSE = mockk()
-    private var affiliateHomeViewModel = spyk(
-        AffiliateHomeViewModel(
+    private var affiliateAdpViewModel = spyk(
+        AffiliateAdpViewModel(
             userSessionInterface,
             affiliateValidateUserStatus,
             affiliateAffiliateAnnouncementUseCase,
@@ -99,10 +99,10 @@ class AffiliateHomeViewModelTest {
             )
         } returns affiliateAnnouncementData
 
-        affiliateHomeViewModel.getAnnouncementInformation()
+        affiliateAdpViewModel.getAnnouncementInformation()
 
         assertEquals(
-            affiliateHomeViewModel.getAffiliateAnnouncement().value,
+            affiliateAdpViewModel.getAffiliateAnnouncement().value,
             affiliateAnnouncementData
         )
     }
@@ -116,7 +116,7 @@ class AffiliateHomeViewModelTest {
             )
         } throws throwable
 
-        affiliateHomeViewModel.getAnnouncementInformation()
+        affiliateAdpViewModel.getAnnouncementInformation()
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/
@@ -125,9 +125,9 @@ class AffiliateHomeViewModelTest {
         val affiliateValidateUserData: AffiliateValidateUserData = mockk(relaxed = true)
         coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } returns affiliateValidateUserData
 
-        affiliateHomeViewModel.getAffiliateValidateUser()
+        affiliateAdpViewModel.getAffiliateValidateUser()
 
-        assertEquals(affiliateHomeViewModel.getValidateUserdata().value, affiliateValidateUserData)
+        assertEquals(affiliateAdpViewModel.getValidateUserdata().value, affiliateValidateUserData)
     }
 
     @Test
@@ -135,10 +135,10 @@ class AffiliateHomeViewModelTest {
         val throwable = Throwable("Validate Data Exception")
         coEvery { affiliateValidateUserStatus.validateUserStatus(any()) } throws throwable
 
-        affiliateHomeViewModel.getAffiliateValidateUser()
+        affiliateAdpViewModel.getAffiliateValidateUser()
 
-        assertEquals(affiliateHomeViewModel.getErrorMessage().value, throwable)
-        assertEquals(affiliateHomeViewModel.progressBar().value, false)
+        assertEquals(affiliateAdpViewModel.getErrorMessage().value, throwable)
+        assertEquals(affiliateAdpViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliatePerformance() *******************************************/
@@ -213,8 +213,8 @@ class AffiliateHomeViewModelTest {
             )
         } returns affiliatePerformanceListData
 
-        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
-        assertEquals(affiliateHomeViewModel.noMoreDataAvailable().value, false)
+        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO)
+        assertEquals(affiliateAdpViewModel.noMoreDataAvailable().value, false)
 
         val affiliatePerformanceListItemData: AffiliateUserPerformaListItemData =
             mockk(relaxed = true)
@@ -228,15 +228,15 @@ class AffiliateHomeViewModelTest {
         } returns affiliatePerformanceListData
         coEvery {
             affiliateUserPerformanceUseCase.affiliateUserperformance(
-                affiliateHomeViewModel.getSelectedDate()
+                affiliateAdpViewModel.getSelectedDate()
             )
         } returns affiliatePerformanceListItemData
         coEvery {
             affiliatePerformanceItemTypeUseCase.affiliatePerformanceItemTypeList()
         } returns itemTypes
-        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, true)
-        assertEquals(affiliateHomeViewModel.noMoreDataAvailable().value, false)
-        assertEquals(affiliateHomeViewModel.getDataShimmerVisibility().value, false)
+        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO, true)
+        assertEquals(affiliateAdpViewModel.noMoreDataAvailable().value, false)
+        assertEquals(affiliateAdpViewModel.getDataShimmerVisibility().value, false)
     }
 
     @Test
@@ -245,14 +245,14 @@ class AffiliateHomeViewModelTest {
         coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(any()) } throws throwable
         coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } throws throwable
 
-        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
+        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO)
 
-        assertEquals(affiliateHomeViewModel.getDataShimmerVisibility().value, false)
-        assertEquals(affiliateHomeViewModel.getErrorMessage().value, throwable)
+        assertEquals(affiliateAdpViewModel.getDataShimmerVisibility().value, false)
+        assertEquals(affiliateAdpViewModel.getErrorMessage().value, throwable)
 
-        affiliateHomeViewModel.getAffiliatePerformance(1)
+        affiliateAdpViewModel.getAffiliatePerformance(1)
 
-        assertEquals(affiliateHomeViewModel.getShimmerVisibility().value, false)
+        assertEquals(affiliateAdpViewModel.getShimmerVisibility().value, false)
     }
 
     /**************************** userSession() *******************************************/
@@ -262,23 +262,23 @@ class AffiliateHomeViewModelTest {
         val isLoggedIn = false
         coEvery { userSessionInterface.isLoggedIn } returns isLoggedIn
 
-        assertEquals(affiliateHomeViewModel.isUserLoggedIn(), isLoggedIn)
+        assertEquals(affiliateAdpViewModel.isUserLoggedIn(), isLoggedIn)
     }
 
     /**************************** getSelectedDate() *******************************************/
     @Test
     fun getSelectedDataTest() {
         val selectedDate = AffiliateBottomDatePicker.THIRTY_DAYS
-        assertEquals(affiliateHomeViewModel.getSelectedDate(), selectedDate)
+        assertEquals(affiliateAdpViewModel.getSelectedDate(), selectedDate)
     }
 
     /**************************** onRangeChanged() *******************************************/
     @Test
     fun onRangeChangeTest() {
         val range: AffiliateDatePickerData = mockk(relaxed = true)
-        affiliateHomeViewModel.onRangeChanged(range)
+        affiliateAdpViewModel.onRangeChanged(range)
 
-        assertEquals(affiliateHomeViewModel.getRangeChanged().value, true)
+        assertEquals(affiliateAdpViewModel.getRangeChanged().value, true)
     }
 
     @Test
@@ -287,8 +287,8 @@ class AffiliateHomeViewModelTest {
             getUnreadNotificationUseCase.getUnreadNotifications()
         } returns 5
 
-        affiliateHomeViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateHomeViewModel.getUnreadNotificationCount().value)
+        affiliateAdpViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliateAdpViewModel.getUnreadNotificationCount().value)
     }
 
     @Test
@@ -297,10 +297,10 @@ class AffiliateHomeViewModelTest {
             getUnreadNotificationUseCase.getUnreadNotifications()
         } returns 5
 
-        affiliateHomeViewModel.fetchUnreadNotificationCount()
-        assertEquals(5, affiliateHomeViewModel.getUnreadNotificationCount().value)
+        affiliateAdpViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliateAdpViewModel.getUnreadNotificationCount().value)
 
-        affiliateHomeViewModel.resetNotificationCount()
-        assertEquals(0, affiliateHomeViewModel.getUnreadNotificationCount().value)
+        affiliateAdpViewModel.resetNotificationCount()
+        assertEquals(0, affiliateAdpViewModel.getUnreadNotificationCount().value)
     }
 }
