@@ -12,6 +12,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.campaign.view.adapter.ShopCampaignCarouselProductHighlightAdapter
+import com.tokopedia.shop.campaign.view.adapter.ShopCampaignCarouselProductHighlightAdapterTypeFactory
 import com.tokopedia.shop.campaign.view.customview.ShopCampaignTabWidgetHeaderView
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface

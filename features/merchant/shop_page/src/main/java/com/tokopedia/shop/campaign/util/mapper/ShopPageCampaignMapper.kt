@@ -1,9 +1,8 @@
 package com.tokopedia.shop.campaign.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.WidgetName.BANNER_TIMER
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -13,21 +12,22 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER_HIGHLIGHT
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
+import com.tokopedia.shop.home.WidgetName.VOUCHER_SLIDER
 import com.tokopedia.shop.home.WidgetType.BUNDLE
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
+import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 
 object ShopPageCampaignMapper {
 
     fun mapToListShopCampaignWidget(
         responseWidgetData: List<ShopLayoutWidget.Widget>,
         shopId: String,
-        listWidgetLayout: List<ShopPageWidgetLayoutUiModel>
+        listWidgetLayout: List<ShopPageWidgetUiModel>
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             responseWidgetData.filter { checkShouldMapWidget(it) }.onEach {
@@ -55,9 +55,11 @@ object ShopPageCampaignMapper {
     private fun mapToWidgetUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
         shopId: String,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.type.lowercase()) {
+            VOUCHER.lowercase() -> mapToVoucherWidget(widgetResponse, widgetLayout)
+
             DISPLAY.lowercase() -> mapDisplayWidget(widgetResponse, widgetLayout)
 
             CAMPAIGN.lowercase() -> mapCampaignWidget(widgetResponse, widgetLayout)
@@ -76,10 +78,26 @@ object ShopPageCampaignMapper {
         }
     }
 
+    private fun mapToVoucherWidget(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?
+    ): Visitable<*>? {
+        return when (widgetResponse.name) {
+            VOUCHER_SLIDER -> {
+                ShopPageWidgetMapper.mapToCampaignVoucherSliderUiModel(
+                    widgetResponse,
+                    widgetLayout
+                )
+            }
+
+            else -> null
+        }
+    }
+
     private fun mapBundleWidget(
         widgetResponse: ShopLayoutWidget.Widget,
         shopId: String,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*> {
         return ShopPageHomeMapper.mapToProductBundleListUiModel(
             widgetResponse,
@@ -90,7 +108,7 @@ object ShopPageCampaignMapper {
 
     private fun mapDynamicWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*> {
         return ShopPageHomeMapper.mapCarouselPlayWidget(
             widgetResponse,
@@ -100,7 +118,7 @@ object ShopPageCampaignMapper {
 
     private fun mapCampaignWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.name) {
             PRODUCT_HIGHLIGHT -> {
@@ -116,7 +134,7 @@ object ShopPageCampaignMapper {
 
     private fun mapDisplayWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ): Visitable<*>? {
         return when (widgetResponse.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN, SLIDER_BANNER, SLIDER_SQUARE_BANNER, VIDEO -> {
@@ -137,7 +155,7 @@ object ShopPageCampaignMapper {
 
 
     fun mapShopCampaignWidgetLayoutToListShopCampaignWidget(
-        listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
+        listWidgetLayout: List<ShopPageWidgetUiModel>,
         shopId: String
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {

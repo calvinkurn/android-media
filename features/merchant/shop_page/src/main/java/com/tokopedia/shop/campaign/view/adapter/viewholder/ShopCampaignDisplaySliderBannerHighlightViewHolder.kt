@@ -76,13 +76,21 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
     }
 
     private fun setPrevNextButton() {
-        buttonPrev?.setOnClickListener {
-            val firstVisiblePos = layoutManagerSliderBannerHighlight.findFirstVisibleItemPosition()
-            rvProductImage?.smoothScrollToPosition(firstVisiblePos.minus(Int.ONE))
+        buttonPrev?.apply {
+            show()
+            setOnClickListener {
+                val firstVisiblePos =
+                    layoutManagerSliderBannerHighlight.findFirstVisibleItemPosition()
+                rvProductImage?.smoothScrollToPosition(firstVisiblePos.minus(Int.ONE))
+            }
         }
-        buttonNext?.setOnClickListener {
-            val lastVisiblePos = layoutManagerSliderBannerHighlight.findLastVisibleItemPosition()
-            rvProductImage?.smoothScrollToPosition(lastVisiblePos.plus(Int.ONE))
+        buttonNext?.apply {
+            show()
+            setOnClickListener {
+                val lastVisiblePos =
+                    layoutManagerSliderBannerHighlight.findLastVisibleItemPosition()
+                rvProductImage?.smoothScrollToPosition(lastVisiblePos.plus(Int.ONE))
+            }
         }
     }
 
@@ -90,6 +98,7 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
         rvProductImage?.apply {
             if (uiModel.listHighlightProductData.isEmpty()) {
                 gone()
+                hidePrevNextButton()
             } else {
                 show()
                 layoutManager = layoutManagerSliderBannerHighlight
@@ -98,6 +107,11 @@ class ShopCampaignDisplaySliderBannerHighlightViewHolder(
                 setPrevNextButton()
             }
         }
+    }
+
+    private fun hidePrevNextButton() {
+        buttonPrev?.gone()
+        buttonNext?.gone()
     }
 
     private fun setButtonCta(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {

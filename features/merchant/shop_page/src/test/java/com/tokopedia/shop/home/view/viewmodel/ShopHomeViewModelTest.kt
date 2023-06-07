@@ -59,7 +59,7 @@ import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
 import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -1569,10 +1569,10 @@ class ShopHomeViewModelTest {
             )
             viewModel.getWidgetContentData(
                 listOf(
-                    ShopPageWidgetLayoutUiModel(
+                    ShopPageWidgetUiModel(
                         widgetId = "1"
                     ),
-                    ShopPageWidgetLayoutUiModel(
+                    ShopPageWidgetUiModel(
                         widgetId = "2"
                     )
                 ),
@@ -1631,7 +1631,7 @@ class ShopHomeViewModelTest {
 
             viewModel.getWidgetContentData(
                 listOf(
-                    ShopPageWidgetLayoutUiModel(
+                    ShopPageWidgetUiModel(
                         widgetId = widgetId,
                         widgetType = widgetType,
                         widgetName = widgetName
@@ -1671,7 +1671,7 @@ class ShopHomeViewModelTest {
 
             viewModel.getWidgetContentData(
                 listOf(
-                    ShopPageWidgetLayoutUiModel(
+                    ShopPageWidgetUiModel(
                         widgetId = "2",
                         widgetType = WidgetType.CAMPAIGN,
                         widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
@@ -1699,7 +1699,7 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } throws Exception()
             viewModel.getWidgetContentData(
-                listOf(ShopPageWidgetLayoutUiModel()),
+                listOf(ShopPageWidgetUiModel()),
                 mockShopId,
                 addressWidgetData,
                 false,
@@ -2133,13 +2133,13 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `when widget type is bundle expect isWidgetBundle to return true`() {
-        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.BUNDLE)
+        val testData = ShopPageWidgetUiModel(widgetType = WidgetType.BUNDLE)
         assertTrue(viewModel.isWidgetBundle(testData))
     }
 
     @Test
     fun `when widget type is not bundle expect isWidgetBundle to return false`() {
-        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.CAMPAIGN)
+        val testData = ShopPageWidgetUiModel(widgetType = WidgetType.CAMPAIGN)
         assertFalse(viewModel.isWidgetBundle(testData))
     }
 
