@@ -259,15 +259,9 @@ class AffiliateHomeViewModelTest {
 
     @Test
     fun userSessionTest() {
-        val name = "Testing"
-        val profile = "Profile Testing"
         val isLoggedIn = false
-        coEvery { userSessionInterface.name } returns name
-        coEvery { userSessionInterface.profilePicture } returns profile
         coEvery { userSessionInterface.isLoggedIn } returns isLoggedIn
 
-        assertEquals(affiliateHomeViewModel.getUserName(), name)
-        assertEquals(affiliateHomeViewModel.getUserProfilePicture(), profile)
         assertEquals(affiliateHomeViewModel.isUserLoggedIn(), isLoggedIn)
     }
 

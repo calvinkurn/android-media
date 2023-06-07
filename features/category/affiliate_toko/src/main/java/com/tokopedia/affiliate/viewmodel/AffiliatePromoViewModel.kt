@@ -13,6 +13,7 @@ import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSSAShopUiModel
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
+import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
@@ -40,6 +41,7 @@ class AffiliatePromoViewModel @Inject constructor(
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase,
     private val affiliateSSAShopUseCase: AffiliateSSAShopUseCase,
+    private val affiliateUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase,
     private val graphqlRepository: GraphqlRepository
 ) : BaseViewModel() {
     private var progressBar = MutableLiveData<Boolean>()
@@ -50,10 +52,23 @@ class AffiliatePromoViewModel @Inject constructor(
     private var discoBanners = MutableLiveData<AffiliateDiscoveryCampaignResponse>()
     private var tokoNowBottomSheetData = MutableLiveData<GenerateAffiliateLinkEligibility?>()
     private val ssaShopList = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
+    private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
 
     companion object {
         private const val SUCCESS = 1
         private const val DEFAULT_SSA_PAGE_SIZE = 7
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSessionInterface.isLoggedIn
+    }
+
+    fun getUserName(): String {
+        return userSessionInterface.name
+    }
+
+    fun getUserProfilePicture(): String {
+        return userSessionInterface.profilePicture
     }
 
     fun getSearch(productLink: String) {
@@ -182,7 +197,20 @@ class AffiliatePromoViewModel @Inject constructor(
             }
         }
     }
+    fun fetchUnreadNotificationCount() {
+        viewModelScope.launch {
+            try {
+                _unreadNotificationCount.value =
+                    affiliateUnreadNotificationUseCase.getUnreadNotifications()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
 
+    fun resetNotificationCount() {
+        _unreadNotificationCount.value = Int.ZERO
+    }
     fun getSSAShopList(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> = ssaShopList
     fun setValidateUserType(onRegistered: String) {
         validateUserState.value = onRegistered

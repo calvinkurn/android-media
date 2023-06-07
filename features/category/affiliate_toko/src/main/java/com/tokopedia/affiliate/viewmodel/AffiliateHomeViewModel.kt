@@ -46,7 +46,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -193,18 +192,6 @@ class AffiliateHomeViewModel @Inject constructor(
                 errorMessage.value = it
             }
         )
-    }
-
-    fun getUserName(): String {
-        return userSessionInterface.name
-    }
-
-    fun getUserProfilePicture(): String {
-        return userSessionInterface.profilePicture
-    }
-
-    fun isUserLoggedIn(): Boolean {
-        return userSessionInterface.isLoggedIn
     }
 
     private fun convertDataToVisitable(
@@ -370,7 +357,9 @@ class AffiliateHomeViewModel @Inject constructor(
     fun resetNotificationCount() {
         _unreadNotificationCount.value = Int.ZERO
     }
-
+    fun isUserLoggedIn(): Boolean {
+        return userSessionInterface.isLoggedIn
+    }
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility
     fun getRangeChanged(): LiveData<Boolean> = rangeChanged

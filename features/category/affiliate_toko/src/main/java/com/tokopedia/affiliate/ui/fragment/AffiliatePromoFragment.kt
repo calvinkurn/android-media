@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.ui.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +21,7 @@ import com.tokopedia.affiliate.AFFILIATE_DISCO_PROMO
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
+import com.tokopedia.affiliate.AFFILIATE_NC
 import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_BANNER
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_DATA
@@ -27,6 +30,12 @@ import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
 import com.tokopedia.affiliate.SYSTEM_DOWN
+import com.tokopedia.affiliate.TIME_EIGHTEEN
+import com.tokopedia.affiliate.TIME_ELEVEN
+import com.tokopedia.affiliate.TIME_FIFTEEN
+import com.tokopedia.affiliate.TIME_SIX
+import com.tokopedia.affiliate.TIME_SIXTEEN
+import com.tokopedia.affiliate.TIME_TEN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateRecommendedAdapter
@@ -51,24 +60,29 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDiscoBannerUiMod
 import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliatePromoFragmentLayoutBinding
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class AffiliatePromoFragment :
@@ -96,6 +110,21 @@ class AffiliatePromoFragment :
             AffiliateAdapterFactory(productClickInterface = this)
         )
     }
+    private val loginRequest =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                setUserDetails()
+                affiliatePromoViewModel.getAffiliateValidateUser()
+            } else {
+                activity?.finish()
+            }
+        }
+
+    private fun isAffiliateNCEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_NC,
+            ""
+        ) == AFFILIATE_NC
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
@@ -144,23 +173,35 @@ class AffiliatePromoFragment :
             userSessionInterface.userId
         )
     }
-
+    private fun sendNotificationClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            "",
+            userSessionInterface.userId
+        )
+    }
     private fun afterViewCreated() {
         binding?.promoNavToolbar?.run {
-            viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(
-                IconBuilder()
-                    .addIcon(IconList.ID_INFORMATION) {
-                        AffiliateHowToPromoteBottomSheet.newInstance(
-                            AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
-                        ).show(childFragmentManager, "")
-                    }
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            val iconBuilder = IconBuilder()
+            if (isAffiliateNCEnabled()) {
+                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                    affiliatePromoViewModel.resetNotificationCount()
+                    sendNotificationClickEvent()
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
+                    )
+                }
+            }
+            iconBuilder
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
+            setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.affiliate_promo)
+                getString(R.string.label_affiliate)
             setOnBackButtonClickListener {
-                handleBack()
+                (activity as? AffiliateActivity)?.handleBackButton(false)
             }
         }
 
@@ -196,7 +237,13 @@ class AffiliatePromoFragment :
         }
         setupViewPager()
         showDefaultState()
-        affiliatePromoViewModel.getAffiliateValidateUser()
+        setAffiliateGreeting()
+        setUserDetails()
+        if (!affiliatePromoViewModel.isUserLoggedIn()) {
+            loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
+        } else {
+            affiliatePromoViewModel.getAffiliateValidateUser()
+        }
         if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AFFILIATE_DISCO_PROMO,
                 ""
@@ -236,6 +283,22 @@ class AffiliatePromoFragment :
     ): View? {
         binding = AffiliatePromoFragmentLayoutBinding.inflate(inflater, container, false)
         return binding?.root
+    }
+
+    private fun setUserDetails() {
+        view?.findViewById<ImageUnify>(R.id.user_image)
+            ?.loadImageCircle(affiliatePromoViewModel.getUserProfilePicture())
+        view?.findViewById<Typography>(R.id.user_name)?.text = affiliatePromoViewModel.getUserName()
+    }
+
+    private fun setAffiliateGreeting() {
+        view?.findViewById<Typography>(R.id.affiliate_greeting)?.text =
+            when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                in TIME_SIX..TIME_TEN -> getString(R.string.affiliate_morning)
+                in TIME_ELEVEN..TIME_FIFTEEN -> getString(R.string.affiliate_noon)
+                in TIME_SIXTEEN..TIME_EIGHTEEN -> getString(R.string.affiliate_afternoon)
+                else -> getString(R.string.affiliate_night)
+            }
     }
 
     private fun setupViewPager() {
@@ -365,33 +428,34 @@ class AffiliatePromoFragment :
                 }
             }
         }
-        affiliatePromoViewModel.getTokoNowBottomSheetData().observe(viewLifecycleOwner) { eligibility ->
-            val pageId = getTokoNowPageId().toString()
-            AffiliatePromotionBottomSheet.newInstance(
-                AffiliatePromotionBottomSheetParams(
-                    null,
-                    pageId,
-                    tokoNowData?.name.toString(),
-                    tokoNowData?.imageURL.toString(),
-                    tokoNowData?.weblink.toString(),
-                    type = PageType.SHOP.value,
-                    productIdentifier = pageId,
-                    isLinkGenerationEnabled = true,
-                    origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_TOKO_NOW,
-                    ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
-                        ssaStatus = true,
-                        ssaMessage = "",
-                        message = eligibility?.eligibleCommission?.message.toString(),
-                        label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
-                            labelType = "",
-                            labelText = ""
+        affiliatePromoViewModel.getTokoNowBottomSheetData()
+            .observe(viewLifecycleOwner) { eligibility ->
+                val pageId = getTokoNowPageId().toString()
+                AffiliatePromotionBottomSheet.newInstance(
+                    AffiliatePromotionBottomSheetParams(
+                        null,
+                        pageId,
+                        tokoNowData?.name.toString(),
+                        tokoNowData?.imageURL.toString(),
+                        tokoNowData?.weblink.toString(),
+                        type = PageType.SHOP.value,
+                        productIdentifier = pageId,
+                        isLinkGenerationEnabled = true,
+                        origin = AffiliatePromotionBottomSheet.ORIGIN_PROMO_TOKO_NOW,
+                        ssaInfo = AffiliatePromotionBottomSheetParams.SSAInfo(
+                            ssaStatus = true,
+                            ssaMessage = "",
+                            message = eligibility?.eligibleCommission?.message.toString(),
+                            label = AffiliatePromotionBottomSheetParams.SSAInfo.Label(
+                                labelType = "",
+                                labelText = ""
+                            )
                         )
-                    )
-                ),
-                AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
-                null
-            ).show(childFragmentManager, "")
-        }
+                    ),
+                    AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                    null
+                ).show(childFragmentManager, "")
+            }
         affiliatePromoViewModel.getSSAShopList().observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 binding?.ssaPromotionGroup?.show()

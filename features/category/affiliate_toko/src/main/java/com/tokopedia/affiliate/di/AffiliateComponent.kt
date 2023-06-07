@@ -23,7 +23,7 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchArticleFragme
 import com.tokopedia.affiliate.ui.fragment.AffiliateEducationSearchFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateDiscoPromoListFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoSearchFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromotionHistoryFragment
@@ -56,7 +56,7 @@ interface AffiliateComponent {
 
     fun injectRegistrationActivity(affiliateRegistrationActivity: AffiliateRegistrationActivity)
 
-    fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
+    fun injectAdpFragment(affiliateAdpFragment: AffiliateAdpFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
 

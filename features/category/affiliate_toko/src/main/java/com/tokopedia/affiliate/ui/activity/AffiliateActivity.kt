@@ -34,7 +34,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.custom.LottieBottomNavbar
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateAdpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.education.AffiliateEducationLandingPage
@@ -262,9 +262,9 @@ class AffiliateActivity :
 
     private fun getHomeFragmentView(): Typography? {
         val currentFragment =
-            supportFragmentManager.findFragmentByTag(AffiliateHomeFragment::class.java.name)
+            supportFragmentManager.findFragmentByTag(AffiliatePromoFragment::class.java.name)
         currentFragment?.let { fragment ->
-            return (fragment as? AffiliateHomeFragment)?.view?.findViewById(R.id.user_name)
+            return (fragment as? AffiliatePromoFragment)?.view?.findViewById(R.id.user_name)
         }
         return null
     }
@@ -279,7 +279,7 @@ class AffiliateActivity :
     }
 
     private fun initBottomNavigationView() {
-        var selectedTab = HOME_MENU
+        var selectedTab = PROMO_MENU
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             when {
                 it.contains(PAGE_SEGMENT_HELP) || it.contains(PAGE_SEGMENT_EDU_PAGE) -> {
@@ -311,7 +311,7 @@ class AffiliateActivity :
 
     override fun menuClicked(position: Int, id: Int, isNotFromBottom: Boolean): Boolean {
         when (position) {
-            HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this, this))
+            ADP_MENU -> openFragment(AffiliateAdpFragment.getFragmentInstance(this, this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
             INCOME_MENU -> openFragment(
                 AffiliateIncomeFragment.getFragmentInstance(
@@ -388,7 +388,7 @@ class AffiliateActivity :
     private fun sendBottomNavClickEvent(position: Int) {
         var eventAction = ""
         when (position) {
-            HOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
+            ADP_MENU -> eventAction = AffiliateAnalytics.ActionKeys.HOME_NAV_BAR_CLICK
             PROMO_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PROMOSIKAN_NAV_BAR_CLICK
             EDUKASI_MENU -> eventAction = AffiliateAnalytics.ActionKeys.BANUTAN_NAV_BAR_CLICK
             INCOME_MENU -> eventAction = AffiliateAnalytics.ActionKeys.PENDAPATAN_NAV_BAR_CLICK
@@ -420,8 +420,8 @@ class AffiliateActivity :
     }
 
     companion object MenuItems {
-        var HOME_MENU = FIRST_TAB
-        var PROMO_MENU = SECOND_TAB
+        var PROMO_MENU = FIRST_TAB
+        var ADP_MENU = SECOND_TAB
         var INCOME_MENU = THIRD_TAB
         var EDUKASI_MENU = FOURTH_TAB
     }
@@ -474,8 +474,8 @@ class AffiliateActivity :
 
     private fun setBottomState(peek: String?) {
         when (peek) {
-            AffiliateHomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
-                HOME_MENU
+            AffiliateAdpFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                ADP_MENU
             )
             AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 PROMO_MENU

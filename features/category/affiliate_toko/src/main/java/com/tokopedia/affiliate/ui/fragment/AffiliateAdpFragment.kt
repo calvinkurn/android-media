@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,12 +24,6 @@ import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.TIME_EIGHTEEN
-import com.tokopedia.affiliate.TIME_ELEVEN
-import com.tokopedia.affiliate.TIME_FIFTEEN
-import com.tokopedia.affiliate.TIME_SIX
-import com.tokopedia.affiliate.TIME_SIXTEEN
-import com.tokopedia.affiliate.TIME_TEN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -73,22 +68,19 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
-class AffiliateHomeFragment :
+class AffiliateAdpFragment :
     AffiliateBaseFragment<AffiliateHomeViewModel>(),
     ProductClickInterface,
     AffiliatePerformaClickInterfaces,
@@ -116,20 +108,21 @@ class AffiliateHomeFragment :
     private var swipeRefresh: SwipeToRefresh? = null
     private var navToolbar: NavToolbar? = null
     private var loader: LoaderUnify? = null
+
+    private val loginRequest =
+        registerForActivityResult(StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                affiliateHomeViewModel.getAffiliateValidateUser()
+            } else {
+                activity?.finish()
+            }
+        }
     private fun isAffiliateNCEnabled() =
         RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
             AFFILIATE_NC,
             ""
         ) == AFFILIATE_NC
 
-    private val loginRequest = registerForActivityResult(StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            setUserDetails()
-            affiliateHomeViewModel.getAffiliateValidateUser()
-        } else {
-            activity?.finish()
-        }
-    }
     private val linkHistory = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             bottomNavBarClickListener?.selectItem(
@@ -150,13 +143,11 @@ class AffiliateHomeFragment :
             affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface,
             affiliateActivity: AffiliateActivityInterface
         ): Fragment {
-            return AffiliateHomeFragment().apply {
+            return AffiliateAdpFragment().apply {
                 bottomNavBarClickListener = affiliateBottomNavBarClickListener
                 affiliateActivityInterface = affiliateActivity
             }
         }
-
-        private const val PARTIAL_RESET_LENGTH = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,7 +175,7 @@ class AffiliateHomeFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.affiliate_home_fragment_layout, container, false)
+        return inflater.inflate(R.layout.affiliate_adp_fragment_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -212,7 +203,6 @@ class AffiliateHomeFragment :
         } else {
             affiliateHomeViewModel.getAffiliateValidateUser()
         }
-        setAffiliateGreeting()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         productRV?.layoutManager = layoutManager
@@ -236,15 +226,18 @@ class AffiliateHomeFragment :
                 }
             }
             iconBuilder
-                .addIcon(IconList.ID_BILL) { openHistoryActivity() }
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
-            setIcon(iconBuilder)
+            setIcon(
+                IconBuilder()
+                    .addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.label_affiliate)
+                getString(R.string.performa_affiliate)
             setOnBackButtonClickListener {
-                (activity as? AffiliateActivity)?.handleBackButton(false)
+                activity?.finish()
             }
         }
+
         if (!CoachMarkPreference.hasShown(
                 requireContext(),
                 COACHMARK_TAG
@@ -252,8 +245,9 @@ class AffiliateHomeFragment :
         ) {
             affiliateActivityInterface?.showCoachMarker()
         }
-        setUserDetails()
-        affiliateHomeViewModel.fetchUnreadNotificationCount()
+        if (isAffiliateNCEnabled()) {
+            affiliateHomeViewModel.fetchUnreadNotificationCount()
+        }
     }
 
     private fun sendNotificationClickEvent() {
@@ -277,28 +271,14 @@ class AffiliateHomeFragment :
         linkHistory.launch(intent)
     }
 
-    private fun setUserDetails() {
-        view?.findViewById<ImageUnify>(R.id.user_image)
-            ?.loadImageCircle(affiliateHomeViewModel.getUserProfilePicture())
-        view?.findViewById<Typography>(R.id.user_name)?.text = affiliateHomeViewModel.getUserName()
-    }
-
     private fun resetItems() {
         loadMoreTriggerListener?.resetState()
         listSize = 0
         adapter.resetList()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
-        affiliateHomeViewModel.fetchUnreadNotificationCount()
-    }
-
-    private fun setAffiliateGreeting() {
-        view?.findViewById<Typography>(R.id.affiliate_greeting)?.text =
-            when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-                in TIME_SIX..TIME_TEN -> getString(R.string.affiliate_morning)
-                in TIME_ELEVEN..TIME_FIFTEEN -> getString(R.string.affiliate_noon)
-                in TIME_SIXTEEN..TIME_EIGHTEEN -> getString(R.string.affiliate_afternoon)
-                else -> getString(R.string.affiliate_night)
-            }
+        if (isAffiliateNCEnabled()) {
+            affiliateHomeViewModel.fetchUnreadNotificationCount()
+        }
     }
 
     private fun getEndlessRecyclerViewListener(
@@ -474,7 +454,7 @@ class AffiliateHomeFragment :
     }
 
     override fun initInject() {
-        getComponent().injectHomeFragment(this)
+        getComponent().injectAdpFragment(this)
     }
 
     private fun getComponent(): AffiliateComponent =

@@ -10,6 +10,7 @@ import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateDiscoveryCampaignUseCase
+import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSSAShopUseCase
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
@@ -44,6 +45,7 @@ class AffiliatePromoViewModelTest {
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase = mockk()
     private val affiliateDiscoveryCampaignUseCase: AffiliateDiscoveryCampaignUseCase = mockk()
     private val affiliateSSAShopUseCase: AffiliateSSAShopUseCase = mockk()
+    private val affiliateGetUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val graphqlRepository: GraphqlRepository = mockk()
     private val affiliatePromoViewModel = spyk(
         AffiliatePromoViewModel(
@@ -53,6 +55,7 @@ class AffiliatePromoViewModelTest {
             affiliateAffiliateAnnouncementUseCase,
             affiliateDiscoveryCampaignUseCase,
             affiliateSSAShopUseCase,
+            affiliateGetUnreadNotificationUseCase,
             graphqlRepository
         )
     )
@@ -288,4 +291,21 @@ class AffiliatePromoViewModelTest {
         affiliatePromoViewModel.fetchSSAShopList()
         assertTrue(affiliatePromoViewModel.getSSAShopList().value.isNullOrEmpty())
     }
+
+    /**************************** userSession() *******************************************/
+
+    @Test
+    fun userSessionTest() {
+        val name = "Testing"
+        val profile = "Profile Testing"
+        val isLoggedIn = false
+        coEvery { userSessionInterface.name } returns name
+        coEvery { userSessionInterface.profilePicture } returns profile
+        coEvery { userSessionInterface.isLoggedIn } returns isLoggedIn
+
+        assertEquals(affiliatePromoViewModel.getUserName(), name)
+        assertEquals(affiliatePromoViewModel.getUserProfilePicture(), profile)
+        assertEquals(affiliatePromoViewModel.isUserLoggedIn(), isLoggedIn)
+    }
+
 }

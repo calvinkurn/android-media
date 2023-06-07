@@ -13,7 +13,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceM
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
 
-class AffiliateHomeUserDataVH(
+class AffiliateAdpUserDataVH(
     itemView: View,
     onPerformaGridClick: AffiliatePerformaClickInterfaces?
 ) : AbstractViewHolder<AffiliateUserPerformanceModel>(itemView) {
