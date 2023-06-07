@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -4055,14 +4056,17 @@ class ShipmentFragment :
     // endregion
 
     override fun checkPlatformFee() {
+        Log.i("qwertyuiop", "check platform fee")
         if (shipmentPresenter.getShipmentPlatformFeeData().isEnable) {
             val platformFeeModel = shipmentPresenter.shipmentCostModel.value.dynamicPlatformFee
             if (shipmentPresenter.shipmentCostModel.value.totalPrice > platformFeeModel.minRange &&
                 shipmentPresenter.shipmentCostModel.value.totalPrice < platformFeeModel.maxRange
             ) {
-                shipmentAdapter.setPlatformFeeData(platformFeeModel)
+                Log.i("qwertyuiop", "set platform fee")
+                shipmentPresenter.setPlatformFeeData(platformFeeModel)
                 updateCost()
             } else {
+                Log.i("qwertyuiop", "get platform fee")
                 getPaymentFee()
             }
         }
@@ -4118,7 +4122,8 @@ class ShipmentFragment :
                 platformFeeModel.slashedFee = paymentFee.slashedFee.toDouble()
             }
         }
-        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        Log.i("qwertyuiop", "show fee $platformFeeModel")
+        shipmentPresenter.setPlatformFeeData(platformFeeModel)
         hideLoaderTotalPayment()
         updateCost()
         checkoutAnalyticsCourierSelection.eventViewPlatformFeeInCheckoutPage(
@@ -4130,7 +4135,7 @@ class ShipmentFragment :
     fun showPaymentFeeSkeletonLoading() {
         val platformFeeModel = ShipmentPaymentFeeModel()
         platformFeeModel.isLoading = true
-        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        shipmentPresenter.setPlatformFeeData(platformFeeModel)
         showLoaderTotalPayment()
         updateCost()
     }
@@ -4153,7 +4158,7 @@ class ShipmentFragment :
         val platformFeeModel = ShipmentPaymentFeeModel()
         platformFeeModel.isShowTicker = true
         platformFeeModel.ticker = ticker
-        shipmentAdapter.setPlatformFeeData(platformFeeModel)
+        shipmentPresenter.setPlatformFeeData(platformFeeModel)
         hideLoaderTotalPayment()
         updateCost()
     }

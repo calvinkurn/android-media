@@ -71,6 +71,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.common_epharmacy.EPHARMACY_CONSULTATION_STATUS_APPROVED
@@ -5496,6 +5497,10 @@ class ShipmentPresenter @Inject constructor(
 
     fun getShipmentPlatformFeeData(): ShipmentPlatformFeeData {
         return shipmentPlatformFeeData
+    }
+
+    fun setPlatformFeeData(paymentFee: ShipmentPaymentFeeModel) {
+        shipmentCostModel.value = shipmentCostModel.value.copy(dynamicPlatformFee = paymentFee)
     }
 
     companion object {

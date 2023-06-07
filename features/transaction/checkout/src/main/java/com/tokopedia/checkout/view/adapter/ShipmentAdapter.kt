@@ -26,7 +26,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel
-import com.tokopedia.checkout.view.uimodel.ShipmentPaymentFeeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel
@@ -235,7 +234,8 @@ class ShipmentAdapter @Inject constructor(
             ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST -> {
                 return ShipmentCostViewHolder(
                     ViewItemShipmentCostDetailsBinding.bind(view),
-                    layoutInflater
+                    layoutInflater,
+                    shipmentAdapterActionListener
                 )
             }
 
@@ -1000,7 +1000,7 @@ class ShipmentAdapter @Inject constructor(
                         skipValidateUse
                     )
                 }
-//                shipmentAdapterActionListener.updateCheckoutRequest(requestData.checkoutRequestData)
+                shipmentAdapterActionListener.checkPlatformFee()
                 return true
             }
         }
@@ -1337,19 +1337,19 @@ class ShipmentAdapter @Inject constructor(
         notifyItemChanged(position)
     }
 
-    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
-        if (shipmentCostModel != null) {
-            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
-        }
-    }
+//    fun setPlatformFeeData(platformFeeModel: ShipmentPaymentFeeModel?) {
+//        if (shipmentCostModel != null) {
+//            shipmentCostModel!!.dynamicPlatformFee = platformFeeModel!!
+//        }
+//    }
 
-    fun getShipmentCostItemIndex(): Int {
-        var index = 0
-        if (shipmentCostModel != null) {
-            index = shipmentDataList.indexOf(shipmentCostModel!!)
-        }
-        return index
-    }
+//    fun getShipmentCostItemIndex(): Int {
+//        var index = 0
+//        if (shipmentCostModel != null) {
+//            index = shipmentDataList.indexOf(shipmentCostModel!!)
+//        }
+//        return index
+//    }
 
     fun updateItem(item: Any, position: Int) {
         shipmentDataList[position] = item
