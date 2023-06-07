@@ -62,14 +62,26 @@ public class FakeAppModule {
 
     @ApplicationScope
     @Provides
-    @ApplicationContext
-    public GraphqlRepository provideGraphqlRepository() {
+    public FakeGraphqlRepository provideFakeRepo() {
         return new FakeGraphqlRepository(context, new Gson());
     }
 
     @ApplicationScope
     @Provides
-    public GraphqlUseCaseInterface provideGraphqlUsecase() {
+    @ApplicationContext
+    public GraphqlRepository provideGraphqlRepository(FakeGraphqlRepository fakeRepo) {
+        return fakeRepo;
+    }
+
+    @ApplicationScope
+    @Provides
+    public GraphqlUseCaseInterface provideGraphqlUsecase(FakeGraphqlUseCase fakeUseCase) {
+        return fakeUseCase;
+    }
+
+    @ApplicationScope
+    @Provides
+    public FakeGraphqlUseCase provideFakeUseCase() {
         return new FakeGraphqlUseCase(context);
     }
 

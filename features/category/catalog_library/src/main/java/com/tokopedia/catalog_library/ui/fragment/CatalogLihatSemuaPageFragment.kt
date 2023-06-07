@@ -173,6 +173,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
             makeApiCall()
+            order = CatalogLibraryConstant.ASCENDING_ORDER_STR
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.ASCENDING_ORDER_STR}",
@@ -183,6 +184,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             sortAsc?.chipType = ChipsUnify.TYPE_NORMAL
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
             makeApiCall(DESC_SORT_ORDER)
+            order = CatalogLibraryConstant.DESCENDING_ORDER_STR
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.DESCENDING_ORDER_STR}",
@@ -286,11 +288,19 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
 
     override fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {
         super.onAccordionStateChange(expanded, element)
-        val expandCollapse = if (expanded) "expand" else "collapse"
-        CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
-            "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
-            userSessionInterface?.userId ?: ""
-        )
+        if (isOriginBrand) {
+            val expandCollapse = if (expanded) "expand" else "collapse"
+            CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
+                "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
+                userSessionInterface?.userId ?: ""
+            )
+        } else {
+            val expandCollapse = if (expanded) "open" else "close"
+            CatalogAnalyticsLihatSemuaPage.sendClickDropUpButtonEvent(
+                "L1 name: ${element.catalogLibraryDataList?.rootCategoryName} - L1 ID: ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse - sort & filter: grid view - $order",
+                userSessionInterface?.userId ?: ""
+            )
+        }
     }
 
     override fun categoryListImpression(

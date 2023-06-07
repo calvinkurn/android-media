@@ -41,7 +41,6 @@ public class AddressConstants {
     public static final String EXTRA_FROM_PINPOINT = "EXTRA_FROM_PINPOINT";
     public static final String EXTRA_RESET_TO_SEARCH_PAGE = "EXTRA_RESET_TO_SEARCH_PAGE";
     public static final String KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL = "KEY_SAVE_INSTANCE_SAVE_ADDRESS_DATA_MODEL";
-    public static final String EXTRA_IS_GET_PINPOINT_ONLY = "EXTRA_IS_GET_PINPOINT_ONLY";
 
     private static final Double MONAS_LAT = -6.175794;
     private static final Double MONAS_LONG = 106.826457;
@@ -83,4 +82,10 @@ public class AddressConstants {
     public static final String PARAM_DISTRICT_ID = "districtId";
     public static final String PARAM_CURRENT_LOC = "currentLoc";
     public static final String PARAM_SOURCE = "source" ;
+
+    // User Consent
+    public static final String ADD_ADDRESS_COLLECTION_ID_STAGING = "01203d44-15c8-46f5-aed2-77e92dd4e625";
+    public static final String ADD_ADDRESS_COLLECTION_ID_PRODUCTION = "1dd907e3-3e1f-405d-90c5-3db42e19d59d";
+    public static final String EDIT_ADDRESS_COLLECTION_ID_STAGING = "e5a06379-2564-4357-8380-d2bf9e694340";
+    public static final String EDIT_ADDRESS_COLLECTION_ID_PRODUCTION = "011d3e50-a147-41ea-8ea4-eae1dda6701e";
 }

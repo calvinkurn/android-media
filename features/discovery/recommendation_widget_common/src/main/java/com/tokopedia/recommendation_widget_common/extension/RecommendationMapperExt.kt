@@ -10,6 +10,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabels
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationSpecificationLabelsBullet
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.viewtoview.ViewToViewItemData
 import com.tokopedia.unifycomponents.UnifyButton
@@ -24,173 +25,200 @@ fun List<RecommendationEntity.RecommendationData>.mappingToRecommendationModel()
     }
 }
 
-fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget{
+const val SPEC_TYPE_TEXT = "text"
+const val SPEC_TYPE_BULLET = "bullet"
+
+fun RecommendationEntity.RecommendationData.toRecommendationWidget(): RecommendationWidget {
     return RecommendationWidget(
-            recommendationItemList = recommendation.mapIndexed { index, recommendation ->
-                RecommendationItem(
-                        productId = recommendation.id,
-                        name = recommendation.name,
-                        categoryBreadcrumbs = recommendation.categoryBreadcrumbs,
-                        url = recommendation.url,
-                        appUrl = recommendation.appUrl,
-                        clickUrl = recommendation.clickUrl,
-                        wishlistUrl = recommendation.wishlistUrl,
-                        trackerImageUrl = recommendation.trackerImageUrl,
-                        imageUrl = recommendation.imageUrl,
-                        price = recommendation.price,
-                        priceInt = recommendation.priceInt,
-                        departmentId = recommendation.departmentId,
-                        rating = recommendation.rating,
-                        ratingAverage = recommendation.ratingAverage,
-                        countReview = recommendation.countReview,
-                        stock = if (isRecomCardShouldShowVariantOrCart() && recommendation.maxOrder != 0) recommendation.maxOrder else recommendation.stock,
-                        recommendationType = recommendation.recommendationType,
-                        isTopAds = recommendation.isIsTopads,
-                        isWishlist = recommendation.isWishlist,
-                        slashedPrice = recommendation.slashedPrice,
-                        slashedPriceInt = recommendation.slashedPriceInt,
-                        discountPercentage = if (recommendation.discountPercentage > 0) "${recommendation.discountPercentage}%" else "",
-                        discountPercentageInt = recommendation.discountPercentage,
-                        position = index,
-                        shopId = recommendation.shop.id,
-                        shopName = recommendation.shop.name,
-                        quantity = getItemQuantityBasedOnLayoutType(),
-                        header = title,
-                        pageName = pageName,
-                        minOrder = recommendation.minOrder,
-                        maxOrder = recommendation.maxOrder,
-                        location = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.shop.city,
-                        badgesUrl = if (isRecomCardShouldShowVariantOrCart()) listOf<String>() else recommendation.badges.map { it.imageUrl },
-                        type = layoutType,
-                        isFreeOngkirActive = if (isRecomCardShouldShowVariantOrCart()) false else recommendation.freeOngkirInformation.isActive,
-                        freeOngkirImageUrl = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.freeOngkirInformation.imageUrl,
-                        labelGroupList = recommendation.labelGroups.map {
-                            RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
-                        },
-                        isGold = recommendation.shop.isGold,
-                        isOfficial = recommendation.shop.isOfficial,
-                        specs = recommendation.specificationsLabels.map {
-                            RecommendationSpecificationLabels(
-                                    specTitle = it.key,
-                                    specSummary = it.value
-                            )
-                        },
-                        parentID = recommendation.parentID,
-                        isRecomProductShowVariantAndCart = isRecomCardShouldShowVariantOrCart()
-                )
-            },
-            title = title,
-            foreignTitle = foreignTitle,
-            subtitle = subtitle,
-            source = source,
-            tid = tid,
-            widgetUrl = widgetUrl,
-            layoutType = layoutType,
-            seeMoreAppLink = seeMoreAppLink,
-            currentPage = pagination.currentPage,
-            nextPage = pagination.nextPage,
-            prevPage = pagination.prevPage,
-            hasNext = pagination.hasNext,
-            pageName = pageName,
-            recommendationBanner = campaign.mapToBannerData(),
-            isTokonow = isRecomCardShouldShowVariantOrCart()
+        recommendationItemList = recommendation.mapIndexed { index, recommendation ->
+            RecommendationItem(
+                productId = recommendation.id,
+                name = recommendation.name,
+                categoryBreadcrumbs = recommendation.categoryBreadcrumbs,
+                url = recommendation.url,
+                appUrl = recommendation.appUrl,
+                clickUrl = recommendation.clickUrl,
+                wishlistUrl = recommendation.wishlistUrl,
+                trackerImageUrl = recommendation.trackerImageUrl,
+                imageUrl = recommendation.imageUrl,
+                price = recommendation.price,
+                priceInt = recommendation.priceInt,
+                departmentId = recommendation.departmentId,
+                rating = recommendation.rating,
+                ratingAverage = recommendation.ratingAverage,
+                countReview = recommendation.countReview,
+                stock = if (isTokonow() && recommendation.maxOrder != 0) recommendation.maxOrder else recommendation.stock,
+                recommendationType = recommendation.recommendationType,
+                isTopAds = recommendation.isIsTopads,
+                isWishlist = recommendation.isWishlist,
+                slashedPrice = recommendation.slashedPrice,
+                slashedPriceInt = recommendation.slashedPriceInt,
+                discountPercentage = if (recommendation.discountPercentage > 0) "${recommendation.discountPercentage}%" else "",
+                discountPercentageInt = recommendation.discountPercentage,
+                position = index,
+                shopId = recommendation.shop.id,
+                shopName = recommendation.shop.name,
+                quantity = getItemQuantityBasedOnLayoutType(),
+                header = title,
+                pageName = pageName,
+                minOrder = recommendation.minOrder,
+                maxOrder = recommendation.maxOrder,
+                location = if (isTokonow()) "" else recommendation.shop.city,
+                badgesUrl = if (isTokonow()) listOf<String>() else recommendation.badges.map { it.imageUrl },
+                type = layoutType,
+                isFreeOngkirActive = if (isTokonow()) false else recommendation.freeOngkirInformation.isActive,
+                freeOngkirImageUrl = if (isTokonow()) "" else recommendation.freeOngkirInformation.imageUrl,
+                labelGroupList = recommendation.labelGroups.map {
+                    RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.imageUrl)
+                },
+                isGold = recommendation.shop.isGold,
+                isOfficial = recommendation.shop.isOfficial,
+                specs = recommendation.specificationsLabels.map {
+                    RecommendationSpecificationLabels(
+                        specTitle = it.key,
+                        specSummary = if (it.type == SPEC_TYPE_TEXT) it.value else "",
+                        recommendationSpecificationLabelsBullet = if (it.type == SPEC_TYPE_BULLET) {
+                            it.content.map { content ->
+                                RecommendationSpecificationLabelsBullet(
+                                    specsSummary = content.description,
+                                    icon = content.iconUrl
+                                )
+                            }
+                        } else {
+                            listOf()
+                        }
+                    )
+                },
+                parentID = recommendation.parentID,
+                addToCartType = getAtcType(),
+                anchorProductId = this.recommendation.firstOrNull()?.id.toString()
+            )
+        },
+        title = title,
+        foreignTitle = foreignTitle,
+        subtitle = subtitle,
+        source = source,
+        tid = tid,
+        widgetUrl = widgetUrl,
+        layoutType = layoutType,
+        seeMoreAppLink = seeMoreAppLink,
+        currentPage = pagination.currentPage,
+        nextPage = pagination.nextPage,
+        prevPage = pagination.prevPage,
+        hasNext = pagination.hasNext,
+        pageName = pageName,
+        recommendationBanner = campaign.mapToBannerData(),
+        isTokonow = isTokonow()
     )
 }
 
-fun List<RecommendationItem>.toProductCardModels(hasThreeDots: Boolean = false): List<ProductCardModel>{
+fun List<RecommendationItem>.toProductCardModels(
+    hasThreeDots: Boolean = false
+): List<ProductCardModel> {
     return map {
         it.toProductCardModel(hasThreeDots = hasThreeDots)
     }
 }
 
 fun RecommendationItem.toProductCardModel(
-        hasAddToCartButton: Boolean = false,
-        addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
-        hasThreeDots: Boolean = false,
-        cardInteraction: Boolean = false
-) : ProductCardModel{
+    hasAddToCartButton: Boolean = false,
+    addToCartButtonType: Int = UnifyButton.Type.TRANSACTION,
+    hasThreeDots: Boolean = false,
+    cardInteraction: Boolean = false
+): ProductCardModel {
     var variant: ProductCardModel.Variant? = null
     var nonVariant: ProductCardModel.NonVariant? = null
     var hasThreeDotsFinalValue = hasThreeDots
-    if (isRecomProductShowVariantAndCart) {
+    if (addToCartType == RecommendationItem.AddToCartType.QuantityEditor) {
         hasThreeDotsFinalValue = false
         variant = ProductCardModel.Variant(quantity = quantity)
         nonVariant = ProductCardModel.NonVariant(quantity = quantity, minQuantity = minOrder, maxQuantity = stock)
     }
     return ProductCardModel(
-            slashedPrice = slashedPrice,
-            productName = name,
-            formattedPrice = price,
-            productImageUrl = imageUrl,
-            isTopAds = isTopAds,
-            isWishlistVisible = true,
-            hasThreeDots = hasThreeDotsFinalValue,
-            isWishlisted = isWishlist,
-            discountPercentage = discountPercentage,
-            reviewCount = countReview,
-            ratingCount = rating,
-            shopLocation = location,
-            countSoldRating = ratingAverage,
-            shopBadgeList = badgesUrl.map {
-                ProductCardModel.ShopBadge(imageUrl = it)
-            },
-            freeOngkir = ProductCardModel.FreeOngkir(
-                    isActive = isFreeOngkirActive,
-                    imageUrl = freeOngkirImageUrl
-            ),
-            labelGroupList = labelGroupList.map {
-                ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl=it.imageUrl)
-            },
-            hasAddToCartButton = hasAddToCartButton,
-            addToCartButtonType = addToCartButtonType,
-            variant = if (isProductHasParentID()) variant else null,
-            nonVariant = if (isProductHasParentID()) null else nonVariant,
-            cardInteraction = cardInteraction,
+        slashedPrice = slashedPrice,
+        productName = name,
+        formattedPrice = price,
+        productImageUrl = imageUrl,
+        isTopAds = isTopAds,
+        isWishlistVisible = true,
+        hasThreeDots = hasThreeDotsFinalValue,
+        isWishlisted = isWishlist,
+        discountPercentage = discountPercentage,
+        reviewCount = countReview,
+        ratingCount = rating,
+        shopLocation = location,
+        countSoldRating = ratingAverage,
+        shopBadgeList = badgesUrl.map {
+            ProductCardModel.ShopBadge(imageUrl = it)
+        },
+        freeOngkir = ProductCardModel.FreeOngkir(
+            isActive = isFreeOngkirActive,
+            imageUrl = freeOngkirImageUrl
+        ),
+        labelGroupList = labelGroupList.map {
+            ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type, imageUrl = it.imageUrl)
+        },
+        hasAddToCartButton = if (addToCartType == RecommendationItem.AddToCartType.None) hasAddToCartButton else true,
+        addToCartButtonType = addToCartButtonType,
+        variant = if (isProductHasParentID()) variant else null,
+        nonVariant = if (isProductHasParentID()) null else nonVariant,
+        cardInteraction = cardInteraction
     )
 }
 
-fun List<RecommendationItem>.toViewToViewItemModels(): List<ViewToViewItemData>{
+fun List<RecommendationItem>.toViewToViewItemModels(): List<ViewToViewItemData> {
     return map {
         it.toViewToViewItem()
     }
 }
 
-fun RecommendationItem.toViewToViewItem() : ViewToViewItemData {
+fun RecommendationItem.toViewToViewItem(): ViewToViewItemData {
     return ViewToViewItemData(
         name = name,
         price = price,
         imageUrl = imageUrl,
         departmentId = departmentId.toString(),
         url = url,
-        recommendationData = this,
+        recommendationData = this
     )
 }
 
 var LABEL_FULFILLMENT: String = "fulfillment"
 val LAYOUTTYPE_HORIZONTAL_ATC: String = "horizontal-atc"
 val LAYOUTTYPE_INFINITE_ATC: String = "infinite-atc"
+val PAGENAME_IDENTIFIER_RECOM_ATC: String = "hatc"
 val DEFAULT_QTY_0: Int = 0
 val DEFAULT_QTY_1: Int = 1
 
-//tokonow validation
-private fun RecommendationEntity.RecommendationData.isRecomCardShouldShowVariantOrCart() : Boolean {
+// tokonow validation
+private fun RecommendationEntity.RecommendationData.isTokonow(): Boolean {
     return layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC
 }
 
 private fun RecommendationEntity.RecommendationData.getItemQuantityBasedOnLayoutType(): Int {
-    return if (this.isRecomCardShouldShowVariantOrCart()) DEFAULT_QTY_0 else DEFAULT_QTY_1
+    return if (this.isTokonow()) DEFAULT_QTY_0 else DEFAULT_QTY_1
 }
 
-fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean{
+fun List<RecommendationLabel>.hasLabelGroupFulfillment(): Boolean {
     return this.any { it.position == LABEL_FULFILLMENT }
+}
+
+private fun RecommendationEntity.RecommendationData.getAtcType(): RecommendationItem.AddToCartType {
+    return if (layoutType == LAYOUTTYPE_HORIZONTAL_ATC || layoutType == LAYOUTTYPE_INFINITE_ATC) {
+        RecommendationItem.AddToCartType.QuantityEditor
+    } else if (pageName.contains(PAGENAME_IDENTIFIER_RECOM_ATC)) {
+        RecommendationItem.AddToCartType.DirectAtc
+    } else {
+        RecommendationItem.AddToCartType.None
+    }
 }
 
 fun RecommendationEntity.RecommendationCampaign.mapToBannerData(): RecommendationBanner? {
     assets?.banner?.let {
         return RecommendationBanner(
-                applink = appLandingPageLink,
-                imageUrl = it.apps,
-                thematicID = thematicID
+            applink = appLandingPageLink,
+            imageUrl = it.apps,
+            thematicID = thematicID
         )
     }
     return null

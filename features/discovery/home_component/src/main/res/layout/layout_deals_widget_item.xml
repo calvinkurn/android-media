@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingRight="@dimen/home_deals_outer_card_padding"
+    android:paddingTop="@dimen/home_deals_outer_card_padding"
+    android:paddingBottom="@dimen/home_deals_outer_card_padding">
+
+    <ImageView
+        android:id="@+id/ribbon_anchor"
+        android:layout_width="5dp"
+        android:layout_height="30dp"
+        app:srcCompat="@drawable/deals_ribbon_anchor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/card_deals"
+        app:layout_constraintTop_toTopOf="@id/card_deals"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        android:layout_marginTop="6dp"
+        android:contentDescription="@string/content_desc_deals_widget_ribbon"
+        android:scaleType="fitXY"
+        android:elevation="4dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_deals"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ribbon_anchor">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/background_color"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@id/image"
+                app:layout_constraintEnd_toEndOf="@id/image"
+                app:layout_constraintTop_toTopOf="@id/image"
+                app:layout_constraintBottom_toBottomOf="@id/image"
+                android:background="@color/Unify_NN100" />
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1:1"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/content_desc_deals_widget"
+                android:scaleType="centerInside"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:unify_image_corner_radius="0" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ribbon_content"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                app:layout_constrainedWidth="true"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/deals_ribbon_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@id/ribbon_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_bias="0"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:visibility="gone"
+                tools:visibility="visible"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/ribbon_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginVertical="4dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                app:layout_constraintLeft_toLeftOf="@id/ribbon_content"
+                app:layout_constraintRight_toRightOf="@id/ribbon_content"
+                app:layout_constraintTop_toTopOf="@id/ribbon_content"
+                app:layout_constraintBottom_toBottomOf="@id/ribbon_content"
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_Static_White"
+                tools:text="Diskon Hingga 50%" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/image"
+                app:layout_constraintBottom_toTopOf="@id/text_desc"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                android:textColor="@color/Unify_NN950"
+                tools:text="Sealer Makanan" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/Unify_NN600"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_name"
+                app:typographyType="paragraph_3"
+                tools:text="Diskon hingga 50%" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify2>
+</androidx.constraintlayout.widget.ConstraintLayout>
