@@ -46,7 +46,7 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     uiModel.minimumPurchase.getNumberFormatted()
                 )
             )
-            setRemainingQuota(uiModel.remainingQuota)
+            setRemainingQuota(uiModel.remainingQuota.toString())
             setVoucherName(uiModel.voucherName)
             if (shopCampaignListener.isCampaignTabDarkMode()) useDarkBackground() else useLightBackground()
             setOnClickListener {
@@ -55,7 +55,7 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     bindingAdapterPosition
                 )
             }
-            val ctaText = getVoucherClaimStatus(context, uiModel)
+            val ctaText = uiModel.buttonStr
             setPrimaryCta(
                 ctaText = ctaText,
                 onClick = {
@@ -65,24 +65,6 @@ class ShopCampaignVoucherSliderItemViewHolder(
                     )
                 }
             )
-        }
-    }
-
-    private fun getVoucherClaimStatus(context: Context, voucher: ExclusiveLaunchVoucher): String {
-        return when {
-            voucher.source is ExclusiveLaunchVoucher.VoucherSource.MerchantCreated -> context.getString(
-                R.string.shop_page_use
-            )
-
-            voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo && voucher.source.isClaimed -> context.getString(
-                R.string.shop_page_claimed
-            )
-
-            voucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo && !voucher.source.isClaimed -> context.getString(
-                R.string.shop_page_claim
-            )
-
-            else -> context.getString(R.string.shop_page_use)
         }
     }
 

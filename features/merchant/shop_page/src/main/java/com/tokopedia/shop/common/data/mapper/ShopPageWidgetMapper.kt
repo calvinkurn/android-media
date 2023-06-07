@@ -6,6 +6,7 @@ import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductU
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
@@ -96,4 +97,30 @@ object ShopPageWidgetMapper {
         widgetLayout?.isFestivity.orFalse(),
         widgetLayout?.header?.data?.map { it.categorySlug }.orEmpty()
     )
+
+    fun mapToShopPageWidgetRequest(listWidgetLayout: List<ShopPageWidgetUiModel>): List<ShopPageWidgetRequestModel> {
+        return listWidgetLayout.map {
+            ShopPageWidgetRequestModel(
+                it.widgetId,
+                it.widgetMasterId,
+                it.widgetType,
+                it.widgetName,
+                ShopPageWidgetRequestModel.HeaderInput(
+                    it.header.title,
+                    it.header.subtitle,
+                    it.header.ctaText,
+                    it.header.ctaLink,
+                    it.header.isAtc,
+                    it.header.etalaseId,
+                    it.header.isShowEtalaseName,
+                    it.header.data.map { dataHeader ->
+                        ShopPageWidgetRequestModel.HeaderInput.DataOnHeaderInput(
+                            dataHeader.linkID.toString(),
+                            dataHeader.linkType
+                        )
+                    }
+                )
+            )
+        }
+    }
 }

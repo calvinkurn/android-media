@@ -47,7 +47,7 @@ import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSl
 import com.tokopedia.shop.campaign.view.adapter.viewholder.ShopCampaignVoucherSliderMoreItemViewHolder
 import com.tokopedia.shop.campaign.view.adapter.viewholder.WidgetConfigListener
 import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
-import com.tokopedia.shop.campaign.view.bottomsheet.PromoVoucherDetailBottomSheet
+import com.tokopedia.shop.campaign.view.bottomsheet.VoucherDetailBottomSheet
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignCarouselProductListener
 import com.tokopedia.shop.campaign.view.listener.ShopCampaignInterface
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
@@ -814,8 +814,9 @@ class ShopPageCampaignFragment :
 
     private fun showVoucherListBottomSheet(listCategorySlug: List<String>) {
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
+            shopId = shopId,
             useDarkBackground = isCampaignTabDarkMode(),
-            promoVouchersCategorySlugs = listCategorySlug
+            slugs = listCategorySlug
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -823,23 +824,10 @@ class ShopPageCampaignFragment :
     private fun showVoucherDetailBottomSheet(selectedVoucher: ExclusiveLaunchVoucher) {
         if (!isAdded) return
 
-        val categorySlug =
-            if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
-                selectedVoucher.source.categorySlug
-            } else {
-                ""
-            }
-
-        val promoVoucherCode =
-            if (selectedVoucher.source is ExclusiveLaunchVoucher.VoucherSource.Promo) {
-                selectedVoucher.source.voucherCode
-            } else {
-                ""
-            }
-
-        val bottomSheet = PromoVoucherDetailBottomSheet.newInstance(
-            categorySlug = categorySlug,
-            promoVoucherCode = promoVoucherCode
+        val bottomSheet = VoucherDetailBottomSheet.newInstance(
+            shopId = shopId,
+            slug = selectedVoucher.slug,
+            promoVoucherCode = selectedVoucher.couponCode
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
                 handleRedeemVoucherSuccess(redeemResult)

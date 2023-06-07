@@ -43,6 +43,7 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -838,14 +839,7 @@ class ShopHomeViewModel @Inject constructor(
                         cityId = widgetUserAddressLocalData.city_id,
                         latitude = widgetUserAddressLocalData.lat,
                         longitude = widgetUserAddressLocalData.long,
-                        listWidgetRequest = listWidgetLayout.map {
-                            ShopPageWidgetRequestModel(
-                                it.widgetId,
-                                it.widgetMasterId,
-                                it.widgetType,
-                                it.widgetName
-                            )
-                        }
+                        listWidgetRequest = ShopPageWidgetMapper.mapToShopPageWidgetRequest(listWidgetLayout)
                     )
                 )
                 useCase.executeOnBackground()

@@ -1057,6 +1057,13 @@ object ShopPageHomeMapper {
                     it.widgetName,
                     it.isFestivity,
                     ShopPageHeaderUiModel(
+                        title = it.header.title,
+                        subtitle = it.header.subtitle,
+                        ctaText = it.header.ctaText,
+                        ctaLink = it.header.ctaLink,
+                        isAtc = it.header.isAtc,
+                        etalaseId = it.header.etalaseId,
+                        isShowEtalaseName = it.header.isShowEtalaseName,
                         data = it.header.data.map {
                             ShopPageHeaderDataUiModel(
                                 linkType = it.linkType,

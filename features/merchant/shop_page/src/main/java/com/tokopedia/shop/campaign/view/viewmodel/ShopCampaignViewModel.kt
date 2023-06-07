@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -14,6 +13,7 @@ import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.domain.usecase.GetPromoVoucherListUseCase
 import com.tokopedia.shop.campaign.domain.usecase.RedeemPromoVoucherUseCase
 import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
+import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
@@ -23,7 +23,6 @@ import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
@@ -68,14 +67,7 @@ class ShopCampaignViewModel @Inject constructor(
                         cityId = widgetUserAddressLocalData.city_id,
                         latitude = widgetUserAddressLocalData.lat,
                         longitude = widgetUserAddressLocalData.long,
-                        listWidgetRequest = listWidgetLayout.map {
-                            ShopPageWidgetRequestModel(
-                                it.widgetId,
-                                it.widgetMasterId,
-                                it.widgetType,
-                                it.widgetName
-                            )
-                        }
+                        listWidgetRequest = ShopPageWidgetMapper.mapToShopPageWidgetRequest(listWidgetLayout)
                     )
                 )
                 getShopPageHomeLayoutV2UseCase.executeOnBackground()
@@ -141,14 +133,7 @@ class ShopCampaignViewModel @Inject constructor(
     }
 
     private suspend fun getPromoVoucherDataAsync(uiModel: ShopWidgetVoucherSliderUiModel): List<ExclusiveLaunchVoucher> {
-        return getPromoVoucherListUseCase.execute(setGetPromoVoucherListUseCaseParam(uiModel))
-    }
-
-    private fun setGetPromoVoucherListUseCaseParam(uiModel: ShopWidgetVoucherSliderUiModel): GetPromoVoucherListUseCase.Param {
-        return GetPromoVoucherListUseCase.Param(
-            categorySlug = "",
-            categorySlugs = uiModel.listCategorySlug
-        )
+        return getPromoVoucherListUseCase.execute(uiModel.listCategorySlug)
     }
 
     fun redeemCampaignVoucherSlider(model: ExclusiveLaunchVoucher) {
