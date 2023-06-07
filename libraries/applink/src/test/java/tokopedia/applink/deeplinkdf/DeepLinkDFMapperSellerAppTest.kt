@@ -316,13 +316,19 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
 
     @Test
     fun `check external statistic appLink should return DF_STATISTIC in seller app`() {
-        val statisticExternal = "tokopedia://gold-merchant-statistic-dashboard"
+        val statisticExternal = ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD
         assertEqualDeepLinkSellerApp(statisticExternal, DeeplinkDFMapper.DF_STATISTIC)
     }
 
     @Test
+    fun `check sellerapp external statistic appLink should return DF_STATISTIC in seller app`() {
+        val appLink = ApplinkConst.SellerApp.STATISTIC_DASHBOARD
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_STATISTIC)
+    }
+
+    @Test
     fun `check internal statistic appLink should return DF_STATISTIC in seller app`() {
-        val appLink = ApplinkConstInternalMechant.INTERNAL_MERCHANT + "/statistic_dashboard"
+        val appLink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_STATISTIC)
     }
 }

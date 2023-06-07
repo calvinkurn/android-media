@@ -56,9 +56,9 @@ import com.tokopedia.applink.ApplinkConst.SHOP_TALK
 import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
+import com.tokopedia.applink.ApplinkConst.SellerApp.STATISTIC_DASHBOARD
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -972,11 +972,10 @@ object DeeplinkDFMapper : CoroutineScope {
             add(
                 DFP(
                     {
-                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) ||
-                        it.startsWithPattern(MERCHANT_STATISTIC_DASHBOARD)
-                    },
-                    DF_STATISTIC,
-                    R.string.title_statistic
+                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) || it.startsWithPattern(
+                            MERCHANT_STATISTIC_DASHBOARD
+                        ) || it.startsWithPattern(STATISTIC_DASHBOARD)
+                    }, DF_STATISTIC, R.string.title_statistic
                 )
             )
         }
