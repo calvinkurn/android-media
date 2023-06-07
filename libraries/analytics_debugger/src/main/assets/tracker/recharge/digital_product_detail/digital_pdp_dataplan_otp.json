@@ -1,7 +1,8 @@
 {
   "readme": "Digital PDP paket data OTP",
   "mode": "exact",
-  "query": [{
+  "query": [
+    {
     "event": "viewDigitalIris",
     "eventLabel": ".* - .* - .* - .*",
     "eventAction": "impression check balance info",
