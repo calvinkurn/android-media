@@ -255,7 +255,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             chipsPenaltyMap
         )
 
-        val typeId = typePenaltyList?.find { it.isSelected }?.value ?: ZERO_NUMBER
+        val typeIds = typePenaltyList?.filter { it.isSelected }?.map { it.value }.orEmpty()
         val sortBy =
             penaltyFilterUiModelList.filterIsInstance<PenaltyFilterUiModel>()
                 .find { it.title == ShopScoreConstant.TITLE_SORT }?.chipsFilterList?.find { it.isSelected }?.value
@@ -264,7 +264,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
         datePenaltyFilter?.let {
             viewModelShopPenalty.setDateFilterData(it.defaultStartDate, it.defaultEndDate, it.completeDate)
         }
-        viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeId))
+        viewModelShopPenalty.setSortTypeFilterData(Pair(sortBy, typeIds))
 
         binding?.rvPenaltyPage?.post {
             penaltyPageAdapter.run {
@@ -349,7 +349,9 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     private fun updateItemChildSortFilterPenalty(sortFilterItemPeriodWrapperList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>?) {
-        val typeId = sortFilterItemPeriodWrapperList?.find { it.isSelected }?.idFilter ?: ZERO_NUMBER
+        val typeIds = sortFilterItemPeriodWrapperList?.filter { it.isSelected }?.map {
+            it.idFilter
+        }.orEmpty()
         sortFilterItemPeriodWrapperList?.let { penaltyPageAdapter.updateChipsSelected(it) }
         penaltyPageAdapter.run {
             removePenaltyListData()
@@ -359,7 +361,7 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
             showLoading()
         }
         endlessRecyclerViewScrollListener.resetState()
-        viewModelShopPenalty.setTypeFilterData(typeId)
+        viewModelShopPenalty.setTypeFilterData(typeIds)
     }
 
 

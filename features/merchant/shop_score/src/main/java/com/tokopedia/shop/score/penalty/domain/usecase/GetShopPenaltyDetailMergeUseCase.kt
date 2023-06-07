@@ -47,14 +47,14 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
     fun setParams(
         startDate: String,
         endDate: String,
-        typeId: Int,
+        typeIds: List<Int>,
         sort: Int,
         status: Int
     ) {
         params = RequestParams.create().apply {
             putString(START_DATE_KEY, startDate)
             putString(END_DATE_KEY, endDate)
-            putInt(TYPE_ID_KEY, typeId)
+            putObject(TYPE_IDS_KEY, typeIds)
             putInt(SORT_KEY, sort)
             putInt(STATUS_KEY, status)
         }
@@ -64,7 +64,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
 
         private const val START_DATE_KEY = "startDate"
         private const val END_DATE_KEY = "endDate"
-        private const val TYPE_ID_KEY = "typeID"
+        private const val TYPE_IDS_KEY = "typeIDs"
         private const val SORT_KEY = "sort"
         private const val STATUS_KEY = "status"
 
@@ -72,7 +72,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
             query shopScorePenaltyDetail(
                 ${'$'}startDate: String!,
                 ${'$'}endDate: String!,
-                ${'$'}typeID: Int!,
+                ${'$'}typeIDs: [Int64],
                 ${'$'}sort: Int!,
                 ${'$'}status: Int!
               ){
@@ -122,7 +122,7 @@ class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                    total : 10
                    startDate : ${'$'}startDate
                    endDate : ${'$'}endDate
-                   typeID : ${'$'}typeID
+                   typeIDs : ${'$'}typeIDs
                    sort : ${'$'}sort
                    status: ${'$'}status
                    lang : "id"

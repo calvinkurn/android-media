@@ -74,8 +74,8 @@ class ShopPenaltyViewModel @Inject constructor(
     private var itemSortFilterWrapperList =
         mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
 
-    private val _typeFilterData = MutableLiveData<Int>()
-    private val _sortTypeFilterData = MutableLiveData<Pair<Int, Int>>()
+    private val _typeFilterData = MutableLiveData<List<Int>>()
+    private val _sortTypeFilterData = MutableLiveData<Pair<Int, List<Int>>>()
     private val _dateFilterData = MutableLiveData<Pair<String, String>>()
 
     private var startDate = String.EMPTY
@@ -86,7 +86,7 @@ class ShopPenaltyViewModel @Inject constructor(
         format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
     private var endDateSummary =
         format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
-    private var typeId = 0
+    private var typeIds = listOf<Int>()
     private var sortBy = 0
 
     init {
@@ -118,11 +118,11 @@ class ShopPenaltyViewModel @Inject constructor(
         maxEndDate = maxDateFilter.second
     }
 
-    fun setTypeFilterData(typeId: Int) {
-        _typeFilterData.value = typeId
+    fun setTypeFilterData(typeIds: List<Int>) {
+        _typeFilterData.value = typeIds
     }
 
-    fun setSortTypeFilterData(sortTypeFilter: Pair<Int, Int>) {
+    fun setSortTypeFilterData(sortTypeFilter: Pair<Int, List<Int>>) {
         _sortTypeFilterData.value = sortTypeFilter
     }
 
@@ -146,7 +146,7 @@ class ShopPenaltyViewModel @Inject constructor(
                         getShopPenaltyDetailMergeUseCase.get().setParams(
                             startDate = startDateSummary,
                             endDate = endDateSummary,
-                            typeId = typeId,
+                            typeIds = typeIds,
                             sort = sortBy,
                             status = getStatusFromPageType(pageType)
                         )
@@ -177,7 +177,7 @@ class ShopPenaltyViewModel @Inject constructor(
                 penaltyDetailMerge.second,
                 notYetDeductedPenalty,
                 sortBy,
-                typeId
+                typeIds
             )
 
             startDate = penaltyDetailMerge.second.startDate
@@ -207,12 +207,12 @@ class ShopPenaltyViewModel @Inject constructor(
     private fun initPenaltyDetail() {
         shopPenaltyDetailMediator.addSource(_sortTypeFilterData) {
             sortBy = it.first
-            typeId = it.second
+            typeIds = it.second
             getPenaltyDetailListNext()
         }
 
         shopPenaltyDetailMediator.addSource(_typeFilterData) {
-            typeId = it
+            typeIds = it
             getPenaltyDetailListNext()
         }
 
@@ -231,7 +231,7 @@ class ShopPenaltyViewModel @Inject constructor(
                         page = page,
                         startDate = startDate,
                         endDate = endDate,
-                        typeID = typeId,
+                        typeIDs = typeIds,
                         sort = sortBy
                     )
                 )
@@ -268,10 +268,24 @@ class ShopPenaltyViewModel @Inject constructor(
         }
     }
 
-    fun updateFilterSelected(titleFilter: String, chipType: String, position: Int) {
+    fun updateSortFilterSelected(typeIds: List<Int>) {
+        launch {
+            val mapTransformUpdateSortFilterSelected =
+                penaltyMapper.transformUpdateSortFilterSelected(
+                    penaltyFilterUiModel,
+                    typeIds
+                )
+            penaltyFilterUiModel = mapTransformUpdateSortFilterSelected.first
+            itemSortFilterWrapperList = mapTransformUpdateSortFilterSelected.second
+            _updateSortFilterSelected.value = Success(itemSortFilterWrapperList)
+        }
+    }
+
+    fun updateFilterSelected(titleFilter: String, chipType: String, position: Int, isMultiple: Boolean) {
         launch {
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
             val mapTransformUpdateFilterSelected = penaltyMapper.transformUpdateFilterSelected(
+                isMultiple,
                 titleFilter,
                 updateChipsSelected,
                 position,
@@ -296,6 +310,9 @@ class ShopPenaltyViewModel @Inject constructor(
                         }
                     } else {
                         penaltyFilterUiModel.chipsFilterList.map {
+                            it.isSelected = false
+                        }
+                        penaltyFilterUiModel.shownFilterList.map {
                             it.isSelected = false
                         }
                     }

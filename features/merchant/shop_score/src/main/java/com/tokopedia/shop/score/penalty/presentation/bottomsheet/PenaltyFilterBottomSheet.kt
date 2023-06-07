@@ -93,6 +93,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
         getDataCacheFromManager()
         setupRecyclerView()
         observePenaltyFilter()
+        observeUpdateSortSelectedPeriod()
         observeUpdateFilterSelected()
         observeResetFilter()
         clickBtnApplied()
@@ -116,10 +117,10 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     ) {
         when (nameFilter) {
             ShopScoreConstant.TITLE_SORT -> {
-                viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
+                viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position, false)
             }
             ShopScoreConstant.TITLE_TYPE_PENALTY -> {
-                viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position)
+                viewModelShopPenalty.updateFilterSelected(nameFilter, chipType, position, true)
             }
         }
     }
@@ -140,7 +141,7 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
     }
 
     override fun onFilterSaved(filterList: List<Int>) {
-//        TODO("Not yet implemented")
+        viewModelShopPenalty.updateSortFilterSelected(filterList)
     }
 
     override fun onDatePicked(
@@ -251,6 +252,12 @@ class PenaltyFilterBottomSheet : BaseBottomSheetShopScore<BottomsheetFilterPenal
             }
             is Fail -> {
             }
+        }
+    }
+
+    private fun observeUpdateSortSelectedPeriod() = observe(viewModelShopPenalty.updateSortSelectedPeriod) {
+        if (it is Success) {
+            filterPenaltyAdapter.updateFilterSelected(it.data)
         }
     }
 

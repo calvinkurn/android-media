@@ -2,7 +2,9 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.filter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
 import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
 
@@ -41,6 +43,27 @@ class FilterPenaltyAdapter(adapterFactory: FilterPenaltyAdapterFactory) :
         visitables.filterIsInstance<PenaltyFilterUiModel>()
             .find { it.title == title }?.run {
                 chipsFilterList = chipFilterList
+            }
+        if (chipsIndex != RecyclerView.NO_POSITION) {
+            notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)
+        }
+    }
+
+    fun updateFilterSelected(
+        wrapperList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>
+    ) {
+        val updateIndex =
+            visitables.filterIsInstance<PenaltyFilterUiModel>().find { it.title == TITLE_TYPE_PENALTY }
+        val chipsIndex = visitables.indexOf(updateIndex)
+        visitables.filterIsInstance<PenaltyFilterUiModel>()
+            .find { it.title == TITLE_TYPE_PENALTY }?.run {
+                chipsFilterList = wrapperList.map {
+                    ChipsFilterPenaltyUiModel(
+                        title = it.title,
+                        isSelected = it.isSelected,
+                        value = it.idFilter
+                    )
+                }
             }
         if (chipsIndex != RecyclerView.NO_POSITION) {
             notifyItemChanged(chipsIndex, PAYLOAD_CHIPS_FILTER)

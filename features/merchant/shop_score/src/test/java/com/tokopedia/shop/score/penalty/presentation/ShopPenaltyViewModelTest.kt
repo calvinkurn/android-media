@@ -48,7 +48,7 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
 
             penaltyViewModel.shopPenaltyDetailMediator.observe({ lifecycle }) {}
 
-            penaltyViewModel.setSortTypeFilterData(Pair(0, 2))
+            penaltyViewModel.setSortTypeFilterData(Pair(0, listOf(2)))
 
             verifyGetShopPenaltyDetailUseCaseCaseCalled()
             val actualResult = penaltyViewModel.shopPenaltyDetailData.observeAwaitValue(time = 60)
@@ -63,7 +63,7 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
             val shopScorePenaltyDetail = ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail()
             onGetShopPenaltyDetailUseCase_thenReturn(shopScorePenaltyDetail)
 
-            val typeFilter = 4
+            val typeFilter = listOf(4)
 
             penaltyViewModel.shopPenaltyDetailMediator.observe({ lifecycle }) {}
 
@@ -83,7 +83,7 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
             val messageErrorException = MessageErrorException("Internal Server Error")
             onGetShopPenaltyDetailUseCaseError_thenReturn(messageErrorException)
 
-            val typeFilter = 4
+            val typeFilter = listOf(4)
 
             penaltyViewModel.shopPenaltyDetailMediator.observe({ lifecycle }) {}
 
@@ -302,7 +302,7 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
                 sortFilterItemWrapperList
             )
 
-            penaltyViewModel.updateFilterSelected(titleFilter, chipType, position)
+            penaltyViewModel.updateFilterSelected(titleFilter, chipType, position, true)
             val actualResult = penaltyViewModel.updateFilterSelected.observeAwaitValue()
             assertTrue(actualResult is Success)
             val actualResultData = (actualResult as Success).data
@@ -340,7 +340,7 @@ class ShopPenaltyViewModelTest : ShopPenaltyViewModelTestFixture() {
                 sortFilterItemWrapperList
             )
 
-            penaltyViewModel.updateFilterSelected(titleFilter, chipType, position)
+            penaltyViewModel.updateFilterSelected(titleFilter, chipType, position, true)
             val actualResult = penaltyViewModel.updateFilterSelected.observeAwaitValue()
             assertTrue(actualResult is Success)
             val actualResultData = (actualResult as Success).data

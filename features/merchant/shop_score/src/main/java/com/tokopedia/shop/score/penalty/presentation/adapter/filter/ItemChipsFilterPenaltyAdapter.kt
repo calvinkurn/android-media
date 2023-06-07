@@ -63,7 +63,7 @@ class ItemChipsFilterPenaltyAdapter(
                         filterPenaltyBottomSheetListener.onChipsFilterItemClick(
                             nameFilter, chipType.orEmpty(),
                             chipsItemPenalty.chipText.orEmpty(),
-                            adapterPosition
+                            absoluteAdapterPosition
                         )
                     }
                 }
