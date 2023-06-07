@@ -48,6 +48,7 @@ import com.tokopedia.autocompletecomponent.suggestion.SuggestionFragment.Suggest
 import com.tokopedia.autocompletecomponent.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerModule
+import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.addComponentId
 import com.tokopedia.autocompletecomponent.util.addQueryIfEmpty
@@ -81,7 +82,8 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     SuggestionViewUpdateListener,
     InitialStateViewUpdateListener,
     SearchBarKeywordListener,
-    SearchBarView.SearchBarViewListener {
+    SearchBarView.SearchBarViewListener,
+    HasViewModelFactory {
 
     private val searchBarView by lazy {
         findViewById<SearchBarView?>(R.id.autocompleteSearchBar)
@@ -99,7 +101,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         findViewById<View>(R.id.activity_container)
     }
 
-    var viewModelFactory: ViewModelProvider.Factory? = null
+    override var viewModelFactory: ViewModelProvider.Factory? = null
         @Inject set
 
     private val viewModel: SearchBarViewModel? by lazy {
@@ -339,7 +341,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     protected open fun createInitialStateComponent(): InitialStateComponent =
         DaggerInitialStateComponent.builder()
             .baseAppComponent(getBaseAppComponent())
-            .autoCompleteComponent(autoCompleteComponent)
             .initialStateViewListenerModule(getInitialStateViewListenerModule())
             .build()
 
@@ -349,7 +350,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     protected open fun createSuggestionComponent(): SuggestionComponent =
         DaggerSuggestionComponent.builder()
             .baseAppComponent(getBaseAppComponent())
-            .autoCompleteComponent(autoCompleteComponent)
             .suggestionViewListenerModule(getSuggestionViewListenerModule())
             .build()
 

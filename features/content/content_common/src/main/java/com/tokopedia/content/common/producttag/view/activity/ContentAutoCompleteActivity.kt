@@ -14,7 +14,6 @@ class ContentAutoCompleteActivity : BaseAutoCompleteActivity() {
     override fun createInitialStateComponent(): InitialStateComponent {
         return DaggerFeedInitialStateComponent.builder()
             .baseAppComponent(getBaseAppComponent())
-            .autoCompleteComponent(autoCompleteComponent)
             .initialStateViewListenerModule(getInitialStateViewListenerModule())
             .build()
     }
@@ -22,7 +21,6 @@ class ContentAutoCompleteActivity : BaseAutoCompleteActivity() {
     override fun createSuggestionComponent(): SuggestionComponent {
         return DaggerFeedSuggestionComponent.builder()
             .baseAppComponent(getBaseAppComponent())
-            .autoCompleteComponent(autoCompleteComponent)
             .suggestionViewListenerModule(getSuggestionViewListenerModule())
             .build()
     }

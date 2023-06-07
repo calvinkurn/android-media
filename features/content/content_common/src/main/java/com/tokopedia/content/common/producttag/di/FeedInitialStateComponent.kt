@@ -1,7 +1,6 @@
 package com.tokopedia.content.common.producttag.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.autocompletecomponent.di.AutoCompleteComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateComponent
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStatePresenterModule
 import com.tokopedia.autocompletecomponent.initialstate.di.InitialStateScope
@@ -25,9 +24,6 @@ import dagger.Component
         InitialStatePresenterModule::class,
         InitialStateViewListenerModule::class,
     ],
-    dependencies = [
-        BaseAppComponent::class,
-        AutoCompleteComponent::class,
-    ]
+    dependencies = [BaseAppComponent::class]
 )
 interface FeedInitialStateComponent : InitialStateComponent

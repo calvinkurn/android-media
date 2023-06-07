@@ -23,6 +23,7 @@ import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopListener
+import com.tokopedia.autocompletecomponent.util.HasViewModelFactory
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
@@ -67,12 +68,10 @@ class SuggestionFragment :
     var suggestionTracking: SuggestionTracking? = null
         @Inject set
 
-    var viewModelFactory: ViewModelProvider.Factory? = null
-        @Inject set
-
     private val viewModel: SearchBarViewModel? by lazy {
-        val factory = viewModelFactory ?: return@lazy null
         val activity = activity ?: return@lazy null
+        if (activity !is HasViewModelFactory) return@lazy null
+        val factory = activity.viewModelFactory ?: return@lazy null
         ViewModelProvider(activity, factory).get()
     }
 

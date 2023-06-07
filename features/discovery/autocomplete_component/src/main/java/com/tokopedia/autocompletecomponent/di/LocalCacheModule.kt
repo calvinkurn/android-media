@@ -8,18 +8,19 @@ import com.tokopedia.discovery.common.utils.MpsLocalCache
 import com.tokopedia.discovery.common.utils.SharedPrefsMpsLocalCache
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 
 @Module
 object LocalCacheModule {
     @Provides
-    @AutoCompleteScope
+    @Reusable
     @JvmStatic
     fun bindCoachMarkLocalCache(
         instance: SharedPrefsCoachMarkLocalCache
     ) : CoachMarkLocalCache = instance
 
     @Provides
-    @AutoCompleteScope
+    @Reusable
     @JvmStatic
     fun bindMpsLocalCache(
         @ApplicationContext context: Context

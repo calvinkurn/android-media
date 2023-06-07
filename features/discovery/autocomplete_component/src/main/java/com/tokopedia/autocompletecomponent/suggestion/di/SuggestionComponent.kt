@@ -15,10 +15,7 @@ import dagger.Component
     SuggestionPresenterModule::class,
     SuggestionTrackingModule::class,
     SuggestionViewListenerModule::class
-], dependencies = [
-    BaseAppComponent::class,
-    AutoCompleteComponent::class,
-])
+], dependencies = [BaseAppComponent::class])
 interface SuggestionComponent {
 
     fun inject(fragment: SuggestionFragment)

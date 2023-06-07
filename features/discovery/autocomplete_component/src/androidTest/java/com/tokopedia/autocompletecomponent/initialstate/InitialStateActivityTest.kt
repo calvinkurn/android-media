@@ -17,14 +17,9 @@ class InitialStateActivityTest:
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_initial_state)
 
-        val autoCompleteComponent = DaggerAutoCompleteComponent.builder()
-            .baseAppComponent(getBaseAppComponent())
-            .build()
-
         val component = DaggerInitialStateTestComponent
             .builder()
             .baseAppComponent(getBaseAppComponent())
-            .autoCompleteComponent(autoCompleteComponent)
             .initialStateViewListenerModule(InitialStateViewListenerModule(this))
             .build()
 
