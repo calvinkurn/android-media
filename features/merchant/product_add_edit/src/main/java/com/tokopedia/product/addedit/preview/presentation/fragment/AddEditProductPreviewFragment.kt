@@ -150,6 +150,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.product.manage.common.R as productManageR
 
 class AddEditProductPreviewFragment :
     AddEditProductFragment(),
@@ -640,31 +641,7 @@ class AddEditProductPreviewFragment :
 
     private fun setupDoneButton(view: View) {
         doneButton?.setOnClickListener {
-            if (viewModel.productInputModel.value?.hasDTStock.orFalse()){
-                showEditDTProductsInActiveConfirmationDialog()
-            }else{
-                processSave(view)
-            }
-        }
-    }
-
-    private fun showEditDTProductsInActiveConfirmationDialog() {
-        context?.let { it ->
-            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(
-                    getString(
-                        R.string.product_manage_confirm_inactive_dt_product_title
-                    )
-                )
-                setDescription(getString(R.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml())
-                setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
-                setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
-                setPrimaryCTAClickListener {
-
-                    dismiss()
-                }
-                setSecondaryCTAClickListener { dismiss() }
-            }.show()
+            processSave(view)
         }
     }
 
@@ -1754,13 +1731,13 @@ class AddEditProductPreviewFragment :
         viewModel.updateProductStatus(true)
         productStatusSwitch?.isChecked = true
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        val descriptionText = MethodChecker
-            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
+        val descriptionText = getString(
+            productManageR.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml()
         dialog.apply {
-            setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
+            setTitle(getString(productManageR.string.product_manage_confirm_inactive_dt_product_title))
             setDescription(descriptionText)
-            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
-            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setPrimaryCTAText(getString(productManageR.string.product_manage_confirm_inactive_dt_product_positive_button))
+            setSecondaryCTAText(getString(productManageR.string.product_manage_confirm_dt_product_cancel_button))
             setPrimaryCTAClickListener {
                 productStatusSwitch?.isChecked = false
                 viewModel.updateProductStatus(false)

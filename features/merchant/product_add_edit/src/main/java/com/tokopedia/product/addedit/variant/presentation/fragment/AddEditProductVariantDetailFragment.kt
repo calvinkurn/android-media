@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -24,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
@@ -67,6 +67,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.math.BigInteger
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.product.manage.common.R as productManageR
 
 class AddEditProductVariantDetailFragment :
     BaseDaggerFragment(),
@@ -493,13 +494,12 @@ class AddEditProductVariantDetailFragment :
 
     private fun showDTNotAllowedChangeStatusDialog(position: Int) {
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        val descriptionText = MethodChecker
-            .fromHtml(getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate))
+        val descriptionText = getString(R.string.product_add_edit_text_description_product_dt_cannot_deactivate).parseAsHtml()
         dialog.apply {
             setTitle(getString(R.string.product_add_edit_text_title_product_dt_cannot_deactivate))
             setDescription(descriptionText)
-            setPrimaryCTAText(getString(R.string.product_add_edit_text_dt_deactivate))
-            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setPrimaryCTAText(getString(productManageR.string.product_manage_confirm_inactive_dt_product_positive_button))
+            setSecondaryCTAText(getString(productManageR.string.product_manage_confirm_dt_product_cancel_button))
             setPrimaryCTAClickListener {
                 viewModel.updateSwitchStatus(false, position)
                 variantDetailFieldsAdapter?.deactivateVariantStatus(position)
