@@ -36,6 +36,8 @@ sealed interface UserProfileUiEvent {
 
     data class ErrorLikeDislike(val throwable: Throwable) : UserProfileUiEvent
 
+    data class OpenProductDetailPage(val productId: String) : UserProfileUiEvent
+
     data class OpenReviewMediaGalleryPage(
         val review: UserReviewUiModel.Review,
         val mediaPosition: Int,

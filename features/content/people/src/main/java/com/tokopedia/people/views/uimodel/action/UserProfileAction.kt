@@ -51,6 +51,8 @@ sealed interface UserProfileAction {
 
     data class ClickReviewTextSeeMore(val review: UserReviewUiModel.Review) : UserProfileAction
 
+    data class ClickProductInfo(val review: UserReviewUiModel.Review) : UserProfileAction
+
     data class ClickReviewMedia(
         val feedbackID: String,
         val attachment: UserReviewUiModel.Attachment
