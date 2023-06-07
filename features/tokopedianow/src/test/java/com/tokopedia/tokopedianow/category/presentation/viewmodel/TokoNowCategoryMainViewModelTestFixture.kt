@@ -5,10 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryPageMapper.mapToShowcaseProductCard
@@ -16,6 +19,7 @@ import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailRespons
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
+import com.tokopedia.tokopedianow.category.presentation.util.MiniCartMapper
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
@@ -41,27 +45,33 @@ open class TokoNowCategoryMainViewModelTestFixture {
     /**
      * private variable section
      */
+    private lateinit var localAddress: TokoNowLocalAddress
+
+    private val privateFieldLocalAddress = "localAddressData"
+
     private val categoryProductResponse1 = "category/ace-search-product-1-aneka-sayuran.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse2 = "category/ace-search-product-2-bawang.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse3 = "category/ace-search-product-3-buah-buahan.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse4 = "category/ace-search-product-4-jamur.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse5 = "category/ace-search-product-5-paket-sayur.json".jsonToObject<AceSearchProductModel>()
+    private val miniCartDataResponse = "category/get-minicart.json".jsonToObject<MiniCartGqlResponse>()
 
     /**
      * protected variable section
      */
 
-    protected lateinit var localAddress: TokoNowLocalAddress
     protected lateinit var viewModel: TokoNowCategoryMainViewModel
     protected lateinit var addressData: LocalCacheModel
 
     protected val categoryIdL1: String = "123"
     protected val warehouseId: String = "345"
+    protected val shopId: String = "11122"
     protected val navToolbarHeight: Int = 100
 
     protected val categoryDetailResponse = "category/category-detail.json".jsonToObject<CategoryDetailResponse>()
     protected val targetedTickerResponse = "category/targeted-ticker.json".jsonToObject<GetTargetedTickerResponse>()
     protected val addToCartGqlResponse = "category/add-to-cart-product.json".jsonToObject<AddToCartGqlResponse>()
+    protected val updateProductInCartResponse = "category/update-product-in-cart.json".jsonToObject<UpdateCartGqlResponse>()
 
     protected val categoryProductResponseMap = mapOf(
         "4859" to categoryProductResponse1,
@@ -80,7 +90,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
     @RelaxedMockK
     lateinit var getCategoryProductUseCase: GetCategoryProductUseCase
     @RelaxedMockK
-    lateinit var getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase
+    lateinit var getMiniCartUseCase: GetMiniCartListSimplifiedUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
@@ -104,7 +114,10 @@ open class TokoNowCategoryMainViewModelTestFixture {
     @Before
     fun setUp() {
         localAddress = TokoNowLocalAddress(mockk(relaxed = true))
-        setWarehouseId(warehouseId)
+        setAddressData(
+            warehouseId = warehouseId,
+            shopId = shopId
+        )
 
         MockKAnnotations.init(this)
 
@@ -114,7 +127,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
             categoryIdL1 = categoryIdL1,
             addressData = localAddress,
             userSession = userSession,
-            getMiniCartUseCase = getMiniCartListSimplifiedUseCase,
+            getMiniCartUseCase = getMiniCartUseCase,
             addToCartUseCase = addToCartUseCase,
             updateCartUseCase = updateCartUseCase,
             deleteCartUseCase = deleteCartUseCase,
@@ -128,11 +141,21 @@ open class TokoNowCategoryMainViewModelTestFixture {
      * protected thenReturns & thenThrows functions section
      */
 
-    protected fun setWarehouseId(
-        warehouseId: String
+    protected fun setAddressData(
+        warehouseId: String,
+        shopId: String
     ) {
-        addressData = LocalCacheModel(warehouse_id = warehouseId)
-        localAddress.mockPrivateField("localAddressData", LocalCacheModel(warehouse_id = warehouseId))
+        addressData = LocalCacheModel(
+            warehouse_id = warehouseId,
+            shop_id = shopId
+        )
+        localAddress.mockPrivateField(
+            name = privateFieldLocalAddress,
+            value = LocalCacheModel(
+                warehouse_id = warehouseId,
+                shop_id = shopId
+            )
+        )
     }
 
     protected fun onUserSession_thenReturns(
@@ -224,6 +247,20 @@ open class TokoNowCategoryMainViewModelTestFixture {
         } answers {
             firstArg<(AddToCartDataModel) -> Unit>().invoke(addToCartDataModel)
         }
+    }
+
+    protected fun onUpdateProductInCart_thenReturns() {
+        coEvery {
+            updateCartUseCase.execute(any(), any())
+        } answers {
+            firstArg<(UpdateCartV2Data) -> Unit>().invoke(updateProductInCartResponse.updateCartData)
+        }
+    }
+
+    protected fun onGetMiniCart_thenReturns() {
+        coEvery {
+            getMiniCartUseCase.executeOnBackground()
+        } returns MiniCartMapper.mapMiniCartSimplifiedData(miniCartDataResponse.miniCart)
     }
 
     /**

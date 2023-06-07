@@ -148,8 +148,9 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
     fun `the execution of getCategoryHeader should not be continued because warehouse id is zero`() {
-        setWarehouseId(
-            warehouseId = NO_WAREHOUSE_ID
+        setAddressData(
+            warehouseId = NO_WAREHOUSE_ID,
+            shopId = shopId
         )
 
         viewModel.getCategoryHeader(

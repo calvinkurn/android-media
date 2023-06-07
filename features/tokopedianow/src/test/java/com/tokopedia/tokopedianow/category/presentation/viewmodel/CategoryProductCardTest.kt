@@ -7,7 +7,7 @@ import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTracker
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
-import com.tokopedia.tokopedianow.category.presentation.util.CategoryProductCardUtil.mapAddToCartResponse
+import com.tokopedia.tokopedianow.category.presentation.util.AddToCartMapper.mapAddToCartResponse
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -19,7 +19,8 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class CategoryProductCardTest: TokoNowCategoryMainViewModelTestFixture(){
     @Test
-    fun `while adding product to cart, the request should be success`() = runTest {
+    fun `when adding product to cart, request should be successful`() = runTest {
+        // mock data
         val parentProductId = "1223"
         val productId = "2025598474"
         val productOrderQuantity = 0
@@ -29,7 +30,6 @@ class CategoryProductCardTest: TokoNowCategoryMainViewModelTestFixture(){
         val productPosition = 0
         val showcaseTitle = "Buah- Buahan"
         val showcaseId = "133333"
-        val shopId = "11515028"
         val privateFieldNameLayout = "layout"
         val newProductOrderQuantity = 2
 
@@ -62,6 +62,7 @@ class CategoryProductCardTest: TokoNowCategoryMainViewModelTestFixture(){
             value = mockLayout
         )
 
+        // change product quantity
         viewModel.onCartQuantityChanged(
             productId = categoryShowcaseItemUiModel.productCardModel.productId,
             quantity = newProductOrderQuantity,
@@ -76,6 +77,7 @@ class CategoryProductCardTest: TokoNowCategoryMainViewModelTestFixture(){
             layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
         )
 
+        //verify data
         viewModel.addItemToCart
             .getOrAwaitValue()
         viewModel.addItemToCart
@@ -109,53 +111,90 @@ class CategoryProductCardTest: TokoNowCategoryMainViewModelTestFixture(){
             .verifyValueEquals(resultCategoryPage)
     }
 
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun `while updating product to cart, the request should be success`() {
-//        runTest {
-//            val addToCartProductResponse = "category/update-product-in-cart.json".jsonToObject<UpdateCartGqlResponse>()
-//
-//            coEvery {
-//                updateCartUseCase.execute(any(), any())
-//            } answers {
-//                firstArg<(AddToCartDataModel) -> Unit>().invoke(addToCartProductResponse.updateCartData)
-//            }
-//
-//            val categoryShowcaseItemUiModel = CategoryShowcaseItemUiModel(
-//                productCardModel = ProductCardCompactUiModel(
-//                    productId = "2025598474",
-//                    orderQuantity = 0,
-//                    availableStock = 5,
-//                    name = "product name",
-//                    price = "1000"
-//                ),
-//                parentProductId = "1223",
-//                headerName = "testing"
-//            )
-//
-//            val categoryShowcaseUiModel = CategoryShowcaseUiModel(id = "133333", productListUiModels = listOf(categoryShowcaseItemUiModel))
-//
-//            viewModel.mockPrivateField("layout", mutableListOf(categoryShowcaseUiModel))
-//
-//            viewModel.onCartQuantityChanged(
-//                productId = categoryShowcaseItemUiModel.productCardModel.productId,
-//                quantity = 2,
-//                stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
-//                shopId = "11515028",
-//                position = 0,
-//                isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
-//                name = categoryShowcaseItemUiModel.productCardModel.name,
-//                categoryIdL1 = categoryIdL1,
-//                price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
-//                headerName = categoryShowcaseItemUiModel.headerName,
-//                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
-//            )
-//
-//            viewModel.addItemToCart.getOrAwaitValue()
-//            viewModel.addItemToCart.verifyValueEquals(Success(addToCartDataModel))
-//
-//            viewModel.categoryPage.getOrAwaitValue()
-//            viewModel.categoryPage.verifyValueEquals(listOf(categoryShowcaseUiModel.copy(productListUiModels = listOf(categoryShowcaseItemUiModel.copy(productCardModel = categoryShowcaseItemUiModel.productCardModel.copy(orderQuantity = 2))))))
-//        }
-//    }
+    @Test
+    fun `when updating product to cart, request should be successful`() {
+        runTest {
+            // mock data
+            val parentProductId = "1223"
+            val productId = "2025598474"
+            val productOrderQuantity = 1
+            val productStock = 5
+            val productName = "Jeruk"
+            val productPrice = "Rp. 2000"
+            val productPosition = 0
+            val showcaseTitle = "Buah- Buahan"
+            val showcaseId = "133333"
+            val privateFieldNameLayout = "layout"
+            val newProductOrderQuantity = 2
+            val isLoggedIn = true
+            val userId = "14445"
+            val deviceId = "88889"
+
+            onUserSession_thenReturns(
+                isLoggedIn = isLoggedIn,
+                userId = userId,
+                deviceId = deviceId
+            )
+            onUpdateProductInCart_thenReturns()
+            onGetMiniCart_thenReturns()
+
+            val categoryShowcaseItemUiModel = CategoryShowcaseItemUiModel(
+                productCardModel = ProductCardCompactUiModel(
+                    productId = productId,
+                    orderQuantity = productOrderQuantity,
+                    availableStock = productStock,
+                    name = productName,
+                    price = productPrice
+                ),
+                parentProductId = parentProductId,
+                headerName = showcaseTitle
+            )
+
+            val categoryShowcaseUiModel = CategoryShowcaseUiModel(
+                id = showcaseId,
+                title = showcaseTitle,
+                productListUiModels = listOf(
+                    categoryShowcaseItemUiModel
+                )
+            )
+
+            val mockLayout = mutableListOf(categoryShowcaseUiModel)
+            viewModel.mockPrivateField(
+                name = privateFieldNameLayout,
+                value = mockLayout
+            )
+
+            // get minicart
+            viewModel.getMiniCart()
+
+            // change product quantity
+            viewModel.onCartQuantityChanged(
+                productId = categoryShowcaseItemUiModel.productCardModel.productId,
+                quantity = newProductOrderQuantity,
+                stock = categoryShowcaseItemUiModel.productCardModel.availableStock,
+                shopId = shopId,
+                position = productPosition,
+                isOos = categoryShowcaseItemUiModel.productCardModel.isOos(),
+                name = categoryShowcaseItemUiModel.productCardModel.name,
+                categoryIdL1 = categoryIdL1,
+                price = categoryShowcaseItemUiModel.productCardModel.price.getDigits().orZero(),
+                headerName = categoryShowcaseItemUiModel.headerName,
+                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE,
+            )
+
+            //verify data
+            viewModel.updateCartItem
+                .getOrAwaitValue()
+            viewModel.updateCartItem
+                .verifyValueEquals(
+                    Success(
+                        Triple(
+                            productId,
+                            updateProductInCartResponse.updateCartData,
+                            newProductOrderQuantity
+                        )
+                    )
+                )
+        }
+    }
 }

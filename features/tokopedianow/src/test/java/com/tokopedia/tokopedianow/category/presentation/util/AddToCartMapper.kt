@@ -8,7 +8,7 @@ import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 
-object CategoryProductCardUtil {
+object AddToCartMapper {
     fun mapAddToCartResponse(addToCartGqlResponse: AddToCartGqlResponse): AddToCartDataModel {
         return addToCartGqlResponse.addToCartResponse.let {
             val errorReporter = ErrorReporterModel()
