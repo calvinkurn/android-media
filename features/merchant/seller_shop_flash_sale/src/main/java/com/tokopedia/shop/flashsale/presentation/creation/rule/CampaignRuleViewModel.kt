@@ -123,7 +123,6 @@ class CampaignRuleViewModel @Inject constructor(
     private var initialCampaignRelation: Boolean? = null
     private var initialCampaignRelations: List<RelatedCampaign> = emptyList()
     private var selectedVpsPackageId: Long = 0
-    private var isEnableTransactionWhenOos: Boolean = true // Out Of Stock Handler
 
 
     private val isInputChanged: Boolean
@@ -519,7 +518,7 @@ class CampaignRuleViewModel @Inject constructor(
     ): DoSellerCampaignCreationUseCase.Param {
         val campaignRelations = getCampaignRelationIds(campaignId)
         val selectedPaymentType = selectedPaymentType.value ?: campaignData.paymentType
-        val isEnableOosTransaction = selectedOosState.value ?: campaignData.isOosImprovement
+        val isEnableOosTransaction = selectedOosState.value ?: campaignData.isOosImprovement // The default value should assigned to true
         val isCampaignRuleSubmit = isTNCConfirmed.value == true
         return DoSellerCampaignCreationUseCase.Param(
             action = action,
