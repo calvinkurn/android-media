@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.di
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.chuckerteam.chucker.api.ChuckerInterceptor
@@ -13,7 +14,6 @@ import com.gojek.kyc.sdk.config.KycSdkUserInfo
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.google.gson.Gson
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
@@ -101,7 +101,7 @@ open class GoToKycModule {
         userSessionInterface: UserSessionInterface
     ): TkpdAuthenticatorGql {
         return TkpdAuthenticatorGql(
-            application = context as BaseMainApplication,
+            application = context as Application,
             networkRouter = networkRouter,
             userSession = userSessionInterface,
             RefreshTokenGql()
