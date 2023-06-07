@@ -38,6 +38,8 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     private val interactor = KycSdkStatusPublisher.get()
 
+    private var errorMessage = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,6 +58,10 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.globalError?.setActionClickListener {
+            GotoKycAnalytics.sendClickOnButtonKirimUlangErrorPageEvent(
+                errorMessage = errorMessage,
+                projectId = args.parameter.projectId
+            )
             onUploadingDocuments()
             oneKycSdk.submitKycDocuments()
         }
@@ -132,9 +138,18 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
         }
 
         if (!isConnectionAvailable(requireContext())) {
-            GotoKycAnalytics.sendViewConnectionIssuePage(projectId = args.parameter.projectId)
+            errorMessage = ERROR_NO_CONNECTION
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = errorMessage,
+                projectId = args.parameter.projectId
+            )
             binding?.globalError?.setType(GlobalError.NO_CONNECTION)
         } else {
+            errorMessage = FAILED_UPLOAD_DOCUMENT
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = errorMessage,
+                projectId = args.parameter.projectId
+            )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
         }
     }
@@ -153,5 +168,10 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(GoToKycComponent::class.java).inject(this)
+    }
+
+    companion object {
+        private const val FAILED_UPLOAD_DOCUMENT = "failed upload document"
+        private const val ERROR_NO_CONNECTION = "no connection"
     }
 }

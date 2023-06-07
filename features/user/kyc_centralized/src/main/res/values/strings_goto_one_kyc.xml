@@ -18,8 +18,8 @@
     <string name="onekyc_zero_clicks_selfie_prepare_card_info2">Tanpa topi</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info3">Tanpa kacamata</string>
     <string name="onekyc_zero_clicks_selfie_prepare_card_info4">Cahaya cukup</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta1">Mulai Selfie</string>
-    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Tap here if you need time to get ready</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_ready_cta">Mulai Selfie</string>
+    <string name="onekyc_zero_clicks_selfie_prepare_card_needtime_cta">Siap-siap Dulu</string>
 
     <!-- Zero Click Flow Feedbacks-->
     <string name="onekyc_zero_clicks_feedback_ktp_face_not_detected">Fotomu yang ada di e-KTP harus masuk di kotak</string>
@@ -78,8 +78,6 @@
     <string name="onekyc_guideline_ktp_instruction_1">e-KTP kamu harus asli (bukan hasil scan atau fotokopi) dan difoto langsung dari kamera HP-mu.</string>
     <string name="onekyc_guideline_ktp_instruction_2">e-KTP harus muat di dalam bingkai.</string>
     <string name="onekyc_guideline_ktp_instruction_3">Pastikan e-KTP kamu bisa dibaca dengan jelas.</string>
-    <string name="onekyc_guideline_ktp_instruction_auto_4">Tekan button untuk ambil foto.</string>
-    <string name="onekyc_guideline_ktp_instruction_manual_4">Tekan button untuk ambil foto.</string>
     <string name="onekyc_guideline_selfie_title">Tips ambil selfie</string>
     <string name="onekyc_guideline_selfie_autocapture_info_title">Fotomu akan diambil secara otomatis</string>
     <string name="onekyc_guideline_selfie_autocapture_info_description">Kamu hanya perlu posisikan wajahmu sesuai tips di bawah ini. Kami akan otomatis ambil fotomu.</string>
@@ -105,6 +103,6 @@
     <string name="gofin_kyc_auto_capture_exhausted_dialog_title">Mau coba foto manual aja?</string>
     <string name="gofin_kyc_auto_capture_exhausted_dialog_description">Sepertinya kamu kesulitan saat ambil foto otomatis, coba foto manual buat lanjutin.</string>
     <string name="gofin_kyc_auto_capture_continue_cta">Foto Otomatis</string>
-    <string name="gofin_kyc_auto_capture_swicth_mode_cta">Foto Manual</string>
+    <string name="gofin_kyc_auto_capture_switch_mode_cta">Foto Manual</string>
 
 </resources>

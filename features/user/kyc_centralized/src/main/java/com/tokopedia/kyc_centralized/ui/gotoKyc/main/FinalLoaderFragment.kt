@@ -41,6 +41,8 @@ class FinalLoaderFragment : BaseDaggerFragment() {
 
     private val args: FinalLoaderFragmentArgs by navArgs()
 
+    private var errorMessage = ""
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -133,14 +135,16 @@ class FinalLoaderFragment : BaseDaggerFragment() {
     private fun handleGlobalError(throwable: Throwable?) {
         binding?.globalError?.show()
         if (throwable != null) {
-            val error = throwable.getGotoKycErrorMessage(requireContext())
+            errorMessage = throwable.getGotoKycErrorMessage(requireContext())
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = errorMessage,
+                projectId = args.parameter.projectId
+            )
             when (throwable) {
                 is UnknownHostException, is ConnectException -> {
-                    GotoKycAnalytics.sendViewConnectionIssuePage(args.parameter.projectId)
                     binding?.globalError?.setType(GlobalError.NO_CONNECTION)
                 }
                 is SocketTimeoutException -> {
-                    GotoKycAnalytics.sendViewTimeoutPage(projectId = args.parameter.projectId)
                     binding?.globalError?.apply {
                     errorIllustration.loadImage(getString(R.string.img_url_goto_kyc_error_timeout))
 
@@ -153,11 +157,16 @@ class FinalLoaderFragment : BaseDaggerFragment() {
                 else -> {
                     binding?.globalError?.apply {
                         setType(GlobalError.MAINTENANCE)
-                        errorDescription.text = error
+                        errorDescription.text = errorMessage
                     }
                 }
             }
         } else {
+            errorMessage = context?.getString(R.string.goto_kyc_error_from_be).toString()
+            GotoKycAnalytics.sendViewOnErrorPageEvent(
+                errorMessage = errorMessage,
+                projectId = args.parameter.projectId
+            )
             binding?.globalError?.setType(GlobalError.MAINTENANCE)
         }
     }

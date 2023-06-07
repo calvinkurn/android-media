@@ -93,6 +93,16 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     }
                 }
             }
+            IMAGE_CAPTURE_MODE_AUTO_CAPTURE -> {
+                when (eventProperties[TYPE]) {
+                    KTP -> {
+                        GotoKycAnalytics.sendClickOnButtonFotoOtomatisKtpPage(projectId)
+                    }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendClickOnButtonFotoOtomatisSelfiePage(projectId)
+                    }
+                }
+            }
             IMAGE_CAPTURE_MODE_CHANGED -> {
                 when (eventProperties[TYPE]) {
                     KTP -> {
@@ -191,6 +201,9 @@ class GotoKycEventTrackingProvider @Inject constructor(
             SELFIE_PREPARE_SCREEN_VIEWED -> {
                 GotoKycAnalytics.sendViewGuideSelfiePage(projectId)
             }
+            CLICK_SELFIE_NEED_TIME -> {
+                GotoKycAnalytics.sendClickNeedTimeGuideSelfiePage(projectId)
+            }
             SELFIE_PREPARE_READY_CLICKED -> {
                 GotoKycAnalytics.sendClickOnStartSelfie(projectId)
             }
@@ -214,6 +227,16 @@ class GotoKycEventTrackingProvider @Inject constructor(
                     }
                     SELFIE -> {
                         GotoKycAnalytics.sendClickButtonRetakeSelfie(projectId)
+                    }
+                }
+            }
+            DOCUMENT_RETAKE_CTA -> {
+                when (eventProperties[TYPE]) {
+                    KTP -> {
+                        GotoKycAnalytics.sendClickOnButtonFotoUlangReviewKtpPage(projectId)
+                    }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendClickOnButtonFotoUlangReviewSelfiePage(projectId)
                     }
                 }
             }
@@ -243,6 +266,16 @@ class GotoKycEventTrackingProvider @Inject constructor(
                             statusScan = VALUE_IMAGE_DETECTED_ERROR,
                             projectId = projectId
                         )
+                    }
+                }
+            }
+            IMAGE_DELETED -> {
+                when (eventProperties[TYPE]) {
+                    KTP -> {
+                        GotoKycAnalytics.sendClickDeleteKtp(projectId)
+                    }
+                    SELFIE -> {
+                        GotoKycAnalytics.sendClickDeleteSelfie(projectId)
                     }
                 }
             }
@@ -299,20 +332,23 @@ class GotoKycEventTrackingProvider @Inject constructor(
         private const val DEEPLEARN_AUTO_CAPTURE = "DeeplearnAutoCapture"
         private const val CUSTOM = "Custom"
         private const val CAMERA_OPENED = "GP KYC Camera Opened"
+        private const val IMAGE_CAPTURE_MODE_AUTO_CAPTURE  = "GP KYC Image Capture Mode Autocapture Clicked"
         private const val IMAGE_CAPTURE_MODE_CHANGE_VIEWED = "GP KYC Image Capture Mode Change Viewed"
         private const val IMAGE_CAPTURE_MODE_CHANGED = "GP KYC Image Capture Mode Changed"
         private const val IMAGE_CAPTURE_INITIATED = "GP KYC Image Capture Initiated"
         private const val APP_CLOSE_BUTTON_CLICKED = "GP KYC In App Close Button Clicked"
         private const val CLOSE_BUTTON_CLICKED = "GP KYC Close Button Clicked"
-        private const val GUIDELINE_CLICKED = "GP KYC Guideline Clicked"
         private const val IMAGE_CAPTURE_MODE_BACK_PRESSED = "GP KYC Image Capture Mode Back Button Pressed"
         private const val SELFIE_PREPARE_SCREEN_VIEWED = "GP KYC Selfie Prepare Screen Viewed"
+        private const val CLICK_SELFIE_NEED_TIME = "GP KYC Selfie Prepare Need Time CTA Clicked"
         private const val SELFIE_PREPARE_READY_CLICKED = "GP KYC Selfie Prepare Ready CTA Clicked"
         private const val PREVIEW_ALL_DOCUMENT_VIEWED = "GP KYC All Documents Viewed"
         private const val PREVIEW_ALL_DOCUMENT_CTA_CLICKED = "GP KYC View Document CTA Clicked"
         private const val DOCUMENT_RETAKE = "GP KYC Document Retake"
+        private const val DOCUMENT_RETAKE_CTA = "GP KYC View Document Retake CTA Clicked"
         private const val PREVIEW_ALL_DOCUMENT_SUBMITTED = "GP KYC All Documents Submitted"
         private const val VIEW_DOCUMENT_LOOKS_GOOD_CLICKED = "GP KYC View Document Looks Good CTA Clicked"
+        private const val IMAGE_DELETED = "GP KYC Document Deleted"
         private const val IMAGE_QUALITY_ERROR = "GP KYC Image Quality Error"
         private const val IMAGE_DETECTED = "GP KYC Image Detected"
         private const val IMAGE_QUALITY_GOOD_DETECTED = "GP KYC Good Quality Image Detected"

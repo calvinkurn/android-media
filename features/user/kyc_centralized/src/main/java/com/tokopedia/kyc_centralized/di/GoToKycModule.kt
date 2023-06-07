@@ -16,7 +16,6 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
@@ -94,7 +93,6 @@ open class GoToKycModule {
     @ActivityScope
     @Provides
     fun provideOkHttpClient(
-        @ApplicationContext context: Context,
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         retryPolicy: OkHttpRetryPolicy,
         loggingInterceptor: HttpLoggingInterceptor,
@@ -131,9 +129,7 @@ open class GoToKycModule {
         userSessionInterface: UserSessionInterface
     ): KycSdkUserInfo {
         return KycSdkUserInfo(
-            emailId = userSessionInterface.email,
-            userId = userSessionInterface.userId,
-            userName = userSessionInterface.name
+            userId = userSessionInterface.userId
         )
     }
 
@@ -182,11 +178,7 @@ open class GoToKycModule {
         @ApplicationContext context: Context
     ) = KycSdkAnalyticsConfig(
         apiKey = context.getString(com.tokopedia.keys.R.string.one_kyc_click_stream_api_key),
-        url = if (GlobalConfig.isAllowDebuggingTools()) {
-            KYCConstant.ONE_KYC_CLICKSTREAM_URL_STAGING
-        } else {
-            KYCConstant.ONE_KYC_CLICKSTREAM_URL_PRODUCTION
-        },
+        url = "${TokopediaUrl.getInstance().ONE_KYC_CLICKSTREAM}$clickstreamEndPoint",
         enableDebugLogs = GlobalConfig.isAllowDebuggingTools()
     )
 
@@ -219,5 +211,6 @@ open class GoToKycModule {
     companion object {
         private const val NET_RETRY = 3
         private const val sharedPreferenceName = "kyc_centralized"
+        private const val clickstreamEndPoint = "/api/v1/events"
     }
 }

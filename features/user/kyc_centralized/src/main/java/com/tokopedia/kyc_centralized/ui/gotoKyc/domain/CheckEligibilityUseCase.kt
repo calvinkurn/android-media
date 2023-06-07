@@ -19,7 +19,7 @@ class CheckEligibilityUseCase @Inject constructor(
             if (response.success == true) {
                 when (response.data?.flow) {
                     KYCConstant.GotoKycFlow.PROGRESSIVE -> {
-                        CheckEligibilityResult.Progressive(response.data?.details?.maskedName.orEmpty())
+                        CheckEligibilityResult.Progressive(response.data?.userIdentityData?.maskedName.orEmpty())
                     }
                     KYCConstant.GotoKycFlow.NON_PROGRESSIVE -> {
                         CheckEligibilityResult.NonProgressive()
