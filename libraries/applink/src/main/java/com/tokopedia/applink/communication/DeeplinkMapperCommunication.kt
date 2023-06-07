@@ -13,6 +13,8 @@ object DeeplinkMapperCommunication {
 
     private const val CHAT_SETTINGS = "chatsettings"
     private const val KEY_ROLLENCE_UNIVERSAL_INBOX = "universal_inbox"
+    private const val ROLLENCE_TYPE_A = "inbox_varA"
+    private const val ROLLENCE_TYPE_B = "inbox_varB"
 
     const val TOKOCHAT_REMOTE_CONFIG = "android_enable_tokochat"
 
@@ -34,16 +36,16 @@ object DeeplinkMapperCommunication {
     /**
      * Rollence util
      */
-    private fun isRollenceActive(key: String): Boolean {
+    private fun isABTestActive(key: String): String {
         return try {
             RemoteConfigInstance
                 .getInstance()
                 .abTestPlatform.getString(
                     key,
-                    key
-                ) == key
+                    ""
+                )
         } catch (throwable: Throwable) {
-            true
+            ""
         }
     }
 
@@ -78,13 +80,13 @@ object DeeplinkMapperCommunication {
         }
     }
 
-
-
     /**
      * Inbox mapper with remote config
      */
     fun getRegisteredNavigationInbox(): String {
-        return if (isRollenceActive(KEY_ROLLENCE_UNIVERSAL_INBOX)) {
+        val useUnivInbox = isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_A ||
+            isABTestActive(KEY_ROLLENCE_UNIVERSAL_INBOX) == ROLLENCE_TYPE_B
+        return if (useUnivInbox) {
             ApplinkConstInternalCommunication.UNIVERSAL_INBOX
         } else {
             ApplinkConsInternalHome.HOME_INBOX

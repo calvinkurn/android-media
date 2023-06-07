@@ -4,6 +4,12 @@ object UniversalInboxValueUtil {
 
     const val PAGE_NAME = "inbox"
 
+    /**
+     * Rollence
+     */
+    const val ROLLENCE_KEY = "inbox_universal"
+    const val ROLLENCE_TYPE_A = "inbox_varA"
+    const val ROLLENCE_TYPE_B = "inbox_varB"
 
     /**
      * Widget
