@@ -782,7 +782,14 @@ class CartListPresenter @Inject constructor(
                 tmpSubtotalBeforeSlashedPrice += itemPrice
             }
 
-            tmpSubTotalPrice += itemPrice
+            var addonProductPrice = 0.0
+            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
+                cartItemHolderData.addOnsProduct.listData.forEach {
+                    addonProductPrice += it.price
+                }
+            }
+
+            tmpSubTotalPrice += itemPrice + addonProductPrice
             cartItemHolderData.wholesalePriceFormatted = null
             cartItemParentIdMap[parentIdPriceIndex] = cartItemHolderData
         }

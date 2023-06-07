@@ -1,8 +1,6 @@
 package com.tokopedia.cart.view.uimodel
 
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Action
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOns
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.AddOnsWidget
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.ProductInformationWithIcon
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
@@ -96,8 +94,7 @@ data class CartItemHolderData(
     var wholesalePriceFormatted: String? = null,
 
     // AddOns Product
-    var addOnProductList: List<AddOns> = emptyList(),
-    var addOnProductWidget: AddOnsWidget = AddOnsWidget()
+    var addOnsProduct: CartAddOnData = CartAddOnData()
 ) {
     companion object {
         const val BUNDLING_ITEM_DEFAULT = 0

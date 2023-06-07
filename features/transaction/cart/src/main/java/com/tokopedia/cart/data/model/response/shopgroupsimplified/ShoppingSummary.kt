@@ -12,5 +12,14 @@ data class ShoppingSummary(
     @SerializedName("promo_wording")
     val promoWording: String = "",
     @SerializedName("seller_cashback_wording")
-    val sellerCashbackWording: String = ""
-)
+    val sellerCashbackWording: String = "",
+    @SerializedName("summary_add_ons")
+    val summaryAddOnList: List<SummaryAddOn> = emptyList()
+) {
+    data class SummaryAddOn(
+            @SerializedName("wording")
+            val wording: String = "",
+            @SerializedName("type")
+            val type: Int = -1
+    )
+}

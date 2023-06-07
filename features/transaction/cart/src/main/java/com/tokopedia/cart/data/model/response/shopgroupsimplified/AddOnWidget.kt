@@ -2,7 +2,7 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
 
-data class AddOnsWidget(
+data class AddOnWidget(
         @SerializedName("wording")
         val wording: String = "",
         @SerializedName("left_icon_url")

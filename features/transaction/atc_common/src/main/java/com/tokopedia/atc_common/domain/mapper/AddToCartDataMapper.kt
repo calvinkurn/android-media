@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.data.model.response.occ.DataOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.occ.DetailOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.ocs.OcsDataResponse
+import com.tokopedia.atc_common.domain.model.response.AddOn
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiCartData
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
@@ -161,6 +162,7 @@ class AddToCartDataMapper @Inject constructor() {
         dataModel.ucUtParam = it.ucUtParam
         dataModel.isTradeIn = it.isTradeIn
         dataModel.message = it.message
+        dataModel.addOns = mapAddOns(it.addOnsProduct)
         return dataModel
     }
 
@@ -185,6 +187,19 @@ class AddToCartDataMapper @Inject constructor() {
                 customerId = cart.customerId,
                 warehouseId = cart.warehouseId
         )
+    }
+
+    private fun mapAddOns(addOnsProduct: List<DataResponse.AddOnsProduct>): List<AddOn> {
+        val arrayListAddOn = arrayListOf<AddOn>()
+        addOnsProduct.forEach {
+            val addOn = AddOn(
+                    id = it.addOnId,
+                    uniqueId = it.uniqueId,
+                    status = it.status
+            )
+            arrayListAddOn.add(addOn)
+        }
+        return arrayListAddOn
     }
 
 }

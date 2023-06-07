@@ -69,6 +69,10 @@ data class DataResponse(
         @Expose
         val addOnId: String = "",
 
+        @SerializedName("unique_id")
+        @Expose
+        val uniqueId: String = "",
+
         @SerializedName("status")
         @Expose
         val status: Int = -1
