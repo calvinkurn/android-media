@@ -303,17 +303,11 @@ class PlayShortsViewModel @Inject constructor(
             val response = repo.submitOnboardAffiliateTnc(request)
             val isSuccess = response.errorMessage.isEmpty()
 
-            if (!isSuccess) {
-                _uiEvent.emit(
-                    PlayShortsUiEvent.ErrorOnboardAffiliate(Throwable(response.errorMessage))
-                )
-            }
+            if (!isSuccess) throw Throwable(response.errorMessage)
 
-            checkIsSuccessSubmitAffiliate(isSuccess)
+            checkIsSuccessSubmitAffiliate()
         }) {
-            _uiEvent.emit(
-                PlayShortsUiEvent.ErrorOnboardAffiliate(it)
-            )
+            _uiEvent.emit(PlayShortsUiEvent.ErrorOnboardAffiliate(it))
         }
     }
 
@@ -496,8 +490,7 @@ class PlayShortsViewModel @Inject constructor(
         setupShortsAffiliateEntryPoint(!_isAffiliate.value)
     }
 
-    private suspend fun checkIsSuccessSubmitAffiliate(isSuccess: Boolean) {
-        if (!isSuccess) return
+    private suspend fun checkIsSuccessSubmitAffiliate() {
         checkIsUserAffiliate()
         _uiEvent.emit(PlayShortsUiEvent.SuccessOnboardAffiliate)
     }

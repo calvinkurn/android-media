@@ -113,7 +113,6 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
             binding.btnContinue.isEnabled = binding.layoutTnc.cbxTnc.isChecked
         }
         binding.btnContinue.setOnClickListener {
-            if (binding.btnContinue.isLoading) return@setOnClickListener
             if (it.isEnabled) {
                 updateButtonState(true)
                 mListener?.onSubmitTnc()
@@ -140,7 +139,7 @@ class PlayShortsAffiliateTnCBottomSheet @Inject constructor(
             throwable,
             duration = Toaster.LENGTH_INDEFINITE,
             actionLabel = getString(R.string.title_try_again),
-            actionListener = {mListener?.onSubmitTnc() }
+            actionListener = { mListener?.onSubmitTnc() }
         )
     }
 
