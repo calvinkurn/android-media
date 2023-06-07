@@ -18,12 +18,25 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_8"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_task_progress"
         app:layout_constraintStart_toEndOf="@id/iv_check"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_2"
         tools:text="Follow toko" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_task_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_task"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="paragraph_3"
+        tools:text="1/5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

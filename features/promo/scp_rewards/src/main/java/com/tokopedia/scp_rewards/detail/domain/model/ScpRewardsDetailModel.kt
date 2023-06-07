@@ -63,7 +63,8 @@ data class Mission(
 
 data class Task(
     @SerializedName("isCompleted") val isCompleted: Boolean = false,
-    @SerializedName("title") val title: String? = null
+    @SerializedName("title") val title: String? = null,
+    @SerializedName("progressInfo") val progressInfo: String? = null,
 )
 
 data class Benefit(

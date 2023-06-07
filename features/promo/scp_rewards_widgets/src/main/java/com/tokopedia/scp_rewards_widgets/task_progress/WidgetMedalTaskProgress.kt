@@ -12,8 +12,9 @@ import com.tokopedia.scp_rewards_common.R
 import com.tokopedia.scp_rewards_widgets.common.VerticalSpacing
 import com.tokopedia.scp_rewards_widgets.databinding.WidgetMedalTaskProgressBinding
 import com.tokopedia.unifycomponents.ProgressBarUnify
+import java.util.*
 
-class WidgetMedalTaskProgress(context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
+class WidgetMedalTaskProgress(private val context: Context, attrs: AttributeSet?) : ConstraintLayout(context, attrs) {
 
     private val binding = WidgetMedalTaskProgressBinding.inflate(LayoutInflater.from(context), this)
 
@@ -41,11 +42,12 @@ class WidgetMedalTaskProgress(context: Context, attrs: AttributeSet?) : Constrai
     fun bindData(taskProgress: TaskProgress) {
         binding.tvProgress.text = taskProgress.title
         taskProgress.progress?.let {
-            binding.progressBar.apply {
-                setValue(it)
-                rightIndicatorText = "$it%"
-            }
-        } ?: run { binding.progressBar.gone() }
+            binding.tvProgressPercent.text = String.format(Locale.getDefault(), context.getString(com.tokopedia.scp_rewards_widgets.R.string.progress_percent), it)
+            binding.progressBar.setValue(it)
+        } ?: run {
+            binding.tvProgressPercent.gone()
+            binding.progressBar.gone()
+        }
 
         taskProgress.tasks?.let {
             taskAdapter.setVisitables(it)
