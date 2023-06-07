@@ -138,6 +138,7 @@ class DeveloperOptionActivity : BaseActivity(),
                 /* starting http request */
                 connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
+                connection.connectTimeout = 3000
                 connection.connect()
 
                 /* reading the response */
