@@ -223,6 +223,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
                                 )
                             }
                         },
+                        deleteWidgetWhen = {
+                            it?.model?.items?.isEmpty() == true
+                        },
                         widgetRepository = homePlayRepository
                     ) { visitableFound, data, position ->
                         visitableFound.copy(widgetState = data)
