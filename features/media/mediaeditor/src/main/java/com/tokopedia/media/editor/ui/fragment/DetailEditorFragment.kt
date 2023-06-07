@@ -34,6 +34,7 @@ import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.entity.AddTextColorCollection
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
@@ -91,7 +92,8 @@ class DetailEditorFragment @Inject constructor(
     private val editorDetailAnalytics: EditorDetailAnalytics,
     private val pickerParam: PickerCacheManager,
     private val addLogoCacheManager: EditorAddLogoCacheManager,
-    private val addTextCacheManager: EditorAddTextCacheManager
+    private val addTextCacheManager: EditorAddTextCacheManager,
+    private val colorCollection: AddTextColorCollection
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -460,7 +462,7 @@ class DetailEditorFragment @Inject constructor(
                         latarModel = model
                     ))
 
-                    it.textColor = latarSelectionTextColor(color)
+                    it.textColor = colorCollection.getTextColorOnBackgroundMode(color)
                 }
 
                 tempTemplateMode = templateIndex
@@ -1504,19 +1506,16 @@ class DetailEditorFragment @Inject constructor(
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
-    private fun showAddTextLatarSelection(onFinish: (color: Int, latarModel: Int) -> Unit) {
-        AddTextLatarBottomSheet(data.resultUrl, onFinish).show(
+    private fun showAddTextLatarSelection(onFinish: (color: String, latarModel: Int) -> Unit) {
+        AddTextLatarBottomSheet(
+            data.resultUrl,
+            onFinish,
+            colorCollection.listOfTextWithBackgroundColor,
+            colorCollection.listOfTextWithBackgroundColorName
+        ).show(
             childFragmentManager,
             ADD_TEXT_BOTTOM_SHEET_TAG
         )
-    }
-
-    // color mapping for latar -> text (automatic choose text color according to latar color)
-    private fun latarSelectionTextColor(latarColor: Int): Int {
-        return when (latarColor) {
-            TEXT_LATAR_TEMPLATE_BLACK -> TEXT_COLOR_WHITE
-            else -> TEXT_COLOR_BLACK
-        }
     }
 
     private fun showAddTextTemplateSaveDialog() {

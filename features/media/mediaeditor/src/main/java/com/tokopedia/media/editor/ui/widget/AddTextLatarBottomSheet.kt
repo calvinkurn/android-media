@@ -6,21 +6,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
+import javax.inject.Inject
 
-class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color: Int, latarModel: Int) -> Unit) :
+class AddTextLatarBottomSheet(
+    private val imgUrl: String?,
+    val onFinish: (color: String, latarModel: Int) -> Unit,
+    private val colorList: List<String>,
+    private val colorText: List<String>
+) :
     BottomSheetUnify() {
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
     private var templateModelRef: ArrayList<AddTextLatarBtmItem> = arrayListOf()
     private var mNextButton: UnifyButton? = null
+    private var mColorButtonContainerRef: LinearLayout? = null
 
-    // 0 -> black || 1 -> white (please refer to TEXT_LATAR_TEMPLATE_BLACK & TEXT_LATAR_TEMPLATE_WHITE)
+    // 0 -> black || 1 -> white
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
 
@@ -44,12 +55,26 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
 
     private fun initializeView(parent: View) {
         parent.apply {
-            colorButtonRef.add(
-                findViewById(editorR.id.btmsht_add_text_color_black)
-            )
-            colorButtonRef.add(
-                findViewById(editorR.id.btmsht_add_text_color_white)
-            )
+            mColorButtonContainerRef = findViewById(editorR.id.btmsht_add_text_color_container)
+
+            colorList.forEachIndexed { index, color ->
+                val chip = ChipsUnify(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    setMargin(0, 0, CHIP_PADDING.toPx(), 0)
+                    chip_text.text = colorText[index]
+                    chip_image_icon.type = ImageUnify.TYPE_CIRCLE
+                    chipImageResource = if (color.toColorInt() == Color.BLACK) {
+                        ColorDrawable(color.toColorInt())
+                    } else {
+                        ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
+                    }
+                }
+                colorButtonRef.add(chip)
+                mColorButtonContainerRef?.addView(chip)
+            }
 
             templateModelRef.add(
                 findViewById(editorR.id.btmsht_add_text_template_model_full)
@@ -62,25 +87,15 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
             )
 
             mNextButton = findViewById(editorR.id.btmsht_add_text_action_lanjut)
-
-            findViewById<ChipsUnify>(editorR.id.btmsht_add_text_color_black).apply {
-                chip_image_icon.type = ImageUnify.TYPE_CIRCLE
-                chipImageResource = ColorDrawable(Color.BLACK)
-            }
-
-            findViewById<ChipsUnify>(editorR.id.btmsht_add_text_color_white).apply {
-                chip_image_icon.type = ImageUnify.TYPE_CIRCLE
-                chipImageResource = ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
-            }
         }
     }
 
     private fun initializeActiveState() {
-        if (colorSelectionIndex in(0..colorButtonRef.count())) {
+        if (colorSelectionIndex in (0..colorButtonRef.count())) {
             colorButtonRef[colorSelectionIndex].chipType = ChipsUnify.TYPE_SELECTED
         }
 
-        if (modelSelectionIndex in(0..templateModelRef.count())) {
+        if (modelSelectionIndex in (0..templateModelRef.count())) {
             templateModelRef[modelSelectionIndex].setActive()
         }
     }
@@ -102,7 +117,7 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
         }
 
         mNextButton?.setOnClickListener {
-            onFinish(colorSelectionIndex, modelSelectionIndex)
+            onFinish(colorList[colorSelectionIndex], modelSelectionIndex)
             dismiss()
         }
     }
@@ -159,5 +174,6 @@ class AddTextLatarBottomSheet(private val imgUrl: String?, val onFinish: (color:
 
     companion object {
         private const val TITLE = "Warna & Template"
+        private const val CHIP_PADDING = 16
     }
 }

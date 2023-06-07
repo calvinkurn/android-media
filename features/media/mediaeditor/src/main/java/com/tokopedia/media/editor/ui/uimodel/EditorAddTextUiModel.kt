@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 class EditorAddTextUiModel(
     var textValue: String,
     var textStyle: Int = TEXT_STYLE_REGULAR,
-    var textColor: Int = 0,
+    var textColor: String = "",
     var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
     var textPosition: Int = TEXT_POSITION_BOTTOM,
     var textTemplate: Int = TEXT_TEMPLATE_FREE,
@@ -90,6 +90,6 @@ class EditorAddTextUiModel(
 
 @Parcelize
 data class LatarTemplateDetail(
-    val latarColor: Int,
+    val latarColor: String,
     val latarModel: Int
 ) : Parcelable

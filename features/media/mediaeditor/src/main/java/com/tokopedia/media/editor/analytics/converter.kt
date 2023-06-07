@@ -63,8 +63,9 @@ fun addTextToText(textDetail: EditorAddTextUiModel?): String {
         }
 
         text += "_" + when (textValue.textColor) {
-            EditorAddTextUiModel.TEXT_COLOR_BLACK -> ADD_TEXT_COLOR_BLACK
-            else -> ADD_TEXT_COLOR_WHITE
+            "#000000" -> ADD_TEXT_COLOR_BLACK
+            "#FFFFFF" -> ADD_TEXT_COLOR_WHITE
+            else -> ""
         }
 
         textValue.getLatarTemplate()?.let {

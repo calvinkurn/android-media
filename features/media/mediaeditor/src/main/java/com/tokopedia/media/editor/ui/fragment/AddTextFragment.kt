@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.entity.AddTextColorCollection
 import com.tokopedia.media.editor.databinding.FragmentAddTextLayoutBinding
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
@@ -39,7 +41,8 @@ import javax.inject.Inject
 import com.tokopedia.media.editor.R as editorR
 
 class AddTextFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
+    addTextColorCollection: AddTextColorCollection
 ) : BaseEditorFragment() {
 
     private val viewBinding: FragmentAddTextLayoutBinding? by viewBinding()
@@ -47,10 +50,7 @@ class AddTextFragment @Inject constructor(
 
     private var defaultPadding = 0
 
-    private var colorList = arrayListOf(
-        TEXT_COLOR_BLACK,
-        TEXT_COLOR_WHITE
-    )
+    private var colorList = addTextColorCollection.listOfTextColor
 
     /**
      * 0 -> regular
@@ -78,11 +78,7 @@ class AddTextFragment @Inject constructor(
     private val textColorItemRef: Array<AddTextColorItem?> = Array(2) { null }
     private var activeColorIndex = DEFAULT_COLOR_INDEX
         set(value) {
-            field = if (value in colorList.indices) {
-                value
-            } else {
-                colorList.indexOf(value)
-            }
+            field = value
             viewModel.textData.textColor = colorList[field]
         }
 
@@ -324,9 +320,10 @@ class AddTextFragment @Inject constructor(
         colorList.forEachIndexed { index, colorRef ->
             viewBinding?.fontColorContainer?.addView(
                 AddTextColorItem(requireContext()).apply {
-                    setColor(colorRef)
+                    val colorInt = colorRef.toColorInt()
+                    setColor(colorInt)
                     setOnClickListener {
-                        changeFontColor(colorRef)
+                        changeFontColor(colorInt)
                         textColorItemRef[index]?.setActive()
                         textColorItemRef[activeColorIndex]?.setInactive()
 
@@ -334,7 +331,7 @@ class AddTextFragment @Inject constructor(
                     }
                     if (index == activeColorIndex) {
                         this.setActive()
-                        changeFontColor(colorRef)
+                        changeFontColor(colorInt)
                     }
 
                     textColorItemRef[index] = this
@@ -390,9 +387,11 @@ class AddTextFragment @Inject constructor(
     }
 
     private fun initStartValue() {
+        val textColor = colorList.indexOf(viewModel.textData.textColor)
+
         activeStyleIndex = viewModel.textData.textStyle
         alignmentIndex = viewModel.textData.textAlignment
-        activeColorIndex = colorList.find { viewModel.textData.textColor == it } ?: DEFAULT_COLOR_INDEX
+        activeColorIndex = if (textColor == -1) DEFAULT_COLOR_INDEX else textColor
         positionIndex = viewModel.textData.textPosition
     }
 

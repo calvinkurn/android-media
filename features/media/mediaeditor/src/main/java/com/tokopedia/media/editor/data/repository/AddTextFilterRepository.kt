@@ -8,8 +8,10 @@ import android.text.TextPaint
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
+import androidx.core.graphics.toColorInt
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.media.editor.data.entity.AddTextColorCollection
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
@@ -29,7 +31,8 @@ interface AddTextFilterRepository {
 }
 
 class AddTextFilterRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val colorCollection: AddTextColorCollection
 ) : AddTextFilterRepository {
     override fun generateTextOverlay(
         size: Pair<Int, Int>,
@@ -63,7 +66,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         val mTextPaint = TextPaint()
 
         mTextPaint.textSize = fontSize
-        mTextPaint.color = data.textColor
+        mTextPaint.color = data.textColor.toColorInt()
 
         val typeFace = getTypeface(context, TYPEFACE)
         mTextPaint.typeface = Typeface.create(typeFace, data.getTypeFaceStyle())
@@ -142,7 +145,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         }.apply {
             this?.let {
                 ContextCompat.getDrawable(context, it)?.let { latarBg ->
-                    if (latarDetail.latarColor == TEXT_LATAR_TEMPLATE_WHITE) latarBg.toWhite()
+                    colorCollection.implementDrawableColor(latarBg, latarDetail.latarColor)
                     return latarBg
                 }
             }
