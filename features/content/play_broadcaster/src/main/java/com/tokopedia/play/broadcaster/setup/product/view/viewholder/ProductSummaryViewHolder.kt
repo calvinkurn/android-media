@@ -88,7 +88,7 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
 
-            binding.tvCommissionFmt.text = String.format(ctx.getString(R.string.play_shorts_affiliate_commission_fmt, item.product.commissionFmt))
+            binding.tvCommissionFmt.text = ctx.getString(R.string.play_shorts_affiliate_commission_fmt, item.product.commissionFmt)
             binding.tvCommissionFmt.showWithCondition(item.product.hasCommission)
             binding.tvCommissionExtra.showWithCondition(item.product.hasCommission && item.product.extraCommission)
 
