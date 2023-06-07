@@ -2399,16 +2399,14 @@ class CartFragment :
         }
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int) {
         val (index, groupData) = cartAdapter.getCartGroupHolderDataAndIndexByCartString(cartItemHolderData.cartString, false)
         if (index >= 0) {
             val shopHeaderData = groupData.first()
             if (shopHeaderData is CartGroupHolderData) {
                 onNeedToUpdateViewItem(index)
             }
-            if (isQuantityChanged) {
-                onNeedToUpdateViewItem(itemPosition)
-            }
+            onNeedToUpdateViewItem(itemPosition)
             val shopBottomData = groupData.last()
             if (shopBottomData is CartShopBottomHolderData) {
                 checkCartShopGroupTicker(shopBottomData.shopData)
@@ -2430,13 +2428,6 @@ class CartFragment :
                 onNeedToUpdateViewItem(index + groupData.lastIndex)
             }
         }
-    }
-
-    override fun onNeedToRefreshMultipleShop() {
-        val firstShopIndexAndCount = cartAdapter.getFirstShopAndShopCountWithIterateFunction {
-            checkCartShopGroupTicker(it)
-        }
-        onNeedToUpdateMultipleViewItem(firstShopIndexAndCount.first, firstShopIndexAndCount.second)
     }
 
     override fun onNeedToRecalculate() {
