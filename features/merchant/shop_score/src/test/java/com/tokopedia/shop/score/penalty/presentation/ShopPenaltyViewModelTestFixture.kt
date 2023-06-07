@@ -4,17 +4,27 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.shop.score.penalty.domain.old.mapper.PenaltyMapperOld
+import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.common.ShopScorePrefManager
+import com.tokopedia.shop.score.common.format
+import com.tokopedia.shop.score.common.getNowTimeStamp
+import com.tokopedia.shop.score.common.getPastDaysPenaltyTimeStamp
+import com.tokopedia.shop.score.penalty.domain.mapper.PenaltyMapper
+import com.tokopedia.shop.score.penalty.domain.response.ShopPenaltySummaryTypeWrapper
 import com.tokopedia.shop.score.penalty.domain.response.ShopScorePenaltyDetailResponse
-import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailMergeUseCaseOld
-import com.tokopedia.shop.score.penalty.domain.old.usecase.GetShopPenaltyDetailUseCaseOld
-import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyDataWrapperOld
-import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyFilterUiModelOld
-import com.tokopedia.shop.score.penalty.presentation.viewmodel.old.ShopPenaltyViewModelOld
+import com.tokopedia.shop.score.penalty.domain.usecase.GetNotYetDeductedPenaltyUseCase
+import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailMergeUseCase
+import com.tokopedia.shop.score.penalty.domain.usecase.GetShopPenaltyDetailUseCase
+import com.tokopedia.shop.score.penalty.presentation.model.ChipsFilterPenaltyUiModel
+import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import dagger.Lazy
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
+import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -24,15 +34,18 @@ abstract class ShopPenaltyViewModelTestFixture {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    lateinit var penaltyMapperOld: PenaltyMapperOld
+    lateinit var penaltyMapper: PenaltyMapper
 
     @RelaxedMockK
-    lateinit var getShopPenaltyDetailMergeUseCaseOld: Lazy<GetShopPenaltyDetailMergeUseCaseOld>
+    lateinit var getShopPenaltyDetailMergeUseCase: Lazy<GetShopPenaltyDetailMergeUseCase>
 
     @RelaxedMockK
-    lateinit var getShopPenaltyDetailUseCaseOld: Lazy<GetShopPenaltyDetailUseCaseOld>
+    lateinit var getShopPenaltyDetailUseCase: Lazy<GetShopPenaltyDetailUseCase>
 
-    lateinit var penaltyViewModel: ShopPenaltyViewModelOld
+    @RelaxedMockK
+    lateinit var getNotYetDeductedPenaltyUseCase: Lazy<GetNotYetDeductedPenaltyUseCase>
+
+    lateinit var penaltyViewModel: ShopPenaltyViewModel
 
     protected lateinit var lifecycle: LifecycleRegistry
 
@@ -40,12 +53,14 @@ abstract class ShopPenaltyViewModelTestFixture {
     fun setup() {
         MockKAnnotations.init(this)
         val context = mockk<Context>(relaxed = true)
-        penaltyMapperOld = PenaltyMapperOld(context)
-        penaltyViewModel = ShopPenaltyViewModelOld(
+        val sharedPrefManager = mockk<ShopScorePrefManager>(relaxed = true)
+        penaltyMapper = PenaltyMapper(context, sharedPrefManager)
+        penaltyViewModel = ShopPenaltyViewModel(
             CoroutineTestDispatchersProvider,
-            getShopPenaltyDetailMergeUseCaseOld,
-            getShopPenaltyDetailUseCaseOld,
-            penaltyMapperOld
+            getShopPenaltyDetailMergeUseCase,
+            getShopPenaltyDetailUseCase,
+            getNotYetDeductedPenaltyUseCase,
+            penaltyMapper
         )
         lifecycle = LifecycleRegistry(mockk()).apply {
             handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -59,16 +74,25 @@ abstract class ShopPenaltyViewModelTestFixture {
 
     protected fun onGetShopPenaltyDetailMergeUseCase_thenReturn() {
         coEvery {
-            getShopPenaltyDetailMergeUseCaseOld.get().executeOnBackground()
-        } returns PenaltyDataWrapperOld()
+            getShopPenaltyDetailMergeUseCase.get().executeOnBackground()
+        } returns Pair(ShopPenaltySummaryTypeWrapper(), ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail())
     }
 
     protected fun onGetShopPenaltyDetailMergeUseCaseError_thenReturn(exception: Throwable) {
-        coEvery { getShopPenaltyDetailMergeUseCaseOld.get().executeOnBackground() } throws exception
+        coEvery { getShopPenaltyDetailMergeUseCase.get().executeOnBackground() } throws exception
+    }
+
+    protected fun onGetNotYetDeductedPenaltyUseCase_thenReturn() {
+        coEvery {
+            getNotYetDeductedPenaltyUseCase.get().execute(
+                format(getPastDaysPenaltyTimeStamp().time, ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM),
+                format(getNowTimeStamp(), ShopScoreConstant.PATTERN_PENALTY_DATE_PARAM)
+            )
+        } returns listOf(ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result())
     }
 
     protected fun verifyGetShopPenaltyDetailMergeUseCaseCalled() {
-        coVerify { getShopPenaltyDetailMergeUseCaseOld.get().executeOnBackground() }
+        coVerify { getShopPenaltyDetailMergeUseCase.get().executeOnBackground() }
     }
 
     protected fun onGetShopPenaltyDetailUseCase_thenReturn(
@@ -76,26 +100,26 @@ abstract class ShopPenaltyViewModelTestFixture {
         ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail
     ) {
         coEvery {
-            getShopPenaltyDetailUseCaseOld.get().executeOnBackground()
+            getShopPenaltyDetailUseCase.get().executeOnBackground()
         } returns shopScorePenaltyDetail
     }
 
     protected fun onGetShopPenaltyDetailUseCaseError_thenReturn(exception: Throwable) {
-        coEvery { getShopPenaltyDetailUseCaseOld.get().executeOnBackground() } throws exception
+        coEvery { getShopPenaltyDetailUseCase.get().executeOnBackground() } throws exception
     }
 
     protected fun verifyGetShopPenaltyDetailUseCaseCaseCalled() {
-        coVerify { getShopPenaltyDetailUseCaseOld.get().executeOnBackground() }
+        coVerify { getShopPenaltyDetailUseCase.get().executeOnBackground() }
     }
 
 
     protected fun mapToChipsTypePenaltyFilterDummy():
-            List<PenaltyFilterUiModelOld.ChipsFilterPenaltyUiModel> {
-        return mutableListOf<PenaltyFilterUiModelOld.ChipsFilterPenaltyUiModel>().apply {
-            add(PenaltyFilterUiModelOld.ChipsFilterPenaltyUiModel(title = "Bersalah di Pusat Resolusi"))
-            add(PenaltyFilterUiModelOld.ChipsFilterPenaltyUiModel(title = "Pesanan diabaikan"))
-            add(PenaltyFilterUiModelOld.ChipsFilterPenaltyUiModel(title = "Pengiriman diabaikan"))
-            add(PenaltyFilterUiModelOld.ChipsFilterPenaltyUiModel(title = "Pengiriman ditolak"))
+            List<ChipsFilterPenaltyUiModel> {
+        return mutableListOf<ChipsFilterPenaltyUiModel>().apply {
+            add(ChipsFilterPenaltyUiModel(title = "Bersalah di Pusat Resolusi"))
+            add(ChipsFilterPenaltyUiModel(title = "Pesanan diabaikan"))
+            add(ChipsFilterPenaltyUiModel(title = "Pengiriman diabaikan"))
+            add(ChipsFilterPenaltyUiModel(title = "Pengiriman ditolak"))
         }
     }
 }
