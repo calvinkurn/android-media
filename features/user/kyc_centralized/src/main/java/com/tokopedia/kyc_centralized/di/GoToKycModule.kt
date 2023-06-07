@@ -13,9 +13,12 @@ import com.gojek.kyc.sdk.config.KycSdkUserInfo
 import com.gojek.kyc.sdk.core.constants.KycPlusNetworkConfig
 import com.gojek.kyc.sdk.core.utils.KycSdkPartner
 import com.google.gson.Gson
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycDefaultCard
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycErrorHandler
 import com.tokopedia.kyc_centralized.ui.gotoKyc.oneKycSdk.GotoKycEventTrackingProvider
@@ -92,16 +95,33 @@ open class GoToKycModule {
 
     @ActivityScope
     @Provides
+    fun provideTkpdAuthGql(
+        @ApplicationContext context: Context,
+        networkRouter: NetworkRouter,
+        userSessionInterface: UserSessionInterface
+    ): TkpdAuthenticatorGql {
+        return TkpdAuthenticatorGql(
+            application = context as BaseMainApplication,
+            networkRouter = networkRouter,
+            userSession = userSessionInterface,
+            RefreshTokenGql()
+        )
+    }
+
+    @ActivityScope
+    @Provides
     fun provideOkHttpClient(
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         retryPolicy: OkHttpRetryPolicy,
         loggingInterceptor: HttpLoggingInterceptor,
         chuckerInterceptor: ChuckerInterceptor,
-        gotoKycInterceptor: GotoKycInterceptor
+        gotoKycInterceptor: GotoKycInterceptor,
+        tkpdAuthenticatorGql: TkpdAuthenticatorGql
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(gotoKycInterceptor)
+        builder.authenticator(tkpdAuthenticatorGql)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
