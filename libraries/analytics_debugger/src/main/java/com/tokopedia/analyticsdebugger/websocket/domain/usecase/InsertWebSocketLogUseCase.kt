@@ -39,6 +39,7 @@ class InsertWebSocketLogUseCase @Inject constructor(
                 message = param.info.message,
                 timestamp = System.currentTimeMillis(),
                 warehouseId = param.info.play.warehouseId,
+                header = param.info.play.header,
             )
         )
     }

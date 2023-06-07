@@ -38,8 +38,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.unifycomponents.toPx
 import kotlin.math.abs
@@ -60,16 +60,18 @@ private const val STAR_SCALE_KEYFRAME_3_TIME = 333
 @Composable
 private fun ReviewStar(state: MutableState<ReviewStarState>) {
     val resources = LocalContext.current.resources
+
     /**
      * `starStates` represent the active/inactive state of the stars and are determined by the color ID value.
      * It is used to trigger the color and scale animations simultaneously, as both animations should run together.
      * We choose color as the determinant because active and inactive state have exactly 1 color representation
      */
     val starState by remember { derivedStateOf { state.value.color } }
+
     /**
      * sizeState represent the star size state and it is determined by the size value. It is used to
      * trigger the star size animation
-    */
+     */
     val sizeState by remember { derivedStateOf { state.value.size } }
     val contentDescription by remember { derivedStateOf { state.value.contentDescription } }
     val starDrawable = remember {
