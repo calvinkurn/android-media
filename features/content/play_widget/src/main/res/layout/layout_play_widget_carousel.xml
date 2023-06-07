@@ -7,7 +7,7 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
     >
 
-    <com.tokopedia.play_common.ui.custom.NestedScrollableHost
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,6 +21,6 @@
             android:layout_height="match_parent"
             />
 
-    </com.tokopedia.play_common.ui.custom.NestedScrollableHost>
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
 </merge>

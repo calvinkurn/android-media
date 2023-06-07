@@ -1,6 +1,3 @@
-<<<<<<<< HEAD:features/content/play_common/src/main/java/com/tokopedia/play_common/ui/custom/NestedScrollableHost.kt
-package com.tokopedia.play_common.ui.custom
-========
 /*
  * Copyright 2019 The Android Open Source Project
  *
@@ -16,9 +13,7 @@ package com.tokopedia.play_common.ui.custom
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.tokopedia.content.common.util.scroll
->>>>>>>> e7a598cb105758008e374dfa4fb65e2cb0d3540f:features/content/content_common/src/main/java/com/tokopedia/content/common/util/scroll/NestedScrollableHost.kt
 
 import android.content.Context
 import android.util.AttributeSet
@@ -27,12 +22,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
-<<<<<<<< HEAD:features/content/play_common/src/main/java/com/tokopedia/play_common/ui/custom/NestedScrollableHost.kt
-import com.tokopedia.play_common.R
-========
-import androidx.viewpager2.widget.ViewPager2.ORIENTATION_HORIZONTAL
 import com.tokopedia.content.common.R
->>>>>>>> e7a598cb105758008e374dfa4fb65e2cb0d3540f:features/content/content_common/src/main/java/com/tokopedia/content/common/util/scroll/NestedScrollableHost.kt
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 

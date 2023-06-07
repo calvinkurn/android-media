@@ -126,7 +126,7 @@
         app:layout_goneMarginBottom="12dp"
         />
 
-    <com.tokopedia.play_common.ui.custom.NestedScrollableHost
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
         android:id="@+id/scrollable_host_products"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -149,6 +149,6 @@
             tools:listitem="@layout/item_play_widget_carousel_product"
             />
 
-    </com.tokopedia.play_common.ui.custom.NestedScrollableHost>
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
