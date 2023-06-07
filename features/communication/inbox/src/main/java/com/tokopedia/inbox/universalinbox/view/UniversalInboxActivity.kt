@@ -121,7 +121,7 @@ class UniversalInboxActivity: BaseSimpleActivity(), HasComponent<UniversalInboxC
     private val notifCenterResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-       listener?.refreshCounter()
+       listener?.loadWidgetMetaAndCounter()
     }
 
     fun updateNotificationCounter(strCounter: String) {

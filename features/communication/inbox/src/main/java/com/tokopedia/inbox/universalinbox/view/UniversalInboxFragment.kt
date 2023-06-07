@@ -19,8 +19,10 @@ import com.tokopedia.inbox.databinding.UniversalInboxFragmentBinding
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxAnalytics
 import com.tokopedia.inbox.universalinbox.analytics.UniversalInboxTopAdsAnalytic
 import com.tokopedia.inbox.universalinbox.di.UniversalInboxComponent
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CHATBOT_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.CLICK_TYPE_WISHLIST
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.COMPONENT_NAME_TOP_ADS
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.GOJEK_TYPE
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_ADS_BANNER_COUNT
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.HEADLINE_POS_NOT_TO_BE_ADDED
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PDP_EXTRA_UPDATED_POSITION
@@ -34,12 +36,14 @@ import com.tokopedia.inbox.universalinbox.view.adapter.decorator.UniversalInboxR
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxCounterListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxEndlessScrollListener
 import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxMenuListener
+import com.tokopedia.inbox.universalinbox.view.listener.UniversalInboxWidgetListener
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationLoaderUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxRecommendationTitleUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopAdsBannerUiModel
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxTopadsHeadlineUiModel
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -69,6 +73,7 @@ import javax.inject.Inject
 class UniversalInboxFragment :
     BaseDaggerFragment(),
     UniversalInboxEndlessScrollListener.Listener,
+    UniversalInboxWidgetListener,
     UniversalInboxMenuListener,
     UniversalInboxCounterListener,
     TdnBannerResponseListener,
@@ -160,6 +165,7 @@ class UniversalInboxFragment :
             this,
             this,
             this,
+            this,
             this
         )
         binding?.inboxRv?.layoutManager = StaggeredGridLayoutManager(
@@ -195,8 +201,47 @@ class UniversalInboxFragment :
                     binding?.inboxRv?.post {
                         adapter.notifyItemRangeChanged(Int.ZERO, it.data.size - Int.ONE)
                     }
-                    refreshCounter()
+                    loadWidgetMetaAndCounter()
                     loadTopAdsAndRecommendation()
+                }
+                is Fail -> {
+                    // Do nothing
+                }
+            }
+        }
+
+        viewModel.widget.observe(viewLifecycleOwner) {
+            if (adapter.isWidgetMetaAdded()) {
+                adapter.removeItemAt(Int.ZERO)
+            }
+            // If not empty (if empty then should hide) or Error, show the widget meta
+            if (it.widgetList.isNotEmpty() || it.isError) {
+                adapter.addItem(Int.ZERO, it)
+            }
+            binding?.inboxRv?.post {
+                val rangePosition = adapter.getFirstTopAdsBannerPositionPair()?.first
+                adapter.notifyItemRangeChanged(Int.ZERO, rangePosition ?: adapter.itemCount)
+            }
+        }
+
+        viewModel.allCounter.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    // Update notif & static menu counters
+                    if (activity is UniversalInboxActivity) {
+                        val notifUnread = it.data.notifCenterUnread.notifUnread
+                        if (notifUnread.toIntOrZero() > Int.ZERO) {
+                            (activity  as UniversalInboxActivity).updateNotificationCounter(
+                                it.data.notifCenterUnread.notifUnread
+                            )
+                        }
+                    }
+                    val updatedMenuList = adapter.updateAllCounters(it.data)
+                    binding?.inboxRv?.post {
+                        if (updatedMenuList.isNotEmpty()) {
+                            adapter.notifyItemRangeChanged(Int.ZERO, updatedMenuList.size)
+                        }
+                    }
                 }
                 is Fail -> {
                     // Do nothing
@@ -217,29 +262,6 @@ class UniversalInboxFragment :
             when (it) {
                 is Success -> {
                     addRecommendationItem(it.data)
-                }
-                is Fail -> {}
-            }
-        }
-
-        viewModel.allCounter.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    if (activity is UniversalInboxActivity) {
-                        val notifUnread = it.data.notifCenterUnread.notifUnread
-                        if (notifUnread.toIntOrZero() > Int.ZERO) {
-                            (activity as UniversalInboxActivity).updateNotificationCounter(
-                                it.data.notifCenterUnread.notifUnread
-                            )
-                        }
-                    }
-                    val updatedMenuList = adapter.updateAllCounters(it.data)
-                    binding?.inboxRv?.post {
-                        val firstIndex = updatedMenuList.firstOrNull()
-                        if (firstIndex != null && updatedMenuList.isNotEmpty()) {
-                            adapter.notifyItemRangeChanged(firstIndex, updatedMenuList.size)
-                        }
-                    }
                 }
                 is Fail -> {}
             }
@@ -347,8 +369,8 @@ class UniversalInboxFragment :
         viewModel.generateStaticMenu()
     }
 
-    override fun refreshCounter() {
-        viewModel.loadAllCounter()
+    override fun loadWidgetMetaAndCounter() {
+        viewModel.loadWidgetMetaAndCounter()
     }
 
     private fun loadTopAdsAndRecommendation() {
@@ -390,6 +412,29 @@ class UniversalInboxFragment :
         }
         if (activity is UniversalInboxActivity) {
             (activity as UniversalInboxActivity).listener = this
+        }
+    }
+
+    override fun onClickWidget(item: UniversalInboxWidgetUiModel) {
+        if (item.applink.isEmpty()) return
+        context?.let {
+            val intent = RouteManager.getIntent(it, item.applink)
+            inboxMenuResultLauncher.launch(intent)
+        }
+    }
+
+    override fun onRefreshWidgetMeta() {
+        loadWidgetMetaAndCounter()
+    }
+
+    override fun onRefreshWidgetCard(item: UniversalInboxWidgetUiModel) {
+        when (item.type) {
+            CHATBOT_TYPE -> {
+                loadWidgetMetaAndCounter()
+            }
+            GOJEK_TYPE -> {
+                //TODO SDK
+            }
         }
     }
 
@@ -626,7 +671,7 @@ class UniversalInboxFragment :
     private val inboxMenuResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        refreshCounter()
+        loadWidgetMetaAndCounter()
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.inbox.universalinbox.data.response.counter.UniversalInboxAllCounterResponse
+import com.tokopedia.inbox.universalinbox.data.response.widget.UniversalInboxWidgetMetaResponse
 import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetAllCounterUseCase
+import com.tokopedia.inbox.universalinbox.domain.UniversalInboxGetWidgetMetaUseCase
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_NAME
+import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetMetaUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_DEVICE
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
@@ -44,6 +47,7 @@ import javax.inject.Inject
 
 class UniversalInboxViewModel @Inject constructor(
     private val getAllCounterUseCase: UniversalInboxGetAllCounterUseCase,
+    private val getWidgetMetaUseCase: UniversalInboxGetWidgetMetaUseCase,
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val addWishListV2UseCase: AddToWishlistV2UseCase,
     private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
@@ -51,6 +55,18 @@ class UniversalInboxViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main), DefaultLifecycleObserver {
+
+    private val _inboxMenu = MutableLiveData<Result<List<Any>>>()
+    val inboxMenu: LiveData<Result<List<Any>>>
+        get() = _inboxMenu
+
+    private val _widget = MutableLiveData<UniversalInboxWidgetMetaUiModel>()
+    val widget: LiveData<UniversalInboxWidgetMetaUiModel>
+        get() = _widget
+
+    private val _allCounter = MutableLiveData<Result<UniversalInboxAllCounterResponse>>()
+    val allCounter: LiveData<Result<UniversalInboxAllCounterResponse>>
+        get() = _allCounter
 
     private val _firstPageRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val firstPageRecommendation: LiveData<Result<RecommendationWidget>>
@@ -60,29 +76,45 @@ class UniversalInboxViewModel @Inject constructor(
     val morePageRecommendation: LiveData<Result<List<RecommendationItem>>>
         get() = _morePageRecommendation
 
-    private val _inboxMenu = MutableLiveData<Result<List<Any>>>()
-    val inboxMenu: LiveData<Result<List<Any>>>
-        get() = _inboxMenu
-
-    private val _allCounter = MutableLiveData<Result<UniversalInboxAllCounterResponse>>()
-    val allCounter: LiveData<Result<UniversalInboxAllCounterResponse>>
-        get() = _allCounter
-
     fun generateStaticMenu() {
         val staticMenuList = inboxMenuMapper.getStaticMenu(userSession)
         _inboxMenu.postValue(Success(staticMenuList))
     }
 
-    fun loadAllCounter() {
+    fun loadWidgetMetaAndCounter() {
         viewModelScope.launch {
             withContext(dispatcher.io) {
                 try {
-                    val result = getAllCounterUseCase(userSession.shopId)
-                    _allCounter.postValue(Success(result))
+                    val widgetMetaResponse = getWidgetMeta()
+                    val allCounterResponse = getAllCounter()
+                    val result = inboxMenuMapper.mapWidgetMetaToUiModel(
+                        widgetMetaResponse, allCounterResponse
+                    )
+                    _widget.postValue(result)
                 } catch (throwable: Throwable) {
-                    _allCounter.postValue(Fail(throwable))
+                    _widget.postValue(inboxMenuMapper.mapWidgetMetaToUiModel())
                 }
             }
+        }
+    }
+
+    private suspend fun getWidgetMeta(): UniversalInboxWidgetMetaResponse? {
+        return try {
+            getWidgetMetaUseCase(Unit).chatInboxWidgetMeta
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
+            null
+        }
+    }
+
+    private suspend fun getAllCounter(): UniversalInboxAllCounterResponse? {
+        return try {
+            val result = getAllCounterUseCase(userSession.shopId)
+            _allCounter.postValue(Success(result))
+            result
+        } catch (throwable: Throwable) {
+            _allCounter.postValue(Fail(throwable))
+            null
         }
     }
 
@@ -139,7 +171,6 @@ class UniversalInboxViewModel @Inject constructor(
                         actionListener.onErrorAddWishList(result.throwable, productId)
                     }
                 } catch (throwable: Throwable) {
-                    Timber.d(throwable)
                     actionListener.onErrorAddWishList(throwable, model.productId.toString())
                 }
             }
@@ -161,7 +192,6 @@ class UniversalInboxViewModel @Inject constructor(
                         actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
                     }
                 } catch (throwable: Throwable) {
-                    Timber.d(throwable)
                     actionListener.onErrorAddWishList(throwable, model.productId.toString())
                 }
             }
