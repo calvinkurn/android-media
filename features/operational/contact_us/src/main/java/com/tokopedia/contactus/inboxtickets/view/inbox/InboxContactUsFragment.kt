@@ -514,7 +514,6 @@ class InboxContactUsFragment :
         } else {
             val route = "$CONTACT_US_NATIVE?$FLAG_FROM_TOKOPEDIA_HELP=true"
             startActivity(RouteManager.getIntent(context ?: return, route))
-            activity?.finish()
         }
     }
 
