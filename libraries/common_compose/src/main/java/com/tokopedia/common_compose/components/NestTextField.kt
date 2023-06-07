@@ -3,14 +3,7 @@ package com.tokopedia.common_compose.components
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,13 +29,13 @@ import com.tokopedia.iconunify.R
 
 @Composable
 fun NestTextField(
-    modifier: Modifier = Modifier,
     value: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     label: String? = null,
     placeholder: String? = null,
-    icon1: @Composable (() -> Unit)? = null,
-    icon2: @Composable (() -> Unit)? = null,
+    icon1: @Composable() (() -> Unit)? = null,
+    icon2: @Composable() (() -> Unit)? = null,
     suffix: String? = null,
     prefix: String? = null,
     error: String? = null,
@@ -326,8 +319,8 @@ fun NestTextFieldPreview() {
                 value = "value",
                 modifier = Modifier
                     .padding(vertical = 8.dp),
-                label = "label",
                 enabled = false,
+                label = "label",
                 placeholder = "placeholder"
             )
             NestTextField(
@@ -335,6 +328,7 @@ fun NestTextFieldPreview() {
                 modifier = Modifier
                     .padding(vertical = 8.dp),
                 label = "label",
+                placeholder = "placeholder",
                 icon1 = {
                     NestTypography(text = "aaa")
                 },
@@ -342,14 +336,13 @@ fun NestTextFieldPreview() {
                     NestTypography(text = "bbb")
                 },
                 suffix = "$",
-                prefix = "IDR",
-                placeholder = "placeholder"
+                prefix = "IDR"
             )
             NestTextFieldSkeleton()
             NestTextField(
+                value = "aaa",
                 modifier = Modifier
                     .padding(vertical = 8.dp),
-                value = "aaa",
                 onClear = {}
             )
         }

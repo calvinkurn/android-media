@@ -47,10 +47,20 @@ class InboxReviewFeedbackViewHolder(
             if(adapterPosition == 0) {
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
             }
-            if(element.replyText.isNotBlank()) {
-                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            if (element.replyText.isNotBlank()) {
+                root.setBackgroundColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    )
+                )
             } else {
-                root.setBackgroundColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
+                root.setBackgroundColor(
+                    ContextCompat.getColor(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_GN50
+                    )
+                )
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))

@@ -33,6 +33,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
+import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -53,6 +54,7 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     var validatorJob: Job? = null
     var catalogProductJob: Job? = null
     var recommendationJob: Job? = null
+    var mccmProductsJob: Job? = null
     var clientNumberThrottleJob: Job? = null
     var operatorData: TelcoCatalogPrefixSelect = TelcoCatalogPrefixSelect(RechargeCatalogPrefixSelect())
     var isEligibleToBuy = false
@@ -109,6 +111,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val _recommendationData = MutableLiveData<RechargeNetworkResult<RecommendationWidgetModel>>()
     val recommendationData: LiveData<RechargeNetworkResult<RecommendationWidgetModel>>
         get() = _recommendationData
+
+    private val _mccmProductsData = MutableLiveData<RechargeNetworkResult<DenomWidgetModel>>()
+    val mccmProductsData: LiveData<RechargeNetworkResult<DenomWidgetModel>>
+        get() = _mccmProductsData
 
     fun setMenuDetailLoading() {
         _menuDetailData.value = RechargeNetworkResult.Loading
@@ -200,6 +206,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         recommendationJob?.cancel()
     }
 
+    fun cancelMCCMProductsJob() {
+        mccmProductsJob?.cancel()
+    }
+
     fun cancelValidatorJob() {
         validatorJob?.cancel()
     }
@@ -251,6 +261,21 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)
+        }
+    }
+
+    fun getMCCMProducts(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+        mccmProductsJob = viewModelScope.launchCatchError(dispatchers.main, block = {
+            delay(DELAY_MULTI_TAB)
+            val mccmProducts = repo.getMCCMProducts(
+                clientNumbers,
+                dgCategoryIds,
+                emptyList(),
+                DigitalPDPConstant.MCCM_CHANNEL_NAME
+            )
+            _mccmProductsData.value = RechargeNetworkResult.Success(mccmProducts)
+        }){
+            _mccmProductsData.value = RechargeNetworkResult.Fail(it)
         }
     }
 
@@ -378,10 +403,6 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
             }
         }
         setFilterDataParam(filterData)
-    }
-
-    fun isEmptyDenomMCCM(listDenomData: List<DenomData>, listMCCMData: List<DenomData>): Boolean {
-        return listDenomData.isEmpty() && listMCCMData.isEmpty()
     }
 
     private fun setFilterDataParam(filterTagComponents: List<TelcoFilterTagComponent>) {
