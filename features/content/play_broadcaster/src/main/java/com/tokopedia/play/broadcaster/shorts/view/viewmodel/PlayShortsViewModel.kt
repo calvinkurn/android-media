@@ -300,10 +300,7 @@ class PlayShortsViewModel @Inject constructor(
                 profileID = _selectedAccount.value.id,
             )
 
-            val response = repo.submitOnboardAffiliateTnc(request)
-            val isSuccess = response.errorMessage.isEmpty()
-
-            if (!isSuccess) throw Throwable(response.errorMessage)
+            repo.submitOnboardAffiliateTnc(request)
 
             checkIsSuccessSubmitAffiliate()
         }) {

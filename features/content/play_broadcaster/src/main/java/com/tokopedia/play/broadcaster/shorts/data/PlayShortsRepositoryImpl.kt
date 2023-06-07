@@ -104,7 +104,9 @@ class PlayShortsRepositoryImpl @Inject constructor(
 
     override suspend fun submitOnboardAffiliateTnc(request: OnboardAffiliateRequestModel): OnboardAffiliateUiModel {
         return withContext(dispatchers.io) {
-            mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request))
+            val response = mapper.mapOnboardAffiliate(onboardAffiliateUseCase(request))
+            if (response.errorMessage.isEmpty()) throw Throwable(response.errorMessage)
+            response
         }
     }
 
