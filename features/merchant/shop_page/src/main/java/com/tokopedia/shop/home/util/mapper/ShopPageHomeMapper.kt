@@ -1068,7 +1068,7 @@ object ShopPageHomeMapper {
                             ShopPageHeaderDataUiModel(
                                 linkType = it.linkType,
                                 linkID = it.linkID,
-                                categorySlug = it.categorySlug
+                                link = it.link
                             )
                         }
                     )

@@ -163,6 +163,18 @@ class ShopPageCampaignFragment :
         super.onViewCreated(view, savedInstanceState)
         observeVoucherSliderWidgetData()
         observeRedeemResult()
+        observeCampaignWidgetListVisitable()
+    }
+
+    private fun observeCampaignWidgetListVisitable() {
+        viewModelCampaign?.campaignWidgetListVisitable?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    shopCampaignTabAdapter.submitList(it.data)
+                }
+                is Fail -> {}
+            }
+        }
     }
 
     private fun observeRedeemResult() {
@@ -182,12 +194,18 @@ class ShopPageCampaignFragment :
     private fun observeVoucherSliderWidgetData() {
         viewModelCampaign?.voucherSliderWidgetData?.observe(viewLifecycleOwner) {
             when (it) {
-                is Success -> shopCampaignTabAdapter.updateVoucherSliderWidgetData(it.data)
+                is Success -> {
+                    viewModelCampaign?.updateVoucherSliderWidgetData(
+                        shopCampaignTabAdapter.getNewVisitableItems(),
+                        it.data
+                    )
+                }
                 else -> {
                     shopCampaignTabAdapter.getVoucherSliderUiModel()?.copy(
                         isError = true
                     )?.let { voucherSliderUiModel ->
-                        shopCampaignTabAdapter.updateVoucherSliderWidgetData(
+                        viewModelCampaign?.updateVoucherSliderWidgetData(
+                            shopCampaignTabAdapter.getNewVisitableItems(),
                             voucherSliderUiModel
                         )
                     }

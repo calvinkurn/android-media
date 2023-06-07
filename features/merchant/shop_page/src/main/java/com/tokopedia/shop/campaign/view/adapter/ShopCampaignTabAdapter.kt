@@ -58,9 +58,9 @@ class ShopCampaignTabAdapter(
         return Int.ZERO
     }
 
-    private fun getNewVisitableItems() = visitables.toMutableList()
+    fun getNewVisitableItems() = visitables.toMutableList()
 
-    private fun submitList(newList: List<Visitable<*>>) {
+    fun submitList(newList: List<Visitable<*>>) {
         val diffCallback = ShopPageCampaignDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
@@ -202,22 +202,6 @@ class ShopCampaignTabAdapter(
 
     fun getVoucherSliderUiModel(): ShopWidgetVoucherSliderUiModel? {
         return visitables.filterIsInstance<ShopWidgetVoucherSliderUiModel>().firstOrNull()
-    }
-
-    fun updateVoucherSliderWidgetData(voucherSliderUiModel: ShopWidgetVoucherSliderUiModel) {
-        val newList = getNewVisitableItems()
-        newList.indexOfFirst { it is ShopWidgetVoucherSliderUiModel }.let { index ->
-            if (index >= 0) {
-                if ((voucherSliderUiModel.listVoucher.isEmpty() || voucherSliderUiModel.isError)) {
-                    newList.removeAt(index)
-                } else {
-                    voucherSliderUiModel.widgetState = WidgetState.FINISH
-                    voucherSliderUiModel.isNewData = true
-                    newList.setElement(index, voucherSliderUiModel)
-                }
-            }
-        }
-        submitList(newList)
     }
 
     fun setHomeYouTubeData(widgetId: String, data: YoutubeVideoDetailModel) {

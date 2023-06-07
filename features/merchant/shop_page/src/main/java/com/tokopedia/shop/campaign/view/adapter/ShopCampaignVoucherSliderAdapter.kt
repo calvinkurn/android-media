@@ -36,7 +36,8 @@ class ShopCampaignVoucherSliderAdapter(
             ShopCampaignVoucherSliderItemViewHolder.LAYOUT -> ShopCampaignVoucherSliderItemViewHolder(
                 view,
                 shopCampaignListener,
-                voucherSliderItemListener
+                voucherSliderItemListener,
+                itemCount
             )
 
             else -> ShopCampaignVoucherSliderMoreItemViewHolder(

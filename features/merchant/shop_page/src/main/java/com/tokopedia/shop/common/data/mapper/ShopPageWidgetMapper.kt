@@ -95,7 +95,7 @@ object ShopPageWidgetMapper {
         widgetResponse.type,
         ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
         widgetLayout?.isFestivity.orFalse(),
-        widgetLayout?.header?.data?.map { it.categorySlug }.orEmpty()
+        widgetLayout?.header?.data?.map { it.link }.orEmpty()
     )
 
     fun mapToShopPageWidgetRequest(listWidgetLayout: List<ShopPageWidgetUiModel>): List<ShopPageWidgetRequestModel> {

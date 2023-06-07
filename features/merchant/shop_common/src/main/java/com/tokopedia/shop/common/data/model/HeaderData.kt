@@ -7,6 +7,6 @@ data class HeaderData(
     val linkType : String = "",
     @SerializedName("linkID")
     val linkID : Long = 0L,
-    @SerializedName("categorySlug")
-    val categorySlug : String = "",
+    @SerializedName("link")
+    val link : String = "",
 )

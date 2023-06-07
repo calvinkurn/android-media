@@ -1,9 +1,9 @@
 package com.tokopedia.shop.campaign.view.adapter.viewholder
 
-import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.shop.R
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
@@ -15,7 +15,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ShopCampaignVoucherSliderItemViewHolder(
     itemView: View,
     private val shopCampaignListener: ShopCampaignInterface,
-    private val listener: Listener
+    private val listener: Listener,
+    private val itemCount: Int
 ) : RecyclerView.ViewHolder(itemView) {
 
     interface Listener {
@@ -35,6 +36,15 @@ class ShopCampaignVoucherSliderItemViewHolder(
     fun bind(uiModel: ExclusiveLaunchVoucher?) {
         uiModel?.let {
             setVoucherViewData(it)
+            setVoucherWidth()
+        }
+    }
+
+    private fun setVoucherWidth() {
+        voucherView?.layoutParams?.width = if (itemCount == Int.ONE) {
+            RecyclerView.LayoutParams.MATCH_PARENT
+        } else {
+            itemView.resources.getDimension(R.dimen.voucher_slider_widget_item_width).toInt()
         }
     }
 

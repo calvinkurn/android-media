@@ -16,10 +16,12 @@ import com.tokopedia.shop.campaign.util.mapper.ShopPageCampaignMapper
 import com.tokopedia.shop.common.data.mapper.ShopPageWidgetMapper
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
+import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
 import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.view.model.*
+import com.tokopedia.shop_widget.common.util.WidgetState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -52,6 +54,10 @@ class ShopCampaignViewModel @Inject constructor(
     private val _voucherSliderWidgetData = MutableLiveData<Result<ShopWidgetVoucherSliderUiModel>>()
     val voucherSliderWidgetData: LiveData<Result<ShopWidgetVoucherSliderUiModel>>
         get() = _voucherSliderWidgetData
+
+    private val _campaignWidgetListVisitable = MutableLiveData<Result<List<Visitable<*>>>>()
+    val campaignWidgetListVisitable: LiveData<Result<List<Visitable<*>>>>
+        get() = _campaignWidgetListVisitable
 
     fun getWidgetContentData(
         listWidgetLayout: List<ShopPageWidgetUiModel>,
@@ -152,6 +158,33 @@ class ShopCampaignViewModel @Inject constructor(
     private suspend fun doRedeemPromoVoucher(model: ExclusiveLaunchVoucher): RedeemPromoVoucherResult {
         val param = RedeemPromoVoucherUseCase.Param(model.id, 0)
         return redeemPromoVoucherUseCase.execute(param)
+    }
+
+    fun updateVoucherSliderWidgetData(
+        newList: MutableList<Visitable<*>>,
+        voucherSliderUiModel: ShopWidgetVoucherSliderUiModel
+    ) {
+        launchCatchError(
+            dispatcherProvider.io,
+            block = {
+                newList.indexOfFirst { it is ShopWidgetVoucherSliderUiModel }.let { index ->
+                    if (index >= Int.ZERO) {
+                        if ((voucherSliderUiModel.listVoucher.isEmpty() || voucherSliderUiModel.isError)) {
+                            newList.removeAt(index)
+                        } else {
+                            voucherSliderUiModel.widgetState = WidgetState.FINISH
+                            voucherSliderUiModel.isNewData = true
+                            newList.setElement(index, voucherSliderUiModel)
+                        }
+                    }
+                }
+                _campaignWidgetListVisitable.postValue(Success(newList))
+            },
+            onError = { throwable ->
+                _campaignWidgetListVisitable.postValue(Fail(throwable))
+            }
+        )
+
     }
 
 }
