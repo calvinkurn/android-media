@@ -88,6 +88,24 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         )
     }
 
+    @Test
+    fun validate_interact_with_input_manual_number() {
+        Thread.sleep(4000)
+        clientNumberWidget_clickClearIcon()
+        clientNumberWidget_typeNumber("0")
+        clientNumberWidget_typeNumber("8")
+        clientNumberWidget_typeNumber("1")
+        clientNumberWidget_typeNumber("2")
+        clientNumberWidget_typeNumber("2")
+        clientNumberWidget_typeNumber("8")
+        Thread.sleep(4000)
+        MatcherAssert.assertThat(
+            cassavaTestRule.validate(PATH_ANALYTICS_INPUT_MANUAL),
+            hasAllSuccess()
+        )
+    }
+
+
     private fun interactWithClientNumberWidget() {
         Thread.sleep(4000)
         favoriteNumberPage_stubContactNumber()
@@ -180,5 +198,6 @@ class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
         const val PATH_ANALYTICS_FAVORITE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_favorite.json"
         const val PATH_ANALYTICS_AUTOCOMPLETE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_autocomplete.json"
         const val PATH_ANALYTICS_FILTER_BUY_WIDGET = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_filter.json"
+        const val PATH_ANALYTICS_INPUT_MANUAL = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_input_manual.json"
     }
 }
