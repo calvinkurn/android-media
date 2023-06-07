@@ -14,18 +14,20 @@ import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 700L
     }
 
     @Test
     fun `while adding product to cart, the request should be success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 1
             val quantity = 2
             val cartId = "22122121"
@@ -67,7 +69,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while adding product to cart, the request should fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 1
             val quantity = 2
 
@@ -87,7 +89,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while updating product to cart, the request should be success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 0
             val quantity = 4
             val message = "success"
@@ -116,7 +118,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while updating product to cart, the request should fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 1
             val quantity = 2
 
@@ -139,7 +141,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while removing product to cart, the request should be success`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 0
             val quantity = 0
             val currentQuantity = 1
@@ -177,7 +179,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while removing product to cart, the request should fail`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 0
             val quantity = 0
             val currentQuantity = 1
@@ -208,7 +210,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while adding product to cart if quantity is 0 and mMiniCartSimplifiedData is null, it will do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 1
             val quantity = 0
 
@@ -234,8 +236,8 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
     }
 
     @Test
-    fun `while adding product to cart if product is not TokoNowProductCardCarouselItemUiModel, it will do nothing`() {
-        coroutineTestRule.runBlockingTest {
+    fun `while adding product to cart if product is not ProductCardCompactCarouselItemUiModel, it will do nothing`() {
+        runTest {
             val position = productModels.size - 1
             val quantity = 0
             val shopId = "12221"
@@ -260,7 +262,7 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
 
     @Test
     fun `while adding product to cart if product list size is not more than position, it will do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val position = 10
             val quantity = 0
             val shopId = "12221"
@@ -275,6 +277,93 @@ class AddToCartTest : TokoNowProductRecommendationViewModelTestFixture() {
                 quantity = quantity,
                 shopId = shopId
             )
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            viewModel.addItemToCart.verifyValueEquals(null)
+            viewModel.updateCartItem.verifyValueEquals(null)
+            viewModel.removeCartItem.verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given new quantity same as cart quantity when update cart item should do nothing`() {
+        coroutineTestRule.runTest {
+            val position = 0
+            val quantity = 4
+            val cartQuantity = 4
+
+            val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
+            val shopId = expectedProduct.shopId
+            val productId = expectedProduct.getProductId()
+
+            mockProductModels()
+
+            mockMiniCartSimplifiedData(
+                productId = productId,
+                quantity = cartQuantity
+            )
+
+            val response = UpdateCartV2Data()
+
+            onUpdateItemCart_thenReturn(response)
+
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            viewModel.addItemToCart.verifyValueEquals(null)
+            viewModel.updateCartItem.verifyValueEquals(null)
+            viewModel.removeCartItem.verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given new quantity is 0 when update cart item should do nothing`() {
+        coroutineTestRule.runTest {
+            val position = 0
+            val quantity = 0
+            val cartQuantity = 4
+
+            val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
+            val shopId = expectedProduct.shopId
+            val productId = expectedProduct.getProductId()
+
+            mockProductModels()
+
+            mockMiniCartSimplifiedData(
+                productId = productId,
+                quantity = cartQuantity
+            )
+
+            val response = UpdateCartV2Data()
+
+            onUpdateItemCart_thenReturn(response)
+
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
+            advanceTimeBy(CHANGE_QUANTITY_DELAY)
+
+            viewModel.addItemToCart.verifyValueEquals(null)
+            viewModel.updateCartItem.verifyValueEquals(null)
+            viewModel.removeCartItem.verifyValueEquals(null)
+        }
+    }
+
+    @Test
+    fun `given new quantity is 0 when add cart item should do nothing`() {
+        coroutineTestRule.runTest {
+            val position = 0
+            val quantity = 0
+
+            val expectedProduct = productModels[position] as ProductCardCompactCarouselItemUiModel
+            val productId = expectedProduct.getProductId()
+            val shopId = expectedProduct.shopId
+
+            mockProductModels()
+
+            val response = AddToCartDataModel()
+
+            onAddToCart_thenReturn(response)
+
+            viewModel.onCartQuantityChanged(productId, shopId, quantity, 1, false)
             advanceTimeBy(CHANGE_QUANTITY_DELAY)
 
             viewModel.addItemToCart.verifyValueEquals(null)

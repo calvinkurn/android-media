@@ -2,13 +2,14 @@ package com.tokopedia.media.picker.ui.activity.picker
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.picker.data.FeatureToggleManager
-import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.mapper.toModel
 import com.tokopedia.media.picker.data.repository.BitmapConverterRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaFileRepository
-import com.tokopedia.media.picker.ui.publisher.*
+import com.tokopedia.media.picker.ui.publisher.EventPickerState
+import com.tokopedia.media.picker.ui.publisher.PickerEventBus
+import com.tokopedia.media.picker.ui.publisher.PickerEventBusImpl
 import com.tokopedia.media.picker.utils.internal.NetworkStateManager
 import com.tokopedia.media.picker.utils.internal.ResourceManager
 import com.tokopedia.media.util.awaitItem
@@ -17,17 +18,15 @@ import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -55,10 +54,6 @@ class PickerViewModelTest {
 
     @Before
     fun setup() {
-        Dispatchers.setMain(
-            coroutineScopeRule.dispatchers.main
-        )
-
         mockkStatic(::mediaToUiModel)
         every { mediaToUiModel(any()) } returns mediaUiModelList
         every { paramCacheManager.get() } returns PickerParam()
@@ -78,11 +73,6 @@ class PickerViewModelTest {
             coroutineScopeRule.dispatchers,
             eventBus
         )
-    }
-
-    @After
-    fun tearDown() {
-        testCoroutineScope.cleanupTestCoroutines()
     }
 
     @Test
@@ -116,7 +106,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `ui event should be not invoked the SelectionChanged when includeMedias is does not exist`() = coroutineScopeRule.runBlockingTest {
+    fun `ui event should be not invoked the SelectionChanged when includeMedias is does not exist`() = coroutineScopeRule.runTest {
         // When
         every {
             paramCacheManager.get().includeMedias()
@@ -128,7 +118,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `ui event should be not invoked the SelectionChanged when includeMedias is exist but no internet connection`() = coroutineScopeRule.runBlockingTest {
+    fun `ui event should be not invoked the SelectionChanged when includeMedias is exist but no internet connection`() = coroutineScopeRule.runTest {
         // When
         val noInternetMessage = "Opps!"
         val mockImageUrl = "https://isfa.com/sample.png"
@@ -151,7 +141,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runBlockingTest {
+    fun `ui event should be invoked the SelectionChanged when includeMedias is exist`() = coroutineScopeRule.runTest {
         // Given
         val includeMedias = listOf(
             "https://isfa.com/sample.png",
@@ -167,7 +157,7 @@ class PickerViewModelTest {
         every { networkStateManager.isNetworkConnected() } returns true
         every { paramCacheManager.get().includeMedias() } returns includeMedias
         every { bitmapConverterRepository.convert(any()) } returns flow {
-            emit(convertedResultMedias)
+            emit(includeMedias.zip(convertedResultMedias))
         }
 
         // Then
@@ -193,7 +183,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `device storage validation should be return almost full state`() = coroutineScopeRule.runBlockingTest {
+    fun `device storage validation should be return almost full state`() = coroutineScopeRule.runTest {
         // Given
         val expectedValue = true
 
@@ -208,7 +198,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `device storage validation should be not return almost full state`() = coroutineScopeRule.runBlockingTest {
+    fun `device storage validation should be not return almost full state`() = coroutineScopeRule.runTest {
         // Given
         val expectedValue = false
 
@@ -223,7 +213,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `fetch local gallery data should be return list of media less than threshold size`() = coroutineScopeRule.runBlockingTest {
+    fun `fetch local gallery data should be return list of media`() = coroutineScopeRule.runTest {
         // Given
         every { mediaRepository.maxLimitSize() } returns 3
         every { mediaRepository.invoke(any(), any()) } returns flow {
@@ -240,7 +230,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `fetch local gallery data should be return list of media more than threshold size`() = coroutineScopeRule.runBlockingTest {
+    fun `fetch local gallery data should be return list of media more than threshold size`() = coroutineScopeRule.runTest {
         // Given
         every { mediaRepository.maxLimitSize() } returns 5
         every { mediaRepository.invoke(any(), any()) } returns flow {
@@ -257,7 +247,7 @@ class PickerViewModelTest {
     }
 
     @Test
-    fun `fetch local gallery data should be throw an exception`() = coroutineScopeRule.runBlockingTest {
+    fun `fetch local gallery data should be throw an exception`() = coroutineScopeRule.runTest {
         // Given
         every { mediaRepository.invoke(any(), any()) } returns flow { throw Throwable("") }
 

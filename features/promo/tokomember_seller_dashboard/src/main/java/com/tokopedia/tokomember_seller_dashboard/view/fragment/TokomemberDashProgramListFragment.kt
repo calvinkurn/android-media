@@ -212,6 +212,9 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 TokoLiveDataResult.STATUS.ERROR -> {
                     closeLoadingDialog()
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
 
@@ -230,6 +233,9 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 }
                 TokoLiveDataResult.STATUS.ERROR ->{
                     closeLoadingDialog()
+                }
+                else -> {
+                    //no-op
                 }
             }
         }

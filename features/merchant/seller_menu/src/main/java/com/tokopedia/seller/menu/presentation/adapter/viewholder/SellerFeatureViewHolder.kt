@@ -13,10 +13,10 @@ import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerInstaQueryBuilder
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.seller.menu.common.constant.AdminFeature
 import com.tokopedia.seller.menu.databinding.ItemSellerMenuFeatureSectionBinding
 import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.shopadmin.common.util.AdminFeature
 
 class SellerFeatureViewHolder(
         itemView: View,
@@ -86,7 +86,7 @@ class SellerFeatureViewHolder(
         }
     }
 
-    private fun goToToAdminAuthorizationPage(@AdminFeature featureName: String) {
+    private fun goToToAdminAuthorizationPage(@com.tokopedia.shopadmin.common.util.AdminFeature featureName: String) {
         itemView.context?.run {
             RouteManager.route(this, UriUtil.buildUri(ApplinkConstInternalSellerapp.ADMIN_AUTHORIZE, featureName))
         }

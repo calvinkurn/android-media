@@ -6,9 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -16,11 +14,11 @@ import com.tokopedia.discovery2.viewcontrollers.decorator.HeaderItemDecoration
 
 class StickyHeadRecyclerView : ConstraintLayout {
 
-    constructor(context: Context?) : super(context)
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context?, attrSet: AttributeSet) : super(context, attrSet)
+    constructor(context: Context, attrSet: AttributeSet) : super(context, attrSet)
 
-    constructor(context: Context?, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
+    constructor(context: Context, attrSet: AttributeSet, defStyleAttr: Int) : super(context, attrSet, defStyleAttr)
 
     private val headerRecyclerView: FrameLayout
     private val recyclerView: RecyclerView
@@ -91,34 +89,21 @@ class StickyHeadRecyclerView : ConstraintLayout {
         recyclerView.addItemDecoration(itemDecoration)
     }
 
-    fun smoothScrollToPosition(position: Int = 0,isHeaderSticky:Boolean = false) {
+    fun smoothScrollToPosition(position: Int = 0) {
         if (position == 0) {
             recyclerView.smoothScrollToPosition(position)
-        }
-        else {
-            if(isHeaderSticky) {
-                try {
-                    val smoothScroller: SmoothScroller =
-                        object : LinearSmoothScroller(context) {
-                            override fun getVerticalSnapPreference(): Int {
-                                return SNAP_TO_START
-                            }
-
-                            override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
-                                return super.calculateDyToMakeVisible(view, snapPreference) + dpToPx(55).toInt()
-                            }
-                        }
-                    smoothScroller.targetPosition = position
-                    (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.startSmoothScroll(smoothScroller)
-                } catch (e: Exception) {
-                }
-            }
-        else{
-                (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(position, 0)
-            }
+        } else {
+            (recyclerView.layoutManager as? StaggeredGridLayoutManager)?.scrollToPositionWithOffset(
+                position,
+                0
+            )
         }
     }
     fun dpToPx(dp: Int): Float {
         return (dp * Resources.getSystem().displayMetrics.density)
+    }
+
+    fun setPaddingToInnerRV(left: Int, top: Int, right: Int, bottom: Int) {
+        recyclerView.setPadding(left, top, right, bottom)
     }
 }

@@ -16,12 +16,14 @@ class PlayChannelInfoModelBuilder {
         rtnConfigInfo: PlayRealTimeNotificationConfig = buildRtnConfigInfo(),
         popUpConfig: PlayPopUpConfigUiModel = buildPopUpConfig(),
         widgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
+        commentUiModel: PlayCommentUiModel = buildCommentConfig(),
     ) = PlayChannelDetailUiModel(
             shareInfo = shareInfo,
             channelInfo = channelInfo,
             rtnConfigInfo = rtnConfigInfo,
             popupConfig = popUpConfig,
             exploreWidgetConfig = widgetConfig,
+            commentConfig = commentUiModel,
     )
 
     fun buildShareInfo(
@@ -59,4 +61,9 @@ class PlayChannelInfoModelBuilder {
     ) = PlayPopUpConfigUiModel(
         isEnabled, duration, text
     )
+
+    fun buildCommentConfig(
+        shouldShow: Boolean = false,
+        count: String = ""
+    ) = PlayCommentUiModel(shouldShow = shouldShow, total = count)
 }
