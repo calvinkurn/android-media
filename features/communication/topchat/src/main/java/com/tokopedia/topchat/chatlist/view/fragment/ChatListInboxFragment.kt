@@ -41,9 +41,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
@@ -343,7 +340,7 @@ open class ChatListInboxFragment :
                 when (it) {
                     is Success -> updateChatBannedSellerStatus(it.data)
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -582,12 +579,12 @@ open class ChatListInboxFragment :
                                 result.data as IncomingTypingWebSocketModel
                             )
                             else -> {
-                                //no-op
+                                // no-op
                             }
                         }
                     }
                     else -> {
-                        //no-op
+                        // no-op
                     }
                 }
             }
@@ -1112,6 +1109,7 @@ open class ChatListInboxFragment :
         return try {
             abTestPlatform.getString(key, "").isNotEmpty()
         } catch (t: Throwable) {
+            Timber.d(t)
             false
         }
     }

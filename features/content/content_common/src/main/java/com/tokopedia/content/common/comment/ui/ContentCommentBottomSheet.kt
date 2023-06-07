@@ -498,8 +498,8 @@ class ContentCommentBottomSheet @Inject constructor(
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.DELETE -> deleteCommentChecker()
-            FeedMenuIdentifier.LAPORKAN -> {
+            FeedMenuIdentifier.Delete -> deleteCommentChecker()
+            FeedMenuIdentifier.Report -> {
                 viewModel.submitAction(CommentAction.RequestReportAction)
                 analytics?.clickReportComment()
             }
@@ -533,28 +533,18 @@ class ContentCommentBottomSheet @Inject constructor(
         if (item.isOwner || viewModel.isCreator) {
             add(
                 FeedMenuItem(
-                    name = getString(R.string.content_common_menu_delete),
-                    drawable = getIconUnifyDrawable(
-                        context = requireContext(),
-                        iconId = IconUnify.DELETE
-                    ),
-                    type = FeedMenuIdentifier.DELETE
+                    name = R.string.content_common_menu_delete,
+                    iconUnify = IconUnify.DELETE,
+                    type = FeedMenuIdentifier.Delete
                 )
             )
         }
         if (item.isReportAllowed) {
             add(
                 FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.WARNING,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(R.string.content_common_menu_report),
-                    type = FeedMenuIdentifier.LAPORKAN
+                    iconUnify = IconUnify.WARNING,
+                    name = R.string.content_common_menu_report,
+                    type = FeedMenuIdentifier.Report
                 )
             )
         }

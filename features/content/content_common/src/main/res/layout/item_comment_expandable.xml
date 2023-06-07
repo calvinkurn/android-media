@@ -26,8 +26,8 @@
         android:id="@+id/iv_chevron"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_comment_expandable"
         app:layout_constraintStart_toEndOf="@id/tv_comment_expandable"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:icon_name="CHEVRON_DOWN"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_comment_expandable"
+        tools:icon_name="CHEVRON_DOWN" />
 </androidx.constraintlayout.widget.ConstraintLayout>

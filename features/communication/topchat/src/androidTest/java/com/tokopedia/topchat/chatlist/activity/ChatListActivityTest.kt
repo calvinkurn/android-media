@@ -64,6 +64,7 @@ class ChatListActivityTest : ChatListTest() {
     fun empty_chat_list_seller_buyer() {
         // Given
         chatListUseCase.response = exEmptyChatListPojo
+        setLastSeenTab(isSellerTab = true)
         userSession.setIsShopOwner(true)
 
         // When
@@ -149,11 +150,11 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = false)
         setRollenceMVCIcon(isActive = true)
 
         // When
         startChatListActivity()
-        onView(withText("Rifqi MF .. (45)")).perform(click())
 
         // Then
         BroadcastResult.assertMVCVoucherVisible(isVisible = true)
@@ -164,11 +165,11 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = false)
         setRollenceMVCIcon(isActive = false)
 
         // When
         startChatListActivity()
-        onView(withText("Rifqi MF .. (45)")).perform(click())
 
         // Then
         BroadcastResult.assertMVCVoucherVisible(isVisible = false)
@@ -179,13 +180,14 @@ class ChatListActivityTest : ChatListTest() {
         // Given
         chatListUseCase.response = exBroadcastChatListPojo
         userSession.setIsShopOwner(true)
+        setLastSeenTab(isSellerTab = true)
         setRollenceMVCIcon(isActive = true)
 
         // When
         startChatListActivity()
-        onView(withText("Toko Rifq.. (19)")).perform(click())
 
         // Then
+        Thread.sleep(500)
         BroadcastResult.assertMVCVoucherVisible(isVisible = false)
     }
 }
