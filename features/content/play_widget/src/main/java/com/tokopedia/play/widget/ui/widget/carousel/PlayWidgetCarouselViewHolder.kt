@@ -4,12 +4,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetProduct
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.ext.isMuted
 import com.tokopedia.play.widget.ui.model.reminded
-import kotlin.math.abs
 
 /**
  * Created by kenny.hadisaputra on 17/05/23
@@ -18,7 +16,8 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
     class VideoContent private constructor(
         private val channelView: PlayWidgetCardCarouselChannelView,
-        private val listener: Listener,
+        private val dataSource: DataSource,
+        private val listener: Listener
     ) : RecyclerView.ViewHolder(channelView) {
 
         init {
@@ -44,14 +43,14 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     view: PlayWidgetCardCarouselChannelView,
                     item: PlayWidgetChannelUiModel,
                     product: PlayWidgetProduct,
-                    position: Int,
+                    position: Int
                 ) {
                     listener.onProductClicked(view, item, product, position, absoluteAdapterPosition)
                 }
 
                 override fun onPartnerClicked(
                     view: PlayWidgetCardCarouselChannelView,
-                    item: PlayWidgetChannelUiModel,
+                    item: PlayWidgetChannelUiModel
                 ) {
                     listener.onPartnerClicked(view, item, absoluteAdapterPosition)
                 }
@@ -66,7 +65,9 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 listener.onChannelImpressed(channelView, data.channel, absoluteAdapterPosition)
             }
             channelView.setModel(data.channel)
-            channelView.showMuteButton(data.isSelected)
+            channelView.showMuteButton(
+                data.isSelected && dataSource.canAutoPlay(data.channel)
+            )
             if (!data.isSelected) channelView.resetProductPosition()
         }
 
@@ -77,11 +78,13 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_MUTE_CHANGE -> {
                         channelView.setMuted(
                             shouldMuted = data.channel.isMuted,
-                            animate = data.isSelected,
+                            animate = data.isSelected
                         )
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
-                        channelView.showMuteButton(data.isSelected)
+                        channelView.showMuteButton(
+                            data.isSelected && dataSource.canAutoPlay(data.channel)
+                        )
                         if (!data.isSelected) channelView.resetProductPosition()
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_TOTAL_VIEW_CHANGE -> {
@@ -98,10 +101,12 @@ class PlayWidgetCarouselViewHolder private constructor() {
         companion object {
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                dataSource: DataSource,
+                listener: Listener
             ) = VideoContent(
                 PlayWidgetCardCarouselChannelView(parent.context),
-                listener,
+                dataSource,
+                listener
             )
         }
 
@@ -122,7 +127,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 view: PlayWidgetCardCarouselChannelView,
                 item: PlayWidgetChannelUiModel,
                 shouldMute: Boolean,
-                position: Int,
+                position: Int
             )
 
             fun onProductImpressed(
@@ -130,7 +135,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 item: PlayWidgetChannelUiModel,
                 product: PlayWidgetProduct,
                 productPosition: Int,
-                position: Int,
+                position: Int
             )
 
             fun onProductClicked(
@@ -138,20 +143,24 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 item: PlayWidgetChannelUiModel,
                 product: PlayWidgetProduct,
                 productPosition: Int,
-                position: Int,
+                position: Int
             )
 
             fun onPartnerClicked(
                 view: PlayWidgetCardCarouselChannelView,
                 item: PlayWidgetChannelUiModel,
-                position: Int,
+                position: Int
             )
+        }
+
+        interface DataSource {
+            fun canAutoPlay(item: PlayWidgetChannelUiModel): Boolean
         }
     }
 
     class UpcomingContent private constructor(
         private val upcomingView: PlayWidgetCardCarouselUpcomingView,
-        private val listener: Listener,
+        private val listener: Listener
     ) : RecyclerView.ViewHolder(upcomingView) {
 
         init {
@@ -171,7 +180,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
 
                 override fun onPartnerClicked(
                     view: PlayWidgetCardCarouselUpcomingView,
-                    item: PlayWidgetChannelUiModel,
+                    item: PlayWidgetChannelUiModel
                 ) {
                     listener.onPartnerClicked(view, item, absoluteAdapterPosition)
                 }
@@ -196,7 +205,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     PlayWidgetCarouselDiffCallback.PAYLOAD_REMINDED_CHANGE -> {
                         upcomingView.setReminded(
                             data.channel.reminderType.reminded,
-                            animate = data.isSelected,
+                            animate = data.isSelected
                         )
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
@@ -209,10 +218,10 @@ class PlayWidgetCarouselViewHolder private constructor() {
         companion object {
             fun create(
                 parent: ViewGroup,
-                listener: Listener,
+                listener: Listener
             ) = UpcomingContent(
                 PlayWidgetCardCarouselUpcomingView(parent.context),
-                listener,
+                listener
             )
         }
 
@@ -239,7 +248,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
             fun onPartnerClicked(
                 view: PlayWidgetCardCarouselUpcomingView,
                 item: PlayWidgetChannelUiModel,
-                position: Int,
+                position: Int
             )
         }
     }

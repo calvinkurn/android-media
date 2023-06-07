@@ -49,6 +49,12 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         this
     )
 
+    private val videoContentDataSource = object : PlayWidgetCarouselViewHolder.VideoContent.DataSource {
+        override fun canAutoPlay(item: PlayWidgetChannelUiModel): Boolean {
+            return mModel.config.autoPlay
+        }
+    }
+
     private val videoContentListener = object : PlayWidgetCarouselViewHolder.VideoContent.Listener {
         override fun onChannelImpressed(
             view: PlayWidgetCardCarouselChannelView,
@@ -60,7 +66,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
         }
@@ -75,13 +81,13 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                item.appLink,
+                item.appLink
             )
         }
 
@@ -96,7 +102,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
 
@@ -118,7 +124,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     mModel.config,
                     product,
                     productPosition,
-                    it,
+                    it
                 )
             }
         }
@@ -137,13 +143,13 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     mModel.config,
                     product,
                     productPosition,
-                    it,
+                    it
                 )
             }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                product.appLink,
+                product.appLink
             )
         }
 
@@ -157,13 +163,13 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                item.partner.appLink,
+                item.partner.appLink
             )
         }
     }
@@ -179,7 +185,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
         }
@@ -194,13 +200,13 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                item.appLink,
+                item.appLink
             )
         }
 
@@ -216,14 +222,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     item,
                     mModel.config,
                     it,
-                    reminderType.reminded,
+                    reminderType.reminded
                 )
 
                 mWidgetListener?.onReminderClicked(
                     this@PlayWidgetCarouselView,
                     item.channelId,
                     reminderType,
-                    it,
+                    it
                 )
             }
         }
@@ -238,20 +244,21 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                     this@PlayWidgetCarouselView,
                     item,
                     mModel.config,
-                    it,
+                    it
                 )
             }
 
             mWidgetListener?.onWidgetOpenAppLink(
                 this@PlayWidgetCarouselView,
-                item.partner.appLink,
+                item.partner.appLink
             )
         }
     }
 
     private val adapter = PlayWidgetCarouselAdapter(
+        videoContentDataSource = videoContentDataSource,
         videoContentListener = videoContentListener,
-        upcomingListener = upcomingListener,
+        upcomingListener = upcomingListener
     )
 
     private val snapHelper = PagerSnapHelper()
@@ -285,11 +292,11 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 val snappedView = snapHelper.findSnapView(layoutManager) ?: return
                 val snappedPosition = recyclerView.getChildAdapterPosition(snappedView)
 
-                //Case 1:
-                //[3 4 0 1 3 4 0 1 3 4] 0 1 3 4 [0 1 3 4 0 1 3 4 0 1]
+                // Case 1:
+                // [3 4 0 1 3 4 0 1 3 4] 0 1 3 4 [0 1 3 4 0 1 3 4 0 1]
 
-                //Case 2: (Fake Count = 7, itemCount = 5)
-                //[4 5 0 1 3 4 5] 0 1 3 4 5 [0 1 3 4 5 0 1]
+                // Case 2: (Fake Count = 7, itemCount = 5)
+                // [4 5 0 1 3 4 5] 0 1 3 4 5 [0 1 3 4 5 0 1]
 
                 val realItemSize = adapter.itemCount - (2 * FAKE_COUNT_PER_SIDE)
                 if (snappedPosition < FAKE_COUNT_PER_SIDE) {
@@ -300,9 +307,8 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
                     recyclerView.scrollBy(stepToCorrectIndex * (snappedView.width + itemDecoration.getOffset()), 0)
                     onWidgetSelected(snappedPosition + stepToCorrectIndex)
-
                 } else if (snappedPosition >= FAKE_COUNT_PER_SIDE + realItemSize) {
-                    val stepToOriginalEnd = snappedPosition - FAKE_COUNT_PER_SIDE - realItemSize + 1 //e.g pos 14
+                    val stepToOriginalEnd = snappedPosition - FAKE_COUNT_PER_SIDE - realItemSize + 1 // e.g pos 14
                     val modulus = stepToOriginalEnd % realItemSize
                     val addBy = if (modulus == 0) realItemSize else modulus
                     val stepToCorrectIndex = (-1 * stepToOriginalEnd) - realItemSize + addBy
@@ -341,8 +347,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
         updateChannels(
             channels,
-            selectedPosition = nextPosition,
-            shouldRoughlyScroll = true,
+            selectedPosition = nextPosition
         )
     }
 
@@ -360,15 +365,14 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
 
     private fun updateChannels(
         channels: List<PlayWidgetChannelUiModel> = mModel.items.filterIsInstance<PlayWidgetChannelUiModel>(),
-        selectedPosition: Int = mSelectedWidgetPos,
-        shouldRoughlyScroll: Boolean = false,
+        selectedPosition: Int = mSelectedWidgetPos
     ) {
         val dataWithFake = getDataWithFake(channels)
         val finalModel = dataWithFake.mapIndexed { index, channel ->
             val isSelected = index == selectedPosition
             PlayWidgetCarouselAdapter.Model(
                 channel.setMute(mIsMuted),
-                isSelected,
+                isSelected
             )
         }
 
@@ -380,51 +384,39 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
                 val focusedWidgets = getFocusedWidgets(binding.rvChannels)
                 mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
             }
-//            if (shouldRoughlyScroll) {
-//                roughlyScrollTo(selectedPosition) {
-//                    onWidgetSelected(selectedPosition)
-//
-//                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
-//                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
-//                }
-//            } else {
-//                binding.rvChannels.smoothScrollToPosition(selectedPosition)
-//                onWidgetSelected(selectedPosition)
-//
-//                binding.rvChannels.post {
-//                    val focusedWidgets = getFocusedWidgets(binding.rvChannels)
-//                    mWidgetInternalListener?.onFocusedWidgetsChanged(focusedWidgets)
-//                }
-//            }
         }
     }
 
     private fun getDataWithFake(channels: List<PlayWidgetChannelUiModel>): List<PlayWidgetChannelUiModel> {
-        return if (channels.isEmpty()) emptyList() else buildList {
-            var leftFakeCount = FAKE_COUNT_PER_SIDE
-            do {
-                val takeCount = min(leftFakeCount, channels.size)
-                addAll(
-                    0,
-                    channels.takeLast(takeCount).map {
-                        it.copy(channelId = "fakeStart-${it.channelId}")
-                    }
-                )
-                leftFakeCount -= takeCount
-            } while (leftFakeCount > 0)
+        return if (channels.isEmpty()) {
+            emptyList()
+        } else {
+            buildList {
+                var leftFakeCount = FAKE_COUNT_PER_SIDE
+                do {
+                    val takeCount = min(leftFakeCount, channels.size)
+                    addAll(
+                        0,
+                        channels.takeLast(takeCount).map {
+                            it.copy(channelId = "fakeStart-${it.channelId}")
+                        }
+                    )
+                    leftFakeCount -= takeCount
+                } while (leftFakeCount > 0)
 
-            addAll(channels)
+                addAll(channels)
 
-            var rightFakeCount = FAKE_COUNT_PER_SIDE
-            do {
-                val takeCount = min(rightFakeCount, channels.size)
-                addAll(
-                    channels.take(takeCount).map {
-                        it.copy(channelId = "fakeEnd-${it.channelId}")
-                    }
-                )
-                rightFakeCount -= takeCount
-            } while (rightFakeCount > 0)
+                var rightFakeCount = FAKE_COUNT_PER_SIDE
+                do {
+                    val takeCount = min(rightFakeCount, channels.size)
+                    addAll(
+                        channels.take(takeCount).map {
+                            it.copy(channelId = "fakeEnd-${it.channelId}")
+                        }
+                    )
+                    rightFakeCount -= takeCount
+                } while (rightFakeCount > 0)
+            }
         }
     }
 
@@ -446,7 +438,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
         return listOf(
             WidgetInList(
                 widget = snappedView,
-                position = recyclerView.getChildAdapterPosition(snappedView),
+                position = recyclerView.getChildAdapterPosition(snappedView)
             )
         )
     }
@@ -474,7 +466,7 @@ class PlayWidgetCarouselView : ConstraintLayout, IPlayWidgetView {
             view: PlayWidgetCarouselView,
             channelId: String,
             reminderType: PlayWidgetReminderType,
-            position: Int,
+            position: Int
         ) {}
     }
 }

@@ -11,8 +11,9 @@ import com.tokopedia.play.widget.ui.model.ext.isMuted
  * Created by kenny.hadisaputra on 17/05/23
  */
 internal class PlayWidgetCarouselAdapter(
+    private val videoContentDataSource: PlayWidgetCarouselViewHolder.VideoContent.DataSource,
     private val videoContentListener: PlayWidgetCarouselViewHolder.VideoContent.Listener,
-    private val upcomingListener: PlayWidgetCarouselViewHolder.UpcomingContent.Listener,
+    private val upcomingListener: PlayWidgetCarouselViewHolder.UpcomingContent.Listener
 ) : ListAdapter<PlayWidgetCarouselAdapter.Model, RecyclerView.ViewHolder>(PlayWidgetCarouselDiffCallback()) {
 
     override fun onCreateViewHolder(
@@ -21,7 +22,11 @@ internal class PlayWidgetCarouselAdapter(
     ): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_UPCOMING -> PlayWidgetCarouselViewHolder.UpcomingContent.create(parent, upcomingListener)
-            TYPE_VIDEO -> PlayWidgetCarouselViewHolder.VideoContent.create(parent, videoContentListener)
+            TYPE_VIDEO -> PlayWidgetCarouselViewHolder.VideoContent.create(
+                parent,
+                videoContentDataSource,
+                videoContentListener
+            )
             else -> error("View Type $viewType is not supported")
         }
     }
@@ -40,8 +45,9 @@ internal class PlayWidgetCarouselAdapter(
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (payloads.isEmpty()) onBindViewHolder(holder, position)
-        else {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        } else {
             val data = getItem(position)
             val payloadSet = payloads
                 .filterIsInstance<PlayWidgetCarouselDiffCallback.Payloads>()
@@ -78,7 +84,7 @@ internal class PlayWidgetCarouselAdapter(
 
     internal data class Model(
         val channel: PlayWidgetChannelUiModel,
-        val isSelected: Boolean,
+        val isSelected: Boolean
     )
 }
 
@@ -128,6 +134,6 @@ internal class PlayWidgetCarouselDiffCallback : DiffUtil.ItemCallback<PlayWidget
     }
 
     data class Payloads(
-        val payloads: List<String>,
+        val payloads: List<String>
     )
 }
