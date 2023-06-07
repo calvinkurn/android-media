@@ -52,7 +52,7 @@ class InfoDilayaniTokopediaBottomSheet(
     }
 
     private fun setupView() {
-        val title = context?.getString(com.tokopedia.product.manage.R.string.product_manage_propduct_dilayani_tokopedia_title).orEmpty()
+        val title = "Produk Dilayani Tokopedia"
         setTitle(title)
 
         val description = context?.getString(com.tokopedia.product.manage.common.R.string.product_manage_propduct_dilayani_tokopedia)
