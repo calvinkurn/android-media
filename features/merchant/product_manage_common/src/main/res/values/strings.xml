@@ -9,7 +9,7 @@
     <string name="product_manage_stock_description_information_stock_reminder" tools:keep="@string/product_manage_stock_description_information_stock_reminder">Pengingat Stok sudah diaktifkan dan kamu akan menerima notifikasi saat stok produk ini di bawah %d.</string>
     <string name="product_manage_stock_description_information_stock_reminder_active" tools:keep="@string/product_manage_stock_description_information_stock_reminder_active">Stok produk di bawah batas min. stok untuk pengingat (%d). Ayo update stok agar pembeli bisa tetap membeli produk ini.</string>
     <string name="product_manage_propduct_dilayani_tokopedia" tools:keep="@string/product_manage_stock_description_information_stock">Stok produk ini terdaftar di gudang Dilayani Tokopedia.</string>
-    <string name="product_manage_propduct_dilayani_tokopedia_title" tools:keep="@string/product_manage_stock_description_information_stock">Produk Dilayani Tokopedia.</string>
+    <string name="product_manage_propduct_dilayani_tokopedia_title">Produk Dilayani Tokopedia.</string>
 
     <string name="product_manage_error_description">Oops, ada gangguan yang perlu kami bereskan.</string>
     <string name="product_manage_save">Simpan</string>
