@@ -16,6 +16,7 @@ import com.google.android.material.sidesheet.SideSheetBehavior
 import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
@@ -80,7 +81,8 @@ class PlayExploreWidget @Inject constructor(
     }
 
     fun setupTab(categories: List<String>) {
-        tabs[categories.first()] = fgCategory
+        if(categories.size > 1)
+            tabs[categories.first()] = fgCategory
         tabs[categories.last()] = fgExplore
     }
 

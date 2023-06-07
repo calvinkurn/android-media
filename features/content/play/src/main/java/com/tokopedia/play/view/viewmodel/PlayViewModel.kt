@@ -563,8 +563,9 @@ class PlayViewModel @AssistedInject constructor(
 
     val exploreWidgetTabs: List<String>
         get() {
+            val config = _channelDetail.value.exploreWidgetConfig
             return buildList {
-                add(_channelDetail.value.exploreWidgetConfig.categoryName)
+                if (config.hasCategory) add(config.categoryName)
                 add(DEFAULT_TAB)
             }
         }
