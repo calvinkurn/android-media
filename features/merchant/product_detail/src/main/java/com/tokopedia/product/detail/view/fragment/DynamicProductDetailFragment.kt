@@ -2941,7 +2941,7 @@ open class DynamicProductDetailFragment :
 
     private fun observeAffiliateEligibility() {
         viewModel.resultAffiliate.observe(viewLifecycleOwner) {
-            if (it is Success && it.data.affiliateEligibility?.isEligible == true) {
+            if (it is Success && it.data.eligibleCommission?.isEligible.orFalse()) {
                 updateToolbarShareAffiliate()
             }
         }

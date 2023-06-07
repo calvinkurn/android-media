@@ -881,7 +881,7 @@ class ShopPageHeaderFragment :
 
         shopHeaderViewModel?.resultAffiliate?.observe(viewLifecycleOwner) {
             if (it is Success) {
-                updateShareIcon(it.data.affiliateEligibility?.isEligible.orFalse())
+                updateShareIcon(it.data.eligibleCommission?.isEligible.orFalse())
             }
         }
     }
