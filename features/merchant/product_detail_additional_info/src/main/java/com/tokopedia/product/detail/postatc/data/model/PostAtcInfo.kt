@@ -1,12 +1,29 @@
 package com.tokopedia.product.detail.postatc.data.model
 
-class PostAtcInfo {
-    var productId: String = ""
-    var cartId: String = ""
-    var layoutId: String = ""
-    var pageSource: String = ""
-    var layoutName: String = ""
-    var categoryId: String = ""
-    var categoryName: String = ""
-    var shopId: String = ""
+data class PostAtcInfo(
+    val productId: String = "",
+    val cartId: String = "",
+    val categoryId: String = "",
+    val categoryName: String = "",
+    val footer: Footer = Footer(),
+    val isFulfillment: Boolean = false,
+    val layoutId: String = "",
+    val layoutName: String = "",
+    val pageSource: String = "",
+    val selectedAddonsIds: List<String> = emptyList(),
+    val shopId: String = "",
+    val warehouseId: String = ""
+) {
+    data class Footer(
+        val image: String = "",
+        val description: String = "",
+        val info: String = "",
+        val buttonText: String = "",
+        val cartId: String = ""
+    ) {
+//        val shouldShow: Boolean
+//            get() = image.isNotEmpty() && description.isNotEmpty()
+
+        val shouldShow: Boolean = true
+    }
 }
