@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="mlp_button_bottomsheet_width">288dp</dimen>
-    <dimen name="mlp_button_bottomsheet_height">40dp</dimen>
-</resources>
