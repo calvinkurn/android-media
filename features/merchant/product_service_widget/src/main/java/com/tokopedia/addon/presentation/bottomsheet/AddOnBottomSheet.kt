@@ -21,9 +21,10 @@ class AddOnBottomSheet: BottomSheetUnify() {
     private var warehouseId: Long = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        overlayClickDismiss = true
+        overlayClickDismiss = false
         binding = BottomsheetAddonBinding.inflate(inflater, container, false)
         setChild(binding?.root)
+        clearContentPadding = true
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

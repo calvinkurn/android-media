@@ -87,4 +87,7 @@
     <string name="bundlewidget_other_product_text">produk lainnya</string>
     <string name="bundlewidget_other_product_count_format">+%d</string>
 
+    <!-- add on -->
+    <string name="addon_addon_total_text">Total Tambahan</string>
+
 </resources>
