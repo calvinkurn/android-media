@@ -13,11 +13,13 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.util.ShopUtil.setElement
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeSliderBannerViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop_widget.common.util.WidgetState
@@ -27,6 +29,10 @@ class ShopCampaignTabAdapter(
     shopCampaignTabAdapterTypeFactory: ShopCampaignTabAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, AdapterTypeFactory>(shopCampaignTabAdapterTypeFactory),
     DataEndlessScrollListener.OnDataEndlessScrollListener {
+
+    companion object{
+        private const val INVALID_INDEX = -1
+    }
 
     private var recyclerView: RecyclerView? = null
 
@@ -242,4 +248,59 @@ class ShopCampaignTabAdapter(
         return widget.items.isEmpty()
     }
 
+    fun removeWidget(model: Visitable<*>) {
+        val newList = getNewVisitableItems()
+        val modelIndex = newList.indexOf(model)
+        if (modelIndex != INVALID_INDEX) {
+            newList.remove(model)
+            submitList(newList)
+        }
+    }
+
+    override fun showLoading() {
+        if (!isLoading) {
+            val newList = getNewVisitableItems()
+            if (isShowLoadingMore) {
+                newList.add(loadingMoreModel)
+            } else {
+                newList.clear()
+                newList.add(loadingModel)
+            }
+            submitList(newList)
+        }
+    }
+
+    fun showBannerTimerRemindMeLoading() {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
+            nplCampaignUiModel.let {
+                it.data?.showRemindMeLoading = true
+                it.isNewData = true
+            }
+        }
+        submitList(newList)
+    }
+
+    fun updateBannerTimerWidgetData(
+        isRemindMe: Boolean? = null,
+        isClickRemindMe: Boolean = false
+    ) {
+        val newList = getNewVisitableItems()
+        newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
+            nplCampaignUiModel.data?.let {
+                isRemindMe?.let { isRemindMe ->
+                    it.isRemindMe = isRemindMe
+                    if (isClickRemindMe) {
+                        if (isRemindMe)
+                            ++it.totalNotify
+                        else
+                            --it.totalNotify
+                    }
+                }
+                it.showRemindMeLoading = false
+                nplCampaignUiModel.isNewData = true
+            }
+        }
+        submitList(newList)
+    }
 }

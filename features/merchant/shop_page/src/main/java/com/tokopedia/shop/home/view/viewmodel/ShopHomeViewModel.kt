@@ -227,6 +227,15 @@ class ShopHomeViewModel @Inject constructor(
         get() = _latestShopHomeWidgetLayoutData
     private val _latestShopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
 
+    val bannerTimerRemindMeStatusData: LiveData<Result<GetCampaignNotifyMeUiModel>>
+        get() = _bannerTimerRemindMeStatusData
+    private val _bannerTimerRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
+
+    //TODO need to check if we can combine other CheckCampaignNotifyMeUiModel live data since it is the same
+    val checkBannerTimerRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
+        get() = _checkBannerTimerRemindMeStatusData
+    private val _checkBannerTimerRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
+
     fun getShopPageHomeWidgetLayoutData(
         shopId: String,
         extParam: String
@@ -625,6 +634,32 @@ class ShopHomeViewModel @Inject constructor(
             _checkCampaignFlashSaleRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
         }) {
             _checkCampaignFlashSaleRemindMeStatusData.postValue(
+                Fail(
+                    CheckCampaignNplException(
+                        it.cause,
+                        it.message,
+                        campaignId
+                    )
+                )
+            )
+        }
+    }
+
+    fun clickBannerTimerReminder(campaignId: String, action: String) {
+        launchCatchError(block = {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                checkCampaignNotifyMe(campaignId, action)
+            }
+            val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
+                checkCampaignNotifyMeModel.campaignId,
+                checkCampaignNotifyMeModel.success,
+                checkCampaignNotifyMeModel.message,
+                checkCampaignNotifyMeModel.errorMessage,
+                action
+            )
+            _checkBannerTimerRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
+        }) {
+            _checkBannerTimerRemindMeStatusData.postValue(
                 Fail(
                     CheckCampaignNplException(
                         it.cause,
@@ -1293,5 +1328,17 @@ class ShopHomeViewModel @Inject constructor(
         } else {
             _isShowHomeTabConfettiLiveData.postValue(false)
         }
+    }
+
+    fun getBannerTimerRemindMeStatus(campaignId: String) {
+        launchCatchError(block = {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                getCampaignNotifyMe(campaignId)
+            }
+            val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
+                getCampaignNotifyMeModel
+            )
+            _bannerTimerRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+        }) {}
     }
 }

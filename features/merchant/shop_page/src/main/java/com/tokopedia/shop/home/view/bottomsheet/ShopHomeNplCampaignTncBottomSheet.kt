@@ -41,6 +41,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
+//TODO need to combine this bottomsheet with ShopHomeCampaignTncBottomSheet in the future, since both of them have the same purpose
 class ShopHomeNplCampaignTncBottomSheet : BottomSheetUnify() {
 
     companion object {

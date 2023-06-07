@@ -28,7 +28,7 @@ data class ShopWidgetDisplayBannerTimerUiModel(
         val endDate: String = "",
         val bgColor: List<String> = listOf(),
         val textColor: String = "",
-        val status: Int = -1,
+        val status: StatusCampaign = StatusCampaign.UPCOMING,
         var totalNotify: Int = 0,
         val totalNotifyWording: String = "",
         var isRemindMe: Boolean? = null,

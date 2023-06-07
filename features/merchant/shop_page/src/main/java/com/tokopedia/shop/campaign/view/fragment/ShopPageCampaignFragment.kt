@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
@@ -69,15 +70,19 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
+import com.tokopedia.shop.home.view.model.CheckCampaignNotifyMeUiModel
+import com.tokopedia.shop.home.view.model.NotifyMeAction
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageHeaderFragment
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.viewBinding
@@ -101,6 +106,7 @@ class ShopPageCampaignFragment :
         private const val KEY_SHOP_ID = "SHOP_ID"
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
+        private const val HOME_TAB_APP_LINK_LAST_SEGMENT = "home"
 
         fun createInstance(shopId: String): ShopPageCampaignFragment {
             val bundle = Bundle()
@@ -769,8 +775,11 @@ class ShopPageCampaignFragment :
     }
 
     override fun onWidgetSliderBannerHighlightCtaClicked(uiModel: ShopWidgetDisplaySliderBannerHighlightUiModel) {
-        val appLink = uiModel.header.ctaLink
-        if (Uri.parse(appLink).lastPathSegment.equals("home", true)) {
+        checkShouldSelectHomeTab(uiModel.header.ctaLink)
+    }
+
+    private fun checkShouldSelectHomeTab(appLink: String) {
+        if (Uri.parse(appLink).lastPathSegment.equals(HOME_TAB_APP_LINK_LAST_SEGMENT, true)) {
             (parentFragment as? ShopPageHeaderFragment)?.selectShopTab(ShopPageHeaderTabName.HOME)
         }
     }
@@ -872,4 +881,70 @@ class ShopPageCampaignFragment :
         )
         shopCampaignTabAdapter.setHomeYouTubeData(widgetId, YoutubeVideoDetailModel())
     }
+
+    override fun onDisplayBannerTimerClicked(
+        position: Int,
+        uiModel: ShopWidgetDisplayBannerTimerUiModel
+    ) {}
+
+    override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {}
+
+    override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        shopCampaignTabAdapter.removeWidget(uiModel)
+        endlessRecyclerViewScrollListener.resetState()
+        getLatestShopHomeWidgetLayoutData()
+    }
+
+    override fun getLatestShopHomeWidgetLayoutData() {
+        globalErrorShopPage?.hide()
+        shopCampaignTabAdapter.showLoading()
+        scrollToTop()
+        viewModel?.getLatestShopHomeWidgetLayoutData(
+            shopId,
+            extParam,
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+        )
+    }
+
+    override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        viewModel?.let {
+            if (it.isLogin) {
+                shopCampaignTabAdapter.showBannerTimerRemindMeLoading()
+                handleBannerTimerClickRemindMe(uiModel)
+            } else {
+                redirectToLoginPage()
+            }
+        }
+    }
+
+    override fun onSuccessCheckBannerTimerNotifyMe(data: CheckCampaignNotifyMeUiModel) {
+        val isRegisterCampaign = data.action.equals(
+            NotifyMeAction.REGISTER.action,
+            ignoreCase = true
+        )
+        shopCampaignTabAdapter.updateBannerTimerWidgetData(isRegisterCampaign, true)
+        view?.let {
+            Toaster.build(
+                it,
+                data.message,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.shop_string_ok)
+            ).show()
+        }
+    }
+
+    override fun onFailCheckBannerTimerNotifyMe(errorMessage: String) {
+        view?.let {
+            Toaster.build(
+                it,
+                errorMessage,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.shop_string_ok)
+            ).show()
+        }
+        shopCampaignTabAdapter.updateBannerTimerWidgetData()
+    }
+
 }

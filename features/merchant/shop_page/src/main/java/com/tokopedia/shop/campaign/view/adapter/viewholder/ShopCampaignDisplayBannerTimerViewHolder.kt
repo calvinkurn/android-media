@@ -30,7 +30,7 @@ import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THA
 import com.tokopedia.shop.home.util.DateHelper.millisecondsToDays
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
-import com.tokopedia.shop.home.view.model.StatusCampaignInt
+import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifyHighlight
@@ -120,7 +120,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private fun setTimer(
         model: ShopWidgetDisplayBannerTimerUiModel
     ) {
-        val statusCampaign = model.data?.status ?: -1
+        val statusCampaign = model.data?.status
         if (!isStatusCampaignFinished(statusCampaign)) {
             val timeDescription = model.data?.timeDescription.orEmpty()
             val timeCounter = model.data?.timeCounter.orZero()
@@ -155,7 +155,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     private fun setTimerUnify(
         dateCampaign: Date,
         timeCounter: Long,
-        statusCampaign: Int,
+        statusCampaign: StatusCampaign?,
         model: ShopWidgetDisplayBannerTimerUiModel
     ) {
         timerMoreThanOneDay?.gone()
@@ -175,7 +175,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         }
     }
 
-    private fun configTimerUnifyPosition(statusCampaign: Int) {
+    private fun configTimerUnifyPosition(statusCampaign: StatusCampaign?) {
         val constraintSet = ConstraintSet()
         constraintSet.clone(timerContainer)
         if (isStatusCampaignUpcoming(statusCampaign)) {
@@ -328,16 +328,16 @@ class ShopCampaignDisplayBannerTimerViewHolder(
     }
 
 
-    private fun isStatusCampaignFinished(statusCampaign: Int): Boolean {
-        return statusCampaign == StatusCampaignInt.FINISHED.statusCampaign
+    private fun isStatusCampaignFinished(statusCampaign: StatusCampaign?): Boolean {
+        return statusCampaign == StatusCampaign.FINISHED
     }
 
-    private fun isStatusCampaignOngoing(statusCampaign: Int): Boolean {
-        return statusCampaign == StatusCampaignInt.ONGOING.statusCampaign
+    private fun isStatusCampaignOngoing(statusCampaign: StatusCampaign?): Boolean {
+        return statusCampaign == StatusCampaign.ONGOING
     }
 
-    private fun isStatusCampaignUpcoming(statusCampaign: Int): Boolean {
-        return statusCampaign == StatusCampaignInt.UPCOMING.statusCampaign
+    private fun isStatusCampaignUpcoming(statusCampaign: StatusCampaign?): Boolean {
+        return statusCampaign == StatusCampaign.UPCOMING
     }
 
     private fun getIndexRatio(data: ShopWidgetDisplayBannerTimerUiModel, index: Int): Int {

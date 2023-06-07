@@ -10,6 +10,7 @@ import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
 import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
+import com.tokopedia.shop.home.view.model.StatusCampaign
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
@@ -41,7 +42,7 @@ object ShopPageWidgetMapper {
             endDate = data?.timeInfo?.endDate.orEmpty(),
             bgColor = data?.timeInfo?.bgColor.orEmpty(),
             textColor = data?.timeInfo?.textColor.orEmpty(),
-            status = data?.timeInfo?.status ?: -1,
+            status = data?.timeInfo?.status.mapToStatusCampaign(),
             totalNotify = data?.totalNotify.orZero(),
             totalNotifyWording = data?.totalNotifyWording.orEmpty()
         )
@@ -121,6 +122,15 @@ object ShopPageWidgetMapper {
                     }
                 )
             )
+        }
+    }
+
+    private fun Int?.mapToStatusCampaign(): StatusCampaign {
+        return when (this) {
+            0 -> StatusCampaign.UPCOMING
+            1 -> StatusCampaign.ONGOING
+            2 -> StatusCampaign.FINISHED
+            else -> StatusCampaign.UPCOMING
         }
     }
 }
