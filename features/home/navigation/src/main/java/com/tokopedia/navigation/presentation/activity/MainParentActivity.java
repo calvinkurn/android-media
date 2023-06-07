@@ -631,7 +631,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void configureNavigationBarBasedOnFragment(Fragment fragment) {
-        bottomNavigation.forceDarkMode(fragment.getClass().getSimpleName().equalsIgnoreCase(FEED_PAGE));
+        bottomNavigation.forceDarkMode(getIsFragmentForceDarkModeNavigationBar(fragment));
     }
 
     private void scrollToTop(Fragment fragment) {
@@ -651,6 +651,13 @@ public class MainParentActivity extends BaseActivity implements
     private boolean getIsFragmentLightStatusBar(Fragment fragment) {
         if (fragment instanceof FragmentListener) {
             return ((FragmentListener) fragment).isLightThemeStatusBar();
+        }
+        return false;
+    }
+
+    private boolean getIsFragmentForceDarkModeNavigationBar(Fragment fragment) {
+        if (fragment instanceof FragmentListener) {
+            return ((FragmentListener) fragment).isForceDarkModeNavigationBar();
         }
         return false;
     }
