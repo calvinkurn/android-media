@@ -1444,9 +1444,9 @@ class CartAdapter constructor(
         cartItemActionListener.onNeedToRecalculate()
     }
 
-    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int, isQuantityChanged: Boolean) {
+    override fun onNeedToRefreshSingleShop(cartItemHolderData: CartItemHolderData, itemPosition: Int) {
         cartItemActionListener.onNeedToRecalculate()
-        cartItemActionListener.onNeedToRefreshSingleShop(cartItemHolderData, itemPosition, isQuantityChanged)
+        cartItemActionListener.onNeedToRefreshSingleShop(cartItemHolderData, itemPosition)
     }
 
     override fun onNeedToRefreshWeight(cartItemHolderData: CartItemHolderData) {
