@@ -83,6 +83,10 @@ class UserProfileReviewFragment @Inject constructor(
                 override fun onClickSeeMore(review: UserReviewUiModel.Review) {
                     viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review))
                 }
+
+                override fun onClickProductInfo(review: UserReviewUiModel.Review) {
+                    viewModel.submitAction(UserProfileAction.ClickProductInfo(review))
+                }
             },
             onLoading = {
                 viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = false))
@@ -136,6 +140,9 @@ class UserProfileReviewFragment @Inject constructor(
                     }
                     is UserProfileUiEvent.ErrorLikeDislike -> {
                         showError(event.throwable)
+                    }
+                    is UserProfileUiEvent.OpenProductDetailPage -> {
+                        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_INFO, event.productId)
                     }
                     else -> {}
                 }

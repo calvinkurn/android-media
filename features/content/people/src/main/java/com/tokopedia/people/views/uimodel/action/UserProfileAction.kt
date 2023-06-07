@@ -50,4 +50,6 @@ sealed interface UserProfileAction {
     data class ClickLikeReview(val review: UserReviewUiModel.Review) : UserProfileAction
 
     data class ClickReviewTextSeeMore(val review: UserReviewUiModel.Review) : UserProfileAction
+
+    data class ClickProductInfo(val review: UserReviewUiModel.Review) : UserProfileAction
 }

@@ -34,4 +34,6 @@ sealed interface UserProfileUiEvent {
     object ShowReviewOnboarding : UserProfileUiEvent
 
     data class ErrorLikeDislike(val throwable: Throwable) : UserProfileUiEvent
+
+    data class OpenProductDetailPage(val productId: String) : UserProfileUiEvent
 }

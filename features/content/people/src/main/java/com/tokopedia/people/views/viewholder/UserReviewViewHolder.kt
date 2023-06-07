@@ -109,6 +109,10 @@ class UserReviewViewHolder private constructor() {
                 setupMedia(item)
 
                 setupLike(item)
+
+                binding.clProductInfo.setOnClickListener {
+                    listener.onClickProductInfo(item)
+                }
             }
         }
 
@@ -202,6 +206,7 @@ class UserReviewViewHolder private constructor() {
         interface Listener {
             fun onClickLike(review: UserReviewUiModel.Review)
             fun onClickSeeMore(review: UserReviewUiModel.Review)
+            fun onClickProductInfo(review: UserReviewUiModel.Review)
         }
     }
 
