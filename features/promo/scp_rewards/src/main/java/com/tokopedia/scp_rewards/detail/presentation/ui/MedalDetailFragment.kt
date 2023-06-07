@@ -1,10 +1,13 @@
 package com.tokopedia.scp_rewards.detail.presentation.ui
 
+import android.app.Activity
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -17,11 +20,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.R
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
@@ -57,6 +59,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
     @Inject
     @JvmField
     var viewModelFactory: ViewModelFactory? = null
+    private var insetBottom = 0
 
     private var medaliSlug = ""
     private var sourceName = ""
@@ -149,7 +152,11 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun showToastAndNavigateToLink(id: Int?, message: String?, appLink: String?, url: String?) {
         binding.viewMedalFooter.showLoading(id, false)
-        Toaster.build(binding.root, message.orEmpty())
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            val height = getNavigationBarHeight()
+            Toaster.toasterCustomBottomHeight = height
+        }
+        Toaster.build(activity?.window?.decorView!!, message.orEmpty())
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
@@ -157,6 +164,21 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 }
             })
             .show()
+    }
+
+    // For Testing
+    private fun getNavigationBarHeight(): Int {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
+        val resources = context?.resources
+        val resourceId: Int = resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
+        return if (resourceId > 0) {
+            resources?.getDimensionPixelSize(resourceId) ?: 0
+        } else {
+            0
+        }
     }
 
     private fun observeBadgeData() {
@@ -266,7 +288,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         Task(
                             title = it.title,
                             isCompleted = it.isCompleted,
-                            progressInfo = it.progressInfo,
+                            progressInfo = it.progressInfo
                         )
                     }
                 )
@@ -342,6 +364,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
             }
             binding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = insets.bottom
+                insetBottom = insets.bottom
             }
             WindowInsetsCompat.CONSUMED
         }
