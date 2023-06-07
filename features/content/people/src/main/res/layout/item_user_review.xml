@@ -6,41 +6,51 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/img_product"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_product"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_product_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintBottom_toTopOf="@id/tv_variant"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/img_product"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="display_3"
-        app:typographyWeight="bold"
-        tools:text="Nike Air Force 1 Low White Red" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_variant"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/img_product"
-        app:layout_constraintEnd_toEndOf="@id/tv_product"
-        app:layout_constraintStart_toStartOf="@id/tv_product"
-        app:layout_constraintTop_toBottomOf="@id/tv_product"
-        app:typographyType="display_3"
-        tools:text="Varian: Red White" />
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_product"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_product"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@id/tv_variant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_product"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Nike Air Force 1 Low White Red" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_variant"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintBottom_toBottomOf="@id/img_product"
+            app:layout_constraintEnd_toEndOf="@id/tv_product"
+            app:layout_constraintStart_toStartOf="@id/tv_product"
+            app:layout_constraintTop_toBottomOf="@id/tv_product"
+            app:typographyType="display_3"
+            tools:text="Varian: Red White" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/ll_star"
@@ -48,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="@id/img_product"
-        app:layout_constraintTop_toBottomOf="@id/img_product">
+        app:layout_constraintStart_toStartOf="@id/cl_product_info"
+        app:layout_constraintTop_toBottomOf="@id/cl_product_info">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_star_1"
