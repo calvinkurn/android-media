@@ -6,7 +6,8 @@
     android:id="@+id/productCardFooterLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="NotSibling">
 
     <ViewStub
         android:id="@+id/buttonNotifyStub"
