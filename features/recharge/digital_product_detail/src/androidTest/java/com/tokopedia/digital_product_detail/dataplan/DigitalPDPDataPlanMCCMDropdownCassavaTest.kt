@@ -36,7 +36,6 @@ class DigitalPDPDataPlanMCCMDropdownCassavaTest : BaseDigitalPDPDataPlanTest() {
     @Test
     fun validate_interact_mccm_dropdown() {
         interactWithMccmWidget()
-        Thread.sleep(4000)
         MatcherAssert.assertThat(
             cassavaTestRule.validate(PATH_ANALYTICS),
             hasAllSuccess()
@@ -44,7 +43,7 @@ class DigitalPDPDataPlanMCCMDropdownCassavaTest : BaseDigitalPDPDataPlanTest() {
     }
 
     private fun interactWithMccmWidget() {
-        Thread.sleep(2000)
+        Thread.sleep(10000)
         mccm_vertical_clickShowMore()
         mccm_vertical_clickCard_withIndex(0)
         mccm_vertical_clickCardChevron_withIndex(0)
