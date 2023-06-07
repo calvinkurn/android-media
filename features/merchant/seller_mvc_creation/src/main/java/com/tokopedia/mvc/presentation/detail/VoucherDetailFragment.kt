@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.transition.AutoTransition
-import androidx.transition.Fade
-import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -413,8 +411,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 VoucherStatus.NOT_STARTED -> {
                     btnUbahKupon.apply {
                         visible()
-                        if (data.isEditable) enable()
-                        else disable()
+                        if (data.isEditable) {
+                            enable()
+                        } else {
+                            disable()
+                        }
                     }
                     timer.invisible()
                     tpgPeriodStop.invisible()
@@ -468,7 +469,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupPerformanceSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus == VoucherStatus.ONGOING) return
+            if (data.voucherStatus != VoucherStatus.ONGOING) return
             if (layoutPerformance.parent != null) {
                 layoutPerformance.inflate()
             }
