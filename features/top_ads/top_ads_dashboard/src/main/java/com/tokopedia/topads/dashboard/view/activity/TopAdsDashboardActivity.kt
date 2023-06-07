@@ -67,11 +67,11 @@ import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -88,9 +88,13 @@ private const val CLICK_IKLAN_TOKO = " click - iklan toko"
 private const val VIEW_IKLAN_PRODUK = "view - dashboard iklan produk"
 private const val VIEW_HEADLINE_EVENT = "view - iklan toko"
 
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
-    TopAdsProductIklanFragment.AppBarAction, TopAdsProductIklanFragment.AdInfo,
-    TopAdsHeadlineBaseFragment.AppBarActionHeadline, CustomDatePicker.ActionListener {
+class TopAdsDashboardActivity :
+    BaseActivity(),
+    HasComponent<TopAdsDashboardComponent>,
+    TopAdsProductIklanFragment.AppBarAction,
+    TopAdsProductIklanFragment.AdInfo,
+    TopAdsHeadlineBaseFragment.AppBarActionHeadline,
+    CustomDatePicker.ActionListener {
 
     private var appBarLayout: AppBarLayout? = null
     private var tabLayout: TabsUnify? = null
@@ -106,7 +110,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private val headerToolbarRight by lazy(LazyThreadSafetyMode.NONE) {
         layoutInflater.inflate(
-            R.layout.layout_topads_dashboard_actionbar, null, false
+            R.layout.layout_topads_dashboard_actionbar,
+            null,
+            false
         )
     }
 
@@ -172,7 +178,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         tabLayout?.getUnifyTabLayout()
             ?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(p0: TabLayout.Tab?) {
-
                 }
 
                 override fun onTabUnselected(p0: TabLayout.Tab?) {}
@@ -196,7 +201,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                         IKLANKAN_PRODUK_TAB -> {
                             removeBtn()
                             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(
-                                VIEW_IKLAN_PRODUK, ""
+                                VIEW_IKLAN_PRODUK,
+                                ""
                             )
                         }
                         INSIGHT_PAGE -> {
@@ -240,8 +246,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
 
         multiActionBtn?.setOnClickListener {
-            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0)
+            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_0) {
                 navigateToAdTypeSelection()
+            }
             if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == CONST_3) {
                 val fragments = (viewPager.adapter as TopAdsDashboardBasePagerAdapter).getList()
                 for (frag in fragments) {
@@ -259,7 +266,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
 
         ivEducationTopAdsActionBar.setOnClickListener {
-            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == INSIGHT_PAGE){
+            if (tabLayout?.getUnifyTabLayout()?.selectedTabPosition == INSIGHT_PAGE) {
                 openSaransTopAdsEducationalBottomsheet()
             } else {
                 startActivity(Intent(this, TopAdsEducationActivity::class.java))
@@ -275,8 +282,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
     }
 
-    private fun openSaransTopAdsEducationalBottomsheet(){
-        val view = layoutInflater.inflate(R.layout.layout_saran_topads_eductional_info_bottomsheet,null,false)
+    private fun openSaransTopAdsEducationalBottomsheet() {
+        val view = layoutInflater.inflate(R.layout.layout_saran_topads_eductional_info_bottomsheet, null, false)
         saranTopAdsEducationalBottomSheet = BottomSheetUnify().apply {
             setChild(view)
             isDragable = false
@@ -292,8 +299,12 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         val seeSuggestionsCta = view.findViewById<UnifyButton>(R.id.topads_suggestion_cta)
         videoThumbnail.urlSrc = SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_THUMBNAIL
         videoThumbnail.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(
-                SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK))
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(
+                    SARAN_TOPADS_EDUCATIONAL_INFO_VIDEO_LINK
+                )
+            )
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
@@ -303,7 +314,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         seeSuggestionsCta.setOnClickListener {
             saranTopAdsEducationalBottomSheet?.dismiss()
         }
-        saranTopAdsEducationalBottomSheet?.show(supportFragmentManager,"educationalBottomSheet")
+        saranTopAdsEducationalBottomSheet?.show(supportFragmentManager, "educationalBottomSheet")
     }
 
     private fun initView() {
@@ -380,8 +391,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 false
             )
         ) {
-            if (resultCode == Activity.RESULT_OK)
+            if (resultCode == Activity.RESULT_OK) {
                 renderTabAndViewPager()
+            }
         }
     }
 
@@ -417,7 +429,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
-                positionOffsetPixels: Int,
+                positionOffsetPixels: Int
             ) {
             }
 
@@ -494,7 +506,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             .inject(this)
     }
 
-
     private fun actionSendAnalyticsIfFromPushNotif() {
         val intent = intent
         if (intent != null && intent.hasExtra(TopAdsDashboardConstant.EXTRA_FROM_PUSH)) {
@@ -522,8 +533,8 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 val homeIntent = RouteManager.getIntent(this, applinkConst)
                 startActivity(homeIntent)
                 finish()
-            } else
-            //coming from deeplink
+            } else {
+                // coming from deeplink
                 try {
                     this.startActivity(RouteManager.getIntent(this, applinkConst))
                     this.finish()
@@ -531,6 +542,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 } catch (e: ClassNotFoundException) {
                     e.printStackTrace()
                 }
+            }
         }
         super.onBackPressed()
     }
@@ -597,7 +609,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     fun toggleMultiActionButton(show: Boolean) {
         when {
-            viewPager.currentItem == IKLANKAN_PRODUK_TAB || viewPager.currentItem == HEADLINE_ADS_TAB || !show -> bottom?.hide()
+            viewPager.currentItem == IKLANKAN_PRODUK_TAB || viewPager.currentItem == HEADLINE_ADS_TAB || viewPager.currentItem == INSIGHT_PAGE || !show -> bottom?.hide()
             show -> bottom?.show()
         }
     }
@@ -621,8 +633,9 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private fun showBottomSheet() {
         val dateRange = if (!customStartDate.isNullOrEmpty()) {
             "$customStartDate - $customEndDate"
-        } else
+        } else {
             getString(R.string.topads_dash_custom_date_desc)
+        }
 
         datePickerSheet = DatePickerSheet.newInstance(this, datePickerIndex, dateRange)
         datePickerSheet?.show()
