@@ -105,10 +105,10 @@ class PlayVideoFragment @Inject constructor(
 
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
-        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit) {
+        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit, channelType: PlayChannelType) {
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     .apply {
-                        setTitle(getString(R.string.play_pip_permission_rationale_title))
+                        setTitle(getString(R.string.play_pip_permission_rationale_title, channelType.value.capitalize()))
                         setDescription(getString(R.string.play_pip_permission_rationale_desc))
                         setPrimaryCTAText(getString(R.string.play_pip_activate))
                         setPrimaryCTAClickListener {
@@ -126,7 +126,8 @@ class PlayVideoFragment @Inject constructor(
                     }.show()
         }
 
-        override fun onShouldRequestPermission(pipMode: PiPMode, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+        override fun onShouldRequestPermission(pipModel: PiPInfoUiModel, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+            val pipMode = pipModel.pipMode
             val dialogHandler = { openDialog(
                     requestHandler = {
                         requestPermissionFlow.requestPermission()
@@ -143,7 +144,8 @@ class PlayVideoFragment @Inject constructor(
                     },
                     dismissHandler = {
                         requestPermissionFlow.cancel()
-                    }
+                    },
+                    channelType = pipModel.channelType,
             ) }
 
             when (pipMode) {
