@@ -56,16 +56,6 @@
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
-    },
-    {
-      "eventAction": "input manual number",
-      "eventCategory": "digital - homepage",
-      "eventLabel": ".*_.*",
-      "event": "clickDigital",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
     }
   ]
 }
