@@ -101,6 +101,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    private val sellerEduArticleUrl = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
     private val campaignId by lazy { arguments?.getLong(BundleConstant.BUNDLE_KEY_CAMPAIGN_ID) }
     private val pageMode by lazy {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
@@ -307,9 +308,10 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun getOosSpan(spanString: String): CharSequence? {
         val spannableString = SpannableString(spanString)
+        val urlLink = "${ApplinkConst.WEBVIEW}?url=${sellerEduArticleUrl}"
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(p0: View) {
-                RouteManager.route(context, SELLER_MVC_INTRO)
+                RouteManager.route(context, urlLink)
             }
 
             override fun updateDrawState(ds: TextPaint) {
