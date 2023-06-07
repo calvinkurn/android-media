@@ -453,6 +453,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                             getString(R.string.play_setup_cover_auto_generated_toaster_delete_cover_from_product)
                         }
                     }
+                    is PlayShortsUiEvent.ResetForm -> {
+                        coachMark = null
+                        coachMarkItems.clear()
+                    }
                     else -> {}
                 }
             }

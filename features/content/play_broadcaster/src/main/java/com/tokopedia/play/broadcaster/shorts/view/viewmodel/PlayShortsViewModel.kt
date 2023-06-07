@@ -495,7 +495,7 @@ class PlayShortsViewModel @Inject constructor(
         _uiEvent.emit(PlayShortsUiEvent.SuccessOnboardAffiliate)
     }
 
-    private fun setSelectedAccount(account: ContentAccountUiModel) {
+    private suspend fun setSelectedAccount(account: ContentAccountUiModel) {
         _selectedAccount.update { account }
         sharedPref.setLastSelectedAccountType(account.type)
         resetForm()
@@ -544,11 +544,12 @@ class PlayShortsViewModel @Inject constructor(
         }
     }
 
-    private fun resetForm() {
+    private suspend fun resetForm() {
         _titleForm.update { PlayShortsTitleFormUiState.Empty }
         _productSectionList.update { emptyList() }
         _coverForm.update { PlayShortsCoverFormUiState.Empty }
         mDataStore.getSetupDataStore().setFullCover(PlayCoverUiModel.empty())
+        _uiEvent.emit(PlayShortsUiEvent.ResetForm)
     }
 
     private fun emitEventAccountBanned() {
