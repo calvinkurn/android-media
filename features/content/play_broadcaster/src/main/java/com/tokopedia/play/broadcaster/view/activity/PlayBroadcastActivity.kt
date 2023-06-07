@@ -179,6 +179,18 @@ class PlayBroadcastActivity : BaseActivity(),
     private val isPortrait: Boolean
         get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+    private val dialogUnSupportedDevice by lazyThreadSafetyNone {
+        getDialog(
+            title = getString(R.string.play_dialog_unsupported_device_title),
+            desc = getString(R.string.play_dialog_unsupported_device_desc),
+            primaryCta = getString(R.string.play_broadcast_exit),
+            primaryListener = { dialog ->
+                dialog.dismiss()
+                finish()
+            }
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         loadEffectNativeLibrary()
 
@@ -722,15 +734,8 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun showDialogWhenUnSupportedDevices() {
-        getDialog(
-                title = getString(R.string.play_dialog_unsupported_device_title),
-                desc = getString(R.string.play_dialog_unsupported_device_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    finish()
-                }
-        ).show()
+        if (dialogUnSupportedDevice.isShowing) return
+        dialogUnSupportedDevice.show()
     }
 
     private fun showToaster(
