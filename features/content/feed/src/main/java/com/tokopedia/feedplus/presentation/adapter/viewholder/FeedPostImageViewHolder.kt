@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.databinding.ItemFeedPostBinding
 import com.tokopedia.feedplus.domain.mapper.MapperFeedModelToTrackerDataModel
@@ -216,15 +215,11 @@ class FeedPostImageViewHolder(
                 menuButton.setOnClickListener {
                     listener.onMenuClicked(
                         data.id,
-                        data.editable,
-                        data.deletable,
-                        data.reportable,
-                        FeedContentData(
-                            data.text,
-                            data.id,
-                            data.author.id,
-                            absoluteAdapterPosition
-                        ),
+                        data.menuItems.map {
+                            it.copy(
+                                contentData = it.contentData?.copy(rowNumber = absoluteAdapterPosition)
+                            )
+                        },
                         trackerData
                     )
                 }

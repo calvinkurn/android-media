@@ -141,7 +141,7 @@
         tools:visibility="visible"
         />
 
-    <com.tokopedia.play.util.scroll.NestedScrollableHost
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
         android:id="@+id/scrollable_host_chat"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
             android:layout_height="match_parent"
             />
 
-    </com.tokopedia.play.util.scroll.NestedScrollableHost>
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
     <com.tokopedia.play.view.custom.video.PlayVideoControlView
         android:id="@+id/pcv_video"
@@ -396,7 +396,7 @@
         android:layout_marginBottom="@dimen/unify_space_40"
         app:layout_constraintBottom_toBottomOf="@id/view_size" />
 
-    <com.tokopedia.play.util.scroll.NestedScrollableHost
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
         android:id="@+id/scrollable_host_engagement"
         android:layout_width="wrap_content"
         android:layout_height="110dp"
@@ -414,6 +414,6 @@
             android:layout_height="match_parent"
             />
 
-    </com.tokopedia.play.util.scroll.NestedScrollableHost>
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
 </com.tokopedia.play.view.custom.PlayInteractionConstraintLayout>
