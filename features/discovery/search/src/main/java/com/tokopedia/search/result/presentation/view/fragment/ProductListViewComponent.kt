@@ -31,6 +31,7 @@ import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtc
 import com.tokopedia.search.result.product.lastfilter.LastFilterModule
 import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.responsecode.ResponseCodeProviderModule
 import com.tokopedia.search.result.product.safesearch.SafeSearchModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
 import com.tokopedia.search.result.product.ticker.TickerModule
@@ -81,6 +82,7 @@ import dagger.Component
     WishlistModule::class,
     LastFilterModule::class,
     BottomSheetFilterModule::class,
+    ResponseCodeProviderModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 
