@@ -393,6 +393,8 @@ public class MainParentActivity extends BaseActivity implements
         fragmentContainer = findViewById(R.id.container);
         fragmentList = fragments();
 
+        bottomNavigation = findViewById(R.id.bottom_navbar);
+
         WeaveInterface firstTimeWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -403,7 +405,6 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
-        bottomNavigation = findViewById(R.id.bottom_navbar);
 
         populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
@@ -580,6 +581,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void selectFragment(Fragment fragment) {
         configureStatusBarBasedOnFragment(fragment);
+        configureNavigationBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
     }
@@ -628,6 +630,10 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
+    private void configureNavigationBarBasedOnFragment(Fragment fragment) {
+        bottomNavigation.forceDarkMode(getIsFragmentForceDarkModeNavigationBar(fragment));
+    }
+
     private void scrollToTop(Fragment fragment) {
         if (fragment != null && fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
@@ -645,6 +651,13 @@ public class MainParentActivity extends BaseActivity implements
     private boolean getIsFragmentLightStatusBar(Fragment fragment) {
         if (fragment instanceof FragmentListener) {
             return ((FragmentListener) fragment).isLightThemeStatusBar();
+        }
+        return false;
+    }
+
+    private boolean getIsFragmentForceDarkModeNavigationBar(Fragment fragment) {
+        if (fragment instanceof FragmentListener) {
+            return ((FragmentListener) fragment).isForceDarkModeNavigationBar();
         }
         return false;
     }
