@@ -24,7 +24,7 @@ object TokonowWarehouseMapper {
         return warehouses.map { LocalWarehouseModel(warehouse_id = it.warehouseId.toLongOrZero(), service_type = it.serviceType) }
     }
 
-    fun mapWarehousesModelToLocal(warehouses: List<WarehouseDataModel>) : List<LocalWarehouseModel> {
+    fun mapWarehousesDataModelToLocal(warehouses: List<WarehouseDataModel>) : List<LocalWarehouseModel> {
         return warehouses.map { LocalWarehouseModel(warehouse_id = it.warehouseId, service_type = it.serviceType) }
     }
 }

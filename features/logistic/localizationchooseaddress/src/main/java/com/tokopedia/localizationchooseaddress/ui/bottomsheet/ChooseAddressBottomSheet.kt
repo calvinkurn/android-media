@@ -190,7 +190,7 @@ class ChooseAddressBottomSheet :
             postalCode = data.postalCode,
             warehouseId = data.warehouseId.toString(),
             shopId = data.shopId.toString(),
-            warehouses = TokonowWarehouseMapper.mapWarehousesModelToLocal(data.warehouses),
+            warehouses = TokonowWarehouseMapper.mapWarehousesDataModelToLocal(data.warehouses),
             serviceType = data.serviceType
         )
 
