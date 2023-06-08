@@ -84,10 +84,10 @@ class UserProfileReviewTrackerImpl @Inject constructor(
                     UserProfileAnalytics.Constants.PROMO_VIEW to hashMapOf(
                         UserProfileAnalytics.Constants.PROMOTIONS to listOf(
                             hashMapOf(
-                                UserProfileAnalytics.Constants.CREATIVE_NAME to "",
-                                UserProfileAnalytics.Constants.CREATIVE_SLOT to position,
-                                UserProfileAnalytics.Constants.ITEM_ID to feedbackId,
-                                UserProfileAnalytics.Constants.ITEM_NAME to "/feed user profile - review"
+                                UserProfileAnalytics.Constants.CREATIVE to "",
+                                UserProfileAnalytics.Constants.POSITION to position,
+                                UserProfileAnalytics.Constants.ID to feedbackId,
+                                UserProfileAnalytics.Constants.NAME to "/feed user profile - review"
                             )
                         )
                     )
@@ -136,17 +136,27 @@ class UserProfileReviewTrackerImpl @Inject constructor(
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = UserProfileAnalytics.Event.EVENT_CLICK_CONTENT,
-                category = UserProfileAnalytics.Category.FEED_USER_PROFILE,
-                action = UserProfileAnalytics.Action.CLICK_PROFILE_PICTURE,
+                event = UserProfileAnalytics.Constants.PROMO_CLICK,
+                category = UserProfileAnalytics.Constants.CONTENT,
+                action = "click - product on review",
                 label = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+            ),
+            hashMapOf(
+                UserProfileAnalytics.Constants.ECOMMERCE to hashMapOf(
+                    UserProfileAnalytics.Constants.PROMO_CLICK to hashMapOf(
+                        UserProfileAnalytics.Constants.PROMOTIONS to listOf(
+                            /** TODO: adjust it later */
+                            mapOf<String, String>()
+                        )
+                    )
+                )
             ),
             hashMapOf(
                 UserProfileAnalytics.Constants.CURRENT_SITE to UserProfileAnalytics.Variable.currentSite,
                 UserProfileAnalytics.Constants.SESSION_IRIS to UserProfileAnalytics.Variable.sessionIris,
                 UserProfileAnalytics.Constants.USER_ID to userId,
                 UserProfileAnalytics.Constants.BUSINESS_UNIT to UserProfileAnalytics.Constants.CONTENT,
-                UserProfileAnalytics.Constants.KEY_TRACKER_ID to "24608",
+                UserProfileAnalytics.Constants.KEY_TRACKER_ID to "44110",
             )
         )
     }
