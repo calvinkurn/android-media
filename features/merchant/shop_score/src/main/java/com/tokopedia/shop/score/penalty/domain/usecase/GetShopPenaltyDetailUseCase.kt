@@ -31,7 +31,10 @@ open class GetShopPenaltyDetailUseCase @Inject constructor(
                       penaltyExpirationDate
                       status
                       penaltyTypeGroup
-                      productDetail
+                      productDetail {
+                        id
+                        name
+                      }
                   }
                   hasNext
                   hasPrev
