@@ -116,7 +116,6 @@ class MainAddressFragment :
     private var bottomSheetConfirmationShareAddress: BottomSheetUnify? = null
 
     private var _selectedAddressItem: RecipientAddressModel? = null
-    private var editedChosenAddress: RecipientAddressModel? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -127,7 +126,6 @@ class MainAddressFragment :
     private var prevState: Int = -1
     private var localChosenAddr: LocalCacheModel? = null
     private var isFromEditAddress: Boolean? = false
-    var isFromEditChosenAddress: Boolean? = null
     private var isFromDeleteAddress: Boolean? = false
     private var isStayOnPageState: Boolean? = false
     private var mainAddressListener: MainAddressListener? = null
@@ -154,7 +152,6 @@ class MainAddressFragment :
         initView()
         initAdapter()
         initSearch()
-        setOnBackPressed()
         observerListAddress()
         observerSetDefault()
         observerGetChosenAddress()
@@ -303,9 +300,6 @@ class MainAddressFragment :
                                 cityId = data.cityId.toString()
                             }
                             _selectedAddressItem = newRecipientAddressModel
-                            if (isFromEditChosenAddress == true) {
-                                editedChosenAddress = newRecipientAddressModel
-                            }
                         }
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             context,
@@ -472,8 +466,6 @@ class MainAddressFragment :
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
-            isFromEditChosenAddress =
-                data?.getBooleanExtra(EXTRA_IS_STATE_CHOSEN_ADDRESS_CHANGED, false)
 
             performSearch(viewModel.savedQuery, null)
             viewModel.getStateChosenAddress("address")
@@ -781,8 +773,8 @@ class MainAddressFragment :
         }
     }
 
-    private fun setChosenAddress(isClickBackButton: Boolean = false) {
-        val addressData = if (isClickBackButton) editedChosenAddress else _selectedAddressItem
+    private fun setChosenAddress() {
+        val addressData = _selectedAddressItem
         if (isStayOnPageState == false) {
             if (isLocalization == true) {
                 val resultIntent = Intent().apply {
@@ -886,21 +878,6 @@ class MainAddressFragment :
         } else {
             binding?.btnChooseAddress?.isEnabled = false
         }
-    }
-
-    private fun setOnBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (isFromEditChosenAddress == true) {
-                        setChosenAddress(true)
-                    } else {
-                        activity?.finish()
-                    }
-                }
-            }
-        )
     }
 
     private fun getManageAddressFragment(): ManageAddressFragment? {

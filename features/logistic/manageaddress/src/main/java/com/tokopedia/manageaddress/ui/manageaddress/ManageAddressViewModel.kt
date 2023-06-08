@@ -209,9 +209,9 @@ class ManageAddressViewModel @Inject constructor(
                 val resultDelete =
                     deletePeopleAddressUseCase(
                         DeleteAddressParam(
-                            id.toLong(),
-                            isTokonow,
-                            consentJson
+                            inputAddressId = id.toLong(),
+                            isTokonowRequest = true,
+                            consentJson = consentJson
                         )
                     )
                 if (resultDelete.response.status.equals(ManageAddressConstant.STATUS_OK, true) &&
@@ -241,7 +241,7 @@ class ManageAddressViewModel @Inject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val defaultAddressParam =
-                    DefaultAddressParam(id.toLong(), setAsStateChosenAddress, isTokonow)
+                    DefaultAddressParam(id.toLong(), setAsStateChosenAddress, true)
                 val resultDefaultAddress = setDefaultPeopleAddressUseCase(defaultAddressParam)
                 if (
                     resultDefaultAddress.response.status.equals(

@@ -265,7 +265,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         saveDataModel?.apply {
             this.receiverName = receiverName
             this.phone = phoneNo
-            this.isTokonowRequest = isTokonow
+            this.isTokonowRequest = true
             this.address1 = address1
             this.address1Notes = address1Notes
             this.addressName = addressName
