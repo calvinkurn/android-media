@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -366,6 +365,7 @@ class DeveloperOptionActivity : BaseActivity() {
         dialog.setDesc(result)
         dialog.setDescMovementMethod()
         dialog.setBtnCancel("Close")
+        dialog.alertDialog.setCanceledOnTouchOutside(true)
         dialog.setOnCancelClickListener {
             dialog.dismiss()
         }
