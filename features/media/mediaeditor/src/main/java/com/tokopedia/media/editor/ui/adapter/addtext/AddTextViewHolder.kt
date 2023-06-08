@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.media.editor.ui.widget.ToolSelectionItem
+import com.tokopedia.media.editor.ui.widget.ToolSelectionItemView
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.R as principleR
 
 class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-    private var selectionToolItem: ToolSelectionItem? = null
+    private var selectionToolItem: ToolSelectionItemView? = null
 
     fun bind(addTextData: AddTextAction, listener: () -> Unit) {
         try {
-            (view as ToolSelectionItem).apply {
+            (view as ToolSelectionItemView).apply {
                 selectionToolItem = this
                 setTextTitle(addTextData.textRef)
                 addTextData.iconId?.let {
@@ -47,7 +47,7 @@ class AddTextViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourcePackage")
         fun create(viewGroup: ViewGroup): AddTextViewHolder {
             return AddTextViewHolder(
-                ToolSelectionItem(viewGroup.context)
+                ToolSelectionItemView(viewGroup.context)
             )
         }
 

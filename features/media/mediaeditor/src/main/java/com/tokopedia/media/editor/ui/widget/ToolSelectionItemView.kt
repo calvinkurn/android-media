@@ -3,21 +3,18 @@ package com.tokopedia.media.editor.ui.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R
 import com.tokopedia.unifycomponents.CardUnify2
-import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
 
 @SuppressLint("ResourcePackage")
-class ToolSelectionItem: ConstraintLayout {
+class ToolSelectionItemView: ConstraintLayout {
     private var mTextRef: Typography? = null
     private var mImgRef: AppCompatImageView? = null
     private var mIconRef: IconUnify? = null
