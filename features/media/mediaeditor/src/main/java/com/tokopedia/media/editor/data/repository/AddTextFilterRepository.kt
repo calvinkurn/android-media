@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.media.editor.data.entity.AddTextColorManager
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
-import com.tokopedia.media.editor.ui.uimodel.BitmapCreationModel
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
@@ -131,7 +130,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             }
 
             // latar only on bottom & right
-            getLatarDrawable(data.getLatarTemplate())?.let {
+            getAddTextBackgroundDrawable(data.getLatarTemplate())?.let {
                 val latarHeight = (mTextLayout!!.height + paddingVertical + adjustmentPadding).toInt()
                 latarWidth -= floatingWidthAdjustment.toInt()
 
@@ -147,7 +146,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getLatarDrawable(latarDetail: LatarTemplateDetail?): Drawable?{
+    private fun getAddTextBackgroundDrawable(latarDetail: LatarTemplateDetail?): Drawable?{
         if (latarDetail == null) return null
 
         when (latarDetail.latarModel) {
