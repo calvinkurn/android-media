@@ -2926,7 +2926,7 @@ open class ProductManageFragment :
                     )
                 )
 
-                setDescription(htmlText.spannedString.toString())
+                setDescription(htmlText.spannedString ?: String.EMPTY)
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
