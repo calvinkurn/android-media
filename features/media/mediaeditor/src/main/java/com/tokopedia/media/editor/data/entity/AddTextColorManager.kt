@@ -21,14 +21,17 @@ class AddTextColorManagerImpl @Inject constructor(): AddTextColorManager {
     private val black = "#000000"
     private val white = "#FFFFFF"
 
+    private val blackText = "Hitam"
+    private val whiteText = "Putih"
+
     override val listOfTextColor = listOf(
         black,
         white
     )
 
     override val listOfTextWithBackgroundColor = listOf(
-        Pair(black, BLACK_TEXT),
-        Pair(white, WHITE_TEXT)
+        Pair(black, blackText),
+        Pair(white, whiteText)
     )
 
     override fun getTextColorIndex(color: String): Int {
@@ -45,8 +48,8 @@ class AddTextColorManagerImpl @Inject constructor(): AddTextColorManager {
 
     override fun getTextFromHex(hexColor: String?): String {
         return when(hexColor){
-            black -> BLACK_TEXT
-            white -> WHITE_TEXT
+            black -> blackText
+            white -> whiteText
             else -> hexColor ?: ""
         }
     }
@@ -57,10 +60,5 @@ class AddTextColorManagerImpl @Inject constructor(): AddTextColorManager {
         } else {
             drawable.setColorFilter(color.toColorInt(), PorterDuff.Mode.SRC_ATOP)
         }
-    }
-
-    companion object {
-        private const val BLACK_TEXT = "Hitam"
-        private const val WHITE_TEXT = "Putih"
     }
 }
