@@ -235,8 +235,8 @@ class TapcashBalanceViewModel @Inject constructor(private val graphqlRepository:
      * @return should return 16 char string that represent card number
      */
 
-    private fun getCardNumber(securePurse: String): String {
-        return if (securePurse.isNotEmpty()) {
+    fun getCardNumber(securePurse: String): String {
+        return if (securePurse.isNotEmpty() && securePurse.length == MAX_SECURE_PURSE_LENGTH) {
             getStringFromPosition(securePurse, positionCANStart, positionCANEnd)
         } else {
             ""
