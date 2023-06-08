@@ -707,6 +707,13 @@ class DigitalPDPPulsaFragment :
                     DigitalPDPWidgetMapper.mapCheckBalanceToWidgetBalanceInfoModels(checkBalanceData),
                     DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
                 )
+                digitalPDPAnalytics.impressionCheckBalanceInfo(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    operator.attributes.name,
+                    loyaltyStatus,
+                    checkBalanceData.campaignLabelText,
+                    userSession.userId
+                )
                 showCheckBalanceWidget()
             }
 
@@ -729,6 +736,13 @@ class DigitalPDPPulsaFragment :
 //                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
 //                    )
 //                    showCheckBalanceWidget()
+//                    digitalPDPAnalytics.impressionCheckBalanceInfo(
+//                        DigitalPDPCategoryUtil.getCategoryName(categoryId),
+//                        operator.attributes.name,
+//                        loyaltyStatus,
+//                        checkBalanceData.campaignLabelText,
+//                        userSession.userId
+//                    )
 //                }
 //                else -> return
 //            }
@@ -743,13 +757,6 @@ class DigitalPDPPulsaFragment :
             } else {
                 hideCheckBalanceWarning()
             }
-            digitalPDPAnalytics.impressionCheckBalanceInfo(
-                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                operator.attributes.name,
-                loyaltyStatus,
-                checkBalanceData.campaignLabelText,
-                userSession.userId
-            )
             setupDynamicScrollViewPadding()
         }
     }

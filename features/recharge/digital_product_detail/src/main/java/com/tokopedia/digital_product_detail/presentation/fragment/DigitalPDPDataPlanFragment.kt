@@ -814,6 +814,13 @@ class DigitalPDPDataPlanFragment :
                     DigitalPDPWidgetMapper.mapCheckBalanceToBottomSheetBalanceDetailModels(checkBalanceData)
                 )
                 showCheckBalanceWidget()
+                digitalPDPAnalytics.impressionCheckBalanceInfo(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    operator.attributes.name,
+                    loyaltyStatus,
+                    checkBalanceData.campaignLabelText,
+                    userSession.userId
+                )
             }
 
             // TODO: [Misael] Back to this logic
@@ -835,6 +842,13 @@ class DigitalPDPDataPlanFragment :
 //                        DigitalPDPWidgetMapper.mapCheckBalanceToWidgetModels(checkBalanceData)
 //                    )
 //                    showCheckBalanceWidget()
+//                        digitalPDPAnalytics.impressionCheckBalanceInfo(
+//                            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+//                            operator.attributes.name,
+//                            loyaltyStatus,
+//                            checkBalanceData.campaignLabelText,
+//                            userSession.userId
+//                        )
 //                }
 //                else -> return
 //            }
@@ -850,13 +864,6 @@ class DigitalPDPDataPlanFragment :
             } else {
                 hideCheckBalanceWarning()
             }
-            digitalPDPAnalytics.impressionCheckBalanceInfo(
-                DigitalPDPCategoryUtil.getCategoryName(categoryId),
-                operator.attributes.name,
-                loyaltyStatus,
-                checkBalanceData.campaignLabelText,
-                userSession.userId
-            )
             setupDynamicScrollViewPadding()
         }
     }

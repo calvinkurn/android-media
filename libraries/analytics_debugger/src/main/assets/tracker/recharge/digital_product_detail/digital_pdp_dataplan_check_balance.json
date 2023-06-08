@@ -1,34 +1,13 @@
 {
-  "readme": "Digital PDP paket data - check balance",
+  "readme": "Digital PDP paket data - check balance widget",
   "mode": "exact",
   "query": [
     {
       "event": "viewDigitalIris",
-      "eventLabel": ".* - .* - .*",
-      "eventAction": "impression check balance widget",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "impression check balance info",
       "eventCategory": "digital - homepage",
-      "trackerId": "43697",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*"
-    },
-    {
-      "event": "clickDigital",
-      "eventLabel": ".* - .* - .*",
-      "eventAction": "click check balance widget",
-      "eventCategory": "digital - homepage",
-      "trackerId": "43698",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "viewDigitalIris",
-      "eventLabel": ".* - .*",
-      "eventAction": "impression pdp otp pop up",
-      "eventCategory": "digital - homepage",
-      "trackerId": "43699",
+      "trackerId": "43704",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
@@ -36,34 +15,97 @@
     },
     {
       "event": "clickDigital",
-      "eventLabel": ".* - .*",
-      "eventAction": "click pdp otp pop up",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "click lihat detail check balance",
       "eventCategory": "digital - homepage",
-      "trackerId": "43700",
+      "trackerId": "43705",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
     },
     {
-      "event": "openScreen",
-      "isLoggedInStatus": ".*",
-      "screenName": "iframe-otp",
-      "trackerId": "43701",
+      "event": "view_item",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "impression sheet active package",
+      "eventCategory": "digital - homepage",
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "trackerId": "43706",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": "",
+          "item_category": "Paket Data"
+        }
+      ]
+    },
+    {
+      "event": "clickDigital",
+      "eventLabel": ".* - .* - .*",
+      "eventAction": "click close sheet active package",
+      "eventCategory": "digital - homepage",
+      "trackerId": "43707",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
     },
     {
-      "event": "openScreen",
-      "trackerId": "43702",
-      "isLoggedInStatus": ".*",
-      "screenName": "iframe-otp",
+      "event": "view_item_list",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "impression active package check balance",
+      "eventCategory": "digital - homepage",
+      "clientId": ".*",
+      "trackerId": "43708",
+      "item_list": ".*",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
-      "sessionIris": ".*"
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": "Paket Data"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventLabel": ".* - .* - .* - .*",
+      "eventAction": "click beli lagi active package",
+      "eventCategory": "digital - homepage",
+      "clientId": ".*",
+      "trackerId": "43709",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "item_list": ".*",
+      "userId": ".*",
+      "sessionIris": ".*",
+      "items": [
+        {
+          "item_id": ".*",
+          "price": ".*",
+          "dimension40": ".*",
+          "index": ".*",
+          "item_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": "Paket Data"
+        }
+      ]
     }
   ]
 }

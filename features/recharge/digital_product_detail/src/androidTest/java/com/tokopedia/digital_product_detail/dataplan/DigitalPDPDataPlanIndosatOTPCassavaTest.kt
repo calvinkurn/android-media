@@ -58,6 +58,6 @@ class DigitalPDPDataPlanIndosatOTPCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     companion object {
         const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
-        const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_check_balance.json"
+        const val PATH_ANALYTICS = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_otp.json"
     }
 }

@@ -10,7 +10,8 @@
       "trackerId": "43697",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*"
+      "userId": ".*",
+      "sessionIris": ".*"
     },
     {
       "event": "clickDigital",
