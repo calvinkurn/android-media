@@ -3,27 +3,23 @@ package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 import com.tokopedia.imageassets.TokopediaImageUrl
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
+import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductBundlingBinding
 import com.tokopedia.buyerorderdetail.presentation.adapter.OwocProductBundlingItemAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.itemdecoration.ProductBundlingItemDecoration
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 
 class OwocProductBundlingViewHolder(
-    itemView: View?,
+    view: View?,
     private val navigator: BuyerOrderDetailNavigator?
-) : AbstractViewHolder<OwocProductListUiModel.ProductBundlingUiModel>(itemView),
+) : AbstractViewHolder<OwocProductListUiModel.ProductBundlingUiModel>(view),
     OwocProductBundlingItemAdapter.ViewHolder.Listener {
 
     companion object {
@@ -36,18 +32,11 @@ class OwocProductBundlingViewHolder(
     private val bundleItemAdapter: OwocProductBundlingItemAdapter =
         OwocProductBundlingItemAdapter(this)
 
-    private val bundleItemDecoration = itemView?.context?.let {
+    private val bundleItemDecoration = itemView.context?.let {
         ProductBundlingItemDecoration(it)
     }
 
-    private var containerLayout: ConstraintLayout? = null
-    private var bundlingNameText: Typography? = null
-    private var bundlingIconImage: ImageUnify? = null
-    private var bundlingItemRecyclerView: RecyclerView? = null
-
-    init {
-        bindViews()
-    }
+    private val binding = ItemOwocProductBundlingBinding.bind(itemView)
 
     override fun bind(element: OwocProductListUiModel.ProductBundlingUiModel) {
         setupBundleHeader(element.bundleName, element.bundleIconUrl)
@@ -83,17 +72,8 @@ class OwocProductBundlingViewHolder(
         }
     }
 
-    private fun bindViews() {
-        itemView.run {
-            containerLayout = findViewById(R.id.container_owoc_bundling)
-            bundlingNameText = findViewById(R.id.tv_owoc_bundling_name)
-            bundlingIconImage = findViewById(R.id.iv_owoc_bundling_icon)
-            bundlingItemRecyclerView = findViewById(R.id.rv_owoc_bundling)
-        }
-    }
-
     private fun setupBundleAdapter() {
-        bundlingItemRecyclerView?.run {
+        binding.rvOwocBundling.run {
             if (adapter != bundleItemAdapter) {
                 layoutManager = LinearLayoutManager(context)
                 adapter = bundleItemAdapter
@@ -105,11 +85,11 @@ class OwocProductBundlingViewHolder(
     }
 
     private fun setupBundleHeader(bundleName: String, bundleIconUrl: String) {
-        bundlingNameText?.text = bundleName
+        binding.tvOwocBundlingName.text = bundleName
         val iconUrl = bundleIconUrl.ifEmpty {
             PRODUCT_BUNDLING_IMAGE_ICON_URL
         }
-        bundlingIconImage?.loadImage(iconUrl)
+        binding.ivOwocBundlingIcon.loadImage(iconUrl)
     }
 
     private fun setupBundleItems(bundleItemList: List<OwocProductListUiModel.ProductUiModel>) {

@@ -1,25 +1,20 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.view.View
-import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorderdetail.R
-import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
+import com.tokopedia.buyerorderdetail.databinding.ItemOwocProductListHeaderBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OwocProductListUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 
 class OwocProductListHeaderViewHolder(
-    itemView: View?,
+    view: View?,
     private val listener: Listener
-) : AbstractViewHolder<OwocProductListUiModel.ProductListHeaderUiModel>(itemView),
-    View.OnClickListener {
+) : AbstractViewHolder<OwocProductListUiModel.ProductListHeaderUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_owoc_product_list_header
@@ -27,11 +22,7 @@ class OwocProductListHeaderViewHolder(
         const val LABEL_TYPE = "label"
     }
 
-    private val ivOwocShopTier = itemView?.findViewById<ImageView>(R.id.ivOwocShopTier)
-    private val tvOwocShopLabel = itemView?.findViewById<Typography>(R.id.tvOwocShopLabel)
-    private val tvOwocOrderInvoice = itemView?.findViewById<Typography>(R.id.tvOwocOrderInvoice)
-    private val labelOwoc = itemView?.findViewById<Label>(R.id.labelOwoc)
-    private val btnOwocMoreDetail = itemView?.findViewById<UnifyButton>(R.id.btnOwocMoreDetail)
+    private val binding = ItemOwocProductListHeaderBinding.bind(itemView)
 
     init {
         setupClickListener()
@@ -77,14 +68,6 @@ class OwocProductListHeaderViewHolder(
         super.bind(element, payloads)
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btnOwocMoreDetail -> {
-                goToOtherBomDetail()
-            }
-        }
-    }
-
     private fun goToOtherBomDetail() {
         element?.let {
             listener.goToOtherBomDetail(it.orderId)
@@ -92,8 +75,11 @@ class OwocProductListHeaderViewHolder(
     }
 
     private fun setupClickListener() {
-        labelOwoc?.setOnClickListener(this@OwocProductListHeaderViewHolder)
-        btnOwocMoreDetail?.setOnClickListener(this@OwocProductListHeaderViewHolder)
+        with(binding) {
+            btnOwocMoreDetail.setOnClickListener {
+                goToOtherBomDetail()
+            }
+        }
     }
 
     private fun setupButtonOrLabel(
@@ -110,7 +96,7 @@ class OwocProductListHeaderViewHolder(
             OwocProductListUiModel.ProductListHeaderUiModel.OwocActionButtonUiModel,
         isLabelType: Boolean
     ) {
-        btnOwocMoreDetail?.run {
+        binding.btnOwocMoreDetail.run {
             text = owocButtonActionButtonsUiModel.displayName
             buttonVariant = Utils.mapButtonVariant(owocButtonActionButtonsUiModel.variant)
             buttonType = Utils.mapButtonType(owocButtonActionButtonsUiModel.type)
@@ -122,7 +108,7 @@ class OwocProductListHeaderViewHolder(
         owocButtonActionButtonsUiModel: OwocProductListUiModel.ProductListHeaderUiModel.OwocActionButtonUiModel,
         isLabelType: Boolean
     ) {
-        labelOwoc?.run {
+        binding.labelOwoc.run {
             text = owocButtonActionButtonsUiModel.displayName
             showWithCondition(isLabelType && owocButtonActionButtonsUiModel.displayName.isNotBlank())
         }
@@ -137,19 +123,19 @@ class OwocProductListHeaderViewHolder(
     }
 
     private fun setupShopName(shopName: String) {
-        tvOwocShopLabel?.text = MethodChecker.fromHtml(shopName)
+        binding.tvOwocShopLabel.text = MethodChecker.fromHtml(shopName)
     }
 
     private fun setupInvoice(invoice: String) {
-        tvOwocOrderInvoice?.text = invoice
+        binding.tvOwocOrderInvoice.text = invoice
     }
 
     private fun hideShopBadge() {
-        ivOwocShopTier?.gone()
+        binding.ivOwocShopTier.gone()
     }
 
     private fun showShopBadge(url: String) {
-        ivOwocShopTier?.let {
+        binding.ivOwocShopTier.let {
             it.loadImage(url) {
                 setErrorDrawable(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_error)
             }

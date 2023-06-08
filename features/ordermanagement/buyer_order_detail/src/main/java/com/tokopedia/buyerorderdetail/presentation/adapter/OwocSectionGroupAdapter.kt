@@ -25,7 +25,7 @@ class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFacto
     }
 
     fun showLoadingShimmer() {
-        if (visitables.getOrNull(Int.ZERO) !is OwocShimmerUiModel) {
+        if (visitables.firstOrNull() !is OwocShimmerUiModel) {
             visitables.add(OwocShimmerUiModel())
             notifyItemInserted(Int.ZERO)
         }
@@ -39,7 +39,7 @@ class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFacto
     }
 
     fun showError(item: OwocErrorUiModel) {
-        if (visitables.getOrNull(Int.ZERO) !is OwocErrorUiModel) {
+        if (visitables.firstOrNull() !is OwocErrorUiModel) {
             visitables.add(item)
             notifyItemInserted(Int.ZERO)
         }
@@ -50,9 +50,5 @@ class OwocSectionGroupAdapter(private val typeFactory: OwocSectionGroupTypeFacto
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         }
-    }
-
-    inline fun <reified T : Visitable<*>> filterUiModel(): T? {
-        return list.filterIsInstance<T>().firstOrNull()
     }
 }
