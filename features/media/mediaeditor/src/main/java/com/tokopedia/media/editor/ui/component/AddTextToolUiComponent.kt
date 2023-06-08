@@ -15,23 +15,23 @@ class AddTextToolUiComponent constructor(
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_tool_add_text) {
 
-    private val mRv = findViewById<RecyclerView>(R.id.add_text_rv)
+    private val mRecycleView = findViewById<RecyclerView>(R.id.add_text_rv)
 
     fun setupView(data: EditorAddTextUiModel?, isLocalTemplateReady: Boolean) {
         container().show()
 
-        mRv.layoutManager = LinearLayoutManager(
+        mRecycleView.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        mRv.adapter = AddTextToolAdapter(listener, isLocalTemplateReady)
+        mRecycleView.adapter = AddTextToolAdapter(listener, isLocalTemplateReady)
 
         updateItemActiveState(data)
     }
 
     fun updateItemActiveState(data: EditorAddTextUiModel?) {
-        mRv.post {
+        mRecycleView.post {
             data?.let {
                 if (it.textValue.isNotEmpty()) {
                     setSelectedState(it.textTemplate)
@@ -41,8 +41,8 @@ class AddTextToolUiComponent constructor(
     }
 
     private fun setSelectedState(index: Int) {
-        for (i in 0 until mRv.childCount) {
-            (mRv.getChildViewHolder(mRv.getChildAt(i)) as AddTextViewHolder).apply {
+        for (i in 0 until mRecycleView.childCount) {
+            (mRecycleView.getChildViewHolder(mRecycleView.getChildAt(i)) as AddTextViewHolder).apply {
                 if (i == index) {
                     setActive()
                 } else {
@@ -53,7 +53,7 @@ class AddTextToolUiComponent constructor(
     }
 
     fun updateSaveToApply() {
-        (mRv.adapter as AddTextToolAdapter).updateTemplateText(true, needRefresh = true)
+        (mRecycleView.adapter as AddTextToolAdapter).updateTemplateText(true, needRefresh = true)
     }
 
     interface Listener {
