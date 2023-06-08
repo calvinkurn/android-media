@@ -28,6 +28,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:padding="1dp"
+        android:gravity="center_horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/iv_category_image"
         app:layout_constraintStart_toStartOf="@+id/iv_category_image"
