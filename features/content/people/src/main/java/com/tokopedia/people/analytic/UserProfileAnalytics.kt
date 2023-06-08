@@ -71,6 +71,10 @@ class UserProfileAnalytics {
         const val PLAY = "play"
         const val ON = "on"
         const val OFF = "off"
+        const val CREATIVE_NAME = "creative_name"
+        const val CREATIVE_SLOT = "creative_slot"
+        const val ITEM_ID = "item_id"
+        const val ITEM_NAME = "item_name"
     }
 
     object Event {

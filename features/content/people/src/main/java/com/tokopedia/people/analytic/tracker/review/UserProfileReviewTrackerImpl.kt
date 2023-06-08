@@ -3,6 +3,7 @@ package com.tokopedia.people.analytic.tracker.review
 import com.tokopedia.people.analytic.UserProfileAnalytics
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -71,7 +72,35 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         productId: String,
         position: Int
     ) {
-        /** TODO: will implement this later */
+        trackingQueue.putEETracking(
+            EventModel(
+                event = UserProfileAnalytics.Constants.PROMO_VIEW,
+                category = UserProfileAnalytics.Category.FEED_USER_PROFILE,
+                action = "impression - review",
+                label = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+            ),
+            hashMapOf(
+                UserProfileAnalytics.Constants.ECOMMERCE to hashMapOf(
+                    UserProfileAnalytics.Constants.PROMO_VIEW to hashMapOf(
+                        UserProfileAnalytics.Constants.PROMOTIONS to listOf(
+                            hashMapOf(
+                                UserProfileAnalytics.Constants.CREATIVE_NAME to "",
+                                UserProfileAnalytics.Constants.CREATIVE_SLOT to position,
+                                UserProfileAnalytics.Constants.ITEM_ID to feedbackId,
+                                UserProfileAnalytics.Constants.ITEM_NAME to "/feed user profile - review"
+                            )
+                        )
+                    )
+                )
+            ),
+            hashMapOf(
+                UserProfileAnalytics.Constants.CURRENT_SITE to UserProfileAnalytics.Variable.currentSite,
+                UserProfileAnalytics.Constants.SESSION_IRIS to UserProfileAnalytics.Variable.sessionIris,
+                UserProfileAnalytics.Constants.USER_ID to userId,
+                UserProfileAnalytics.Constants.BUSINESS_UNIT to UserProfileAnalytics.Constants.CONTENT,
+                UserProfileAnalytics.Constants.KEY_TRACKER_ID to "44103",
+            )
+        )
     }
 
     override fun openScreenEmptyOrHiddenReviewTab() {
@@ -105,7 +134,21 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-        /** TODO: will implement this later */
+        trackingQueue.putEETracking(
+            EventModel(
+                event = UserProfileAnalytics.Event.EVENT_CLICK_CONTENT,
+                category = UserProfileAnalytics.Category.FEED_USER_PROFILE,
+                action = UserProfileAnalytics.Action.CLICK_PROFILE_PICTURE,
+                label = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+            ),
+            hashMapOf(
+                UserProfileAnalytics.Constants.CURRENT_SITE to UserProfileAnalytics.Variable.currentSite,
+                UserProfileAnalytics.Constants.SESSION_IRIS to UserProfileAnalytics.Variable.sessionIris,
+                UserProfileAnalytics.Constants.USER_ID to userId,
+                UserProfileAnalytics.Constants.BUSINESS_UNIT to UserProfileAnalytics.Constants.CONTENT,
+                UserProfileAnalytics.Constants.KEY_TRACKER_ID to "24608",
+            )
+        )
     }
 
     private fun generateCompleteEventAction(
