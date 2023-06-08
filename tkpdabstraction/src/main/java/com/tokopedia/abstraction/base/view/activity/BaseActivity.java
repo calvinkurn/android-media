@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -95,9 +96,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
+        new DebugBanner().initView((Activity) this, getLiveStatus());
 
-        new DebugBanner().initView(this, getLiveStatus());
     }
+
 
     private String getLiveStatus() {
         if (TokopediaUrl.Companion.getInstance().getGQL().contains("staging")) {
@@ -105,7 +107,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         } else if (BannerDebugInterceptor.isBeta(getApplicationContext())) {
             return "BETA";
         } else {
-            return "";
+            return "LIVE";
         }
     }
 

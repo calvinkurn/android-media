@@ -8,8 +8,7 @@ import okhttp3.Response
 
 class BannerDebugInterceptor(private val context: Context) : Interceptor {
 
-    var sharedPreferences: SharedPreferences = context
-        .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
+    var sharedPreferences: SharedPreferences = context.getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
 
     companion object {
         const val URL_BETA = "1"
@@ -30,8 +29,6 @@ class BannerDebugInterceptor(private val context: Context) : Interceptor {
         var response: Response = chain.proceed(request)
 
         fun saveBeta(isBeta: Boolean) {
-            val sharedPreferences = context
-                .getSharedPreferences(BETA_INTERCEPTOR_PREF_NAME, Context.MODE_PRIVATE)
             val edit = sharedPreferences.edit()
             edit.putBoolean(IS_BETA_TOKOPEDIA, isBeta)
             edit.apply()
@@ -47,21 +44,6 @@ class BannerDebugInterceptor(private val context: Context) : Interceptor {
                     } else {
                         saveBeta(false)
                     }
-                }
-//                GlobalConfig.CONSUMER_PRO_APPLICATION -> {
-//                    val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
-//                    createNotif(
-//                        context,
-//                        if (get.equals(URL_BETA)) {
-//                            appName + "-beta"
-//                        } else {
-//                            appName
-//                        }
-//                    ) {
-//                        saveBeta(true)
-//                    }
-//                }
-                else -> {
                 }
             }
         }
