@@ -72,7 +72,7 @@ class ProfileSettingsActivity : AppCompatActivity() {
         }
 
         binding.switchReview.setOnCheckedChangeListener { compoundButton, isChecked ->
-            userProfileTracker.clickUserProfileSettings(viewModel.userID)
+            userProfileTracker.clickReviewSettingsToggle(viewModel.userID, isChecked)
             viewModel.submitAction(UserProfileSettingsAction.SetShowReview(isChecked))
         }
 
