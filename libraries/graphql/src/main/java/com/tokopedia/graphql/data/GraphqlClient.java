@@ -26,6 +26,7 @@ import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.graphql.interceptor.BannerDebugInterceptor;
 import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -146,8 +147,8 @@ public class GraphqlClient {
         }
 
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-//        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
-        tkpdOkHttpBuilder.addInterceptor(new BannerDebugInterceptor(context.getApplicationContext()));
+        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new BannerDebugInterceptor(context));
 
 
         sRetrofit = CommonNetwork.createRetrofit(
@@ -172,8 +173,8 @@ public class GraphqlClient {
             }
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-//        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
-        tkpdOkHttpBuilder.addInterceptor(new BannerDebugInterceptor(context.getApplicationContext()));
+        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new BannerDebugInterceptor(context));
 
 
         if (GlobalConfig.isAllowDebuggingTools()) {
