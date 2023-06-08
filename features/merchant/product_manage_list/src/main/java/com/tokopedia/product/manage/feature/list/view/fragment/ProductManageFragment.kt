@@ -797,7 +797,16 @@ open class ProductManageFragment :
     }
 
     override fun editMultipleProductsInActive() {
-        showEditProductsInActiveConfirmationDialog()
+        val totalDTProductSelected = itemsChecked.filter {
+            it.isDTInbound
+        }.size
+        val totalProductSelected = itemsChecked.size
+        val isAllDT = (totalDTProductSelected == totalProductSelected)
+        if (isAllDT) {
+            showEditDTProductsInActiveConfirmationDialog()
+        } else {
+            showEditProductsInActiveConfirmationDialog()
+        }
         ProductManageTracking.eventBulkSettingsDeactive()
     }
 
@@ -2886,20 +2895,9 @@ open class ProductManageFragment :
                 setPrimaryCTAText(getString(R.string.product_manage_edit_products_inactive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {
-                    val totalDTProductSelected = itemsChecked.filter {
-                        it.isDTInbound
-                    }.size
-
-                    val totalProductSelected = itemsChecked.size
-
-                    val isAllDT = (totalDTProductSelected == totalProductSelected)
-                    if (isAllDT) {
-                        showEditDTProductsInActiveConfirmationDialog()
-                    } else {
-                        val productIds =
-                            itemsChecked.filter { !it.isDTInbound }.map { item -> item.id }
-                        viewModel.editProductsByStatus(productIds, INACTIVE)
-                    }
+                    val productIds =
+                        itemsChecked.filter { !it.isDTInbound }.map { item -> item.id }
+                    viewModel.editProductsByStatus(productIds, INACTIVE)
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
