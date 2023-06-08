@@ -53,6 +53,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState3Binding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailHeaderSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailPerformanceSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailProductSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailRecapSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
@@ -122,6 +123,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     // binding
     private var binding by autoClearedNullable<SmvcFragmentVoucherDetailBinding>()
+    private var recapBinding by autoClearedNullable<SmvcVoucherDetailRecapSectionBinding>()
     private var headerBinding by autoClearedNullable<SmvcVoucherDetailHeaderSectionBinding>()
     private var performanceBinding by autoClearedNullable<SmvcVoucherDetailPerformanceSectionBinding>()
     private var voucherTypeBinding by autoClearedNullable<SmvcVoucherDetailVoucherTypeSectionBinding>()
@@ -254,6 +256,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupView(data: VoucherDetailWithVoucherCreationMetadata) {
         binding?.run {
+            layoutRecap.setOnInflateListener { _, view ->
+                recapBinding = SmvcVoucherDetailRecapSectionBinding.bind(view)
+            }
             layoutHeader.setOnInflateListener { _, view ->
                 headerBinding = SmvcVoucherDetailHeaderSectionBinding.bind(view)
             }
@@ -274,6 +279,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         setupTicker(data.voucherDetail)
+        setupRecapSection(data.voucherDetail)
         setupHeaderSection(data.voucherDetail)
         setupPerformanceSection(data.voucherDetail)
         setupVoucherTypeSection(data.voucherDetail)
@@ -290,6 +296,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 showWithCondition(voucherDetail.subsidyDetail.programDetail.programLabel.isNotEmpty())
                 tickerTitle = voucherDetail.subsidyDetail.programDetail.programLabel
                 setTextDescription(voucherDetail.subsidyDetail.programDetail.programLabelDetail)
+            }
+        }
+    }
+
+    private fun setupRecapSection(data: VoucherDetailData) {
+        binding?.run {
+            if (data.voucherStatus != VoucherStatus.ENDED) return
+            if (layoutRecap.parent != null) {
+                layoutRecap.inflate()
             }
         }
     }
