@@ -107,8 +107,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private void setupBannerEnvironment() {
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, false)) {
-            if (isBannerEnvironmentEnabled(this)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, false)) {
+            if (isBannerEnvironmentEnabled(this) && GlobalConfig.isAllowDebuggingTools()) {
                 new DebugBanner().initView((Activity) this, getLiveStatus());
             }
         }
