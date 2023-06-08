@@ -493,17 +493,17 @@ class ChooseAddressBottomSheet :
             shouldShowGpsPopUp = true
             showGpsPopUp()
         } else {
-            /*if (adapter.containsChosenAddress()) {
+            if (adapter.containsChosenAddress()) {
                 buttonLogin?.gone()
                 buttonAddAddress?.gone()
                 chooseAddressLayout?.visible()
-            } else {*/
+            } else {
                 chooseAddressLayout?.gone()
                 buttonLogin?.gone()
                 buttonAddAddress?.visible()
                 shouldShowGpsPopUp = true
                 showGpsPopUp()
-//            }
+            }
         }
         errorLayout?.gone()
         progressBar?.gone()
