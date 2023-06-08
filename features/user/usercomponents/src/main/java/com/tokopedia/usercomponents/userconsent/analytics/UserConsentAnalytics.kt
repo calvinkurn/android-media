@@ -9,9 +9,9 @@ class UserConsentAnalytics @Inject constructor() {
 
     private val tracker = TrackApp.getInstance().gtm
 
-    private fun sendTracker(action: String, label: String) {
+    private fun sendTracker(event: String, action: String, label: String) {
         val trackerParam = TrackAppUtils.gtmData(
-            EVENT.CLICK_ACCOUNT,
+            event,
             CATEGORY.CONSENT_BOX,
             action,
             label
@@ -38,6 +38,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnPurposeCheck(isChecked: Boolean, purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event= EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_TICK_BOX,
             label = String.format(
                 LABEL.TICK_BOX,
@@ -51,6 +52,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnPurposeCheckOnOptional(isChecked: Boolean, purposes: PurposeDataModel, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_TICK_BOX,
             label = String.format(
                 LABEL.TICK_BOX,
@@ -64,6 +66,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnTnCHyperLinkClicked(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_TNC_HYPER_LINK,
             label = "${generatePurposeId(purposes)} - $collectionId"
         )
@@ -71,6 +74,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnPolicyHyperLinkClicked(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_PRIVACY_HYPER_LINK,
             label = "${generatePurposeId(purposes)} - $collectionId"
         )
@@ -78,6 +82,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnActionButtonClicked(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.CLICK_ACCOUNT,
             action = ACTION.CLICK_ACTION_BUTTON,
             label = "${generatePurposeId(purposes)} - $collectionId"
         )
@@ -85,6 +90,7 @@ class UserConsentAnalytics @Inject constructor() {
 
     fun trackOnConsentView(purposes: MutableList<PurposeDataModel>, collectionId: String) {
         sendTracker(
+            event = EVENT.VIEW_ACCOUNT_IRIS,
             action = ACTION.VIEW_USER_CONSENT,
             label = "${generatePurposeId(purposes)} - $collectionId"
         )
@@ -99,6 +105,7 @@ class UserConsentAnalytics @Inject constructor() {
         const val TOKOPEDIA_MARKETPLACE_SITE = "tokopediamarketplace"
 
         object EVENT {
+            const val VIEW_ACCOUNT_IRIS = "viewAccountIris"
             const val CLICK_ACCOUNT = "clickAccount"
         }
 
