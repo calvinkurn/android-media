@@ -102,11 +102,11 @@ class AddTextBackgroundBottomSheet(
     }
 
     private fun initializeActiveState() {
-        if (colorSelectionIndex in (0..colorButtonRef.count())) {
+        if (colorSelectionIndex in (0 until colorButtonRef.count())) {
             colorButtonRef[colorSelectionIndex].chipType = ChipsUnify.TYPE_SELECTED
         }
 
-        if (modelSelectionIndex in (0..templateModelRef.count())) {
+        if (modelSelectionIndex in (0 until templateModelRef.count())) {
             templateModelRef[modelSelectionIndex].setActive()
         }
     }

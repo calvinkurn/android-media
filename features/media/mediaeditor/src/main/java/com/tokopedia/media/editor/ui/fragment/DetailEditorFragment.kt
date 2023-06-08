@@ -1327,7 +1327,7 @@ class DetailEditorFragment @Inject constructor(
         )
     }
 
-    private fun updateAddTextOverlay (
+    private fun updateAddTextOverlay(
         newSize: Pair<Int, Int>,
         onFinish: (filePath: String) -> Unit
     ) {

@@ -29,7 +29,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
-import com.tokopedia.media.editor.ui.widget.AddTextColorItem
+import com.tokopedia.media.editor.ui.widget.AddTextColorItemView
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.CardUnify2
@@ -73,7 +73,7 @@ class AddTextFragment @Inject constructor(
             viewModel.textData.textAlignment = value
         }
 
-    private val textColorItemRef: Array<AddTextColorItem?> = Array(2) { null }
+    private val textColorItemRef: Array<AddTextColorItemView?> = Array(2) { null }
     private var activeColorIndex = DEFAULT_COLOR_INDEX
         set(value) {
             field = value
@@ -315,7 +315,7 @@ class AddTextFragment @Inject constructor(
     private fun initFontColor() {
         colorList.forEachIndexed { index, colorRef ->
             viewBinding?.fontColorContainer?.addView(
-                AddTextColorItem(requireContext()).apply {
+                AddTextColorItemView(requireContext()).apply {
                     val colorInt = colorRef.toColorInt()
                     setColor(colorInt)
                     setOnClickListener {

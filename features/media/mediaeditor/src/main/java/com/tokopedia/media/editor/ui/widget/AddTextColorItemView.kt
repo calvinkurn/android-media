@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.R as principleR
 
-class AddTextColorItem(context: Context) : AppCompatImageView(context) {
+class AddTextColorItemView(context: Context) : AppCompatImageView(context) {
     private val shapeDrawable = GradientDrawable()
 
     private val strokeInactiveColor = principleR.color.Unify_NN0
