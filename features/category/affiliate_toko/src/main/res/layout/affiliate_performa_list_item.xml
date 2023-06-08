@@ -71,12 +71,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/link_history_entry" />
 
-    <androidx.constraintlayout.widget.Group
+    <androidx.constraintlayout.helper.widget.Layer
         android:id="@+id/link_history_group"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:clickable="true"
+        android:focusable="true"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:constraint_referenced_ids="link_history_chevron, link_history_entry, icon_link_link_history"
         app:layout_constraintTop_toBottomOf="@+id/performaItem_RV" />
 

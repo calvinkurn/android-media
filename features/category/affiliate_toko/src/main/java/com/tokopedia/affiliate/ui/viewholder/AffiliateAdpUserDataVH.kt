@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.helper.widget.Layer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateAdpUserDataVH(
     itemView: View,
-    onPerformaGridClick: AffiliatePerformaClickInterfaces?
+    private val onPerformaGridClick: AffiliatePerformaClickInterfaces?
 ) : AbstractViewHolder<AffiliateUserPerformanceModel>(itemView) {
 
     companion object {
@@ -35,7 +36,11 @@ class AffiliateAdpUserDataVH(
         performRV.layoutManager = GridLayoutManager(itemView.context, 2).apply {
             spanSizeLookup = object : SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (position == 0) SPAN_TWO else SPAN_ONE
+                    return if (position == 0) {
+                        SPAN_TWO
+                    } else {
+                        SPAN_ONE
+                    }
                 }
             }
         }
@@ -44,6 +49,10 @@ class AffiliateAdpUserDataVH(
         adapter.addMoreData(element?.data)
         itemView.findViewById<Typography>(R.id.head).apply {
             setText(R.string.link_dengan_performa)
+        }
+
+        itemView.findViewById<Layer>(R.id.link_history_group).apply {
+            setOnClickListener { onPerformaGridClick?.onPromoHistoryClick() }
         }
     }
 }

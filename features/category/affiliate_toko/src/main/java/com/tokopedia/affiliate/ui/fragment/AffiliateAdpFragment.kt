@@ -115,6 +115,7 @@ class AffiliateAdpFragment :
                 activity?.finish()
             }
         }
+
     private fun isAffiliateNCEnabled() =
         RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
             AFFILIATE_NC,
@@ -551,6 +552,10 @@ class AffiliateAdpFragment :
             affiliateAdpViewModel.getSelectedDate(),
             tickerInfo = tickerInfo
         ).show(childFragmentManager, "")
+    }
+
+    override fun onPromoHistoryClick() {
+        openHistoryActivity()
     }
 
     private fun sendInfoClickEvent(type: String?) {
