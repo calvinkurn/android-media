@@ -36,6 +36,6 @@ class DevOptsAuthorizationViewHolder(
     }
 
     interface DevOptsAuthorizationListener {
-        fun onSubmitDevOptsPassword(sha256: String)
+        fun onSubmitDevOptsPassword(sha256: String, isAuto:Boolean = false)
     }
 }

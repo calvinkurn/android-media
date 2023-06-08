@@ -51,10 +51,7 @@
     <string name="buyer_reputation">Reputasi Pembeli</string>
     <string name="buyer_reputation_given_by_seller">Nilai pembeli yang diberikan penjual</string>
     <string name="close">Tutup</string>
-    <string name="seller_reputation">Reputasi Toko</string>
-    <string name="seller_reputation_given_by_buyer">Nilai toko yang diberikan pembeli</string>
     <string name="point">Poin</string>
-    <string name="no_reputation_yet">Belum ada nilai reputasi</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
     <string name="label_edit_pickup">Ubah Gerai</string>
     <string name="empty_search_result_default">Pencarian tidak ditemukan</string>

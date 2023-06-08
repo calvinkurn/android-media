@@ -73,7 +73,8 @@ class GlobalBundlingViewHolder(
             override fun impressionSingleBundle(
                 selectedBundle: BundleDetailUiModel,
                 selectedProduct: BundleProductUiModel,
-                bundleName: String
+                bundleName: String,
+                bundlePosition: Int
             ) {
                 listener.onImpressionProductBundling(
                     selectedBundle.bundleId,
@@ -95,7 +96,8 @@ class GlobalBundlingViewHolder(
 
             override fun onSingleBundleActionButtonClicked(
                 selectedBundle: BundleDetailUiModel,
-                bundleProducts: BundleProductUiModel
+                bundleProducts: BundleProductUiModel,
+                bundlePosition: Int
             ) {
                 listener.onClickActionButtonBundling(
                     selectedBundle.bundleId,
@@ -107,7 +109,8 @@ class GlobalBundlingViewHolder(
             override fun onBundleProductClicked(
                 bundle: BundleUiModel,
                 selectedMultipleBundle: BundleDetailUiModel,
-                selectedProduct: BundleProductUiModel
+                selectedProduct: BundleProductUiModel,
+                itemPosition: Int
             ) {
                 listener.onClickProductInBundling(
                     bundle.selectedBundleId,

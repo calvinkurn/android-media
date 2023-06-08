@@ -87,6 +87,10 @@ class FeedXCard(
     // FeedXCardPlay
     @SerializedName("playChannelID")
     val playChannelId: String = "",
+    @SerializedName("performanceSummaryPageLink")
+    val performanceSummaryPageLink: String = "",
+    @SerializedName("insightSummaryPageLink")
+    val insightSummaryPageLink: String = "",
 
     // FeedXCardTopAds
     @SerializedName("promos")
