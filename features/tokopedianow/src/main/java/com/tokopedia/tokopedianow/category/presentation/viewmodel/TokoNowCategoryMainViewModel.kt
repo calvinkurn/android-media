@@ -113,10 +113,13 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         miniCartData: MiniCartSimplifiedData
     ) {
         super.onSuccessGetMiniCartData(miniCartData)
-        layout.updateProductQuantity(
-            miniCartData = miniCartData,
-            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
-        )
+        launch {
+            layout.updateProductQuantity(
+                miniCartData = miniCartData,
+                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+            )
+            _categoryPage.postValue(layout)
+        }
     }
 
     private suspend fun getCategoryShowcaseAsync(
