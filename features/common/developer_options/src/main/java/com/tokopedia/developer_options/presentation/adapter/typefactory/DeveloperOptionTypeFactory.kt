@@ -60,4 +60,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: LoginHelperUiModel): Int
     fun type(uiModel: DevOptsAuthorizationUiModel): Int
     fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int
+
+    fun type(uiModel: BranchLinkUiModel): Int
 }
