@@ -1788,6 +1788,12 @@ class ChatbotViewModelTest {
     }
 
     @Test
+    fun `set page source value`() {
+        viewModel.setPageSourceValue("Contact Us ")
+        assertEquals(viewModel.pageSourceAccess, "Contact Us ")
+    }
+
+    @Test
     fun `cancelImageUpload success`() {
         viewModel.cancelImageUpload()
 
