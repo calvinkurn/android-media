@@ -52,7 +52,7 @@ class ChatTabCounterViewModel @Inject constructor(
     }
 
     companion object {
-        private const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
-        private const val KEY_LAST_POSITION = "key_last_seen_tab_position"
+        const val PREF_CHAT_LIST_TAB = "chatlist_tab_activity.pref"
+        const val KEY_LAST_POSITION = "key_last_seen_tab_position"
     }
 }
