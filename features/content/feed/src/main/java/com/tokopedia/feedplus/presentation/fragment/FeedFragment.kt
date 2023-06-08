@@ -139,7 +139,7 @@ class FeedFragment :
 
         MapperFeedModelToTrackerDataModel(
             if (isCdp) FeedBaseFragment.CDP else data?.type ?: "",
-            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ""
+            arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ENTRY_POINT_DEFAULT
         )
     }
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
@@ -674,7 +674,11 @@ class FeedFragment :
                 }
                 author?.let {
                     if (userSession.isLoggedIn) {
-                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.type.isShop)
+                        feedPostViewModel.doFollow(
+                            author.id,
+                            author.encryptedUserId,
+                            author.type.isShop
+                        )
                     } else {
                         feedPostViewModel.suspendFollow(
                             author.id,
@@ -1393,6 +1397,8 @@ class FeedFragment :
 
         private const val PARAM_AUTHOR_TYPE = "author_type"
         const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
+
+        private const val ENTRY_POINT_DEFAULT = "applink"
 
         fun createFeedFragment(
             data: FeedDataModel,
