@@ -1,13 +1,12 @@
 ---
-title: Digital Dynamic Homepage
-labels:
+Digital Dynamic Homepage
 ---
 <!--left header table-->
 | **Status** | <!--start status:GREEN-->RELEASE<!--end status--> |
 | --- | --- |
 | Team | [Minion Mark](https://tokopedia.atlassian.net/people/team/54372146-8afa-46e4-8de3-783c53a0cc3b) |
 | Module PIC | Irfan Muhlishin (temporary) |
-| Product Manager | Syarief Husin  |
+| Product Manager | [Fardhan Amarullah](https://tokopedia.atlassian.net/wiki/people/5e13b89c0242870e996f0490?ref=confluence)  |
 | Module Type | <!--start status:YELLOW-->FEATURE<!--end status--> |
 | Module Location | `features/recharge/digital_homepage` |
 
@@ -16,6 +15,12 @@ labels:
 <!--toc-->
 
 ## Release Notes
+
+<!--start expand:26 May 23 (MA-3.222)-->
+Add 1 new templates `3_BUTTONS_MYBILLS_ENTRYPOINT`
+
+PR : <https://github.com/tokopedia/android-tokopedia-core/pull/33081>
+<!--end expand-->
 
 <!--start expand:13 Dec 22 (MA-3.202)-->
 In this release, we add 2 new templates `MYBILLS_ENTRYPOINT` & `BILL_WIDGET` as part of Bill Management project.
@@ -41,13 +46,15 @@ Digital Homepage is a page containing a list of digital products. There are seve
 
 | Recharge Subhomepage | Travel Subhomepage | Streaming Subhomepage |
 | --- | --- | --- |
-|  |  |  |
+| ![](res/Screenshot_20230111_085119.png)<br/> | ![](res/Screenshot_20230111_085032.png)<br/> | ![](res/Screenshot_20230111_085507.png)<br/> |
 
 ## Tech Design
 
 ### How Dynamic sub-homepage works?
 
-![](res/Untitled Diagram.png)Visit diagram here: <https://drive.google.com/file/d/148hmVKe7eCGqurSMEef6XyIcgM-gBFok/view?usp=sharing> 
+![](res/Untitled Diagram.png)
+
+Visit diagram here: <https://drive.google.com/file/d/148hmVKe7eCGqurSMEef6XyIcgM-gBFok/view?usp=sharing> 
 
 ### **Notes on some cases/flow**
 
@@ -58,7 +65,9 @@ Digital Homepage is a page containing a list of digital products. There are seve
 
 ### List of Dynamic sub-homepage’s component
 
-![](res/image-20210112-045934.png)Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dtZ8iCSAF/view?usp=sharing> 
+![](res/image-20210112-045934.png)
+
+Tech Design diagram: <https://drive.google.com/file/d/1IYPgRqP5taKQr6HUVgvZ512dtZ8iCSAF/view?usp=sharing> 
 
 ### Details of sub-homepage’s components
 
@@ -68,38 +77,41 @@ Digital Homepage is a page containing a list of digital products. There are seve
 
 | **No** | **TEMPLATE** | **ViewHolder** | **Screenshot** |
 | --- | --- | --- | --- |
-| 1 | `TOP_BANNER` | `RechargeHomepageBannerViewHolder` |  |
-| 2 | `TOP_BANNER_EMPTY` | `RechargeHomepageBannerEmptyViewHolder` |  |
-| 3 | `TOP_ICONS` | `RechargeHomepageFavoriteViewHolder` |  |
-| 4 | `DYNAMIC_ICONS` | `RechargeHomepageCategoryViewHolder` |  |
-| 5 | `DUAL_ICONS` | `RechargeHomepageDualIconsViewHolder` |  |
-| 6 | `URGENCY_WIDGETS` | `ReminderWidgetViewHolder` |  |
-| 7 | `VIDEO_HIGHLIGHT` | `RechargeHomepageVideoHighlightViewHolder` |  |
-| 8 | `SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder` |  |
-| 9 | `COUNTDOWN_SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder`notes: - the widget will automatically disappear if the countdown time is expired<br/> |  |
-| 10 | `DUAL_BANNERS` | `RechargeHomepageDualBannerViewHolder` |  |
-| 11 | `LEGO_BANNERS` | `DynamicLegoBannerViewHolder` |  |
-| 12 | `PRODUCT_CARD_ROW` | `RechargeHomepageProductCardsViewHolder` | New UI in v.3.131 above: |
-| 13 | `PRODUCT_CARD_ROW_1X1` | `RechargeHomepageProductCardsViewHolder` | using the same view holder with `PRODUCT_CARD_ROW` |
-| 14 | `COUNTDOWN_PRODUCT_BANNER` | `RechargeHomepageProductBannerViewHolder` |  |
-| 15 | `PRODUCT_CARD_CUSTOM_BANNER` | `RechargeHomepageProductCardCustomBannerViewHolder` |  |
-| 16 | `MINI_CAROUSELL` | `RechargeHomepageCarousellViewHolder` |  |
-| 17 | `SWIPE_BANNER` | `RechargeHomepageSwipeBannerViewHolder` |  |
-| 18 | `PRODUCT_CARD_DGU` | `RechargeHomepageProductCardUnifyViewHolder` |  |
-| 19 | `3_ICONS` | `RechargeHomepageThreeIconsViewHolder` |  |
-| 20 | `PRODUCT_CARD_CUSTOM_BANNER_V2` | `RechargeHomepageProductCardCustomBannerV2ViewHolder` |  |
-| 21 | `2X2_BANNER` | `RechargeHomepageRecommendationBannerViewHolder` |  |
-| 22 | `PRODUCT_CARD_CUSTOM_LAST_ITEM` | `RechargeHomepageProductCardCustomLastItemViewHolder` |  |
-| 23 | `OFFERING_WIDGET` | `RechargeHomepageOfferingWidgetViewHolder` |  |
-| 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` |  |
-| 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` |  |
-| - | For loading purposes | `RechargeHomepageLoadingViewHolder` |  |
+| 1 | `TOP_BANNER` | `RechargeHomepageBannerViewHolder` | ![](res/image-20210520-100242.png)<br/> |
+| 2 | `TOP_BANNER_EMPTY` | `RechargeHomepageBannerEmptyViewHolder` | ![](res/image-20210520-100950.png)<br/> |
+| 3 | `TOP_ICONS` | `RechargeHomepageFavoriteViewHolder` | ![](res/image-20210520-093244.png)<br/> |
+| 4 | `DYNAMIC_ICONS` | `RechargeHomepageCategoryViewHolder` | ![](res/image-20210520-093256.png)<br/> |
+| 5 | `DUAL_ICONS` | `RechargeHomepageDualIconsViewHolder` | ![](res/image-20210520-093748.png)<br/> |
+| 6 | `URGENCY_WIDGETS` | `ReminderWidgetViewHolder` | ![](res/image-20210520-114955.png)<br/> |
+| 7 | `VIDEO_HIGHLIGHT` | `RechargeHomepageVideoHighlightViewHolder` | ![](res/image-20210520-102120.png)<br/> |
+| 8 | `SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder` | ![](res/image-20210520-103143.png)<br/> |
+| 9 | `COUNTDOWN_SINGLE_BANNER` | `RechargeHomepageSingleBannerViewHolder`notes: - the widget will automatically disappear if the countdown time is expired<br/> | ![](res/image-20210520-103143.png)<br/> |
+| 10 | `DUAL_BANNERS` | `RechargeHomepageDualBannerViewHolder` | ![](res/image-20210520-103507.png)<br/> |
+| 11 | `LEGO_BANNERS` | `DynamicLegoBannerViewHolder` | ![](res/image-20210520-115450.png)<br/> |
+| 12 | `PRODUCT_CARD_ROW` | `RechargeHomepageProductCardsViewHolder` | ![](res/image-20210520-104103.png)<br/>New UI in v.3.131 above:![](res/image-20210623-110014.png)<br/> |
+| 13 | `PRODUCT_CARD_ROW_1X1` | `RechargeHomepageProductCardsViewHolder` | ![](res/image-20210623-110034.png)<br/>using the same view holder with `PRODUCT_CARD_ROW` |
+| 14 | `COUNTDOWN_PRODUCT_BANNER` | `RechargeHomepageProductBannerViewHolder` | ![](res/image-20210520-105628.png)<br/> |
+| 15 | `PRODUCT_CARD_CUSTOM_BANNER` | `RechargeHomepageProductCardCustomBannerViewHolder` | ![](res/image-20210520-110848.png)<br/> |
+| 16 | `MINI_CAROUSELL` | `RechargeHomepageCarousellViewHolder` | ![](res/image-20210520-115830.png)<br/> |
+| 17 | `SWIPE_BANNER` | `RechargeHomepageSwipeBannerViewHolder` | ![](res/Screen Shot 2023-02-17 at 18.41.09.png)<br/> |
+| 18 | `PRODUCT_CARD_DGU` | `RechargeHomepageProductCardUnifyViewHolder` | ![](res/Screen Shot 2023-02-17 at 18.46.30.png)<br/> |
+| 19 | `3_ICONS` | `RechargeHomepageThreeIconsViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.52.24.png)<br/> |
+| 20 | `PRODUCT_CARD_CUSTOM_BANNER_V2` | `RechargeHomepageProductCardCustomBannerV2ViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.51.47.png)<br/> |
+| 21 | `2X2_BANNER` | `RechargeHomepageRecommendationBannerViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.52.51.png)<br/> |
+| 22 | `PRODUCT_CARD_CUSTOM_LAST_ITEM` | `RechargeHomepageProductCardCustomLastItemViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.51.12.png)<br/> |
+| 23 | `OFFERING_WIDGET` | `RechargeHomepageOfferingWidgetViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.47.47.png)<br/> |
+| 24 | `BILL_WIDGET` | `RechargeHomepageMyBillsWidgetViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.47.00.png)<br/> |
+| 25 | `MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsEntryPointWidgetViewHolder` | ![](res/Screen Shot 2023-02-15 at 19.46.45.png)<br/> |
+| 26 | `3_BUTTONS_MYBILLS_ENTRYPOINT` | `RechargeHomepageMyBillsTripleEntryPointWidgetViewHolder` | ![](res/Screen Shot 2023-05-22 at 12.55.51.png)<br/> |
+| - | For loading purposes | `RechargeHomepageLoadingViewHolder` | ![](res/image-20210520-115856.png)<br/> |
 
 ### How sub-homepage’s search bar works?
 
 - Happy Flow
 
-![](res/image-20210520-083934.png)## API List
+![](res/image-20210520-083934.png)
+
+## API List
 
 
 
