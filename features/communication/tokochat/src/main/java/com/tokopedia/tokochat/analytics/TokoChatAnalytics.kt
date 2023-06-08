@@ -429,18 +429,56 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
         tracking.sendGeneralEvent(mapData)
     }
 
+    fun clickUploadButton(
+        attachmentId: String,
+        orderId: String,
+        role: String,
+        source: String
+    ) {
+        val eventCategory = if (isFromBubble) {
+            TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM
+        } else {
+            TokoChatAnalyticsConstants.TOKOCHAT_DETAIL
+        }
+        val trackerId = if (isFromBubble) {
+            TokoChatAnalyticsConstants.TRACKER_ID_43183
+        } else {
+            TokoChatAnalyticsConstants.TRACKER_ID_43071
+        }
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_UPLOAD_BUTTON,
+            TrackAppUtils.EVENT_CATEGORY to eventCategory,
+            TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to trackerId,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
     fun clickRetryImage(
         attachmentId: String,
         orderId: String,
         role: String,
         source: String
     ) {
+        val eventCategory = if (isFromBubble) {
+            TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM
+        } else {
+            TokoChatAnalyticsConstants.TOKOCHAT_DETAIL
+        }
+        val trackerId = if (isFromBubble) {
+            TokoChatAnalyticsConstants.TRACKER_ID_43184
+        } else {
+            TokoChatAnalyticsConstants.TRACKER_ID_43073
+        }
         val mapData = mapOf(
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_RETRY_IMAGE,
-            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_CATEGORY to eventCategory,
             TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderId - $source - $role",
-            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43073,
+            TokoChatAnalyticsConstants.TRACKER_ID to trackerId,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
         )

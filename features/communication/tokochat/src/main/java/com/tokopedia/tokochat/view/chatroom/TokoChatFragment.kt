@@ -173,6 +173,16 @@ open class TokoChatFragment :
         }
     }
 
+    override fun trackClickComposeArea() {
+        if (viewModel.channelId.isNotBlank()) {
+            tokoChatAnalytics.clickTextField(
+                viewModel.tkpdOrderId,
+                TokoChatAnalyticsConstants.BUYER,
+                viewModel.source
+            )
+        }
+    }
+
     override fun initViews(view: View, savedInstanceState: Bundle?) {
         super.initViews(view, savedInstanceState)
         setupBackground()
@@ -1378,18 +1388,6 @@ open class TokoChatFragment :
         tokoChatAnalytics = TokoChatAnalytics(
             isFromBubble = (activity?.isFromBubble() ?: false) || viewModel.isFromBubble
         )
-
-        getComposeMessageArea()?.setTracker(
-            trackOnClickComposeArea = {
-                if (viewModel.channelId.isNotBlank()) {
-                    tokoChatAnalytics.clickTextField(
-                        viewModel.tkpdOrderId,
-                        TokoChatAnalyticsConstants.BUYER,
-                        viewModel.source
-                    )
-                }
-            }
-        )
     }
 
     private fun showGlobalErrorWithRefreshAction() {
@@ -1437,6 +1435,12 @@ open class TokoChatFragment :
                     adapter.getImageAttachmentPairWithId(it)?.let { (position, element) ->
                         element.updateImageState(
                             TokoChatImageBubbleUiModel.ImageState.LOADING_UPLOAD
+                        )
+                        tokoChatAnalytics.clickUploadButton(
+                            attachmentId = element.imageId,
+                            orderId = viewModel.tkpdOrderId,
+                            role = tokoChatAnalytics.getStringRole(element.isSender),
+                            source = viewModel.source
                         )
                         // notify
                         notifyWhenAllowed(position)
