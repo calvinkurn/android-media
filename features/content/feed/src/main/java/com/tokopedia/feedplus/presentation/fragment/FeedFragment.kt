@@ -53,7 +53,17 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
-import com.tokopedia.feedplus.presentation.model.*
+import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
+import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
+import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardLivePreviewContentModel
+import com.tokopedia.feedplus.presentation.model.FeedCardProductModel
+import com.tokopedia.feedplus.presentation.model.FeedCardVideoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedDataModel
+import com.tokopedia.feedplus.presentation.model.FeedMainEvent
+import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
+import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
@@ -130,8 +140,10 @@ class FeedFragment :
 
     private val feedMvcAnalytics = FeedMVCAnalytics()
     private val trackerModelMapper: MapperFeedModelToTrackerDataModel by lazy {
+        val isCdp = arguments?.getBoolean(ARGUMENT_IS_CDP, false) ?: false
+
         MapperFeedModelToTrackerDataModel(
-            data?.type ?: "",
+            if (isCdp) FeedBaseFragment.CDP else data?.type ?: "",
             arguments?.getString(ARGUMENT_ENTRY_POINT) ?: ""
         )
     }
@@ -364,7 +376,10 @@ class FeedFragment :
             feature = "share"
         )
         shareBottomSheet.setMetaData(
-            tnTitle = String.format(requireContext().getString(feedR.string.feed_share_title), data.author.name),
+            tnTitle = String.format(
+                requireContext().getString(feedR.string.feed_share_title),
+                data.author.name
+            ),
             tnImage = data.mediaUrl
         )
         if (!shareBottomSheet.isVisible) {
@@ -1344,7 +1359,10 @@ class FeedFragment :
     ) = object : ShareBottomsheetListener {
         override fun onShareOptionClicked(shareModel: ShareModel) {
             dismissShareBottomSheet()
-            feedAnalytics.sendClickSharingChannelEvent(shareModel.socialMediaName.orEmpty(), trackerModel)
+            feedAnalytics.sendClickSharingChannelEvent(
+                shareModel.socialMediaName.orEmpty(),
+                trackerModel
+            )
             generateShareLinkUrl(data, shareModel, trackerModel)
         }
 
@@ -1388,7 +1406,10 @@ class FeedFragment :
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         val shareString =
                             if (shareData.description.contains("%s")) {
-                                String.format(shareData.description, linkerShareData?.shareUri.orEmpty())
+                                String.format(
+                                    shareData.description,
+                                    linkerShareData?.shareUri.orEmpty()
+                                )
                             } else {
                                 "${shareData.description}\n${linkerShareData?.shareUri.orEmpty()}"
                             }
@@ -1412,7 +1433,7 @@ class FeedFragment :
                         dismissShareBottomSheet()
                     }
 
-                    override fun onError(linkerError: LinkerError?) { }
+                    override fun onError(linkerError: LinkerError?) {}
                 }
             )
         )
@@ -1425,6 +1446,7 @@ class FeedFragment :
     companion object {
         private const val ARGUMENT_DATA = "ARGUMENT_DATA"
         private const val ARGUMENT_ENTRY_POINT = "ARGUMENT_ENTRY_POINT"
+        private const val ARGUMENT_IS_CDP = "ARGUMENT_IS_CDP"
 
         private const val MINIMUM_ENDLESS_CALL = 3
 
@@ -1440,12 +1462,14 @@ class FeedFragment :
         fun createFeedFragment(
             data: FeedDataModel,
             extras: Bundle,
-            entryPoint: String
+            entryPoint: String,
+            isCdp: Boolean = false
         ): FeedFragment = FeedFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(ARGUMENT_DATA, data)
                 putAll(extras)
                 putString(ARGUMENT_ENTRY_POINT, entryPoint)
+                putBoolean(ARGUMENT_IS_CDP, isCdp)
             }
         }
     }

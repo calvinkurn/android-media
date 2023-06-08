@@ -60,7 +60,8 @@ class FeedDetailActivity : BaseActivity() {
                     ),
                     extrasData,
                     intent?.getStringExtra(ApplinkConstInternalContent.UF_EXTRA_FEED_ENTRY_POINT)
-                        ?: ""
+                        ?: "",
+                    true
                 )
             )
         }
