@@ -96,6 +96,7 @@
     <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
     <string name="smvc_voucherlist_quota_usage_format"><![CDATA[<b>%d</b> dari %d]]></string>
     <string name="smvc_general_error">Oops, ada gangguan yang perlu kami bereskan.</string>
+    <string name="smvc_placeholder_recurring_program_name">|  %s</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
@@ -333,6 +334,8 @@
     <string name="smvc_summary_page_loading_dialog">Kupon lagi dibuat</string>
     <string name="smvc_summary_page_loading_dialog_desc">Mohon menunggu, ya</string>
     <string name="smvc_summary_page_duplicating_message">Informasi kupon %s berhasil diduplikat. Cek lagi sebelum buat kupon, ya.</string>
+    <string name="smvc_summary_coachmark_title">Cek perubahan Syarat &amp; Ketentuan, yuk!</string>
+    <string name="smvc_summary_coachmark_description">Ada update tentang pengaturan pembiayaan dan penggunaan kupon. Pelajari selengkapnya dengan klik di sini, ya.</string>
 
     <!--Voucher Creation Step One-->
     <string name="smvc_kupon_toko_label">Kupon Toko</string>

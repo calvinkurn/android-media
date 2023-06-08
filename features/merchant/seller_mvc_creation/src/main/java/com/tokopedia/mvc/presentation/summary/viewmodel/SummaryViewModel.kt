@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.presentation.summary.viewmodel
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
@@ -21,6 +22,7 @@ import com.tokopedia.mvc.domain.usecase.GetCouponImagePreviewFacadeUseCase
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
+import com.tokopedia.mvc.util.constant.CommonConstant
 import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.mvc.util.tracker.SummaryPageTracker
 import java.util.*
@@ -32,7 +34,8 @@ class SummaryViewModel @Inject constructor(
     private val getCouponImagePreviewUseCase: GetCouponImagePreviewFacadeUseCase,
     private val addEditCouponFacadeUseCase: AddEditCouponFacadeUseCase,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
-    private val tracker: SummaryPageTracker
+    private val tracker: SummaryPageTracker,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -257,5 +260,18 @@ class SummaryViewModel @Inject constructor(
                     hourEnd = it.hourEnd
                 )
             }
+    }
+
+    fun coachMarkIsShown(): Boolean {
+        return sharedPreferences.getBoolean(
+            CommonConstant.SHARED_PREF_VOUCHER_CREATION_SUMMARY_COACH_MARK,
+            false
+        )
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit()
+            .putBoolean(CommonConstant.SHARED_PREF_VOUCHER_CREATION_SUMMARY_COACH_MARK, true)
+            .apply()
     }
 }
