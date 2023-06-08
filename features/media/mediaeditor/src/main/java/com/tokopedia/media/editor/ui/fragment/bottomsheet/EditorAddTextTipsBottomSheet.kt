@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment.bottomsheet
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,17 +19,14 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
     private var btnRef: UnifyButton? = null
     private var carouselRef: CarouselUnify? = null
 
-    private val btnTextCollection = listOf(
-        "Lanjut",
-        "Oke, Mengerti"
-    )
+    private val btnTextCollection = mutableListOf<String>()
+    private var btmSheetTitle = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setTitle(TIPS_TITLE)
         inflater.inflate(editorR.layout.add_text_tips_bottomsheet, null)?.apply {
             setChild(this)
 
@@ -38,6 +36,8 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
             setCarousel()
             setBtnListener()
         }
+        getBottomSheetText(inflater.context)
+        setTitle(btmSheetTitle)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -109,8 +109,16 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private fun getBottomSheetText(context: Context) {
+        btnTextCollection.apply {
+            add(getString(editorR.string.add_text_tips_cta_next))
+            add(getString(editorR.string.add_text_tips_cta_done))
+        }
+
+        btmSheetTitle = getString(editorR.string.add_text_tips_title)
+    }
+
     companion object{
-        private const val TIPS_TITLE = "Tips tambah teks"
         private const val BOTTOM_SHEET_FREE_TEXT = "https://images.tokopedia.net/img/FYkQxT/2023/3/29/867a9134-b77a-4fca-b2e1-2e8fcc86c4fa.png"
         private const val BOTTOM_SHEET_RIBBON_TEXT = "https://images.tokopedia.net/img/FYkQxT/2023/3/29/b1ee7176-286f-489c-ba3b-68de920462e9.png"
     }

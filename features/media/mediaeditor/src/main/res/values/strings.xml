@@ -79,6 +79,9 @@
     <!-- Add Text Bottomsheet tips text -->
     <string name="add_text_tips_carousel_item_1">Yuk, buat produkmu lebih menarik dengan tambahin nama produknya!</string>
     <string name="add_text_tips_carousel_item_2">Atau, kamu bisa tambahin keunggulan produk sesuai keinginanmu. Yuk, cobain!</string>
+    <string name="add_text_tips_cta_next">Lanjut</string>
+    <string name="add_text_tips_cta_done">Oke, Mengerti</string>
+    <string name="add_text_tips_title">Tips tambah teks</string>
     
     <!-- Add Text Bottomsheet latar text -->
     <string name="add_text_background_tips">Teks yang sudah kamu buat bisa kepotong saat kamu pakai Latar Teks.</string>

@@ -101,7 +101,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     mTextLayout = createStaticLayout(data ,canvas.height - (paddingHorizontal * 2).toInt(), mTextPaint)
 
                     val yOffset = canvas.width - mTextLayout.height - paddingVertical - paddingFloating
-                    canvas.rotate(-90f)
+                    canvas.rotate(ROTATE_90_DEGREE_COUNTER_CLOCKWISE)
                     canvas.translate(-(canvas.height.toFloat() - paddingHorizontal), yOffset)
                 }
                 EditorAddTextUiModel.TEXT_POSITION_LEFT -> {
@@ -113,7 +113,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     mTextLayout = createStaticLayout(data, canvas.height - (paddingHorizontal * 2).toInt(), mTextPaint)
 
                     val yOffset = -(mTextLayout.height + paddingVertical)
-                    canvas.rotate(90f)
+                    canvas.rotate(ROTATE_90_DEGREE_CLOCKWISE)
                     canvas.translate(paddingHorizontal, yOffset)
                 }
                 EditorAddTextUiModel.TEXT_POSITION_BOTTOM -> {
@@ -227,5 +227,8 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         private const val ADJUSTMENT_PADDING_PERCENTAGE = 0.1f
 
         private const val PADDING_FLOATING_ENABLE = 0.25f
+
+        private const val ROTATE_90_DEGREE_CLOCKWISE = 90f
+        private const val ROTATE_90_DEGREE_COUNTER_CLOCKWISE = -90f
     }
 }
