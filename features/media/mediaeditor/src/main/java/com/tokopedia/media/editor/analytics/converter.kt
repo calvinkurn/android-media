@@ -53,7 +53,7 @@ fun addLogoToText(logoState: Int?): String {
     }
 }
 
-fun addTextToText(textDetail: EditorAddTextUiModel?): String {
+fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): String {
     return textDetail?.let { textValue ->
         var text = ""
 
@@ -62,11 +62,7 @@ fun addTextToText(textDetail: EditorAddTextUiModel?): String {
             else -> ADD_TEXT_TEMPLATE
         }
 
-        text += "_" + when (textValue.textColor) {
-            "#000000" -> ADD_TEXT_COLOR_BLACK
-            "#FFFFFF" -> ADD_TEXT_COLOR_WHITE
-            else -> ""
-        }
+        text += "_$colorOnText"
 
         textValue.getLatarTemplate()?.let {
             text += "_${it.latarModel}"

@@ -11,15 +11,13 @@ import androidx.core.graphics.scale
 import androidx.core.graphics.toColorInt
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.data.entity.AddTextColorCollection
+import com.tokopedia.media.editor.data.entity.AddTextColorManager
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.LatarTemplateDetail
-import com.tokopedia.media.editor.utils.toWhite
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 
@@ -32,7 +30,7 @@ interface AddTextFilterRepository {
 
 class AddTextFilterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val colorCollection: AddTextColorCollection
+    private val colorCollection: AddTextColorManager
 ) : AddTextFilterRepository {
     override fun generateTextOverlay(
         size: Pair<Int, Int>,

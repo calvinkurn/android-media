@@ -34,7 +34,7 @@ import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.entity.AddTextColorCollection
+import com.tokopedia.media.editor.data.entity.AddTextColorManager
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
@@ -43,12 +43,8 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.*
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_BLACK
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_BLACK
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_WHITE
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_FREE
@@ -57,8 +53,8 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.ui.widget.AddTextLatarBottomSheet
-import com.tokopedia.media.editor.ui.widget.EditorAddTextTipsBottomSheet
+import com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextlatar.AddTextLatarBottomSheet
+import com.tokopedia.media.editor.ui.fragment.bottomsheet.EditorAddTextTipsBottomSheet
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
 import com.tokopedia.media.loader.data.Properties
@@ -93,7 +89,7 @@ class DetailEditorFragment @Inject constructor(
     private val pickerParam: PickerCacheManager,
     private val addLogoCacheManager: EditorAddLogoCacheManager,
     private val addTextCacheManager: EditorAddTextCacheManager,
-    private val colorCollection: AddTextColorCollection
+    private val addTextColorManager: AddTextColorManager
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -462,7 +458,7 @@ class DetailEditorFragment @Inject constructor(
                         latarModel = model
                     ))
 
-                    it.textColor = colorCollection.getTextColorOnBackgroundMode(color)
+                    it.textColor = addTextColorManager.getTextColorOnBackgroundMode(color)
                 }
 
                 tempTemplateMode = templateIndex
@@ -1281,7 +1277,10 @@ class DetailEditorFragment @Inject constructor(
                 viewModel.rotateSliderValue.toInt()
             }
             val addLogoValue = addLogoToText(addLogoComponent.getLogoState())
-            val addTextValue = addTextToText(data.addTextValue)
+            val addTextValue = addTextToText(
+                data.addTextValue,
+                addTextColorManager.getTextFromHex(data.addTextValue?.textColor)
+            )
 
             val currentEditorText =
                 requireContext().getText(getToolEditorText(data.editorToolType)).toString()
@@ -1509,9 +1508,7 @@ class DetailEditorFragment @Inject constructor(
     private fun showAddTextLatarSelection(onFinish: (color: String, latarModel: Int) -> Unit) {
         AddTextLatarBottomSheet(
             data.resultUrl,
-            onFinish,
-            colorCollection.listOfTextWithBackgroundColor,
-            colorCollection.listOfTextWithBackgroundColorName
+            onFinish
         ).show(
             childFragmentManager,
             ADD_TEXT_BOTTOM_SHEET_TAG

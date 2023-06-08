@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.widget
+package com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextlatar
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable

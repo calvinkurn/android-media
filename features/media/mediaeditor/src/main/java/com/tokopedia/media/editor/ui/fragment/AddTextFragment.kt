@@ -17,7 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.entity.AddTextColorCollection
+import com.tokopedia.media.editor.data.entity.AddTextColorManager
 import com.tokopedia.media.editor.databinding.FragmentAddTextLayoutBinding
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
@@ -29,8 +29,6 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_BOLD
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_STYLE_ITALIC
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_TEMPLATE_BACKGROUND
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_BLACK
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_COLOR_WHITE
 import com.tokopedia.media.editor.ui.widget.AddTextColorItem
 import com.tokopedia.media.editor.ui.widget.AddTextStyleItem
 import com.tokopedia.media.loader.loadImage
@@ -42,7 +40,7 @@ import com.tokopedia.media.editor.R as editorR
 
 class AddTextFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    addTextColorCollection: AddTextColorCollection
+    addTextColorManager: AddTextColorManager
 ) : BaseEditorFragment() {
 
     private val viewBinding: FragmentAddTextLayoutBinding? by viewBinding()
@@ -50,7 +48,7 @@ class AddTextFragment @Inject constructor(
 
     private var defaultPadding = 0
 
-    private var colorList = addTextColorCollection.listOfTextColor
+    private var colorList = addTextColorManager.listOfTextColor
 
     /**
      * 0 -> regular

@@ -81,10 +81,6 @@ class EditorAddTextUiModel(
         const val TEXT_LATAR_TEMPLATE_BLACK = 0
         const val TEXT_LATAR_TEMPLATE_WHITE = 1
         // ---
-
-        // Int color, get from hex => android color
-        const val TEXT_COLOR_WHITE = -1
-        const val TEXT_COLOR_BLACK = -16777216
     }
 }
 

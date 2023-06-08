@@ -1,14 +1,12 @@
 package com.tokopedia.media.editor.di.module
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsImpl
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
-import com.tokopedia.media.editor.data.entity.AddTextColorCollection
-import com.tokopedia.media.editor.data.entity.AddTextColorCollectionImpl
+import com.tokopedia.media.editor.data.entity.AddTextColorManager
+import com.tokopedia.media.editor.data.entity.AddTextColorManagerImpl
 import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.picker.common.cache.*
 import dagger.Binds
@@ -116,6 +114,6 @@ abstract class EditorModule {
     @Binds
     @ActivityScope
     internal abstract fun provideAddTextColorCollection(
-        textColorCollection: AddTextColorCollectionImpl
-    ): AddTextColorCollection
+        textColorCollection: AddTextColorManagerImpl
+    ): AddTextColorManager
 }

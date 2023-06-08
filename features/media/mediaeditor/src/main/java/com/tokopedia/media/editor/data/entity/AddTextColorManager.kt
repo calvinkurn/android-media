@@ -2,24 +2,22 @@ package com.tokopedia.media.editor.data.entity
 
 import android.graphics.BlendMode
 import android.graphics.BlendModeColorFilter
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.graphics.toColorInt
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import javax.inject.Inject
 
-interface AddTextColorCollection{
+interface AddTextColorManager{
     val listOfTextColor: List<String>
-    val listOfTextWithBackgroundColor: List<String>
-    val listOfTextWithBackgroundColorName: List<String>
+    val listOfTextWithBackgroundColor: List<Pair<String, String>>
     fun getTextColorIndex(color: String): Int
     fun getTextColorOnBackgroundMode(backgroundColor: String): String
     fun implementDrawableColor(drawable: Drawable, color: String)
+    fun getTextFromHex(hexColor: String?): String
 }
 
-class AddTextColorCollectionImpl @Inject constructor(): AddTextColorCollection {
+class AddTextColorManagerImpl @Inject constructor(): AddTextColorManager {
     private val black = "#000000"
     private val white = "#FFFFFF"
 
@@ -29,13 +27,8 @@ class AddTextColorCollectionImpl @Inject constructor(): AddTextColorCollection {
     )
 
     override val listOfTextWithBackgroundColor = listOf(
-        black,
-        white
-    )
-
-    override val listOfTextWithBackgroundColorName = listOf(
-        "Hitam",
-        "Putih"
+        Pair(black, BLACK_TEXT),
+        Pair(white, WHITE_TEXT)
     )
 
     override fun getTextColorIndex(color: String): Int {
@@ -50,11 +43,24 @@ class AddTextColorCollectionImpl @Inject constructor(): AddTextColorCollection {
         }
     }
 
+    override fun getTextFromHex(hexColor: String?): String {
+        return when(hexColor){
+            black -> BLACK_TEXT
+            white -> WHITE_TEXT
+            else -> hexColor ?: ""
+        }
+    }
+
     override fun implementDrawableColor(drawable: Drawable, color: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             drawable.colorFilter = BlendModeColorFilter(color.toColorInt(), BlendMode.SRC_ATOP)
         } else {
             drawable.setColorFilter(color.toColorInt(), PorterDuff.Mode.SRC_ATOP)
         }
+    }
+
+    companion object {
+        private const val BLACK_TEXT = "Hitam"
+        private const val WHITE_TEXT = "Putih"
     }
 }

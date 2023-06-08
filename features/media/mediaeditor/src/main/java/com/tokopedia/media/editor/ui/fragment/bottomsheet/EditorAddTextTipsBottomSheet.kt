@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.widget
+package com.tokopedia.media.editor.ui.fragment.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.widget
+package com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextlatar
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.media.editor.data.entity.AddTextColorManager
+import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -20,11 +22,11 @@ import javax.inject.Inject
 
 class AddTextLatarBottomSheet(
     private val imgUrl: String?,
-    val onFinish: (color: String, latarModel: Int) -> Unit,
-    private val colorList: List<String>,
-    private val colorText: List<String>
-) :
-    BottomSheetUnify() {
+    val onFinish: (color: String, latarModel: Int) -> Unit
+) : BottomSheetUnify() {
+
+    @Inject
+    lateinit var addTextColorManager: AddTextColorManager
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
     private var templateModelRef: ArrayList<AddTextLatarBtmItem> = arrayListOf()
@@ -34,6 +36,11 @@ class AddTextLatarBottomSheet(
     // 0 -> black || 1 -> white
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,23 +64,27 @@ class AddTextLatarBottomSheet(
         parent.apply {
             mColorButtonContainerRef = findViewById(editorR.id.btmsht_add_text_color_container)
 
-            colorList.forEachIndexed { index, color ->
-                val chip = ChipsUnify(context).apply {
-                    layoutParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                    )
-                    setMargin(0, 0, CHIP_PADDING.toPx(), 0)
-                    chip_text.text = colorText[index]
-                    chip_image_icon.type = ImageUnify.TYPE_CIRCLE
-                    chipImageResource = if (color.toColorInt() == Color.BLACK) {
-                        ColorDrawable(color.toColorInt())
-                    } else {
-                        ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
+            addTextColorManager.listOfTextWithBackgroundColor.forEachIndexed { index, pair ->
+                pair.let { (hex, text) ->
+                    val chip = ChipsUnify(context).apply {
+                        layoutParams = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT
+                        )
+                        setMargin(0, 0, CHIP_PADDING.toPx(), 0)
+                        chip_text.text = text
+                        chip_image_icon.type = ImageUnify.TYPE_CIRCLE
+
+                        val colorInt = hex.toColorInt()
+                        chipImageResource = if (colorInt == Color.BLACK) {
+                            ColorDrawable(colorInt)
+                        } else {
+                            ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
+                        }
                     }
+                    colorButtonRef.add(chip)
+                    mColorButtonContainerRef?.addView(chip)
                 }
-                colorButtonRef.add(chip)
-                mColorButtonContainerRef?.addView(chip)
             }
 
             templateModelRef.add(
@@ -117,8 +128,10 @@ class AddTextLatarBottomSheet(
         }
 
         mNextButton?.setOnClickListener {
-            onFinish(colorList[colorSelectionIndex], modelSelectionIndex)
-            dismiss()
+            addTextColorManager.listOfTextWithBackgroundColor[colorSelectionIndex].let {(hex, _) ->
+                onFinish(hex, modelSelectionIndex)
+                dismiss()
+            }
         }
     }
 
@@ -169,6 +182,14 @@ class AddTextLatarBottomSheet(
                 // please refer color with EditorAddTextUiModel.TEXT_LATAR_TEMPLATE_BLACK
                 item.setLatarModel(index, colorSelectionIndex)
             }
+        }
+    }
+
+    private fun initInjector() {
+        activity?.applicationContext?.let {
+            EditorInjector
+                .get(it)
+                .inject(this)
         }
     }
 
