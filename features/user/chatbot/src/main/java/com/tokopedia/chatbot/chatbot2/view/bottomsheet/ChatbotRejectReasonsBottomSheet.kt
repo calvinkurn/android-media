@@ -6,12 +6,15 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotRejectReasonsAdapter
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
 import com.tokopedia.chatbot.databinding.BottomSheetChatbotReasonsBinding
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -24,6 +27,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private var chipSelectedListener: ChatbotRejectReasonsChipListener? = null
     private var isChipSelected: Boolean = false
     private var isEnabledFromText: Boolean = false
+    private var charCount: Long = 0
 
     init {
         isFullpage = false
@@ -50,13 +54,29 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                 setTitle(data.title)
                 senderIcon.urlSrc = data.iconTanya
                 reasonTitleText.text = data.reasonTitle
+                charCount = data.reasonMinimumCharacter.toLongOrZero()
                 reasonText.apply {
                     setPlaceholder(data.textBoxPlaceHolder)
                     minLine = MINIMUM_LINES
+                    labelText.hide()
+                    editText.setHintTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                        )
+                    )
+                    context?.resources?.apply {
+                        setMessage(
+                            getString(com.tokopedia.chatbot.R.string.chatbot_reject_reasons_min) +
+                                data.reasonMinimumCharacter +
+                                getString(com.tokopedia.chatbot.R.string.chatbot_reject_reasons_character
+                            )
+                        )
+                    }
                 }
                 reasonsAdapter = ChatbotRejectReasonsAdapter(chipSelectedListener)
                 reasonsList.apply {
-                    layoutManager = getLayoutManager(data.reasonChipList)
+                    layoutManager = getMyLayoutManager()
                     reasonsAdapter?.setList(data.reasonChipList)
                     adapter = reasonsAdapter
                 }
@@ -75,18 +95,8 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun getLayoutManager(filterList: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>): RecyclerView.LayoutManager {
-        val gridLayoutManager = GridLayoutManager(context, 2)
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(i: Int): Int {
-                return if (filterList.size % 2 == 0) {
-                    1
-                } else {
-                    if (i == filterList.size - 1) 2 else 1
-                }
-            }
-        }
-        return gridLayoutManager
+    private fun getMyLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(context)
     }
 
     fun checkChipCounter(count: Int) {
