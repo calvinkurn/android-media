@@ -12,6 +12,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -40,7 +42,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaRecomBottomSheetState
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.ui.OneTimeMethodEvent
@@ -56,9 +57,6 @@ import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
 import com.tokopedia.recommendation_widget_common.affiliate.RecommendationNowAffiliateData
-import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
@@ -91,6 +89,8 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Matchers.anyString
 import rx.Observable
@@ -924,6 +924,54 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `test recom add to cart when click atc button without quantity editor`() {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 1
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(
+                success = 1,
+                cartId = "12345",
+                message = arrayListOf("Barang berhasil ditambahkan ke keranjang belanja")
+            ),
+            status = "OK"
+        )
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.atcRecomNonVariant(recomItem, quantity, null)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+        Assert.assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
+        Assert.assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
+    }
+
+    @Test
+    fun `test recom add to cart when click atc button without quantity editor with zero minimum order`() {
+        val recomItem = RecommendationItem(productId = 12345, shopId = 123)
+        val quantity = 0
+        val atcResponseSuccess = AddToCartDataModel(
+            data = DataModel(
+                success = 1,
+                cartId = "12345",
+                message = arrayListOf("Barang berhasil ditambahkan ke keranjang belanja")
+            ),
+            status = "OK"
+        )
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.atcRecomNonVariant(recomItem, quantity, null)
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+        Assert.assertEquals(viewModel.atcRecomTracker.value, Success(recomItem))
+        Assert.assertEquals(viewModel.atcRecom.value, Success(atcResponseSuccess.data.message.first()))
     }
     //endregion
 
@@ -2184,8 +2232,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
         Assert.assertTrue(!atcResponseSuccess.isStatusError())
-        Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
-        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTokonowSendTracker.value)
+        Assert.assertTrue(viewModel.atcRecomTracker.value is Success)
+        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTracker.value)
     }
 
     @Test
@@ -2206,7 +2254,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2222,7 +2270,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2246,7 +2294,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.atcRecom.value is Success)
     }
 
     @Test
@@ -2268,7 +2316,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2288,7 +2336,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             updateCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2317,7 +2365,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             miniCartListSimplifiedUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Success)
+        Assert.assertTrue(viewModel.atcRecom.value is Success)
     }
 
     @Test
@@ -2340,7 +2388,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2359,7 +2407,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             deleteCartUseCase.executeOnBackground()
         }
 
-        Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+        Assert.assertTrue(viewModel.atcRecom.value is Fail)
     }
 
     @Test
@@ -2375,6 +2423,36 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify isWithList in getDynamicProductInfoP1 is true after add wishlist`() {
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        `verify add to wishlistv2 returns success`()
+        Assert.assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+    }
+
+    @Test
+    fun `verify wishlist value from p1 replace with previous value`() {
+        viewModel.getDynamicProductInfoP1 = null
+        `on success get product info non login`()
+        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        `on success get product info non login`()
+        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+            data = ComponentData(isWishlist = true)
+        )
+        `on success get product info non login`()
+        assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+            data = ComponentData(isWishlist = false)
+        )
+        `on success get product info non login`()
+        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
     }
 
     @Test
@@ -2511,7 +2589,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         coVerify { addToCartUseCase.createObservable(any()) }
@@ -2535,7 +2613,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         spykViewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         coVerify { updateCartUseCase.executeOnBackground() }
@@ -2559,7 +2637,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         spykViewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         coVerify { deleteCartUseCase.executeOnBackground() }
@@ -2577,7 +2655,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         viewModel.onAtcRecomNonVariantQuantityChanged(
             recommItem,
             quantity,
-            RecommendationNowAffiliateData(),
+            RecommendationNowAffiliateData()
         )
 
         Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)

@@ -39,6 +39,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/1732
  * https://mynakama.tokopedia.com/datatracker/requestdetail/781
  * New Seller Journey Tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3581
+ * RichList Widget Tracker : https://mynakama.tokopedia.com/datatracker/requestdetail/view/3954
  * */
 
 object SellerHomeTracking {
@@ -220,8 +221,8 @@ object SellerHomeTracking {
             stateMediaUrl = post.stateMediaUrl
             stateText = post.stateText
         } else {
-            stateMediaUrl = ""
-            stateText = ""
+            stateMediaUrl = String.EMPTY
+            stateText = String.EMPTY
         }
 
         val map = createEventMap(
@@ -1149,6 +1150,62 @@ object SellerHomeTracking {
             .send()
     }
 
+    fun sendClickRichListWidgetCtaEligibleEvent(eventLabel: String) {
+        val trackerId = "43647"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_WIDGET_MRP_ELIGIBLE)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendImpressionRichListWidgetEligibleEvent(eventLabel: String) {
+        val trackerId = "43648"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.VIEW_PG_IRIS)
+            .setEventAction(TrackingConstant.IMPRESSION_WIDGET_MRP_ELIGIBLE)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(eventLabel)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendClickRichListWidgetCtaNotEligibleEvent() {
+        val trackerId = "43649"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.CLICK_PG)
+            .setEventAction(TrackingConstant.CLICK_WIDGET_MRP_NOT_ELIGIBLE)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
+    fun sendImpressionRichListWidgetNotEligibleEvent() {
+        val trackerId = "43650"
+        Tracker.Builder()
+            .setEvent(TrackingConstant.VIEW_PG_IRIS)
+            .setEventAction(TrackingConstant.IMPRESSION_WIDGET_MRP_NOT_ELIGIBLE)
+            .setEventCategory(TrackingConstant.SELLER_APP_HOME)
+            .setEventLabel(String.EMPTY)
+            .setCustomProperty(TrackingConstant.TRACKER_ID, trackerId)
+            .setBusinessUnit(TrackingConstant.PHYSICAL_GOODS_CAPITALIZED)
+            .setCurrentSite(TrackingConstant.TOKOPEDIA_MARKETPLACE)
+            .build()
+            .send()
+    }
+
     fun sendScreen(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
@@ -1174,7 +1231,7 @@ object SellerHomeTracking {
             Ticker.TYPE_ERROR -> TrackingConstant.TICKER_DANGER
             Ticker.TYPE_INFORMATION -> TrackingConstant.TICKER_INFO
             Ticker.TYPE_WARNING -> TrackingConstant.TICKER_WARNING
-            else -> ""
+            else -> String.EMPTY
         }
     }
 
