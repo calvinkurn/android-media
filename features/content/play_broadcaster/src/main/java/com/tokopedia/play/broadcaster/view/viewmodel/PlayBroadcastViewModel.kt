@@ -87,6 +87,7 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -134,6 +135,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val logger: PlayLogger,
     private val broadcastTimer: PlayBroadcastTimer,
     private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    private val remoteConfig: RemoteConfig,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -1787,7 +1789,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     faceFilter.copy(
                         value = faceFilter.defaultValue,
                         isSelected = false,
-                        isChecked = faceFilter.defaultValue > 0
+                        active = faceFilter.defaultValue > 0
                     )
                 },
                 presets = it.presets.map { preset ->
@@ -1812,12 +1814,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 it.copy(
                     faceFilters = it.faceFilters.map { item ->
                         item.copy(
-                            active = item.id == faceFilter.id,
-                            isChecked = when {
-                                 faceFilter.isRemoveEffect -> false
-                                 item.id == faceFilter.id -> item.value > 0.0
-                                 else -> item.isChecked
-                             },
+                            active = when {
+                                item.id == faceFilter.id -> item.value > 0.0 || faceFilter.isRemoveEffect
+                                faceFilter.isRemoveEffect || item.isRemoveEffect -> false
+                                else -> item.active
+                            },
                             isSelected = item.id == faceFilter.id,
                         )
                     }
@@ -1872,9 +1873,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private suspend fun setBeautificationConfig(beautificationConfig: BeautificationConfigUiModel) {
-        _beautificationConfig.value = beautificationConfig
+        _beautificationConfig.value = if (remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY, true)) {
+            beautificationConfig
+        } else {
+            BeautificationConfigUiModel.Empty
+        }
 
-        if (!beautificationConfig.isUnknown) {
+        if (!_beautificationConfig.value.isUnknown) {
             try {
                 downloadInitialBeautificationAsset(beautificationConfig)
                 setupOnDemandAsset(beautificationConfig)
@@ -1970,6 +1975,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 throw Exception("Something went wrong")
             }
         }) { throwable ->
+            delay(ERROR_EVENT_DELAY)
             updatePresetAssetStatus(preset, BeautificationAssetStatus.NotDownloaded)
             _uiEvent.emit(
                 PlayBroadcastEvent.BeautificationDownloadAssetFailed(throwable, preset)
@@ -2322,5 +2328,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val SAVE_BEAUTIFICATION_JOB_ID = "SAVE_BEAUTIFICATION_JOB_ID"
         private const val SAVE_BEAUTIFICATION_DELAY = 500L
+        private const val ERROR_EVENT_DELAY = 500L
+
+        private const val REMOTE_CONFIG_ENABLE_BEAUTIFICATION_KEY = "android_enable_beautification"
     }
 }

@@ -55,6 +55,8 @@ class EffectManagerImpl @Inject constructor(
         }
 
     override fun startRenderThread() {
+        if (mRenderThread?.isAlive == true) return
+
         stopRenderThread()
 
         mRenderThread = Thread(

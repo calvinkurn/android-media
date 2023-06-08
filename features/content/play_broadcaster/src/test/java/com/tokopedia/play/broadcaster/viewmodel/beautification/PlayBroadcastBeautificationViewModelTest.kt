@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationAssetStatus
 import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConfigUiModel
 import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -71,6 +72,7 @@ class PlayBroadcastBeautificationViewModelTest {
     private val mockPlayBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
+    private val mockRemoteConfig: RemoteConfig = mockk(relaxed = true)
 
     @Before
     fun setUp() {
@@ -89,6 +91,8 @@ class PlayBroadcastBeautificationViewModelTest {
         coEvery { mockRepo.downloadModel(any()) } returns true
         coEvery { mockRepo.downloadCustomFace(any()) } returns true
         coEvery { mockRepo.downloadPresetAsset(any(), any()) } returns true
+
+        coEvery { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
     @Test
@@ -102,6 +106,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -123,6 +128,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -140,6 +146,30 @@ class PlayBroadcastBeautificationViewModelTest {
     }
 
     @Test
+    fun `playBroadcaster_beautification_getAllowedBeautificationConfigButGotDisabledFromRemoteConfig`() {
+        coEvery { mockRemoteConfig.getBoolean(any(), any()) } returns false
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+            }
+
+            state.beautificationConfig.isUnknown.assertTrue()
+            assert(state.menuList.firstOrNull { item -> item.menu == DynamicPreparationMenu.Menu.FaceFilter } == null)
+        }
+    }
+
+    @Test
     fun `playBroadcaster_beautification_setBeautificationConfig_downloadLicenseError`() {
         coEvery { mockRepo.downloadLicense(any()) } throws Exception("Network Error")
 
@@ -150,6 +180,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -177,6 +208,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -204,6 +236,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -231,6 +264,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -257,6 +291,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -268,7 +303,7 @@ class PlayBroadcastBeautificationViewModelTest {
 
             assert(state.beautificationConfig.selectedPreset == null)
 
-            events[events.size - 2].assertEvent(PlayBroadcastEvent.BeautificationDownloadAssetFailed(Exception("ignore this"), mockBeautificationConfigNotDownloaded.presets[0]))
+            events.last().assertEvent(PlayBroadcastEvent.BeautificationDownloadAssetFailed(Exception("ignore this"), mockBeautificationConfigNotDownloaded.presets[0]))
         }
     }
 
@@ -281,6 +316,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -302,6 +338,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -325,7 +362,7 @@ class PlayBroadcastBeautificationViewModelTest {
             }
 
             postState.beautificationConfig.faceFilters[2].value.assertEqualTo(postState.beautificationConfig.faceFilters[2].defaultValue)
-            postState.beautificationConfig.faceFilters[2].isChecked.assertTrue()
+            postState.beautificationConfig.faceFilters[2].active.assertTrue()
 
             postState.beautificationConfig.presets[2].isSelected.assertFalse()
             postState.beautificationConfig.presets[2].value.assertEqualTo(postState.beautificationConfig.presets[2].defaultValue)
@@ -346,11 +383,15 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
-            val state = it.recordState {
+            val prevState = it.recordState {
                 getAccountConfiguration()
+            }
+
+            val state = it.recordState {
                 it.getViewModel().submitAction(PlayBroadcastAction.SelectFaceFilterOption(mockBeautificationConfigAvailable.faceFilters[mockSelectedFaceFilterPosition]))
             }
 
@@ -360,7 +401,7 @@ class PlayBroadcastBeautificationViewModelTest {
                     e.isSelected.assertTrue()
                 }
                 else {
-                    e.active.assertFalse()
+                    e.active.assertEqualTo(prevState.beautificationConfig.faceFilters[idx].active)
                     e.isSelected.assertFalse()
                 }
             }
@@ -379,6 +420,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -395,7 +437,6 @@ class PlayBroadcastBeautificationViewModelTest {
                 else {
                     e.active.assertFalse()
                     e.isSelected.assertFalse()
-                    e.isChecked.assertFalse()
                     e.value.assertEqualTo(e.defaultValue)
                 }
             }
@@ -414,6 +455,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -439,6 +481,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -469,6 +512,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -501,6 +545,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -547,6 +592,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -580,6 +626,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -603,6 +650,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {
@@ -629,6 +677,7 @@ class PlayBroadcastBeautificationViewModelTest {
             getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
             productMapper = PlayBroProductUiMapper(),
             playBroadcastMapper = mockPlayBroadcastMapper,
+            remoteConfig = mockRemoteConfig,
         )
 
         robot.use {

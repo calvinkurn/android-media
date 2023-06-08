@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -13,42 +13,8 @@ buildscript {
     }
 }
 
-android {
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
-    }
-
-    defaultConfig {
-        multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        consumerProguardFiles 'proguard-rules.pro'
-    }
-
-    buildTypes {
-        debug {
-            ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            testCoverageEnabled (project.hasProperty('coverage'))
-        }
-        release {
-            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-    }
-
-    buildFeatures {
-        viewBinding true
-        buildConfig true
-    }
-}
-
 dependencies {
-    implementation files('libs/effectAAR-release-4.4.2.aar')
+    implementation rootProject.ext.tkpdInternalLibDependencies.byteplusEffectSdk
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
@@ -56,12 +22,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'effect'
-    groupId = 'com.tokopedia.byteplus.effect'
-    versionName = "0.0.1"
+    artifactId = 'byteplus-effect'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
     artifactName ="byteplus-effect-release"
 }
 
 apply from: '../../publish_local.gradle'
-apply from: '../../jacoco_task.gradle'
-apply from: '../../sonar_config.gradle'

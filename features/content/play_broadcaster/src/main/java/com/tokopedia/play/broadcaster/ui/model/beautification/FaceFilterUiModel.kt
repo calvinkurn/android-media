@@ -18,7 +18,6 @@ data class FaceFilterUiModel(
     val maxValue: Double,
     val defaultValue: Double,
     val value: Double,
-    val isChecked: Boolean,
     val isSelected: Boolean,
 ) : Parcelable {
 
@@ -42,8 +41,8 @@ data class FaceFilterUiModel(
 
     fun copyWithNewValue(newValueFromSlider: Int): FaceFilterUiModel {
         return copy(
+            active = newValueFromSlider > 0,
             value = newValueFromSlider.toFuzzyPercent(),
-            isChecked = newValueFromSlider > 0,
         )
     }
 

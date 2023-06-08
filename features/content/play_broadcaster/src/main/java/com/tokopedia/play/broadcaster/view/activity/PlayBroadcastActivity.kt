@@ -179,6 +179,18 @@ class PlayBroadcastActivity : BaseActivity(),
     private val isPortrait: Boolean
         get() = resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
+    private val dialogUnSupportedDevice by lazyThreadSafetyNone {
+        getDialog(
+            title = getString(R.string.play_dialog_unsupported_device_title),
+            desc = getString(R.string.play_dialog_unsupported_device_desc),
+            primaryCta = getString(R.string.play_broadcast_exit),
+            primaryListener = { dialog ->
+                dialog.dismiss()
+                finish()
+            }
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         loadEffectNativeLibrary()
 
@@ -406,7 +418,7 @@ class PlayBroadcastActivity : BaseActivity(),
         if(!::broadcaster.isInitialized) return
 
         val selectedFaceFilter = value ?: return
-        applyFaceFilter(selectedFaceFilter)
+        applyFaceFilter(listOf(selectedFaceFilter))
     }
 
     private fun renderPreset(
@@ -421,7 +433,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun applyFaceFilter(
-        vararg faceFilters: FaceFilterUiModel,
+        faceFilters: List<FaceFilterUiModel>,
         withToaster: Boolean = true,
     ): Boolean {
         var isAllFilterApplied = true
@@ -430,7 +442,10 @@ class PlayBroadcastActivity : BaseActivity(),
             if (faceFilter.isRemoveEffect) {
                 broadcaster.removeFaceFilter()
             } else {
-                val isSuccess = broadcaster.setFaceFilter(faceFilter.id, faceFilter.value.toFloat())
+                val isSuccess = broadcaster.setFaceFilter(
+                    faceFilter.id,
+                    if (faceFilter.active) faceFilter.value.toFloat() else 0f
+                )
 
                 if (isSuccess) return@forEach
 
@@ -455,7 +470,7 @@ class PlayBroadcastActivity : BaseActivity(),
                             page = beautificationAnalyticStateHolder.pageSource.mapToAnalytic(),
                             customFace = faceFilter.id,
                         )
-                        applyFaceFilter(faceFilter)
+                        applyFaceFilter(listOf(faceFilter))
                     }
                 )
             }
@@ -493,9 +508,9 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun rebindEffect(isFirstTimeOpenPage: Boolean) {
         if (viewModel.isBeautificationEnabled) {
             val isAllFaceFilterApplied = if (viewModel.selectedFaceFilter?.isRemoveEffect == true) {
-                viewModel.selectedFaceFilter?.let { applyFaceFilter(it, withToaster = false) }.orTrue()
+                viewModel.selectedFaceFilter?.let { applyFaceFilter(listOf(it), withToaster = false) }.orTrue()
             } else {
-                applyFaceFilter(*viewModel.faceFiltersWithoutNoneOption.toTypedArray(), withToaster = false)
+                applyFaceFilter(viewModel.faceFiltersWithoutNoneOption, withToaster = false)
             }
 
             val isPresetApplied = viewModel.selectedPreset?.let { applyPreset(it, withToaster = false) }.orTrue()
@@ -719,15 +734,8 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private fun showDialogWhenUnSupportedDevices() {
-        getDialog(
-                title = getString(R.string.play_dialog_unsupported_device_title),
-                desc = getString(R.string.play_dialog_unsupported_device_desc),
-                primaryCta = getString(R.string.play_broadcast_exit),
-                primaryListener = { dialog ->
-                    dialog.dismiss()
-                    finish()
-                }
-        ).show()
+        if (dialogUnSupportedDevice.isShowing) return
+        dialogUnSupportedDevice.show()
     }
 
     private fun showToaster(

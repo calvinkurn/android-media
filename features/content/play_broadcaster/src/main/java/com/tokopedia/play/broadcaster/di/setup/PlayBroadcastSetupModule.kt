@@ -12,6 +12,8 @@ import com.tokopedia.play.broadcaster.util.cover.PlayMinimumCoverImageTransforme
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
 

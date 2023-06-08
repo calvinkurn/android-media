@@ -38,7 +38,7 @@ class BeautificationFilterOptionViewHolder private constructor() {
 
                 icBeautificationFilter.setImage(item.iconUnifyId)
                 icBeautificationFilter.show()
-                icChecked.showWithCondition(item.isChecked)
+                icChecked.showWithCondition(item.active && !item.isRemoveEffect)
 
                 clIcon.setBackgroundResource(
                     if(item.isSelected) R.drawable.bg_face_filter_option_selected

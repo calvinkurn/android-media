@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
@@ -48,6 +49,7 @@ fun parentBroViewModel(
     logger: PlayLogger = mockk(relaxed = true),
     broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
     playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
+    remoteConfig: RemoteConfig = mockk(relaxed = true),
 ): PlayBroadcastViewModel {
     return PlayBroadcastViewModel(
         handle = handle,
@@ -67,6 +69,7 @@ fun parentBroViewModel(
         logger = logger,
         broadcastTimer = broadcastTimer,
         playShortsEntryPointRemoteConfig = playShortsEntryPointRemoteConfig,
+        remoteConfig = remoteConfig,
     )
 }
 
