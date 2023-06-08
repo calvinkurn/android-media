@@ -102,11 +102,11 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                         if (get.equals(URL_BETA)) {
                             createNotif(context, appName) {
                                 saveBeta(it, true)
-                            }.invoke()
+                            }
                         } else {
                             cancelNotif {
                                 saveBeta(it, false)
-                            }.invoke()
+                            }
                         }
                     }
                     GlobalConfig.CONSUMER_PRO_APPLICATION -> {
