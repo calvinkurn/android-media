@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.comment.usecase.GetCountCommentsUseCase
 import com.tokopedia.feed.component.product.FeedTaggedProductUiModel
+import com.tokopedia.feedcomponent.data.pojo.UpcomingCampaignResponse
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.FollowShop
 import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -33,6 +34,8 @@ import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
 import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
+import com.tokopedia.kolcommon.data.SubmitActionContentResponse
 import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase
 import com.tokopedia.mvcwidget.ResultStatus
@@ -532,13 +535,323 @@ class FeedPostViewModelTest {
         assert((viewModel.feedHome.value as Fail).throwable.message == "Failed")
     }
 
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithoutRelevantPost() {
+        // given
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+
+        // when
+        viewModel.fetchFeedPosts("")
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == 5)
+        assert(data.items[0] is FeedCardImageContentModel)
+        assert(data.items[1] is FeedCardVideoContentModel)
+        assert(data.items[2] is FeedCardImageContentModel)
+        assert(data.items[3] is FeedCardVideoContentModel)
+        assert(data.items[4] is FeedNoContentModel)
+    }
+
+    @Test
+    fun onFetchFeedPosts_whenSuccessWithRelevantPost() {
+        // given
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+
+        // when
+        viewModel.fetchFeedPosts("", true, "1")
+
+        // then
+        assert(!viewModel.shouldShowNoMoreContent)
+        assert(viewModel.feedHome.value is Success)
+        val data = (viewModel.feedHome.value as Success).data
+        assert(data.items.size == 10)
+        assert(data.items[0] is FeedCardImageContentModel)
+        assert(data.items[1] is FeedCardVideoContentModel)
+        assert(data.items[2] is FeedCardImageContentModel)
+        assert(data.items[3] is FeedCardVideoContentModel)
+        assert(data.items[4] is FeedNoContentModel)
+        assert(data.items[5] is FeedCardImageContentModel)
+        assert(data.items[6] is FeedCardVideoContentModel)
+        assert(data.items[7] is FeedCardImageContentModel)
+        assert(data.items[8] is FeedCardVideoContentModel)
+        assert(data.items[9] is FeedNoContentModel)
+    }
+
+    @Test
+    fun onDeletePost_whenFailed_shouldBeFail() {
+        // given
+        coEvery { deletePostUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { deletePostUseCase.executeOnBackground() } throws MessageErrorException("Failed")
+
+        // when
+        viewModel.doDeletePost("", 1)
+
+        // then
+        assert(viewModel.deletePostResult.value is Fail)
+        assert((viewModel.deletePostResult.value as Fail).throwable is MessageErrorException)
+        assert((viewModel.deletePostResult.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onDeletePost_whenNotSuccess_shouldBeFail() {
+        // given
+        coEvery { deletePostUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { deletePostUseCase.executeOnBackground() } returns SubmitActionContentResponse(
+            content = SubmitActionContentResponse.FeedContentSubmit(
+                success = 0
+            )
+        )
+
+        // when
+        viewModel.doDeletePost("", 1)
+
+        // then
+        assert(viewModel.deletePostResult.value is Fail)
+        assert((viewModel.deletePostResult.value as Fail).throwable is MessageErrorException)
+    }
+
+    @Test
+    fun onDeletePost_whenSuccess_shouldBeSuccess() {
+        // given
+        provideDefaultFeedPostMockData()
+        coEvery { deletePostUseCase.setRequestParams(any()) } coAnswers {}
+        coEvery { deletePostUseCase.executeOnBackground() } returns SubmitActionContentResponse(
+            content = SubmitActionContentResponse.FeedContentSubmit(
+                success = 1
+            )
+        )
+
+        // when
+        viewModel.doDeletePost("image 1 id", 1)
+
+        // then
+        assert(viewModel.deletePostResult.value is Success)
+        assert((viewModel.deletePostResult.value as Success).data == 1)
+        assert((viewModel.feedHome.value as Success).data.items.size == getDummyFeedModel().items.size - 1)
+    }
+
+    @Test
+    fun onSetReminder_whenFailed_shouldBeFail() {
+        // given
+        coEvery { campaignReminderUseCase.createParams(1, true) } returns mapOf()
+        coEvery { campaignReminderUseCase(any()) } throws MessageErrorException("Failed")
+
+        // when
+        viewModel.setUnsetReminder(1, true, FeedCampaignRibbonType.ASGC_GENERAL)
+
+        // then
+        assert(viewModel.reminderResult.value is Fail)
+        assert((viewModel.reminderResult.value as Fail).throwable is MessageErrorException)
+        assert((viewModel.reminderResult.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onSetReminder_whenNotSuccess_shouldBeFail() {
+        // given
+        coEvery { campaignReminderUseCase.createParams(1, true) } returns mapOf()
+        coEvery { campaignReminderUseCase(any()) } returns UpcomingCampaignResponse()
+
+        // when
+        viewModel.setUnsetReminder(1, true, FeedCampaignRibbonType.ASGC_GENERAL)
+
+        // then
+        assert(viewModel.reminderResult.value is Fail)
+        assert((viewModel.reminderResult.value as Fail).throwable is MessageErrorException)
+        assert((viewModel.reminderResult.value as Fail).throwable.message == "")
+    }
+
+    @Test
+    fun onSetReminder_whenSuccessWithErrorMessage_shouldBeFail() {
+        // given
+        coEvery { campaignReminderUseCase.createParams(1, true) } returns mapOf()
+        coEvery { campaignReminderUseCase(any()) } returns UpcomingCampaignResponse(
+            success = true,
+            errorMessage = "Failed"
+        )
+
+        // when
+        viewModel.setUnsetReminder(1, true, FeedCampaignRibbonType.ASGC_GENERAL)
+
+        // then
+        assert(viewModel.reminderResult.value is Fail)
+        assert((viewModel.reminderResult.value as Fail).throwable is MessageErrorException)
+        assert((viewModel.reminderResult.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onSetReminder_whenNotSuccessWithErrorMessage_shouldBeFail() {
+        // given
+        coEvery { campaignReminderUseCase.createParams(1, true) } returns mapOf()
+        coEvery { campaignReminderUseCase(any()) } returns UpcomingCampaignResponse(
+            success = false,
+            errorMessage = "Failed"
+        )
+
+        // when
+        viewModel.setUnsetReminder(1, true, FeedCampaignRibbonType.ASGC_GENERAL)
+
+        // then
+        assert(viewModel.reminderResult.value is Fail)
+        assert((viewModel.reminderResult.value as Fail).throwable is MessageErrorException)
+        assert((viewModel.reminderResult.value as Fail).throwable.message == "Failed")
+    }
+
+    @Test
+    fun onSetReminder_whenSuccessWithoutErrorMessage_shouldBeSuccess() {
+        // given
+        provideDefaultFeedPostMockData()
+        coEvery { campaignReminderUseCase.createParams(1, true) } returns mapOf()
+        coEvery { campaignReminderUseCase(any()) } returns UpcomingCampaignResponse(success = true)
+
+        // when
+        viewModel.setUnsetReminder(1, true, FeedCampaignRibbonType.ASGC_GENERAL)
+
+        // then
+        assert(viewModel.reminderResult.value is Success)
+        val data = (viewModel.reminderResult.value as Success).data
+        assert(data.isSetReminder)
+        assert(data.reminderType == FeedCampaignRibbonType.ASGC_GENERAL)
+
+        assert(viewModel.feedHome.value is Success)
+        val feedData = (viewModel.feedHome.value as Success).data
+        assert(feedData.items.size == getDummyFeedModel().items.size)
+        assert(feedData.items[0] is FeedCardImageContentModel)
+        assert((feedData.items[0] as FeedCardImageContentModel).campaign.isReminderActive)
+        assert(feedData.items[1] is FeedCardVideoContentModel)
+        assert((feedData.items[1] as FeedCardVideoContentModel).campaign.isReminderActive)
+        assert(feedData.items[2] is FeedCardImageContentModel)
+        assert(!(feedData.items[2] as FeedCardImageContentModel).campaign.isReminderActive)
+        assert(feedData.items[3] is FeedCardVideoContentModel)
+        assert(!(feedData.items[3] as FeedCardVideoContentModel).campaign.isReminderActive)
+        assert(feedData.items[4] is FeedNoContentModel)
+    }
+
+    @Test
+    fun onCheckIsFollowing_whenFeedHomeNull_shouldBeFalse() {
+        // when
+        val isFollowing = viewModel.isFollowing("1")
+
+        // then
+        assert(!isFollowing)
+    }
+
+    @Test
+    fun onCheckIsFollowing_whenFeedHomeFailed_shouldBeFalse() {
+        // given
+        viewModel.fetchFeedPosts("foryou")
+
+        // when
+        val isFollowing = viewModel.isFollowing("1")
+
+        // then
+        assert(!isFollowing)
+    }
+
+    @Test
+    fun onCheckIsFollowing_whenFeedHomeSuccess_shouldBeBasedOnResponse() {
+        // given
+        provideDefaultFeedPostMockData()
+
+        // when
+        val isFollowingImage1 = viewModel.isFollowing("image 1 id")
+        val isFollowingVideo1 = viewModel.isFollowing("video 1 id")
+        val isFollowingImage2 = viewModel.isFollowing("image 2 id")
+        val isFollowingVideo2 = viewModel.isFollowing("video 2 id")
+        val isFollowingRandom = viewModel.isFollowing("random")
+
+        // then
+        assert(isFollowingImage1)
+        assert(isFollowingVideo1)
+        assert(!isFollowingImage2)
+        assert(!isFollowingVideo2)
+        assert(!isFollowingRandom)
+    }
+
+    private fun provideDefaultFeedPostMockData() {
+        coEvery { feedXHomeUseCase.createParams(any(), any(), any(), any()) } returns emptyMap()
+        coEvery { feedXHomeUseCase.createPostDetailParams("1") } returns emptyMap()
+        coEvery { feedXHomeUseCase(any()) } returns getDummyFeedModel()
+        viewModel.fetchFeedPosts("")
+    }
+
     private fun getAuthorModelDefault() =
         FeedAuthorModel("", AuthorType.User, "", "", "", "", "", false)
 
     private fun getDummyFeedModel() = FeedModel(
         items = listOf(
             FeedCardImageContentModel(
-                "activity id",
+                "image 1 id",
+                "FeedProductHighlight",
+                "Dummy Type",
+                getAuthorModelDefault(),
+                "Title",
+                "Subtitle",
+                "Caption",
+                FeedCardCtaModel(),
+                "",
+                "",
+                "",
+                "",
+                "",
+                emptyList(),
+                0,
+                FeedCardCampaignModel(id = "1"),
+                false,
+                emptyList(),
+                "",
+                "",
+                FeedViewModel(),
+                FeedLikeModel(),
+                FeedCommentModel(),
+                FeedShareModel("", getAuthorModelDefault(), "", "", ""),
+                FeedFollowModel(isFollowed = true),
+                emptyList(),
+                emptyList(),
+                "",
+                0,
+                "0",
+                "",
+                "",
+                false,
+                ""
+            ),
+            FeedCardVideoContentModel(
+                "video 1 id",
+                "FeedPlay",
+                "Dummy Type",
+                getAuthorModelDefault(),
+                "Title",
+                "Subtitle",
+                "Caption",
+                FeedCardCtaModel(),
+                "",
+                "",
+                "",
+                FeedCardCampaignModel(id = "1"),
+                false,
+                emptyList(),
+                0,
+                emptyList(),
+                "",
+                "",
+                FeedViewModel(),
+                FeedLikeModel(),
+                FeedCommentModel(),
+                FeedShareModel("", getAuthorModelDefault(), "", "", ""),
+                FeedFollowModel(isFollowed = true),
+                emptyList(),
+                emptyList(),
+                "",
+                ""
+            ),
+            FeedCardImageContentModel(
+                "image 2 id",
                 "FeedProductHighlight",
                 "Dummy Type",
                 getAuthorModelDefault(),
@@ -562,7 +875,7 @@ class FeedPostViewModelTest {
                 FeedLikeModel(),
                 FeedCommentModel(),
                 FeedShareModel("", getAuthorModelDefault(), "", "", ""),
-                FeedFollowModel(),
+                FeedFollowModel(isFollowed = false),
                 emptyList(),
                 emptyList(),
                 "",
@@ -574,7 +887,7 @@ class FeedPostViewModelTest {
                 ""
             ),
             FeedCardVideoContentModel(
-                "activity id",
+                "video 2 id",
                 "FeedPlay",
                 "Dummy Type",
                 getAuthorModelDefault(),
@@ -596,7 +909,7 @@ class FeedPostViewModelTest {
                 FeedLikeModel(),
                 FeedCommentModel(),
                 FeedShareModel("", getAuthorModelDefault(), "", "", ""),
-                FeedFollowModel(),
+                FeedFollowModel(isFollowed = false),
                 emptyList(),
                 emptyList(),
                 "",
