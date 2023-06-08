@@ -15,11 +15,12 @@ import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.helper.ClassBuilder
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.*
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -46,7 +47,6 @@ class PlayViewerTagItemsRepositoryTest {
     private val testDispatcher = coroutineTestRule.dispatchers
 
     private val mockGetProductTagUseCase: GetProductTagItemSectionUseCase = mockk(relaxed = true)
-    private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
     private val mockCheckUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase = mockk(relaxed = true)
     private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
@@ -59,12 +59,10 @@ class PlayViewerTagItemsRepositoryTest {
     private val classBuilder = ClassBuilder()
     private val mockMapper = classBuilder.getPlayUiModelMapper()
 
-
     @Before
-    fun setUp(){
+    fun setUp() {
         tagItemRepo = PlayViewerTagItemRepositoryImpl(
             getProductTagItemsUseCase = mockGetProductTagUseCase,
-            getProductVariantUseCase = mockGetProductVariantUseCase,
             addToCartUseCase = mockAddToCartUseCase,
             checkUpcomingCampaignReminderUseCase = mockCheckUpcomingCampaignReminderUseCase,
             postUpcomingCampaignReminderUseCase = mockPostUpcomingCampaignReminderUseCase,
@@ -82,14 +80,17 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when get section success return success with complete config`(){
+    fun `when get section success return success with complete config`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockResponse = modelBuilder.generateResponseSectionGql(gradient = null)
 
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
             val response = tagItemRepo.getTagItem(
-                "12669", "", "PLAY"
+                "12669",
+                "",
+                "PLAY",
+                PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -98,14 +99,42 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when get section success return success with bg config null`(){
+    fun `when get section success return success with complete config -- live product numeration shown`() {
+        testDispatcher.coroutineDispatcher.runBlockingTest {
+            val mockResponse = modelBuilder.generateGqlProductNumeration()
+
+            coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
+
+            val response = tagItemRepo.getTagItem(
+                "12669",
+                "",
+                "PLAY",
+                PlayChannelType.Live
+            )
+
+            coVerify { mockGetProductTagUseCase.executeOnBackground() }
+            response.resultState.assertEqualTo(ResultState.Success)
+            response.product.productSectionList.filterIsInstance<ProductSectionUiModel.Section>().forEach {
+                it.productList.forEach {
+                        item ->
+                    item.isNumerationShown.assertTrue()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when get section success return success with bg config null`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockResponse = modelBuilder.generateResponseSectionGql(gradient = listOf("3fffff", "#45a5aa"))
 
             coEvery { mockGetProductTagUseCase.executeOnBackground() } returns mockResponse
 
             val response = tagItemRepo.getTagItem(
-                "12669", "0", "PLAY"
+                "12669",
+                "0",
+                "PLAY",
+                PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -114,7 +143,7 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when ATC success return success response`(){
+    fun `when ATC success return success response`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockCartId = "1"
             val mockResponse = AddToCartDataModel(
@@ -140,7 +169,7 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when ATC error return failed response = exception`(){
+    fun `when ATC error return failed response = exception`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockCartId = "1"
             val mockErrorResponse = AddToCartDataModel(
@@ -161,21 +190,21 @@ class PlayViewerTagItemsRepositoryTest {
                     12000.0
                 )
                 coVerify { mockAddToCartUseCase.executeOnBackground() }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 (e is MessageErrorException).assertTrue()
             }
         }
     }
 
     @Test
-    fun  `when upco campaign is exist check if user has reminded, if user has reminded return true`(){
+    fun `when upco campaign is exist check if user has reminded, if user has reminded return true`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockResponse = CheckUpcomingCampaign(
                 response = UpcomingCampaignResponse(isAvailable = true)
             )
             coEvery { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() } returns mockResponse
 
-           val result = tagItemRepo.checkUpcomingCampaign(campaignId)
+            val result = tagItemRepo.checkUpcomingCampaign(campaignId)
 
             coVerify { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() }
 
@@ -184,7 +213,7 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when upco campaign is exist check if user has reminded, if user has not reminded return false`(){
+    fun `when upco campaign is exist check if user has reminded, if user has not reminded return false`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockResponse = CheckUpcomingCampaign(
                 response = UpcomingCampaignResponse(isAvailable = false)
@@ -200,7 +229,7 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun `when upco campaign is exist when user click reminder return true if success`(){
+    fun `when upco campaign is exist when user click reminder return true if success`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val successResponse = UpcomingCampaignResponse(isAvailable = true)
             val mockResponse = PostUpcomingCampaign(
@@ -219,6 +248,7 @@ class PlayViewerTagItemsRepositoryTest {
             result.isReminded.assertEqualTo(mockResponse.response.isAvailable)
         }
     }
+
     @Test
     fun `given voucher from gql when there is public voucher show ticker`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
@@ -228,7 +258,10 @@ class PlayViewerTagItemsRepositoryTest {
             val partnerName = "PLAY"
 
             val response = tagItemRepo.getTagItem(
-                "12669", "0", partnerName
+                "12669",
+                "0",
+                partnerName,
+                PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -250,7 +283,10 @@ class PlayViewerTagItemsRepositoryTest {
             val partnerName = "PLAY"
 
             val response = tagItemRepo.getTagItem(
-                "12669", "0", partnerName
+                "12669",
+                "0",
+                partnerName,
+                PlayChannelType.VOD
             )
 
             coVerify { mockGetProductTagUseCase.executeOnBackground() }
@@ -263,11 +299,11 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when ATC to OCC success return success response`(){
+    fun `when ATC to OCC success return success response`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockResponse = AddToCartOccMultiDataModel(
                 errorMessage = arrayListOf(),
-                status = AddToCartOccMultiDataModel.STATUS_OK, //if OK -> success
+                status = AddToCartOccMultiDataModel.STATUS_OK // if OK -> success
             )
             coEvery { mockAtcOcc.executeOnBackground() } returns mockResponse
 
@@ -287,10 +323,10 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when ATC occ error return failed response = exception`(){
+    fun `when ATC occ error return failed response = exception`() {
         testDispatcher.coroutineDispatcher.runBlockingTest {
             val mockResponse = AddToCartOccMultiDataModel(
-                status = AddToCartOccMultiDataModel.STATUS_ERROR, //if OK -> success
+                status = AddToCartOccMultiDataModel.STATUS_ERROR // if OK -> success
             )
             coEvery { mockAtcOcc.executeOnBackground() } returns mockResponse
 
@@ -303,7 +339,7 @@ class PlayViewerTagItemsRepositoryTest {
                     12000.0
                 )
                 coVerify { mockAtcOcc.executeOnBackground() }
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 (e is MessageErrorException).assertTrue()
             }
         }

@@ -6,11 +6,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
-import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
-import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
-import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -24,6 +20,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -121,6 +118,12 @@ class ShipmentPresenterDisableFeatureTest {
     @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
+    @MockK
+    private lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
+
+    @MockK(relaxed = true)
+    private lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private val gson = Gson()
@@ -156,7 +159,9 @@ class ShipmentPresenterDisableFeatureTest {
             gson,
             TestSchedulers,
             eligibleForAddressUseCase,
-            getRatesWithScheduleUseCase
+            getRatesWithScheduleUseCase,
+            updateDynamicDataPassingUseCase,
+            dynamicPaymentFeeCheckoutUseCase
         )
         presenter.attachView(view)
     }

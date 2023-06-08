@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -94,6 +95,20 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         private const val REQUEST_CODE_IMAGE = 111
         private const val BULK_REVIEW_COACH_MARK_TAG = "BULK_REVIEW_COACH_MARK_TAG"
         private const val BULK_REVIEW_KEY_CACHE_MANAGER_ID = "bulkReviewCacheManagerId"
+
+        private const val RV_MIN_ALPHA = 0f
+        private const val RV_MAX_ALPHA = 1f
+        private const val LOADER_MIN_ALPHA = 0f
+        private const val LOADER_MAX_ALPHA = 1f
+        private const val STICKY_BUTTON_MIN_ALPHA = 0f
+        private const val STICKY_BUTTON_MAX_ALPHA = 1f
+        private const val SUBMIT_LOADER_MIN_ALPHA = 0f
+        private const val SUBMIT_LOADER_MAX_ALPHA = 0.5f
+        private const val GLOBAL_ERROR_MIN_ALPHA = 0f
+        private const val GLOBAL_ERROR_MAX_ALPHA = 1f
+
+        private const val APP_LINK_PARAM_INVOICE = "invoice"
+        private const val APP_LINK_PARAM_UTM_SOURCE = "utm_source"
     }
 
     @Inject
@@ -111,6 +126,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         ViewModelProvider(requireActivity(), viewModelFactory).get(BulkReviewViewModel::class.java)
     }
     private val activityResultHandler by lazy(LazyThreadSafetyMode.NONE) { ActivityResultHandler() }
+    private val appLinkHandler by lazy(LazyThreadSafetyMode.NONE) { AppLinkHandler() }
     private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
     private val coachMarkHandler by lazy(LazyThreadSafetyMode.NONE) { CoachMarkHandler() }
     private val dialogHandler by lazy(LazyThreadSafetyMode.NONE) { DialogHandler() }
@@ -134,6 +150,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         activity?.window?.let { WindowCompat.setDecorFitsSystemWindows(it, false) }
         initUiState(savedInstanceState)
         collectBulkReviewPageUiState()
+        collectScrollRequest()
         collectToasterQueue()
         collectBulkReviewRemoveReviewItemDialogUiState()
         collectBulkReviewCancelReviewSubmissionDialogUiState()
@@ -224,6 +241,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
         viewModel.onExpandTextArea(inboxID, text)
     }
 
+    override fun onTextChanged(inboxID: String, text: String) {
+        viewModel.onReviewItemTextAreaTextChanged(inboxID, text)
+    }
+
     override fun onSingleTapToDismissKeyboard() {
         clearViewFocus()
     }
@@ -263,8 +284,9 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             false
         }
         binding?.globalErrorBulkReview?.setActionClickListener {
-            viewModel.getData()
+            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         }
+        binding?.viewOverlay?.setOnClickListener { /* noop, just to block the view behind */ }
     }
 
     private fun setupToolbar() {
@@ -303,9 +325,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                     Int.ZERO,
                     bottom.coerceAtLeast(Int.ZERO)
                 )
-                viewModel.findFocusedReviewItemVisitable()?.let { (index, _) ->
-                    binding?.rvBulkReviewItems?.smoothSnapToPosition(index, SNAP_TO_START)
-                }
+                viewModel.scrollToFocusedReviewItemVisitable()
                 clearFocusOnHideKeyboard(imeInsets.bottom)
                 insets
             }
@@ -328,11 +348,19 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
 
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            viewModel.getData()
+            viewModel.getData(appLinkHandler.getInvoiceNumber(), appLinkHandler.getUtmSource())
         } else {
             val cacheManagerId = savedInstanceState.getString(BULK_REVIEW_KEY_CACHE_MANAGER_ID).orEmpty()
             val cacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
-            viewModel.onRestoreInstanceState(cacheManager)
+            viewModel.onRestoreInstanceState(
+                saveInstanceCacheManager = cacheManager,
+                onFailedRestoreState = {
+                    viewModel.getData(
+                        appLinkHandler.getInvoiceNumber(),
+                        appLinkHandler.getUtmSource()
+                    )
+                }
+            )
         }
     }
 
@@ -345,10 +373,21 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                     it.items,
                     it.stickyButtonUiState
                 )
-                is BulkReviewPageUiState.Submitting -> onBulkReviewPageSubmitting()
+                is BulkReviewPageUiState.Submitting -> onBulkReviewPageSubmitting(
+                    it.items,
+                    it.stickyButtonUiState
+                )
                 is BulkReviewPageUiState.Cancelled -> onBulkReviewPageCancelled()
                 is BulkReviewPageUiState.Submitted -> onBulkReviewPageSubmitted(it.userName)
             }
+        }
+    }
+
+    private fun collectScrollRequest() {
+        collectLatestWhenResumed(viewModel.reviewItemScrollRequest) { reviewItem ->
+            val rvItemPosition = viewModel.getReviewItemVisitablePosition(reviewItem.inboxID)
+            if (rvItemPosition == RecyclerView.NO_POSITION) return@collectLatestWhenResumed
+            binding?.rvBulkReviewItems?.smoothSnapToPosition(rvItemPosition, SNAP_TO_START)
         }
     }
 
@@ -445,16 +484,16 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 setupGlobalErrorUI(throwable)
                 globalErrorBulkReview.show()
                 animatePageUiStateChange(
-                    rvBulkReviewItemsAlphaTarget = 0F,
-                    loaderBulkReviewAlphaTarget = 0F,
-                    widgetBulkReviewStickyButtonAlphaTarget = 0F,
-                    widgetBulkReviewSubmitLoaderAlphaTarget = 0F,
-                    globalErrorBulkReviewAlphaTarget = 1F
+                    rvBulkReviewItemsAlphaTarget = RV_MIN_ALPHA,
+                    loaderBulkReviewAlphaTarget = LOADER_MIN_ALPHA,
+                    widgetBulkReviewStickyButtonAlphaTarget = STICKY_BUTTON_MIN_ALPHA,
+                    widgetBulkReviewSubmitLoaderAlphaTarget = SUBMIT_LOADER_MIN_ALPHA,
+                    globalErrorBulkReviewAlphaTarget = GLOBAL_ERROR_MAX_ALPHA
                 ) {
                     rvBulkReviewItems.gone()
                     loaderBulkReview.gone()
                     widgetBulkReviewStickyButton.gone()
-                    widgetBulkReviewSubmitLoader.gone()
+                    viewOverlay.gone()
                     continuation.resume(Unit)
                 }
             }
@@ -471,16 +510,16 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             binding?.run {
                 loaderBulkReview.show()
                 animatePageUiStateChange(
-                    rvBulkReviewItemsAlphaTarget = 0F,
-                    loaderBulkReviewAlphaTarget = 1F,
-                    widgetBulkReviewStickyButtonAlphaTarget = 0F,
-                    widgetBulkReviewSubmitLoaderAlphaTarget = 0F,
-                    globalErrorBulkReviewAlphaTarget = 0F
+                    rvBulkReviewItemsAlphaTarget = RV_MIN_ALPHA,
+                    loaderBulkReviewAlphaTarget = LOADER_MAX_ALPHA,
+                    widgetBulkReviewStickyButtonAlphaTarget = STICKY_BUTTON_MIN_ALPHA,
+                    widgetBulkReviewSubmitLoaderAlphaTarget = SUBMIT_LOADER_MIN_ALPHA,
+                    globalErrorBulkReviewAlphaTarget = GLOBAL_ERROR_MIN_ALPHA
                 ) {
                     rvBulkReviewItems.gone()
                     widgetBulkReviewStickyButton.gone()
                     globalErrorBulkReview.gone()
-                    widgetBulkReviewSubmitLoader.gone()
+                    viewOverlay.gone()
                     continuation.resume(Unit)
                 }
             }
@@ -511,15 +550,15 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         widgetBulkReviewStickyButton.updateUiState(stickyButtonUiState)
                         widgetBulkReviewStickyButton.setListener(stickyButtonListener)
                         animatePageUiStateChange(
-                            rvBulkReviewItemsAlphaTarget = 1F,
-                            loaderBulkReviewAlphaTarget = 0F,
-                            widgetBulkReviewStickyButtonAlphaTarget = 1F,
-                            widgetBulkReviewSubmitLoaderAlphaTarget = 0F,
-                            globalErrorBulkReviewAlphaTarget = 0F
+                            rvBulkReviewItemsAlphaTarget = RV_MAX_ALPHA,
+                            loaderBulkReviewAlphaTarget = LOADER_MIN_ALPHA,
+                            widgetBulkReviewStickyButtonAlphaTarget = STICKY_BUTTON_MAX_ALPHA,
+                            widgetBulkReviewSubmitLoaderAlphaTarget = SUBMIT_LOADER_MIN_ALPHA,
+                            globalErrorBulkReviewAlphaTarget = GLOBAL_ERROR_MIN_ALPHA
                         ) {
                             loaderBulkReview.gone()
                             globalErrorBulkReview.gone()
-                            widgetBulkReviewSubmitLoader.gone()
+                            viewOverlay.gone()
                             coachMarkHandler.tryShowCoachMark()
                             continuation.resume(Unit)
                         }
@@ -534,23 +573,33 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
      * function. This is necessary because we want to make sure that the next emitted value will
      * be collected only after the animation/transition to the submitting state UI is finished.
      */
-    private suspend fun onBulkReviewPageSubmitting() {
-        suspendCoroutine<Unit> { continuation ->
+    protected open suspend fun onBulkReviewPageSubmitting(
+        bulkReviewVisitableList: List<BulkReviewVisitable<BulkReviewAdapterTypeFactory>>,
+        stickyButtonUiState: BulkReviewStickyButtonUiState
+    ) {
+        suspendCancellableCoroutine<Unit> { continuation ->
             binding?.run {
-                widgetBulkReviewSubmitLoader.show()
-                coachMarkHandler.tryDismissCoachMark()
-                animatePageUiStateChange(
-                    rvBulkReviewItemsAlphaTarget = 0F,
-                    loaderBulkReviewAlphaTarget = 0F,
-                    widgetBulkReviewStickyButtonAlphaTarget = 0F,
-                    widgetBulkReviewSubmitLoaderAlphaTarget = 1F,
-                    globalErrorBulkReviewAlphaTarget = 0F
-                ) {
-                    rvBulkReviewItems.gone()
-                    widgetBulkReviewStickyButton.gone()
-                    globalErrorBulkReview.gone()
-                    loaderBulkReview.gone()
-                    continuation.resume(Unit)
+                rvBulkReviewItems.post {
+                    if (continuation.isActive) {
+                        adapter.updateItems(bulkReviewVisitableList)
+                        rvBulkReviewItems.show()
+                        widgetBulkReviewStickyButton.show()
+                        viewOverlay.show()
+                        coachMarkHandler.tryDismissCoachMark()
+                        widgetBulkReviewStickyButton.updateUiState(stickyButtonUiState)
+                        widgetBulkReviewStickyButton.setListener(stickyButtonListener)
+                        animatePageUiStateChange(
+                            rvBulkReviewItemsAlphaTarget = RV_MAX_ALPHA,
+                            loaderBulkReviewAlphaTarget = LOADER_MIN_ALPHA,
+                            widgetBulkReviewStickyButtonAlphaTarget = STICKY_BUTTON_MAX_ALPHA,
+                            widgetBulkReviewSubmitLoaderAlphaTarget = SUBMIT_LOADER_MAX_ALPHA,
+                            globalErrorBulkReviewAlphaTarget = GLOBAL_ERROR_MIN_ALPHA
+                        ) {
+                            globalErrorBulkReview.gone()
+                            loaderBulkReview.gone()
+                            continuation.resume(Unit)
+                        }
+                    }
                 }
             }
         }
@@ -576,7 +625,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             } else {
                 val intent = Intent()
                 intent.putExtra(
-                    ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE,
+                    ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE,
                     getString(R.string.bulk_review_submission_success_message, userName)
                 )
                 setResult(Activity.RESULT_OK, intent)
@@ -648,7 +697,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
             val currentRvBulkReviewItemsAlpha = rvBulkReviewItems.alpha
             val currentLoaderBulkReviewAlpha = loaderBulkReview.alpha
             val currentWidgetBulkReviewStickyButtonAlpha = widgetBulkReviewStickyButton.alpha
-            val currentWidgetBulkReviewSubmitLoaderAlpha = widgetBulkReviewSubmitLoader.alpha
+            val currentWidgetBulkReviewSubmitLoaderAlpha = viewOverlay.alpha
             val currentGlobalErrorBulkReviewAlpha = globalErrorBulkReview.alpha
             val needToAnimate = currentRvBulkReviewItemsAlpha != rvBulkReviewItemsAlphaTarget ||
                 currentLoaderBulkReviewAlpha != loaderBulkReviewAlphaTarget ||
@@ -677,7 +726,7 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         widgetBulkReviewStickyButtonAlphaTarget
                     ),
                     ObjectAnimator.ofFloat(
-                        widgetBulkReviewSubmitLoader,
+                        viewOverlay,
                         View.ALPHA,
                         currentWidgetBulkReviewSubmitLoaderAlpha,
                         widgetBulkReviewSubmitLoaderAlphaTarget
@@ -727,7 +776,10 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                         source = ReviewInboxConstants.SOURCE_REVIEW_INBOX
                     ).apply {
                         if (message.isNotBlank()) {
-                            putExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE, message)
+                            putExtra(
+                                ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE,
+                                message
+                            )
                         }
                     }
                 )
@@ -750,6 +802,16 @@ open class BulkReviewFragment : BaseDaggerFragment(), BulkReviewItemViewHolder.L
                 }
                 else -> super@BulkReviewFragment.onActivityResult(requestCode, resultCode, data)
             }
+        }
+    }
+
+    private inner class AppLinkHandler {
+        fun getInvoiceNumber(): String {
+            return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_INVOICE).orEmpty()
+        }
+
+        fun getUtmSource(): String {
+            return activity?.intent?.data?.getQueryParameter(APP_LINK_PARAM_UTM_SOURCE).orEmpty()
         }
     }
 

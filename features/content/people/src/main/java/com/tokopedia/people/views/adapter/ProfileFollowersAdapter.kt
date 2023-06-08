@@ -15,15 +15,14 @@ import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel.PeopleUiModel
+import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 open class ProfileFollowersAdapter(
     private val viewModel: FollowerFollowingViewModel,
     callback: AdapterCallback,
-    private val listener: UserFollowListener,
+    private val followListener: UserFollowListener,
 ) : BaseAdapter<PeopleUiModel>(callback) {
 
     protected var cList: MutableList<BaseItem>? = null
@@ -93,7 +92,7 @@ open class ProfileFollowersAdapter(
         loadCompletedWithError()
     }
 
-    private fun bindUser(holder: ViewHolder, item: ProfileUiModel.UserUiModel, position: Int) {
+    private fun bindUser(holder: ViewHolder, item: PeopleUiModel.UserUiModel, position: Int) {
         holder.imgProfile.setImageUrl(item.photoUrl)
         holder.textName.text = item.name
         holder.imgBadge.hide()
@@ -106,7 +105,7 @@ open class ProfileFollowersAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            listener.onItemUserClicked(item, position)
+            followListener.onItemUserClicked(item, position)
         }
 
         if (item.isMySelf) {
@@ -115,12 +114,12 @@ open class ProfileFollowersAdapter(
             updateFollowButton(holder.btnAction, item.isFollowed)
             holder.btnAction.show()
             holder.btnAction.setOnClickListener { view ->
-                listener.onFollowUserClicked(item, position)
+                followListener.onFollowUserClicked(item, position)
             }
         }
     }
 
-    private fun bindShop(holder: ViewHolder, item: ProfileUiModel.ShopUiModel, position: Int) {
+    private fun bindShop(holder: ViewHolder, item: PeopleUiModel.ShopUiModel, position: Int) {
         holder.imgProfile.setImageUrl(item.logoUrl)
         holder.textName.text = item.name
 
@@ -134,29 +133,29 @@ open class ProfileFollowersAdapter(
         holder.textUsername.hide()
 
         holder.itemView.setOnClickListener {
-            listener.onItemShopClicked(item, position)
+            followListener.onItemShopClicked(item, position)
         }
         updateFollowButton(holder.btnAction, item.isFollowed)
         holder.btnAction.show()
         holder.btnAction.setOnClickListener { view ->
-            listener.onFollowShopClicked(item, position)
+            followListener.onFollowShopClicked(item, position)
         }
     }
 
     private fun setData(holder: ViewHolder, item: PeopleUiModel, position: Int) {
         when (item) {
-            is ProfileUiModel.UserUiModel -> bindUser(holder, item, position)
-            is ProfileUiModel.ShopUiModel -> bindShop(holder, item, position)
+            is PeopleUiModel.UserUiModel -> bindUser(holder, item, position)
+            is PeopleUiModel.ShopUiModel -> bindShop(holder, item, position)
         }
     }
 
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
         if (position >= 0 && position < items.size) {
             when(val item = items[position]) {
-                is ProfileUiModel.UserUiModel -> {
+                is PeopleUiModel.UserUiModel -> {
                     items[position] = item.copy(isFollowed = isFollowed)
                 }
-                is ProfileUiModel.ShopUiModel -> {
+                is PeopleUiModel.ShopUiModel -> {
                     items[position] = item.copy(isFollowed = isFollowed)
                 }
             }

@@ -47,7 +47,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.minicart.common.widget.general.MiniCartGeneralWidget
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
@@ -79,7 +78,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
-import com.tokopedia.shop.pageheader.util.ShopPageTabName
+import com.tokopedia.shop.pageheader.util.ShopPageHeaderTabName
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -458,7 +457,6 @@ class ShopPageProductListResultFragment :
     }
 
     private fun loadProductDataEmptyState(shopInfo: ShopInfo, page: Int) {
-        selectedEtalaseId = ""
         sortId = SORT_NEWEST
         context?.let {
             viewModel.getShopProductEmptyState(
@@ -466,7 +464,7 @@ class ShopPageProductListResultFragment :
                 page,
                 ShopPageConstant.SHOP_PRODUCT_EMPTY_STATE_LIMIT,
                 sortId.toIntOrZero(),
-                selectedEtalaseId,
+                "",
                 keywordEmptyState,
                 localCacheModel ?: LocalCacheModel(),
                 isEnableDirectPurchase
@@ -477,10 +475,7 @@ class ShopPageProductListResultFragment :
     private fun initRecyclerView(view: View) {
         recyclerView = super.getRecyclerView(view)
         recyclerView?.let {
-            val animator = it.itemAnimator
-            if (animator is SimpleItemAnimator) {
-                animator.supportsChangeAnimations = false
-            }
+            it.itemAnimator = null
             rvDefaultPaddingBottom = it.paddingBottom
         }
     }
@@ -600,6 +595,9 @@ class ShopPageProductListResultFragment :
                     is Success -> {
                         onSuccessGetBottomSheetFilterData(it.data)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )
@@ -610,6 +608,9 @@ class ShopPageProductListResultFragment :
                 when (it) {
                     is Success -> {
                         onSuccessGetShopProductFilterCount(count = it.data)
+                    }
+                    else -> {
+                        //no-op
                     }
                 }
             }
@@ -753,7 +754,7 @@ class ShopPageProductListResultFragment :
         shopDynamicTabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab
     ): Boolean {
         return shopDynamicTabData.tabData.firstOrNull {
-            it.name == ShopPageTabName.HOME
+            it.name == ShopPageHeaderTabName.HOME
         }?.shopLayoutFeature?.firstOrNull {
             it.name == ShopPageConstant.ShopLayoutFeatures.DIRECT_PURCHASE && it.isActive
         } != null

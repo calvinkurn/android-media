@@ -25,31 +25,15 @@ interface UserSessionDataStore {
 
     suspend fun setIsGoldMerchant(isGoldMerchant: Boolean)
 
-    suspend fun setTempLoginName(fullName: String)
-
     suspend fun setTempUserId(userId: String)
 
     suspend fun setIsAffiliateStatus(isAffiliate: Boolean)
-
-    suspend fun setTempPhoneNumber(userPhone: String)
-
-    suspend fun setTempLoginEmail(email: String)
 
     suspend fun setToken(accessToken: String, tokenType: String)
 
     suspend fun setTokenType(tokenType: String)
 
     suspend fun setAccessToken(accessToken: String)
-
-    suspend fun clearToken()
-
-    suspend fun logoutSession()
-
-    suspend fun clearDataStore()
-
-    suspend fun setFirstTimeUserOnboarding(isFirstTime: Boolean)
-
-    suspend fun setFirstTimeUser(isFirstTime: Boolean)
 
     suspend fun setToken(accessToken: String, tokenType: String, refreshToken: String)
 
@@ -73,23 +57,11 @@ interface UserSessionDataStore {
 
     suspend fun setProfilePicture(profilePicture: String)
 
-    suspend fun setSaldoWithdrawalWaring(value: Boolean)
-
-    suspend fun setSaldoIntroPageStatus(value: Boolean)
-
     suspend fun setGCToken(gcToken: String)
 
     suspend fun setShopAvatar(shopAvatar: String)
 
     suspend fun setIsPowerMerchantIdle(powerMerchantIdle: Boolean)
-
-    suspend fun setTwitterAccessTokenAndSecret(accessToken: String, accessTokenSecret: String)
-
-    suspend fun setTwitterAccessToken(accessToken: String)
-
-    suspend fun setTwitterSecret(secret: String)
-
-    suspend fun setTwitterShouldPost(shouldPost: Boolean)
 
     suspend fun setAutofillUserData(autofillUserData: String)
 
@@ -97,10 +69,29 @@ interface UserSessionDataStore {
 
     suspend fun setIsShopOfficialStore(isShopOfficialStore: Boolean)
 
-    suspend fun setDeviceId(deviceId: String)
+    suspend fun setIsShopOwner(isShopOwner: Boolean)
 
-    suspend fun setFcmTimestamp(timestamp: String)
+    suspend fun setIsShopAdmin(isShopAdmin: Boolean)
 
+    suspend fun setIsLocationAdmin(isLocationAdmin: Boolean)
+
+    suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
+
+    suspend fun setAndroidId(androidId: String)
+
+    suspend fun setTwitterAccessToken(token: String)
+
+    suspend fun setTwitterAccessTokenSecret(token: String)
+
+    suspend fun setTwitterShouldPost(shouldPost: Boolean)
+
+    suspend fun clearToken()
+
+    suspend fun logoutSession()
+
+    suspend fun clearAllData()
+
+    suspend fun clearDataStore()
 
     // Getter
     fun getUserSession(): Flow<UserData>
@@ -123,19 +114,11 @@ interface UserSessionDataStore {
 
     fun getTemporaryUserId(): Flow<String>
 
-    fun getDeviceId(): Flow<String>
-
-    fun getTempEmail(): Flow<String>
-
-    fun getTempPhoneNumber(): Flow<String>
-
     fun isMsisdnVerified(): Flow<Boolean>
 
     fun getPhoneNumber(): Flow<String>
 
     fun getEmail(): Flow<String>
-
-    fun isFirstTimeUser(): Flow<Boolean>
 
     fun isGoldMerchant(): Flow<Boolean>
 
@@ -153,6 +136,8 @@ interface UserSessionDataStore {
 
     fun getAutofillUserData(): Flow<String>
 
+    // considering to take out these twitter data
+
     fun getTwitterAccessToken(): Flow<String>
 
     fun getTwitterAccessTokenSecret(): Flow<String>
@@ -163,33 +148,17 @@ interface UserSessionDataStore {
 
     fun isShopOfficialStore(): Flow<Boolean>
 
-    fun hasShownSaldoWithdrawalWarning(): Flow<Boolean>
-
-    fun getFcmTimestamp(): Flow<Long>
-
     fun getGTMLoginID(): Flow<String>
 
     fun isAffiliate(): Flow<Boolean>
 
-    fun hasShownSaldoIntroScreen(): Flow<Boolean>
-
     fun isShopOwner(): Flow<Boolean>
-
-    suspend fun setIsShopOwner(isShopOwner: Boolean)
 
     fun isShopAdmin(): Flow<Boolean>
 
-    suspend fun setIsShopAdmin(isShopAdmin: Boolean)
-
     fun isLocationAdmin(): Flow<Boolean>
-
-    suspend fun setIsLocationAdmin(isLocationAdmin: Boolean)
 
     fun isMultiLocationShop(): Flow<Boolean>
 
-    suspend fun setIsMultiLocationShop(isMultiLocationShop: Boolean)
-
-    suspend fun getAndroidId(context: Context): Flow<String>
-
-    suspend fun setAndroidId(androidId: String)
+    fun getAndroidId(context: Context): Flow<String>
 }

@@ -1,14 +1,9 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
 }
@@ -30,13 +25,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
 }
 
 dependencies {
@@ -53,9 +41,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.supportLibDependencies.supportV4
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-    implementation 'com.google.android.material:material:1.4.0'
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation projectOrAar(rootProject.ext.libraries.imagePreview)

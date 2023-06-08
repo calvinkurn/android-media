@@ -25,11 +25,8 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -73,6 +70,8 @@ import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.recommendation.RecommendationPresenterDelegate
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.responsecode.ResponseCodeImpl
+import com.tokopedia.search.result.product.responsecode.ResponseCodeProvider
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
@@ -148,6 +147,9 @@ class ProductListPresenter @Inject constructor(
     private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
     private val recommendationPresenterDelegate: RecommendationPresenterDelegate,
     private val adsLowOrganic: AdsLowOrganic,
+    @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
+    private val remoteConfig: RemoteConfig,
+    private val responseCodeImpl: ResponseCodeImpl,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -160,7 +162,8 @@ class ProductListPresenter @Inject constructor(
     SafeSearchPresenter by safeSearchPresenter,
     WishlistPresenter by wishlistPresenterDelegate,
     BottomSheetFilterPresenter by bottomSheetFilterPresenter,
-    InspirationCarouselPresenter by inspirationCarouselPresenter {
+    InspirationCarouselPresenter by inspirationCarouselPresenter,
+    ResponseCodeProvider by responseCodeImpl {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -181,7 +184,6 @@ class ProductListPresenter @Inject constructor(
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
     private var hasLoadData = false
-    private var responseCode = ""
     private var navSource = ""
     private var pageId = ""
     private var pageTitle = ""
@@ -202,6 +204,14 @@ class ProductListPresenter @Inject constructor(
         private set
     private val adsInjector = AdsInjector()
     private val postProcessingFilter = PostProcessingFilter()
+    private val newCardType by lazy {
+        try {
+            remoteConfig.getString(RollenceKey.PRODUCT_CARD_EXPERIMENT, "")
+        } catch (ignored: Exception) {
+            ""
+        }
+    }
+
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -358,6 +368,7 @@ class ProductListPresenter @Inject constructor(
             keyword,
             isShowLocalSearchRecommendation(),
             externalReference,
+            newCardType,
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -406,10 +417,11 @@ class ProductListPresenter @Inject constructor(
             searchProductModel: SearchProductModel,
             searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
+        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         val loadMoreProductList = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType(),
+            productListType,
             searchProductModel.isShowButtonAtc,
         )
         productList.addAll(loadMoreProductList)
@@ -600,7 +612,7 @@ class ProductListPresenter @Inject constructor(
 
         val productDataView = createFirstProductDataView(searchProductModel)
 
-        responseCode = productDataView.responseCode ?: ""
+        responseCodeImpl.setResponseCode(productDataView.responseCode ?: "")
         suggestionPresenter.setSuggestionDataView(productDataView.suggestionModel)
         broadMatchDelegate.setRelatedDataView(productDataView.relatedDataView)
         bannerDelegate.setBannerData(productDataView.bannerDataView)
@@ -681,7 +693,7 @@ class ProductListPresenter @Inject constructor(
             keyword = view.queryKey,
             topAdsModel = productDataView.adsModel,
             productData = createAdsLowOrganicProductData(),
-            action = visitableList::addAll
+            action = visitableList::addAll,
         )
         broadMatchDelegate.processBroadMatchReplaceEmptySearch(visitableList::addAll)
 
@@ -776,7 +788,7 @@ class ProductListPresenter @Inject constructor(
             isFilterActive = isAnyFilterActive,
             keyword = view.queryKey,
             localSearch = emptyStateLocalSearch(isAnyFilterActive),
-            isShowAdsLowOrganic = adsLowOrganic.isEnabledRollence,
+            isShowAdsLowOrganic = adsLowOrganic.isEnabled,
         )
     }
 
@@ -862,7 +874,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isShowGlobalSearchRecommendation() =
-        !view.isAnyFilterActive && !adsLowOrganic.isEnabledRollence
+        !view.isAnyFilterActive && !adsLowOrganic.isEnabled
 
     private fun getGlobalSearchRecommendation() {
         view.addLoading()
@@ -876,10 +888,12 @@ class ProductListPresenter @Inject constructor(
             productDataView: ProductDataView,
     ) {
         adsInjector.resetTopAdsPosition()
+
+        val productListType = newCardType.ifBlank { searchProductModel.getProductListType() }
         productList = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType(),
+            productListType,
             searchProductModel.isShowButtonAtc,
         ).toMutableList()
 
@@ -1035,7 +1049,6 @@ class ProductListPresenter @Inject constructor(
 
     private fun onDropDownQuickFilterClick(filter: Filter) {
         view.openBottomsheetMultipleOptionsQuickFilter(filter)
-        view.trackEventClickDropdownQuickFilter(filter.title)
     }
 
     override fun onApplyDropdownQuickFilter(optionList: List<Option>?) {

@@ -9,12 +9,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.discoveryext.UIWidgetUninitializedException
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentcardemptystate.ContentCardEmptyStateViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerProductCardViewHolder
@@ -24,6 +27,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.DiscoveryHomeFactory
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 
 class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parentComponent: AbstractViewHolder? = null)
     : ListAdapter<ComponentsItem, AbstractViewHolder>(ComponentsDiffCallBacks()) {
@@ -38,22 +43,50 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder {
         val itemView: View =
-                LayoutInflater.from(parent.context).inflate(ComponentsList.values()[viewType].id, parent, false)
-        return DiscoveryHomeFactory.createViewHolder(itemView, viewType, fragment) as AbstractViewHolder
+            LayoutInflater.from(parent.context)
+                .inflate(ComponentsList.values()[viewType].id, parent, false)
+        return DiscoveryHomeFactory.createViewHolder(
+            itemView,
+            viewType,
+            fragment
+        ) as AbstractViewHolder
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder, position: Int) {
-        if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
-            return
-        setViewSpanType(holder, componentList[position].properties?.template)
-        if(mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(position)
-                && (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null ){
-            holder.bindView((mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel!!, parentComponent)
-        }else{
-            with(viewHolderListModel.getViewHolderModel(
-                    DiscoveryHomeFactory.createViewModel(getItemViewType(position)), componentList[position], position)) {
-                holder.bindView(this, parentComponent)
+        try {
+            if (componentList.size <= position)  //tmp code need this handling to handle multithread enviorment
+                return
+            setViewSpanType(holder, componentList[position].properties?.template)
+            if (mCurrentHeader?.first == position && mCurrentHeader?.second?.itemViewType == getItemViewType(
+                    position
+                )
+                && (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel != null
+            ) {
+                holder.bindView(
+                    (mCurrentHeader?.second as AbstractViewHolder).discoveryBaseViewModel!!,
+                    parentComponent
+                )
+            } else {
+                with(
+                    viewHolderListModel.getViewHolderModel(
+                        DiscoveryHomeFactory.createViewModel(getItemViewType(position)),
+                        componentList[position],
+                        position
+                    )
+                ) {
+                    holder.bindView(this, parentComponent)
+                }
             }
+        } catch (e: UIWidgetUninitializedException) {
+            e.componentName =
+                "${componentList[position].name ?: ""} - ${componentList[position].pageEndPoint ?: ""}"
+            val map = mutableMapOf<String, String>()
+            map["type"] = "log"
+            map["err"] = "uiWidgetComponent not initialized"
+            map["page"] = componentList[position].pageEndPoint ?: ""
+            map["compName"] = componentList[position].name ?: ""
+            ServerLogger.log(Priority.P2, "DISCO_DAGGER_VALIDATION", map)
+            Utils.logException(e)
         }
 
     }
@@ -92,12 +125,20 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder) {
         super.onViewAttachedToWindow(holder)
-        holder.onViewAttachedToWindow()
+        try {
+            holder.onViewAttachedToWindow()
+        } catch (e: UninitializedPropertyAccessException) {
+            Utils.logException(e)
+        }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder) {
         holder.onViewDetachedToWindow()
-        super.onViewDetachedFromWindow(holder)
+        try {
+            super.onViewDetachedFromWindow(holder)
+        } catch (e: UninitializedPropertyAccessException) {
+            Utils.logException(e)
+        }
     }
 
     private fun setViewSpanType(holder: AbstractViewHolder, template: String?) {
@@ -109,6 +150,7 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
                 is ShopBannerInfiniteItemViewHolder -> false
                 is ShopCardItemViewHolder -> false
                 is ContentCardItemViewHolder -> false
+                is ContentCardEmptyStateViewHolder -> false
                 is MasterProductCardItemViewHolder -> template == LIST
                 is ShimmerProductCardViewHolder -> template == LIST
                 else -> true

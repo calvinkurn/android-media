@@ -15,7 +15,7 @@ import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 
-@Module(includes = [AddEditProductDescriptionViewModelModule::class])
+@Module
 class AddEditProductDescriptionModule {
 
     @Provides
@@ -27,17 +27,21 @@ class AddEditProductDescriptionModule {
 
     @AddEditProductDescriptionScope
     @Provides
-    fun provideInterceptors(loggingInterceptor: HttpLoggingInterceptor,
-                            commonErrorResponseInterceptor: CommonErrorResponseInterceptor) =
-            mutableListOf(loggingInterceptor, commonErrorResponseInterceptor)
+    fun provideInterceptors(
+        loggingInterceptor: HttpLoggingInterceptor,
+        commonErrorResponseInterceptor: CommonErrorResponseInterceptor
+    ) =
+        mutableListOf(loggingInterceptor, commonErrorResponseInterceptor)
 
     @AddEditProductDescriptionScope
     @Provides
-    fun provideRestRepository(interceptors: MutableList<Interceptor>,
-                              @ApplicationContext context: Context): RestRepository =
-            RestRequestInteractor.getInstance().restRepository.apply {
-        updateInterceptors(interceptors, context)
-    }
+    fun provideRestRepository(
+        interceptors: MutableList<Interceptor>,
+        @ApplicationContext context: Context
+    ): RestRepository =
+        RestRequestInteractor.getInstance().restRepository.apply {
+            updateInterceptors(interceptors, context)
+        }
 
     @AddEditProductDescriptionScope
     @Provides
@@ -50,5 +54,4 @@ class AddEditProductDescriptionModule {
     fun provideGetYoutubeVideoUseCase(restRepository: RestRepository): GetYoutubeVideoDetailUseCase {
         return GetYoutubeVideoDetailUseCase(restRepository)
     }
-
 }

@@ -35,7 +35,10 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -1210,8 +1213,8 @@ class AddEditProductPreviewFragment :
 
     private fun updateImageListFromIntentData(data: Intent) {
         val result = ImagePickerResultExtractor.extract(data)
-        val imagePickerResult = result.imageUrlOrPathList as ArrayList
-        val originalImageUrl = result.originalImageUrl as ArrayList
+        val imagePickerResult = ArrayList<String>(result.imageUrlOrPathList as ArrayList)
+        val originalImageUrl = ArrayList<String>(result.originalImageUrl as ArrayList)
         val isEditted = result.isEditted as ArrayList
         if (imagePickerResult.size > 0) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
@@ -1234,8 +1237,8 @@ class AddEditProductPreviewFragment :
 
     private fun updateImageListFromPicker(data: Intent) {
         val result = MediaPicker.result(data)
-        val imagePickerResult = result.editedImages as ArrayList
-        val originalImageUrl = result.originalPaths as ArrayList
+        val imagePickerResult = ArrayList<String>(result.editedImages)
+        val originalImageUrl = ArrayList<String>(result.originalPaths)
         if (imagePickerResult.size > 0) {
             val shouldUpdatePhotosInsteadMoveToDetail = isEditing() ||
                 viewModel.isDuplicate ||
@@ -1257,6 +1260,7 @@ class AddEditProductPreviewFragment :
         showLoading()
         data.let { intent ->
             val saveAddressDataModel = intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                ?: intent.getParcelableExtra<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)
 
             saveAddressDataModel?.let { model ->
                 latitude = model.latitude
@@ -1382,7 +1386,7 @@ class AddEditProductPreviewFragment :
                 }
             }.orEmpty()
 
-            if (Rollence.getImagePickerRollence()) {
+            if (RemoteConfig.getImagePickerRemoteConfig(context)) {
                 val pageSource = if (!isEditing()) PageSource.AddProduct else PageSource.EditProduct
                 doTracking(isEditing())
                 val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
@@ -1478,7 +1482,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateProductImage() {
-        if (Rollence.getImagePickerRollence()) {
+        if (RemoteConfig.getImagePickerRemoteConfig(context)) {
             updateProductImageList()
         } else {
             updateImageList()
@@ -1712,10 +1716,22 @@ class AddEditProductPreviewFragment :
     }
 
     private fun moveToLocationPicker() {
-        RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
-            putExtra(EXTRA_IS_FULL_FLOW, false)
-            putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
-            startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+        activity?.let {
+            if (PinpointRolloutHelper.eligibleForRevamp(it, false)) {
+                val bundle = Bundle().apply {
+                    putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                }
+                RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT).apply {
+                    putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+                }
+            } else {
+                RouteManager.getIntent(it, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                    putExtra(EXTRA_IS_FULL_FLOW, false)
+                    putExtra(EXTRA_IS_LOGISTIC_LABEL, false)
+                    startActivityForResult(this, REQUEST_CODE_SHOP_LOCATION)
+                }
+            }
         }
     }
 

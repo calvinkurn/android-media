@@ -14,7 +14,7 @@ import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.R
 import com.tokopedia.people.viewmodels.FollowerFollowingViewModel
 import com.tokopedia.people.views.adapter.listener.UserFollowListener
-import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
+import com.tokopedia.people.views.uimodel.PeopleUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -22,7 +22,7 @@ open class ProfileFollowingAdapter(
     val viewModel: FollowerFollowingViewModel,
     callback: AdapterCallback,
     private val listener: UserFollowListener,
-) : BaseAdapter<ProfileUiModel.PeopleUiModel>(callback) {
+) : BaseAdapter<PeopleUiModel>(callback) {
 
     var lastCursor: String = ""
 
@@ -33,7 +33,7 @@ open class ProfileFollowingAdapter(
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
 
-        override fun bindView(item: ProfileUiModel.PeopleUiModel, position: Int) {
+        override fun bindView(item: PeopleUiModel, position: Int) {
             setData(this, item, position)
         }
     }
@@ -77,10 +77,10 @@ open class ProfileFollowingAdapter(
     fun updateFollowUnfollow(position: Int, isFollowed: Boolean) {
         if (position >= 0 && position < items.size) {
             when(val item = items[position]) {
-                is ProfileUiModel.UserUiModel -> {
+                is PeopleUiModel.UserUiModel -> {
                     items[position] = item.copy(isFollowed = isFollowed)
                 }
-                is ProfileUiModel.ShopUiModel -> {
+                is PeopleUiModel.ShopUiModel -> {
                     items[position] = item.copy(isFollowed = isFollowed)
                 }
             }
@@ -88,7 +88,7 @@ open class ProfileFollowingAdapter(
         }
     }
 
-    fun onSuccess(data: List<ProfileUiModel.PeopleUiModel>, cursor: String) {
+    fun onSuccess(data: List<PeopleUiModel>, cursor: String) {
         if (data.isEmpty()) {
             loadCompleted(mutableListOf(), data)
             isLastPage = true
@@ -104,14 +104,14 @@ open class ProfileFollowingAdapter(
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, item: ProfileUiModel.PeopleUiModel, position: Int) {
+    private fun setData(holder: ViewHolder, item: PeopleUiModel, position: Int) {
         when (item) {
-            is ProfileUiModel.UserUiModel -> bindUser(holder, item, position)
-            is ProfileUiModel.ShopUiModel -> bindShop(holder, item, position)
+            is PeopleUiModel.UserUiModel -> bindUser(holder, item, position)
+            is PeopleUiModel.ShopUiModel -> bindShop(holder, item, position)
         }
     }
 
-    private fun bindUser(holder: ViewHolder, item: ProfileUiModel.UserUiModel, position: Int) {
+    private fun bindUser(holder: ViewHolder, item: PeopleUiModel.UserUiModel, position: Int) {
         holder.imgProfile.setImageUrl(item.photoUrl)
         holder.textName.text = item.name
         holder.imgBadge.hide()
@@ -138,7 +138,7 @@ open class ProfileFollowingAdapter(
         }
     }
 
-    private fun bindShop(holder: ViewHolder, item: ProfileUiModel.ShopUiModel, position: Int) {
+    private fun bindShop(holder: ViewHolder, item: PeopleUiModel.ShopUiModel, position: Int) {
         holder.imgProfile.setImageUrl(item.logoUrl)
         holder.textName.text = item.name
 

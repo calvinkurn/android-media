@@ -8,6 +8,7 @@ import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.deals.pdp.domain.DealsPDPVerifyUseCase
 import com.tokopedia.deals.pdp.ui.utils.DealsPDPMapper
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -51,7 +52,11 @@ class DealsPDPSelectQuantityViewModel @Inject constructor(
             dealsPDPVerifyUseCase.execute(dealsVerifyRequest)
         }
 
-        return Success(dealsVerifyResponse)
+        return if (dealsVerifyResponse.eventVerify.error.isEmpty()) {
+             Success(dealsVerifyResponse)
+        } else {
+             Fail(MessageErrorException(dealsVerifyResponse.eventVerify.errorDescription))
+        }
     }
 
     companion object {

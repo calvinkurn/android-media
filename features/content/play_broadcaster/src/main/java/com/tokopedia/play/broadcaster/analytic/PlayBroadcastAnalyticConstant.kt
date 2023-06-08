@@ -27,6 +27,8 @@ internal const val KEY_TRACK_BUSINESS_UNIT = "play"
 internal const val KEY_TRACK_CATEGORY = "seller broadcast"
 internal const val KEY_TRACK_CATEGORY_PLAY = "play broadcast"
 internal const val KEY_TRACK_CATEGORY_SELLER = "seller"
+internal const val KEY_TRACK_CATEGORY_SHOP_PAGE_SELLER = "shop page - seller"
+internal const val KEY_TRACK_CATEGORY_GROUP_CHAT_ROOM = "groupchat room"
 internal const val KEY_TRACKER_ID = "trackerId"
 
 internal const val KEY_TRACK_CLICK_EVENT_SELLER = "clickContent"
@@ -41,8 +43,10 @@ internal const val KEY_TRACK_IMPRESSION = "impression"
 
 internal const val VAL_BUSINESS_UNIT = "content"
 
+internal val isSellerApp = GlobalConfig.isSellerApp()
+
 internal val currentSite: String
-    get() = if (GlobalConfig.isSellerApp()) {
+    get() = if (isSellerApp) {
         KEY_TRACK_CURRENT_SITE
     } else {
         KEY_TRACK_CURRENT_SITE_MARKETPLACE
@@ -52,15 +56,20 @@ internal val sessionIris: String
     get() = TrackApp.getInstance().gtm.irisSessionId
 
 internal val KEY_TRACK_CLICK_EVENT: String
-    get() = if (GlobalConfig.isSellerApp()) {
+    get() = if (isSellerApp) {
         KEY_TRACK_CLICK_EVENT_SELLER
     } else {
         KEY_TRACK_CLICK_EVENT_MARKETPLACE
     }
 
 internal val KEY_TRACK_VIEW_EVENT: String
-    get() = if (GlobalConfig.isSellerApp()) {
+    get() = if (isSellerApp) {
         KEY_TRACK_VIEW_EVENT_SELLER
     } else {
         KEY_TRACK_VIEW_EVENT_MARKETPLACE
     }
+
+internal fun getTrackerId(trackerIdMA: String, trackerIdSA: String): String {
+    return if (isSellerApp) trackerIdSA
+    else trackerIdMA
+}

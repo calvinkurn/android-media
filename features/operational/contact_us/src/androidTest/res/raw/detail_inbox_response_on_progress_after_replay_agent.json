@@ -1,0 +1,140 @@
+{
+  "chipGetInboxDetail": {
+    "data": {
+      "isSuccess": 1,
+      "tickets": {
+        "id": "5005D000008p4RjQAI",
+        "showRating": false,
+        "badCsatReasonList": [
+          {
+            "id": 31,
+            "message": "Kecepatan respons",
+            "messageEn": "Response speed"
+          },
+          {
+            "id": 32,
+            "message": "Kejelasan bahasa",
+            "messageEn": "Language clarity"
+          },
+          {
+            "id": 33,
+            "message": "Waktu penyelesaian",
+            "messageEn": "Problem-solving time"
+          },
+          {
+            "id": 35,
+            "message": "Pemahaman masalah",
+            "messageEn": "Understanding problems"
+          },
+          {
+            "id": 36,
+            "message": "Solusi yang diberikan",
+            "messageEn": "Providing solutions"
+          }
+        ],
+        "comments": [
+          {
+            "id": "a175D000001KK7qQAG",
+            "create_time": "2023-02-28T09:26:20.000+0000",
+            "message": "Haiii bagaimana kabar anda?",
+            "message_plaintext": "Haiii bagaimana kabar anda?",
+            "created_by": {
+              "name": "Gaow",
+              "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+              "role": "customer"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          },
+          {
+            "id": "a175D000001KK7vQAG",
+            "create_time": "2023-02-28T09:26:26.000+0000",
+            "message": "Apakah baik baik saja?",
+            "message_plaintext": "Apakah baik baik saja?",
+            "created_by": {
+              "name": "Gaow",
+              "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+              "role": "customer"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          },
+          {
+            "id": "a175D000001KuXnQAK",
+            "create_time": "2023-03-12T21:04:10.000+0000",
+            "message": "Hai, bagaimana kabarmu?",
+            "message_plaintext": "Hai, bagaimana kabarmu?",
+            "created_by": {
+              "name": "Gaow",
+              "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+              "role": "customer"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          },
+          {
+            "id": "a175D000001KuXxQAK",
+            "create_time": "2023-03-12T21:04:39.000+0000",
+            "message": "Hai, bagaimana kabarmu?",
+            "message_plaintext": "Hai, bagaimana kabarmu?",
+            "created_by": {
+              "name": "Gaow",
+              "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+              "role": "customer"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          },
+          {
+            "id": "a175D000001KvYaQAK",
+            "create_time": "2023-03-13T03:15:06.000+0000",
+            "message": "Haiii, bagaimana ini?",
+            "message_plaintext": "Haiii, bagaimana ini?",
+            "created_by": {
+              "name": "Gaow",
+              "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+              "role": "customer"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          },
+          {
+            "id": "a175D000001KvaMQAS",
+            "create_time": "2023-03-13T06:27:23.000+0000",
+            "message": "<p>Let&#39;s prepare to deleted</p>",
+            "message_plaintext": "Let's prepare to deleted",
+            "created_by": {
+              "name": "Tim Tokopedia Care",
+              "picture": "https://ecs7.tokopedia.net/img/contact-us/cs_square.png",
+              "role": "agent"
+            },
+            "attachment": [],
+            "note": "",
+            "rating": ""
+          }
+        ],
+        "number": "02142068",
+        "subject": "Ubah nomor handphone",
+        "invoice": "",
+        "status": "solved",
+        "readStatus": "unread",
+        "message": "Bagaimana cara mengganti nomor hp saya?",
+        "createdBy": {
+          "name": "Gaow",
+          "picture": "https://images-staging.tokopedia.net/img/cache/100-square/tPxBYm/2023/1/20/0c372e2a-77da-496f-96c9-a453b449f85d.jpg",
+          "role": "customer"
+        },
+        "createTime": "2023-02-25T14:04:52.000+0000",
+        "needAttachment": false,
+        "attachment": [],
+        "allowClose": true
+      }
+    },
+    "messageError": []
+  }
+}

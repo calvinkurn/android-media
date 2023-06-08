@@ -8,5 +8,6 @@ enum class ManageAddressSource(val source: String) {
     LOCALIZED_ADDRESS_WIDGET("localizedAddressWidget"),
     NOTIFICATION("notification"),
     TOKOFOOD("tokofood"),
-    TOKONOW("tokonow")
+    TOKONOW("tokonow"),
+    MONEY_IN("moneyIn")
 }

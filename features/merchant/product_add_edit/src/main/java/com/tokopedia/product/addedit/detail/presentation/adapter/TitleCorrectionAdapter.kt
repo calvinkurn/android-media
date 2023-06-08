@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.detail.presentation.viewholder.NameRecommendationViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewholder.TitleCorrectionViewHolder
 
 class TitleCorrectionAdapter : RecyclerView.Adapter<TitleCorrectionViewHolder>() {
@@ -40,7 +39,7 @@ class TitleCorrectionAdapter : RecyclerView.Adapter<TitleCorrectionViewHolder>()
     }
 
     fun setTitle(title: String) {
-        this.titleSubstrings = title.split( " ")
+        this.titleSubstrings = title.split(" ")
         notifyDataSetChanged()
     }
 

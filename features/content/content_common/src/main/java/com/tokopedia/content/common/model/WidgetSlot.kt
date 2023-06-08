@@ -131,6 +131,9 @@ data class ContentItem(
 
         @SerializedName("name")
         val name: String = "",
+
+        @SerializedName("type")
+        val type: String = "",
     )
 
     data class Video(

@@ -7,7 +7,6 @@ import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.channel.ui.component.KebabIconUiComponent
 import com.tokopedia.play.channel.ui.component.ProductCarouselUiComponent
-import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
@@ -16,12 +15,12 @@ import com.tokopedia.play.view.uimodel.event.OCCSuccessEvent
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewcomponent.ExploreWidgetViewComponent
+import com.tokopedia.play.widget.ui.model.PartnerType
 import com.tokopedia.play_common.eventbus.EventBus
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -71,10 +70,6 @@ class PlayChannelAnalyticManager @Inject constructor(
                             it.productMap.isEmpty()
                         ) return@collect
 
-                        it.productMap.forEach { entry ->
-                            if (!entry.key.isPinned) return@forEach
-                            analytic2?.impressPinnedProductInCarousel(entry.key, entry.value)
-                        }
                         sendImpression(it.productMap)
                     }
                     is ProductCarouselUiComponent.Event.OnUpdated -> {
@@ -157,6 +152,7 @@ class PlayChannelAnalyticManager @Inject constructor(
         if(partnerType == PartnerType.TokoNow) newAnalytic.impressFeaturedProductNow(finalProducts)
 
         finalProducts.forEach {
+            if (it.first.isPinned) analytic2?.impressPinnedProductInCarousel(it.first, it.second)
             impressionSet.add(it.first.id)
         }
     }

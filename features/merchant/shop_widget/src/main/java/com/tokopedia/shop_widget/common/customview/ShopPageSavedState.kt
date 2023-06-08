@@ -27,6 +27,8 @@ class ShopPageSavedState : View.BaseSavedState {
         out.writeSparseArray(childrenStates)
     }
 
+    //Please don't remove this, it's needed for restoring state from parcel
+    @Suppress("unused")
     companion object {
         @JvmField
         val CREATOR: ClassLoaderCreator<ShopPageSavedState> = object : ClassLoaderCreator<ShopPageSavedState> {
@@ -43,4 +45,5 @@ class ShopPageSavedState : View.BaseSavedState {
             }
         }
     }
+
 }

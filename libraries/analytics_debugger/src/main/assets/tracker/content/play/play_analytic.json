@@ -34,7 +34,7 @@
       "eventAction": "null",
       "eventCategory": "null",
       "eventLabel": "null",
-      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true|false)",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark true",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -531,6 +531,7 @@
         }
       ],
       "item_list": "/groupchat - featured product",
+      "item_list_name": "/groupchat - featured product",
       "currentSite": ".*",
       "userId": ".*",
       "businessUnit": "play"
@@ -768,6 +769,28 @@
           "item_name": "voucher bottomsheet"
         }
       ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "view - cart button bottom sheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "42863",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - cart button bottom sheet",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - (live|vod)",
+      "trackerId": "42864",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     }

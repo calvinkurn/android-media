@@ -88,4 +88,13 @@ data class Properties(
         @SerializedName("targeted_component_id")
         val targetedComponentId: String = "",
 
+        @SerializedName("catalog_slug")
+        val catalogSlug: String? = "",
+
+        @SerializedName("category_slug")
+        val categorySlug: String? = "",
+
+        @SerializedName("supergraphic_image_url")
+        val supergraphicImageUrl: String? = "",
+
 )

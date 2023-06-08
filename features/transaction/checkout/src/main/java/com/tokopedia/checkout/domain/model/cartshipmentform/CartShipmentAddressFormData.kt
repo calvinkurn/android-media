@@ -46,7 +46,10 @@ data class CartShipmentAddressFormData(
     var upsell: UpsellData = UpsellData(),
     var newUpsell: NewUpsellData = NewUpsellData(),
     var cartData: String = "",
-    var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData()
+    var isUsingDdp: Boolean = false,
+    var dynamicData: String = "",
+    var coachmarkPlus: CheckoutCoachmarkPlusData = CheckoutCoachmarkPlusData(),
+    var shipmentPlatformFee: ShipmentPlatformFeeData = ShipmentPlatformFeeData()
 ) : Parcelable {
 
     val getAvailablePurchaseProtection: ArrayList<String>

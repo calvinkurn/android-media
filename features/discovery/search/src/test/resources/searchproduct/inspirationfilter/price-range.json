@@ -15,14 +15,16 @@
           "color": "",
           "applink": "",
           "component_id": "04.08.01.00",
-          "filters": {
-            "title": "",
-            "key": "price_range_1",
-            "name": "Di bawah Rp18 rb",
-            "value": "",
-            "val_min": "",
-            "val_max": "18000"
-          }
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "price_range_1",
+              "name": "Di bawah Rp18 rb",
+              "value": "",
+              "val_min": "",
+              "val_max": "18000"
+            }
+          ]
         },
         {
           "text": "Rp18 rb - Rp36 rb",
@@ -31,14 +33,16 @@
           "color": "",
           "applink": "",
           "component_id": "04.08.02.00",
-          "filters": {
-            "title": "",
-            "key": "price_range_2",
-            "name": "Rp18 rb - Rp36 rb",
-            "value": "",
-            "val_min": "18000",
-            "val_max": "36000"
-          }
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "price_range_2",
+              "name": "Rp18 rb - Rp36 rb",
+              "value": "",
+              "val_min": "18000",
+              "val_max": "36000"
+            }
+          ]
         },
         {
           "text": "Rp36 rb - Rp67 rb",
@@ -47,14 +51,16 @@
           "color": "",
           "applink": "",
           "component_id": "04.08.03.00",
-          "filters": {
-            "title": "",
-            "key": "price_range_3",
-            "name": "Rp36 rb - Rp67 rb",
-            "value": "",
-            "val_min": "36000",
-            "val_max": "67000"
-          }
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "price_range_3",
+              "name": "Rp36 rb - Rp67 rb",
+              "value": "",
+              "val_min": "36000",
+              "val_max": "67000"
+            }
+          ]
         },
         {
           "text": "Rp67 rb - Rp88 rb",
@@ -63,14 +69,16 @@
           "color": "",
           "applink": "",
           "component_id": "04.08.04.00",
-          "filters": {
-            "title": "",
-            "key": "price_range_4",
-            "name": "Rp67 rb - Rp88 rb",
-            "value": "",
-            "val_min": "67000",
-            "val_max": "88000"
-          }
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "price_range_4",
+              "name": "Rp67 rb - Rp88 rb",
+              "value": "",
+              "val_min": "67000",
+              "val_max": "88000"
+            }
+          ]
         },
         {
           "text": "Rp88 rb ke atas",
@@ -79,14 +87,16 @@
           "color": "",
           "applink": "",
           "component_id": "04.08.05.00",
-          "filters": {
-            "title": "",
-            "key": "price_range_5",
-            "name": "Rp88 rb ke atas",
-            "value": "",
-            "val_min": "88000",
-            "val_max": ""
-          }
+          "multi_filters": [
+            {
+              "title": "",
+              "key": "price_range_5",
+              "name": "Rp88 rb ke atas",
+              "value": "",
+              "val_min": "88000",
+              "val_max": ""
+            }
+          ]
         }
       ],
       "tracking_option": "2"

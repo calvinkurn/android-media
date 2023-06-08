@@ -96,7 +96,7 @@ class SuccessUploadBottomSheet: BottomSheetUnify() {
         voucher.apply {
             val startPeriod = startPeriod.toFormattedString(DATE_LONGMONTH_YEAR_WITH_TIME)
             val endPeriod = endPeriod.toFormattedString(DATE_LONGMONTH_YEAR_WITH_TIME)
-            val voucherPeriodInfo = if (totalPeriod > Int.ONE) {
+            val voucherPeriodInfo = if (isPeriod && totalPeriod > Int.ONE) {
                 context?.getString(R.string.smvc_success_upload_multiperiod_desc, voucherName, totalPeriod)
             } else {
                 context?.getString(R.string.smvc_success_upload_desc, voucherName, startPeriod, endPeriod)

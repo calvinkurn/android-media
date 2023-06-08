@@ -49,6 +49,12 @@ class GetFollowerListUseCase @Inject constructor(
                     ${"$$KEY_CURSOR"}: String!, 
                     ${"$$KEY_LIMIT"}: Int!
                 ) {
+                  feedXProfileHeader(${KEY_USERNAME}: ${"$${KEY_USERNAME}"}) {
+                    stats {
+                      totalFollowerFmt
+                      totalFollowingFmt
+                    }
+                  }
                   feedXProfileFollowerList(req: {
                     $KEY_USERNAME: ${"$$KEY_USERNAME"}, 
                     $KEY_CURSOR: ${"$$KEY_CURSOR"}, 

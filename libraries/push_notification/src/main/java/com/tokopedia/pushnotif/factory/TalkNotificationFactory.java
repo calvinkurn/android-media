@@ -1,6 +1,7 @@
 package com.tokopedia.pushnotif.factory;
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 
 import androidx.core.app.NotificationCompat;
@@ -31,8 +32,9 @@ public class TalkNotificationFactory extends BaseNotificationFactory {
         if (ApplinkNotificationHelper.allowGroup()) {
             builder.setGroup(generateGroupKey(applinkNotificationModel.getApplinks()));
         }
-        builder.setContentIntent(createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId));
-        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId));
+        PendingIntent pendingContentIntent = createPendingIntent(applinkNotificationModel.getApplinks(), notificationType, notificationId, applinkNotificationModel);
+        builder.setContentIntent(pendingContentIntent);
+        builder.setDeleteIntent(createDismissPendingIntent(notificationType, notificationId, applinkNotificationModel));
         builder.setAutoCancel(true);
 
         if (isAllowBell()) {

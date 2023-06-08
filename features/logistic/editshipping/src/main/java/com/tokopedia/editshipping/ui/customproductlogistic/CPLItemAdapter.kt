@@ -62,7 +62,8 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
     }
 
     fun modifyData(shipper: ShipperCPLModel) {
-        val index = cplItem.indexOfFirst { shipperCPLModel -> shipperCPLModel.shipperId == shipper.shipperId }
+        val index =
+            cplItem.indexOfFirst { shipperCPLModel -> shipperCPLModel.shipperId == shipper.shipperId }
         if (index != -1 && cplItem.elementAtOrNull(index) != null) {
             cplItem[index] = shipper
             notifyItemChanged(index)

@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
@@ -37,11 +36,6 @@ android {
     testOptions {
         animationsDisabled = true
     }
-}
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
 }
 
 dependencies {
@@ -84,6 +78,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.carousel
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.unifyDependencies.header

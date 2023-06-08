@@ -9,9 +9,10 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.CardUnify
 
-class BigReplyBox (context: Context, attributeSet: AttributeSet) :
+class BigReplyBox(context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
     private var replyBox: CardUnify? = null
@@ -20,8 +21,8 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     private var parentLayout: ConstraintLayout? = null
     private var replyBoxText: com.tokopedia.unifyprinciples.Typography? = null
 
-    var sendButtonListener : ChatbotSendButtonListener? = null
-    var replyBoxClickListener : ReplyBoxClickListener? = null
+    var sendButtonListener: ChatbotSendButtonListener? = null
+    var replyBoxClickListener: ReplyBoxClickListener? = null
 
     init {
         initViewBindings()
@@ -45,7 +46,7 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
             replyBoxClickListener?.onAttachmentMenuClicked()
         }
         replyBox?.setOnClickListener {
-            replyBoxClickListener?.goToBigReplyBoxBottomSheet()
+            replyBoxClickListener?.goToBigReplyBoxBottomSheet(isError = false)
         }
     }
 
@@ -63,9 +64,11 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
         replyBoxText?.text = text
     }
 
+    fun shouldShowAddAttachmentButton(showAddAttachmentMenu: Boolean) {
+        addAttachmentMenu?.showWithCondition(showAddAttachmentMenu)
+    }
+
     companion object {
-        val LAYOUT = R.layout.chatbot_big_reply_box
+        val LAYOUT = R.layout.customview_chatbot_big_reply_box
     }
 }
-
-

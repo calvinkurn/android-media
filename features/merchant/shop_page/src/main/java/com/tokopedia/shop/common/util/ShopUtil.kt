@@ -12,7 +12,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.data.Properties
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
@@ -36,9 +36,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 object ShopUtil {
-    fun getProductPerPage(context: Context?): Int {
-        return context?.let {
-            if (DeviceScreenInfo.isTablet(context)) {
+    var isFoldableAndHorizontalScreen: Boolean = false
+    var isFoldable: Boolean = true
+
+    fun getProductPerPage(context: Context?): Int{
+        return context?.let{
+            if(DeviceScreenInfo.isTablet(context)){
                 DEFAULT_PER_PAGE_TABLET
             } else {
                 DEFAULT_PER_PAGE_NON_TABLET

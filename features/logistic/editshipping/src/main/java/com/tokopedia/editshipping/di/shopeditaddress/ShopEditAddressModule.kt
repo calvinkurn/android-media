@@ -14,5 +14,4 @@ class ShopEditAddressModule {
     @Provides
     @ActivityScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
-
 }

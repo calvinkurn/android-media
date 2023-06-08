@@ -38,19 +38,19 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment.Comp
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
-import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.APPLINK_OMNI_DATA_CODE
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
-import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.OTHER_COMPONENT_APPLINK_OMNI
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_DIGITAL_SAVED_NUMBER
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN_ALT
@@ -58,6 +58,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.TELCO_PREFERENCES_NAME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
+import com.tokopedia.digital_product_detail.data.model.data.TelcoOtherComponent
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
@@ -76,7 +77,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -86,6 +86,7 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
+import com.tokopedia.recharge_component.listener.RechargeProductDescListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.client_number.InputFieldType
@@ -96,9 +97,9 @@ import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.recharge_component.widget.RechargeOmniWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -123,11 +124,13 @@ class DigitalPDPDataPlanFragment :
     RechargeBuyWidgetListener,
     RechargeRecommendationCardListener,
     RechargeDenomFullListener,
+    RechargeOmniWidget.RechargeOmniWidgetListener,
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
     FilterPDPBottomsheet.FilterBottomSheetListener,
     DigitalHistoryIconListener,
+    RechargeProductDescListener,
     DigitalKeyboardDelegate by DigitalKeyboardDelegateImpl() {
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
@@ -154,6 +157,9 @@ class DigitalPDPDataPlanFragment :
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+    private var isMCCMEmpty: Boolean = false
+    private var isProductListEmpty: Boolean = false
+
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
@@ -198,6 +204,7 @@ class DigitalPDPDataPlanFragment :
     override fun onAttachFragment(childFragment: Fragment) {
         if (childFragment is ProductDescBottomSheet) {
             childFragment.setListener(this)
+            childFragment.setProductDescListener(this)
         } else if (childFragment is FilterPDPBottomsheet) {
             childFragment.setListener(this)
         }
@@ -294,6 +301,7 @@ class DigitalPDPDataPlanFragment :
                     hideEmptyState()
                     onHideBuyWidget()
                     getRecommendations()
+                    getMCCMProducts()
                     getCatalogProductInputMultiTab(
                         selectedOperator.key,
                         isOperatorChanged,
@@ -306,6 +314,7 @@ class DigitalPDPDataPlanFragment :
                 operator = TelcoOperator()
                 viewModel.run {
                     cancelRecommendationJob()
+                    cancelMCCMProductsJob()
                     cancelCatalogProductJob()
                 }
                 rechargePdpPaketDataClientNumberWidget.run {
@@ -324,7 +333,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun observeData() {
-        viewModel.menuDetailData.observe(viewLifecycleOwner, {
+        viewModel.menuDetailData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetMenuDetail(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetMenuDetail(it.error)
@@ -332,45 +341,102 @@ class DigitalPDPDataPlanFragment :
                     onShimmeringRecommendation()
                 }
             }
-        })
+        }
 
-        viewModel.favoriteChipsData.observe(viewLifecycleOwner, {
+        viewModel.favoriteChipsData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteChips(it.data)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(true)
                 }
+                else -> {
+                    //no-op
+                }
             }
-        })
+        }
 
-        viewModel.autoCompleteData.observe(viewLifecycleOwner, {
+        viewModel.autoCompleteData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+                else -> {
+                    //no-op
+                }
             }
-        })
+        }
 
-        viewModel.prefillData.observe(viewLifecycleOwner, {
+        viewModel.prefillData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
+                else -> {
+                    //no-op
+                }
             }
-        })
+        }
 
-        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner, {
+        viewModel.catalogPrefixSelect.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetPrefixOperator()
                 is RechargeNetworkResult.Fail -> onFailedGetPrefixOperator(it.error)
+                else -> {
+                    //no-op
+                }
             }
-        })
+        }
 
-        viewModel.recommendationData.observe(viewLifecycleOwner, {
+        viewModel.recommendationData.observe(viewLifecycleOwner) {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetRecommendations(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetRecommendations()
                 is RechargeNetworkResult.Loading -> onShimmeringRecommendation()
             }
-        })
+        }
 
-        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
+        viewModel.mccmProductsData.observe(viewLifecycleOwner) {
+            when(it) {
+                is RechargeNetworkResult.Success -> {
+                    if (it.data.listDenomData.isNotEmpty()) {
+                        if (productId >= 0) {
+                            viewModel.setAutoSelectedDenom(
+                                it.data.listDenomData,
+                                productId.toString()
+                            )
+                        }
+                        val selectedPositionMCCM =
+                            viewModel.getSelectedPositionId(it.data.listDenomData)
+                        if (it.data.isHorizontalMCCM) {
+                            onLoadingAndFailMCCMVertical()
+                            onSuccessMCCM(it.data, selectedPositionMCCM)
+                        } else {
+                            onLoadingAndFailMCCM()
+                            onSuccessMCCMVertical(it.data, selectedPositionMCCM)
+                        }
+
+                        if (selectedPositionMCCM == null) {
+                            onHideBuyWidget()
+                        }
+                    } else {
+                        onLoadingAndFailMCCM()
+                        onLoadingAndFailMCCMVertical()
+
+                        isMCCMEmpty = true
+
+                        if(isMCCMEmpty && isProductListEmpty){
+                            showGlobalErrorState()
+                            isMCCMEmpty = false
+                        } else {
+                            hideGlobalErrorState()
+                        }
+                    }
+                }
+
+                is RechargeNetworkResult.Fail, RechargeNetworkResult.Loading -> {
+                    onLoadingAndFailMCCM()
+                    onLoadingAndFailMCCMVertical()
+                }
+            }
+        }
+
+        viewModel.observableDenomMCCMData.observe(viewLifecycleOwner) { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
                     if (productId >= 0) {
@@ -381,8 +447,6 @@ class DigitalPDPDataPlanFragment :
                     }
                     val selectedPositionDenom =
                         viewModel.getSelectedPositionId(denomData.data.denomFull.listDenomData)
-                    val selectedPositionMCCM =
-                        viewModel.getSelectedPositionId(denomData.data.denomMCCMFull.listDenomData)
 
                     if (denomData.data.isFilterRefreshed) {
                         digitalPDPAnalytics.impressionFilterChip(
@@ -393,44 +457,44 @@ class DigitalPDPDataPlanFragment :
                         onSuccessSortFilter()
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
-                    onSuccessMCCM(denomData.data.denomMCCMFull, selectedPositionMCCM)
 
-                    if (viewModel.isEmptyDenomMCCM(
-                            denomData.data.denomFull.listDenomData,
-                            denomData.data.denomMCCMFull.listDenomData
-                        )
-                    ) {
+                    if (denomData.data.denomFull.listDenomData.isEmpty()){
+                        isProductListEmpty = true
+                    }
+
+                    if(isMCCMEmpty && isProductListEmpty){
                         showGlobalErrorState()
+                        isProductListEmpty = false
                     } else {
                         hideGlobalErrorState()
                     }
 
-                    if (selectedPositionDenom == null && selectedPositionMCCM == null) {
+                    if (selectedPositionDenom == null) {
                         onHideBuyWidget()
                     }
+                    onSuccessOmniChannel(denomData.data.otherComponents)
                 }
 
                 is RechargeNetworkResult.Fail -> {
                     onFailedDenomFull()
-                    onLoadingAndFailMCCM()
                 }
 
                 is RechargeNetworkResult.Loading -> {
                     hideGlobalErrorState()
                     hideEmptyState()
                     onShimmeringDenomFull()
-                    onLoadingAndFailMCCM()
+                    onShimmeringOmniWidget()
                 }
             }
-        })
+        }
 
-        viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
+        viewModel.addToCartResult.observe(viewLifecycleOwner) { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
                     if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
-                        categoryId.toString(),
+                        atcData.data.categoryId,
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
                         operator.attributes.name,
                         userSession.userId,
@@ -452,7 +516,7 @@ class DigitalPDPDataPlanFragment :
                     showLoadingDialog()
                 }
             }
-        })
+        }
 
         viewModel.errorAtc.observe(viewLifecycleOwner) {
             hideLoadingDialog()
@@ -463,7 +527,7 @@ class DigitalPDPDataPlanFragment :
             }
         }
 
-        viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
+        viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner) { msg ->
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
                 setLoading(false)
                 showClearIcon()
@@ -474,7 +538,40 @@ class DigitalPDPDataPlanFragment :
                     onHideBuyWidget()
                 }
             }
-        })
+        }
+    }
+
+    private fun onSuccessOmniChannel(otherComponents: List<TelcoOtherComponent>) {
+        otherComponents.forEach {
+            if (it.name == OTHER_COMPONENT_APPLINK_OMNI) {
+                val collection = it.otherComponentDataCollection.firstOrNull { collection ->
+                    collection.key == APPLINK_OMNI_DATA_CODE
+                }
+                if (collection != null) {
+                    renderOmniChannel(collection.value)
+                } else {
+                    binding?.rechargePdpPaketDataOmniWidget?.hide()
+                }
+            } else {
+                binding?.rechargePdpPaketDataOmniWidget?.hide()
+            }
+        }
+    }
+
+    private fun renderOmniChannel(applink: String) {
+        binding?.rechargePdpPaketDataOmniWidget?.run {
+            hideShimmering()
+            if (applink.isNotEmpty()) {
+                digitalPDPAnalytics.impressionOmniChannelWidget(
+                    DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                    operator.attributes.name,
+                    loyaltyStatus,
+                    userSession.userId
+                )
+                renderOmniWidget(this@DigitalPDPDataPlanFragment, applink)
+                show()
+            }
+        }
     }
 
     private fun getCatalogProductInputMultiTab(
@@ -484,6 +581,7 @@ class DigitalPDPDataPlanFragment :
     ) {
         viewModel.run {
             if (isOperatorChanged) resetFilter()
+            isProductListEmpty = false
             cancelCatalogProductJob()
             setRechargeCatalogInputMultiTabLoading()
             getRechargeCatalogInputMultiTab(
@@ -501,6 +599,14 @@ class DigitalPDPDataPlanFragment :
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
         viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+    }
+
+    private fun getMCCMProducts() {
+        isMCCMEmpty = false
+        val clientNumbers =
+            listOf(binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "")
+        viewModel.cancelMCCMProductsJob()
+        viewModel.getMCCMProducts(clientNumbers, listOf(categoryId))
     }
 
     private fun getCatalogMenuDetail() {
@@ -579,10 +685,8 @@ class DigitalPDPDataPlanFragment :
                         favoriteChips
                     )
                 )
-                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
-            } else {
-                setupDynamicScrollViewPadding()
             }
+            setupDynamicScrollViewPadding()
         }
     }
 
@@ -749,6 +853,15 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun onShimmeringOmniWidget() {
+        binding?.let {
+            it.rechargePdpPaketDataOmniWidget.run {
+                show()
+                renderShimmering()
+            }
+        }
+    }
+
     private fun onClearSelectedDenomFull(position: Int) {
         binding?.let {
             it.rechargePdpPaketDataDenomFullWidget.clearSelectedProduct(position)
@@ -784,15 +897,49 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
+    private fun onSuccessMCCMVertical(denomFull: DenomWidgetModel, selectedPosition: Int?) {
+        binding?.let {
+            var selectedInitialPosition = selectedPosition
+            if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
+                viewModel.updateSelectedPositionId(selectedPosition)
+                onShowBuyWidget(viewModel.selectedFullProduct.denomData)
+            } else {
+                selectedInitialPosition = null
+            }
+            if (denomFull.listDenomData.isNotEmpty()) {
+                it.rechargePdpPaketDataPromoWidgetVertical.show()
+                it.rechargePdpPaketDataPromoWidgetVertical.renderMCCMVertical(
+                    this,
+                    denomFull,
+                    selectedInitialPosition
+                )
+            } else {
+                it.rechargePdpPaketDataPromoWidgetVertical.hide()
+            }
+        }
+    }
+
     private fun onLoadingAndFailMCCM() {
         binding?.let {
             it.rechargePdpPaketDataPromoWidget.hide()
         }
     }
 
+    private fun onLoadingAndFailMCCMVertical() {
+        binding?.let {
+            it.rechargePdpPaketDataPromoWidgetVertical.hide()
+        }
+    }
+
     private fun onClearSelectedMCCM(position: Int) {
         binding?.let {
             it.rechargePdpPaketDataPromoWidget.clearSelectedProduct(position)
+        }
+    }
+
+    private fun onClearSelectedMCCMVertical(position: Int) {
+        binding?.let {
+            it.rechargePdpPaketDataPromoWidgetVertical.clearSelectedProductMCCMVertical(position)
         }
     }
 
@@ -918,8 +1065,10 @@ class DigitalPDPDataPlanFragment :
 
                 sortFilterPaketData.hide()
                 rechargePdpPaketDataPromoWidget.hide()
+                rechargePdpPaketDataPromoWidgetVertical.hide()
                 rechargePdpPaketDataRecommendationWidget.hide()
                 rechargePdpPaketDataDenomFullWidget.hide()
+                rechargePdpPaketDataOmniWidget.hide()
                 globalErrorPaketData.hide()
                 rechargePdpPaketDataClientNumberWidget.hideOperatorIcon()
             }
@@ -1159,9 +1308,7 @@ class DigitalPDPDataPlanFragment :
             setAddToCartLoading()
             addToCart(
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
-                DigitalSubscriptionParams(),
-                userSession.userId,
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
+                userSession.userId
             )
         }
     }
@@ -1184,15 +1331,44 @@ class DigitalPDPDataPlanFragment :
                             this
                         )
                         binding?.run {
-                            val defaultPadding: Int = context?.resources?.displayMetrics?.let {
-                                rechargePdpPaketDataClientNumberWidget.height.pxToDp(it)
+                            val defaultPadding: Int = rechargePdpPaketDataClientNumberWidget.height
+                            val scrollViewMargin: Int = context?.resources?.let {
+                                it.getDimensionPixelOffset(com.tokopedia.digital_product_detail.R.dimen.nested_scroll_view_margin)
                             } ?: 0
-                            val dynamicPadding = defaultPadding + extraPadding
+                            val dynamicPadding = defaultPadding + extraPadding - scrollViewMargin
                             rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
                         }
                     }
                 })
     }
+
+    //region RechargeProductDescListener
+
+    override fun onCloseProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum) {
+        digitalPDPAnalytics.clickCloseProductDescription(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            layoutType
+        )
+    }
+
+    override fun onImpressProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum,
+                                             productListTitle: String, position: Int) {
+        digitalPDPAnalytics.impressProductDescription(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+            layoutType,
+            denomData,
+            productListTitle,
+            position
+        )
+    }
+
+    //endregion
 
     //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
@@ -1421,11 +1597,30 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
+
+        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE){
+
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
+                onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
+            }
+            digitalPDPAnalytics.clickMCCMProductNew(
+                productListTitle,
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+                denomFull,
+                layoutType,
+                position
+            )
+
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
-                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE
+                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
+                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE
             ) {
                 onClearSelectedMCCM(viewModel.selectedFullProduct.position)
+                onClearSelectedMCCMVertical(viewModel.selectedFullProduct.position)
             }
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
@@ -1451,10 +1646,22 @@ class DigitalPDPDataPlanFragment :
     override fun onDenomFullImpression(
         denomFull: DenomData,
         layoutType: DenomWidgetEnum,
-        position: Int
+        position: Int,
+        productListTitle: String
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
             digitalPDPAnalytics.impressionProductMCCM(
+                DigitalPDPCategoryUtil.getCategoryName(categoryId),
+                operator.attributes.name,
+                loyaltyStatus,
+                userSession.userId,
+                denomFull,
+                layoutType,
+                position
+            )
+        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+            digitalPDPAnalytics.impressMCCMProductNew(
+                productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
@@ -1478,12 +1685,17 @@ class DigitalPDPDataPlanFragment :
     override fun onChevronDenomClicked(
         denomFull: DenomData,
         position: Int,
-        layoutType: DenomWidgetEnum
+        layoutType: DenomWidgetEnum,
+        productListTitle: String
     ) {
         childFragmentManager?.let {
             productDescBottomSheet = ProductDescBottomSheet.getInstance()
             productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setLayoutType(layoutType)
+            productDescBottomSheet.setProductListTitle(productListTitle)
+            productDescBottomSheet.setPosition(position)
             productDescBottomSheet.setListener(this)
+            productDescBottomSheet.setProductDescListener(this)
             productDescBottomSheet.show(it, "")
         }
 
@@ -1500,9 +1712,21 @@ class DigitalPDPDataPlanFragment :
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
+                productListTitle,
+                denomFull,
+                position,
                 layoutType
             )
         }
+    }
+
+    override fun onShowMoreClicked() {
+        digitalPDPAnalytics.clickExpandMCCM(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId,
+        )
     }
     //endregion
 
@@ -1544,6 +1768,18 @@ class DigitalPDPDataPlanFragment :
             loyaltyStatus,
             userSession.userId
         )
+    }
+    //endregion
+
+    //region RechargeOmniWidgetListener
+    override fun onClickOmniWidget(applink: String) {
+        digitalPDPAnalytics.clickOmniChannelWidget(
+            DigitalPDPCategoryUtil.getCategoryName(categoryId),
+            operator.attributes.name,
+            loyaltyStatus,
+            userSession.userId
+        )
+        RouteManager.route(context, applink)
     }
     //endregion
 

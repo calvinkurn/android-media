@@ -513,6 +513,9 @@ class UserProfileFragment @Inject constructor(
                         emptyPostVisitor()
                         mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }
@@ -1147,22 +1150,27 @@ class UserProfileFragment @Inject constructor(
     }
 
     private fun showUniversalShareBottomSheet() {
-        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            init(this@UserProfileFragment)
-            userSession.userId.ifEmpty { "0" }.let {
-                setUtmCampaignData(
-                    PAGE_NAME_PROFILE,
-                    it,
-                    viewModel.profileUserID,
-                    FEATURE_SHARE
+        if(!isAdded) return
+
+        if(universalShareBottomSheet == null) {
+            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(this@UserProfileFragment)
+                userSession.userId.ifEmpty { "0" }.let {
+                    setUtmCampaignData(
+                        PAGE_NAME_PROFILE,
+                        it,
+                        viewModel.profileUserID,
+                        FEATURE_SHARE
+                    )
+                }
+                setMetaData(
+                    tnTitle = viewModel.displayName,
+                    tnImage = viewModel.profileCover
                 )
+                setOgImageUrl(viewModel.profileCover)
             }
-            setMetaData(
-                tnTitle = viewModel.displayName,
-                tnImage = viewModel.profileCover
-            )
-            setOgImageUrl(viewModel.profileCover)
         }
+
         universalShareBottomSheet?.show(childFragmentManager, this, screenShotDetector)
     }
 

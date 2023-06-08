@@ -74,6 +74,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_SKIP_INSPIRATION_CAROUSEL = "skip_inspiration_carousel";
         String SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET = "skip_inspiration_widget";
         String SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET = "skip_last_filter";
+        String SEARCH_PRODUCT_SKIP_TDN_BANNER = "skip_tdn_banner";
     }
 
     interface HeadlineAds {
@@ -199,5 +200,8 @@ public interface SearchConstant {
     interface ProductListType {
         String VAR_LONG_IMG = "var_long_img";
         String VAR_REPOSITION = "var_reposition";
+        String GIMMICK = "gimmick";
+        String PORTRAIT = "portrait";
+        String ETA = "eta";
     }
 }

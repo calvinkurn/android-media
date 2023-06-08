@@ -40,7 +40,6 @@ import com.tokopedia.play.view.uimodel.PiPInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.isYouTube
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
-import com.tokopedia.play.view.viewcomponent.OnboardingViewComponent
 import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
 import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -87,7 +86,6 @@ class PlayVideoFragment @Inject constructor(
     private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video, this) }
     private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
     private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
-    private val onboardingView by viewComponentOrNull { OnboardingViewComponent(it, R.id.iv_onboarding) }
 
     private val blurUtil: ImageBlurUtil by lifecycleBound (
             creator = { ImageBlurUtil(it.requireContext()) },
@@ -107,10 +105,10 @@ class PlayVideoFragment @Inject constructor(
 
     private val playViewerPiPCoordinatorListener = object : PlayViewerPiPCoordinator.Listener {
 
-        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit) {
+        private fun openDialog(requestHandler: () -> Unit, cancelHandler: () -> Unit, dismissHandler: () -> Unit, channelType: PlayChannelType) {
             DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     .apply {
-                        setTitle(getString(R.string.play_pip_permission_rationale_title))
+                        setTitle(getString(R.string.play_pip_permission_rationale_title, channelType.value.capitalize()))
                         setDescription(getString(R.string.play_pip_permission_rationale_desc))
                         setPrimaryCTAText(getString(R.string.play_pip_activate))
                         setPrimaryCTAClickListener {
@@ -128,7 +126,8 @@ class PlayVideoFragment @Inject constructor(
                     }.show()
         }
 
-        override fun onShouldRequestPermission(pipMode: PiPMode, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+        override fun onShouldRequestPermission(pipModel: PiPInfoUiModel, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow) {
+            val pipMode = pipModel.pipMode
             val dialogHandler = { openDialog(
                     requestHandler = {
                         requestPermissionFlow.requestPermission()
@@ -145,7 +144,8 @@ class PlayVideoFragment @Inject constructor(
                     },
                     dismissHandler = {
                         requestPermissionFlow.cancel()
-                    }
+                    },
+                    channelType = pipModel.channelType,
             ) }
 
             when (pipMode) {
@@ -274,7 +274,7 @@ class PlayVideoFragment @Inject constructor(
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation2.get(requireActivity())
-        videoView.setOrientation(orientation.orientation, playViewModel.videoOrientation)
+        videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -325,7 +325,7 @@ class PlayVideoFragment @Inject constructor(
 
     private fun setupView() {
         videoView.setOrientation(
-            orientation.orientation,
+            orientation,
             playViewModel.videoOrientation,
         )
     }
@@ -335,7 +335,6 @@ class PlayVideoFragment @Inject constructor(
         observeVideoProperty()
         observeBottomInsetsState()
         observePiPEvent()
-        observeOnboarding()
         observeCastState()
 
         observeUiState()
@@ -363,7 +362,7 @@ class PlayVideoFragment @Inject constructor(
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             videoView.setOrientation(
-                orientation.orientation,
+                orientation,
                 meta.videoStream.orientation,
             )
 
@@ -404,18 +403,6 @@ class PlayVideoFragment @Inject constructor(
         playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
         }
-    }
-
-    private fun observeOnboarding() {
-        val startingChannel = activity?.intent?.data?.lastPathSegment.orEmpty()
-        val isShown = startingChannel == channelId || channelId == "0" // 0 for handling channel recom
-
-        playViewModel.observableOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
-            analytic.screenWithSwipeCoachMark(isShown = isShown)
-            if (!orientation.isLandscape && isShown) {
-                onboardingView?.showAnimated()
-            }
-        })
     }
 
     private fun observeCastState() {
@@ -468,6 +455,9 @@ class PlayVideoFragment @Inject constructor(
             PlayViewerVideoState.Waiting,
             PlayViewerVideoState.End -> {
                 videoView.hideThumbnail()
+            }
+            else -> {
+                //no-op
             }
         }
     }
@@ -526,6 +516,9 @@ class PlayVideoFragment @Inject constructor(
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)
             PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
             PlayViewerVideoState.Unknown -> videoLoadingView.show(source = BufferSource.Unknown)
+            else -> {
+                //no-op
+            }
         }
     }
 

@@ -18,7 +18,9 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.cache.PickerCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.utils.isUrl
+import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -47,8 +49,8 @@ class PickerViewModel @Inject constructor(
     private var _isMediaEmpty = MutableLiveData<Boolean>()
     val isMediaEmpty: LiveData<Boolean> get() = _isMediaEmpty
 
-    private var _includeMedias = MutableLiveData<List<String?>>()
-    val includeMedias: LiveData<List<String?>> get() = _includeMedias
+    private var _includeMedias = MutableLiveData<List<MediaUiModel?>>()
+    val includeMedias: LiveData<List<MediaUiModel?>> get() = _includeMedias
 
     private var _isFetchMediaLoading = MutableLiveData<Boolean>()
     val isFetchMediaLoading: LiveData<Boolean> get() = _isFetchMediaLoading
@@ -70,10 +72,10 @@ class PickerViewModel @Inject constructor(
         }
 
     fun navigateToEditorPage(result: PickerResult) {
-        viewModelScope.launch {
-            val data = Pair(result, param.get().getEditorParam() ?: EditorParam())
-            _editorParam.value = data
-        }
+        val editorParam = param.get().getEditorParam() ?: EditorParam()
+        val data = Pair(result, editorParam)
+
+        _editorParam.value = data
     }
 
     fun setPickerParam(pickerParam: PickerParam?) {
@@ -104,16 +106,39 @@ class PickerViewModel @Inject constructor(
             return
         }
 
-        val result = mIncludeMedias.flattenFilter { it.isUrl() }
+        /*
+        * Determine the includeMedia where the source is URL or URI.
+        * If the URL, put at the first pair, otherwise put as second pair.
+        *
+        * the URLs will convert to local file using bitmapConverter.convert()
+        * */
+        val (urls, uris) = mIncludeMedias.flattenFilter { it.isUrl() }
 
-        bitmapConverter.convert(result.first)
+        val localFiles = uris
+            .map { it.asPickerFile() }
+            .map { it.toUiModel() }
+
+        bitmapConverter.convert(urls)
             .flowOn(dispatchers.io)
             .onStart { _isLoading.value = true }
             .onCompletion { _isLoading.value = false }
             .map {
-                _includeMedias.value = it + result.second
+                val uiModels = setIncludedUrls(it)
+
+                _includeMedias.value = uiModels + localFiles
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun setIncludedUrls(result: List<Pair<String, String>?>): List<MediaUiModel?> {
+        return result.map {
+            it?.first
+                ?.asPickerFile()
+                ?.toUiModel()
+                ?.also { model ->
+                    model.sourcePath = it.second
+                }
+        }
     }
 
     fun loadMedia(bucketId: Long, start: Int = 0) {
@@ -122,6 +147,7 @@ class PickerViewModel @Inject constructor(
                 .flowOn(dispatchers.io)
                 .onStart { _isFetchMediaLoading.value = true }
                 .onCompletion { _isFetchMediaLoading.value = false }
+                .catch { _isFetchMediaLoading.value = false }
                 .collect { data ->
                     _medias.value = mediaToUiModel(data)
 
@@ -137,5 +163,4 @@ class PickerViewModel @Inject constructor(
     fun isOnVideoRecording(isRecord: Boolean) {
         _isOnVideoRecording.value = isRecord
     }
-
 }

@@ -3,6 +3,7 @@ package com.tokopedia.oneclickcheckout.order.view
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressTokonow
@@ -176,6 +177,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 OccState.Failed(Failure(result.throwable))
             }
             orderShipment.value = OrderShipment()
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
             orderPayment.value = result.orderPayment
             validateUsePromoRevampUiModel = null
             lastValidateUsePromoRequest = null
@@ -359,6 +361,11 @@ class OrderSummaryPageViewModel @Inject constructor(
                 orderShop.value.shopShipment
             )
         }
+
+        if (result.throwable is AkamaiErrorException) {
+            globalEvent.value = OccGlobalEvent.Error(result.throwable)
+        }
+
         var hasOldPromoCode = result.clearOldPromoCode.isNotEmpty()
         if (hasOldPromoCode) {
             clearOldLogisticPromo(result.clearOldPromoCode)
@@ -394,7 +401,13 @@ class OrderSummaryPageViewModel @Inject constructor(
                 hasOldPromoCode = true
             }
         }
-        orderShipment.value = result.orderShipment
+        if (hasOldPromoCode) {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = true)
+        } else {
+            orderShipment.value = result.orderShipment
+                .copy(isShowLogisticPromoTickerMessage = orderShipment.value.isShowLogisticPromoTickerMessage)
+        }
         sendViewOspEe()
         sendPreselectedCourierOption(result.preselectedSpId)
         if (result.overweight != null) {
@@ -686,7 +699,10 @@ class OrderSummaryPageViewModel @Inject constructor(
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
                 globalEvent.value = OccGlobalEvent.UpdateLocalCacheAddress(newChosenAddress)
-                clearBboIfExist()
+                clearBboIfExist().also { isBoExist ->
+                    orderShipment.value =
+                        orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -799,7 +815,15 @@ class OrderSummaryPageViewModel @Inject constructor(
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
-                clearBboIfExist()
+                clearBboIfExist().also { isBoExist ->
+                    if (orderShipment.value.isShowLogisticPromoTickerMessage) {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = true)
+                    } else {
+                        orderShipment.value =
+                            orderShipment.value.copy(isShowLogisticPromoTickerMessage = isBoExist)
+                    }
+                }
             }
             globalEvent.value = newGlobalEvent
         }
@@ -886,7 +910,7 @@ class OrderSummaryPageViewModel @Inject constructor(
         orderPromo.value = OrderPromo(state = OccButtonState.NORMAL)
     }
 
-    fun updatePromoState(promoUiModel: PromoUiModel) {
+    private fun updatePromoState(promoUiModel: PromoUiModel) {
         orderPromo.value = orderPromo.value.copy(
             lastApply = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel),
             isDisabled = false,
@@ -992,7 +1016,7 @@ class OrderSummaryPageViewModel @Inject constructor(
                 val (resultValidateUse, isSuccess, newGlobalEvent) = promoProcessor.finalValidateUse(validateUsePromoRequest, orderCart)
                 if (resultValidateUse != null) {
                     validateUsePromoRevampUiModel = resultValidateUse
-                    updatePromoState(resultValidateUse.promoUiModel)
+                    updatePromoStateWithoutCalculate(resultValidateUse.promoUiModel)
                     if (isSuccess) {
                         doCheckout(products, shop, profile, onSuccessCheckout)
                         return@launch

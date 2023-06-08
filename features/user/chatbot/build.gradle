@@ -68,6 +68,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -90,6 +97,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

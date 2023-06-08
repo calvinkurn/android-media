@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
+import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -35,6 +36,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
+import com.tokopedia.purchase_platform.common.feature.dynamicdatapassing.domain.UpdateDynamicDataPassingUseCase
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
@@ -115,7 +117,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
         gson: Gson,
         executorSchedulers: ExecutorSchedulers,
-        eligibleForAddressUseCase: EligibleForAddressUseCase
+        eligibleForAddressUseCase: EligibleForAddressUseCase,
+        updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase,
+        dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
     ): ShipmentContract.Presenter {
         return ShipmentPresenter(
             compositeSubscription,
@@ -128,7 +132,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             analyticsPurchaseProtection, checkoutAnalytics,
             shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
-            executorSchedulers, eligibleForAddressUseCase, ratesWithScheduleUseCase
+            executorSchedulers, eligibleForAddressUseCase,
+            ratesWithScheduleUseCase, updateDynamicDataPassingUseCase, dynamicPaymentFeeCheckoutUseCase
         )
     }
 

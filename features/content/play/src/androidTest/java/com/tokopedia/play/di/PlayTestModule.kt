@@ -1,7 +1,10 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.activity.result.ActivityResultRegistry
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.annotation.Nullable
+import androidx.core.app.ActivityOptionsCompat
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -33,7 +36,6 @@ import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
-import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -99,16 +101,10 @@ class PlayTestModule(
 
     @Provides
     @PlayScope
-    @Named(VariantConstant.QUERY_VARIANT)
-    internal fun provideQueryVariant(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
-    }
-
-    @Provides
-    @PlayScope
-    internal fun provideAddToCartUseCase(graphqlUseCase: GraphqlUseCase,
-                                         atcMapper: AddToCartDataMapper,
-                                         chosenAddressHelper: ChosenAddressRequestHelper
+    internal fun provideAddToCartUseCase(
+        graphqlUseCase: GraphqlUseCase,
+        atcMapper: AddToCartDataMapper,
+        chosenAddressHelper: ChosenAddressRequestHelper
     ): AddToCartUseCase {
         return AddToCartUseCase(graphqlUseCase, atcMapper, chosenAddressHelper)
     }
@@ -167,7 +163,6 @@ class PlayTestModule(
     @Provides
     fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
 
-
     /**
      * SSE
      */
@@ -188,5 +183,22 @@ class PlayTestModule(
     @Provides
     fun provideSharedPref(@ApplicationContext context: Context): PlayPreference {
         return playPreference(context)
+    }
+
+    private val resultRegistry = object : ActivityResultRegistry() {
+        override fun <I : Any?, O : Any?> onLaunch(
+            requestCode: Int,
+            contract: ActivityResultContract<I, O>,
+            input: I,
+            options: ActivityOptionsCompat?
+        ) {
+            dispatchResult(requestCode, null)
+        }
+    }
+
+    @PlayScope
+    @Provides
+    fun provideActivityResultRegistry(): ActivityResultRegistry {
+        return resultRegistry
     }
 }
