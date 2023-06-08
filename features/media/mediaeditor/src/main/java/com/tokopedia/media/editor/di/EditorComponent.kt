@@ -6,7 +6,7 @@ import com.tokopedia.media.editor.di.module.*
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorActivity
-import com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextlatar.AddTextLatarBottomSheet
+import com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground.AddTextBackgroundBottomSheet
 import dagger.Component
 
 @ActivityScope
@@ -25,5 +25,5 @@ interface EditorComponent {
     fun inject(activity: EditorActivity)
     fun inject(activity: DetailEditorActivity)
     fun inject(activity: AddTextActivity)
-    fun inject(fragment: AddTextLatarBottomSheet)
+    fun inject(fragment: AddTextBackgroundBottomSheet)
 }

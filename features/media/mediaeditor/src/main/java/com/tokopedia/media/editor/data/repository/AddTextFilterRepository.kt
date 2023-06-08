@@ -15,10 +15,10 @@ import com.tokopedia.media.editor.data.entity.AddTextColorManager
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FULL
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_FLOATING
-import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_LATAR_TEMPLATE_SIDE_CUT
-import com.tokopedia.media.editor.ui.uimodel.LatarTemplateDetail
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_FULL
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_FLOATING
+import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_SIDE_CUT
+import com.tokopedia.media.editor.ui.uimodel.BackgroundTemplateDetail
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
 
@@ -41,7 +41,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
     private var floatingWidthAdjustment = 0f
     private var paddingFloating = 0f
 
-    private var latarModel: Int? = null
+    private var backgroundModel: Int? = null
 
     private var fontSize = 0f
         set(value) {
@@ -52,11 +52,11 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             paddingHorizontal = PADDING_HORIZONTAL_PERCENTAGE * value
             adjustmentPadding = ADJUSTMENT_PADDING_PERCENTAGE * value
 
-            if (latarModel == TEXT_LATAR_TEMPLATE_FLOATING) {
+            if (backgroundModel == TEXT_BACKGROUND_TEMPLATE_FLOATING) {
                 // when using template floating need extra space
                 paddingFloating = PADDING_FLOATING_ENABLE * value
 
-                // get total horizontal padding (padding x2) to reduce latar width
+                // get total horizontal padding (padding x2) to reduce background width
                 floatingWidthAdjustment = paddingFloating * 2
             }
         }
@@ -77,7 +77,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         )?.let { bitmap ->
             val canvas = Canvas(bitmap)
 
-            latarModel = data.getLatarTemplate()?.latarModel
+            backgroundModel = data.getBackgroundTemplate()?.addTextBackgroundModel
             fontSize = originalImageHeight * FONT_SIZE_PERCENTAGE
 
             val mTextPaint = createTextPaint(data.textColor.toColorInt(), data.getTypeFaceStyle())
@@ -86,7 +86,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
             canvas.save()
 
-            var latarWidth = originalImageWidth
+            var backgroundWidth = originalImageWidth
 
             when (data.textPosition) {
                 EditorAddTextUiModel.TEXT_POSITION_RIGHT -> {
@@ -94,8 +94,8 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                     fontSize = originalImageWidth * FONT_SIZE_PERCENTAGE
                     mTextPaint.textSize = fontSize
 
-                    // update latar size
-                    latarWidth = originalImageHeight
+                    // update background size
+                    backgroundWidth = originalImageHeight
 
                     // update text width bound to follow image height
                     mTextLayout = createStaticLayout(data ,canvas.height - (paddingHorizontal * 2).toInt(), mTextPaint)
@@ -129,12 +129,12 @@ class AddTextFilterRepositoryImpl @Inject constructor(
                 }
             }
 
-            // latar only on bottom & right
-            getAddTextBackgroundDrawable(data.getLatarTemplate())?.let {
-                val latarHeight = (mTextLayout!!.height + paddingVertical + adjustmentPadding).toInt()
-                latarWidth -= floatingWidthAdjustment.toInt()
+            // background only on bottom & right
+            getAddTextBackgroundDrawable(data.getBackgroundTemplate())?.let {
+                val backgroundHeight = (mTextLayout!!.height + paddingVertical + adjustmentPadding).toInt()
+                backgroundWidth -= floatingWidthAdjustment.toInt()
 
-                it.toBitmap().scale(latarWidth, latarHeight).apply {
+                it.toBitmap().scale(backgroundWidth, backgroundHeight).apply {
                     canvas.drawBitmap(this, -(paddingHorizontal - paddingFloating), -adjustmentPadding, null)
                 }
             }
@@ -146,19 +146,19 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun getAddTextBackgroundDrawable(latarDetail: LatarTemplateDetail?): Drawable?{
-        if (latarDetail == null) return null
+    private fun getAddTextBackgroundDrawable(backgroundDetail: BackgroundTemplateDetail?): Drawable?{
+        if (backgroundDetail == null) return null
 
-        when (latarDetail.latarModel) {
-            TEXT_LATAR_TEMPLATE_FULL -> editorR.drawable.add_text_latar_full
-            TEXT_LATAR_TEMPLATE_FLOATING -> editorR.drawable.add_text_latar_floating
-            TEXT_LATAR_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_latar_cut
+        when (backgroundDetail.addTextBackgroundModel) {
+            TEXT_BACKGROUND_TEMPLATE_FULL -> editorR.drawable.add_text_background_full
+            TEXT_BACKGROUND_TEMPLATE_FLOATING -> editorR.drawable.add_text_background_floating
+            TEXT_BACKGROUND_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_background_cut
             else -> null
         }.apply {
             this?.let {
-                ContextCompat.getDrawable(context, it)?.let { latarBg ->
-                    colorCollection.implementDrawableColor(latarBg, latarDetail.latarColor)
-                    return latarBg
+                ContextCompat.getDrawable(context, it)?.let { backgroundDrawable ->
+                    colorCollection.implementDrawableColor(backgroundDrawable, backgroundDetail.addTextBackgroundColor)
+                    return backgroundDrawable
                 }
             }
             return null
@@ -167,7 +167,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
     private fun createStaticLayout(data: EditorAddTextUiModel, width: Int, paint: TextPaint): StaticLayout {
         val text = data.textValue.let {
-            if (data.getLatarTemplate() != null) {
+            if (data.getBackgroundTemplate() != null) {
                 ellipsizeDrawText(it, paint, width.toFloat())
             } else {
                 it

@@ -96,7 +96,7 @@ class AddTextFragment @Inject constructor(
             textValue = getUserInput(),
             textPosition = positionIndex,
             textTemplate = viewModel.textData.textTemplate,
-            textTemplateLatar = viewModel.textData.getLatarTemplate()
+            textTemplateBackgroundDetail = viewModel.textData.getBackgroundTemplate()
         )
     }
 
@@ -195,7 +195,7 @@ class AddTextFragment @Inject constructor(
             // left -> right -> top -> bottom
             val positionViewContainer = it.positionOverlayContainer
             for (i in 0 until positionViewContainer.childCount) {
-                // skip top & left when template is latar
+                // skip top & left when template is using background
                 if (viewModel.textData.textTemplate == TEXT_TEMPLATE_BACKGROUND && (i == 0 || i == 2)) {
                     continue
                 }

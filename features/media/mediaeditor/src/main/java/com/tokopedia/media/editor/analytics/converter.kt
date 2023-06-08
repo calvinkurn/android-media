@@ -64,8 +64,8 @@ fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): Strin
 
         text += "_$colorOnText"
 
-        textValue.getLatarTemplate()?.let {
-            text += "_${it.latarModel}"
+        textValue.getBackgroundTemplate()?.let {
+            text += "_${it.addTextBackgroundModel}"
         }
 
         text += when (textValue.textPosition) {

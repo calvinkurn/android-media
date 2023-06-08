@@ -81,10 +81,10 @@
     <string name="add_text_tips_carousel_item_2">Atau, kamu bisa tambahin keunggulan produk sesuai keinginanmu. Yuk, cobain!</string>
     
     <!-- Add Text Bottomsheet latar text -->
-    <string name="add_text_latar_tips">Teks yang sudah kamu buat bisa kepotong saat kamu pakai Latar Teks.</string>
-    <string name="add_text_latar_content_title_color">Pilihan Warna:</string>
-    <string name="add_text_latar_content_title_template">Pilih Template:</string>
-    <string name="add_text_latar_content_btn_text">Lanjut</string>
+    <string name="add_text_background_tips">Teks yang sudah kamu buat bisa kepotong saat kamu pakai Latar Teks.</string>
+    <string name="add_text_background_content_title_color">Pilihan Warna:</string>
+    <string name="add_text_background_content_title_template">Pilih Template:</string>
+    <string name="add_text_background_content_btn_text">Lanjut</string>
 
     <!-- Add Text dialog text -->
     <string name="add_text_dialog_save_title">Mau simpan buat template?</string>

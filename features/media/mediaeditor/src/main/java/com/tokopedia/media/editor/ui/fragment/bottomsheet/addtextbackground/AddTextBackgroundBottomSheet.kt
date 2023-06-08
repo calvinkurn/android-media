@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextlatar
+package com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -20,16 +20,16 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
-class AddTextLatarBottomSheet(
+class AddTextBackgroundBottomSheet(
     private val imgUrl: String?,
-    val onFinish: (color: String, latarModel: Int) -> Unit
+    val onFinish: (color: String, backgroundModel: Int) -> Unit
 ) : BottomSheetUnify() {
 
     @Inject
     lateinit var addTextColorManager: AddTextColorManager
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
-    private var templateModelRef: ArrayList<AddTextLatarBtmItem> = arrayListOf()
+    private var templateModelRef: ArrayList<AddTextBackgroundBtmItem> = arrayListOf()
     private var mNextButton: UnifyButton? = null
     private var mColorButtonContainerRef: LinearLayout? = null
 
@@ -47,13 +47,13 @@ class AddTextLatarBottomSheet(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        inflater.inflate(editorR.layout.add_text_latar_bottomsheet, container)?.apply {
+        inflater.inflate(editorR.layout.add_text_background_bottomsheet_layout, container)?.apply {
             setChild(this)
 
             initializeView(this)
             initializeActiveState()
             initializeButtonListener()
-            setLatarItem()
+            setBackgroundItem()
         }
 
         setTitle(TITLE)
@@ -144,7 +144,7 @@ class AddTextLatarBottomSheet(
         templateModelRef[modelSelectionIndex].setViewState(true)
     }
 
-    private fun AddTextLatarBtmItem.setViewState(isActive: Boolean) {
+    private fun AddTextBackgroundBtmItem.setViewState(isActive: Boolean) {
         if (isActive) {
             setActive()
         } else {
@@ -161,7 +161,7 @@ class AddTextLatarBottomSheet(
         colorButtonRef[colorSelectionIndex].setChipState(true)
 
         // update BottomSheetItem
-        setLatarItem()
+        setBackgroundItem()
     }
 
     private fun ChipsUnify.setChipState(isActive: Boolean) {
@@ -172,15 +172,15 @@ class AddTextLatarBottomSheet(
         }
     }
 
-    // initialize item image & latar model
-    private fun setLatarItem() {
+    // initialize item image & background model
+    private fun setBackgroundItem() {
         imgUrl?.let { imgUrlReady ->
             templateModelRef.forEachIndexed { index, item ->
                 item.setImage(imgUrlReady)
 
-                // please refer index with EditorAddTextUiModel.TEXT_LATAR_TEMPLATE_FULL
-                // please refer color with EditorAddTextUiModel.TEXT_LATAR_TEMPLATE_BLACK
-                item.setLatarModel(index, colorSelectionIndex)
+                // please refer index with EditorAddTextUiModel.TEXT_BACKGROUND_TEMPLATE_FULL
+                // please refer color with EditorAddTextUiModel.TEXT_BACKGROUND_TEMPLATE_BLACK
+                item.setBackgroundModel(index, colorSelectionIndex)
             }
         }
     }

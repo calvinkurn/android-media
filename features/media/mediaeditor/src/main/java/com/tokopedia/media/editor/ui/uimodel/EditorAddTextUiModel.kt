@@ -14,23 +14,23 @@ class EditorAddTextUiModel(
     var textAlignment: Int = TEXT_ALIGNMENT_CENTER,
     var textPosition: Int = TEXT_POSITION_BOTTOM,
     var textTemplate: Int = TEXT_TEMPLATE_FREE,
-    private var textTemplateLatar: LatarTemplateDetail? = null,
+    private var textTemplateBackgroundDetail: BackgroundTemplateDetail? = null,
     var textImagePath: String? = null
 ) : Parcelable {
 
-    // need to encapsulate latar template model to prevent error when using `Free Text` but accessing `Latar Text` template
-    fun getLatarTemplate(): LatarTemplateDetail? {
+    // need to encapsulate background template model to prevent error when using `Free Text` but accessing `Latar Text` template
+    fun getBackgroundTemplate(): BackgroundTemplateDetail? {
         return if (textTemplate != TEXT_TEMPLATE_BACKGROUND) {
             return null
         } else {
-            textTemplateLatar
+            textTemplateBackgroundDetail
         }
     }
 
-    fun setLatarTemplate(latarTemplate: LatarTemplateDetail) {
-        textTemplateLatar = latarTemplate
+    fun setBackgroundTemplate(backgroundTemplate: BackgroundTemplateDetail) {
+        textTemplateBackgroundDetail = backgroundTemplate
         if (textTemplate == TEXT_TEMPLATE_BACKGROUND) {
-            // if using latar text can be only on bottom or right
+            // if using background, text can be only on bottom or right
             if (textPosition == TEXT_POSITION_TOP || textPosition == TEXT_POSITION_LEFT) {
                 textPosition = TEXT_POSITION_BOTTOM
             }
@@ -73,19 +73,19 @@ class EditorAddTextUiModel(
         const val TEXT_TEMPLATE_FREE = AddTextToolAdapter.FREE_TEXT_INDEX
         const val TEXT_TEMPLATE_BACKGROUND = AddTextToolAdapter.BACKGROUND_TEXT_INDEX
 
-        // --- if edit this line please check AddTextLatarBottomSheet
-        const val TEXT_LATAR_TEMPLATE_FULL = 0
-        const val TEXT_LATAR_TEMPLATE_SIDE_CUT = 1
-        const val TEXT_LATAR_TEMPLATE_FLOATING = 2
+        // --- if edit this line please check AddTextBackgroundBottomSheet
+        const val TEXT_BACKGROUND_TEMPLATE_FULL = 0
+        const val TEXT_BACKGROUND_TEMPLATE_SIDE_CUT = 1
+        const val TEXT_BACKGROUND_TEMPLATE_FLOATING = 2
 
-        const val TEXT_LATAR_TEMPLATE_BLACK = 0
-        const val TEXT_LATAR_TEMPLATE_WHITE = 1
+        const val TEXT_BACKGROUND_TEMPLATE_BLACK = 0
+        const val TEXT_BACKGROUND_TEMPLATE_WHITE = 1
         // ---
     }
 }
 
 @Parcelize
-data class LatarTemplateDetail(
-    val latarColor: String,
-    val latarModel: Int
+data class BackgroundTemplateDetail(
+    val addTextBackgroundColor: String,
+    val addTextBackgroundModel: Int
 ) : Parcelable

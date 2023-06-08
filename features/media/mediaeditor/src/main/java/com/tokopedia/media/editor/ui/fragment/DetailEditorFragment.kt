@@ -53,7 +53,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
-import com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextlatar.AddTextLatarBottomSheet
+import com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground.AddTextBackgroundBottomSheet
 import com.tokopedia.media.editor.ui.fragment.bottomsheet.EditorAddTextTipsBottomSheet
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.utils.*
@@ -440,16 +440,16 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onAddSingleBackgroundText() {
         editorDetailAnalytics.clickAddTextBackgroundText()
-        showAddTextLatarSelection{ color, model ->
+        showAddTextBackgroundSelection{ color, model ->
             if (data.addTextValue?.textTemplate == TEXT_TEMPLATE_FREE) {
                 isEdited = true
             }
 
             data.addTextValue?.let {
                 it.textTemplate = TEXT_TEMPLATE_BACKGROUND
-                it.setLatarTemplate(LatarTemplateDetail(
-                    latarColor = color,
-                    latarModel = model
+                it.setBackgroundTemplate(BackgroundTemplateDetail(
+                    addTextBackgroundColor = color,
+                    addTextBackgroundModel = model
                 ))
 
                 it.textColor = addTextColorManager.getTextColorOnBackgroundMode(color)
@@ -1492,8 +1492,8 @@ class DetailEditorFragment @Inject constructor(
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
-    private fun showAddTextLatarSelection(onFinish: (color: String, latarModel: Int) -> Unit) {
-        AddTextLatarBottomSheet(
+    private fun showAddTextBackgroundSelection(onFinish: (color: String, backgroundModel: Int) -> Unit) {
+        AddTextBackgroundBottomSheet(
             data.resultUrl,
             onFinish
         ).show(
