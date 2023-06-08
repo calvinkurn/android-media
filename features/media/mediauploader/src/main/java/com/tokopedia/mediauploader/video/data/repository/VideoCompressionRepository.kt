@@ -1,15 +1,14 @@
 package com.tokopedia.mediauploader.video.data.repository
 
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
-import com.tokopedia.mediauploader.video.internal.VideoCompressor
-import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
-import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.compressor.data.Configuration
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.di.UploaderQualifier
+import com.tokopedia.mediauploader.common.logger.logCompressionError
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam
-import timber.log.Timber
+import com.tokopedia.mediauploader.video.internal.VideoCompressor
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import java.io.File
 import javax.inject.Inject
 import kotlin.math.min
@@ -99,9 +98,7 @@ class VideoCompressionRepositoryImpl @Inject constructor(
 
                 return compressedPath
             } else {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    Timber.d(compression.failureMessage)
-                }
+                logCompressionError(compression.failureMessage)
 
                 return originalPath
             }

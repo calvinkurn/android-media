@@ -28,7 +28,7 @@ class UploaderUseCase @Inject constructor(
     private var withTranscode = true
     private var shouldCompress = false
     private var isSecure = false
-    private var isRetry = true
+    private var isRetriable = true
     private var extraHeader: Map<String, String> = mapOf()
     private var extraBody: Map<String, String> = mapOf()
 
@@ -41,7 +41,7 @@ class UploaderUseCase @Inject constructor(
         sourceId = params.getString(PARAM_SOURCE_ID, "")
         file = params.getObject(PARAM_FILE_PATH) as File
         isSecure = params.getBoolean(PARAM_IS_SECURE, false)
-        isRetry = params.getBoolean(PARAM_IS_RETRY, false)
+        isRetriable = params.getBoolean(PARAM_IS_RETRY, false)
         extraHeader = params.getObject(PARAM_EXTRA_HEADER) as Map<String, String>
         extraBody = params.getObject(PARAM_EXTRA_BODY) as Map<String, String>
 
@@ -63,7 +63,7 @@ class UploaderUseCase @Inject constructor(
                 progressUploader,
                 withTranscode,
                 shouldCompress,
-                isRetry
+                isRetriable
             )
         }
     )
@@ -111,6 +111,7 @@ class UploaderUseCase @Inject constructor(
         filePath: File,
         withTranscode: Boolean = true,
         isSecure: Boolean = false,
+        isRetriable: Boolean = false,
         shouldCompress: Boolean = false,
         extraHeader: Map<String, String> = mapOf(),
         extraBody: Map<String, String> = mapOf()
@@ -120,6 +121,7 @@ class UploaderUseCase @Inject constructor(
             putString(PARAM_SOURCE_ID, sourceId)
             putObject(PARAM_FILE_PATH, filePath)
             putBoolean(PARAM_IS_SECURE, isSecure)
+            putBoolean(PARAM_IS_RETRY, isRetriable)
             putBoolean(PARAM_SHOULD_COMPRESS, shouldCompress)
             putObject(PARAM_EXTRA_HEADER, extraHeader)
             putObject(PARAM_EXTRA_BODY, extraBody)

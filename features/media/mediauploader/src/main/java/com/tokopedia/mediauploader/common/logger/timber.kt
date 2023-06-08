@@ -15,3 +15,14 @@ fun trackToTimber(filePath: File? = null, sourceId: String, message: String) {
 fun trackToTimber(sourceId: String = "", errorMessage: String) {
     ServerLogger.log(Priority.P1, "MEDIA_UPLOADER_ERROR", mapOf("type" to sourceId, "err" to errorMessage))
 }
+
+fun logCompressionError(message: String?) {
+    if (message == null) return
+
+    ServerLogger
+        .log(
+            Priority.P2,
+            "MEDIA_UPLOADER_COMPRESSOR",
+            mapOf("err" to message)
+        )
+}
