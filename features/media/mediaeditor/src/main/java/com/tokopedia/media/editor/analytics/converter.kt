@@ -76,7 +76,5 @@ fun addTextToText(textDetail: EditorAddTextUiModel?, colorOnText: String): Strin
         }
 
         return text
-    } ?: run{
-        ""
-    }
+    } ?: ""
 }
