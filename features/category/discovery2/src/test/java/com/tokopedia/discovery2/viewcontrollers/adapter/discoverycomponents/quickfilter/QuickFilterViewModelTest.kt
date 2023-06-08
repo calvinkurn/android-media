@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentAdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -16,9 +17,12 @@ import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.usecase.QuickFilterUseCase
+import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.user.session.UserSession
 import io.mockk.MockKAnnotations
 import io.mockk.OfTypeMatcher
@@ -26,10 +30,13 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkConstructor
+import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkConstructor
+import io.mockk.unmockkObject
 import io.mockk.unmockkStatic
+import io.mockk.verify
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -333,7 +340,7 @@ class QuickFilterViewModelTest {
     }
 
     @Test
-    fun `test for selected filters flow in addFilterOptions() when chipSize small or not present`(){
+    fun `test for selected filters flow in addFilterOptions() when chipSize small or not present`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         val viewModel: QuickFilterViewModel =
             spyk(QuickFilterViewModel(application, componentsItem, 99))
@@ -358,7 +365,7 @@ class QuickFilterViewModelTest {
             )
         } returns arrayListOf(filter)
         val mockProp = mockk<Properties>()
-        every { componentsItem.properties} returns mockProp
+        every { componentsItem.properties } returns mockProp
         every { mockProp.chipSize } returns Constant.ChipSize.SMALL
         viewModel.fetchQuickFilters()
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
@@ -366,7 +373,7 @@ class QuickFilterViewModelTest {
     }
 
     @Test
-    fun `test for selected filters flow in addFilterOptions() when chipSize is Large and no pre selected quick filter`(){
+    fun `test for selected filters flow in addFilterOptions() when chipSize is Large and no pre selected quick filter`() {
         val componentsItem: ComponentsItem = mockk(relaxed = true)
         val viewModel: QuickFilterViewModel =
             spyk(QuickFilterViewModel(application, componentsItem, 99))
@@ -391,7 +398,7 @@ class QuickFilterViewModelTest {
             )
         } returns arrayListOf(filter)
         val mockProp = mockk<Properties>()
-        every { componentsItem.properties} returns mockProp
+        every { componentsItem.properties } returns mockProp
         every { mockProp.chipSize } returns Constant.ChipSize.LARGE
         viewModel.fetchQuickFilters()
         assert((viewModel.getQuickFilterLiveData().value as ArrayList<Filter>).isNotEmpty())
@@ -517,6 +524,58 @@ class QuickFilterViewModelTest {
     }
 
     @Test
+    fun `test for setFilterData for non dynamic component`() {
+        val componentsItem: ComponentsItem = spyk()
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns false
+        every { componentsItem.id } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        val mockkFilter: Filter = mockk()
+        every { filterModel.data.filter } returns listOf(mockkFilter)
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+        assert(componentsItem.filters.size == 1 && componentsItem.filters.first() == mockkFilter)
+    }
+    @Test
+    fun `test for setSortData for non dynamic component`() {
+        val componentsItem: ComponentsItem = spyk()
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns false
+        every { componentsItem.id } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        val mockkSort: Sort = mockk()
+        every { filterModel.data.sort } returns listOf(mockkSort)
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+    }
+
+    @Test
     fun `test for filterProductsCount`() {
         val componentsItem: ComponentsItem = spyk()
         val quickFilterGQLRepository: IQuickFilterGqlRepository = mockk()
@@ -576,5 +635,148 @@ class QuickFilterViewModelTest {
 
 
     }
+
+    @Test
+    fun `test for onDropDownFilterSelected`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.onDropDownFilterSelected(listOf(spyk()))
+    }
+
+    @Test
+    fun `test for onApplySortFilter with empty params for selected sort and filter`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        val applySortFilterModel: SortFilterBottomSheet.ApplySortFilterModel =
+            SortFilterBottomSheet.ApplySortFilterModel(mapOf(), mapOf(), mapOf(), "", mapOf())
+        viewModel.onApplySortFilter(applySortFilterModel)
+    }
+
+    @Test
+    fun `should update selected filters and apply filter to TargetComponent when applying sort filter with non-empty selected filter and sort maps`() {
+        val componentsItem = spyk<ComponentsItem>()
+        val mockFilterController = mockk<FilterController>()
+        val mockQuickFilterUseCase = mockk<QuickFilterUseCase>()
+        val mockTargetComponent = spyk<ComponentsItem>()
+        mockkObject(Utils)
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        viewModel.quickFilterUseCase  = mockQuickFilterUseCase
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns false
+        every { componentsItem.id } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        val mockkSort: Sort = mockk()
+        every { mockkSort.key } returns "sort1"
+        every { filterModel.data.sort } returns listOf(mockkSort)
+        every { filterModel.data.filter } returns listOf()
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+        viewModel.components.filterController = mockFilterController
+        val searchParamHashMap : HashMap<String, String> = hashMapOf()
+        every { mockQuickFilterUseCase.onFilterApplied(any(), any(), any()) } returns true
+        every { componentsItem.searchParameter.getSearchParameterHashMap() } returns searchParamHashMap
+        every { componentsItem.searchParameter.contains(any()) } returns true
+        every { componentsItem.searchParameter.get(any()) } returns DEFAULT_SORT_ID
+        every { componentsItem.filterController.getFilterCount() } returns 10
+        every { componentsItem.filterController.getActiveFilterMap() } returns hashMapOf("filter1" to "value1")
+        componentsItem.selectedFilters = hashMapOf("filter1" to "value")
+        componentsItem.selectedSort = hashMapOf("sort1" to "value")
+        every { Utils.getTargetComponentOfFilter(any()) } returns mockTargetComponent
+
+        val applySortFilterModel = SortFilterBottomSheet.ApplySortFilterModel(
+            mapParameter = hashMapOf("filter1" to "value1","sort1" to "value2"),
+            selectedFilterMapParameter = hashMapOf("filter1" to "value1"),
+            selectedSortMapParameter = hashMapOf("sort1" to "value2"),
+            selectedSortName = "ob_sort",
+            sortAutoFilterMapParameter = hashMapOf()
+        )
+        viewModel.onApplySortFilter(applySortFilterModel)
+
+        verify {
+            componentsItem.selectedFilters = hashMapOf("filter1" to "value1")
+            componentsItem.selectedSort = hashMapOf("sort1" to "value2")
+            mockTargetComponent.selectedFilters = hashMapOf("filter1" to "value1")
+            mockTargetComponent.selectedSort = hashMapOf("sort1" to "value2")
+            mockQuickFilterUseCase.onFilterApplied(mockTargetComponent, any(), any())
+        }
+        TestCase.assertEquals(true, viewModel.syncData.value)
+        unmockkObject(Utils)
+    }
+
+    @Test
+    fun `test for clearQuickFilters`() {
+        val componentsItem: ComponentsItem = spyk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.clearQuickFilters()
+    }
+
+    @Test
+    fun `should update filter count live data with correct value when sort filters are present`() {
+        val componentsItem: ComponentsItem = spyk()
+        val filterRepository: FilterRepository = mockk()
+        val viewModel: QuickFilterViewModel =
+            spyk(QuickFilterViewModel(application, componentsItem, 99))
+        viewModel.filterRepository = filterRepository
+        val prop: Properties = mockk()
+        every { componentsItem.properties } returns prop
+        every { prop.dynamic } returns false
+        every { componentsItem.id } returns "1001"
+        every { componentsItem.userAddressData } returns null
+        val filterModel: DynamicFilterModel = spyk()
+        val mockkSort: Sort = mockk()
+        every { mockkSort.key } returns "ob_sort"
+        every { filterModel.data.sort } returns listOf(mockkSort)
+        every { filterModel.data.filter } returns listOf()
+        coEvery {
+            filterRepository.getFilterData(
+                "1001",
+                any(),
+                componentsItem.pageEndPoint
+            )
+        } returns filterModel
+
+        viewModel.fetchDynamicFilterModel()
+        val mockFilterController = mockk<FilterController>()
+        viewModel.components.filterController = mockFilterController
+        every { componentsItem.searchParameter.contains("ob_sort") } returns true
+        every { componentsItem.searchParameter.get("ob_sort") } returns "selectedId"
+        every { mockFilterController.getFilterCount() } returns 10
+
+        viewModel.getSelectedFilterCount()
+
+        val expectedFilterCount = 11
+        assert(expectedFilterCount ==  viewModel.filterCountLiveData.value)
+    }
+
+    @Test
+    fun `should update filter count live data with correct value when no sort filters are present`() {
+        val componentsItem: ComponentsItem = spyk()
+        val mockFilterController = mockk<FilterController>()
+        val viewModel = spyk(QuickFilterViewModel(application, componentsItem, 0))
+        viewModel.components.filterController = mockFilterController
+        every { componentsItem.searchParameter.contains(any()) } returns false
+        every { mockFilterController.getFilterCount() } returns 10
+        viewModel.getSelectedFilterCount()
+
+        val expectedFilterCount = 10 // No additional sort filter is selected
+        assert(expectedFilterCount == viewModel.filterCountLiveData.value)
+    }
+
+
 
 }
