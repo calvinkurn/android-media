@@ -2787,6 +2787,9 @@ class ShipmentPresenter @Inject constructor(
                     val boPromoCode = getBoPromoCode(shipmentCartItemModel)
                     view?.renderCourierStateFailed(itemPosition, true, false)
                     view?.logOnErrorLoadCourier(t, itemPosition, boPromoCode)
+                    if (t is AkamaiErrorException) {
+                        view?.showToastErrorAkamai(t.message)
+                    }
                 }
             }
         } else {

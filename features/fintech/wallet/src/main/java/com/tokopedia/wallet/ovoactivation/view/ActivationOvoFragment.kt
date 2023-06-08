@@ -11,11 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wallet.R
+import com.tokopedia.wallet.databinding.FragmentActivationOvoBinding
 import com.tokopedia.wallet.di.WalletComponentInstance
+import com.tokopedia.wallet.ovoactivation.OvoActivationAnalytics
 import javax.inject.Inject
 
 /**
@@ -23,9 +23,6 @@ import javax.inject.Inject
  */
 class ActivationOvoFragment : BaseDaggerFragment() {
 
-    private lateinit var activationNewAccountBtn: UnifyButton
-    private lateinit var changeNumberBtn: UnifyButton
-    private lateinit var activationDesc: Typography
     private lateinit var registeredApplink: String
     private var phoneNumber: String = ""
     private var changeMsisdnApplink: String = ""
@@ -33,8 +30,11 @@ class ActivationOvoFragment : BaseDaggerFragment() {
     @Inject
     lateinit var ovoActivationAnalytics: OvoActivationAnalytics
 
+    private var binding by autoClearedNullable<FragmentActivationOvoBinding>()
+
     override fun initInjector() {
-        val walletComponent = WalletComponentInstance.getComponent(activity?.application as Application)
+        val walletComponent =
+            WalletComponentInstance.getComponent(activity?.application as Application)
         walletComponent.inject(this)
     }
 
@@ -42,12 +42,13 @@ class ActivationOvoFragment : BaseDaggerFragment() {
         return null
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_activation_ovo, container, false)
-        activationNewAccountBtn = view.findViewById(R.id.activation_ovo_btn)
-        changeNumberBtn = view.findViewById(R.id.change_number_btn)
-        activationDesc = view.findViewById(R.id.activation_desc)
-        return view
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentActivationOvoBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,22 +60,28 @@ class ActivationOvoFragment : BaseDaggerFragment() {
             changeMsisdnApplink = it.getString(ActivationOvoActivity.CHANGE_MSISDN_APPLINK, "")
         }
 
-        activationDesc.text = setContentAndBoldPhoneNumber()
-        activationNewAccountBtn.setOnClickListener {
+        binding?.activationDesc?.text = setContentAndBoldPhoneNumber()
+        binding?.activationOvoBtn?.setOnClickListener {
             ovoActivationAnalytics.eventClickMakeNewOvoAccount()
             directPageWithApplink(registeredApplink)
         }
-        changeNumberBtn.setOnClickListener {
+        binding?.changeNumberBtn?.setOnClickListener {
             ovoActivationAnalytics.eventClickChangePhoneNumber()
             directPageWithApplink(changeMsisdnApplink)
         }
     }
 
     private fun setContentAndBoldPhoneNumber(): SpannableString {
-        val activationDesc = String.format(getString(R.string.wallet_activation_ovo_desc), phoneNumber)
+        val activationDesc =
+            String.format(getString(R.string.wallet_activation_ovo_desc), phoneNumber)
         val spannableString = SpannableString(activationDesc)
         val endIndex = 22 + phoneNumber.length
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), 22, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(
+            StyleSpan(Typeface.BOLD),
+            22,
+            endIndex,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return spannableString
     }
 
@@ -90,8 +97,10 @@ class ActivationOvoFragment : BaseDaggerFragment() {
 
     companion object {
 
-        fun newInstance(registeredApplink: String,
-                        phoneNumber: String, changeMsisdnApplink: String): ActivationOvoFragment {
+        fun newInstance(
+            registeredApplink: String,
+            phoneNumber: String, changeMsisdnApplink: String
+        ): ActivationOvoFragment {
             val fragment = ActivationOvoFragment()
             val bundle = Bundle()
             bundle.putString(ActivationOvoActivity.REGISTERED_APPLINK, registeredApplink)

@@ -212,6 +212,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
 
                     shouldShowCampaign = ongoingCampaignData == null
+                    isWishlisted = it.data.isWishlist
                 }
             }
 
@@ -874,7 +875,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     widget = data,
                     metadata = RecommendationWidgetMetadata(
                         pageSource = RecommendationWidgetSource.PDP.xSourceValue,
-                        pageName = data.pageName,
+                        pageName = data.pageName
                     ),
                     trackingModel = RecommendationWidgetTrackingModel(
                         androidPageName = RecommendationWidgetSource.PDP.trackingValue

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -104,6 +105,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.getLocali
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.updateLocalizingAddressDataFromOther
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.updateTokoNowData
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
@@ -113,6 +115,7 @@ import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticCommon.util.PinpointRolloutHelper.eligibleForRevamp
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -194,6 +197,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.build
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import com.tokopedia.utils.currency.CurrencyFormatUtil.getThousandSeparatorString
@@ -267,6 +271,8 @@ class ShipmentFragment :
 
     @Inject
     lateinit var ePharmacyAnalytics: EPharmacyAnalytics
+
+    private var toasterErrorAkamai: Snackbar? = null
 
     private var hasClearPromoBeforeCheckout = false
     private var hasRunningApiCall = false
@@ -607,6 +613,22 @@ class ShipmentFragment :
                 )
                     .show()
             }
+        }
+    }
+
+    fun showToastErrorAkamai(message: String?) {
+        if (toasterErrorAkamai == null) {
+            val actionText =
+                activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+            toasterErrorAkamai = build(
+                view!!, message!!,
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                actionText,
+                View.OnClickListener { view: View? -> })
+        }
+        if (toasterErrorAkamai?.isShownOrQueued == false) {
+            toasterErrorAkamai?.show()
         }
     }
 
@@ -1003,8 +1025,7 @@ class ShipmentFragment :
 
     private fun onResultFromCourierPinpoint(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data!!.extras != null) {
-            val locationPass =
-                data.extras!!.getParcelable<LocationPass>(LogisticConstant.EXTRA_EXISTING_LOCATION)
+            val locationPass = getLocationPassFromIntent(data)
             if (locationPass != null) {
                 shipmentPresenter.editAddressPinpoint(
                     locationPass.latitude,
@@ -1015,6 +1036,23 @@ class ShipmentFragment :
         } else {
             shipmentAdapter.lastServiceId = 0
         }
+    }
+
+    private fun getLocationPassFromIntent(data: Intent): LocationPass? {
+        var locationPass =
+            data.extras!!.getParcelable<LocationPass>(LogisticConstant.EXTRA_EXISTING_LOCATION)
+        if (locationPass == null) {
+            val addressData =
+                data.getParcelableExtra<SaveAddressDataModel>(AddressConstant.EXTRA_SAVE_DATA_UI_MODEL)
+            if (addressData != null) {
+                locationPass = LocationPass()
+                locationPass.latitude = addressData.latitude
+                locationPass.longitude = addressData.longitude
+                locationPass.districtName = addressData.districtName
+                locationPass.cityName = addressData.cityName
+            }
+        }
+        return locationPass
     }
 
     private fun onResultFromAddNewAddress(resultCode: Int, data: Intent?) {
@@ -2735,12 +2773,36 @@ class ShipmentFragment :
     }
 
     private fun navigateToPinpointActivity(locationPass: LocationPass?) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle()
-        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+        val activity: Activity? = activity
+        if (activity != null) {
+            if (eligibleForRevamp(activity, true)) {
+                val bundle = Bundle()
+                bundle.putBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY, true)
+                if (locationPass?.latitude != null &&
+                    locationPass.latitude.isNotEmpty() && locationPass.longitude != null &&
+                    locationPass.longitude.isNotEmpty()
+                ) {
+                    bundle.putDouble(AddressConstant.EXTRA_LAT, locationPass.latitude.toDouble())
+                    bundle.putDouble(
+                        AddressConstant.EXTRA_LONG,
+                        locationPass.longitude.toDouble()
+                    )
+                }
+                bundle.putString(AddressConstant.EXTRA_CITY_NAME, locationPass?.cityName)
+                bundle.putString(AddressConstant.EXTRA_DISTRICT_NAME, locationPass?.districtName)
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.PINPOINT)
+                intent.putExtra(AddressConstant.EXTRA_BUNDLE, bundle)
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            } else {
+                val intent =
+                    RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle()
+                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+            }
+        }
     }
 
     override fun onChangeShippingDuration(
@@ -3348,7 +3410,8 @@ class ShipmentFragment :
                         lca.shop_id,
                         lca.warehouse_id,
                         lca.warehouses,
-                        lca.service_type
+                        lca.service_type,
+                        lca.warehouse_ids
                     )
                 )
             } else {
@@ -3369,7 +3432,8 @@ class ShipmentFragment :
                         lca.shop_id,
                         lca.warehouse_id,
                         lca.warehouses,
-                        lca.service_type
+                        lca.service_type,
+                        lca.warehouse_ids
                     )
                 )
             }
