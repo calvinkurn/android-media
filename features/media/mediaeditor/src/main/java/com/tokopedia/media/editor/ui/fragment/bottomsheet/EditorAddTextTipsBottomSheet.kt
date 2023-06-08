@@ -77,9 +77,9 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
                     // temporary image, will be replace later
                     view.findViewById<AppCompatImageView>(editorR.id.carousel_item_img).loadImage(
                         if (index == 0) {
-                            BOTTOM_SHEET_RIBBON_TEXT
+                            getString(editorR.string.add_text_bottom_sheet_ribbon)
                         } else {
-                            BOTTOM_SHEET_FREE_TEXT
+                            getString(editorR.string.add_text_bottom_sheet_free)
                         }
                     )
                 } catch (_: Exception) {}
@@ -116,10 +116,5 @@ class EditorAddTextTipsBottomSheet: BottomSheetUnify() {
         }
 
         btmSheetTitle = getString(editorR.string.add_text_tips_title)
-    }
-
-    companion object{
-        private const val BOTTOM_SHEET_FREE_TEXT = "https://images.tokopedia.net/img/FYkQxT/2023/3/29/867a9134-b77a-4fca-b2e1-2e8fcc86c4fa.png"
-        private const val BOTTOM_SHEET_RIBBON_TEXT = "https://images.tokopedia.net/img/FYkQxT/2023/3/29/b1ee7176-286f-489c-ba3b-68de920462e9.png"
     }
 }
