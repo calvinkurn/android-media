@@ -1,6 +1,8 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +64,9 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                     )
                     dismiss()
                 }
+                setUpTextWatcher()
             }
+            handleButtonState(false)
         }
     }
 
@@ -83,6 +87,39 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     fun setUpListener(listener: ChatbotRejectReasonsListener) {
         this.listener = listener
     }
+    private fun handleButtonState(isEnabled: Boolean) {
+        binding?.btnSubmit?.isEnabled = isEnabled
+    }
+
+    private fun setUpTextWatcher() {
+        val textWatcher = getTextWatcherForMessage()
+        binding?.reasonText?.editText?.addTextChangedListener(textWatcher)
+    }
+
+    private fun getTextWatcherForMessage(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (getCharCount() >= MINIMUM_CHAR) {
+                    handleButtonState(true)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val wordCount = getCharCount()
+                if (wordCount < MINIMUM_CHAR) {
+                    handleButtonState(false)
+                }
+            }
+        }
+    }
+
+    private fun getCharCount(): Int {
+        val words = binding?.reasonText?.editText?.text?.toString()?.trim() ?: ""
+        return words.count { it != ' ' }
+    }
 
     companion object {
 
@@ -95,6 +132,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
         }
 
         const val MINIMUM_LINES = 3
+        const val MINIMUM_CHAR = 30
     }
 
     interface ChatbotRejectReasonsListener {

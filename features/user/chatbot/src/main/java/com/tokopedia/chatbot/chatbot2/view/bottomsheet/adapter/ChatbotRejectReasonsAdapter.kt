@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
 import com.tokopedia.chatbot.databinding.ItemChatbotRejectReasonsBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_NORMAL
@@ -14,6 +15,7 @@ class ChatbotRejectReasonsAdapter : RecyclerView.Adapter<ChatbotRejectReasonsAda
 
     val list = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
+    var chipListener: ChatbotRejectReasonsChipListener? = null
 
     inner class ChatbotRejectReasonsViewHolder(itemView: ItemChatbotRejectReasonsBinding) : RecyclerView.ViewHolder(itemView.root) {
         var item: ChipsUnify = itemView.chip
@@ -42,6 +44,10 @@ class ChatbotRejectReasonsAdapter : RecyclerView.Adapter<ChatbotRejectReasonsAda
 
     override fun onBindViewHolder(holder: ChatbotRejectReasonsViewHolder, position: Int) {
         holder.bind(list[position], position)
+    }
+
+    fun setListener(listener: ChatbotRejectReasonsChipListener) {
+        this.chipListener = listener
     }
 
     @SuppressLint("NotifyDataSetChanged")
