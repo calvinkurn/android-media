@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +35,8 @@ import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.interceptor.BannerDebugInterceptor;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
@@ -58,6 +61,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
+
+    public static final String DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED";
+    public static final String IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED";
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
@@ -96,8 +102,31 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        new DebugBanner().initView((Activity) this, getLiveStatus());
+        setupBannerEnvironment();
+    }
 
+    private void setupBannerEnvironment() {
+        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(this);
+        if (!remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, false)) {
+            if (isBannerEnvironmentEnabled(this)) {
+                new DebugBanner().initView((Activity) this, getLiveStatus());
+            }
+        }
+    }
+
+    public static boolean isBannerEnvironmentEnabled(Context context) {
+        SharedPreferences cache = context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE);
+        return cache.getBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, false);
+    }
+
+    public static void setBannerEnvironmentEnabled(Context context, boolean isDevOptOnNotifEnabled) {
+        context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(
+                        IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED,
+                        isDevOptOnNotifEnabled
+                )
+                .apply();
     }
 
 

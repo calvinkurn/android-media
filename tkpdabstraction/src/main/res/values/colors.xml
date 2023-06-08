@@ -26,5 +26,5 @@
 
 <!--    banner debug color-->
     <color name="banner_debug_staging">#10490F</color>
-    <color name="banner_debug_beta">#259b24</color>
+    <color name="banner_debug_beta">#10490F</color>
 </resources>
