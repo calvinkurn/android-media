@@ -33,13 +33,13 @@ class SessionSetupActivity : AppCompatActivity(){
 
     private fun handleHomeMacrobenchmarkUri(isLogin: Boolean, userSession: UserSessionInterface) {
         isCoachmmarkShowAllowed = false
-        userSession.setFirstTimeUserOnboarding(false)
+//        userSession.setFirstTimeUserOnboarding(false)
 
-//        if (isLogin) {
-//            MacrobenchmarkAuthHelper.loginInstrumentationTestUser1(this)
-//        } else {
-//            MacrobenchmarkAuthHelper.clearUserSession(this)
-//        }
+        if (isLogin) {
+            MacrobenchmarkAuthHelper.loginInstrumentationTestUser1(this)
+        } else {
+            MacrobenchmarkAuthHelper.clearUserSession(this)
+        }
         val sharedPrefs =
             this.getSharedPreferences(CACHE_NAME, MODE_PRIVATE)
         sharedPrefs.edit().putString("android_user_two_factor_check", "false").apply()
