@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.test.base
 
 import android.content.Context
 import android.content.Intent
+import androidx.core.net.toUri
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -17,7 +18,6 @@ import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
