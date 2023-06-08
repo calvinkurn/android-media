@@ -81,18 +81,12 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     groupDetailMapper.detailPageDataMap[TYPE_KEYWORD_BID] = keywordBidUiModel
                     groupDetailMapper.detailPageDataMap[TYPE_NEGATIVE_KEYWORD_BID] = negativeKeywordModel
                 }
-                is TopAdsListAllInsightState.Fail -> {
-                    throw batchKeyword.throwable
-                }
                 else -> {}
             }
             when (groupBidInsight) {
                 is TopAdsListAllInsightState.Success -> {
                     val groupBidUiModel = groupDetailMapper.convertToAccordianGroupBidUiModel(groupBidInsight)
                     groupDetailMapper.detailPageDataMap[TYPE_GROUP_BID] = groupBidUiModel
-                }
-                is TopAdsListAllInsightState.Fail -> {
-                    throw groupBidInsight.throwable
                 }
                 else -> {}
             }
@@ -102,7 +96,6 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = dailyBudgetUiModel
                 }
                 is TopAdsListAllInsightState.Fail -> {
-//                    throw sellerInsightData.throwable
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
                         TYPE_DAILY_BUDGET,
                         "Anggaran harian",

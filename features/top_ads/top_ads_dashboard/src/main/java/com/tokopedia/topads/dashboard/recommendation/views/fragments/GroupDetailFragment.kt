@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
@@ -52,10 +53,12 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var insightType: Int = 0
     private var insightList: ArrayList<AdGroupUiModel>? = null
     private var adGroupId: String? = ""
+    private var adGroupName: String? = ""
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var groupChipsLayout: View? = null
     private var groupDetailPageShimmer: View? = null
+    private var detailPageEmptyState: EmptyStateUnify? = null
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
@@ -102,6 +105,26 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         setUpRecyclerView()
         setUpChipsRecyclerView()
         observeLiveData()
+        settingClicks()
+
+    }
+
+    private fun settingClicks() {
+        detailPageEmptyState?.emptyStateCTAID?.setOnClickListener {
+            viewModel.selectDefaultChips(insightType)
+            if (!adGroupId.isNullOrEmpty() && !adGroupName.isNullOrEmpty()) {
+                viewModel.loadDetailPageOnAction(
+                    utils.convertAdTypeToInt(this.adType),
+                    adGroupId!!,
+                    DEFAULT_SELECTED_INSIGHT_TYPE,
+                    this.adGroupId!!.isEmpty(),
+                    adGroupName!!
+                )
+            }
+            detailPageEmptyState?.hide()
+            groupDetailsRecyclerView?.show()
+
+        }
     }
 
     private fun retrieveInitialData() {
@@ -125,6 +148,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         viewModel.detailPageLiveData.observe(viewLifecycleOwner) { it ->
             when (it) {
                 is TopAdsListAllInsightState.Success -> {
+                    detailPageEmptyState?.hide()
                     val list = mutableListOf<GroupDetailDataModel>()
                     it.data.map {
                         if (it.value.isAvailable()) list.add(it.value)
@@ -140,9 +164,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                     groupDetailPageShimmer?.hide()
                 }
                 is TopAdsListAllInsightState.Fail -> {
+                    groupDetailPageShimmer?.hide()
+                    groupDetailsRecyclerView?.hide()
+                    detailPageEmptyState?.show()
                 }
                 is TopAdsListAllInsightState.Loading -> {
                     groupDetailPageShimmer?.show()
+                    detailPageEmptyState?.hide()
                 }
             }
         }
@@ -220,6 +248,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         groupDetailChipsRv = view?.findViewById(R.id.groupDetailChipsRv)
         groupChipsLayout = view?.findViewById(R.id.groupChipsLayout)
         groupDetailPageShimmer = view?.findViewById(R.id.groupDetailPageShimmer)
+        detailPageEmptyState = view?.findViewById(R.id.detailPageEmptyState)
     }
 
     private val onChipClick: (Int) -> Unit = {
@@ -283,6 +312,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId
         this.insightType = if (adType == TYPE_PRODUCT_VALUE) 0 else 5
+        this.adGroupName = groupName
         viewModel.selectDefaultChips(insightType)
         viewModel.loadDetailPageOnAction(
             adType,
