@@ -10,11 +10,11 @@ data class DynamicAttachmentRejectReasons(
 ) {
     data class RejectReasonHelpfulQuestion(
         @SerializedName("message")
-        val message: String,
+        val message: String = "",
         @SerializedName("new_quick_replies")
-        val newQuickRepliesList: List<RejectReasonNewQuickReply>,
+        val newQuickRepliesList: List<RejectReasonNewQuickReply> = emptyList(),
         @SerializedName("quick_replies")
-        val quickReplies: List<RejectReasonQuickReply>
+        val quickReplies: List<RejectReasonQuickReply> = emptyList()
     ) {
         data class RejectReasonNewQuickReply(
             @SerializedName("action")
