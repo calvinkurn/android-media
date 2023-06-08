@@ -647,6 +647,11 @@ class PromoCheckoutViewModel @Inject constructor(
                         if (coupon.isSelected) {
                             preSelectedPromoList.add(coupon.code)
                         }
+                        coupon.secondaryCoupons.forEach { secondaryCoupon ->
+                            if (secondaryCoupon.isSelected) {
+                                preSelectedPromoList.add(secondaryCoupon.code)
+                            }
+                        }
                     }
                 }
             }
