@@ -9,7 +9,7 @@
       "eventLabel": ".* - (self|visitor)",
       "trackerId": "44098",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -20,7 +20,7 @@
       "eventLabel": ".*",
       "trackerId": "44099",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -31,7 +31,7 @@
       "eventLabel": ".* - (on|off)",
       "trackerId": "44100",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -42,7 +42,7 @@
       "eventLabel": ".* - .* - (self|visitor) - .*",
       "trackerId": "44101",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -53,7 +53,7 @@
       "eventLabel": ".* - .* - (self|visitor) - .*",
       "trackerId": "44102",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -64,7 +64,7 @@
       "eventLabel": ".* - .* - (self|visitor) - .*",
       "trackerId": "44103",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "promotions": [
         {
           "creative_name": "",
@@ -80,7 +80,7 @@
       "event": "openScreen",
       "trackerId": "44104",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "isLoggedInStatus": "(true|false)",
       "screenName": "/user profile - review tab",
       "sessionIris": ".*",
@@ -98,7 +98,7 @@
       "eventLabel": ".* - .* - (self|visitor) - .*",
       "trackerId": "44108",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
     },
@@ -109,7 +109,7 @@
       "eventLabel": ".* - .* - (self|visitor) - .*",
       "trackerId": "44110",
       "businessUnit": "content",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "currentSite": "tokopediamarketplace",
       "item_list": "/user profile - review tab",
       "items": [
         {

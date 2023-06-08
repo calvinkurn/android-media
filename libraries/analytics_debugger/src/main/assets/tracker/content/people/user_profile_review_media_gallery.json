@@ -1,0 +1,58 @@
+{
+  "readme": "User Profile Review Media Gallery - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "impression - review media",
+      "eventCategory": "feed user profile - review media detail",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44105",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "",
+          "creative_slot": "",
+          "item_id": ".*",
+          "item_name": "/feed user profile - review media"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "viewContentIris",
+      "eventAction": "impression - review detail",
+      "eventCategory": "feed user profile - review media detail",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44106",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - like review",
+      "eventCategory": "feed user profile - review media detail",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44107",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickContent",
+      "eventAction": "click - review selengkapnya",
+      "eventCategory": "feed user profile - review media detail",
+      "eventLabel": ".* - .* - (self|visitor) - .*",
+      "trackerId": "44109",
+      "businessUnit": "content",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
