@@ -18,7 +18,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2
@@ -29,7 +28,6 @@ import com.tokopedia.content.common.comment.analytic.ContentCommentAnalytics
 import com.tokopedia.content.common.comment.analytic.ContentCommentAnalyticsModel
 import com.tokopedia.content.common.comment.ui.ContentCommentBottomSheet
 import com.tokopedia.content.common.report_content.bottomsheet.ContentThreeDotsMenuBottomSheet
-import com.tokopedia.content.common.report_content.model.FeedContentData
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
 import com.tokopedia.content.common.usecase.FeedComplaintSubmitReportUseCase
@@ -69,8 +67,6 @@ import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -93,7 +89,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.feedplus.R as feedR
-import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Muhammad Furqan on 01/02/23
@@ -268,10 +263,7 @@ class FeedFragment :
 
     override fun onMenuClicked(
         id: String,
-        editable: Boolean,
-        deletable: Boolean,
-        reportable: Boolean,
-        contentData: FeedContentData,
+        menuItems: List<FeedMenuItem>,
         trackerModel: FeedTrackerDataModel
     ) {
         currentTrackerData = trackerModel
@@ -283,14 +275,14 @@ class FeedFragment :
                     it.classLoader
                 )
             feedMenuSheet.setListener(this)
-            feedMenuSheet.setData(getMenuItemData(editable, deletable, reportable, contentData), id)
+            feedMenuSheet.setData(menuItems, id)
             feedMenuSheet.show(childFragmentManager, TAG_FEED_MENU_BOTTOMSHEET)
         }
     }
 
     override fun onMenuItemClick(feedMenuItem: FeedMenuItem, contentId: String) {
         when (feedMenuItem.type) {
-            FeedMenuIdentifier.LAPORKAN -> {
+            FeedMenuIdentifier.Report -> {
                 if (!userSession.isLoggedIn) {
                     onGoToLogin()
                 } else {
@@ -302,7 +294,7 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.MODE_NONTON -> {
+            FeedMenuIdentifier.WatchMode -> {
                 adapter?.showClearView(binding.rvFeedPost.currentItem)
                 currentTrackerData?.let {
                     feedAnalytics.eventClickWatchMode(it)
@@ -310,7 +302,7 @@ class FeedFragment :
                 }
             }
 
-            FeedMenuIdentifier.EDIT -> {
+            FeedMenuIdentifier.Edit -> {
                 val intent = RouteManager.getIntent(context, INTERNAL_AFFILIATE_CREATE_POST_V2)
                 intent.putExtra(PARAM_AUTHOR_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
                 intent.putExtra(
@@ -325,7 +317,7 @@ class FeedFragment :
                 startActivity(intent)
             }
 
-            FeedMenuIdentifier.DELETE -> {
+            FeedMenuIdentifier.Delete -> {
                 context?.let {
                     DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(feedR.string.dialog_delete_post_title))
@@ -347,7 +339,10 @@ class FeedFragment :
                 }
             }
 
-            else -> {}
+            FeedMenuIdentifier.SeePerformance,
+            FeedMenuIdentifier.LearnVideoInsight -> {
+                RouteManager.route(requireContext(), feedMenuItem.appLink)
+            }
         }
     }
 
@@ -564,7 +559,10 @@ class FeedFragment :
 
         if (!checkForFollowerBottomSheet(
                 trackerModel?.activityId ?: "",
-                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+                positionInFeed,
+                campaign.status,
+                campaign.isExclusiveForMember,
+                action
             )
         ) {
             action()
@@ -656,7 +654,10 @@ class FeedFragment :
 
         if (!checkForFollowerBottomSheet(
                 trackerModel?.activityId ?: "",
-                positionInFeed, campaign.status, campaign.isExclusiveForMember, action
+                positionInFeed,
+                campaign.status,
+                campaign.isExclusiveForMember,
+                action
             )
         ) {
             action()
@@ -673,12 +674,12 @@ class FeedFragment :
                 }
                 author?.let {
                     if (userSession.isLoggedIn) {
-                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.isShop)
+                        feedPostViewModel.doFollow(author.id, author.encryptedUserId, author.type.isShop)
                     } else {
                         feedPostViewModel.suspendFollow(
                             author.id,
                             author.encryptedUserId,
-                            author.isShop
+                            author.type.isShop
                         )
                         followLoginResult.launch(
                             RouteManager.getIntent(
@@ -1052,72 +1053,6 @@ class FeedFragment :
         }
     }
 
-    private fun getMenuItemData(
-        editable: Boolean,
-        deletable: Boolean,
-        reportable: Boolean,
-        contentData: FeedContentData
-    ): List<FeedMenuItem> {
-        val items = arrayListOf<FeedMenuItem>()
-
-        if (editable) {
-            items.add(
-                FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.EDIT
-                    ),
-                    name = FeedMenuIdentifier.EDIT.value,
-                    type = FeedMenuIdentifier.EDIT,
-                    contentData = contentData
-                )
-            )
-        }
-        items.add(
-            FeedMenuItem(
-                drawable = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY),
-                name = getString(feedR.string.feed_clear_mode),
-                type = FeedMenuIdentifier.MODE_NONTON
-            )
-        )
-        if (reportable) {
-            items.add(
-                FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.WARNING,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = getString(feedR.string.feed_report),
-                    type = FeedMenuIdentifier.LAPORKAN,
-                    contentData = contentData
-                )
-            )
-        }
-        if (deletable) {
-            items.add(
-                FeedMenuItem(
-                    drawable = getIconUnifyDrawable(
-                        requireContext(),
-                        IconUnify.DELETE,
-                        MethodChecker.getColor(
-                            context,
-                            unifyR.color.Unify_RN500
-                        )
-                    ),
-                    name = FeedMenuIdentifier.DELETE.value,
-                    type = FeedMenuIdentifier.DELETE,
-                    contentData = contentData
-                )
-            )
-        }
-
-        return items
-    }
-
     private fun openProductTagBottomSheet(
         author: FeedAuthorModel,
         products: List<FeedCardProductModel>,
@@ -1152,7 +1087,7 @@ class FeedFragment :
             manager = childFragmentManager,
             tag = TAG_FEED_PRODUCT_BOTTOM_SHEET
         )
-        if (hasVoucher && author.isShop) getMerchantVoucher(author.id)
+        if (hasVoucher && author.type.isShop) getMerchantVoucher(author.id)
     }
 
     private fun getMerchantVoucher(shopId: String) {

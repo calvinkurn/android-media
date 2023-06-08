@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.domain.usecase
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedplus.data.FeedXHomeEntity
-import com.tokopedia.feedplus.domain.mapper.MapperFeedHome
+import com.tokopedia.feedplus.domain.mapper.MapperFeedXHome
 import com.tokopedia.feedplus.presentation.model.FeedModel
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 class FeedXHomeUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
-    private val uiMapper: MapperFeedHome,
+    private val uiMapper: MapperFeedXHome,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<Map<String, Any>, FeedModel>(dispatcher.io) {
 
@@ -142,6 +142,8 @@ class FeedXHomeUseCase @Inject constructor(
               text
               appLink
               webLink
+              performanceSummaryPageLink
+              insightSummaryPageLink
               like {
                 label
                 count

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.databinding.ItemFeedThreeDotsMenuBinding
 import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
 import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -14,28 +15,43 @@ import com.tokopedia.unifyprinciples.R as unifyR
  */
 class FeedMenuViewHolder(
     private val binding: ItemFeedThreeDotsMenuBinding,
-    private val listener: Listener,
+    private val listener: Listener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: FeedMenuItem) {
         binding.apply {
-            tvName.text = item.name
-            ivIcon.setImageDrawable(item.drawable)
-            if (item.type == FeedMenuIdentifier.LAPORKAN){
-                tvName.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        unifyR.color.Unify_RN500
-                    )
-                )
+            val context = itemView.context
+
+            tvName.text = context.getString(item.name)
+            val textColorInt = if (item.type == FeedMenuIdentifier.Report) {
+                unifyR.color.Unify_RN500
             } else {
-                tvName.setTextColor(
-                    MethodChecker.getColor(
-                        itemView.context,
-                        unifyR.color.Unify_NN950
-                    )
-                )
+                unifyR.color.Unify_NN950
             }
+            tvName.setTextColor(
+                MethodChecker.getColor(
+                    itemView.context,
+                    textColorInt
+                )
+            )
+
+            val iconColorInt = when (item.type) {
+                FeedMenuIdentifier.Report, FeedMenuIdentifier.Delete -> {
+                    unifyR.color.Unify_RN500
+                }
+                else -> {
+                    unifyR.color.Unify_NN900
+                }
+            }
+            val iconDrawable = getIconUnifyDrawable(
+                context,
+                item.iconUnify,
+                MethodChecker.getColor(
+                    itemView.context,
+                    iconColorInt
+                )
+            )
+            if (iconDrawable != null) ivIcon.setImageDrawable(iconDrawable)
 
             root.setOnClickListener {
                 listener.onClick(item)
@@ -46,7 +62,7 @@ class FeedMenuViewHolder(
     companion object {
         fun create(
             parent: ViewGroup,
-            listener: Listener,
+            listener: Listener
         ): FeedMenuViewHolder {
             return FeedMenuViewHolder(
                 ItemFeedThreeDotsMenuBinding.inflate(

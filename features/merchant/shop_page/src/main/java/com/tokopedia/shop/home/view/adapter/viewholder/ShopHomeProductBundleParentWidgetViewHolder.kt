@@ -113,7 +113,8 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     override fun onBundleProductClicked(
         bundle: BundleUiModel,
         selectedMultipleBundle: BundleDetailUiModel,
-        selectedProduct: BundleProductUiModel
+        selectedProduct: BundleProductUiModel,
+        itemPosition: Int
     ) {
         val selectedShopHomeBundleUiModel = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
             selectedMultipleBundle,
@@ -199,7 +200,8 @@ class ShopHomeProductBundleParentWidgetViewHolder(
     override fun impressionSingleBundle(
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
-        bundleName: String
+        bundleName: String,
+        bundlePosition: Int
     ) {
         val selectedSingleBundle = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(
             selectedBundle,
