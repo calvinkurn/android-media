@@ -1458,6 +1458,10 @@ open class TokoChatFragment :
     private fun showBubblesAwarenessBottomSheet() {
         TokoChatBubblesAwarenessBottomSheet.createInstance().apply {
             setListener(this@TokoChatFragment)
+        }.apply {
+            setOnDismissListener {
+                activity?.finish()
+            }
         }.show(childFragmentManager)
     }
 
