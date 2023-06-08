@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -175,7 +174,6 @@ class DigitalPDPDataPlanFragment :
     private var loader: LoaderDialog? = null
     private var isMCCMEmpty: Boolean = false
     private var isProductListEmpty: Boolean = false
-
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
@@ -416,7 +414,7 @@ class DigitalPDPDataPlanFragment :
         }
 
         viewModel.mccmProductsData.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is RechargeNetworkResult.Success -> {
                     if (it.data.listDenomData.isNotEmpty()) {
                         if (productId >= 0) {
@@ -444,7 +442,7 @@ class DigitalPDPDataPlanFragment :
 
                         isMCCMEmpty = true
 
-                        if(isMCCMEmpty && isProductListEmpty){
+                        if (isMCCMEmpty && isProductListEmpty) {
                             showGlobalErrorState()
                             isMCCMEmpty = false
                         } else {
@@ -482,11 +480,11 @@ class DigitalPDPDataPlanFragment :
                     }
                     onSuccessDenomFull(denomData.data.denomFull, selectedPositionDenom)
 
-                    if (denomData.data.denomFull.listDenomData.isEmpty()){
+                    if (denomData.data.denomFull.listDenomData.isEmpty()) {
                         isProductListEmpty = true
                     }
 
-                    if(isMCCMEmpty && isProductListEmpty){
+                    if (isMCCMEmpty && isProductListEmpty) {
                         showGlobalErrorState()
                         isProductListEmpty = false
                     } else {
@@ -653,7 +651,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.setRechargeUserAccessTokenLoading()
         viewModel.saveRechargeUserAccessToken(msisdn, accessToken)
     }
-    
+
     private fun getMCCMProducts() {
         isMCCMEmpty = false
         val clientNumbers =
@@ -869,8 +867,6 @@ class DigitalPDPDataPlanFragment :
                 getIndosatCheckBalance()
             }
         }
-        // TODO: [Misael] show local load error
-        Toast.makeText(context, throwable.message, Toast.LENGTH_LONG).show()
     }
 
     private fun onLoadingGetCheckBalance() {
@@ -1530,8 +1526,12 @@ class DigitalPDPDataPlanFragment :
         )
     }
 
-    override fun onImpressProductBottomSheet(denomData: DenomData, layoutType: DenomWidgetEnum,
-                                             productListTitle: String, position: Int) {
+    override fun onImpressProductBottomSheet(
+        denomData: DenomData,
+        layoutType: DenomWidgetEnum,
+        productListTitle: String,
+        position: Int
+    ) {
         digitalPDPAnalytics.impressProductDescription(
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
@@ -1773,9 +1773,7 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-
-        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE){
-
+        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE) {
                 onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
             }
@@ -1789,7 +1787,6 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
                 viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE ||
@@ -1835,7 +1832,7 @@ class DigitalPDPDataPlanFragment :
                 layoutType,
                 position
             )
-        } else if(layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.MCCM_FULL_VERTICAL_TYPE) {
             digitalPDPAnalytics.impressMCCMProductNew(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1901,7 +1898,7 @@ class DigitalPDPDataPlanFragment :
             DigitalPDPCategoryUtil.getCategoryName(categoryId),
             operator.attributes.name,
             loyaltyStatus,
-            userSession.userId,
+            userSession.userId
         )
     }
     //endregion

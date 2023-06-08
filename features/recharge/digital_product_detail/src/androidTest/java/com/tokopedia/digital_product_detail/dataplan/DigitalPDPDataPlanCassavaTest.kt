@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class DigitalPDPDataPlanCassavaTest: BaseDigitalPDPDataPlanTest() {
+class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
