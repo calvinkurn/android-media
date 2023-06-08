@@ -2150,11 +2150,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentAdapter.updateShipmentCostModel();
                 shipmentAdapter.updateItemAndTotalCost(position);
                 shipmentAdapter.updateInsuranceTncVisibility();
+                onNeedUpdateRequestData();
             });
         } else {
             shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateItemAndTotalCost(position);
             shipmentAdapter.updateInsuranceTncVisibility();
+            onNeedUpdateRequestData();
         }
     }
 
