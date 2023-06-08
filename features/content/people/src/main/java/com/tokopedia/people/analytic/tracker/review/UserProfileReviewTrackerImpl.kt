@@ -1,5 +1,7 @@
 package com.tokopedia.people.analytic.tracker.review
 
+import com.tokopedia.people.analytic.UserProfileAnalytics
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -13,15 +15,27 @@ class UserProfileReviewTrackerImpl @Inject constructor(
 ) : UserProfileReviewTracker {
 
     override fun clickReviewTab(userId: String, isSelf: Boolean) {
-
+        sendGeneralClickTracker(
+            eventAction = "click - review tab",
+            eventLabel = "$userId - ${UserProfileAnalytics.Function.isSelfOrVisitor(isSelf)}",
+            trackerId = "44098"
+        )
     }
 
     override fun clickUserProfileSettings(userId: String) {
-
+        sendGeneralClickTracker(
+            eventAction = "click - gear icon",
+            eventLabel = userId,
+            trackerId = "44099"
+        )
     }
 
     override fun clickReviewSettingsToggle(userId: String, isOn: Boolean) {
-
+        sendGeneralClickTracker(
+            eventAction = "click - toggle button",
+            eventLabel = "$userId - ${UserProfileAnalytics.Function.isOnOrOff(isOn)}",
+            trackerId = "44100"
+        )
     }
 
     override fun clickReviewMedia(
@@ -30,7 +44,11 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-
+        sendGeneralClickTracker(
+            eventAction = "click - review media",
+            eventLabel = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+            trackerId = "44101"
+        )
     }
 
     override fun clickLikeReview(
@@ -39,7 +57,11 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-
+        sendGeneralClickTracker(
+            eventAction = "click - like review",
+            eventLabel = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+            trackerId = "44102"
+        )
     }
 
     override fun impressReviewCard(
@@ -49,11 +71,19 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         productId: String,
         position: Int
     ) {
-
+        /** TODO: will implement this later */
     }
 
     override fun openScreenEmptyOrHiddenReviewTab() {
-
+        UserProfileAnalytics.Variable.analyticTracker.sendScreenAuthenticated(
+            "/user profile - review tab",
+            mapOf(
+                UserProfileAnalytics.Constants.TRACKER_ID to "44104",
+                UserProfileAnalytics.Constants.BUSINESS_UNIT to UserProfileAnalytics.Constants.CONTENT,
+                UserProfileAnalytics.Constants.CURRENT_SITE to UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE,
+                UserProfileAnalytics.Constants.SESSION_IRIS to UserProfileAnalytics.Variable.sessionIris
+            )
+        )
     }
 
     override fun clickReviewSeeMoreDescription(
@@ -62,7 +92,11 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
-
+        sendGeneralClickTracker(
+            eventAction = "click - review selengkapnya",
+            eventLabel = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+            trackerId = "44108"
+        )
     }
 
     override fun clickReviewProductInfo(
@@ -71,6 +105,34 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         isSelf: Boolean,
         productId: String
     ) {
+        /** TODO: will implement this later */
+    }
 
+    private fun generateCompleteEventAction(
+        userId: String,
+        feedbackId: String,
+        isSelf: Boolean,
+        productId: String
+    ): String {
+        return "$feedbackId - $userId - ${UserProfileAnalytics.Function.isSelfOrVisitor(isSelf)} - $productId"
+    }
+
+    private fun sendGeneralClickTracker(
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String,
+    ) {
+        Tracker.Builder()
+            .setEvent(UserProfileAnalytics.Event.EVENT_CLICK_CONTENT)
+            .setEventCategory(UserProfileAnalytics.Category.FEED_USER_PROFILE)
+            .setEventAction(eventAction)
+            .setEventLabel(eventLabel)
+            .setBusinessUnit(UserProfileAnalytics.Constants.CONTENT)
+            .setCurrentSite(UserProfileAnalytics.Constants.TOKOPEDIA_MARKETPLACE)
+            .setUserId(userSession.userId)
+            .setCustomProperty(UserProfileAnalytics.Constants.SESSION_IRIS, UserProfileAnalytics.Variable.sessionIris)
+            .setCustomProperty(UserProfileAnalytics.Constants.TRACKER_ID, trackerId)
+            .build()
+            .send()
     }
 }

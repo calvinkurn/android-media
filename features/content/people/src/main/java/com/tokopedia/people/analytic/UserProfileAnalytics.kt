@@ -3,6 +3,8 @@ package com.tokopedia.people.analytic
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.LIVE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.NOT_LIVE
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.OFF
+import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.ON
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.SELF
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VISITOR
 import com.tokopedia.people.analytic.UserProfileAnalytics.Constants.VOD
@@ -30,6 +32,7 @@ class UserProfileAnalytics {
         fun isLiveOrNotLive(isLive: Boolean) = if (isLive) LIVE else NOT_LIVE
         fun isSelfOrVisitor(isSelf: Boolean) = if (isSelf) SELF else VISITOR
         fun isLiveOrVod(isLive: Boolean) = if (isLive) LIVE else VOD
+        fun isOnOrOff(isOn: Boolean) = if (isOn) ON else OFF
     }
 
     object Constants {
@@ -66,6 +69,8 @@ class UserProfileAnalytics {
         const val VOD = "vod"
         const val LAIN_KALI = "Lain Kali"
         const val PLAY = "play"
+        const val ON = "on"
+        const val OFF = "off"
     }
 
     object Event {
