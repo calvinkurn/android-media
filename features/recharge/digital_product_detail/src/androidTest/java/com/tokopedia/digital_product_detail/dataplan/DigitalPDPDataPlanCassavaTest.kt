@@ -37,7 +37,7 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
     }
 
     @Test
-    fun validate_interact_with_check_balance_otp() {
+    fun validate_interact_with_check_balance() {
         Thread.sleep(2000)
         interactWithCheckBalanceWidget()
         MatcherAssert.assertThat(
@@ -98,7 +98,6 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
             hasAllSuccess()
         )
     }
-
 
     private fun interactWithClientNumberWidget() {
         Thread.sleep(4000)
@@ -173,7 +172,7 @@ class DigitalPDPDataPlanCassavaTest : BaseDigitalPDPDataPlanTest() {
 
     companion object {
         const val APPLINK = "tokopedia://digital/form?category_id=2&menu_id=290&template=paketdatav2"
-        const val PATH_ANALYTICS_OTP = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_otp.json"
+        const val PATH_ANALYTICS_OTP = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_check_balance.json"
         const val PATH_ANALYTICS_RECOMMENDATION = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_recommendation.json"
         const val PATH_ANALYTICS_FAVORITE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_favorite.json"
         const val PATH_ANALYTICS_AUTOCOMPLETE = "tracker/recharge/digital_product_detail/digital_pdp_dataplan_autocomplete.json"

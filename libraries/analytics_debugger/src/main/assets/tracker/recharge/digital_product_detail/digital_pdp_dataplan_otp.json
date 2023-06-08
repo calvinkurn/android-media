@@ -1,37 +1,13 @@
 {
-  "readme": "Digital PDP paket data OTP",
+  "readme": "Digital PDP paket data - check balance OTP",
   "mode": "exact",
   "query": [
     {
-    "event": "viewDigitalIris",
-    "eventLabel": ".* - .* - .* - .*",
-    "eventAction": "impression check balance info",
-    "eventCategory": "digital - homepage",
-    "trackerId": "43704",
-    "businessUnit": "recharge",
-    "currentSite": "tokopediadigitalRecharge",
-    "userId": ".*",
-    "sessionIris": ".*"
-  },
-    {
-      "event": "select_content",
+      "event": "viewDigitalIris",
       "eventLabel": ".* - .* - .*",
-      "eventAction": "click lihat detail check balance",
+      "eventAction": "impression check balance widget",
       "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43705",
-      "businessUnit": "recharge",
-      "currentSite": "tokopediadigitalRecharge",
-      "userId": ".*",
-      "sessionIris": ".*"
-    },
-    {
-      "event": "view_item",
-      "eventLabel": ".* - .* - .*",
-      "eventAction": "impression sheet active package",
-      "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43706",
+      "trackerId": "43697",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
@@ -40,62 +16,55 @@
     {
       "event": "clickDigital",
       "eventLabel": ".* - .* - .*",
-      "eventAction": "click close sheet active package",
+      "eventAction": "click check balance widget",
       "eventCategory": "digital - homepage",
-      "trackerId": "43707",
+      "trackerId": "43698",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
       "sessionIris": ".*"
     },
     {
-      "event": "view_item_list",
-      "eventLabel": ".* - .* - .* - .*",
-      "eventAction": "impression active package check balance",
+      "event": "viewDigitalIris",
+      "eventLabel": ".* - .*",
+      "eventAction": "impression pdp otp pop up",
       "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43708",
-      "item_list": ".*",
+      "trackerId": "43699",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
       "userId": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "dimension40": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": "Paket Data"
-        }
-      ]
+      "sessionIris": ".*"
     },
     {
-      "event": "select_content",
-      "eventLabel": ".* - .* - .* - .*",
-      "eventAction": "click beli lagi active package",
+      "event": "clickDigital",
+      "eventLabel": ".* - .*",
+      "eventAction": "click pdp otp pop up",
       "eventCategory": "digital - homepage",
-      "clientId": ".*",
-      "trackerId": "43709",
+      "trackerId": "43700",
       "businessUnit": "recharge",
       "currentSite": "tokopediadigitalRecharge",
-      "item_list": ".*",
       "userId": ".*",
-      "sessionIris": ".*",
-      "items": [
-        {
-          "item_id": ".*",
-          "price": ".*",
-          "dimension40": ".*",
-          "index": ".*",
-          "item_name": ".*",
-          "item_brand": ".*",
-          "item_variant": ".*",
-          "item_category": "Paket Data"
-        }
-      ]
-    }]
+      "sessionIris": ".*"
+    },
+    {
+      "event": "openScreen",
+      "isLoggedInStatus": ".*",
+      "screenName": "iframe-otp",
+      "trackerId": "43701",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "openScreen",
+      "trackerId": "43702",
+      "isLoggedInStatus": ".*",
+      "screenName": "iframe-otp",
+      "businessUnit": "recharge",
+      "currentSite": "tokopediadigitalRecharge",
+      "userId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
 }
