@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.layout.LayoutStrategyBestSeller
 import com.tokopedia.productcard.utils.ViewId
 import com.tokopedia.productcard.utils.ViewStubId
 import com.tokopedia.productcard.utils.expandTouchArea
@@ -200,6 +201,7 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
         renderProductCardRibbon(productCardModel, false)
 
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+        productCardModel.layoutStrategy.setImageSize(mediaAnchorProduct)
 
         val isShowCampaign = productCardModel.isShowLabelCampaign()
         renderLabelCampaign(
@@ -241,7 +243,10 @@ class ProductCardListView: ConstraintLayout, IProductCardView {
 
         imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
 
-        renderProductCardContent(productCardModel, isWideContent = true)
+        renderProductCardContent(
+            productCardModel,
+            isWideContent = productCardModel.layoutStrategy !is LayoutStrategyBestSeller
+        )
 
         renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
 
