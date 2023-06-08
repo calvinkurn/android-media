@@ -59,6 +59,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
+import com.tokopedia.product.addedit.common.util.DTDialogUtil
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.RemoteConfig
@@ -451,11 +452,11 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeDisabledSelected(adapterPosition: Int) {
-        showDTProductNotAllowedDeleteDialog()
+        DTDialogUtil.showDTStockDialog(context ?: return, DTDialogUtil.UserAction.EDIT)
     }
 
     override fun onVariantTypeDisabledDeselected(adapterPosition: Int) {
-        showDTProductNotAllowedDeleteDialog()
+        DTDialogUtil.showDTStockDialog(context ?: return, DTDialogUtil.UserAction.EDIT)
     }
 
     private fun deselectVariantType(
@@ -701,7 +702,7 @@ class AddEditProductVariantFragment :
         } != null
 
         if (hasDTStock) {
-            showDTNotAllowedDeleteDialog()
+            DTDialogUtil.showDTStockDialog(context ?: return, DTDialogUtil.UserAction.REMOVE)
         } else {
             val variantData = viewModel.getVariantData(layoutPosition)
             val variantId = variantData.variantID
@@ -931,7 +932,10 @@ class AddEditProductVariantFragment :
 
             bottomSheet.setHasDTStock(viewModel.hasDTStock.value.orFalse())
             bottomSheet.setOnHasDTStockListener {
-                showDTProductNotAllowedDeleteDialog()
+                DTDialogUtil.showDTStockDialog(
+                    context ?: return@setOnHasDTStockListener,
+                    DTDialogUtil.UserAction.REMOVE
+                )
             }
 
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
@@ -1217,7 +1221,10 @@ class AddEditProductVariantFragment :
             buttonAddVariantType.isEnabled = !it
             if (it) {
                 buttonAddVariantType.setOnDisabledClickListener {
-                    showDTProductNotAllowedDeleteDialog()
+                    DTDialogUtil.showDTStockDialog(
+                        context ?: return@setOnDisabledClickListener,
+                        DTDialogUtil.UserAction.ADD_VARIANT_TYPE
+                    )
                 }
             } else {
                 buttonAddVariantType.setOnDisabledClickListener {
@@ -1396,32 +1403,6 @@ class AddEditProductVariantFragment :
                     if (isEditMode) ProductEditVariantTracking.confirmProductVariantReset(shopId)
                     else ProductAddVariantTracking.confirmProductVariantReset(shopId)
                 }
-            }
-        }
-        dialog.show()
-    }
-
-    private fun showDTNotAllowedDeleteDialog() {
-        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-        dialog.apply {
-            setTitle(getString(R.string.product_add_edit_text_variant_product_dt_can_not_delete))
-            setDescription(getString(R.string.product_add_edit_text_description_variant_product_dt_can_not_delete))
-            setPrimaryCTAText(getString(R.string.action_oke))
-            setPrimaryCTAClickListener {
-                dialog.dismiss()
-            }
-        }
-        dialog.show()
-    }
-
-    private fun showDTProductNotAllowedDeleteDialog() {
-        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-        dialog.apply {
-            setTitle(getString(R.string.product_add_edit_text_product_dt_can_not_delete))
-            setDescription(getString(R.string.product_add_edit_text_description_product_dt_can_not_delete))
-            setPrimaryCTAText(getString(R.string.action_oke))
-            setPrimaryCTAClickListener {
-                dialog.dismiss()
             }
         }
         dialog.show()
@@ -1906,7 +1887,8 @@ class AddEditProductVariantFragment :
             actionTextView?.setOnClickListener {
                 val product = viewModel.productInputModel.value
                 if (product?.hasDTStock.orFalse()) {
-                    showDTNotAllowedDeleteDialog()
+                    DTDialogUtil.showDTStockDialog(context ?: return@setOnClickListener,
+                        DTDialogUtil.UserAction.REMOVE)
                 } else {
                     showRemoveVariantDialog()
                 }
