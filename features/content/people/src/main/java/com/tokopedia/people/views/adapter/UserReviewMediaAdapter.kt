@@ -19,8 +19,8 @@ class UserReviewMediaAdapter(
 
     override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
         return when {
-            oldItem is Model.Image && newItem is Model.Image -> oldItem.feedbackID == newItem.feedbackID
-            oldItem is Model.Video && newItem is Model.Video -> oldItem.feedbackID == newItem.feedbackID
+            oldItem is Model.Image && newItem is Model.Image -> oldItem.attachment.attachmentID == newItem.attachment.attachmentID
+            oldItem is Model.Video && newItem is Model.Video -> oldItem.attachment.attachmentID == newItem.attachment.attachmentID
             else -> oldItem == newItem
         }
     }
@@ -30,11 +30,24 @@ class UserReviewMediaAdapter(
     }
 
     interface Listener {
-        fun onMediaClick(feedbackID: String, attachment: UserReviewUiModel.Attachment)
+        fun onMediaClick(
+            feedbackId: String,
+            productId: String,
+            attachment: UserReviewUiModel.Attachment
+        )
     }
 
     sealed interface Model {
-        data class Image(val feedbackID: String, val attachment: UserReviewUiModel.Attachment.Image) : Model
-        data class Video(val feedbackID: String, val attachment: UserReviewUiModel.Attachment.Video) : Model
+        data class Image(
+            val feedbackId: String,
+            val productId: String,
+            val attachment: UserReviewUiModel.Attachment.Image
+        ) : Model
+
+        data class Video(
+            val feedbackId: String,
+            val productId: String,
+            val attachment: UserReviewUiModel.Attachment.Video
+        ) : Model
     }
 }

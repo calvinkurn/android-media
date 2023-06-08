@@ -75,6 +75,7 @@ import com.tokopedia.people.views.activity.ProfileSettingsActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_REVIEW
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.fragment.bottomsheet.UserProfileReviewOnboardingBottomSheet
@@ -159,9 +160,11 @@ class UserProfileFragment @Inject constructor(
             mainBinding.profileTabs.tabLayout,
             mainBinding.profileTabs.viewPager
         ) {
-            if (it == FRAGMENT_KEY_FEEDS) {
-                userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
-            } else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            when (it) {
+                FRAGMENT_KEY_FEEDS -> userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
+                FRAGMENT_KEY_VIDEO -> userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+                FRAGMENT_KEY_REVIEW -> userProfileTracker.clickReviewTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            }
         }
     }
 
@@ -707,6 +710,7 @@ class UserProfileFragment @Inject constructor(
 
         mainBinding.btnOption.setOnClickListener {
             if (viewModel.isSelfProfile) {
+                userProfileTracker.clickUserProfileSettings(viewModel.profileUserID)
                 userProfileUiBridge.eventBus.emit(UserProfileUiBridge.Event.OpenProfileSetingsPage)
             } else {
                 UserProfileOptionBottomSheet.getOrCreate(

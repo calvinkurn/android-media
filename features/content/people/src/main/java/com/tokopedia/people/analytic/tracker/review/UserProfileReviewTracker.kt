@@ -11,29 +11,29 @@ package com.tokopedia.people.analytic.tracker.review
 interface UserProfileReviewTracker {
 
     /** Row 36 */
-    fun clickReviewTab(isSelf: Boolean)
+    fun clickReviewTab(userId: String, isSelf: Boolean)
 
     /** Row 37 */
-    fun clickUserProfileSettings()
+    fun clickUserProfileSettings(userId: String)
 
     /** Row 38 */
-    fun clickReviewSettingsToggle(isOn: Boolean)
+    fun clickReviewSettingsToggle(userId: String, isOn: Boolean)
 
     /** Row 39 */
-    fun clickReviewMedia(feedbackId: String, isSelf: Boolean, productId: String)
+    fun clickReviewMedia(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
 
     /** Row 40 */
-    fun clickLikeReview(feedbackId: String, isSelf: Boolean, productId: String)
+    fun clickLikeReview(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
 
     /** Row 41 */ /** TODO: send as list or? */
-    fun impressReviewCard(position: Int, feedbackId: String, isSelf: Boolean, productId: String)
+    fun impressReviewCard(userId: String, feedbackId: String, isSelf: Boolean, productId: String, position: Int)
 
     /** Row 42 */
     fun openScreenEmptyOrHiddenReviewTab()
 
     /** Row 46 */
-    fun clickReviewSeeMoreDescription(feedbackId: String, isSelf: Boolean, productId: String)
+    fun clickReviewSeeMoreDescription(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
 
     /** Row 48 */
-    fun clickReviewProductInfo(feedbackId: String, isSelf: Boolean, productId: String)
+    fun clickReviewProductInfo(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
 }

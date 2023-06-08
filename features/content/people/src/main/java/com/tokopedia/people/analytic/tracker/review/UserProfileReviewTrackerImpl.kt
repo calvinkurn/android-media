@@ -12,31 +12,42 @@ class UserProfileReviewTrackerImpl @Inject constructor(
     private val trackingQueue: TrackingQueue,
 ) : UserProfileReviewTracker {
 
-    override fun clickReviewTab(isSelf: Boolean) {
+    override fun clickReviewTab(userId: String, isSelf: Boolean) {
 
     }
 
-    override fun clickUserProfileSettings() {
+    override fun clickUserProfileSettings(userId: String) {
 
     }
 
-    override fun clickReviewSettingsToggle(isOn: Boolean) {
+    override fun clickReviewSettingsToggle(userId: String, isOn: Boolean) {
 
     }
 
-    override fun clickReviewMedia(feedbackId: String, isSelf: Boolean, productId: String) {
+    override fun clickReviewMedia(
+        userId: String,
+        feedbackId: String,
+        isSelf: Boolean,
+        productId: String
+    ) {
 
     }
 
-    override fun clickLikeReview(feedbackId: String, isSelf: Boolean, productId: String) {
+    override fun clickLikeReview(
+        userId: String,
+        feedbackId: String,
+        isSelf: Boolean,
+        productId: String
+    ) {
 
     }
 
     override fun impressReviewCard(
-        position: Int,
+        userId: String,
         feedbackId: String,
         isSelf: Boolean,
-        productId: String
+        productId: String,
+        position: Int
     ) {
 
     }
@@ -46,6 +57,7 @@ class UserProfileReviewTrackerImpl @Inject constructor(
     }
 
     override fun clickReviewSeeMoreDescription(
+        userId: String,
         feedbackId: String,
         isSelf: Boolean,
         productId: String
@@ -53,7 +65,12 @@ class UserProfileReviewTrackerImpl @Inject constructor(
 
     }
 
-    override fun clickReviewProductInfo(feedbackId: String, isSelf: Boolean, productId: String) {
+    override fun clickReviewProductInfo(
+        userId: String,
+        feedbackId: String,
+        isSelf: Boolean,
+        productId: String
+    ) {
 
     }
 }

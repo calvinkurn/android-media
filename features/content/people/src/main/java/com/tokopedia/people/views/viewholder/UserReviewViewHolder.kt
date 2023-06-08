@@ -40,10 +40,11 @@ class UserReviewViewHolder private constructor() {
             UserReviewMediaAdapter(
                 listener = object : UserReviewMediaAdapter.Listener {
                     override fun onMediaClick(
-                        feedbackID: String,
+                        feedbackId: String,
+                        productId: String,
                         attachment: UserReviewUiModel.Attachment
                     ) {
-                        listener.onMediaClick(feedbackID, attachment)
+                        listener.onMediaClick(feedbackId, productId,  attachment)
                     }
                 }
             )
@@ -159,13 +160,15 @@ class UserReviewViewHolder private constructor() {
                     when (attachment) {
                         is UserReviewUiModel.Attachment.Video -> {
                             UserReviewMediaAdapter.Model.Video(
-                                feedbackID = item.feedbackID,
+                                feedbackId = item.feedbackID,
+                                productId = item.product.productID,
                                 attachment = attachment,
                             )
                         }
                         is UserReviewUiModel.Attachment.Image -> {
                             UserReviewMediaAdapter.Model.Image(
-                                feedbackID = item.feedbackID,
+                                feedbackId = item.feedbackID,
+                                productId = item.product.productID,
                                 attachment = attachment,
                             )
                         }
@@ -207,7 +210,8 @@ class UserReviewViewHolder private constructor() {
             fun onClickSeeMore(review: UserReviewUiModel.Review)
 
             fun onMediaClick(
-                feedbackID: String,
+                feedbackId: String,
+                productId: String,
                 attachment: UserReviewUiModel.Attachment
             )
         }

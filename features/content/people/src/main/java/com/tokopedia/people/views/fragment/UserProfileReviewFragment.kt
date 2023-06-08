@@ -1,27 +1,20 @@
 package com.tokopedia.people.views.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.util.setSpanOnText
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -48,13 +41,6 @@ import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.viewholder.UserReviewViewHolder
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewDetail
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewerUserInfo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -87,18 +73,37 @@ class UserProfileReviewFragment @Inject constructor(
         UserReviewAdapter(
             listener = object : UserReviewViewHolder.Review.Listener {
                 override fun onClickLike(review: UserReviewUiModel.Review) {
+                    userProfileTracker.clickLikeReview(
+                        userId = viewModel.profileUserID,
+                        feedbackId = review.feedbackID,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = review.product.productID,
+                    )
                     viewModel.submitAction(UserProfileAction.ClickLikeReview(review))
                 }
 
                 override fun onClickSeeMore(review: UserReviewUiModel.Review) {
+                    userProfileTracker.clickReviewSeeMoreDescription(
+                        userId = viewModel.profileUserID,
+                        feedbackId = review.feedbackID,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = review.product.productID,
+                    )
                     viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review))
                 }
 
                 override fun onMediaClick(
-                    feedbackID: String,
+                    feedbackId: String,
+                    productId: String,
                     attachment: UserReviewUiModel.Attachment
                 ) {
-                    viewModel.submitAction(UserProfileAction.ClickReviewMedia(feedbackID, attachment))
+                    userProfileTracker.clickReviewMedia(
+                        userId = viewModel.profileUserID,
+                        feedbackId = feedbackId,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = productId,
+                    )
+                    viewModel.submitAction(UserProfileAction.ClickReviewMedia(feedbackId, attachment))
                 }
             },
             onLoading = {
@@ -230,6 +235,7 @@ class UserProfileReviewFragment @Inject constructor(
     }
 
     private fun showNoReviewLayout() {
+        userProfileTracker.openScreenEmptyOrHiddenReviewTab()
         if (viewModel.isSelfProfile) {
             binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_empty_title)
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
@@ -250,6 +256,7 @@ class UserProfileReviewFragment @Inject constructor(
     }
 
     private fun showHiddenReviewLayout() {
+        userProfileTracker.openScreenEmptyOrHiddenReviewTab()
         if (viewModel.isSelfProfile) {
             binding.layoutNoUserReview.tvReviewHiddenTitle.text = getString(R.string.up_profile_self_review_hidden_title)
             binding.layoutNoUserReview.tvReviewHiddenDesc.text = setupClickableText(
