@@ -3,7 +3,7 @@ package com.tokopedia.media.editor.ui.uimodel
 import android.graphics.Typeface
 import android.os.Parcelable
 import android.text.Layout
-import com.tokopedia.media.editor.ui.adapter.AddTextToolAdapter
+import com.tokopedia.media.editor.ui.adapter.addtext.AddTextToolAdapter
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

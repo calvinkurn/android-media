@@ -5,8 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.adapter.AddTextToolAdapter
-import com.tokopedia.media.editor.ui.adapter.AddTextViewHolder
+import com.tokopedia.media.editor.ui.adapter.addtext.AddTextToolAdapter
+import com.tokopedia.media.editor.ui.adapter.addtext.AddTextViewHolder
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
 import com.tokopedia.picker.common.basecomponent.UiComponent
 
