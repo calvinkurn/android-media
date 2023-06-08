@@ -62,7 +62,11 @@ data class DataResponse(
 
     @SerializedName("add_ons")
     @Expose
-    val addOnsProduct: List<AddOnsProduct> = emptyList()
+    val addOnsProduct: List<AddOnsProduct> = emptyList(),
+
+    @SerializedName("is_fulfillment")
+    @Expose
+    val isFulfillment: Boolean = false
 ) {
     data class AddOnsProduct(
         @SerializedName("addon_id")
