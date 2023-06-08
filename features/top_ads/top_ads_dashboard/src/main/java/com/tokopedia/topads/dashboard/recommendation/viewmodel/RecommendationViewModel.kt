@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class RecommendationViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGetShopInfoUseCase: TopAdsGetShopInfoUseCase,
-    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
+    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     fun loadRecommendationPage() {
@@ -40,19 +41,19 @@ class RecommendationViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             _shopInfo.value = topAdsGetShopInfoUseCase(source = "test")
         }, onError = {
-            _shopInfo.value = Fail(it)
-        })
+                _shopInfo.value = Fail(it)
+            })
     }
 
     private fun getAdGroupWithInsight() {
         launchCatchError(dispatcher.main, block = {
-            _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase()
+            _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase(
+                RecommendationConstants.PRODUCT_KEY
+            )
         }, onError = {
-            _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)
-        })
+                _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)
+            })
     }
 
     val emptyStateData = EmptyStateData.getData()
-
-
 }

@@ -106,7 +106,6 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         setUpChipsRecyclerView()
         observeLiveData()
         settingClicks()
-
     }
 
     private fun settingClicks() {
@@ -123,7 +122,6 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
             }
             detailPageEmptyState?.hide()
             groupDetailsRecyclerView?.show()
-
         }
     }
 
@@ -178,6 +176,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private fun loadData(adGroupType: Int, groupId: String) {
         viewModel.loadDetailPage(adGroupType, groupId)
+        viewModel.loadInsightCountForOtherAdType(adGroupType)
     }
 
     private fun setUpChipsRecyclerView() {
@@ -260,17 +259,12 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private fun onInsightTypeChipClick(groupList: MutableList<InsightListUiModel>?) {
         if (groupList.isNullOrEmpty()) {
-            val list = arrayListOf(
-                ItemListUiModel(
-                    adType = TYPE_PRODUCT_VALUE,
-                    title = getString(R.string.topads_insight_ad_type_product),
-                    isSelected = (PRODUCT_KEY == adType)
+            val list = viewModel.getItemListUiModel(
+                listOf(
+                    getString(R.string.topads_insight_ad_type_product),
+                    getString(R.string.topads_insight_ad_type_shop)
                 ),
-                ItemListUiModel(
-                    adType = TYPE_SHOP_VALUE,
-                    title = getString(R.string.topads_insight_ad_type_shop),
-                    isSelected = (adType != PRODUCT_KEY)
-                )
+                adType
             )
             ListBottomSheet.show(
                 childFragmentManager,

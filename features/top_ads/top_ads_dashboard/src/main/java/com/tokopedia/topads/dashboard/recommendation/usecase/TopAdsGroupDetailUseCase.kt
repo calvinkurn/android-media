@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
@@ -56,6 +57,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 is TopAdsListAllInsightState.Success -> {
                     val totalInsight =
                         groupWithInsight.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
+                    groupDetailMapper.putInsightCount(adGroupType, totalInsight)
                     if (totalInsight.isZero()) {
                         groupDetailMapper.mapEmptyState()
                         return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)
@@ -124,7 +126,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
 
     private suspend fun getGroupWithInsight(): TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {
         return try {
-            topAdsGetTotalAdGroupsWithInsightUseCase()
+            topAdsGetTotalAdGroupsWithInsightUseCase(PRODUCT_KEY)
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }

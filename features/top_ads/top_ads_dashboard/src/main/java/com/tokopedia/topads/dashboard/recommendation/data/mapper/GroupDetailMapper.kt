@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
@@ -35,6 +36,11 @@ class GroupDetailMapper @Inject constructor() {
         TYPE_GROUP_BID to GroupInsightsUiModel(),
         TYPE_DAILY_BUDGET to GroupInsightsUiModel(),
         TYPE_NEGATIVE_KEYWORD_BID to GroupInsightsUiModel()
+    )
+
+    val insightCountMap: MutableMap<Int, Int> = mutableMapOf(
+        TYPE_PRODUCT_VALUE to CONST_0,
+        TYPE_SHOP_VALUE to CONST_0
     )
 
     fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
@@ -227,5 +233,9 @@ class GroupDetailMapper @Inject constructor() {
                 data
             )
         )
+    }
+
+    fun putInsightCount(adGroupType: Int, totalInsight: Int) {
+        insightCountMap[adGroupType] = totalInsight
     }
 }

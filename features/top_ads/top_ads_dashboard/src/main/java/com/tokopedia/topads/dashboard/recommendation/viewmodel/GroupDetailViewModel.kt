@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.model.InsightTypeApplyInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
@@ -15,12 +17,14 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -30,8 +34,10 @@ class GroupDetailViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGroupDetailUseCase: TopAdsGroupDetailUseCase,
     private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
+    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
-    private val groupDetailMapper: GroupDetailMapper
+    private val groupDetailMapper: GroupDetailMapper,
+    private val utils: Utils
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
     private val _detailPageLiveData =
@@ -140,9 +146,46 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun applyInsight2(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput) {
-        val requestParams = topAdsCreateUseCase.createRequestParamForInsight2(topAdsManagePromoGroupProductInput)
+        val requestParams =
+            topAdsCreateUseCase.createRequestParamForInsight2(topAdsManagePromoGroupProductInput)
         launchCatchError(dispatcher.main, block = {
             topAdsCreateUseCase.execute(requestParams)
         }, onError = {})
+    }
+
+    fun loadInsightCountForOtherAdType(adGroupType: Int) {
+        val otherAdType = if (adGroupType == TYPE_PRODUCT_VALUE) HEADLINE_KEY else PRODUCT_KEY
+        launchCatchError(dispatcher.main, block = {
+            val data = topAdsGetTotalAdGroupsWithInsightUseCase.invoke(otherAdType)
+            if (data is TopAdsListAllInsightState.Success) {
+                groupDetailMapper.putInsightCount(
+                    utils.convertAdTypeToInt(otherAdType),
+                    data.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
+                )
+            }
+        }, onError = {})
+    }
+
+    fun getItemListUiModel(titleList: List<String>, adGroupType: String?): List<ItemListUiModel> {
+        val list = arrayListOf<ItemListUiModel>()
+        if (!groupDetailMapper.insightCountMap[TYPE_PRODUCT_VALUE].isZero()) {
+            list.add(
+                ItemListUiModel(
+                    adType = TYPE_PRODUCT_VALUE,
+                    title = titleList.firstOrNull() ?: "",
+                    isSelected = (PRODUCT_KEY == adGroupType)
+                )
+            )
+        }
+        if (!groupDetailMapper.insightCountMap[RecommendationConstants.TYPE_SHOP_VALUE].isZero()) {
+            list.add(
+                ItemListUiModel(
+                    adType = RecommendationConstants.TYPE_SHOP_VALUE,
+                    title = titleList.getOrNull(CONST_1) ?: "",
+                    isSelected = (adGroupType != PRODUCT_KEY)
+                )
+            )
+        }
+        return list
     }
 }
