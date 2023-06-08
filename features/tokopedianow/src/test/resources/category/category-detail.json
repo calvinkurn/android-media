@@ -68,6 +68,28 @@
           "isAdult": 0,
           "minAge": 0,
           "color": "#FFFAE6"
+        },
+        {
+          "id": "4948",
+          "name": "Rempah",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/rempah",
+          "applinks": "tokopedia://now/category/4858/4948",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/8630c38f-441c-437f-a293-23fe8dc118d1.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
+        },
+        {
+          "id": "4864",
+          "name": "Tahu \u0026 Tempe",
+          "url": "https://www.tokopedia.com/now/category/sayur-buah-segar/tahu-tempe",
+          "applinks": "tokopedia://now/category/4858/4864",
+          "imageUrl": "https://images.tokopedia.net/img/WgKiGm/2021/7/7/17f9a6c8-0c17-48de-b0fe-6c588a9cf2d8.png",
+          "isKyc": false,
+          "isAdult": 0,
+          "minAge": 0,
+          "color": "#FFFAE6"
         }
       ],
       "recommendation": [

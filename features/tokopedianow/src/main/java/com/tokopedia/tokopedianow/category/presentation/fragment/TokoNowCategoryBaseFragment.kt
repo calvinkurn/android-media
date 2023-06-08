@@ -622,20 +622,9 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
                 source = source
             )
             miniCartWidget?.show()
+            miniCartWidget?.hideTopContentView()
         } else {
             hideMiniCart()
-        }
-    }
-
-    protected fun setupPadding(
-        data: MiniCartSimplifiedData
-    ) {
-        binding?.miniCartWidget?.post {
-            val paddingZero = context?.resources?.getDimensionPixelSize(
-                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
-            ).orZero()
-            val paddingBottom = if (data.isShowMiniCartWidget) getMiniCartHeight() else paddingZero
-            binding?.rvCategory?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
         }
     }
 
@@ -709,18 +698,6 @@ abstract class TokoNowCategoryBaseFragment: BaseDaggerFragment(),
     /**
      * -- function without modifier section --
      */
-
-    fun resetPadding() {
-        val paddingZero = context?.resources?.getDimensionPixelSize(
-            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
-        ).orZero()
-        binding?.rvCategory?.setPadding(
-            paddingZero,
-            paddingZero,
-            paddingZero,
-            paddingZero
-        )
-    }
 
     fun hideMiniCart() {
         binding?.miniCartWidget?.hide()

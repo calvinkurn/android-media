@@ -131,6 +131,13 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
         categoryL2Models.remove(categoryL2Model)
 
+        if (categoryPage.searchProduct.data.productList.isEmpty()) {
+            layout.removeItem(
+                id = categoryL2Model.id
+            )
+            return@asyncCatchError
+        }
+
         if (hasAdded) {
             layout.mapCategoryShowcase(
                 model = categoryPage,
@@ -173,6 +180,9 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         }
 
         layout.removeItem(CategoryLayoutType.MORE_PROGRESS_BAR.name)
+
+        addCategoryRecommendation()
+
         _categoryPage.postValue(layout)
     }
 
@@ -206,6 +216,17 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             getBatchShowcase(
                 hasAdded = false
             )
+        }
+    }
+
+    private fun addCategoryRecommendation() {
+        if (categoryL2Models.isEmpty()) {
+            _scrollNotNeeded.postValue(Unit)
+
+            categoryRecommendation?.let { categoryMenu ->
+                layout.addCategoryMenu(categoryMenu)
+                categoryRecommendation = null
+            }
         }
     }
 
@@ -280,16 +301,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     fun loadMore(
         isAtTheBottomOfThePage: Boolean
     ) {
-        if (isAtTheBottomOfThePage && categoryL2Models.isEmpty()) {
-            _scrollNotNeeded.value = Unit
-
-            categoryRecommendation?.let { categoryMenu ->
-                layout.addCategoryMenu(categoryMenu)
-                categoryRecommendation = null
-
-                _categoryPage.value = layout
-            }
-        } else if (isAtTheBottomOfThePage && (moreShowcaseJob == null || moreShowcaseJob?.isCompleted == true)) {
+        if (isAtTheBottomOfThePage && (moreShowcaseJob == null || moreShowcaseJob?.isCompleted == true)) {
             getMoreShowcases()
         }
     }

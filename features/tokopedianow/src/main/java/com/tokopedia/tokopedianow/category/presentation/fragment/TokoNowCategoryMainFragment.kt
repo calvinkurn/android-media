@@ -183,12 +183,10 @@ class TokoNowCategoryMainFragment : TokoNowCategoryBaseFragment() {
                 is Success -> {
                     val data = result.data
                     showMiniCart(data)
-                    setupPadding(data)
                     productRecommendationViewModel.updateMiniCartSimplified(result.data)
                 }
                 is Fail -> {
                     hideMiniCart()
-                    resetPadding()
                 }
             }
         }

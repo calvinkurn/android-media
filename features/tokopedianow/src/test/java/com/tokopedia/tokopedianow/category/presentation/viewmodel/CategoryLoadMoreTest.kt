@@ -79,7 +79,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
             tickerUiModel,
             titleUiModel,
             categoryNavigationUiModel,
-            productRecommendationUiModel,
+            productRecommendationUiModel
         )
 
         val categoryNavigationList = categoryNavigationUiModel.categoryListUiModel.toMutableList()

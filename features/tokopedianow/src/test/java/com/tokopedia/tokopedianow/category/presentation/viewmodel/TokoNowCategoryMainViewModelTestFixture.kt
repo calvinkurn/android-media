@@ -55,6 +55,8 @@ open class TokoNowCategoryMainViewModelTestFixture {
     private val categoryProductResponse3 = "category/ace-search-product-3-buah-buahan.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse4 = "category/ace-search-product-4-jamur.json".jsonToObject<AceSearchProductModel>()
     private val categoryProductResponse5 = "category/ace-search-product-5-paket-sayur.json".jsonToObject<AceSearchProductModel>()
+    private val categoryProductResponse6 = "category/ace-search-product-6-rempah.json".jsonToObject<AceSearchProductModel>()
+    private val categoryProductResponse7 = "category/ace-search-product-7-tahu-tempe.json".jsonToObject<AceSearchProductModel>()
     private val miniCartDataResponse = "category/get-minicart.json".jsonToObject<MiniCartGqlResponse>()
 
     /**
@@ -80,7 +82,9 @@ open class TokoNowCategoryMainViewModelTestFixture {
         "4826" to categoryProductResponse2,
         "4860" to categoryProductResponse3,
         "4863" to categoryProductResponse4,
-        "4865" to categoryProductResponse5
+        "4865" to categoryProductResponse5,
+        "4948" to categoryProductResponse6,
+        "4864" to categoryProductResponse7
     )
 
     /**
@@ -337,9 +341,14 @@ open class TokoNowCategoryMainViewModelTestFixture {
         resultList: MutableList<Visitable<*>>,
         hasBlockedAddToCart: Boolean
     ) {
-        if (hasAdded) {
-            categoryNavigationList.take(BATCH_SHOWCASE_TOTAL).forEachIndexed { index, itemUiModel ->
-                categoryProductResponseMap[itemUiModel.id]?.apply {
+        categoryNavigationList.take(BATCH_SHOWCASE_TOTAL).forEach { itemUiModel ->
+            categoryProductResponseMap[itemUiModel.id]?.apply {
+                if (this.searchProduct.data.productList.isEmpty()) {
+                    resultList.remove(itemUiModel)
+                    return@forEach
+                }
+
+                if (hasAdded) {
                     if (expectedCategoryIdL2Failed != itemUiModel.id) {
                         resultList.add(
                             mapToShowcaseProductCard(
@@ -353,11 +362,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
                         )
                         categoryNavigationList.remove(itemUiModel)
                     }
-                }
-            }
-        } else {
-            categoryNavigationList.take(BATCH_SHOWCASE_TOTAL).forEach { itemUiModel ->
-                categoryProductResponseMap[itemUiModel.id]?.apply {
+                } else {
                     resultList.add(
                         AceSearchProductModel().mapToShowcaseProductCard(
                             categoryIdL2 = itemUiModel.id,
