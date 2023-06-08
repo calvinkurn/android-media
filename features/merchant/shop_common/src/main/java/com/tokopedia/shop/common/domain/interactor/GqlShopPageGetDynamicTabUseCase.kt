@@ -127,6 +127,7 @@ class GqlShopPageGetDynamicTabUseCase @Inject constructor(
                             data {
                                 linkID
                                 linkType
+                                link
                             }
                           }
                         }

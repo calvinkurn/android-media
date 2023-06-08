@@ -690,7 +690,7 @@ class ShopPageCampaignFragment :
     }
 
     private fun isWidgetVoucherSlider(uiModel: ShopPageWidgetUiModel): Boolean {
-        return uiModel.widgetType == WidgetType.VOUCHER && uiModel.widgetName == WidgetName.VOUCHER_SLIDER
+        return uiModel.widgetType == WidgetType.VOUCHER_SLIDER && uiModel.widgetName == WidgetName.VOUCHER
     }
 
     private fun getWidgetContentData(listWidgetLayoutToLoad: MutableList<ShopPageWidgetUiModel>) {
