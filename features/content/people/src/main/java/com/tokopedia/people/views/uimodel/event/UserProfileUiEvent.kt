@@ -42,4 +42,6 @@ sealed interface UserProfileUiEvent {
         val review: UserReviewUiModel.Review,
         val mediaPosition: Int,
     ) : UserProfileUiEvent
+
+    object SendPendingTracker : UserProfileUiEvent
 }

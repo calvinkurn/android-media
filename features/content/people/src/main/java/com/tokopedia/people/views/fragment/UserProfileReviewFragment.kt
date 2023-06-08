@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
+import com.tokopedia.people.analytic.UserReviewImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.getBoldSpan
@@ -52,6 +54,7 @@ class UserProfileReviewFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileUiBridge: UserProfileUiBridge,
     private val userProfileTracker: UserProfileTracker,
+    private val userReviewImpressCoordinator: UserReviewImpressCoordinator
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentUserProfileReviewBinding? = null
@@ -72,6 +75,18 @@ class UserProfileReviewFragment @Inject constructor(
     private val adapter: UserReviewAdapter by lazyThreadSafetyNone {
         UserReviewAdapter(
             listener = object : UserReviewViewHolder.Review.Listener {
+                override fun onImpressCard(review: UserReviewUiModel.Review, position: Int) {
+                    userReviewImpressCoordinator.impress(review) {
+                        userProfileTracker.impressReviewCard(
+                            userId = viewModel.profileUserID,
+                            feedbackId = review.feedbackID,
+                            isSelf = viewModel.isSelfProfile,
+                            productId = review.product.productID,
+                            position = position,
+                        )
+                    }
+                }
+
                 override fun onClickLike(review: UserReviewUiModel.Review) {
                     userProfileTracker.clickLikeReview(
                         userId = viewModel.profileUserID,
@@ -142,6 +157,11 @@ class UserProfileReviewFragment @Inject constructor(
         viewModel.submitAction(UserProfileAction.LoadUserReview(isRefresh = true))
     }
 
+    override fun onPause() {
+        super.onPause()
+        sendPendingTracker()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -163,6 +183,9 @@ class UserProfileReviewFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is UserProfileUiEvent.SendPendingTracker -> {
+                        sendPendingTracker()
+                    }
                     is UserProfileUiEvent.ErrorLoadReview -> {
                         showError(event.throwable)
                     }
@@ -288,6 +311,12 @@ class UserProfileReviewFragment @Inject constructor(
         binding.layoutNoUserReview.tvReviewHiddenDesc.show()
         binding.layoutNoUserReview.root.show()
         binding.rvReview.hide()
+    }
+
+    private fun sendPendingTracker() {
+        userReviewImpressCoordinator.sendTracker {
+            userProfileTracker.sendAll()
+        }
     }
 
     private fun setupClickableText(

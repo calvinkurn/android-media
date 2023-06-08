@@ -272,6 +272,8 @@ class UserProfileViewModel @AssistedInject constructor(
                 _reviewSettings.update {
                     repo.getProfileSettings(_profileInfo.value.userID).getReviewSettings()
                 }
+
+                _uiEvent.emit(UserProfileUiEvent.SendPendingTracker)
             }
             if (!_reviewSettings.value.isEnabled) return@launchCatchError
             if (!isRefresh && !currReviewContent.hasNext) return@launchCatchError

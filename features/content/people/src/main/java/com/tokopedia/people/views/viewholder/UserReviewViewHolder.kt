@@ -87,6 +87,8 @@ class UserReviewViewHolder private constructor() {
 
         fun bind(item: UserReviewUiModel.Review) {
             binding.apply {
+                listener.onImpressCard(item, layoutPosition + 1)
+
                 imgProduct.setImageUrl(item.product.productImageURL)
                 tvProduct.text = item.product.productName
 
@@ -210,6 +212,7 @@ class UserReviewViewHolder private constructor() {
         }
 
         interface Listener {
+            fun onImpressCard(review: UserReviewUiModel.Review, position: Int)
             fun onClickLike(review: UserReviewUiModel.Review)
             fun onClickSeeMore(review: UserReviewUiModel.Review)
             fun onClickProductInfo(review: UserReviewUiModel.Review)
