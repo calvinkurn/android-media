@@ -23,8 +23,8 @@ class BulkReviewGetFormUseCase @Inject constructor(
 
     override fun graphqlQuery(): String {
         return """
-            query GetBulkReviewForm {
-                productrevGetBulkForm {
+            query GetBulkReviewForm(${'$'}invoiceNumber: String, ${'$'}utmSource: String) {
+                productrevGetBulkForm(invoiceNumber: ${'$'}invoiceNumber, utmSource: ${'$'}utmSource) {
                     themeCopy
                     list {
                         inboxID

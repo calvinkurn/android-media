@@ -24,7 +24,7 @@ class PlayWebSocketLogger constructor(mContext: Context) : BaseWebSocketLogger(m
                 pageSource = WebSocketLogPageSource.PLAY,
                 info = WebSocketLogUiModel(
                     event = event,
-                    message = message.jsonHumanized(),
+                    message = message,
                     play = detail
                 )
             )

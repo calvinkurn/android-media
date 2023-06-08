@@ -94,13 +94,13 @@ class PlayViewerPiPCoordinator(
                     if (pipInfoUiModel.pipMode is PiPMode.BrowsingOtherPage) listener.onShouldOpenApplink(pipInfoUiModel.pipMode.applinkModel)
                 },
                 onFailure = listener::onFailedEnterPiPMode,
-                onShouldRequestPermission = { listener.onShouldRequestPermission(pipMode = pipInfoUiModel.pipMode, requestPermissionFlow = it) }
+                onShouldRequestPermission = { listener.onShouldRequestPermission(pipModel = pipInfoUiModel, requestPermissionFlow = it) }
         )
     }
 
     interface Listener {
 
-        fun onShouldRequestPermission(pipMode: PiPMode, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow)
+        fun onShouldRequestPermission(pipModel: PiPInfoUiModel, requestPermissionFlow: FloatingWindowPermissionManager.RequestPermissionFlow)
         fun onFailedEnterPiPMode(error: FloatingWindowException)
         fun onSucceededEnterPiPMode(view: PlayViewerPiPView)
 

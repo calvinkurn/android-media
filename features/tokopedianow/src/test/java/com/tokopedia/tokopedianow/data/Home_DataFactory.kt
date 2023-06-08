@@ -23,6 +23,7 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -73,6 +74,14 @@ fun createHomeLayoutList(): List<HomeLayoutResponse> {
                     header = Header(
                             name = "Banner Tokonow",
                             serverTimeUnix = 0
+                    )
+            ),
+            HomeLayoutResponse(
+                    id = "222332",
+                    layout = "bundling_widget",
+                    header = Header(
+                        name = "Product Bundling",
+                        serverTimeUnix = 0
                     )
             )
     )
