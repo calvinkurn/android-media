@@ -14,11 +14,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_COUNT_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_ID_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_NAME_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_TYPE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.GROUP_DETAIL_BUNDLE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_LIST_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
@@ -50,14 +62,25 @@ class SaranTabsFragment : BaseDaggerFragment() {
     }
     private val recyclerviewScrollListener by lazy { onRecyclerViewListener(layoutManager) }
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    var viewModelFactory: ViewModelFactory? = null
 
+    @JvmField
     @Inject
-    lateinit var mapper: InsightDataMapper
+    var mapper: InsightDataMapper? = null
 
-    private val viewModel: TopAdsListAllInsightViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory)[TopAdsListAllInsightViewModel::class.java]
+    @JvmField
+    @Inject
+    var utils: Utils? = null
+
+    private val viewModel: TopAdsListAllInsightViewModel? by lazy {
+        viewModelFactory?.let {
+            ViewModelProvider(
+                this,
+                it
+            )[TopAdsListAllInsightViewModel::class.java]
+        }
     }
 
     override fun initInjector() {
@@ -87,27 +110,31 @@ class SaranTabsFragment : BaseDaggerFragment() {
         setPageState(getTabType())
         getFirstPageData()
         observeViewModel()
+        setChipsView()
+        setGroupsView()
+    }
 
-        chipsAdapter = ChipsAdapter(onClick())
-
-        chipsRecyclerView?.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        chipsRecyclerView?.adapter = chipsAdapter
-
-        chipsAdapter?.submitList(viewModel.getChipsData())
-        val itemDecoration =
-            RecommendationInsightItemDecoration(
-                groupCardRecyclerView?.context,
-                layoutManager.orientation
-            )
+    private fun setGroupsView() {
+        val itemDecoration = RecommendationInsightItemDecoration(
+            groupCardRecyclerView?.context,
+            layoutManager.orientation
+        )
         groupCardRecyclerView?.layoutManager = layoutManager
         groupCardRecyclerView?.addItemDecoration(itemDecoration)
         groupCardRecyclerView?.adapter = insightListAdapter
         groupCardRecyclerView?.addOnScrollListener(recyclerviewScrollListener)
     }
 
+    private fun setChipsView() {
+        chipsAdapter = ChipsAdapter(onClick())
+        chipsRecyclerView?.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        chipsRecyclerView?.adapter = chipsAdapter
+        viewModel?.let { chipsAdapter?.submitList(it.getChipsData()) }
+    }
+
     private fun getTabType(): Int {
-        return this.arguments?.getInt("adType") ?: TYPE_PRODUCT_VALUE
+        return this.arguments?.getInt(AD_GROUP_TYPE_KEY) ?: TYPE_PRODUCT_VALUE
     }
 
     private fun setPageState(tabType: Int) {
@@ -132,20 +159,20 @@ class SaranTabsFragment : BaseDaggerFragment() {
         }
         chipsAdapter?.submitList(mList)
 
-        if (mapper.insightDataMap[position]?.adGroups?.isEmpty() == true) {
-            viewModel.getFirstPageData(
-                adGroupType = RecommendationConstants.PRODUCT_KEY,
+        if (mapper?.insightDataMap?.get(position)?.adGroups?.isEmpty() == true) {
+            viewModel?.getFirstPageData(
+                adGroupType = PRODUCT_KEY,
                 insightType = position,
                 mapper = mapper
             )
         }
 
-        insightListAdapter.submitList(mapper.insightDataMap[position]?.adGroups?.toMutableList())
+        insightListAdapter.submitList(mapper?.insightDataMap?.get(position)?.adGroups?.toMutableList())
         recyclerviewScrollListener.updateStateAfterGetData()
     }
 
     private fun observeViewModel() {
-        viewModel.productInsights.observe(viewLifecycleOwner) {
+        viewModel?.productInsights?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessProductInsight(it)
@@ -153,18 +180,13 @@ class SaranTabsFragment : BaseDaggerFragment() {
                 is Fail -> {
                 }
                 is Loading -> {
-                    if (mapper.insightDataMap[it.type]?.nextCursor?.isNotEmpty() == true) {
-                        mapper.insightDataMap[it.type]?.adGroups?.add(loadingModel)
-                        insightListAdapter.submitList(mapper.insightDataMap[it.type]?.adGroups?.toMutableList())
-                    } else {
-                        mapper.insightDataMap[it.type]?.adGroups?.add(loadingModel)
-                        insightListAdapter.submitList(mapper.insightDataMap[it.type]?.adGroups?.toMutableList())
-                    }
+                    mapper?.insightDataMap?.get(it.type)?.adGroups?.add(loadingModel)
+                    insightListAdapter.submitList(mapper?.insightDataMap?.get(it.type)?.adGroups?.toMutableList())
                 }
             }
         }
 
-        viewModel.headlineInsights.observe(viewLifecycleOwner) {
+        viewModel?.headlineInsights?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessProductInsight(it)
@@ -180,14 +202,15 @@ class SaranTabsFragment : BaseDaggerFragment() {
     private fun onSuccessProductInsight(it: Success<InsightUiModel>) {
         recyclerviewScrollListener.updateStateAfterGetData()
         val type = it.data.insightType
-        mapper.insightDataMap[type]?.adGroups?.remove(loadingModel)
-        mapper.insightDataMap[type]?.adGroups?.addAll(it.data.adGroups)
-        mapper.insightDataMap[type]?.nextCursor = it.data.nextCursor
-        if (mapper.insightDataMap[type]?.adGroups?.size == 0) {
-            mapper.insightDataMap[type]?.adGroups?.clear()
-            mapper.insightDataMap[type]?.adGroups?.add(viewModel.getEmptyStateData(type))
+        val insightUiModel = mapper?.insightDataMap?.get(type)
+        insightUiModel?.adGroups?.remove(loadingModel)
+        insightUiModel?.adGroups?.addAll(it.data.adGroups)
+        insightUiModel?.nextCursor = it.data.nextCursor
+        if (insightUiModel?.adGroups?.size.isZero()) {
+            insightUiModel?.adGroups?.clear()
+            viewModel?.getEmptyStateData(type)?.let { it1 -> insightUiModel?.adGroups?.add(it1) }
         }
-        insightListAdapter.submitList(mapper.insightDataMap[type]?.adGroups?.toMutableList())
+        insightListAdapter.submitList(insightUiModel?.adGroups?.toMutableList())
     }
 
     private fun onRecyclerViewListener(layoutManager: LinearLayoutManager): EndlessRecyclerViewScrollListener {
@@ -195,14 +218,16 @@ class SaranTabsFragment : BaseDaggerFragment() {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 Toast.makeText(context, "scdjn", Toast.LENGTH_LONG).show()
                 val selected = chipsAdapter?.getSelectedChips()
-                val nextCursor = mapper.insightDataMap[selected]?.nextCursor
+                val nextCursor = mapper?.insightDataMap?.get(selected)?.nextCursor
                 if (nextCursor?.isNotEmpty() == true) {
-                    viewModel.getNextPageData(
-                        adGroupType = RecommendationConstants.PRODUCT_KEY,
-                        insightType = selected ?: 0,
-                        startCursor = nextCursor,
-                        mapper = mapper
-                    )
+                    mapper?.let {
+                        viewModel?.getNextPageData(
+                            adGroupType = PRODUCT_KEY,
+                            insightType = selected ?: Int.ZERO,
+                            startCursor = nextCursor,
+                            mapper = it
+                        )
+                    }
                 }
             }
         }
@@ -211,23 +236,23 @@ class SaranTabsFragment : BaseDaggerFragment() {
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit =
         { adGroupList, item ->
             val bundle = Bundle()
-            bundle.putString("adType", item.adGroupType)
-            bundle.putString("adGroupName", item.adGroupName)
-            bundle.putString("groupId", item.adGroupID)
-            bundle.putInt("count", item.count)
-            bundle.putInt("insightType", item.insightType)
-            bundle.putParcelableArrayList("insightTypeList", adGroupList)
+            bundle.putString(AD_GROUP_TYPE_KEY, item.adGroupType)
+            bundle.putString(AD_GROUP_NAME_KEY, item.adGroupName)
+            bundle.putString(AD_GROUP_ID_KEY, item.adGroupID)
+            bundle.putInt(AD_GROUP_COUNT_KEY, item.count)
+            bundle.putInt(INSIGHT_TYPE_KEY, item.insightType)
+            bundle.putParcelableArrayList(INSIGHT_TYPE_LIST_KEY, adGroupList)
             Intent(context, GroupDetailActivity::class.java).apply {
-                this.putExtra("groupDetailBundle", bundle)
+                this.putExtra(GROUP_DETAIL_BUNDLE_KEY, bundle)
                 startActivity(this)
             }
         }
 
     private fun getFirstPageData() {
         val tabType = getTabType()
-        viewModel.getFirstPageData(
-            adGroupType = if (tabType == TYPE_PRODUCT_VALUE) RecommendationConstants.PRODUCT_KEY else RecommendationConstants.HEADLINE_KEY,
-            insightType = if (tabType == TYPE_PRODUCT_VALUE) 0 else 5,
+        viewModel?.getFirstPageData(
+            adGroupType = utils?.convertAdTypeToString(tabType) ?: PRODUCT_KEY,
+            insightType = if (tabType == TYPE_PRODUCT_VALUE) INSIGHT_TYPE_ALL else INSIGHT_TYPE_NEGATIVE_KEYWORD,
             mapper = mapper
         )
     }
@@ -236,7 +261,7 @@ class SaranTabsFragment : BaseDaggerFragment() {
         fun createInstance(adType: Int): SaranTabsFragment {
             val fragment = SaranTabsFragment()
             val bundle = Bundle()
-            bundle.putInt("adType", adType)
+            bundle.putInt(AD_GROUP_TYPE_KEY, adType)
             fragment.arguments = bundle
             return fragment
         }

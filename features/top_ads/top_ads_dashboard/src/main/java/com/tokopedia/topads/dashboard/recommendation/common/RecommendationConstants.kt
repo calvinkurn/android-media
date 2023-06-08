@@ -27,4 +27,35 @@ object RecommendationConstants {
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"
     const val TAB_NAME_SHOP = "Iklan Toko"
+
+    const val AD_GROUP_TYPE_KEY = "adGroupType"
+    const val AD_GROUP_NAME_KEY = "adGroupName"
+    const val AD_GROUP_ID_KEY = "groupId"
+    const val AD_GROUP_COUNT_KEY = "count"
+    const val INSIGHT_TYPE_KEY = "insightType"
+    const val INSIGHT_TYPE_LIST_KEY = "insightTypeList"
+    const val GROUP_DETAIL_BUNDLE_KEY = "groupDetailBundle"
+
+    object InsightTypeConstants {
+        const val INSIGHT_TYPE_ALL = 0
+        const val INSIGHT_TYPE_POSITIVE_KEYWORD = 1
+        const val INSIGHT_TYPE_KEYWORD_BID = 2
+        const val INSIGHT_TYPE_GROUP_BID = 3
+        const val INSIGHT_TYPE_DAILY_BUDGET = 4
+        const val INSIGHT_TYPE_NEGATIVE_KEYWORD = 5
+
+        const val INSIGHT_TYPE_ALL_INPUT = "Semua"
+        const val INSIGHT_TYPE_POSITIVE_KEYWORD_INPUT = "keyword_new_positive"
+        const val INSIGHT_TYPE_KEYWORD_BID_INPUT = "keyword_bid"
+        const val INSIGHT_TYPE_GROUP_BID_INPUT = "group_bid"
+        const val INSIGHT_TYPE_DAILY_BUDGET_INPUT = "group_daily_budget"
+        const val INSIGHT_TYPE_NEGATIVE_KEYWORD_INPUT = "keyword_new_negative"
+
+        const val INSIGHT_TYPE_ALL_NAME = "Semua"
+        const val INSIGHT_TYPE_POSITIVE_KEYWORD_NAME = "Kata Kunci"
+        const val INSIGHT_TYPE_KEYWORD_BID_NAME = "Biaya Kata Kunci"
+        const val INSIGHT_TYPE_GROUP_BID_NAME = "Biaya Iklan"
+        const val INSIGHT_TYPE_DAILY_BUDGET_NAME = "Anggaran Harian"
+        const val INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME = "Kata Kunci Negatif"
+    }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,8 +20,13 @@ import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_ID_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_NAME_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.AD_GROUP_TYPE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.DEFAULT_SELECTED_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_LIST_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
@@ -100,16 +106,16 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
 
     private fun retrieveInitialData() {
         insightList =
-            arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
-        adType = arguments?.getString("adType")
-        val adGroupName = arguments?.getString("adGroupName")
-        val adGroupId = arguments?.getString("groupId") ?: ""
-        insightType = arguments?.getInt("insightType") ?: 0
+            arguments?.getParcelableArrayList(INSIGHT_TYPE_LIST_KEY) ?: arrayListOf()
+        adType = arguments?.getString(AD_GROUP_TYPE_KEY)
+        val adGroupName = arguments?.getString(AD_GROUP_NAME_KEY)
+        val adGroupId = arguments?.getString(AD_GROUP_ID_KEY) ?: String.EMPTY
+        insightType = arguments?.getInt(INSIGHT_TYPE_KEY) ?: Int.ZERO
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
         viewModel.selectDefaultChips(insightType)
-        if (adType != null && adGroupId != null) {
+        if (adType != null && adGroupId.isNotEmpty()) {
             loadData(
-                if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
+                utils.convertAdTypeToInt(adType),
                 adGroupId
             )
         }
