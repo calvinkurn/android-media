@@ -19,6 +19,7 @@ object LoginConstants {
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
         const val REQUEST_VERIFY_BIOMETRIC = 124
         const val REQUEST_GOTO_SEAMLESS = 125
+        const val REQUEST_CHOOSE_ACCOUNT_OCL = 126
     }
 
     object RemoteConfigKey {
@@ -61,6 +62,7 @@ object LoginConstants {
 
     object RollenceKey {
         const val LOGIN_PAGE_BIOMETRIC = "and_biom_entry_point"
+        const val DIRECT_LOGIN_BIOMETRIC = "loginbiom_an"
     }
 
     object AutoLogin {

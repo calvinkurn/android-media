@@ -293,7 +293,7 @@ class ReviewPendingFragment :
                 )
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(
-                    data?.getStringExtra(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE)
+                    data?.getStringExtra(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
@@ -345,7 +345,7 @@ class ReviewPendingFragment :
             )
         } else {
             val intent = RouteManager.getIntent(context, appLink)
-            if (appLink == ApplinkConst.PRODUCT_BULK_CREATE_REVIEW) {
+            if (appLink.startsWith(ApplinkConst.PRODUCT_BULK_CREATE_REVIEW)) {
                 startActivityForResult(intent, BULK_CREATE_REVIEW_REQUEST_CODE)
             } else {
                 startActivity(intent)
@@ -418,7 +418,7 @@ class ReviewPendingFragment :
     }
 
     private fun showBulkReviewToasterFromIntent() {
-        activity?.intent?.extras?.getString(ReviewInboxConstants.BULK_CREATE_REVIEW_MESSAGE)?.let { message ->
+        activity?.intent?.extras?.getString(ApplinkConstInternalMarketplace.BULK_CREATE_REVIEW_MESSAGE)?.let { message ->
             showToaster(message, getString(R.string.review_oke))
         }
     }

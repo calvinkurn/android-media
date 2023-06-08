@@ -106,6 +106,7 @@ object ShopPageHomeMapper {
                 it.isEnableDirectPurchase = isEnableDirectPurchase
                 it.isVariant = hasVariant
                 it.parentId = parentId
+                it.averageRating = stats.averageRating
             }
         }
 
@@ -208,7 +209,8 @@ object ShopPageHomeMapper {
         isHasAddToCartButton: Boolean,
         hasThreeDots: Boolean,
         shopHomeProductViewModel: ShopHomeProductUiModel,
-        isWideContent: Boolean
+        isWideContent: Boolean,
+        productRating: String
     ): ProductCardModel {
         val discountWithoutPercentageString =
             shopHomeProductViewModel.discountPercentage?.replace("%", "")
@@ -230,7 +232,7 @@ object ShopPageHomeMapper {
             discountPercentage = discountPercentage,
             slashedPrice = shopHomeProductViewModel.originalPrice ?: "",
             formattedPrice = shopHomeProductViewModel.displayedPrice ?: "",
-            countSoldRating = if (shopHomeProductViewModel.rating != 0.0) shopHomeProductViewModel.rating.toString() else "",
+            countSoldRating = productRating,
             freeOngkir = freeOngkirObject,
             labelGroupList = shopHomeProductViewModel.labelGroupList.map {
                 mapToProductCardLabelGroup(it)
