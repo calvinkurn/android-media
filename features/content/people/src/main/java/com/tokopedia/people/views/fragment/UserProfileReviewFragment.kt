@@ -93,6 +93,12 @@ class UserProfileReviewFragment @Inject constructor(
                 }
 
                 override fun onClickProductInfo(review: UserReviewUiModel.Review) {
+                    userProfileTracker.clickReviewSeeMoreDescription(
+                        userId = viewModel.profileUserID,
+                        feedbackId = review.feedbackID,
+                        isSelf = viewModel.isSelfProfile,
+                        productId = review.product.productID,
+                    )
                     viewModel.submitAction(UserProfileAction.ClickProductInfo(review))
                 }
 
