@@ -16,23 +16,12 @@ Digital Dynamic Homepage
 
 ## Release Notes
 
-<!--start expand:26 May 23 (MA-3.222)-->
-Add 1 new templates `3_BUTTONS_MYBILLS_ENTRYPOINT`
-
-PR : <https://github.com/tokopedia/android-tokopedia-core/pull/33081>
-<!--end expand-->
-
-<!--start expand:13 Dec 22 (MA-3.202)-->
-In this release, we add 2 new templates `MYBILLS_ENTRYPOINT` & `BILL_WIDGET` as part of Bill Management project.
-
-PR : <https://github.com/tokopedia/android-tokopedia-core/pull/30695>
-<!--end expand-->
-
-<!--start expand:25 Jul 22 (MA-3.184)-->
-In this release, we add new template `OFFERING_WIDGET`
-
-PR : <https://github.com/tokopedia/android-tokopedia-core/pull/27369>
-<!--end expand-->
+<!--left header table-->
+| **Date**  | **App Version** | Notes                                                                                        | PR                                                               |
+|-----------|-----------------|----------------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| 26 May 23 | MA-3.222        | Add 1 new templates `3_BUTTONS_MYBILLS_ENTRYPOINT`                                           | <https://github.com/tokopedia/android-tokopedia-core/pull/33081> |
+| 13 Dec 22 | MA-3.202        | Add 2 new templates `MYBILLS_ENTRYPOINT` & `BILL_WIDGET` as part of Bill Management project. | <https://github.com/tokopedia/android-tokopedia-core/pull/30695> |
+| 25 Jul 22 | MA-3.184        | Add 1 new template `OFFERING_WIDGET`                                                         |  <https://github.com/tokopedia/android-tokopedia-core/pull/27369> |
 
 ## Overview
 
