@@ -46,6 +46,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.constant.ShopPageConstant.SHOP_COMPARISON_WIDGET_PAGE_NAME
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -1327,11 +1328,8 @@ class ShopHomeViewModel @Inject constructor(
     private suspend fun getProductComparisonResponse(shopId: String): List<RecommendationWidget> {
         return getComparisonProductUseCase.get().getData(
             GetRecommendationRequestParam(
-                //TODO need to change this implementation on prod
-//                shopIds = listOf(shopId)
-                //need to be hardcoded for staging
-                productIds = listOf("2150849620"),
-                pageName = "shop_comparison_test"
+                shopIds = listOf(shopId),
+                pageName = SHOP_COMPARISON_WIDGET_PAGE_NAME
             )
         )
     }
