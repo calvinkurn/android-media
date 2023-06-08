@@ -2,8 +2,8 @@ package com.tokopedia.mediauploader.analytics
 
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.track.TrackApp
 import java.io.File
@@ -29,8 +29,7 @@ class MediaUploaderAnalytics @Inject constructor(
         val bitrate = data.compressedVideoMetadata?.bitrate.orZero() / 1024
         val duration = data.originalVideoMetadata?.duration.orZero().fromMillisToSec()
 
-        val label = StringBuilder()
-            .label(isCompressed)
+        val label = isCompressed.toString()
             .label(isRetryStatus)
             .label(uploadType)
             .label(uploadTime)
@@ -39,7 +38,6 @@ class MediaUploaderAnalytics @Inject constructor(
             .label(sizeAfter)
             .label(bitrate)
             .label(duration)
-            .toString()
 
         val events = mutableMapOf(
             KEY_EVENT_CATEGORY to CATEGORY,
@@ -69,8 +67,8 @@ class MediaUploaderAnalytics @Inject constructor(
         return if (isSimpleUpload) SIMPLE else LARGE
     }
 
-    private fun StringBuilder.label(`object`: Any?): StringBuilder {
-        return append(" - $`object`")
+    private fun String.label(`object`: Any?): String {
+        return plus(" - $`object`")
     }
 
     companion object {
