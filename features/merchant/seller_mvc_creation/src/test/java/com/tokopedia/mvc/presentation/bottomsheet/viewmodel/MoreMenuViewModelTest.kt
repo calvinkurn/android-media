@@ -9,7 +9,9 @@ import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
+import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.util.StringHandler
 import com.tokopedia.network.exception.MessageErrorException
@@ -138,6 +140,375 @@ class MoreMenuViewModelTest {
         assertEquals(expectedOngoing, actualOngoing)
         assertEquals(expectedUpcoming, actualUpcoming)
         assertEquals(expectedStopped, actualStopped)
+    }
+
+    @Test
+    fun `when getMenuList() is called from OtherPeriodBottomSheet, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = OtherPeriodBottomSheet::class.java.simpleName
+        val expected = getOtherScheduleListMenu().map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = null,
+            voucherStatus = VoucherStatus.ENDED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    } @Test
+    fun `when getMenuList() is called from voucher detail or voucher list and sending null voucher, should return empty menuListItem`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val expected = emptyList<MoreMenuUiModel>()
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = null,
+            voucherStatus = VoucherStatus.ONGOING,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        )
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher with ONGOING status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.ONGOING)
+        val expected = getOptionsListForOngoingPromo(voucher).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.ONGOING,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher subsidy with ONGOING status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.ONGOING, isSubsidy = true)
+        val expected = getOptionsListForOngoingPromo(voucher).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.ONGOING,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher vps with ONGOING status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.ONGOING, isVps = true)
+        val expected = getOptionsListForOngoingPromo(voucher).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.ONGOING,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher with UPCOMING status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.NOT_STARTED)
+        val expected = getOptionsListForUpcomingPromo(voucher).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.NOT_STARTED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher subsidy with UPCOMING status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.NOT_STARTED, isSubsidy = true)
+        val expected = getOptionsListForUpcomingPromo(voucher).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.NOT_STARTED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher vps with UPCOMING status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.NOT_STARTED, isVps = true)
+        val expected = getOptionsListForUpcomingPromo(voucher).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.NOT_STARTED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher with ENDED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.ENDED)
+        val expected = getOptionsListForEndedPromo(
+            voucher,
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.ENDED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher subsidy with ENDED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.ENDED, isSubsidy = true)
+        val expected = getOptionsListForEndedPromo(
+            voucher,
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.ENDED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher vps with ENDED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.ENDED, isVps = true)
+        val expected = getOptionsListForEndedPromo(
+            voucher,
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.ENDED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher with STOPPED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.STOPPED)
+        val expected = getOptionsListForStoppedPromo(
+            voucher,
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.STOPPED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher subsidy with STOPPED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.STOPPED, isSubsidy = true)
+        val expected = getOptionsListForStoppedPromo(
+            voucher,
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.STOPPED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher vps with STOPPED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.STOPPED, isVps = true)
+        val expected = getOptionsListForStoppedPromo(
+            voucher,
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.STOPPED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher with CANCELLED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.DELETED)
+        val expected = getEndedOrCancelledOptionsListMenu(
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.DELETED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher subsidy with CANCELLED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.DELETED, isSubsidy = true)
+        val expected = getEndedOrCancelledOptionsListMenu(
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.DELETED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `when getMenuList() is called from voucher list and sending voucher vps with CANCELLED status, should return menuListItem data accordingly`() {
+        // Given
+        val pageSource = MvcListFragment::class.java.simpleName
+        val voucher = Voucher(status = VoucherStatus.DELETED, isVps = true)
+        val expected = getEndedOrCancelledOptionsListMenu(
+            isDiscountPromoTypeEnabled = true,
+            isDiscountPromoType = true
+        ).map { listOf(it.icon) }
+
+        // When
+        val actual = viewModel.getMenuList(
+            voucher = voucher,
+            voucherStatus = VoucherStatus.DELETED,
+            pageSource = pageSource,
+            isDiscountPromoType = true,
+            isDiscountPromoTypeEnabled = true
+        ).map { listOf(it.icon) }
+
+        // Then
+        assertEquals(expected, actual)
     }
 
     private fun getOptionsListForOngoingPromo(voucher: Voucher): List<MoreMenuUiModel> {
