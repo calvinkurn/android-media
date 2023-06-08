@@ -19,7 +19,7 @@
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_name="VIDEO"
+        app:icon_name="SHOPPING_BAG"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
