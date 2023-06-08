@@ -232,20 +232,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     }
 
     override fun getComponent(): UniversalShareComponent? {
-        activity?.let {
-            return DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
-                .universalShareModule(UniversalShareModule()).universalShareUseCaseModule(UniversalShareUseCaseModule()).build()
-        } ?: return null
+        return DaggerUniversalShareComponent.builder().baseAppComponent((LinkerManager.getInstance().context as BaseMainApplication).baseAppComponent)
+            .universalShareModule(UniversalShareModule()).universalShareUseCaseModule(UniversalShareUseCaseModule()).build()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.clear()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        inject()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -317,6 +310,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             logExceptionToRemote(ex)
         }
     }
+
+    init {
+        inject()
+    }
+
     fun init(bottomSheetListener: ShareBottomsheetListener) {
         clearContentPadding = true
         this.bottomSheetListener = bottomSheetListener

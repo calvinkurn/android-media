@@ -14,6 +14,9 @@ public class LinkerManager {
     private WrapperInterface wrapperObj;
     private Context context;
 
+    /**
+     * @return context from application level
+     */
     public Context getContext() {
         return context;
     }
