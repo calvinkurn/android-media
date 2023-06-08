@@ -159,6 +159,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _toggleMultiSelect
     val multiEditProductResult: LiveData<Result<MultiEditResult>>
         get() = _multiEditProductResult
+    val multiEditDTProductResult: LiveData<Result<MultiEditResult>>
+        get() = _multiEditDTProductResult
     val selectedFilterAndSort: LiveData<FilterOptionWrapper>
         get() = _selectedFilterAndSort
     val editVariantPriceResult: LiveData<Result<EditVariantResult>>
@@ -195,6 +197,7 @@ class ProductManageViewModel @Inject constructor(
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
+    private val _multiEditDTProductResult = MutableLiveData<Result<MultiEditResult>>()
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
     private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
@@ -265,7 +268,11 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    fun editProductsByStatus(productIds: List<String>, status: ProductStatus) {
+    fun editProductsByStatus(
+        productIds: List<String>,
+        status: ProductStatus,
+        isDT: Boolean = false
+    ) {
         launchCatchError(block = {
             showProgressDialog()
 
@@ -292,16 +299,26 @@ class ProductManageViewModel @Inject constructor(
             val failed =
                 response.results?.filter { !it.isSuccess() && it.result?.header?.reason != REASON_DT_FOR_BULK_EDIT }
                     .orEmpty()
-            val failedDilayaniTokopediProduct = response.results?.filter {
+            val failedDilayaniTokopediaProduct = response.results?.filter {
                 !it.isSuccess() &&
                     it.result?.header?.reason == REASON_DT_FOR_BULK_EDIT
             }.orEmpty()
 
-            _multiEditProductResult.value =
-                Success(EditByStatus(status, success, failed, failedDilayaniTokopediProduct))
+            if (isDT) {
+                _multiEditDTProductResult.value =
+                    Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
+            } else {
+                _multiEditProductResult.value =
+                    Success(EditByStatus(status, success, failed, failedDilayaniTokopediaProduct))
+            }
+
             hideProgressDialog()
         }, onError = {
-                _multiEditProductResult.value = Fail(it)
+                if (isDT) {
+                    _multiEditDTProductResult.value = Fail(it)
+                } else {
+                    _multiEditProductResult.value = Fail(it)
+                }
                 hideProgressDialog()
             })
     }

@@ -797,12 +797,7 @@ open class ProductManageFragment :
     }
 
     override fun editMultipleProductsInActive() {
-        val haveeDTProducts = itemsChecked.filter { it.isDTInbound }
-        if (haveeDTProducts.isEmpty()) {
-            showEditProductsInActiveConfirmationDialog()
-        } else {
-            showEditDTProductsInActiveConfirmationDialog()
-        }
+        showEditProductsInActiveConfirmationDialog()
         ProductManageTracking.eventBulkSettingsDeactive()
     }
 
@@ -1601,6 +1596,7 @@ open class ProductManageFragment :
                     )
                 }
             }
+
             stock != null -> {
                 showToaster(
                     getString(
@@ -1774,6 +1770,18 @@ open class ProductManageFragment :
     }
 
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
+        val haveDTProducts = itemsChecked.filter { it.isDTInbound }
+
+        if (haveDTProducts.isNotEmpty()) {
+            showEditDTProductsInActiveConfirmationDialog()
+            showMultiEditToast(result, true)
+        } else {
+            updateEditProductList(result)
+            showMultiEditToast(result)
+        }
+    }
+
+    private fun onSuccessMultiEditDTProducts(result: MultiEditResult) {
         if (result is EditByStatus) {
             if (result.failedDT.isNotEmpty() && result.status == DELETED) {
                 showInfoNotAllowedToDeleteProductDT(
@@ -1785,12 +1793,11 @@ open class ProductManageFragment :
                 )
             }
         }
-
         showMultiEditToast(result)
         updateEditProductList(result)
     }
 
-    private fun showMultiEditToast(result: MultiEditResult) {
+    private fun showMultiEditToast(result: MultiEditResult, isHaveNextProcess: Boolean = false) {
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
                 val okeLabel =
@@ -1801,7 +1808,7 @@ open class ProductManageFragment :
             } else if (result.success.isNotEmpty()) {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
-                if (result.failedDT.isEmpty()) {
+                if (!isHaveNextProcess) {
                     clearSelectedProduct()
                     renderCheckedView()
                 }
@@ -2208,7 +2215,7 @@ open class ProductManageFragment :
             }
 
             is Delete -> {
-                if (product.isDTInbound) {
+                if (product.isDTInbound && !product.isCampaign) {
                     showInfoNotAllowedToDeleteProductDT(
                         getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_title),
                         getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
@@ -2815,6 +2822,23 @@ open class ProductManageFragment :
                 }
             }
         }
+
+        viewLifecycleOwner.observe(viewModel.multiEditDTProductResult) {
+            when (it) {
+                is Success -> onSuccessMultiEditDTProducts(it.data)
+                is Fail -> {
+                    showErrorToast()
+                    ProductManageListErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    ProductManageListErrorHandler.logExceptionToServer(
+                        errorTag = ProductManageListErrorHandler.PRODUCT_MANAGE_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        ProductManageListErrorHandler.ProductManageMessage.MULTI_EDIT_PRODUCT_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
+            }
+        }
     }
 
     private fun showDeleteProductsConfirmationDialog(data: MultipleProduct) {
@@ -2862,8 +2886,20 @@ open class ProductManageFragment :
                 setPrimaryCTAText(getString(R.string.product_manage_edit_products_inactive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {
-                    val productIds = itemsChecked.map { item -> item.id }
-                    viewModel.editProductsByStatus(productIds, INACTIVE)
+                    val totalDTProductSelected = itemsChecked.filter {
+                        it.isDTInbound
+                    }.size
+
+                    val totalProductSelected = itemsChecked.size
+
+                    val isAllDT = (totalDTProductSelected == totalProductSelected)
+                    if (isAllDT) {
+                        showEditDTProductsInActiveConfirmationDialog()
+                    } else {
+                        val productIds =
+                            itemsChecked.filter { !it.isDTInbound }.map { item -> item.id }
+                        viewModel.editProductsByStatus(productIds, INACTIVE)
+                    }
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
@@ -2894,8 +2930,8 @@ open class ProductManageFragment :
                 setPrimaryCTAText(getString(R.string.product_manage_confirm_inactive_dt_product_positive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_confirm_dt_product_cancel_button))
                 setPrimaryCTAClickListener {
-                    val productIds = itemsChecked.map { item -> item.id }
-                    viewModel.editProductsByStatus(productIds, INACTIVE)
+                    val productIds = itemsChecked.filter { it.isDTInbound }.map { item -> item.id }
+                    viewModel.editProductsByStatus(productIds, INACTIVE, true)
                     dismiss()
                 }
                 setSecondaryCTAClickListener { dismiss() }
