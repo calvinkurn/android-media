@@ -27,19 +27,6 @@ class AddTextActivity : BaseEditorActivity() {
         ).get(AddTextViewModel::class.java)
     }
 
-    fun finishPage() {
-        val intent = Intent()
-        try {
-            val result = (fragment as AddTextFragment).getInputResult()
-            intent.putExtra(ADD_TEXT_RESULT, result)
-            setResult(Activity.RESULT_OK, intent)
-        } catch (_: Exception) {
-            setResult(Activity.RESULT_CANCELED, intent)
-        }
-
-        finish()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         supportFragmentManager.fragmentFactory = fragmentFactory
@@ -103,6 +90,19 @@ class AddTextActivity : BaseEditorActivity() {
                 hideHeaderAction()
             }
         }
+    }
+
+    fun finishPage() {
+        val intent = Intent()
+        try {
+            val result = (fragment as AddTextFragment).getInputResult()
+            intent.putExtra(ADD_TEXT_RESULT, result)
+            setResult(Activity.RESULT_OK, intent)
+        } catch (_: Exception) {
+            setResult(Activity.RESULT_CANCELED, intent)
+        }
+
+        finish()
     }
 
     companion object {
