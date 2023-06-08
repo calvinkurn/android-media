@@ -252,6 +252,9 @@
     <string name="smvc_quota_from_subsidy_label">Quota dari subsidy</string>
     <string name="smvc_quota_non_subsidy_label">Quota non subsidy</string>
     <string name="smvc_placeholder_total_used_quota">%d/%2d</string>
+    <string name="smvc_placeholder_recap_voucher_name">Kupon %s telah berakhir!</string>
+    <string name="smvc_recap_sub_text">Yuk, cek performa kuponmu di bawah ini</string>
+    <string name="smvc_total_voucher_performance_label">Total Performa Kupon</string>
 
     <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>

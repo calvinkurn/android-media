@@ -307,6 +307,37 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 layoutRecap.inflate()
             }
         }
+        recapBinding?.run {
+            tpgVoucherName.text =
+                getString(R.string.smvc_placeholder_recap_voucher_name, data.voucherName)
+            iconChevron.setOnClickListener {
+                if (clParentExpandedCard.isVisible) {
+                    TransitionManager.beginDelayedTransition(
+                        clParentExpandedCard,
+                        AutoTransition()
+                    )
+                    clParentExpandedCard.gone()
+                    iconChevron.setImage(IconUnify.CHEVRON_DOWN)
+                } else {
+                    TransitionManager.beginDelayedTransition(
+                        cardParentPerformance,
+                        AutoTransition()
+                    )
+                    clParentExpandedCard.visible()
+                    iconChevron.setImage(IconUnify.CHEVRON_UP)
+                }
+            }
+            val usedQuota = data.voucherQuota - data.remainingQuota
+            tpgUsedQuota.text = getString(
+                R.string.smvc_placeholder_total_used_quota,
+                usedQuota,
+                data.voucherQuota
+            )
+            tpgQuotaFromSubsidy.text =
+                data.subsidyDetail.quotaSubsidized.bookedGlobalQuota.toString()
+            tpgQuotaNonSubsidy.text =
+                data.subsidyDetail.quotaSubsidized.confirmedGlobalQuota.toString()
+        }
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -332,7 +363,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             tpgUsedVoucherQuota.text = availableQuota.toString()
             tpgAvailableVoucherQuota.text = getString(
                 R.string.smvc_placeholder_voucher_quota,
-                data.remainingQuota
+                data.voucherQuota
             )
             pgbUsedVoucher.setValue(usedQuotaPercentage, true)
             btnDownloadImageVoucher.apply {
