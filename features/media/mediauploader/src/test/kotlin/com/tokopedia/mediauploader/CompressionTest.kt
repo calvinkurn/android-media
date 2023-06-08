@@ -1,10 +1,10 @@
 package com.tokopedia.mediauploader
 
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
-import com.tokopedia.mediauploader.common.VideoCompressor
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.video.internal.VideoCompressor
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
-import com.tokopedia.mediauploader.common.internal.compressor.data.Result
+import com.tokopedia.mediauploader.common.compressor.data.Result
 import com.tokopedia.mediauploader.util.BaseUploaderTest
 import com.tokopedia.mediauploader.video.data.entity.VideoInfo
 import com.tokopedia.mediauploader.video.data.params.VideoCompressionParam

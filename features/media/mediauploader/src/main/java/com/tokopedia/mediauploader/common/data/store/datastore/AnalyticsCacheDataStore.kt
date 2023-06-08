@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.analytics.datastore
+package com.tokopedia.mediauploader.common.data.store.datastore
 
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import java.io.File

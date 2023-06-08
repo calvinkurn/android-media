@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor
+package com.tokopedia.mediauploader.common.compressor
 
 import android.content.Context
 import android.media.MediaCodec
@@ -10,11 +10,11 @@ import android.os.Build
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
-import com.tokopedia.mediauploader.common.internal.compressor.data.Result
-import com.tokopedia.mediauploader.common.internal.compressor.video.InputSurface
-import com.tokopedia.mediauploader.common.internal.compressor.video.OutputSurface
-import com.tokopedia.mediauploader.common.internal.compressor.video.mp4.MP4Builder
+import com.tokopedia.mediauploader.common.compressor.data.Configuration
+import com.tokopedia.mediauploader.common.compressor.data.Result
+import com.tokopedia.mediauploader.common.compressor.video.InputSurface
+import com.tokopedia.mediauploader.common.compressor.video.OutputSurface
+import com.tokopedia.mediauploader.common.compressor.video.mp4.MP4Builder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -184,7 +184,9 @@ object Compressor {
                             val index = extractor.sampleTrackIndex
 
                             if (index == videoIndex) {
-                                val inputBufferIndex = decoder.dequeueInputBuffer(MEDIACODEC_TIMEOUT_INTERVAL)
+                                val inputBufferIndex = decoder.dequeueInputBuffer(
+                                    MEDIACODEC_TIMEOUT_INTERVAL
+                                )
 
                                 if (inputBufferIndex >= 0) {
                                     val inputBuffer = decoder.getInputBuffer(inputBufferIndex)

@@ -1,6 +1,6 @@
-package com.tokopedia.mediauploader.analytics.datastore
+package com.tokopedia.mediauploader.common.data.store.datastore
 
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.data.entity.UploaderTracker
 import com.tokopedia.mediauploader.common.data.store.base.CacheDataStore
 import com.tokopedia.mediauploader.common.di.UploaderQualifier

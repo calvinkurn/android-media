@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor.video
+package com.tokopedia.mediauploader.common.compressor.video
 
 import android.opengl.*
 import android.view.Surface

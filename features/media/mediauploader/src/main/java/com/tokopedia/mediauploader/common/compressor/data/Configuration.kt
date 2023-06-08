@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor.data
+package com.tokopedia.mediauploader.common.compressor.data
 
 data class Configuration(
     var videoBitrate: Int? = null,

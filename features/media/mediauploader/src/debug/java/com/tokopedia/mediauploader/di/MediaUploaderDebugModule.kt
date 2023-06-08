@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.data.repository.LogRepository
 import com.tokopedia.mediauploader.data.repository.LogRepositoryImpl

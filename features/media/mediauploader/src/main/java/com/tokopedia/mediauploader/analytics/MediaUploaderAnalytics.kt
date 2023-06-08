@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader.analytics
 
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.cache.LargeUploadStateCacheManager
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.track.TrackApp

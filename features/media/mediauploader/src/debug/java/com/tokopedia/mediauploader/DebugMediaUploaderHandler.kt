@@ -2,7 +2,7 @@ package com.tokopedia.mediauploader
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.data.entity.LogType
@@ -67,6 +67,7 @@ class DebugMediaUploaderHandler @Inject constructor(
                         }
                         is DebugMediaLoaderEvent.Upload -> {
                             onFileUpload(state.value.filePath)
+                            onTrackUploaderProgress()
                         }
                         is DebugMediaLoaderEvent.AbortUpload -> {
                             _state.value = state.value.copy(uploading = false)
@@ -108,36 +109,6 @@ class DebugMediaUploaderHandler @Inject constructor(
             isSecure = false
         )
 
-        uploaderUseCase.trackProgress { i, type ->
-            viewModelScope.launch(uploadJob) {
-                val key = trackerCacheStore.key(config.value.sourceId, state.value.filePath)
-                val cached = trackerCacheStore.getData(key)
-
-                if (cached != null &&
-                    cached.compressedVideoPath.isNotEmpty() &&
-                    type == ProgressType.Upload &&
-                    config.value.shouldCompress &&
-                    state.value.isCompressed().not()
-                ) {
-
-                    _state.value = state.value.copy(uploading = true)
-                        .also {
-                            it.log(
-                                LogType.CompressInfo, logRepository.compressionInfo(
-                                sourceId = config.value.sourceId,
-                                path = state.value.filePath
-                            ))
-                        }
-                }
-
-            }
-
-            // update loading
-            _state.value = state.value.copy().also {
-                it.updateProgress(type, i)
-            }
-        }
-
         viewModelScope.launch(uploadJob) {
             val uploader = uploaderUseCase(param)
 
@@ -154,6 +125,37 @@ class DebugMediaUploaderHandler @Inject constructor(
                         )
                     )
                 }
+            }
+        }
+    }
+
+    private fun onTrackUploaderProgress() {
+        uploaderUseCase.trackProgress { i, type ->
+            viewModelScope.launch(uploadJob) {
+                val key = trackerCacheStore.key(config.value.sourceId, state.value.filePath)
+                val cached = trackerCacheStore.getData(key)
+
+                if (cached != null &&
+                    cached.compressedVideoPath.isNotEmpty() &&
+                    type == ProgressType.Upload &&
+                    config.value.shouldCompress &&
+                    state.value.isCompressed().not()
+                ) {
+                    _state.value = state.value.copy(uploading = true)
+                        .also {
+                            it.log(
+                                LogType.CompressInfo, logRepository.compressionInfo(
+                                    sourceId = config.value.sourceId,
+                                    path = state.value.filePath
+                                ))
+                        }
+                }
+
+            }
+
+            // update loading
+            _state.value = state.value.copy().also {
+                it.updateProgress(type, i)
             }
         }
     }

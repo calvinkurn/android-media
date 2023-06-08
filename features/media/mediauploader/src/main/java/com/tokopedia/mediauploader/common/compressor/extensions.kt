@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor
+package com.tokopedia.mediauploader.common.compressor
 
 import android.media.MediaCodec
 import android.media.MediaCodec.BufferInfo

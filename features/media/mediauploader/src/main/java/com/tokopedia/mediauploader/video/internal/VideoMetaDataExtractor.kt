@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common
+package com.tokopedia.mediauploader.video.internal
 
 import android.content.Context
 import android.media.MediaMetadataRetriever

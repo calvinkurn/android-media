@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor.video.mp4
+package com.tokopedia.mediauploader.common.compressor.video.mp4
 
 import com.coremedia.iso.BoxParser
 import com.coremedia.iso.IsoFile

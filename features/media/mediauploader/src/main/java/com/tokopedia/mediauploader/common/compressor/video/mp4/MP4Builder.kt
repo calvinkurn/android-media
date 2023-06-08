@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor.video.mp4
+package com.tokopedia.mediauploader.common.compressor.video.mp4
 
 import android.media.MediaCodec
 import android.media.MediaFormat

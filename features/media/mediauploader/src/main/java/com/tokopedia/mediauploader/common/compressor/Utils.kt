@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor
+package com.tokopedia.mediauploader.common.compressor
 
 import android.media.MediaCodecInfo
 import android.media.MediaCodecList
@@ -6,7 +6,7 @@ import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.tokopedia.mediauploader.common.internal.compressor.video.mp4.Mp4Movie
+import com.tokopedia.mediauploader.common.compressor.video.mp4.Mp4Movie
 import java.io.File
 
 object Utils {

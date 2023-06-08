@@ -6,10 +6,10 @@ import androidx.core.content.FileProvider
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.mediauploader.common.VideoMetaDataExtractor
+import com.tokopedia.mediauploader.video.internal.VideoMetaDataExtractor
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.data.entity.Logs
-import com.tokopedia.mediauploader.analytics.datastore.AnalyticsCacheDataStore
+import com.tokopedia.mediauploader.common.data.store.datastore.AnalyticsCacheDataStore
 import com.tokopedia.mediauploader.common.di.UploaderQualifier
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import java.io.File

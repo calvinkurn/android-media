@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor.data
+package com.tokopedia.mediauploader.common.compressor.data
 
 data class Result(
     val success: Boolean,

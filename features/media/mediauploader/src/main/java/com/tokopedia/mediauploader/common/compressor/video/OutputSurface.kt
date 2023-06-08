@@ -1,4 +1,4 @@
-package com.tokopedia.mediauploader.common.internal.compressor.video
+package com.tokopedia.mediauploader.common.compressor.video
 
 import android.graphics.SurfaceTexture
 import android.graphics.SurfaceTexture.OnFrameAvailableListener

@@ -1,12 +1,12 @@
-package com.tokopedia.mediauploader.common
+package com.tokopedia.mediauploader.video.internal
 
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.mediauploader.common.internal.compressor.CompressionProgressListener
-import com.tokopedia.mediauploader.common.internal.compressor.Compressor
-import com.tokopedia.mediauploader.common.internal.compressor.data.Configuration
-import com.tokopedia.mediauploader.common.internal.compressor.data.Result
+import com.tokopedia.mediauploader.common.compressor.CompressionProgressListener
+import com.tokopedia.mediauploader.common.compressor.Compressor
+import com.tokopedia.mediauploader.common.compressor.data.Configuration
+import com.tokopedia.mediauploader.common.compressor.data.Result
 import com.tokopedia.mediauploader.common.state.ProgressType
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.utils.file.FileUtil
