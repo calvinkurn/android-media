@@ -35,7 +35,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.stock.di.ProductMan
 import com.tokopedia.product.manage.common.feature.quickedit.stock.presentation.viewmodel.ProductManageQuickEditStockViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import javax.inject.Inject
 
@@ -202,7 +201,6 @@ class ProductManageQuickEditStockFragment(
         if (product.hasEditStockAccess() || product.hasEditProductAccess()) {
             binding?.quickEditStockSaveButton?.setOnClickListener {
                 onClickSaveBtn()
-
             }
             binding?.quickEditStockSaveButton?.show()
         } else {
@@ -231,9 +229,9 @@ class ProductManageQuickEditStockFragment(
             }
             shouldSaveStock -> saveProductStock(inputStock)
             shouldSaveStatus -> {
-                if (inputStatus == ProductStatus.INACTIVE){
+                if (inputStatus == ProductStatus.INACTIVE && product?.isDTInbound.orFalse()) {
                     showEditProductsInActiveConfirmationDialogDT()
-                }else{
+                } else {
                     saveProductStatus(inputStatus)
                 }
             }
@@ -307,18 +305,24 @@ class ProductManageQuickEditStockFragment(
     }
 
     private fun observeStock() {
-        viewModel.stock.observe(viewLifecycleOwner, Observer {
-            product = product?.copy(stock = it)
-            setupStockEditor(it)
-        })
+        viewModel.stock.observe(
+            viewLifecycleOwner,
+            Observer {
+                product = product?.copy(stock = it)
+                setupStockEditor(it)
+            }
+        )
     }
 
     private fun observeStatus() {
-        viewModel.status.observe(viewLifecycleOwner, Observer {
-            val isActive = it == ProductStatus.ACTIVE
-            binding?.quickEditStockActivateSwitch?.isChecked = isActive
-            product = product?.copy(status = it)
-        })
+        viewModel.status.observe(
+            viewLifecycleOwner,
+            Observer {
+                val isActive = it == ProductStatus.ACTIVE
+                binding?.quickEditStockActivateSwitch?.isChecked = isActive
+                product = product?.copy(status = it)
+            }
+        )
     }
 
     private fun observeStockTicker() {
@@ -427,7 +431,6 @@ class ProductManageQuickEditStockFragment(
             showWithCondition(!product.suspendAccess())
             setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_warning_oos, 0, 0, 0)
         }
-
     }
 
     private fun setNotifyMeBuyerInfo() {
