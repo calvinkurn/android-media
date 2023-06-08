@@ -162,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ApplinkConst.SHOP_PENALTY
+        return ""
     }
 
     data class Model(
