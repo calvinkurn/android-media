@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/Unify_NN950"
                 app:typographyType="display_3"
                 app:typographyWeight="reguler"
                 tools:text="@string/product_name_detail" />
