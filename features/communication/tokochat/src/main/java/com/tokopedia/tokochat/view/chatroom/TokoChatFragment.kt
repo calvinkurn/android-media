@@ -1432,15 +1432,15 @@ open class TokoChatFragment :
         imagePathList.firstOrNull()?.let { imagePath ->
             if (imagePath.isNotEmpty()) {
                 viewModel.uploadImage(filePath = imagePath) {
+                    tokoChatAnalytics.clickUploadButton(
+                        attachmentId = it,
+                        orderId = viewModel.tkpdOrderId,
+                        role = TokoChatAnalyticsConstants.BUYER,
+                        source = viewModel.source
+                    )
                     adapter.getImageAttachmentPairWithId(it)?.let { (position, element) ->
                         element.updateImageState(
                             TokoChatImageBubbleUiModel.ImageState.LOADING_UPLOAD
-                        )
-                        tokoChatAnalytics.clickUploadButton(
-                            attachmentId = element.imageId,
-                            orderId = viewModel.tkpdOrderId,
-                            role = tokoChatAnalytics.getStringRole(element.isSender),
-                            source = viewModel.source
                         )
                         // notify
                         notifyWhenAllowed(position)
