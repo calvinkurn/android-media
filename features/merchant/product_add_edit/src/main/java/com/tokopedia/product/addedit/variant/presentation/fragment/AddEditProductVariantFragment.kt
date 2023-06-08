@@ -65,6 +65,7 @@ import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.RemoteConfig
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
 import com.tokopedia.product.addedit.common.util.getValueOrDefault
+import com.tokopedia.product.addedit.common.util.setColorToDisabled
 import com.tokopedia.product.addedit.common.util.setDefaultMaxWidth
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductVariantBinding
@@ -1218,6 +1219,7 @@ class AddEditProductVariantFragment :
     private fun observeHasDTStock() {
         viewModel.hasDTStock.observe(viewLifecycleOwner) {
             variantTypeAdapter?.setEnabledSelection(!it)
+            titleLayoutVariantType.titleLayoutViewActionText?.setColorToDisabled(it)
             buttonAddVariantType.isEnabled = !it
             if (it) {
                 buttonAddVariantType.setOnDisabledClickListener {
@@ -1230,6 +1232,11 @@ class AddEditProductVariantFragment :
                 buttonAddVariantType.setOnDisabledClickListener {
                     showToaster(getString(R.string.label_cvt_message_variant_cannot_add))
                 }
+            }
+            titleLayoutVariantType.setActionButtonOnClickListener { view ->
+                DTDialogUtil.showDTStockDialog(view.context,
+                    DTDialogUtil.UserAction.EDIT_VARIANT_TYPE
+                )
             }
         }
     }
