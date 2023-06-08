@@ -155,11 +155,16 @@ class UniversalInboxViewModel @Inject constructor(
                 try {
                     val productId = model.productId.toString()
                     addWishListV2UseCase.setParams(productId, userSession.userId)
-                    val result = withContext(dispatcher.io) { addWishListV2UseCase.executeOnBackground() }
+                    val result = withContext(dispatcher.io) {
+                        addWishListV2UseCase.executeOnBackground()
+                    }
                     if (result is Success) {
                         actionListener.onSuccessAddWishlist(result.data, productId)
-                    } else if (result is Fail) {
-                        actionListener.onErrorAddWishList(result.throwable, productId)
+                    } else {
+                        actionListener.onErrorAddWishList(
+                            (result as Fail).throwable,
+                            productId
+                        )
                     }
                 } catch (throwable: Throwable) {
                     actionListener.onErrorAddWishList(throwable, model.productId.toString())
@@ -175,15 +180,26 @@ class UniversalInboxViewModel @Inject constructor(
         viewModelScope.launch {
             withContext(dispatcher.main) {
                 try {
-                    deleteWishlistV2UseCase.setParams(model.productId.toString(), userSession.userId)
-                    val result = withContext(dispatcher.io) { deleteWishlistV2UseCase.executeOnBackground() }
+                    deleteWishlistV2UseCase.setParams(
+                        model.productId.toString(),
+                        userSession.userId
+                    )
+                    val result = withContext(dispatcher.io) {
+                        deleteWishlistV2UseCase.executeOnBackground()
+                    }
                     if (result is Success) {
-                        actionListener.onSuccessRemoveWishlist(result.data, model.productId.toString())
-                    } else if (result is Fail) {
-                        actionListener.onErrorRemoveWishlist(result.throwable, model.productId.toString())
+                        actionListener.onSuccessRemoveWishlist(
+                            result.data,
+                            model.productId.toString()
+                        )
+                    } else {
+                        actionListener.onErrorRemoveWishlist(
+                            (result as Fail).throwable,
+                            model.productId.toString()
+                        )
                     }
                 } catch (throwable: Throwable) {
-                    actionListener.onErrorAddWishList(throwable, model.productId.toString())
+                    actionListener.onErrorRemoveWishlist(throwable, model.productId.toString())
                 }
             }
         }
