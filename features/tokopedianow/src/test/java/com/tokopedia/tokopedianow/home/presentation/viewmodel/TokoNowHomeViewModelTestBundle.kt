@@ -48,7 +48,8 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         //fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = false
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -84,7 +85,8 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         //fetch homeLayout
         viewModel.getHomeLayout(
             localCacheModel = LocalCacheModel(),
-            removeAbleWidgets = listOf()
+            removeAbleWidgets = listOf(),
+            enableNewRepurchase = false
         )
         viewModel.getLayoutComponentData(
             localCacheModel = LocalCacheModel()
@@ -127,7 +129,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         onGetProductBundleRecom_thenReturn(Exception())
 
         //fetch homeLayout
-        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
+        viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf(), enableNewRepurchase = false)
         viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         //prepare model for expectedResult
