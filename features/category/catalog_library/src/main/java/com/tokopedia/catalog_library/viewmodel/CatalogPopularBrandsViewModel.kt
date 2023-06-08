@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.viewmodels
+package com.tokopedia.catalog_library.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,15 +12,13 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogPopularBrandsVM @Inject constructor(
+class CatalogPopularBrandsViewModel @Inject constructor(
     private val catalogBrandsPopularWithCatalogsUseCase: CatalogBrandsPopularWithCatalogsUseCase
 ) : ViewModel() {
 
     private val _brandsWithCatalogsLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
     val brandsWithCatalogsLiveData: LiveData<Result<CatalogLibraryDataModel>> =
         _brandsWithCatalogsLiveData
-
-    private val listOfComponents = mutableListOf<BaseCatalogLibraryDM>()
 
     fun getBrandsWithCatalogs() {
         catalogBrandsPopularWithCatalogsUseCase.cancelJobs()
@@ -31,7 +29,7 @@ class CatalogPopularBrandsVM @Inject constructor(
     }
 
     private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse) {
-        if (brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()) {
+        if (brandsPopularResponse.catalogGetBrandPopular.brands.isEmpty()) {
             onFailHomeData(IllegalStateException("No Brands Response Data"))
         } else {
             brandsPopularResponse.let {

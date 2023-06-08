@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.viewmodels
+package com.tokopedia.catalog_library.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogProductsBaseVM @Inject constructor(
+class CatalogProductsBaseViewModel @Inject constructor(
     private val catalogProductsUseCase: CatalogProductsUseCase
 ) : ViewModel() {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.viewmodels
+package com.tokopedia.catalog_library.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogLandingPageVM @Inject constructor(
+class CatalogLandingPageViewModel @Inject constructor(
     private val catalogTopFiveUseCase: CatalogProductsUseCase,
     private val catalogMostViralUseCase: CatalogProductsUseCase
 ) : ViewModel() {

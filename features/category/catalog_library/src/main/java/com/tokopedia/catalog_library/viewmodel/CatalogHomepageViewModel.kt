@@ -1,4 +1,4 @@
-package com.tokopedia.catalog_library.viewmodels
+package com.tokopedia.catalog_library.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,12 +18,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class CatalogHomepageVM @Inject constructor(
+class CatalogHomepageViewModel @Inject constructor(
     private val catalogSpecialUseCase: CatalogSpecialUseCase,
     private val catalogRelevantUseCase: CatalogRelevantUseCase,
     private val catalogBrandsPopularUseCase: CatalogBrandsPopularUseCase
 ) : ViewModel() {
-
     private val _catalogHomeLiveData = MutableLiveData<Result<CatalogLibraryDataModel>>()
     val catalogLibraryLiveDataResponse: LiveData<Result<CatalogLibraryDataModel>> =
         _catalogHomeLiveData
@@ -127,7 +126,7 @@ class CatalogHomepageVM @Inject constructor(
     }
 
     private fun onAvailablePopularBrands(brandsPopularResponse: CatalogBrandsPopularResponse) {
-        if (brandsPopularResponse.catalogGetBrandPopular.brands.isNullOrEmpty()) {
+        if (brandsPopularResponse.catalogGetBrandPopular.brands.isEmpty()) {
             onFailHomeData(IllegalStateException("No Brands Response Data"))
         } else {
             brandsPopularResponse.let {
