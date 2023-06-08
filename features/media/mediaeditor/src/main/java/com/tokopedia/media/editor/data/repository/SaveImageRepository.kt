@@ -196,9 +196,7 @@ class SaveImageRepositoryImpl @Inject constructor(
         latch.await()
         return resultBitmap?.let {
             saveToCache(it, sourcePath = sourcePath)?.path ?: ""
-        } ?: run {
-            ""
-        }
+        } ?: ""
     }
 
     private fun fileName(name: String): String {
