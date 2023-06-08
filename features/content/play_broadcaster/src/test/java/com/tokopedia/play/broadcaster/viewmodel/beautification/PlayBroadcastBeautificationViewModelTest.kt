@@ -303,7 +303,7 @@ class PlayBroadcastBeautificationViewModelTest {
 
             assert(state.beautificationConfig.selectedPreset == null)
 
-            events[events.size - 2].assertEvent(PlayBroadcastEvent.BeautificationDownloadAssetFailed(Exception("ignore this"), mockBeautificationConfigNotDownloaded.presets[0]))
+            events.last().assertEvent(PlayBroadcastEvent.BeautificationDownloadAssetFailed(Exception("ignore this"), mockBeautificationConfigNotDownloaded.presets[0]))
         }
     }
 
