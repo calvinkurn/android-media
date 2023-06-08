@@ -17,6 +17,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/product_card_ribbon_arch_red"
         tools:elevation="4dp"
+        android:contentDescription="@string/product_card_content_desc_ribbon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
@@ -92,6 +93,7 @@
                 android:visibility="gone"
                 tools:visibility="visible"
                 app:srcCompat="@drawable/product_card_ribbon_content_red"
+                android:contentDescription="@string/product_card_content_desc_ribbon"
                 app:layout_constraintStart_toStartOf="@id/mediaAnchorProduct"
                 app:layout_constraintTop_toTopOf="@id/textRibbon"
                 app:layout_constraintEnd_toEndOf="@id/textRibbon"
