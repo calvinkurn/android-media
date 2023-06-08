@@ -84,6 +84,12 @@ sealed class AffiliateSdkPageSource(
         override fun shouldCallCheckCookie() = true
     }
 
+    class Wishlist :
+        AffiliateSdkPageSource("") {
+        override fun getType() = AffiliateSdkConstant.WISHLIST
+        override fun shouldCallCheckCookie() = true
+    }
+
     /**
      * Encapsulates info for DirectATC.
      *
