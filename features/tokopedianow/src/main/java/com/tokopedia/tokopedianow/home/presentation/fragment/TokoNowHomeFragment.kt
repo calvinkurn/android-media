@@ -150,6 +150,7 @@ import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRec
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeProductRecomOocCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeSwitcherListener
+import com.tokopedia.tokopedianow.home.presentation.view.listener.BundleWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeEducationalInformationWidgetViewHolder.HomeEducationalInformationListener
@@ -241,6 +242,7 @@ class TokoNowHomeFragment :
     private var binding by autoClearedNullable<FragmentTokopedianowHomeBinding>()
 
     private val adapter by lazy {
+        val bundleWidgetCallback = createBundleWidgetCallback()
         HomeAdapter(
             typeFactory = HomeAdapterTypeFactory(
                 tokoNowView = this,
@@ -266,7 +268,9 @@ class TokoNowHomeFragment :
                 claimCouponWidgetItemListener = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetItemTracker = createClaimCouponWidgetItemCallback(),
                 claimCouponWidgetListener = createClaimCouponWidgetCallback(),
-                productCarouselChipListener = createProductCarouselChipListener()
+                productCarouselChipListener = createProductCarouselChipListener(),
+                productBundleWidgetListener = bundleWidgetCallback,
+                tokoNowBundleWidgetListener = bundleWidgetCallback
             ),
             differ = HomeListDiffer()
         )
@@ -1948,6 +1952,10 @@ class TokoNowHomeFragment :
             chipCarouselAnalytics,
             ::startActivityForResult
         )
+    }
+
+    private fun createBundleWidgetCallback(): BundleWidgetCallback {
+        return BundleWidgetCallback(viewModelTokoNow, analytics)
     }
 
     private fun createCategoryMenuCallback(): HomeCategoryMenuCallback {

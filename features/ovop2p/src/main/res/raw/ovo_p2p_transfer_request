@@ -1,9 +1,0 @@
-mutation goalP2PRequest($amount: Int!, $to_phone_number: String!, $message: String!) {
- goalP2PRequest(amount: $amount, to_phone_number: $to_phone_number, message: $message) {
-    dest_acc_name
-    errors {
-        title
-        message
-    }
-  }
-}
