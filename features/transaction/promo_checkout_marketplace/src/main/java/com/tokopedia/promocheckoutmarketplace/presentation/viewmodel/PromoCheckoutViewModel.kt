@@ -62,7 +62,7 @@ class PromoCheckoutViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     companion object {
-        private const val CLASH_LOADING_MILLISECONDS = 1_000L
+        private const val CLASH_LOADING_MILLISECONDS = 300L
     }
 
     // Fragment UI Model. Store UI model and state on fragment level
@@ -1663,11 +1663,20 @@ class PromoCheckoutViewModel @Inject constructor(
     private fun calculateAndRenderTotalBenefit() {
         var totalBenefit = 0
         var usedPromoCount = 0
-        promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && it.uiState.isParentEnabled &&
-                it.uiData.currentClashingPromo.isEmpty() && it.uiState.isSelected
+        promoListUiModel.value?.forEach { model ->
+            if (model is PromoListItemUiModel && model.uiState.isParentEnabled &&
+                !model.uiData.hasClashingPromo && model.uiState.isSelected
             ) {
-                totalBenefit += it.uiData.benefitAmount
+                val benefitAmount = if (model.uiData.currentClashingPromo.isEmpty()) {
+                    model.uiData.benefitAmount
+                } else {
+                    val nonClashingSecondaryCoupon = model.uiData.secondaryCoupons
+                        .firstOrNull { secondaryCoupon ->
+                            !secondaryCoupon.clashingInfos.any { model.uiData.currentClashingPromo.contains(it.code) }
+                        }
+                    nonClashingSecondaryCoupon?.benefitAmount ?: 0
+                }
+                totalBenefit += benefitAmount
                 usedPromoCount++
             }
         }
@@ -1882,7 +1891,9 @@ class PromoCheckoutViewModel @Inject constructor(
                     promoListItemUiModel.uiState.isDisabled = false
                 }
                 fragmentUiModel.value?.let {
-                    it.uiData.benefitAdjustmentMessage = promoListItemUiModel.uiData.benefitAdjustmentMessage
+                    val nonClashingSecondaryCoupon = promoListItemUiModel.uiData.secondaryCoupons
+                        .firstOrNull { secondaryCoupon -> !secondaryCoupon.clashingInfos.any { clashingInfo -> clashingInfo.code == selectedItem.uiData.promoCode } }
+                    it.uiData.benefitAdjustmentMessage = nonClashingSecondaryCoupon?.benefitAdjustmentMessage ?: ""
                     _fragmentUiModel.value = it
                 }
                 clashResult = false
