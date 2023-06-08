@@ -142,9 +142,6 @@ class DetailEditorFragment @Inject constructor(
     // and used on watermark observer as flag for
     private var isRotatedWatermark = false
 
-    // flag add text for latar / free text
-    private var tempTemplateMode = TEXT_TEMPLATE_FREE
-
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
     }
@@ -434,12 +431,10 @@ class DetailEditorFragment @Inject constructor(
             isEdited = true
         }
 
-        TEXT_TEMPLATE_FREE.let { templateIndex ->
-            data.addTextValue?.let {
-                it.textTemplate = templateIndex
-            }
-            tempTemplateMode = templateIndex
+        data.addTextValue?.let {
+            it.textTemplate = TEXT_TEMPLATE_FREE
         }
+
         implementAddTextData()
     }
 
@@ -450,18 +445,14 @@ class DetailEditorFragment @Inject constructor(
                 isEdited = true
             }
 
-            TEXT_TEMPLATE_BACKGROUND.let { templateIndex ->
-                data.addTextValue?.let {
-                    it.textTemplate = templateIndex
-                    it.setLatarTemplate(LatarTemplateDetail(
-                        latarColor = color,
-                        latarModel = model
-                    ))
+            data.addTextValue?.let {
+                it.textTemplate = TEXT_TEMPLATE_BACKGROUND
+                it.setLatarTemplate(LatarTemplateDetail(
+                    latarColor = color,
+                    latarModel = model
+                ))
 
-                    it.textColor = addTextColorManager.getTextColorOnBackgroundMode(color)
-                }
-
-                tempTemplateMode = templateIndex
+                it.textColor = addTextColorManager.getTextColorOnBackgroundMode(color)
             }
 
             implementAddTextData()
@@ -493,9 +484,7 @@ class DetailEditorFragment @Inject constructor(
             addLogoCacheManager.set(elements.originalPaths.first())
         } else if (requestCode == AddTextActivity.ADD_TEXT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.getParcelableExtra<EditorAddTextUiModel>(AddTextActivity.ADD_TEXT_RESULT)?.let {
-                this.data.addTextValue = it.apply {
-                    textTemplate = tempTemplateMode
-                }
+                this.data.addTextValue = it
                 implementAddTextData()
                 isEdited = true
             }
@@ -724,10 +713,6 @@ class DetailEditorFragment @Inject constructor(
                             openAddTextActivity()
                         }
                     } else {
-                        // set flag according to prev state
-                        data.addTextValue?.textTemplate?.let {
-                            tempTemplateMode = it
-                        }
                         implementAddTextData()
                     }
                 }
@@ -1347,10 +1332,12 @@ class DetailEditorFragment @Inject constructor(
         onFinish: (filePath: String) -> Unit
     ) {
         data.addTextValue?.let {
-            viewModel.generateAddTextOverlay(newSize, it).let { newTextOverlay ->
-                viewModel.saveImageCache(newTextOverlay, sourcePath = PNG_KEY)?.let { cacheFile ->
-                    data.addTextValue?.textImagePath = cacheFile.absolutePath
-                    onFinish(cacheFile.absolutePath)
+            viewModel.generateAddTextOverlay(newSize, it).let { generatorResult ->
+                generatorResult?.let { newTextOverlay ->
+                    viewModel.saveImageCache(newTextOverlay, sourcePath = PNG_KEY)?.let { cacheFile ->
+                        data.addTextValue?.textImagePath = cacheFile.absolutePath
+                        onFinish(cacheFile.absolutePath)
+                    }
                 }
             }
         }

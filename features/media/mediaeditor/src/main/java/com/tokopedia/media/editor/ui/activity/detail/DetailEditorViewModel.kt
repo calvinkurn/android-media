@@ -227,7 +227,7 @@ class DetailEditorViewModel @Inject constructor(
         }
     }
 
-    fun generateAddTextOverlay(size: Pair<Int, Int>, data: EditorAddTextUiModel): Bitmap {
+    fun generateAddTextOverlay(size: Pair<Int, Int>, data: EditorAddTextUiModel): Bitmap? {
         return addTextFilterRepository.generateTextOverlay(
             size,
             data

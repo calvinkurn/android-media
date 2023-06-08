@@ -166,8 +166,7 @@ class AddTextFragment @Inject constructor(
             it.btnCancel.setOnClickListener {
                 try {
                     (activity as AddTextActivity).finish()
-                } catch (_: Exception) {
-                }
+                } catch (_: Exception) {}
             }
 
             renderPositionButton { view, index ->
@@ -184,8 +183,7 @@ class AddTextFragment @Inject constructor(
             it.btnSave.setOnClickListener {
                 try {
                     (activity as AddTextActivity).finishPage()
-                } catch (_: Exception) {
-                }
+                } catch (_: Exception) {}
             }
         }
     }
