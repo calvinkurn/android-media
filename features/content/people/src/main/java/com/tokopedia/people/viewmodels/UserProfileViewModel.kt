@@ -177,6 +177,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickDeletePlayChannel -> handleClickDeletePlayChannel(action.channel)
             is UserProfileAction.ClickLikeReview -> handleClickLikeReview(action.review)
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
+            is UserProfileAction.ClickProductInfo -> handleClickProductInfo(action.review)
             is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
             else -> {}
         }
@@ -602,6 +603,12 @@ class UserProfileViewModel @AssistedInject constructor(
                     }
                 )
             }
+        }
+    }
+
+    private fun handleClickProductInfo(review: UserReviewUiModel.Review) {
+        launch {
+            _uiEvent.emit(UserProfileUiEvent.OpenProductDetailPage(review.product.productID))
         }
     }
 

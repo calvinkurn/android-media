@@ -92,6 +92,10 @@ class UserProfileReviewFragment @Inject constructor(
                     viewModel.submitAction(UserProfileAction.ClickReviewTextSeeMore(review))
                 }
 
+                override fun onClickProductInfo(review: UserReviewUiModel.Review) {
+                    viewModel.submitAction(UserProfileAction.ClickProductInfo(review))
+                }
+
                 override fun onMediaClick(
                     feedbackId: String,
                     productId: String,
@@ -158,6 +162,9 @@ class UserProfileReviewFragment @Inject constructor(
                     }
                     is UserProfileUiEvent.ErrorLikeDislike -> {
                         showError(event.throwable)
+                    }
+                    is UserProfileUiEvent.OpenProductDetailPage -> {
+                        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_INFO, event.productId)
                     }
                     is UserProfileUiEvent.OpenReviewMediaGalleryPage -> {
                         val intent = ReviewMediaGalleryRouter.routeToReviewMediaGallery(
