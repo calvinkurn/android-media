@@ -35,6 +35,7 @@ import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.tokopedia.people.R
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.utils.UserProfileUiBridge
 import com.tokopedia.people.utils.getBoldSpan
 import com.tokopedia.people.utils.getClickableSpan
@@ -64,6 +65,7 @@ import java.net.UnknownHostException
 class UserProfileReviewFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileUiBridge: UserProfileUiBridge,
+    private val userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment() {
 
     private var _binding: FragmentUserProfileReviewBinding? = null
