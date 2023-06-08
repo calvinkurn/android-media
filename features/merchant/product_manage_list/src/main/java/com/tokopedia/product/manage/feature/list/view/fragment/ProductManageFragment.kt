@@ -320,7 +320,6 @@ open class ProductManageFragment :
                                     view = it1
                                 )
                             }
-
                         }
                     }
                 }
@@ -399,10 +398,14 @@ open class ProductManageFragment :
             ) {
                 val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
                 val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
-                if (!coachMark?.isDismissed.orFalse() && (positionCoachMark !in
-                        firstVisibleIndex..lastVisibleIndex || (view != null && getVisiblePercent(
-                        view
-                    ) == -1))
+                if (!coachMark?.isDismissed.orFalse() && (
+                    positionCoachMark !in
+                        firstVisibleIndex..lastVisibleIndex || (
+                        view != null && getVisiblePercent(
+                                view
+                            ) == -1
+                        )
+                    )
                 ) {
                     coachMark?.dismissCoachMark()
                 }
@@ -437,7 +440,6 @@ open class ProductManageFragment :
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
-
 
     private val ticker: Ticker?
         get() = binding?.layoutFragmentProductManage?.ticker?.root
@@ -1581,12 +1583,34 @@ open class ProductManageFragment :
         stock: Int?,
         status: ProductStatus?
     ) {
-        showToaster(
-            getString(
-                com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success,
-                productName
-            )
-        )
+        when {
+            status != null -> {
+                if (status == INACTIVE) {
+                    showToaster(
+                        getString(
+                            com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_status_inactive_success,
+                            productName
+                        )
+                    )
+                } else {
+                    showToaster(
+                        getString(
+                            com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_status_active_success,
+                            productName
+                        )
+                    )
+                }
+            }
+            stock != null -> {
+                showToaster(
+                    getString(
+                        com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success,
+                        productName
+                    )
+                )
+            }
+        }
+
         recyclerView?.post {
             productManageListAdapter.updateStock(productId, stock, status)
         }
@@ -1757,7 +1781,7 @@ open class ProductManageFragment :
                         com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
                         result.failedDT.size.toString()
                     ),
-                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc),
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
                 )
             }
         }
@@ -1767,7 +1791,6 @@ open class ProductManageFragment :
     }
 
     private fun showMultiEditToast(result: MultiEditResult) {
-
         context?.let { context ->
             if (result.failed.isNotEmpty()) {
                 val okeLabel =
@@ -2188,7 +2211,7 @@ open class ProductManageFragment :
                 if (product.isDTInbound) {
                     showInfoNotAllowedToDeleteProductDT(
                         getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_title),
-                        getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc),
+                        getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
                     )
                 } else {
                     clickDeleteProductMenu(productName, productId)
@@ -2857,7 +2880,7 @@ open class ProductManageFragment :
 
             htmlText.urlList.getOrNull(Int.ZERO)?.apply {
                 setOnClickListener {
-                    RouteManager.route(it,this.linkUrl)
+                    RouteManager.route(it, this.linkUrl)
                 }
             }
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -3416,7 +3439,6 @@ open class ProductManageFragment :
         notShowCoachMarkLabelGuarantee: Boolean,
         notShowCoachMarkStockReminder: Boolean
     ) {
-
         if (notShowCoachMarkStockReminder && notShowCoachMarkLabelGuarantee) {
             CoachMarkPreference.setShown(
                 view.context,
@@ -3498,8 +3520,8 @@ open class ProductManageFragment :
 
     private fun getProductWithStockReminder(data: List<ProductUiModel>): Int {
         return data.indexOfFirst {
-            it.hasStockAlert && !it.stockAlertActive && !it.haveNotifyMeOOS && !it.isEmptyStock
-                && !it.isVariant()
+            it.hasStockAlert && !it.stockAlertActive && !it.haveNotifyMeOOS && !it.isEmptyStock &&
+                !it.isVariant()
         }
     }
 
@@ -3568,7 +3590,6 @@ open class ProductManageFragment :
                 setPrimaryCTAClickListener {
                     dismiss()
                 }
-
             }.show()
         }
     }
@@ -3582,9 +3603,9 @@ open class ProductManageFragment :
         val hasStockAvailable =
             getProductWithStockAvailable(adapter.data.filterIsInstance<ProductUiModel>()) == 0
 
-        return (hasStockAvailable && hasShowCoachMarkLabelGuarantee)
-            || (!hasStockAvailable && hasShowCoachMarkLabelGuarantee)
-            || (!hasStockAvailable && !hasShowCoachMarkLabelGuarantee)
+        return (hasStockAvailable && hasShowCoachMarkLabelGuarantee) ||
+            (!hasStockAvailable && hasShowCoachMarkLabelGuarantee) ||
+            (!hasStockAvailable && !hasShowCoachMarkLabelGuarantee)
     }
 
     private fun getConditionNotShowCoachMarkStockReminder(
@@ -3599,13 +3620,14 @@ open class ProductManageFragment :
         haveSetReminder =
             getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
 
-        return ((haveSetReminder == -1 && hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable)
-            || (haveSetReminder == -1 && !hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable)
-            || (haveSetReminder == -1 && hasShowCoachMarkStockReminder && conditionNotShowCoachmarkAvailable)
-            || (haveSetReminder != -1 && !hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable)
-            || (haveSetReminder != -1 && hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable)
-            || (haveSetReminder != -1 && hasShowCoachMarkStockReminder && conditionNotShowCoachmarkAvailable))
-
+        return (
+            (haveSetReminder == -1 && hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable) ||
+                (haveSetReminder == -1 && !hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable) ||
+                (haveSetReminder == -1 && hasShowCoachMarkStockReminder && conditionNotShowCoachmarkAvailable) ||
+                (haveSetReminder != -1 && !hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable) ||
+                (haveSetReminder != -1 && hasShowCoachMarkStockReminder && !conditionNotShowCoachmarkAvailable) ||
+                (haveSetReminder != -1 && hasShowCoachMarkStockReminder && conditionNotShowCoachmarkAvailable)
+            )
     }
 
     private fun getConditionNotShowCoachMarkOnMoreOption(
@@ -3618,9 +3640,8 @@ open class ProductManageFragment :
             SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
         )
 
-        return (!notShowCoachMarkStockAvailable && !notShowCoachMarkStockReminder && hasShowCoachMarkOptionMenu)
-            || (notShowCoachMarkStockAvailable && notShowCoachMarkStockReminder && hasShowCoachMarkOptionMenu)
-
+        return (!notShowCoachMarkStockAvailable && !notShowCoachMarkStockReminder && hasShowCoachMarkOptionMenu) ||
+            (notShowCoachMarkStockAvailable && notShowCoachMarkStockReminder && hasShowCoachMarkOptionMenu)
     }
 
     companion object {
@@ -3646,6 +3667,5 @@ open class ProductManageFragment :
         const val SHARED_PREF_STOCK_REMINDER_FLAG_COACH_MARK = "flagStockAlert"
         const val SHARED_PREF_STOCK_REMINDER_MENU_COACH_MARK = "menuStockReminder"
         const val SHARED_PREF_PRODUCT_MANAGE_SHOW_LABEL_GUARANTEE_COACH_MARK = "showLabelGuarantee"
-
     }
 }
