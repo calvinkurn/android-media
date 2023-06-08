@@ -249,32 +249,40 @@ class UploadPrescriptionViewModel @Inject constructor(
                     localFilePath
                 )
             )
-            _prescriptionImages.value?.get(uniquePositionId)?.apply {
-                result?.data?.firstOrNull()?.let { uploadResult ->
-                    if (uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE) {
-                        isUploadSuccess = true
-                        isUploading = false
-                        prescriptionId = uploadResult.prescriptionId
-                        _successUploadPhoto.postValue(true)
-                    } else {
-                        uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(true))
-                    }
-                } ?: kotlin.run {
-                    isUploadSuccess = false
-                    isUploading = false
-                    isUploadFailed = true
-                    result?.data?.firstOrNull()?.errorMsg?.let { errorMessage ->
-                        if (errorMessage.isNotBlank()) {
-                            uploadFailed(uniquePositionId, EPharmacyUploadBackendError(errorMessage))
-                        }
-                    }
-                }
-            }
-            _prescriptionImages.postValue(_prescriptionImages.value)
+            resultPostUpload(result, uniquePositionId)
         } else {
             uploadFailed(uniquePositionId, EPharmacyUploadEmptyImageError(true))
         }
         checkPrescriptionImages()
+    }
+
+    fun resultPostUpload(
+        result: EPharmacyPrescriptionUploadResponse?,
+        uniquePositionId: Int
+    ) {
+        val images = _prescriptionImages.value
+        images?.get(uniquePositionId)?.apply {
+            result?.data?.firstOrNull()?.let { uploadResult ->
+                if (uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE) {
+                    isUploadSuccess = true
+                    isUploading = false
+                    prescriptionId = uploadResult.prescriptionId
+                    _successUploadPhoto.postValue(true)
+                } else {
+                    uploadFailed(uniquePositionId, EPharmacyUploadNoPrescriptionIdError(true))
+                }
+            } ?: kotlin.run {
+                isUploadSuccess = false
+                isUploading = false
+                isUploadFailed = true
+                result?.data?.firstOrNull()?.errorMsg?.let { errorMessage ->
+                    if (errorMessage.isNotBlank()) {
+                        uploadFailed(uniquePositionId, EPharmacyUploadBackendError(errorMessage))
+                    }
+                }
+            }
+        }
+        _prescriptionImages.postValue(images)
     }
 
     private fun checkPrescriptionImages() {

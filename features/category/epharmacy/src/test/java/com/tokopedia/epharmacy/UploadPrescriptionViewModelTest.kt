@@ -408,6 +408,7 @@ class UploadPrescriptionViewModelTest {
             mockk<EPharmacyPrescriptionUploadResponse>(relaxed = true)
         }
         viewModel.reUploadPrescriptionImage(0, "sfaf")
+        assert(viewModel.successUploadPhoto.value == null)
     }
 
     @Test
@@ -451,6 +452,7 @@ class UploadPrescriptionViewModelTest {
     fun `removePrescriptionImageAtIndex valid index`() {
         viewModel.onSuccessGetPrescriptionImages(arrayListOf(mockk(relaxed = true), mockk(relaxed = true)))
         viewModel.removePrescriptionImageAt(0)
+        assert(viewModel.buttonLiveData.value != null)
         assert(viewModel.prescriptionImages.value?.size == 1)
     }
 
@@ -473,5 +475,82 @@ class UploadPrescriptionViewModelTest {
         viewModel.removePrescriptionImageAt(0)
         viewModel.onCleared()
         assert(viewModel.prescriptionImages.value == null)
+    }
+
+    /*
+    Tests for resultPostUpload
+     */
+    @Test
+    fun `resultPostUpload data`() {
+        val prescriptionImage = PrescriptionImage("", 1, "", "", localPath = "", prescriptionData = null)
+        viewModel.onSuccessGetPrescriptionImages(arrayListOf(prescriptionImage))
+        viewModel.resultPostUpload(
+            EPharmacyPrescriptionUploadResponse(
+                arrayListOf(
+                    EPharmacyPrescriptionUploadResponse.EPharmacyPrescriptionData(
+                        "",
+                        10L,
+                        20L
+                    )
+                ),
+                "",
+                null
+            ),
+            0
+        )
+    }
+
+    @Test
+    fun `resultPostUpload data prescription id 0`() {
+        val prescriptionImage = PrescriptionImage("", 1, "", "", localPath = "", prescriptionData = null)
+        viewModel.onSuccessGetPrescriptionImages(arrayListOf(prescriptionImage))
+        viewModel.resultPostUpload(
+            EPharmacyPrescriptionUploadResponse(
+                arrayListOf(
+                    EPharmacyPrescriptionUploadResponse.EPharmacyPrescriptionData(
+                        "",
+                        0L,
+                        0L
+                    )
+                ),
+                "",
+                null
+            ),
+            0
+        )
+    }
+
+    @Test
+    fun `resultPostUpload data null`() {
+        val prescriptionImage = PrescriptionImage("", 1, "", "", localPath = "", prescriptionData = null)
+        viewModel.onSuccessGetPrescriptionImages(arrayListOf(prescriptionImage))
+        viewModel.resultPostUpload(
+            EPharmacyPrescriptionUploadResponse(
+                null,
+                "",
+                null
+            ),
+            0
+        )
+    }
+
+    @Test
+    fun `resultPostUpload data error message`() {
+        val prescriptionImage = PrescriptionImage("", 1, "", "", localPath = "", prescriptionData = null)
+        viewModel.onSuccessGetPrescriptionImages(arrayListOf(prescriptionImage))
+        viewModel.resultPostUpload(
+            EPharmacyPrescriptionUploadResponse(
+                arrayListOf(
+                    EPharmacyPrescriptionUploadResponse.EPharmacyPrescriptionData(
+                        "fasf",
+                        0L,
+                        0L
+                    )
+                ),
+                "",
+                null
+            ),
+            0
+        )
     }
 }
