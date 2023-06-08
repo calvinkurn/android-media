@@ -281,6 +281,15 @@ class NibSubmissionFragment : BaseDaggerFragment() {
         val onDateSelected: (Date) -> Unit = { selectedDate ->
             viewModel.processEvent(UiEvent.ConfirmDate(selectedDate))
         }
-        datePicker.show(activity ?: return, childFragmentManager, onDateSelected)
+        val onDatePickerDismissed : () -> Unit = {
+            viewModel.processEvent(UiEvent.DatePickerDismissed)
+        }
+
+        datePicker.show(
+            activity ?: return,
+            childFragmentManager,
+            onDateSelected,
+            onDatePickerDismissed
+        )
     }
 }

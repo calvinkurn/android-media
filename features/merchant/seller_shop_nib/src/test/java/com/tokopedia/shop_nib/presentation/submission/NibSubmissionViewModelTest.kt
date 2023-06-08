@@ -304,6 +304,31 @@ class NibSubmissionViewModelTest {
 
         job.cancel()
     }
+
+    @Test
+    fun `When receive TapChangeDate event, if date picker already displayed do not emit new show date picker event`() = runBlockingTest {
+        //Given
+
+        val expectedEffectSize = 1
+        val emittedEffects = arrayListOf<UiEffect>()
+        val job = launch {
+            viewModel.uiEffect.toList(emittedEffects)
+        }
+
+        //When
+
+        //Simulate spamming click calendar icon 4 times to trigger date picker bottomsheet displayed
+        viewModel.processEvent(UiEvent.TapChangeDate)
+        viewModel.processEvent(UiEvent.TapChangeDate)
+        viewModel.processEvent(UiEvent.TapChangeDate)
+        viewModel.processEvent(UiEvent.TapChangeDate)
+
+        //Then
+        val actualEffectSize = emittedEffects.size
+        assertEquals(expectedEffectSize, actualEffectSize)
+
+        job.cancel()
+    }
     //endregion
 
     //region ConfirmDate
@@ -504,6 +529,28 @@ class NibSubmissionViewModelTest {
 
     //endregion
 
+
+    //region handleDatePickerDismissed
+    @Test
+    fun `When date picker dismissed, should set isDatePickerCurrentlyDisplayed to false`() = runBlockingTest {
+        //Given
+        val expected = false
+
+        val emittedValues = arrayListOf<UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        //When
+        viewModel.processEvent(UiEvent.DatePickerDismissed)
+
+        val actual = emittedValues.last()
+
+        assertEquals(expected, actual.isDatePickerCurrentlyDisplayed)
+
+        job.cancel()
+    }
+    //endregion
 
     //region RecordImpression
     @Test
