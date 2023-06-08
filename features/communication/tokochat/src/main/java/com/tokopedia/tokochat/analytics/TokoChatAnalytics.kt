@@ -482,7 +482,7 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.VIEW_ONBOARDING_BOTTOMSHEET,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
-            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43185,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
@@ -499,7 +499,7 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_CONTINUE_ONBOARDING_BOTTOMSHEET,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
-            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43186,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
@@ -516,7 +516,7 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.SWIPE_NEXT_ONBOARDING_BOTTOMSHEET,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
-            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43187,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
@@ -533,7 +533,7 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_SELENGKAPNYA_ONBOARDING_BOTTOMSHEET,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
-            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43188,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
@@ -550,7 +550,7 @@ class TokoChatAnalytics(private val isFromBubble: Boolean = false) {
             TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
             TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_ACTIVATE_FROM_ONBOARDING_BOTTOMSHEET,
             TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_BUBBLE_CHATROOM,
-            TrackAppUtils.EVENT_LABEL to "$orderId - $role - $source",
+            TrackAppUtils.EVENT_LABEL to "$orderId - $source - $role",
             TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_43189,
             TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
             TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE
