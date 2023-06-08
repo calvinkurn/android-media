@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotRejectReasonsAdapter
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
 import com.tokopedia.chatbot.databinding.BottomSheetChatbotReasonsBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -20,6 +21,10 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomSheetChatbotReasonsBinding>()
     private var reasonsAdapter: ChatbotRejectReasonsAdapter? = null
     private var listener: ChatbotRejectReasonsListener? = null
+    private var chipSelectedListener: ChatbotRejectReasonsChipListener? = null
+    private var isChipSelected: Boolean = false
+    private var isEnabledFromText: Boolean = false
+
     init {
         isFullpage = false
         clearContentPadding = false
@@ -49,7 +54,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                     setPlaceholder(data.textBoxPlaceHolder)
                     minLine = MINIMUM_LINES
                 }
-                reasonsAdapter = ChatbotRejectReasonsAdapter()
+                reasonsAdapter = ChatbotRejectReasonsAdapter(chipSelectedListener)
                 reasonsList.apply {
                     layoutManager = getLayoutManager(data.reasonChipList)
                     reasonsAdapter?.setList(data.reasonChipList)
@@ -66,7 +71,7 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                 }
                 setUpTextWatcher()
             }
-            handleButtonState(false)
+            handleButtonState()
         }
     }
 
@@ -84,11 +89,21 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
         return gridLayoutManager
     }
 
+    fun checkChipCounter(count: Int) {
+        isChipSelected = count > 0
+        handleButtonState()
+    }
+
     fun setUpListener(listener: ChatbotRejectReasonsListener) {
         this.listener = listener
     }
-    private fun handleButtonState(isEnabled: Boolean) {
-        binding?.btnSubmit?.isEnabled = isEnabled
+
+    fun setUpChipClickListener(listener: ChatbotRejectReasonsChipListener) {
+        this.chipSelectedListener = listener
+    }
+
+    private fun handleButtonState() {
+        binding?.btnSubmit?.isEnabled = (isEnabledFromText && isChipSelected)
     }
 
     private fun setUpTextWatcher() {
@@ -103,14 +118,16 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (getCharCount() >= MINIMUM_CHAR) {
-                    handleButtonState(true)
+                    isEnabledFromText = true
+                    handleButtonState()
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
                 val wordCount = getCharCount()
                 if (wordCount < MINIMUM_CHAR) {
-                    handleButtonState(false)
+                    isEnabledFromText = false
+                    handleButtonState()
                 }
             }
         }

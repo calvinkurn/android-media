@@ -126,6 +126,7 @@ import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotMediaRetryBottomSh
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotRejectReasonsBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.ChatbotReplyBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotReplyBottomSheetAdapter
+import com.tokopedia.chatbot.chatbot2.view.bottomsheet.listener.ChatbotRejectReasonsChipListener
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.chatbot2.view.customview.chatroom.BigReplyBoxBottomSheet.Companion.MINIMUM_NUMBER_OF_WORDS
@@ -247,7 +248,8 @@ class ChatbotFragment2 :
     com.tokopedia.chatbot.chatbot2.view.listener.ChatbotSendButtonListener,
     com.tokopedia.chatbot.chatbot2.view.customview.chatroom.listener.ReplyBoxClickListener,
     ChatbotRejectReasonsBottomSheet.ChatbotRejectReasonsListener,
-    DynamicStickyButtonListener {
+    DynamicStickyButtonListener,
+    ChatbotRejectReasonsChipListener {
 
     @Inject
     lateinit var session: UserSessionInterface
@@ -1529,16 +1531,13 @@ class ChatbotFragment2 :
 
     private fun openRejectReasonsBottomSheet() {
         dynamicAttachmentRejectReasons?.let {
-            val reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
+            reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
                 it
             )
-
-            reasonsBottomSheet.setUpListener(this)
-
-            reasonsBottomSheet.show(childFragmentManager, "")
         }
 
         reasonsBottomSheet?.setUpListener(this)
+        reasonsBottomSheet?.setUpChipClickListener(this)
         reasonsBottomSheet?.show(childFragmentManager, "")
     }
 
@@ -2879,5 +2878,9 @@ class ChatbotFragment2 :
             SendableUiModel.generateStartTime(),
             helpfulQuestion
         )
+    }
+
+    override fun onChipClick(count: Int) {
+        reasonsBottomSheet?.checkChipCounter(count)
     }
 }

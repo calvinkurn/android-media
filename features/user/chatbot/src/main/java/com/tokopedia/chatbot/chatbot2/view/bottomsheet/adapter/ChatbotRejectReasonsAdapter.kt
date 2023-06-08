@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +12,9 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_SELECTED
 
-class ChatbotRejectReasonsAdapter : RecyclerView.Adapter<ChatbotRejectReasonsAdapter.ChatbotRejectReasonsViewHolder>() {
+class ChatbotRejectReasonsAdapter(
+    private val rejectReasonsChipListener: ChatbotRejectReasonsChipListener?
+) : RecyclerView.Adapter<ChatbotRejectReasonsAdapter.ChatbotRejectReasonsViewHolder>() {
 
     val list = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
     val selectedList = mutableListOf<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>()
@@ -29,6 +32,8 @@ class ChatbotRejectReasonsAdapter : RecyclerView.Adapter<ChatbotRejectReasonsAda
                     selectedList.add(item)
                     this.item.chipType = TYPE_SELECTED
                 }
+                Log.d("FATAL", "bind: $rejectReasonsChipListener")
+                rejectReasonsChipListener?.onChipClick(selectedList.size)
             }
         }
     }
