@@ -32,6 +32,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.PREF_KEY_WALLETAPP_CO
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -69,6 +70,7 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE = "tracker/home/spe
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home/cue_widget_category.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DEALS_WIDGET = "tracker/home/deals_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT = "tracker/home/lego_4_product.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TODO_WIDGET = "tracker/home/todo_widget.json"
@@ -289,6 +291,7 @@ fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition:
 }
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
 }
 
@@ -355,12 +358,15 @@ fun clickAndCloseOnEachTodoWidget(view: View, recyclerViewId: Int, fixedItemPosi
                     ViewMatchers.withContentDescription(CommonActions.UNDER_TEST_TAG)
                 )
             ).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     0,
                     clickOnViewChild(com.tokopedia.home_component.R.id.cta_todo_widget)
-                )
-            ).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                ),
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                    0,
+                    clickOnViewChild(com.tokopedia.home_component.R.id.card_container_todo_widget)
+                ),
+                actionOnItemAtPosition<RecyclerView.ViewHolder>(
                     0,
                     clickOnViewChild(com.tokopedia.home_component.R.id.ic_close_todo_widget)
                 )
@@ -435,12 +441,7 @@ private fun clickEmptyBannerRechargeBUWidget() {
 private fun clickSeeAllRechargeBUWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     waitForData()
     try {
-        Espresso.onView(
-            allOf(
-                ViewMatchers.withId(R.id.see_all_button),
-                ViewMatchers.hasSibling(ViewMatchers.withText("Produk digital khusus kamu"))
-            )
-        ).perform(ViewActions.click())
+        clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     } catch (e: PerformException) {
         e.printStackTrace()
     }
@@ -540,13 +541,17 @@ private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
 private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
-    if (seeAllButton.visibility == View.VISIBLE) {
+    val ctaButton = childView.findViewById<View>(R.id.cta_button_revamp)
+    if (seeAllButton != null && seeAllButton.isVisible) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
                 .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+        } catch (_: PerformException) { }
+    } else if (ctaButton != null && ctaButton.isVisible) {
+        try {
+            Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.cta_button_revamp, scrollVerticalBy)))
+        } catch (_: PerformException) { }
     }
 }
 

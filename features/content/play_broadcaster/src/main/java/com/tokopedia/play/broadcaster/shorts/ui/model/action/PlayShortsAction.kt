@@ -48,9 +48,10 @@ sealed interface PlayShortsAction {
     object ClickUploadVideo : PlayShortsAction
 
     /** Others */
-    object SetNotFirstSwitchAccount : PlayShortsAction
     object SetShowSetupCoverCoachMark : PlayShortsAction
     data class SetCoverUploadedSource(
         val source: Int
     ) : PlayShortsAction
+
+    object ResetUploadState : PlayShortsAction
 }

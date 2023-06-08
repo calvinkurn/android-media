@@ -254,6 +254,9 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
             ProductAction.Buy, ProductAction.OCC -> clickBeliButtonProductWithVariant(productId)
+            else -> {
+                //no-op
+            }
         }
     }
 
@@ -267,15 +270,12 @@ class PlayTagItemsAnalyticImpl @AssistedInject constructor(
     ) {
         when(productAction) {
             ProductAction.AddToCart ->
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickAtcButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
-                }
+                clickAtcButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
             ProductAction.Buy -> {
-                when (bottomInsetsType) {
-                    BottomInsetsType.VariantSheet -> clickBeliButtonInVariant(trackingQueue, product, cartId, shopInfo)
-                    else -> clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
-                }
+                clickBeliButtonProductWithNoVariant(trackingQueue, product, sectionInfo, cartId, shopInfo)
+            }
+            else -> {
+                //no-op
             }
         }
     }

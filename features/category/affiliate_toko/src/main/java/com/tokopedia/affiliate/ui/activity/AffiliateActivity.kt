@@ -17,9 +17,11 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
 import com.tokopedia.affiliate.FOURTH_TAB
+import com.tokopedia.affiliate.PAGE_SEGMENT_DISCO_PAGE_LIST
 import com.tokopedia.affiliate.PAGE_SEGMENT_EDU_PAGE
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.PAGE_SEGMENT_ONBOARDING
+import com.tokopedia.affiliate.PAGE_SEGMENT_PROMO_PAGE
 import com.tokopedia.affiliate.PAGE_SEGMENT_SSA_SHOP_LIST
 import com.tokopedia.affiliate.PAGE_SEGMENT_TRANSACTION_HISTORY
 import com.tokopedia.affiliate.SECOND_TAB
@@ -103,6 +105,12 @@ class AffiliateActivity :
             when {
                 it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
                     startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
+                }
+                it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
+                    startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
+                }
+                it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
+                    selectItem(PROMO_MENU, R.id.menu_promo_affiliate, true)
                 }
                 it.contains(PAGE_SEGMENT_EDU_PAGE) || it.contains(PAGE_SEGMENT_HELP) -> {
                     fromAppLink = it.contains(PAGE_SEGMENT_EDU_PAGE)
@@ -280,8 +288,15 @@ class AffiliateActivity :
                 it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
                     selectedTab = INCOME_MENU
                 }
-                it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) ->
+                it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
+                    selectedTab = PROMO_MENU
+                }
+                it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
                     startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
+                }
+                it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
+                    startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
+                }
             }
         }
         affiliateBottomNavigation = AffiliateBottomNavbar(

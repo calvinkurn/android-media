@@ -30,6 +30,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.design.component.Dialog
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.logisticCommon.data.entity.response.Data
@@ -918,8 +920,11 @@ class PinpointMapFragment :
     private fun EditText.setupClearButtonWithAction() {
         addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
-                val clearIcon = if (editable?.isNotEmpty() == true) R.drawable.ic_close_btn else 0
-                setCompoundDrawablesWithIntrinsicBounds(0, 0, clearIcon, 0)
+                val clearIcon = if (editable?.isNotEmpty() == true) getIconUnifyDrawable(
+                    requireContext(),
+                    IconUnify.CLEAR_SMALL
+                ) else null
+                setCompoundDrawablesWithIntrinsicBounds(null, null, clearIcon, null)
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit

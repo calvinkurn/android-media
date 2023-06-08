@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.WidgetButtonRetakePreviewBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -36,18 +37,17 @@ class RetakeActionButtonWidget @JvmOverloads constructor(
     }
 
     private fun commonMode() {
-        binding.imgAction.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_image)
+        binding.imgAction.setImage(IconUnify.IMAGE)
         binding.txtTitle.text = context.getString(R.string.picker_button_retake_common)
     }
 
     private fun videoMode() {
-        binding.imgAction.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_video)
+        binding.imgAction.setImage(IconUnify.VIDEO)
         binding.txtTitle.text = context.getString(R.string.picker_button_retake_video)
     }
 
     private fun photoMode() {
-        binding.imgAction.setImageResource(com.tokopedia.iconunify.R.drawable.iconunify_camera)
+        binding.imgAction.setImage(IconUnify.CAMERA)
         binding.txtTitle.text = context.getString(R.string.picker_button_retake_image)
     }
-
 }

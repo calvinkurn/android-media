@@ -46,7 +46,9 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 
 /**
  * Created by jegul on 10/02/21
@@ -180,14 +182,6 @@ class PlayViewModelRobot(
 
     fun hideProductBottomSheet() {
         viewModel.onHideProductSheet()
-    }
-
-    fun showVariantBottomSheet(bottomSheetHeight: Int = 50, action: ProductAction = ProductAction.Buy, product: PlayProductUiModel.Product = productTagBuilder.buildProductLine()) {
-        viewModel.onShowVariantSheet(bottomSheetHeight)
-    }
-
-    fun hideVariantBottomSheet() {
-        viewModel.onHideVariantSheet()
     }
 
     fun showLeaderboardBottomSheet(bottomSheetHeight: Int = 50) {
@@ -326,7 +320,7 @@ infix fun PlayViewModelRobot.andWhenExpectEvent(
         fn: PlayViewModelRobot.() -> Unit
 ) : RobotWithValue<PlayViewModelRobot, PlayViewerNewUiEvent> {
     var result: PlayViewerNewUiEvent? = null
-    runBlockingTest {
+    runBlockingTest(CoroutineTestDispatchers.coroutineDispatcher) {
         val value = async {
             viewModel.uiEvent.first()
         }

@@ -5,7 +5,6 @@ import android.graphics.LinearGradient
 import android.graphics.Shader
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getVisiblePercent
@@ -29,6 +27,7 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.PlayVoucherView
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
@@ -39,6 +38,7 @@ import com.tokopedia.play_common.util.extension.getBitmapFromUrl
 import com.tokopedia.play_common.view.BottomSheetHeader
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
+import com.tokopedia.play_common.viewcomponent.BottomSheetViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +52,7 @@ class ProductSheetViewComponent(
     container: ViewGroup,
     private val listener: Listener,
     private val scope: CoroutineScope
-) : ViewComponent(container, R.id.cl_product_sheet) {
+) : BottomSheetViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
@@ -138,10 +138,9 @@ class ProductSheetViewComponent(
                 listener.onInformationImpressed(this@ProductSheetViewComponent)
             }
         },
-        productListener = productCardListener
+        productListener = productCardListener,
     )
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
     private val itemDecoration: ProductLineItemDecoration
 
     private val voucherListener = object : PlayVoucherView.Listener {
@@ -195,15 +194,11 @@ class ProductSheetViewComponent(
             override fun onIconClicked(view: BottomSheetHeader) {
                 listener.onCartClicked(this@ProductSheetViewComponent)
             }
+
+            override fun impressIcon(view: BottomSheetHeader) {
+                listener.onImpressedCart(this@ProductSheetViewComponent)
+            }
         })
-    }
-
-    override fun show() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun showWithHeight(height: Int) {
@@ -460,5 +455,6 @@ class ProductSheetViewComponent(
         fun onInfoVoucherImpressed(view: ProductSheetViewComponent, voucher: PlayVoucherUiModel.Merchant)
 
         fun onCartClicked(view: ProductSheetViewComponent)
+        fun onImpressedCart(view: ProductSheetViewComponent)
     }
 }

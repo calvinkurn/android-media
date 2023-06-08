@@ -76,9 +76,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
     implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
-    implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.categoryCommon)
-    implementation projectOrAar(rootProject.ext.features.officialStore)
     implementation projectOrAar(rootProject.ext.features.playCommon)
     implementation projectOrAar(rootProject.ext.features.productShare)
     implementation projectOrAar(rootProject.ext.libraries.irisSession)
@@ -116,7 +114,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+    implementation rootProject.ext.composeDependencies.composeActivity
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.nestComponents
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -178,7 +178,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.interceptors)
-
+    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
@@ -212,6 +212,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.reviewInbox)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.shopCommon)
+    implementation projectOrAar(rootProject.ext.features.shopAdminCommon)
     implementation projectOrAar(rootProject.ext.features.youtubeCommon)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
@@ -286,6 +287,7 @@ dependencies {
 
     // unify dependencies
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.nestPrinciples
 
     // external dependencies
     implementation(rootProject.ext.debugToolsDependencies.timber) {

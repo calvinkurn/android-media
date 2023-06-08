@@ -6,10 +6,13 @@ import static com.tokopedia.home_account.account_settings.AccountConstants.Analy
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CURRENT_SITE;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FINGERPRINT;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.PASSWORD;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.PAYMENT;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TRACKER_ID;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TRACKER_ID_42695;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER_ID;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER_PLATFORM;
 
 import android.content.Context;
@@ -103,6 +106,25 @@ public class AccountAnalytics {
                 String.format("%s %s", AccountConstants.Analytics.CLICK, item),
                 ""
         ));
+    }
+
+    public void eventClickCreditCardSetting(String item) {
+
+        Analytics analytics = TrackApp.getInstance().getGTM();
+
+        Map<String, Object> data = TrackAppUtils.gtmData(
+                AccountConstants.Analytics.CLICK_PAYMENT,
+                AccountConstants.Analytics.PAYMENT_SETTING_PAGE,
+                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
+                ""
+        );
+
+        data.put(TRACKER_ID,TRACKER_ID_42695);
+        data.put(BUSINESS_UNIT, PAYMENT);
+        data.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
+        data.put(USER_ID, userSessionInterface.getUserId());
+
+        analytics.sendGeneralEvent(data);
     }
 
     public void eventClickKycSetting(String projectId) {

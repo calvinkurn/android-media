@@ -214,15 +214,6 @@ object PromoCheckoutQuery {
         }
     }"""
 
-    fun promoCheckoutPrevalidateCoupon() ="""
-            mutation hachialidateRedeem(${'$'}catalog_id: Int, ${'$'}is_gift: Int, ${'$'}gift_user_id: Int, ${'$'}gift_email: String) {
-        validateRedeem : hachikoValidateRedeem(catalog_id: ${'$'}catalog_id, is_gift: ${'$'}is_gift, gift_user_id: ${'$'}gift_user_id, gift_email: ${'$'}gift_email) {
-            is_valid
-            message_success
-            message_title
-        }
-    }"""
-
     fun promoCheckoutRedeemCoupon() = """
             mutation hachikoRedeem(${'$'}catalog_id: Int, ${'$'}is_gift: Int, ${'$'}gift_user_id: Int, ${'$'}gift_email: String, ${'$'}notes: String) {
         hachikoRedeem(catalog_id: ${'$'}catalog_id, is_gift: ${'$'}is_gift, gift_user_id: ${'$'}gift_user_id, gift_email: ${'$'}gift_email, notes: ${'$'}notes) {
