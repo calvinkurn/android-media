@@ -52,7 +52,7 @@ class ReviewDetailTrackerImpl : ReviewDetailTracker {
             .sendGeneralEvent()
     }
 
-    override fun trackOnSeeAllClicked(feedbackId: String, productId: String, isFromGallery: Boolean) {
+    override fun trackOnSeeAllClicked(feedbackId: String, productId: String, isFromGallery: Boolean, reviewUserId: String, isReviewOwner: Boolean) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PDP,
             if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_IMAGE_GALLERY else AnalyticConstant.EVENT_CATEGORY,

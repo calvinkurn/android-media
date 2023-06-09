@@ -297,7 +297,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                 reviewDetailTracker.trackOnSeeAllClicked(
                     reviewDetailViewModel.getFeedbackID().orEmpty(),
                     sharedReviewMediaGalleryViewModel.getProductId(),
-                    sharedReviewMediaGalleryViewModel.isFromGallery()
+                    sharedReviewMediaGalleryViewModel.isFromGallery(),
+                    sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                    sharedReviewMediaGalleryViewModel.isReviewOwner,
                 )
             } else {
                 reviewDetailTracker.trackOnShopReviewSeeAllClicked(

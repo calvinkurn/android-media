@@ -21,7 +21,9 @@ interface ReviewDetailTracker {
     fun trackOnSeeAllClicked(
         feedbackId: String,
         productId: String,
-        isFromGallery: Boolean
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
     )
 
     fun trackOnShopReviewSeeAllClicked(

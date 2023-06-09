@@ -27,9 +27,11 @@ class ReviewDetailUserProfileTrackerImpl : ReviewDetailTracker {
     override fun trackOnSeeAllClicked(
         feedbackId: String,
         productId: String,
-        isFromGallery: Boolean
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
     ) {
-        Log.d("<LOG>", "ReviewDetailUserProfileTracker will be provided in the next PR")
+        Log.d("<LOG>", "reviewUserId : $reviewUserId, isReviewOwner : $isReviewOwner")
     }
 
     override fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
