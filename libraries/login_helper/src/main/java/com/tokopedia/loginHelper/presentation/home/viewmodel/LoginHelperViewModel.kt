@@ -1,6 +1,5 @@
 package com.tokopedia.loginHelper.presentation.home.viewmodel
 
-import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.PersistentCacheManager
@@ -118,18 +117,18 @@ class LoginHelperViewModel @Inject constructor(
 
     // Can be directly used when moved to REST endpoints
     private fun getLoginData() {
+        handleLoading(true)
         launchCatchError(
             dispatchers.io,
             block = {
                 val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType.toEnvString())
-                Log.d("FATAL", "getLoginData: $userDetails")
                 val loginData = userDetails.body()
 
                 val userList = LoginDataUiModel(
                     loginData?.count?.toRemoteUserHeaderUiModel(),
                     loginData?.users?.toUserDataUiModel()
                 )
-                Log.d("FATAL", "getLoginData: $userList")
+
                 updateUserDataList(Success(userList))
             },
             onError = {
@@ -297,6 +296,14 @@ class LoginHelperViewModel @Inject constructor(
         }
     }
 
+    private fun handleLoading(isLoading: Boolean) {
+        _uiState.update {
+            it.copy(
+                isLoading = isLoading
+            )
+        }
+    }
+
     private fun updateProfileResponse(profilePojo: Result<ProfilePojo>) {
         _uiState.update {
             it.copy(
@@ -308,7 +315,8 @@ class LoginHelperViewModel @Inject constructor(
     private fun updateUserDataList(userDataList: Result<LoginDataUiModel>) {
         _uiState.update {
             it.copy(
-                loginDataList = userDataList
+                loginDataList = userDataList,
+                isLoading = false
             )
         }
     }
@@ -409,6 +417,6 @@ class LoginHelperViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
         loginTokenV2UseCase.cancelJobs()
         generatePublicKeyUseCase.cancelJobs()
-        //    getUserDetailsRestUseCase.cancelJobs()
+
     }
 }

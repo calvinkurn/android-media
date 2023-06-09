@@ -117,6 +117,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         handleLoginUserDataList(state)
         handleLoginToken(state.loginToken)
         handleProfileResponse(state.profilePojo)
+        handleLoadingState(state.isLoading)
     }
 
     private fun handleAction(action: LoginHelperAction) {
@@ -125,6 +126,10 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             is LoginHelperAction.GoToLoginPage -> goToLoginPage()
             is LoginHelperAction.GoToAccountSettings -> goToLoginHelperAccountSettings()
         }
+    }
+
+    private fun handleLoadingState(state: Boolean) {
+        binding?.progressBar?.showWithCondition(state)
     }
 
     private fun goToLoginPage() {
@@ -249,24 +254,8 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         if (state.dataSourceType == LoginHelperDataSourceType.REMOTE) {
             if (state.searchText.isEmpty()) {
                 fillRecyclerViewData(state.searchText, state.loginDataList)
-//                when (val loginDataList = state.loginDataList) {
-//                    is Success -> {
-//                        handleLoginUserDataListSuccess(loginDataList.data)
-//                    }
-//                    is Fail -> {
-//                        handleLoginUserDataListFailure(loginDataList.throwable)
-//                    }
-//                }
             } else {
                 fillRecyclerViewData(state.searchText, state.filteredUserList)
-//                when (val loginDataList = state.filteredUserList) {
-//                    is Success -> {
-//                        handleLoginUserDataListSuccess(loginDataList.data)
-//                    }
-//                    is Fail -> {
-//                        handleLoginUserDataListFailure(loginDataList.throwable)
-//                    }
-//                }
             }
         } else {
             if (state.searchText.isEmpty()) {
