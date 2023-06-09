@@ -21,7 +21,6 @@ class BannerEnvironmentViewHolder(
     private val context = itemView.context
 
     override fun bind(element: BannerEnvironmentUiModel) {
-
         val cb = itemView.findViewById<CheckboxUnify>(R.id.banner_environment)
         cb.isChecked = BannerEnvironment().isBannerEnvironmentEnabled(context)
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->

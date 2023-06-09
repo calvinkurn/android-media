@@ -57,9 +57,6 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dataStore
-
-
-
 }
 
 apply from: '../publish_local.gradle'

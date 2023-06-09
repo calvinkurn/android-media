@@ -16,7 +16,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -55,7 +54,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
-
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
@@ -70,7 +68,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private int REDIRECTION_HOME = 1;
     private int REDIRECTION_WEBVIEW = 2;
-
     private int REDIRECTION_DEFAULT = 0;
 
     @Override
@@ -97,6 +94,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
          new BannerEnvironment().setupBannerEnvironment(this);
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -194,7 +192,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
-                        getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -214,7 +212,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public void onTimezoneError() {
 
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
-                        Snackbar.LENGTH_INDEFINITE)
+                Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_check, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -245,7 +243,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
                     ((AbstractionRouter) getApplication()).onForceLogoutV2(BaseActivity.this, REDIRECTION_WEBVIEW, url);
                 }
             }
-
             @Override
             public void onSecondaryBtnClicked() {
                 if (getApplication() instanceof AbstractionRouter) {
@@ -284,10 +281,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 for (int i = 0, size = dispatchTouchListeners.size(); i < size; i++) {
                     dispatchTouchListeners.get(i).onDispatchTouch(ev);
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) { }
             return super.dispatchTouchEvent(ev);
-        } catch (Exception e) {
+        } catch (Exception e){
             e.printStackTrace();
         }
         return false;
@@ -334,9 +330,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         List<Fragment> list = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : list) {
-            if (fragment instanceof TkpdBaseV4Fragment && fragment.isVisible()) {
-                boolean handled = ((TkpdBaseV4Fragment) fragment).onFragmentBackPressed();
+        for(Fragment fragment : list) {
+            if(fragment instanceof TkpdBaseV4Fragment && fragment.isVisible()) {
+                boolean handled = ((TkpdBaseV4Fragment)fragment).onFragmentBackPressed();
                 if (handled) {
                     return;
                 }

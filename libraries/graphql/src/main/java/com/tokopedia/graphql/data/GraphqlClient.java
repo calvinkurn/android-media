@@ -2,8 +2,8 @@ package com.tokopedia.graphql.data;
 
 import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
 import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
-import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.RESPONSE_HEADER_KEY;
 import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.TOP_ADS_SHARED_PREF_KEY;
+import static com.tokopedia.graphql.util.TopAdsTrackingIdUtilsKt.RESPONSE_HEADER_KEY;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -211,8 +211,8 @@ public class GraphqlClient {
             );
         }
 
-        public String getTopAdsHeader() {
-            SharedPreferences sp = context.get().getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        public String getTopAdsHeader(){
+            SharedPreferences sp =  context.get().getSharedPreferences(TOP_ADS_SHARED_PREF_KEY, Context.MODE_PRIVATE);
             return sp.getString(RESPONSE_HEADER_KEY, "");
         }
     }

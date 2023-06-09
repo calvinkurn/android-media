@@ -73,7 +73,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: LoginHelperUiModel): Int = LoginHelperViewHolder.LAYOUT
     override fun type(uiModel: DevOptsAuthorizationUiModel): Int = DevOptsAuthorizationViewHolder.LAYOUT
     override fun type(uiModel: DeprecatedApiSwitcherToasterUiModel): Int = DeprecatedAPISwitcherToasterViewHolder.LAYOUT
-    override fun type(uiModel: BannerEnvironmentUiModel): Int  = BannerEnvironmentViewHolder.LAYOUT
+    override fun type(uiModel: BannerEnvironmentUiModel): Int = BannerEnvironmentViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
