@@ -182,6 +182,7 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
         if (productName == null) {
             binding?.cardProductDetailPenalty?.gone()
             binding?.tvSummaryCtaDetailPenalty?.gone()
+            binding?.tvTypeTitlePenaltyDetail?.gone()
         } else {
             binding?.cardProductDetailPenalty?.visible()
             binding?.tvSummaryCtaDetailPenalty?.run {
@@ -194,6 +195,7 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
                     )
                 }
             }
+            binding?.tvTypeTitlePenaltyDetail?.visible()
             binding?.tvProductDetailPenalty?.text = MethodChecker.fromHtml(
                 getString(
                     R.string.product_name_detail,
