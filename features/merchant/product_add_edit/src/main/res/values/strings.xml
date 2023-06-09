@@ -556,6 +556,7 @@
     <string name="product_add_edit_dt_action_edit">ubah</string>
     <string name="product_add_edit_dt_action_add_variant_type">buat tipe</string>
     <string name="product_add_edit_dt_action_edit_variant_type">atur</string>
+    <string name="product_add_edit_success_to_deactivate_format">%s berhasil dinonaktifkan.</string>
 
 
 </resources>
