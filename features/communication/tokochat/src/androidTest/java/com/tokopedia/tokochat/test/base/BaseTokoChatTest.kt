@@ -107,6 +107,7 @@ abstract class BaseTokoChatTest {
             idlingResourcePrepareDb
         )
         mockWebServer.start(8090)
+        mockWebServer.dispatcher = mockWebServerDispatcher
         resetDatabase()
         removeDummyCache()
         prepareDatabase()
@@ -154,7 +155,6 @@ abstract class BaseTokoChatTest {
         isFromTokoFoodPostPurchase: Boolean = false,
         intentModifier: (Intent) -> Unit = {}
     ) {
-        mockWebServer.dispatcher = mockWebServerDispatcher
         if (isSellerApp) {
             GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION
         }

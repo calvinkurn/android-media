@@ -1328,7 +1328,9 @@ open class TokoChatFragment :
 
     private fun notifyWhenAllowed(position: Int) {
         try {
-            adapter.notifyItemChanged(position)
+            baseBinding?.tokochatChatroomRv?.postDelayed({
+                adapter.notifyItemChanged(position)
+            }, DELAY)
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }
@@ -1337,6 +1339,8 @@ open class TokoChatFragment :
     companion object {
         private const val TAG = "TokoChatFragment"
         const val TOKOCHAT_ATTACHMENT_MENU = "android_show_attachment_menu_tokochat"
+
+        private const val DELAY = 300L
 
         fun getFragment(
             fragmentManager: FragmentManager,
