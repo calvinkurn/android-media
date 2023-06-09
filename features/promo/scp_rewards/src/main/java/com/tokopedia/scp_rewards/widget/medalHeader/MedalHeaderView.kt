@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.scp_rewards.common.utils.grayscale
 import com.tokopedia.scp_rewards.common.utils.hide
-import com.tokopedia.scp_rewards.common.utils.loadLottieFromUrl
 import com.tokopedia.scp_rewards.common.utils.parseColor
 import com.tokopedia.scp_rewards.databinding.WidgetMedalHeaderBinding
 
@@ -22,26 +21,16 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
             if (data.isGrayScale) {
                 ivMedalIcon.visible()
                 ivMedalIcon.grayscale()
-                lottieViewSparks.hide()
                 lottieView.hide()
                 ivMedalIcon.setImageUrl(data.medalIconUrl ?: "")
             } else {
                 ivMedalIcon.hide()
-                lottieViewSparks.visible()
                 lottieView.visible()
-                loadSparks(data.lottieSparklesUrl)
                 lottieView.loadLottie(data)
             }
             loadBackground(data.background, data.backgroundColor)
-            binding.ivBadgeBase.setImageUrl(data.podiumUrl ?: "")
+            binding.ivBadgeBase.setImageUrl(data.baseImageURL ?: "")
         }
-    }
-
-    private fun WidgetMedalHeaderBinding.loadSparks(lottieSparklesUrl: String?) {
-        lottieViewSparks.loadLottieFromUrl(
-            url = lottieSparklesUrl,
-            autoPlay = true
-        )
     }
 
     private fun WidgetMedalHeaderBinding.loadBackground(

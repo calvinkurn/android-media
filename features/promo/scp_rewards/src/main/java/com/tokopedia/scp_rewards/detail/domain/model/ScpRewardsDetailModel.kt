@@ -21,7 +21,7 @@ data class MedaliDetailPage(
     @SerializedName("backgroundImageColor") val backgroundImageColor: String? = null,
     @SerializedName("frameImageURL") val frameImageURL: String? = null,
     @SerializedName("innerIconImageURL") val innerIconImageURL: String? = null,
-    @SerializedName("maskingImageURL") val maskingImageURL: String? = null,
+    @SerializedName("maskingImageURL") val shutterMaskingImageURL: String? = null,
     @SerializedName("frameMaskingImageURL") val frameMaskingImageURL: String? = null,
     @SerializedName("shutterImageURL") val shutterImageURL: String? = null,
     @SerializedName("shutterText") val shutterText: String? = null,

@@ -20,7 +20,6 @@ private const val SHUTTER_AUTO_OPEN = "shutter_auto_open"
 private const val COACH_MARK_APPEAR = "coachmark_appear"
 private const val SHUTTER_MANUAL_CLOSE = "shutter_manual_close"
 private const val SHUTTER_MANUAL_OPEN = "shutter_manual_open"
-private const val IMAGES_FOLDER = "images"
 
 class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
@@ -29,11 +28,19 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
         WidgetMedalLottieAnimationBinding.inflate(LayoutInflater.from(context), this)
 
     fun loadLottie(data: MedalHeader) {
+        loadSparks(data.lottieSparklesUrl)
         downloadImages(data, {
             loadMedalBadge(data, it)
         }, {
-            // show placeholder
+            binding.lottieView.setImageResource(R.drawable.fallback_badge)
         })
+    }
+
+    private fun loadSparks(lottieSparklesUrl: String?) {
+        binding.lottieViewSparks.loadLottieFromUrl(
+            url = lottieSparklesUrl,
+            autoPlay = false
+        )
     }
 
     private fun loadMedalBadge(data: MedalHeader, map: Map<String, Bitmap?>) {
@@ -41,7 +48,6 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             lottieView.loadLottieFromUrl(
                 url = data.lottieUrl,
                 onLottieLoaded = {
-                    lottieView.imageAssetsFolder = IMAGES_FOLDER
                     map.forEach { (key, bitmap) -> lottieView.updateBitmap(key, bitmap) }
                     val textAutoShow = lottieView.composition?.markers
                         ?.map { it.name }
@@ -56,9 +62,10 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
                     if (textAutoShow == true) {
                         lottieView.setMaxFrame(SHUTTER_AUTO_CLOSE)
                     }
+                    binding.lottieViewSparks.playAnimation()
                 },
                 onError = {
-                          lottieView.setImageResource(R.drawable.fallback_badge)
+                    lottieView.setImageResource(R.drawable.fallback_badge)
                 },
                 onLottieEnded = {
                     val markerName =
@@ -140,18 +147,17 @@ class MedalLottieAnimation(private val context: Context, attrs: AttributeSet?) :
             try {
                 val map = mutableMapOf<String, Bitmap?>()
 
-//                val image0 = async { context.downloadImage(data.frameMaskUrl) }
-                val image1 = async { context.downloadImage(data.shimmerUrl) }
-                val image2 = async { context.downloadImage(data.frameUrl) }
-//                val image3 = async { context.downloadImage(data.maskingShapeUrl) }
+                val image0 = async { context.downloadImage(data.frameMaskingImageUrl) }
+                val image1 = async { context.downloadImage(data.shimmerImageUrl) }
+                val image2 = async { context.downloadImage(data.frameImageUrl) }
+                val image3 = async { context.downloadImage(data.shutterMaskingImageUrl) }
                 val image4 = async { context.downloadImage(data.shutterUrl) }
                 val image5 = async { context.downloadImage(data.medalUrl) }
 
-//                map["image_0"] = image0.await()
+                map["image_0"] = image0.await()
                 map["image_1"] = image1.await()
                 map["image_2"] = image2.await()
-//                The lottie doesn't work properly when masking shape image is download from server
-//                map["image_3"] = image3.await()
+                map["image_3"] = image3.await()
                 map["image_4"] = image4.await()
                 map["image_5"] = image5.await()
                 withContext(Dispatchers.Main) {
