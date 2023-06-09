@@ -42,7 +42,6 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorStat
 import com.tokopedia.editshipping.domain.model.shippingEditor.TickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.WarehousesModel
-import com.tokopedia.editshipping.ui.EditShippingActivity
 import com.tokopedia.editshipping.ui.bottomsheet.ShipperDetailBottomSheet
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.FeatureInfoAdapter
 import com.tokopedia.editshipping.ui.shippingeditor.adapter.ShipperProductItemAdapter
@@ -124,7 +123,7 @@ class ShippingEditorFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkWhitelistedUser()
+        fetchData()
         initViews()
         initAdapter()
         initViewModel()
@@ -135,10 +134,6 @@ class ShippingEditorFragment :
         whitelabelCoachmark = null
 
         super.onPause()
-    }
-
-    private fun checkWhitelistedUser() {
-        viewModel.getWhitelistData(userSession.shopId.toLong())
     }
 
     private fun initViews() {
@@ -198,36 +193,6 @@ class ShippingEditorFragment :
     }
 
     private fun initViewModel() {
-        viewModel.shopWhitelist.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        if (it.data.data.eligibilityState == 1) {
-                            binding?.swipeRefresh?.isRefreshing = false
-                            fetchData()
-                        } else {
-                            activity?.finish()
-                            val intent =
-                                context?.let { context -> EditShippingActivity.createIntent(context) }
-                            startActivityForResult(intent, REQUEST_EDIT_SHIPPING)
-                        }
-                    }
-
-                    is ShippingEditorState.Fail -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
-                    }
-
-                    else -> {
-                        binding?.swipeRefresh?.isRefreshing = true
-                    }
-                }
-            }
-        )
-
         viewModel.shipperList.observe(
             viewLifecycleOwner,
             Observer {
@@ -979,7 +944,6 @@ class ShippingEditorFragment :
 
         private const val BOTTOMSHEET_AWB_OTOMATIS_INFO = 1
 
-        private const val REQUEST_EDIT_SHIPPING = 1998
         private const val COACHMARK_ON_BOARDING_DELAY = 1000L
 
         private const val STATE_AWB_VALIDATION = "awb_otomatis"

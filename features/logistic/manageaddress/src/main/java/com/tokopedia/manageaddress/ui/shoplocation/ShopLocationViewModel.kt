@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.logisticCommon.data.entity.shoplocation.ShopLocationModel
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
-import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationSetStatusResponse
 import com.tokopedia.manageaddress.domain.mapper.ShopLocationMapper
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState

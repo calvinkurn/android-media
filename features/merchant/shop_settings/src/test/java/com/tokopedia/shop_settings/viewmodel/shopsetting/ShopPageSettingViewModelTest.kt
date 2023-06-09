@@ -2,9 +2,6 @@ package com.tokopedia.shop_settings.viewmodel.shopsetting
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibilityResponse
-import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -39,9 +36,6 @@ class ShopPageSettingViewModelTest {
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
 
     @RelaxedMockK
-    lateinit var shopMultiLocationUseCase: ShopMultilocWhitelistUseCase
-
-    @RelaxedMockK
     lateinit var authorizeAccessUseCaseProvider: Provider<AuthorizeAccessUseCase>
 
     @RelaxedMockK
@@ -63,31 +57,12 @@ class ShopPageSettingViewModelTest {
             userSessionInterface,
             getShopInfoUseCase,
             authorizeAccessUseCaseProvider,
-            shopMultiLocationUseCase,
             dispatcherProvider
         )
 
         privateAdminAccessListField = viewModel::class.java.getDeclaredField("adminAccessList").apply {
             isAccessible = true
         }
-    }
-
-    @Test
-    fun `check shop multilocation eligibility and response is success`() {
-        val mockShopId = "123"
-        coEvery { shopMultiLocationUseCase.invoke(mockShopId.toLongOrZero()) } returns KeroGetRolloutEligibilityResponse()
-        viewModel.getMultiLocationEligibility(mockShopId)
-        coVerify { shopMultiLocationUseCase.invoke(mockShopId.toLongOrZero()) }
-        assert(viewModel.shopMultiLocationEligibility.value is Success)
-    }
-
-    @Test
-    fun `check shop multilocation eligibility and response is fail`() {
-        val mockShopId = "123"
-        coEvery { shopMultiLocationUseCase.invoke(mockShopId.toLongOrZero()) } throws Exception()
-        viewModel.getMultiLocationEligibility(mockShopId)
-        coVerify { shopMultiLocationUseCase.invoke(mockShopId.toLongOrZero()) }
-        assert(viewModel.shopMultiLocationEligibility.value is Fail)
     }
 
     @Test

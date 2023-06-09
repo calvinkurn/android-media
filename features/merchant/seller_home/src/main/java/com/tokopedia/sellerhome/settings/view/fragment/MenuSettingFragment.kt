@@ -32,8 +32,6 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
@@ -56,7 +54,6 @@ import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -259,7 +256,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             when (result) {
                 is Success -> {
                     menuSettingAdapter?.showSuccessAccessMenus(result.data)
-                    menuSettingViewModel.getShopLocEligible(userSession.shopId.toLongOrZero())
+                    menuSettingAdapter?.showShopSetting()
                 }
                 is Fail -> {
                     menuSettingAdapter?.removeLoading()
@@ -269,22 +266,15 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         }
     }
 
-    private fun setupLocationSettings(isEligibleMultiloc: Result<Boolean>) {
-        if (isEligibleMultiloc is Success) {
-            menuSettingAdapter?.showShopSetting(isEligibleMultiloc.data)
-        }
-    }
-
     private fun setupView() {
         val menuLayoutManager by getMenuLayoutManager()
         binding?.recyclerView?.layoutManager = menuLayoutManager
         menuSettingAdapter?.populateInitialMenus(userSession.isShopOwner)
         if (userSession.isShopOwner) {
-            menuSettingViewModel.getShopLocEligible(userSession.shopId.toLong())
+            menuSettingAdapter?.showShopSetting()
         } else {
             menuSettingViewModel.checkShopSettingAccess()
         }
-        observe(menuSettingViewModel.shopLocEligible, ::setupLocationSettings)
 
         setupLogoutView()
         setupExtraSettingView()

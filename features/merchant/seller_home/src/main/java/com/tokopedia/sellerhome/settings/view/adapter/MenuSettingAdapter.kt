@@ -94,18 +94,11 @@ class MenuSettingAdapter(
         notifyItemRangeChanged(0, settingList.size - 1)
     }
 
-    fun showShopSetting(isMultiLocation: Boolean){
-        if (isMultiLocation) {
-            if (getCurrentMultiLocMenuIndex() == null) {
-                getExpectedMultiLocMenuIndex()?.let { index ->
-                    visitables.add(index, getMultiLocationUiModel())
-                    notifyItemInserted(index)
-                }
-            }
-        } else {
-            getCurrentMultiLocMenuIndex()?.let { currentIndex ->
-                visitables.removeAt(currentIndex)
-                notifyItemRemoved(currentIndex)
+    fun showShopSetting() {
+        if (getCurrentMultiLocMenuIndex() == null) {
+            getExpectedMultiLocMenuIndex()?.let { index ->
+                visitables.add(index, getMultiLocationUiModel())
+                notifyItemInserted(index)
             }
         }
     }

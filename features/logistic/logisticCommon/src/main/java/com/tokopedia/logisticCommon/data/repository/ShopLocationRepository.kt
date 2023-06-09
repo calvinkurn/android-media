@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logisticCommon.data.query.ShopLocationQuery
-import com.tokopedia.logisticCommon.data.request.shoplocation.KeroGetRolloutEligibilityParam
 import com.tokopedia.logisticCommon.data.response.shoplocation.*
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
@@ -65,16 +64,6 @@ class ShopLocationRepository @Inject constructor(@ApplicationContext private val
         val request = GraphqlRequest(
             ShopLocationQuery.shopLocUpdateWarehouse,
             ShopLocationUpdateWarehouseResponse::class.java,
-            param
-        )
-        return gql.getResponse(request)
-    }
-
-    suspend fun getShopLocationWhitelist(shopId: Long): KeroGetRolloutEligibilityResponse {
-        val param = KeroGetRolloutEligibilityParam(shopId = shopId).toMapParam()
-        val request = GraphqlRequest(
-            ShopLocationQuery.keroGetRolloutEligibility,
-            KeroGetRolloutEligibilityResponse::class.java,
             param
         )
         return gql.getResponse(request)

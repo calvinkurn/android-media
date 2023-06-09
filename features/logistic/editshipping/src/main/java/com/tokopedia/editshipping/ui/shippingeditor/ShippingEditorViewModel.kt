@@ -17,24 +17,17 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ShipperTickerModel
 import com.tokopedia.editshipping.domain.model.shippingEditor.ShippingEditorState
 import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEditorModel
 import com.tokopedia.editshipping.util.EditShippingConstant
-import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShippingEditorViewModel @Inject constructor(
-    private val repo: ShopLocationRepository,
     private val shippingEditorRepo: ShippingEditorRepository,
     private val mapper: ShippingEditorMapper,
     private val validateShippingMapper: ValidateShippingNewMapper,
     private val detailMapper: ShipperDetailMapper
 ) : ViewModel() {
-
-    private val _shopWhitelist = MutableLiveData<ShippingEditorState<KeroGetRolloutEligibility>>()
-    val shopWhitelist: LiveData<ShippingEditorState<KeroGetRolloutEligibility>>
-        get() = _shopWhitelist
 
     private val _shipperList = MutableLiveData<ShippingEditorState<ShipperListModel>>()
     val shipperList: LiveData<ShippingEditorState<ShipperListModel>>
@@ -56,14 +49,6 @@ class ShippingEditorViewModel @Inject constructor(
     private val _saveShippingData = MutableLiveData<ShippingEditorState<SaveShippingResponse>>()
     val saveShippingData: LiveData<ShippingEditorState<SaveShippingResponse>>
         get() = _saveShippingData
-
-    fun getWhitelistData(shopId: Long) {
-        _shopWhitelist.value = ShippingEditorState.Loading
-        viewModelScope.launch(onErrorGetWhitelistData) {
-            val getWhitelistShop = repo.getShopLocationWhitelist(shopId)
-            _shopWhitelist.value = ShippingEditorState.Success(getWhitelistShop.keroGetRolloutEligibility)
-        }
-    }
 
     fun getShipperList(shopId: Long) {
         _shipperList.value = ShippingEditorState.Loading
@@ -165,10 +150,6 @@ class ShippingEditorViewModel @Inject constructor(
 
     private fun ShipperModel.setActiveState() {
         isActive = shipperProduct.any { shipperProductModel -> shipperProductModel.isActive }
-    }
-
-    private val onErrorGetWhitelistData = CoroutineExceptionHandler { _, e ->
-        _shopWhitelist.value = ShippingEditorState.Fail(e, "")
     }
 
     private val onErrorGetShipperData = CoroutineExceptionHandler { _, e ->

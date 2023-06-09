@@ -52,7 +52,6 @@ class ShopPageSettingAdapter(
     }
 
     private var shopPageSettingList = listOf<ShopPageSetting>()
-    private var isEligibleForMultiLocation: Boolean = false
     private var shippingViewHolder: ShippingViewHolder? = null
 
     override fun getItemViewType(position: Int): Int {
@@ -92,7 +91,7 @@ class ShopPageSettingAdapter(
                 holder.bind(supportItemClickListener)
             }
             is ShippingViewHolder -> {
-                holder.bind(isEligibleForMultiLocation, shippingItemClickListener)
+                holder.bind(true, shippingItemClickListener)
                 shippingViewHolder = holder
             }
         }
@@ -102,8 +101,7 @@ class ShopPageSettingAdapter(
         this.shopPageSettingList = newShopPageSettingList
     }
 
-    fun setMultiLocationEligibility(isEligible: Boolean) {
-        isEligibleForMultiLocation = isEligible
+    fun setMultiLocationEligibility() {
         notifyItemChanged(shippingViewHolder?.adapterPosition.orZero())
     }
 }
