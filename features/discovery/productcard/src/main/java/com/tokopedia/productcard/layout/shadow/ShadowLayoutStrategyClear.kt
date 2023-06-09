@@ -28,5 +28,5 @@ internal class ShadowLayoutStrategyClear: ShadowLayoutStrategy {
     }
 
     private fun cardViewLeftMargin(productCardModel: ProductCardModel) =
-        (if (productCardModel.showRibbon) 3 else 0).toPx()
+        (if (productCardModel.showRibbon) 4 else 0).toPx()
 }

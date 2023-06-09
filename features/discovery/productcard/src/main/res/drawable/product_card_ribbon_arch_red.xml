@@ -11,6 +11,6 @@
         android:fillColor="@color/Unify_RN500"/>
     <path
         android:pathData="M4,24L4,20L0,20V20C0,22.209 1.791,24 4,24V24Z"
-        android:fillColor="@color/Unify_RN700"/>
+        android:fillColor="@color/dms_ribbon_anchor_static_dark"/>
   </group>
 </vector>

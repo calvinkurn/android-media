@@ -10,9 +10,9 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.FIRE_HEIGHT
 import com.tokopedia.productcard.utils.FIRE_WIDTH
-import com.tokopedia.productcard.utils.WORDING_LAGI_POPULER
-import com.tokopedia.productcard.utils.WORDING_TERBATAS
-import com.tokopedia.productcard.utils.WORDING_TINGGAL_DIKIT
+import com.tokopedia.productcard.utils.WORDING_LAGI_DIMINATI
+import com.tokopedia.productcard.utils.WORDING_TERSEDIA
+import com.tokopedia.productcard.utils.WORDING_SEGERA_HABIS
 import com.tokopedia.productcard.utils.getStockLabelColor
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -52,7 +52,7 @@ internal class StockBarLayoutStrategyTop: StockBarLayoutStrategy {
     ) {
         if(progressBarStock == null) return
         progressBarStock.progressBarHeight = ProgressBarUnify.SIZE_MEDIUM
-        if (productCardModel.stockBarLabel.equals(WORDING_TINGGAL_DIKIT, ignoreCase = true)) {
+        if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             progressBarStock.setProgressIcon(
                 icon = ContextCompat.getDrawable(
                     progressBarStock.context,
@@ -73,9 +73,9 @@ internal class StockBarLayoutStrategyTop: StockBarLayoutStrategy {
 
     private fun getProgressBarColor(productCardModel: ProductCardModel): Int {
         return when(productCardModel.stockBarLabel) {
-            WORDING_TINGGAL_DIKIT -> unifyR.color.Unify_RN500
-            WORDING_LAGI_POPULER -> unifyR.color.Unify_YN500
-            WORDING_TERBATAS -> unifyR.color.Unify_YN300
+            WORDING_SEGERA_HABIS -> unifyR.color.Unify_RN500
+            WORDING_LAGI_DIMINATI -> unifyR.color.Unify_YN500
+            WORDING_TERSEDIA -> unifyR.color.Unify_YN300
             else -> unifyR.color.Unify_RN500
         }
     }
@@ -86,7 +86,7 @@ internal class StockBarLayoutStrategyTop: StockBarLayoutStrategy {
     ) {
         if(textViewStockLabel == null) return
         if(productCardModel.stockBarLabel.isEmpty()) {
-            textViewStockLabel.text = WORDING_TERBATAS
+            textViewStockLabel.text = WORDING_TERSEDIA
         } else textViewStockLabel.text = productCardModel.stockBarLabel
 
         val color = getStockLabelColor(productCardModel, textViewStockLabel)

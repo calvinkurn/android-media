@@ -736,7 +736,7 @@ private fun testTopStockBar(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
         productName = "Product Card With Top Stock Bar",
         productImageUrl = productImageUrl,
-        stockBarLabel = "Tinggal Dikit!",
+        stockBarLabel = "Segera Habis",
         stockBarPercentage = 20,
         isTopStockBar = true,
     )
