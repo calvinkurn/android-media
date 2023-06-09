@@ -1647,7 +1647,7 @@ open class ProductManageFragment :
                 }
             } else {
                 val okeMessage =
-                    getString(R.string.retry_label)
+                    getString(R.string.label_oke)
                 showErrorToast(it, okeMessage)
             }
         }
