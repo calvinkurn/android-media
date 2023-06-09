@@ -47,8 +47,8 @@ internal object DevOpsTracker {
         if (influx == null) return
         scope.launch(Dispatchers.IO) {
             influx?.send(
-                tags = mapOf("eventType" to "entry"),
-                values = mapOf("feature" to page.toString())
+                tags = mapOf("eventType" to "entry", "feature" to page.toString()),
+                values = mapOf("count" to 1)
             )
         }
     }
