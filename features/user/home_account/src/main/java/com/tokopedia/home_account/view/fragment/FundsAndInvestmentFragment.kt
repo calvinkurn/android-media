@@ -169,7 +169,12 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
-        val wallet = UiModelMapper.getWalletUiModel(balanceAndPoint)
+        val wallet = UiModelMapper.getWalletUiModel(balanceAndPoint).apply {
+            if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC ||
+                balanceAndPoint.id == AccountConstants.WALLET.GOPAYLATERCICIL) {
+                isVertical = false
+            }
+        }
         adapter?.changeItemToSuccessBySameId(wallet)
     }
 
