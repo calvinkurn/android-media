@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground.AddTextBackgroundBtmItem
+            <com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp"
                 android:id="@+id/btmsht_add_text_template_model_full"
@@ -78,7 +78,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground.AddTextBackgroundBtmItem
+            <com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
                 android:layout_marginStart="5dp"
                 android:layout_marginBottom="5dp"
                 android:id="@+id/btmsht_add_text_template_model_floating"
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 tools:ignore="RtlSymmetry" />
 
-            <com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground.AddTextBackgroundBtmItem
+            <com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="5dp"
                 android:id="@+id/btmsht_add_text_template_model_side_cut"

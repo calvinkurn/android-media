@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground
+package com.tokopedia.media.editor.ui.widget
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -21,7 +21,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifyprinciples.R as principleR
 
-class AddTextBackgroundBtmItem constructor(
+class AddTextBackgroundBtmItemView constructor(
     context: Context,
     attributeSet: AttributeSet
 ) : ConstraintLayout(context, attributeSet) {

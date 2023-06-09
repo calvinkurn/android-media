@@ -1,4 +1,4 @@
-package com.tokopedia.media.editor.ui.fragment.bottomsheet.addtextbackground
+package com.tokopedia.media.editor.ui.fragment.bottomsheet
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.di.EditorInjector
+import com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -28,7 +29,7 @@ class AddTextBackgroundBottomSheet(
     lateinit var addTextColorProvider: AddTextColorProvider
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
-    private var templateModelRef: ArrayList<AddTextBackgroundBtmItem> = arrayListOf()
+    private var templateModelRef: ArrayList<AddTextBackgroundBtmItemView> = arrayListOf()
     private var mNextButton: UnifyButton? = null
     private var mColorButtonContainerRef: LinearLayout? = null
 
@@ -144,7 +145,7 @@ class AddTextBackgroundBottomSheet(
         templateModelRef[modelSelectionIndex].setViewState(true)
     }
 
-    private fun AddTextBackgroundBtmItem.setViewState(isActive: Boolean) {
+    private fun AddTextBackgroundBtmItemView.setViewState(isActive: Boolean) {
         if (isActive) {
             setActive()
         } else {
