@@ -1,21 +1,22 @@
 package com.tokopedia.shop.common.data.mapper
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.campaign.view.model.ShopCampaignWidgetCarouselProductUiModel
 import com.tokopedia.shop.campaign.view.model.ShopWidgetDisplaySliderBannerHighlightUiModel
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
+import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
+import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopWidgetDisplayBannerTimerUiModel
+import com.tokopedia.shop.home.view.model.ShopWidgetVoucherSliderUiModel
 
 //TODO need to migrate all other shop widget mapper on home mapper to this mapper
 object ShopPageWidgetMapper {
 
     fun mapToBannerTimerWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     )= ShopWidgetDisplayBannerTimerUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
@@ -48,7 +49,7 @@ object ShopPageWidgetMapper {
 
     fun mapToSliderBannerHighlightWidget(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     )= ShopWidgetDisplaySliderBannerHighlightUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
@@ -70,7 +71,7 @@ object ShopPageWidgetMapper {
 
     fun mapToCampaignProductCarouselWidgetUiModel(
         widgetResponse: ShopLayoutWidget.Widget,
-        widgetLayout: ShopPageWidgetLayoutUiModel?
+        widgetLayout: ShopPageWidgetUiModel?
     ) =  ShopCampaignWidgetCarouselProductUiModel(
         widgetId = widgetResponse.widgetID,
         layoutOrder = widgetResponse.layoutOrder,
@@ -83,4 +84,43 @@ object ShopPageWidgetMapper {
             widgetResponse.data.firstOrNull()?.listProduct.orEmpty()
         )
     )
+
+    fun mapToCampaignVoucherSliderUiModel(
+        widgetResponse: ShopLayoutWidget.Widget,
+        widgetLayout: ShopPageWidgetUiModel?
+    ) = ShopWidgetVoucherSliderUiModel(
+        widgetResponse.widgetID,
+        widgetResponse.layoutOrder,
+        widgetResponse.name,
+        widgetResponse.type,
+        ShopPageHomeMapper.mapToHeaderModel(widgetResponse.header),
+        widgetLayout?.isFestivity.orFalse(),
+        widgetLayout?.header?.data?.map { it.link }.orEmpty()
+    )
+
+    fun mapToShopPageWidgetRequest(listWidgetLayout: List<ShopPageWidgetUiModel>): List<ShopPageWidgetRequestModel> {
+        return listWidgetLayout.map {
+            ShopPageWidgetRequestModel(
+                it.widgetId,
+                it.widgetMasterId,
+                it.widgetType,
+                it.widgetName,
+                ShopPageWidgetRequestModel.HeaderInput(
+                    it.header.title,
+                    it.header.subtitle,
+                    it.header.ctaText,
+                    it.header.ctaLink,
+                    it.header.isAtc,
+                    it.header.etalaseId,
+                    it.header.isShowEtalaseName,
+                    it.header.data.map { dataHeader ->
+                        ShopPageWidgetRequestModel.HeaderInput.DataOnHeaderInput(
+                            dataHeader.linkID.toString(),
+                            dataHeader.linkType
+                        )
+                    }
+                )
+            )
+        }
+    }
 }

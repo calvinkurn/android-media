@@ -16,7 +16,7 @@ class ShopCampaignTabWidgetHeaderView(
     context: Context,
     attrs: AttributeSet
 ) : FrameLayout(context, attrs) {
-    companion object{
+    companion object {
         private val TITLE_BACKGROUND_DARK = R.drawable.bg_campaign_widget_header_title_dark_mode
         private val TITLE_COLOR_DARK = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         private val TITLE_BACKGROUND_LIGHT = R.drawable.bg_campaign_widget_header_title_light_mode
@@ -26,13 +26,25 @@ class ShopCampaignTabWidgetHeaderView(
         private val CTA_COLOR_DARK = com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         private val CTA_BACKGROUND_LIGHT = R.drawable.bg_campaign_widget_header_cta_light_mode
         private val CTA_COLOR_LIGHT = R.color.dms_color_525A67
+
+        private val TEXT_TITLE_ID = R.id.text_title
+        private val CTA_VIEW_ID = R.id.cta_view
+        private val CTA_TEXT_VIEW_ID = R.id.cta_text_view
+
     }
 
     private var binding: ShopCampaignWidgetHeaderViewBinding? = null
+    private var textTitleId = TEXT_TITLE_ID
+    private var ctaViewId = CTA_VIEW_ID
+    private var ctaTextViewId = CTA_TEXT_VIEW_ID
+
     private val textTitle: Typography?
-        get() = binding?.textTitle
+        get() = binding?.root?.findViewById(textTitleId)
     private val ctaView: IconUnify?
-        get() = binding?.ctaView
+        get() = binding?.root?.findViewById(ctaViewId)
+
+    private val ctaTextView: Typography?
+        get() = binding?.root?.findViewById(ctaTextViewId)
 
     init {
         binding = ShopCampaignWidgetHeaderViewBinding.inflate(
@@ -71,10 +83,10 @@ class ShopCampaignTabWidgetHeaderView(
 
     private fun configCtaColorMode(colorMode: Boolean) {
         ctaView?.apply {
-            if(isDarkMode(colorMode)){
+            if (isDarkMode(colorMode)) {
                 background = MethodChecker.getDrawable(context, CTA_BACKGROUND_DARK)
                 setColorFilter(MethodChecker.getColor(context, CTA_COLOR_DARK))
-            }else {
+            } else {
                 background = MethodChecker.getDrawable(context, CTA_BACKGROUND_LIGHT)
                 setColorFilter(MethodChecker.getColor(context, CTA_COLOR_LIGHT))
             }
@@ -83,10 +95,10 @@ class ShopCampaignTabWidgetHeaderView(
 
     private fun configTextTitleColorMode(colorMode: Boolean) {
         textTitle?.apply {
-            if(isDarkMode(colorMode)){
+            if (isDarkMode(colorMode)) {
                 background = MethodChecker.getDrawable(context, TITLE_BACKGROUND_DARK)
                 setTextColor(MethodChecker.getColor(context, TITLE_COLOR_DARK))
-            }else {
+            } else {
                 background = MethodChecker.getDrawable(context, TITLE_BACKGROUND_LIGHT)
                 setTextColor(MethodChecker.getColor(context, TITLE_COLOR_LIGHT))
             }
@@ -95,6 +107,20 @@ class ShopCampaignTabWidgetHeaderView(
 
     private fun isDarkMode(colorMode: Boolean): Boolean {
         return colorMode
+    }
+
+    fun setTitleId(id: Int) {
+        textTitle?.id = id
+        textTitleId = id
+    }
+
+    fun setCtaTextId(id: Int) {
+        ctaTextView?.id = id
+        ctaTextViewId = id
+    }
+
+    fun showTitle() {
+        textTitle?.show()
     }
 
 }
