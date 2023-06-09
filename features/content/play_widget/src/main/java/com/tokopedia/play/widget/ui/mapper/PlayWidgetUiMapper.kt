@@ -29,13 +29,10 @@ import com.tokopedia.play.widget.ui.model.ext.setWithProductNoCaptionVariant
 import com.tokopedia.play.widget.ui.model.getReminderType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
-import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import com.tokopedia.user.session.UserSessionInterface
-import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -45,7 +42,7 @@ import javax.inject.Inject
  */
 class PlayWidgetUiMapper @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val playWidgetPreference: PlayWidgetPreference,
+    private val playWidgetPreference: PlayWidgetPreference
 ) {
 
     private val htmlTextTransformer = DefaultHtmlTextTransformer()
@@ -55,7 +52,7 @@ class PlayWidgetUiMapper @Inject constructor(
     fun mapWidget(
         data: PlayWidget,
         prevState: PlayWidgetState? = null,
-        extraInfo: ExtraInfo = ExtraInfo(),
+        extraInfo: ExtraInfo = ExtraInfo()
     ): PlayWidgetUiModel {
         val widgetBackground = mapWidgetBackground(data)
         val widgetType = PlayWidgetType.getByTypeString(data.meta.template)
@@ -71,8 +68,8 @@ class PlayWidgetUiMapper @Inject constructor(
                 prevState?.model?.items,
                 data.data,
                 widgetType,
-                extraInfo,
-            ),
+                extraInfo
+            )
         )
     }
 
@@ -98,7 +95,7 @@ class PlayWidgetUiMapper @Inject constructor(
         prevItems: List<PlayWidgetItemUiModel>?,
         items: List<PlayWidgetItem>,
         widgetType: PlayWidgetType,
-        extraInfo: ExtraInfo,
+        extraInfo: ExtraInfo
     ): List<PlayWidgetItemUiModel> = items.mapNotNull {
         when (it.typename) {
             "PlayWidgetBanner" -> mapWidgetItemBanner(it)
@@ -106,7 +103,7 @@ class PlayWidgetUiMapper @Inject constructor(
                 prevItems?.find { prevItem -> prevItem is PlayWidgetChannelUiModel && prevItem.channelId == it.id } as? PlayWidgetChannelUiModel,
                 it,
                 widgetType,
-                extraInfo,
+                extraInfo
             )
             else -> null
         }
@@ -121,7 +118,7 @@ class PlayWidgetUiMapper @Inject constructor(
         prevItem: PlayWidgetChannelUiModel?,
         item: PlayWidgetItem,
         widgetType: PlayWidgetType,
-        extraInfo: ExtraInfo,
+        extraInfo: ExtraInfo
     ): PlayWidgetChannelUiModel {
         val channelType = PlayWidgetChannelType.getByValue(item.widgetType)
         return PlayWidgetChannelUiModel(
@@ -143,18 +140,18 @@ class PlayWidgetUiMapper @Inject constructor(
             hasAction = shouldHaveActionMenu(channelType, item.partner.id),
             shouldShowPerformanceDashboard = shouldShowPerformanceDashboard(
                 partnerType = item.partner.type,
-                partnerId = item.partner.id,
+                partnerId = item.partner.id
             ),
             channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
-            products = mapProducts(item.products),
+            products = mapProducts(item.products)
         ).setWithProductNoCaptionVariant(
-            isVariantWithProduct = extraInfo.showProduct,
+            isVariantWithProduct = extraInfo.showProduct
         )
     }
 
     private fun mapTotalView(item: PlayWidgetItem) = PlayWidgetTotalView(
         totalViewFmt = item.stats.view.formatted,
-        isVisible = item.video.isShowTotalView,
+        isVisible = item.video.isShowTotalView
     )
 
     private fun mapPromoType(promoLabels: List<PlayWidgetPromoLabel>): PlayWidgetPromoType {
@@ -179,7 +176,7 @@ class PlayWidgetUiMapper @Inject constructor(
         type = PartnerType.getTypeByValue(partner.type),
         avatarUrl = partner.thumbnailUrl,
         badgeUrl = partner.badgeUrl,
-        appLink = partner.appLink,
+        appLink = partner.appLink
     )
 
     private fun mapProducts(products: List<PlayWidgetItemProduct>) = products.map {
@@ -188,8 +185,8 @@ class PlayWidgetUiMapper @Inject constructor(
             name = it.name,
             imageUrl = it.imageUrl,
             appLink = it.appLink,
-            priceFmt = it.priceFmt,
-            price = it.price,
+            priceFmt = if (it.discount != 0) it.priceFmt else it.originalPriceFmt,
+            price = if (it.discount != 0) it.price else it.originalPrice
         )
     }
 
@@ -227,7 +224,7 @@ class PlayWidgetUiMapper @Inject constructor(
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
-                userSession.shopId == partnerId
+            userSession.shopId == partnerId
     }
 
     private fun shouldShowPerformanceDashboard(partnerType: String, partnerId: String): Boolean {
@@ -239,6 +236,6 @@ class PlayWidgetUiMapper @Inject constructor(
     }
 
     data class ExtraInfo(
-        val showProduct: Boolean = false,
+        val showProduct: Boolean = false
     )
 }
