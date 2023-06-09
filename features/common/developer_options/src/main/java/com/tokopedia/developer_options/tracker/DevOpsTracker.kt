@@ -48,7 +48,7 @@ internal object DevOpsTracker {
         scope.launch(Dispatchers.IO) {
             influx?.send(
                 tags = mapOf("eventType" to "entry"),
-                values = mapOf("feature" to page)
+                values = mapOf("feature" to page.toString())
             )
         }
     }
