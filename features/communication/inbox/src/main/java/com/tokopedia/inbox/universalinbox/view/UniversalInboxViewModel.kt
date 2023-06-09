@@ -46,8 +46,8 @@ class UniversalInboxViewModel @Inject constructor(
     val inboxMenu: LiveData<List<Any>>
         get() = _inboxMenu
 
-    private val _widget = MutableLiveData<UniversalInboxWidgetMetaUiModel>()
-    val widget: LiveData<UniversalInboxWidgetMetaUiModel>
+    private val _widget = MutableLiveData<Pair<UniversalInboxWidgetMetaUiModel, UniversalInboxAllCounterResponse?>>()
+    val widget: LiveData<Pair<UniversalInboxWidgetMetaUiModel, UniversalInboxAllCounterResponse?>>
         get() = _widget
 
     private val _allCounter = MutableLiveData<Result<UniversalInboxAllCounterResponse>>()
@@ -77,12 +77,10 @@ class UniversalInboxViewModel @Inject constructor(
                         widgetMetaResponse,
                         allCounterResponse
                     )
-                    _widget.postValue(result)
+                    _widget.postValue(Pair(result, allCounterResponse))
                 } catch (throwable: Throwable) {
                     _widget.postValue(
-                        UniversalInboxWidgetMetaUiModel(
-                            isError = true
-                        )
+                        Pair(UniversalInboxWidgetMetaUiModel(isError = true), null)
                     )
                 }
             }
