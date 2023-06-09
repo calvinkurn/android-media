@@ -111,7 +111,6 @@ open class GoToKycModule {
     @ActivityScope
     @Provides
     fun provideOkHttpClient(
-        tkpdAuthInterceptor: TkpdAuthInterceptor,
         retryPolicy: OkHttpRetryPolicy,
         loggingInterceptor: HttpLoggingInterceptor,
         chuckerInterceptor: ChuckerInterceptor,
@@ -119,7 +118,6 @@ open class GoToKycModule {
         tkpdAuthenticatorGql: TkpdAuthenticatorGql
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(gotoKycInterceptor)
         builder.authenticator(tkpdAuthenticatorGql)
 
