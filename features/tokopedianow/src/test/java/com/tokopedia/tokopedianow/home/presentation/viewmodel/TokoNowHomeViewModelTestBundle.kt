@@ -20,6 +20,7 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
     fun `when fetching bundle then receiving success result, expected result should return homeLayout with bundle widget`() {
         //create dummy data
         val bundleWidgetId = "222332"
+        val headerName = "Product Bundling"
         val productBundle = ProductBundleRecomResponse(
             ProductBundleRecomResponse.TokonowBundleWidget(
                 ProductBundleRecomResponse.TokonowBundleWidget.Data(
@@ -40,7 +41,8 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
         )
         onGetHomeLayoutData_thenReturn(
             layoutResponse = BundleWidgetDataFactory.createBundleResponseList(
-                id = bundleWidgetId
+                id = bundleWidgetId,
+                headerName = headerName
             )
         )
         onGetProductBundleRecom_thenReturn(productBundle)
@@ -63,7 +65,8 @@ class TokoNowHomeViewModelTestBundle: TokoNowHomeViewModelTestFixture() {
                     id = bundleWidgetId,
                     bundleIds = BundleMapper.mapToProductBundleListItemUiModel(
                         widgetData = productBundle.tokonowBundleWidget.data.widgetData
-                    )
+                    ),
+                    title = headerName
                 )
             ),
             state = TokoNowLayoutState.UPDATE
