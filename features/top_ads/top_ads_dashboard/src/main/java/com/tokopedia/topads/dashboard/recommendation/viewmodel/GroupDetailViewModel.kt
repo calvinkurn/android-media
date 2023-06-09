@@ -156,7 +156,7 @@ class GroupDetailViewModel @Inject constructor(
     fun loadInsightCountForOtherAdType(adGroupType: Int) {
         val otherAdType = if (adGroupType == TYPE_PRODUCT_VALUE) HEADLINE_KEY else PRODUCT_KEY
         launchCatchError(dispatcher.main, block = {
-            val data = topAdsGetTotalAdGroupsWithInsightUseCase.invoke(otherAdType)
+            val data = topAdsGetTotalAdGroupsWithInsightUseCase.invoke(listOf(otherAdType))
             if (data is TopAdsListAllInsightState.Success) {
                 groupDetailMapper.putInsightCount(
                     utils.convertAdTypeToInt(otherAdType),

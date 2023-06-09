@@ -23,7 +23,8 @@ import com.tokopedia.topads.dashboard.data.raw.topAdsHomepageLatestReadingJson
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
@@ -234,7 +235,7 @@ class TopAdsDashboardViewModel @Inject constructor(
     fun fetchInsightTitle() {
         launchCatchError(dispatcher.main, block = {
             _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase(
-                RecommendationConstants.PRODUCT_KEY
+                listOf(PRODUCT_KEY, HEADLINE_KEY)
             )
         }, onError = {
                 _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)

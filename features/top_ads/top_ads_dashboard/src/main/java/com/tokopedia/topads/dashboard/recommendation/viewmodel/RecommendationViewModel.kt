@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsGetShopInfoUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
@@ -48,7 +49,7 @@ class RecommendationViewModel @Inject constructor(
     private fun getAdGroupWithInsight() {
         launchCatchError(dispatcher.main, block = {
             _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase(
-                RecommendationConstants.PRODUCT_KEY
+                listOf(PRODUCT_KEY, HEADLINE_KEY)
             )
         }, onError = {
                 _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)

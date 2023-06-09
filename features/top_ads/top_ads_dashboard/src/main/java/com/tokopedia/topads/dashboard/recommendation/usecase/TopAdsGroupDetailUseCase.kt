@@ -1,13 +1,13 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PERFORMANCE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
+import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
@@ -23,7 +23,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
     private val topAdsGroupPerformanceUseCase: TopAdsGroupPerformanceUseCase,
     private val topAdsGetAdGroupBidInsightUseCase: TopAdsGetAdGroupBidInsightUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
-    private val topAdsGetSellerInsightDataUseCase: TopAdsGetSellerInsightDataUseCase
+    private val topAdsGetSellerInsightDataUseCase: TopAdsGetSellerInsightDataUseCase,
+    private val utils: Utils
 ) {
 
     suspend fun executeOnBackground(
@@ -35,7 +36,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
             val batchKeywordAsync = async { getBatchKeywordInsight(groupId) }
             val groupPerformanceAsync = async { getGroupPerformance(groupId, adGroupType.toString()) }
             val groupBidInsightAsync = async { getGroupBidInsight(groupId) }
-            val groupWithInsightAsync = async { getGroupWithInsight() }
+            val groupWithInsightAsync = async { getGroupWithInsight(utils.convertAdTypeToString(adGroupType)) }
             val sellerInsightDataAsync = async { getSellerInsight(groupId) }
 
             val batchKeyword = batchKeywordAsync.await()
@@ -124,9 +125,9 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         }
     }
 
-    private suspend fun getGroupWithInsight(): TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {
+    private suspend fun getGroupWithInsight(AdGroupType: String): TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {
         return try {
-            topAdsGetTotalAdGroupsWithInsightUseCase(PRODUCT_KEY)
+            topAdsGetTotalAdGroupsWithInsightUseCase(listOf(AdGroupType))
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }
