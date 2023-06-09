@@ -9,7 +9,7 @@ object DTDialogUtil {
     fun showDTStockDialog(context: Context, action: UserAction) {
         val dialog = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
-            setTitle(context.getString(R.string.product_add_edit_text_variant_product_dt_can_not_delete))
+            setTitle(context.getString(R.string.product_add_edit_text_product_dt_can_not_delete))
             setDescription(
                 context.getString(R.string.product_add_edit_text_description_product_dt_can_not_delete,
                     getUserActionWording(context, action))
