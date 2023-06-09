@@ -1104,27 +1104,23 @@ class PlayViewModel @AssistedInject constructor(
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
-            is FetchWidgets -> {
+            is FetchWidgets-> {
                 _isBottomSheetsShown.update { true }
-                widgetQuery.value = widgetQuery.value.mapValues {
-                    if (action.type == it.key) {
-                        it.value.copy(isRefresh = true)
-                    } else {
-                        it.value
-                    }
-                }
+               refreshWidget(action.type)
             }
+            is NextPageWidgets -> refreshWidget(action.type)
             is ClickChipWidget -> onChipAction(action.item)
-            is NextPageWidgets -> {
+            RefreshWidget -> {
+                _categoryWidget.update { it.copy(data = emptyList()) }
                 widgetQuery.value = widgetQuery.value.mapValues {
-                    if (action.type == it.key) {
-                        it.value.copy(isRefresh = true)
+                    val config = _channelDetail.value.exploreWidgetConfig
+                    if (ExploreWidgetType.Default == it.key) {
+                        it.value.copy(isRefresh = true, group = config.group, cursor = "", sourceId = config.sourceId, sourceType = config.sourceType)
                     } else {
                         it.value
                     }
                 }
             }
-            RefreshWidget -> {}
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
             DismissExploreWidget -> {
                 // Resetting
@@ -3008,6 +3004,15 @@ class PlayViewModel @AssistedInject constructor(
                 } else {
                     it.value
                 }
+            }
+        }
+    }
+    private fun refreshWidget (widget: ExploreWidgetType) {
+        widgetQuery.value = widgetQuery.value.mapValues {
+            if (widget == it.key) {
+                it.value.copy(isRefresh = true)
+            } else {
+                it.value
             }
         }
     }

@@ -158,7 +158,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     actionListener = {
-                        viewModel.submitAction(RefreshWidget)
+                        //onRetry
                     }
                 )
             }
