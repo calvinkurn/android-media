@@ -27,8 +27,10 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
@@ -170,6 +172,36 @@ class ShopPageCampaignFragment :
         observeVoucherSliderWidgetData()
         observeRedeemResult()
         observeCampaignWidgetListVisitable()
+        observeLatestShopCampaignWidgetLayoutData()
+    }
+
+    private fun observeLatestShopCampaignWidgetLayoutData() {
+        viewModelCampaign?.latestShopCampaignWidgetLayoutData?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    getRecyclerView(view)?.visible()
+                    setShopLayoutData(it.data)
+                }
+                is Fail -> {
+                    onErrorGetLatestShopCampaignWidgetLayoutData(it.throwable)
+                }
+            }
+        }
+    }
+
+    private fun onErrorGetLatestShopCampaignWidgetLayoutData(throwable: Throwable) {
+        globalErrorShopPage?.visible()
+        if (throwable is MessageErrorException) {
+            globalErrorShopPage?.setType(GlobalError.SERVER_ERROR)
+        } else {
+            globalErrorShopPage?.setType(GlobalError.NO_CONNECTION)
+        }
+        globalErrorShopPage?.errorSecondaryAction?.show()
+        globalErrorShopPage?.setOnClickListener {
+            globalErrorShopPage?.errorSecondaryAction?.hide()
+            getLatestShopCampaignWidgetLayoutData()
+        }
+        getRecyclerView(view)?.hide()
     }
 
     private fun observeCampaignWidgetListVisitable() {
@@ -233,9 +265,17 @@ class ShopPageCampaignFragment :
         getRecyclerView(view)?.visible()
         recyclerViewTopPadding = getRecyclerView(view)?.paddingTop ?: 0
         globalErrorShopPage?.hide()
-        shopPageHomeLayoutUiModel?.let {
-            setShopLayoutData(it)
-            setWidgetLayoutPlaceholder()
+        checkShopLayout()
+    }
+
+    override fun checkShopLayout() {
+        shopPageHomeLayoutUiModel.let {
+            if (it != null) {
+                setShopLayoutData(it)
+                setWidgetLayoutPlaceholder()
+            } else {
+                getLatestShopCampaignWidgetLayoutData()
+            }
         }
     }
 
@@ -895,17 +935,18 @@ class ShopPageCampaignFragment :
     override fun onTimerFinished(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         shopCampaignTabAdapter.removeWidget(uiModel)
         endlessRecyclerViewScrollListener.resetState()
-        getLatestShopHomeWidgetLayoutData()
+        getLatestShopCampaignWidgetLayoutData()
     }
 
-    override fun getLatestShopHomeWidgetLayoutData() {
+    private fun getLatestShopCampaignWidgetLayoutData() {
         globalErrorShopPage?.hide()
         shopCampaignTabAdapter.showLoading()
         scrollToTop()
-        viewModel?.getLatestShopHomeWidgetLayoutData(
+        viewModelCampaign?.getLatestShopCampaignWidgetLayoutData(
             shopId,
             extParam,
-            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            "CampaignTab"
         )
     }
 

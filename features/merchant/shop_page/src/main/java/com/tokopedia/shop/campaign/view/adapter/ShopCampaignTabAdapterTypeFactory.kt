@@ -2,6 +2,7 @@ package com.tokopedia.shop.campaign.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
@@ -42,6 +43,7 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.ShopWidgetTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopCarouselProductWidgetPlaceholderViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopLayoutLoadingShimmerViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayBannerTimerWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
@@ -141,6 +143,9 @@ class ShopCampaignTabAdapterTypeFactory(
             ShopCampaignVideoViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: LoadingModel?): Int {
+        return ShopLayoutLoadingShimmerViewHolder.LAYOUT
+    }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder = when (type) {
@@ -231,6 +236,10 @@ class ShopCampaignTabAdapterTypeFactory(
                 parent,
                 sliderBannerHighlightListener
             )
+
+            ShopLayoutLoadingShimmerViewHolder.LAYOUT -> {
+                ShopLayoutLoadingShimmerViewHolder(parent)
+            }
 
             else -> return super.createViewHolder(parent, type)
         }

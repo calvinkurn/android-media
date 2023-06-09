@@ -58,7 +58,6 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageGetDynamicTabResponse
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.common.data.model.ShopPageWidgetUiModel
 import com.tokopedia.shop.common.data.model.WidgetIdList
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
@@ -292,26 +291,6 @@ class ShopHomeViewModelTest {
             getShopPageHomeLayoutV2UseCase,
             getShopDynamicTabUseCase
         )
-    }
-
-    @Test
-    fun `when getShopPageHomeWidgetLayoutData success should return expected results`() {
-        coEvery { gqlShopPageGetHomeType.executeOnBackground() } returns ShopPageGetHomeType()
-        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
-        coVerify {
-            gqlShopPageGetHomeType.executeOnBackground()
-        }
-        assertTrue(viewModel.shopHomeWidgetLayoutData.value is Success)
-    }
-
-    @Test
-    fun `when getShopPageHomeWidgetLayoutData error should return expected results`() {
-        coEvery { gqlShopPageGetHomeType.executeOnBackground() } throws Exception()
-        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
-        coVerify {
-            gqlShopPageGetHomeType.executeOnBackground()
-        }
-        assertTrue(viewModel.shopHomeWidgetLayoutData.value is Fail)
     }
 
     @Test
@@ -2151,7 +2130,8 @@ class ShopHomeViewModelTest {
         viewModel.getLatestShopHomeWidgetLayoutData(
             mockShopId,
             mockExtParam,
-            addressWidgetData
+            addressWidgetData,
+            "CampaignTab"
         )
         val result = viewModel.latestShopHomeWidgetLayoutData.value
         assert(result is Success)
@@ -2183,7 +2163,8 @@ class ShopHomeViewModelTest {
         viewModel.getLatestShopHomeWidgetLayoutData(
             mockShopId,
             mockExtParam,
-            addressWidgetData
+            addressWidgetData,
+            "CampaignTab"
         )
         val result = viewModel.latestShopHomeWidgetLayoutData.value
         assert(result is Success)
@@ -2215,7 +2196,8 @@ class ShopHomeViewModelTest {
         viewModel.getLatestShopHomeWidgetLayoutData(
             mockShopId,
             mockExtParam,
-            addressWidgetData
+            addressWidgetData,
+            "CampaignTab"
         )
         val result = viewModel.latestShopHomeWidgetLayoutData.value
         assert(result is Success)
@@ -2230,7 +2212,8 @@ class ShopHomeViewModelTest {
         viewModel.getLatestShopHomeWidgetLayoutData(
             mockShopId,
             mockExtParam,
-            addressWidgetData
+            addressWidgetData,
+            "CampaignTab"
         )
         val result = viewModel.latestShopHomeWidgetLayoutData.value
         assert(result is Fail)

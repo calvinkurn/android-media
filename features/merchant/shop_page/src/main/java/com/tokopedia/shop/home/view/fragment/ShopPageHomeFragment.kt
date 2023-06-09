@@ -965,14 +965,22 @@ open class ShopPageHomeFragment :
         shopHomeAdapter?.isOwner = isOwner
         stopMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_PREPARE)
         startMonitoringPltCustomMetric(ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_V2_MIDDLE)
-        shopPageHomeLayoutUiModel?.let {
-            shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
-                it.masterLayoutId,
-                shopId
-            )
-            shopHomeAdapter?.hideLoading()
-            setShopLayoutData(it)
-            setWidgetLayoutPlaceholder()
+        checkShopLayout()
+    }
+
+    protected open fun checkShopLayout() {
+        shopPageHomeLayoutUiModel.let {
+            if (it != null) {
+                shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+                    it.masterLayoutId,
+                    shopId
+                )
+                shopHomeAdapter?.hideLoading()
+                setShopLayoutData(it)
+                setWidgetLayoutPlaceholder()
+            } else {
+                getLatestShopHomeWidgetLayoutData()
+            }
         }
     }
 
@@ -1015,33 +1023,6 @@ open class ShopPageHomeFragment :
     }
 
     private fun observeLiveData() {
-        viewModel?.shopHomeWidgetLayoutData?.observe(viewLifecycleOwner, {
-            hideLoading()
-            when (it) {
-                is Success -> {
-                    shopPageHomeLayoutUiModel = it.data
-                    setShopLayoutData(it.data)
-                }
-                is Fail -> {
-                    val throwable = it.throwable
-                    if (!ShopUtil.isExceptionIgnored(throwable)) {
-                        ShopUtil.logShopPageP2BuyerFlowAlerting(
-                            tag = SHOP_PAGE_BUYER_FLOW_TAG,
-                            functionName = this::observeLiveData.name,
-                            liveDataName = ShopHomeViewModel::shopHomeWidgetLayoutData.name,
-                            userId = userId,
-                            shopId = shopId,
-                            shopName = shopName,
-                            errorMessage = ErrorHandler.getErrorMessage(context, throwable),
-                            stackTrace = Log.getStackTraceString(throwable),
-                            errType = SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
-                        )
-                    }
-                    onErrorGetShopHomeLayoutData(throwable)
-                }
-            }
-        })
-
         viewModel?.productListData?.observe(
             viewLifecycleOwner,
             Observer {
@@ -1640,7 +1621,7 @@ open class ShopPageHomeFragment :
         }
     }
 
-    open fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
+    protected open fun setShopLayoutData(dataWidgetLayoutUiModel: ShopPageLayoutUiModel) {
         val data: ShopPageLayoutUiModel = filterNplWidgetLayoutDataIfDisabled(dataWidgetLayoutUiModel)
         initialLayoutData = data.listWidgetLayout.toMutableList()
         listWidgetLayout = initialLayoutData.toMutableList()
@@ -4024,7 +4005,7 @@ open class ShopPageHomeFragment :
         getLatestShopHomeWidgetLayoutData()
     }
 
-    protected open fun getLatestShopHomeWidgetLayoutData() {
+    private fun getLatestShopHomeWidgetLayoutData() {
         globalErrorShopPage?.hide()
         shopHomeAdapter?.removeProductList()
         shopHomeAdapter?.showLoading()
@@ -4032,7 +4013,8 @@ open class ShopPageHomeFragment :
         viewModel?.getLatestShopHomeWidgetLayoutData(
             shopId,
             extParam,
-            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel()
+            ShopUtil.getShopPageWidgetUserAddressLocalData(context) ?: LocalCacheModel(),
+            "CampaignTab"
         )
     }
 
@@ -4153,9 +4135,10 @@ open class ShopPageHomeFragment :
         this.initialProductListData = productListData
     }
 
-    fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData) {
-        this.shopPageHomeLayoutUiModel =
-            ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(homeLayoutData)
+    fun setListWidgetLayoutData(homeLayoutData: HomeLayoutData?) {
+        homeLayoutData?.let {
+            this.shopPageHomeLayoutUiModel = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(it)
+        }
     }
 
     override fun scrollToTop() {

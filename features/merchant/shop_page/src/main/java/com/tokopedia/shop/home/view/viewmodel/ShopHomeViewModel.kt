@@ -66,7 +66,6 @@ import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidgetParamsModel
-import com.tokopedia.shop.home.data.model.ShopPageWidgetRequestModel
 import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
@@ -123,10 +122,6 @@ class ShopHomeViewModel @Inject constructor(
     val productListData: LiveData<Result<GetShopHomeProductUiModel>>
         get() = _productListData
     private val _productListData = MutableLiveData<Result<GetShopHomeProductUiModel>>()
-
-    val shopHomeWidgetLayoutData: LiveData<Result<ShopPageLayoutUiModel>>
-        get() = _shopHomeWidgetLayoutData
-    private val _shopHomeWidgetLayoutData = MutableLiveData<Result<ShopPageLayoutUiModel>>()
 
     val shopHomeWidgetContentData: Flow<Result<Map<Pair<String, String>, Visitable<*>?>>>
         get() = _shopHomeWidgetContentData
@@ -235,28 +230,6 @@ class ShopHomeViewModel @Inject constructor(
     val checkBannerTimerRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
         get() = _checkBannerTimerRemindMeStatusData
     private val _checkBannerTimerRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
-
-    fun getShopPageHomeWidgetLayoutData(
-        shopId: String,
-        extParam: String
-    ) {
-        launchCatchError(block = {
-            val shopHomeLayoutResponse = withContext(dispatcherProvider.io) {
-                gqlShopPageGetHomeType.isFromCacheFirst = false
-                gqlShopPageGetHomeType.params = GqlShopPageGetHomeType.createParams(
-                    shopId,
-                    extParam
-                )
-                gqlShopPageGetHomeType.executeOnBackground()
-            }
-            val shopHomeLayoutUiModelPlaceHolder = ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(
-                shopHomeLayoutResponse.homeLayoutData
-            )
-            _shopHomeWidgetLayoutData.postValue(Success(shopHomeLayoutUiModelPlaceHolder))
-        }) {
-            _shopHomeWidgetLayoutData.postValue(Fail(it))
-        }
-    }
 
     fun getNewProductList(
         shopId: String,
@@ -1277,13 +1250,15 @@ class ShopHomeViewModel @Inject constructor(
     fun getLatestShopHomeWidgetLayoutData(
         shopId: String,
         extParam: String,
-        locData: LocalCacheModel
+        locData: LocalCacheModel,
+        tabName: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val shopHomeWidgetData = getShopDynamicHomeTabWidgetData(
                 shopId,
                 extParam,
-                locData
+                locData,
+                tabName
             )
             _latestShopHomeWidgetLayoutData.postValue(Success(shopHomeWidgetData))
         }) {
@@ -1296,7 +1271,8 @@ class ShopHomeViewModel @Inject constructor(
     private suspend fun getShopDynamicHomeTabWidgetData(
         shopId: String,
         extParam: String,
-        locData: LocalCacheModel
+        locData: LocalCacheModel,
+        tabName: String
     ): ShopPageLayoutUiModel {
         val useCase = getShopDynamicTabUseCase.get()
         useCase.isFromCacheFirst = false
@@ -1307,7 +1283,8 @@ class ShopHomeViewModel @Inject constructor(
                 locData.district_id,
                 locData.city_id,
                 locData.lat,
-                locData.long
+                locData.long,
+                tabName
             ).parameters
         )
         val layoutData = useCase.executeOnBackground().shopPageGetDynamicTab.tabData.firstOrNull {

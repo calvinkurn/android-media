@@ -164,6 +164,7 @@ import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.ShopPageHeaderFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.home.view.model.ShopPageLayoutUiModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageHeaderComponent
@@ -1335,7 +1336,8 @@ class ShopPageHeaderFragment :
             etalaseId = "",
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
-            extParam = extParam
+            extParam = extParam,
+            selectedTabName = getSelectedTabName()
         )
     }
 
@@ -1805,6 +1807,7 @@ class ShopPageHeaderFragment :
                 getTabAt(i)?.customView = getTabView(i)
             }
         }
+        setShopLayoutDataToSelectedTab()
         viewPager?.setCurrentItem(selectedPosition, false)
         tabLayout?.getTabAt(selectedPosition)?.select()
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -1845,6 +1848,28 @@ class ShopPageHeaderFragment :
                 isTabClickByUser = false
             }
         })
+    }
+
+    private fun setShopLayoutDataToSelectedTab() {
+        val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
+        val selectedFragment = getSelectedFragmentInstance()
+        when (selectedFragment) {
+            is ShopPageCampaignFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            is ShopPageHomeFragment -> {
+                selectedFragment.setListWidgetLayoutData(shopLayoutData)
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun getShopLayoutDataBasedOnSelectedTab(): HomeLayoutData? {
+        return shopPageHeaderDataModel?.listDynamicTabData?.getOrNull(
+            getSelectedDynamicTabPosition()
+        )?.data?.homeLayoutData
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
@@ -2034,7 +2059,6 @@ class ShopPageHeaderFragment :
                         shopHeaderViewModel?.productListData?.let {
                             setInitialProductListData(it)
                         }
-                        setListWidgetLayoutData(it.data.homeLayoutData)
                         setHomeTabListBackgroundColor(it.listBackgroundColor)
                         setHomeTabBackgroundPatternImage(it.backgroundImage)
                         setHomeTabLottieUrl(it.lottieUrl)
@@ -2120,10 +2144,7 @@ class ShopPageHeaderFragment :
         tabData: ShopPageGetDynamicTabResponse.ShopPageGetDynamicTab.TabData
     ): Fragment {
         return ShopPageCampaignFragment.createInstance(shopId).apply {
-            setListWidgetLayoutData(tabData.data.homeLayoutData)
-
             setCampaignTabBackgroundColor(tabData.listBackgroundColor.firstOrNull().orEmpty())
-//            setHomeTabBackgroundPatternImage(tabData.backgroundImage)
         }
     }
 
