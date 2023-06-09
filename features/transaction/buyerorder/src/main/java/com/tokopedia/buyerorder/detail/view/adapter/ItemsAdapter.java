@@ -30,7 +30,6 @@ import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.customview.CustomTicketView;
 import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
@@ -217,14 +216,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else {
-                        Intent intent = null;
-                        try {
-                            intent = OrderListwebViewActivity.getWebViewIntent(context, URLDecoder.decode(
-                                    actionButton.getBody().getAppURL(), "UTF-8"), "Redeem Voucher");
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        context.startActivity(intent);
+//                        Intent intent = null;
+//                        try {
+//                            intent = OrderListwebViewActivity.getWebViewIntent(context, URLDecoder.decode(
+//                                    actionButton.getBody().getAppURL(), "UTF-8"), "Redeem Voucher");
+//                        } catch (UnsupportedEncodingException e) {
+//                            e.printStackTrace();
+//                        }
+//                        context.startActivity(intent);
                     }
                 }
             } else if (actionButton.getControl().equalsIgnoreCase(KEY_QRCODE)) {

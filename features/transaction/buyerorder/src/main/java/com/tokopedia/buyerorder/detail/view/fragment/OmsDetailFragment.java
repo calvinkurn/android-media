@@ -2,7 +2,6 @@ package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -15,11 +14,9 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -69,10 +66,8 @@ import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
-import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter;
-import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
@@ -471,14 +466,14 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                             RouteManager.route(getContext(), helpLink);
                         } else {
 
-                            Intent intent = null;
-                            try {
-                                intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
-                                        getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                            startActivity(intent);
+//                            Intent intent = null;
+//                            try {
+//                                intent = OrderListwebViewActivity.getWebViewIntent(getContext(), URLDecoder.decode(
+//                                        getContext().getResources().getString(R.string.contact_us_applink), "UTF-8"), "Help Centre");
+//                            } catch (UnsupportedEncodingException e) {
+//                                e.printStackTrace();
+//                            }
+//                            startActivity(intent);
                         }
                     }
 
