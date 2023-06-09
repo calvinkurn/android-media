@@ -1637,7 +1637,7 @@ open class ProductManageFragment :
         }
         message?.let {
             val retryMessage =
-                getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+                getString(R.string.label_oke)
             showErrorToast(it, retryMessage) {
                 viewModel.deleteSingleProduct(
                     deleteProductResult.productName,
