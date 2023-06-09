@@ -7,10 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.PARAM_PRODUK_IKLAN
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStatesUiModel
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.util.Locale
@@ -31,7 +37,6 @@ class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewH
     }
 
     override fun getItemCount(): Int = emptyStatePages.size
-
 
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val emptyStateTitle: Typography = view.findViewById(R.id.emptyStateTitle)
@@ -54,18 +59,39 @@ class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewH
             setClickAction(item.landingUrl)
         }
 
-        private fun setClickAction(landingUrl: String) {
-            if (landingUrl.isEmpty()) return
+        private fun setClickAction(landingPage: String) {
+            if (landingPage.isEmpty()) return
             btnEmptyState.setOnClickListener {
-                RouteManager.route(
-                    view.context,
-                    String.format(
-                        Locale.getDefault(),
-                        view.context.getString(R.string.topads_url_format_template),
-                        ApplinkConst.WEBVIEW,
-                        landingUrl
+                when (landingPage) {
+                    "$PARAM_PRODUK_IKLAN" -> {
+                        if (view.context is TopAdsDashboardActivity) {
+                            (view.context as TopAdsDashboardActivity).switchTab(landingPage.toIntOrZero())
+                        } else {
+                            val intent = RouteManager.getIntent(
+                                view.context,
+                                ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+                            )
+                            intent.putExtra(
+                                TopAdsCommonConstant.TOPADS_MOVE_TO_DASHBOARD,
+                                landingPage.toIntOrZero()
+                            )
+                            view.context.startActivity(intent)
+                        }
+                    }
+                    ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP -> RouteManager.route(
+                        view.context,
+                        landingPage
                     )
-                )
+                    RecommendationConstants.SEARCH_REPORT_EDU_URL -> RouteManager.route(
+                        view.context,
+                        String.format(
+                            Locale.getDefault(),
+                            view.context.getString(R.string.topads_url_format_template),
+                            ApplinkConst.WEBVIEW,
+                            landingPage
+                        )
+                    )
+                }
             }
         }
     }

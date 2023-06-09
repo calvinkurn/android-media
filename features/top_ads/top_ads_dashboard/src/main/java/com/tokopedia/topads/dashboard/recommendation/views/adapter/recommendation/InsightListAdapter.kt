@@ -15,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
@@ -26,13 +28,8 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 
-class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit) :
+class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit) :
     ListAdapter<InsightListUiModel, RecyclerView.ViewHolder>(InsightListDiffUtilCallBack()) {
-
-    companion object {
-        const val PRODUCT_TYPE = "product"
-        const val SHOP_TYPE = "headline"
-    }
 
     inner class InsightListItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val groupCardTitle: Typography = view.findViewById(R.id.groupCardTitle)
@@ -45,13 +42,13 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
 
         fun bind(
             item: AdGroupUiModel,
-            onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item:AdGroupUiModel) -> Unit,
+            onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit
         ) {
             groupCardTitle.text = item.adGroupName
             groupCardSubTitle.showWithCondition(item.showGroupType)
             groupCardSubTitle.text = when (item.adGroupType) {
-                PRODUCT_TYPE -> view.context.getString(R.string.iklan_produk_subtitle)
-                SHOP_TYPE -> view.context.getString(R.string.iklan_toko_subtitle)
+                PRODUCT_KEY -> view.context.getString(R.string.iklan_produk_subtitle)
+                HEADLINE_KEY -> view.context.getString(R.string.iklan_toko_subtitle)
                 else -> ""
             }
 
@@ -68,7 +65,7 @@ class InsightListAdapter(private val onInsightItemClick: (list: ArrayList<AdGrou
             view.setOnClickListener {
                 val list = ArrayList<AdGroupUiModel>()
                 this@InsightListAdapter.currentList.map {
-                    (it as? AdGroupUiModel)?.let {  adGroupUiModel ->
+                    (it as? AdGroupUiModel)?.let { adGroupUiModel ->
                         list.add(adGroupUiModel)
                     }
                 }
