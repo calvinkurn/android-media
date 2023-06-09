@@ -198,26 +198,6 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         }
     }
 
-    private fun changeEnvForApp(envType: LoginHelperEnvType) {
-        val currentEnvType = if (envType == LoginHelperEnvType.STAGING) {
-            Env.STAGING
-        } else {
-            Env.LIVE
-        }
-        context?.let {
-            TokopediaUrl.setEnvironment(it, currentEnvType)
-            TokopediaUrl.deleteInstance()
-            TokopediaUrl.init(it)
-            viewModel.processEvent(LoginHelperEvent.LogOutUser)
-            binding?.footer?.showToasterError(
-                context?.resources?.getString(
-                    com.tokopedia.loginHelper.R.string.login_helper_app_restart
-                )
-                    .toBlankOrString()
-            )
-        }
-    }
-
     private fun FragmentLoginHelperBinding.showEnvironmentChipToast() {
         context?.resources?.let {
             footer.showToaster(
@@ -240,6 +220,57 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 .toBlankOrString()
         setNavigationOnClickListener {
             viewModel.processEvent(LoginHelperEvent.TapBackButton)
+        }
+    }
+
+    private fun FragmentLoginHelperBinding.setUpDataSourceSwitcher() {
+        dataSourceSelector.isChecked = true
+        dataSourceSelector.setOnClickListener {
+            viewModel.processEvent(LoginHelperEvent.QueryEmail(""))
+            searchBar.searchBarTextField.text?.clear()
+            globalError.hide()
+            val isChecked = dataSourceSelector.isChecked
+            if (isChecked) {
+                dataSourceSelector.text =
+                    context?.resources?.getString(
+                        com.tokopedia.loginHelper.R.string.login_helper_data_fetching_from_remote
+                    )
+                viewModel.processEvent(
+                    LoginHelperEvent.ChangeDataSourceType(
+                        LoginHelperDataSourceType.REMOTE
+                    )
+                )
+            } else {
+                dataSourceSelector.text =
+                    context?.resources?.getString(
+                        com.tokopedia.loginHelper.R.string.login_helper_data_fetching_from_local
+                    )
+                viewModel.processEvent(
+                    LoginHelperEvent.ChangeDataSourceType(
+                        LoginHelperDataSourceType.LOCAL
+                    )
+                )
+            }
+        }
+    }
+
+    private fun changeEnvForApp(envType: LoginHelperEnvType) {
+        val currentEnvType = if (envType == LoginHelperEnvType.STAGING) {
+            Env.STAGING
+        } else {
+            Env.LIVE
+        }
+        context?.let {
+            TokopediaUrl.setEnvironment(it, currentEnvType)
+            TokopediaUrl.deleteInstance()
+            TokopediaUrl.init(it)
+            viewModel.processEvent(LoginHelperEvent.LogOutUser)
+            binding?.footer?.showToasterError(
+                context?.resources?.getString(
+                    com.tokopedia.loginHelper.R.string.login_helper_app_restart
+                )
+                    .toBlankOrString()
+            )
         }
     }
 
@@ -354,29 +385,12 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         }
     }
 
-    override fun getScreenName(): String {
-        return context?.resources?.getString(
-            com.tokopedia.loginHelper.R.string.login_helper_header_title
-        )
-            .toBlankOrString()
-    }
-
     private fun backToPreviousScreen() {
         val state = RouteManager.route(context, ApplinkConst.HOME)
         if (!state) {
             activity?.finish()
         }
     }
-
-    override fun initInjector() {
-        DaggerLoginHelperComponent.builder()
-            .baseAppComponent(
-                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
-            )
-            .build()
-            .inject(this)
-    }
-
     private fun setEnvValue() {
         val currentEnv = getInstance().TYPE
         if (Env.STAGING == currentEnv) {
@@ -384,10 +398,6 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         } else {
             viewModel.processEvent(LoginHelperEvent.ChangeEnvType(LoginHelperEnvType.PRODUCTION))
         }
-    }
-
-    companion object {
-        fun newInstance() = LoginHelperFragment()
     }
 
     override fun onClickUserData(data: UserDataUiModel?) {
@@ -416,35 +426,22 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             }
         }
     }
+    override fun getScreenName(): String {
+        return context?.resources?.getString(
+            com.tokopedia.loginHelper.R.string.login_helper_header_title
+        )
+            .toBlankOrString()
+    }
+    override fun initInjector() {
+        DaggerLoginHelperComponent.builder()
+            .baseAppComponent(
+                (activity?.applicationContext as? BaseMainApplication)?.baseAppComponent
+            )
+            .build()
+            .inject(this)
+    }
 
-    private fun FragmentLoginHelperBinding.setUpDataSourceSwitcher() {
-        dataSourceSelector.isChecked = true
-        dataSourceSelector.setOnClickListener {
-            viewModel.processEvent(LoginHelperEvent.QueryEmail(""))
-            searchBar.searchBarTextField.text?.clear()
-            globalError.hide()
-            val isChecked = dataSourceSelector.isChecked
-            if (isChecked) {
-                dataSourceSelector.text =
-                    context?.resources?.getString(
-                        com.tokopedia.loginHelper.R.string.login_helper_data_fetching_from_remote
-                    )
-                viewModel.processEvent(
-                    LoginHelperEvent.ChangeDataSourceType(
-                        LoginHelperDataSourceType.REMOTE
-                    )
-                )
-            } else {
-                dataSourceSelector.text =
-                    context?.resources?.getString(
-                        com.tokopedia.loginHelper.R.string.login_helper_data_fetching_from_local
-                    )
-                viewModel.processEvent(
-                    LoginHelperEvent.ChangeDataSourceType(
-                        LoginHelperDataSourceType.LOCAL
-                    )
-                )
-            }
-        }
+    companion object {
+        fun newInstance() = LoginHelperFragment()
     }
 }

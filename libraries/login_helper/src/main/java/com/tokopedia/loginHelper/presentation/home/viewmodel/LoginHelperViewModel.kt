@@ -8,7 +8,6 @@ import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.loginHelper.data.mapper.LoginHelperHomeMapper
 import com.tokopedia.loginHelper.data.mapper.toEnvString
 import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
@@ -63,8 +62,7 @@ class LoginHelperViewModel @Inject constructor(
     private val getProfileUseCase: GetProfileUseCase,
     private val getAdminTypeUseCase: GetAdminTypeUseCase,
     private val aesEncryptorCBC: AESEncryptorCBC,
-    private val secretKey: SecretKey,
-    private val mapper: LoginHelperHomeMapper
+    private val secretKey: SecretKey
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(LoginHelperUiState())
@@ -417,6 +415,5 @@ class LoginHelperViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
         loginTokenV2UseCase.cancelJobs()
         generatePublicKeyUseCase.cancelJobs()
-
     }
 }
