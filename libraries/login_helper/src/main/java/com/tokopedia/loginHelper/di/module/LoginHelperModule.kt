@@ -3,8 +3,6 @@ package com.tokopedia.loginHelper.di.module
 import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.common.network.coroutines.RestRequestInteractor
-import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -33,17 +31,6 @@ class LoginHelperModule {
     @LoginHelperScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @LoginHelperScope
-    @Provides
-    fun provideRestRepository(
-        interceptors: MutableList<Interceptor>,
-        @ApplicationContext context: Context
-    ): RestRepository {
-        return RestRequestInteractor.getInstance().restRepository.apply {
-            updateInterceptors(interceptors, context)
-        }
-    }
 
     @LoginHelperScope
     @Provides

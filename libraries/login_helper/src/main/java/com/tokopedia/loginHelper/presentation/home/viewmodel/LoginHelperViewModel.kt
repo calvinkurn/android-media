@@ -10,6 +10,7 @@ import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.data.mapper.LoginHelperHomeMapper
+import com.tokopedia.loginHelper.data.mapper.toEnvString
 import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
@@ -120,7 +121,7 @@ class LoginHelperViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val userDetails = getUserDetailsRestUseCase.makeNetworkCall()
+                val userDetails = getUserDetailsRestUseCase.makeNetworkCall(_uiState.value.envType.toEnvString())
                 Log.d("FATAL", "getLoginData: $userDetails")
                 val loginData = userDetails.body()
 

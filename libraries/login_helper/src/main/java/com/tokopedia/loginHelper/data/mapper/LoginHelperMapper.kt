@@ -2,6 +2,7 @@ package com.tokopedia.loginHelper.data.mapper
 
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
+import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
@@ -25,6 +26,14 @@ fun Int.toLocalUserHeaderUiModel(): HeaderUiModel {
 
 fun Int.toRemoteUserHeaderUiModel(): HeaderUiModel {
     return HeaderUiModel(this, "Remote Users")
+}
+
+fun LoginHelperEnvType.toEnvString(): String {
+    return if (this == LoginHelperEnvType.STAGING) {
+        "staging"
+    } else {
+        "production"
+    }
 }
 
 fun ArrayList<UserDataUiModel>.toUserDataResponse(): List<UserDataResponse> {
