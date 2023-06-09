@@ -36,18 +36,21 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_USE_DARK_BACKGROUND = "use_dark_background"
         private const val BUNDLE_KEY_VOUCHER_SLUGS = "voucher_slugs"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
 
         @JvmStatic
         fun newInstance(
             shopId: String,
             useDarkBackground: Boolean,
-            slugs: List<String>
+            voucherSlugs: List<String>,
+            campaignId: String
         ): ExclusiveLaunchVoucherListBottomSheet {
             return ExclusiveLaunchVoucherListBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
                     putBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND, useDarkBackground)
-                    putStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS, ArrayList(slugs))
+                    putStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS, ArrayList(voucherSlugs))
+                    putString(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
                 }
             }
         }
@@ -58,6 +61,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val useDarkBackground by lazy { arguments?.getBoolean(BUNDLE_KEY_USE_DARK_BACKGROUND).orFalse() }
     private val voucherSlugs by lazy { arguments?.getStringArrayList(BUNDLE_KEY_VOUCHER_SLUGS)?.toList().orEmpty() }
+    private val campaignId by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_ID).orEmpty() }
 
     private val exclusiveLaunchAdapter = ExclusiveLaunchVoucherAdapter()
     private var onVoucherClaimSuccess: (ExclusiveLaunchVoucher) -> Unit = {}
@@ -167,7 +171,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             setOnVoucherImpression { voucher ->
                 voucherWidgetTracker.sendVoucherImpression(
                     shopId = shopId,
-                    campaignId = "",
+                    campaignId = campaignId,
                     widgetId = voucher.id.toString()
                 )
             }
@@ -183,13 +187,13 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         if (isVoucherRedeemed) {
             voucherWidgetTracker.sendRedeemedVoucherClickEvent(
                 shopId = shopId,
-                campaignId = "",
+                campaignId = campaignId,
                 widgetId = selectedVoucher.id.toString()
             )
         } else {
             voucherWidgetTracker.sendUnredeemedVoucherClickEvent(
                 shopId = shopId,
-                campaignId = "",
+                campaignId = campaignId,
                 widgetId = selectedVoucher.id.toString()
             )
         }
@@ -200,8 +204,9 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
         val bottomSheet = VoucherDetailBottomSheet.newInstance(
             shopId  = shopId,
-            slug = selectedVoucher.slug,
-            promoVoucherCode = selectedVoucher.couponCode
+            voucherSlug = selectedVoucher.slug,
+            promoVoucherCode = selectedVoucher.couponCode,
+            campaignId = campaignId
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult -> handleRedeemVoucherSuccess(redeemResult) }
             setOnVoucherUseSuccess { handleUseVoucherSuccess(selectedVoucher) }

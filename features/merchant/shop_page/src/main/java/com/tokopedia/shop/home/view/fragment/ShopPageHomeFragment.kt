@@ -111,7 +111,6 @@ import com.tokopedia.shop.common.constant.DEFAULT_SORT_ID
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.campaign.view.bottomsheet.ExclusiveLaunchVoucherListBottomSheet
-import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HOME_TAB_BUYER_FLOW_TAG
@@ -122,7 +121,6 @@ import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
-import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.extension.showToaster
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopAsyncErrorException
@@ -215,7 +213,6 @@ import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -536,7 +533,7 @@ open class ShopPageHomeFragment :
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
             shopId = "1854168", //Unilever Official Store,
             useDarkBackground = true,
-            slugs = listOf(
+            voucherSlugs = listOf(
                 "ELTTS400JUN",
                 "ELTTS150JUN",
                 "CFDDJUN",
@@ -545,7 +542,8 @@ open class ShopPageHomeFragment :
                 "SHOPASHJUNE",
                 "FMCG623",
                 "SPORT623"
-            )
+            ),
+            campaignId = ""
         )
         bottomSheet.setOnVoucherClaimSuccess {
             //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab
