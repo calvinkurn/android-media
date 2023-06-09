@@ -27,6 +27,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.ShipmentPlus
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.common.data.model.rates.WarehouseData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
@@ -626,7 +627,14 @@ object DynamicProductDetailMapper {
         return TokoNowParam(
             shopId = localData.shop_id,
             warehouseId = localData.warehouse_id,
-            serviceType = localData.service_type
+            serviceType = localData.service_type,
+            warehouses = localData.warehouses
+                .filter {
+                    it.warehouse_id != 0L
+                }
+                .map {
+                    WarehouseData(it.warehouse_id.toString(), it.service_type)
+                }
         )
     }
 

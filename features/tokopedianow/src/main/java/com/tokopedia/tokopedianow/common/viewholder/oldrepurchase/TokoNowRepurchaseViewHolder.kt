@@ -17,7 +17,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowProductCardAdapter
 import com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowProductCardAdapter.*
-import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.*
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductListCarouselBinding

@@ -1,9 +1,13 @@
 package com.tokopedia.tokopedianow.home.analytic
 
 import android.os.Bundle
+import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.getDigits
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ACCESS_PHOTO_MEDIA_FILES
@@ -74,6 +78,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_NULL_VALUE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.PAGE_NAME_TOKOPEDIA_NOW
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_117
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_DIMENSION_118
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
@@ -96,6 +104,8 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_6
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MULTIPLE_BUNDLE_BUTTON
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MULTIPLE_BUNDLE_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_RECOM
@@ -107,6 +117,9 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEE_DETAILS_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SINGLE_BUNDLE_BUTTON
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SINGLE_BUNDLE_PACKAGE_VARIANT
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SINGLE_BUNDLE_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SLIDER_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SWITCHER_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_TITLE_CARD_QUEST_WIDGET
@@ -119,6 +132,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_3
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_6
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_MULTIPLE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PAST_PURCHASE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_RECOM
@@ -126,6 +140,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SINGLE_BUNDLE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SINGLE_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SLIDER_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
@@ -137,13 +152,22 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_LEGO_4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_CLAIM_COUPON_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_MULTIPLE_BUNDLE_WIDGET_BUTTON
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_MULTIPLE_BUNDLE_WIDGET_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_PRODUCT_RECOM
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_REMOVE_ATC_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_SINGLE_BUNDLE_WIDGET_BUTTON
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_SINGLE_BUNDLE_WIDGET_PRODUCT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_CLICK_VIEW_ALL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_LEGO4
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_DOUBLE_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_MULTIPLE_BUNDLE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_PRODUCT_RECOM
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_BUNDLE_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.TrackerId.ID_IMPRESSION_SINGLE_COUPON_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_SINGLE
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.BUNDLE_TYPE_MULTIPLE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_4_BANNER
@@ -151,9 +175,12 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_6_BANNE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NORMAL_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NULL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_BUNDLING
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_PAGE_SOURCE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.PRODUCT_TOPADS
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_NOW
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.SLASH_PRICE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARIANT
@@ -248,6 +275,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_CLICK_LEGO_6 = "click lego 6 banner"
         const val EVENT_ACTION_CLICK_LEGO_6_VIEW_ALL = "click lego 6 banner view all"
         const val EVENT_ACTION_IMPRESSION_CATEGORY = "impression category banner"
+        const val EVENT_ACTION_IMPRESSION_MULTIPLE_WIDGET = "impression - multiple bundling widget"
+        const val EVENT_ACTION_CLICK_MULTIPLE_BUNDLE_PRODUCT = "click - multiple bundling widget - product"
+        const val EVENT_ACTION_CLICK_MULTIPLE_BUNDLE_BUTTON = "click - multiple bundling widget - lihat paket on bundling component"
+        const val EVENT_ACTION_IMPRESSION_SINGLE_BUNDLE = "impression - single bundling widget"
+        const val EVENT_ACTION_CLICK_SINGLE_BUNDLE_PACKAGE_VARIANT = "click - single bundling widget - package variant"
+        const val EVENT_ACTION_CLICK_SINGLE_BUNDLE_PRODUCT = "click - single bundling widget - product"
+        const val EVENT_ACTION_CLICK_SINGLE_BUNDLE_BUTTON = "click - single bundling widget - lihat paket on bundling component"
     }
 
     object VALUE {
@@ -267,6 +301,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val NOW15M = "now15"
         const val LEGO_6_BANNER = "lego 6 banner"
         const val LEGO_4_BANNER = "lego 4 - banner"
+        const val SLASH_NOW = "/now"
+        const val PRODUCT_BUNDLING = "product bundling"
+        const val BUNDLE_TYPE_SINGLE = "single"
+        const val BUNDLE_TYPE_MULTIPLE = "multiple"
+        const val NULL = "null"
     }
 
     object TrackerId {
@@ -281,6 +320,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val ID_IMPRESSION_SINGLE_COUPON_WIDGET = "41923"
         const val ID_CLICK_COUPON_WIDGET = "41924"
         const val ID_CLICK_CLAIM_COUPON_WIDGET = "41925"
+        const val ID_IMPRESSION_MULTIPLE_BUNDLE_WIDGET = "42078"
+        const val ID_CLICK_MULTIPLE_BUNDLE_WIDGET_PRODUCT = "42079"
+        const val ID_CLICK_MULTIPLE_BUNDLE_WIDGET_BUTTON = "42080"
+        const val ID_IMPRESSION_SINGLE_BUNDLE_WIDGET = "42081"
+        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT = "42082"
+        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_PRODUCT = "42083"
+        const val ID_CLICK_SINGLE_BUNDLE_WIDGET_BUTTON = "42084"
     }
 
     fun onClickSearchBar() {
@@ -694,6 +740,80 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 id = data.productId,
                 name = data.name,
                 price = data.formattedPrice
+            ).apply {
+                putString(KEY_CATEGORY_ID, "")
+                putString(KEY_QUANTITY, quantity.toString())
+                putString(KEY_SHOP_ID, data.shopId)
+                putString(KEY_SHOP_NAME, "")
+                putString(KEY_SHOP_TYPE, "")
+            }
+        )
+
+        val eventLabel = getProductCardLabel(data)
+        val dataLayer = getProductDataLayer(
+            event = EVENT_ADD_TO_CART,
+            action = EVENT_ACTION_ATC_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            items = items
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
+    }
+
+    fun onImpressRepurchase(
+        position: Int,
+        data: TokoNowProductCardUiModel
+    ) {
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            )
+        )
+
+        val eventLabel = getProductCardLabel(data)
+        val dataLayer = getProductDataLayer(
+            event = EVENT_VIEW_ITEM_LIST,
+            action = EVENT_ACTION_IMPRESSION_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            items = items,
+            itemList = "/ - p$position - past purchase - carousel - ${data.headerName}"
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM_LIST, dataLayer)
+    }
+
+    fun onClickRepurchase(position: Int, data: TokoNowProductCardUiModel) {
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                position = position.toString(),
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
+            )
+        )
+
+        val eventLabel = getProductCardLabel(data)
+
+        val dataLayer = getProductDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_PAST_PURCHASE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = eventLabel,
+            items = items,
+            itemList = "/ - p$position - past purchase - carousel - ${data.headerName}"
+        )
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    fun onRepurchaseAddToCart(quantity: Int, data: TokoNowProductCardUiModel) {
+        val items = arrayListOf(
+            productCardItemDataLayer(
+                id = data.productId,
+                name = data.product.productName,
+                price = data.product.formattedPrice
             ).apply {
                 putString(KEY_CATEGORY_ID, "")
                 putString(KEY_QUANTITY, quantity.toString())
@@ -1661,6 +1781,264 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .send()
     }
 
+    /*
+        -- Bundle Widget --
+        Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/view/3808
+    */
+
+    // Tracker ID: 42078
+    fun trackImpressionMultipleBundle(
+        bundleId: String,
+        bundleName: String,
+        bundlePriceCut: String,
+        position: Int
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
+
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = String.EMPTY,
+            creativeSlot = position,
+            itemId = bundleId,
+            itemName = bundleName,
+            dimension40 = itemListValue,
+            dimension117 = BUNDLE_TYPE_MULTIPLE,
+            dimension118 = bundleId
+        )
+        val dataLayer = getDataLayer(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_MULTIPLE_WIDGET,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = label,
+            trackerId = ID_IMPRESSION_MULTIPLE_BUNDLE_WIDGET,
+            businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        ).apply {
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    // Tracker ID: 42079
+    fun trackClickMultipleBundleProduct(
+        bundleId: String,
+        bundleName: String,
+        bundlePrice: String,
+        bundlePriceCut: String,
+        position: Int,
+        productId: String
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
+
+        val itemsDataLayer = itemsDataLayer(
+            position = position,
+            itemBrand = String.EMPTY,
+            itemCategory = String.EMPTY,
+            itemId = bundleId,
+            itemName = bundleName,
+            itemVariant = String.EMPTY,
+            dimension40 = itemListValue,
+            dimension117 = BUNDLE_TYPE_MULTIPLE,
+            dimension118 = bundleId,
+            price = bundlePrice
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_MULTIPLE_BUNDLE_PRODUCT,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = label,
+            trackerId = ID_CLICK_MULTIPLE_BUNDLE_WIDGET_PRODUCT,
+            businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        ).apply {
+            putString(KEY_ITEM_LIST, itemListValue)
+            putString(KEY_PRODUCT_ID, productId)
+            putParcelableArrayList(KEY_ITEMS, arrayListOf(itemsDataLayer))
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    // Tracker ID: 42080
+    fun trackClickMultipleBundleButton(
+        bundleId: String,
+        bundleName: String,
+        bundlePriceCut: String,
+        position: Int
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_MULTIPLE)
+
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = String.EMPTY,
+            creativeSlot = position,
+            itemId = bundleId,
+            itemName = bundleName,
+            dimension40 = itemListValue,
+            dimension117 = BUNDLE_TYPE_MULTIPLE,
+            dimension118 = bundleId
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_MULTIPLE_BUNDLE_BUTTON,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = label,
+            trackerId = ID_CLICK_MULTIPLE_BUNDLE_WIDGET_BUTTON,
+            businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        ).apply {
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    // Tracker ID: 42081
+    fun trackImpressionSingleBundle(
+        bundleId: String,
+        bundleName: String,
+        bundlePriceCut: String,
+        position: Int,
+        productId: String
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
+
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = String.EMPTY,
+            creativeSlot = position,
+            itemId = bundleId,
+            itemName = bundleName,
+            dimension40 = itemListValue,
+            dimension117 = BUNDLE_TYPE_SINGLE,
+            dimension118 = bundleId
+        )
+        val dataLayer = getDataLayer(
+            event = EVENT_VIEW_ITEM,
+            action = EVENT_ACTION_IMPRESSION_SINGLE_BUNDLE,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = label,
+            trackerId = ID_IMPRESSION_SINGLE_BUNDLE_WIDGET,
+            businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        ).apply {
+            putString(KEY_PRODUCT_ID, productId)
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
+    }
+
+    // Tracker ID: 42082
+    fun trackClickSingleBundleChip(
+        bundleId: String,
+        bundleName: String,
+        bundlePriceCut: String,
+        packageVariant: String,
+        productId: String
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, packageVariant, NULL)
+
+        val dataLayer = getDataLayer(
+            EVENT_CLICK_GROCERIES,
+            EVENT_ACTION_CLICK_SINGLE_BUNDLE_PACKAGE_VARIANT,
+            EVENT_CATEGORY_HOME_PAGE,
+            label
+        )
+
+        dataLayer[KEY_TRACKER_ID] = ID_CLICK_SINGLE_BUNDLE_WIDGET_PACKAGE_VARIANT
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_CURRENT_SITE] = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_PRODUCT_ID] = productId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    // Tracker ID: 42083
+    fun trackClickSingleBundleProduct(
+        bundleId: String,
+        bundleName: String,
+        bundlePrice: String,
+        bundlePriceCut: String,
+        packageVariant: String,
+        position: Int,
+        productId: String
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, packageVariant, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
+
+        val itemsDataLayer = itemsDataLayer(
+            position = position,
+            itemBrand = String.EMPTY,
+            itemCategory = String.EMPTY,
+            itemId = bundleId,
+            itemName = bundleName,
+            itemVariant = String.EMPTY,
+            dimension40 = itemListValue,
+            dimension117 = BUNDLE_TYPE_SINGLE,
+            dimension118 = bundleId,
+            price = bundlePrice
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_SINGLE_BUNDLE_PRODUCT,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = label,
+            trackerId = ID_CLICK_SINGLE_BUNDLE_WIDGET_PRODUCT,
+            businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        ).apply {
+            putString(KEY_ITEM_LIST, itemListValue)
+            putString(KEY_PRODUCT_ID, productId)
+            putParcelableArrayList(KEY_ITEMS, arrayListOf(itemsDataLayer))
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+    // Tracker ID: 42084
+    fun trackClickSingleBundleButton(
+        bundleId: String,
+        bundleName: String,
+        bundlePriceCut: String,
+        position: Int,
+        productId: String
+    ) {
+        val label = joinDash(bundleId, bundleName, bundlePriceCut, NULL)
+        val itemListValue = joinDash(SLASH_NOW, PRODUCT_BUNDLING, BUNDLE_TYPE_SINGLE)
+
+        val promotionsDataLayer = promotionsDataLayer(
+            creativeName = String.EMPTY,
+            creativeSlot = position,
+            itemId = bundleId,
+            itemName = bundleName,
+            dimension40 = itemListValue,
+            dimension117 = BUNDLE_TYPE_SINGLE,
+            dimension118 = bundleId
+        )
+
+        val dataLayer = getDataLayer(
+            event = EVENT_SELECT_CONTENT,
+            action = EVENT_ACTION_CLICK_SINGLE_BUNDLE_BUTTON,
+            category = EVENT_CATEGORY_HOME_PAGE,
+            label = label,
+            trackerId = ID_CLICK_SINGLE_BUNDLE_WIDGET_BUTTON,
+            businessUnit = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
+            currentSite = CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+        ).apply {
+            putString(KEY_PRODUCT_ID, productId)
+            putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(promotionsDataLayer))
+        }
+
+        getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
+    }
+
+
     private fun ecommerceDataLayerBannerClicked(
         channelModel: ChannelModel,
         channelGrid: ChannelGrid,
@@ -1711,6 +2089,48 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_ITEM_ID, itemId)
             putString(KEY_ITEM_NAME, itemName)
         }
+    }
+
+    private fun promotionsDataLayer(
+        creativeName: String,
+        creativeSlot: Int,
+        itemId: String,
+        itemName: String,
+        dimension117: String,
+        dimension118: String,
+        dimension40: String
+    ): Bundle = Bundle().apply {
+        putString(KEY_CREATIVE_NAME, creativeName)
+        putInt(KEY_CREATIVE_SLOT, creativeSlot.getTrackerPosition())
+        putString(KEY_DIMENSION_117, dimension117)
+        putString(KEY_DIMENSION_118, dimension118)
+        putString(KEY_DIMENSION_40, dimension40)
+        putString(KEY_ITEM_ID, itemId)
+        putString(KEY_ITEM_NAME, itemName)
+    }
+
+    private fun itemsDataLayer(
+        position: Int,
+        itemBrand: String,
+        itemCategory: String,
+        itemId: String,
+        itemName: String,
+        itemVariant: String,
+        dimension117: String,
+        dimension118: String,
+        dimension40: String,
+        price: String
+    ): Bundle = Bundle().apply {
+        putString(KEY_DIMENSION_117, dimension117)
+        putString(KEY_DIMENSION_118, dimension118)
+        putString(KEY_DIMENSION_40, dimension40)
+        putString(KEY_INDEX, position.getTrackerPosition().toString())
+        putString(KEY_ITEM_BRAND, itemBrand)
+        putString(KEY_ITEM_CATEGORY, itemCategory)
+        putString(KEY_ITEM_ID, itemId)
+        putString(KEY_ITEM_NAME, itemName)
+        putString(KEY_ITEM_VARIANT, itemVariant)
+        putFloat(KEY_PRICE, price.getDigits().orZero().toFloat())
     }
 
     private fun ecommerceDataLayerCategoryClicked(position: Int, categoryId: String, headerName: String): Bundle {
@@ -1829,6 +2249,27 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         }
     }
 
+    private fun getDataLayer(
+        event: String,
+        action: String,
+        category: String,
+        label: String,
+        trackerId: String,
+        businessUnit: String,
+        currentSite: String
+    ): Bundle {
+        return Bundle().apply {
+            putString(TrackAppUtils.EVENT, event)
+            putString(TrackAppUtils.EVENT_ACTION, action)
+            putString(TrackAppUtils.EVENT_CATEGORY, category)
+            putString(TrackAppUtils.EVENT_LABEL, label)
+            putString(KEY_TRACKER_ID, trackerId)
+            putString(KEY_BUSINESS_UNIT, businessUnit)
+            putString(KEY_CURRENT_SITE, currentSite)
+            putString(KEY_USER_ID, userSession.userId)
+        }
+    }
+
     private fun getProductDataLayer(
         event: String,
         action: String,
@@ -1921,6 +2362,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         return if (withHalalLabel == null) WITHOUT_HALAL_LABEL else WITH_HALAL_LABEL
     }
 
+    private fun getProductCardHalalLabel(labelGroup: List<com.tokopedia.productcard.ProductCardModel.LabelGroup>): String {
+        val withHalalLabel = labelGroup.firstOrNull { it.title == LABEL_GROUP_HALAL }
+        return if (withHalalLabel == null) WITHOUT_HALAL_LABEL else WITH_HALAL_LABEL
+    }
+
     private fun getSlashedPriceLabel(slashedPrice: String?): String {
         return if (slashedPrice.isNullOrEmpty()) NORMAL_PRICE else SLASH_PRICE
     }
@@ -1934,5 +2380,16 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         val slashedPriceLabel = getSlashedPriceLabel(data.slashPrice)
         val variantLabel = getVariantLabel(data.parentId)
         return "$halalLabel - $slashedPriceLabel - $variantLabel"
+    }
+
+    private fun getProductCardLabel(data: TokoNowProductCardUiModel): String {
+        val halalLabel = getProductCardHalalLabel(data.product.labelGroupList)
+        val slashedPriceLabel = getSlashedPriceLabel(data.product.slashedPrice)
+        val variantLabel = getVariantLabel(data.parentId)
+        return "$halalLabel - $slashedPriceLabel - $variantLabel"
+    }
+
+    private fun joinDash(vararg s: String?): String {
+        return TextUtils.join(" - ", s)
     }
 }

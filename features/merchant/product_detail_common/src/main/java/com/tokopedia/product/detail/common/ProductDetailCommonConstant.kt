@@ -18,17 +18,14 @@ object ProductDetailCommonConstant {
 
     const val PARAM_SHOP_IDS = "shopIds"
 
-    const val PARAM_RATE_EST_WEIGHT = "weight"
 
     const val PARAM_PAGE = "page"
 
-    const val DEFAULT_NUM_IMAGE_REVIEW = 5
 
     const val FIELDS_PARAM = "fields"
 
     // notify me (teaser campaign)
     const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
-    const val PARAM_TEASER_PRODUCT_ID = "productId"
     const val PARAM_TEASER_PRODUCT_ID_64 = "product_id_64"
     const val PARAM_TEASER_ACTION = "action"
     const val PARAM_TEASER_SOURCE = "source"
@@ -65,7 +62,6 @@ object ProductDetailCommonConstant {
     const val KEY_BUTTON_PRIMARY_GREEN = "primary_green"
     const val KEY_BUTTON_SECONDARY_GREEN = "secondary_green"
     const val KEY_BUTTON_DISABLE = "disabled"
-    const val KEY_BUTTON_SECONDARY = "secondary"
     const val KEY_BUTTON_SECONDARY_GRAY = "secondary_gray"
     const val KEY_CART_TYPE_UPDATE_CART = "update_cart"
 
@@ -77,11 +73,9 @@ object ProductDetailCommonConstant {
     const val ATC_BUTTON = 2
     const val OCS_BUTTON = 3
     const val OCC_BUTTON = 4
-    const val TRADEIN_BUTTON = 6
     const val TRADEIN_AFTER_DIAGNOSE = 7
     const val REMIND_ME_BUTTON = 8
     const val CHECK_WISHLIST_BUTTON = 9
-    const val ATC_UPDATE_BUTTON = 10
 
     const val REQUEST_CODE_CHECKOUT = 12382
     const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198

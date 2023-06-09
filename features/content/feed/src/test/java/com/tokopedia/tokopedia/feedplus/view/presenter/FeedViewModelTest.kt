@@ -1112,7 +1112,7 @@ class FeedViewModelTest {
                 dataList = mutableListOf(
                     Data(
                         shop = Shop(
-                            id = "12",
+                            id = "12"
                         ),
                         isFavorit = true
                     ),
@@ -1139,7 +1139,7 @@ class FeedViewModelTest {
                             )
                         )
                     )
-                ),
+                )
             )
         )
 
@@ -1281,7 +1281,7 @@ class FeedViewModelTest {
                 dataList = mutableListOf(
                     Data(
                         shop = Shop(
-                            id = "67890",
+                            id = "67890"
                         ),
                         isFavorit = true
                     ),
@@ -1313,7 +1313,7 @@ class FeedViewModelTest {
                             )
                         )
                     )
-                ),
+                )
             )
         )
 
@@ -1347,11 +1347,12 @@ class FeedViewModelTest {
                 assert((newListResult[3] as DynamicPostUiModel).feedXCard.followers.isFollowed)
                 assert(newListResult[4] == currentDataList[4])
                 assert((newListResult[5] as ShopRecomWidgetModel).shopRecomUiModel.items[0] == (currentDataList[5] as ShopRecomWidgetModel).shopRecomUiModel.items[0])
-                assert((newListResult[5] as ShopRecomWidgetModel).shopRecomUiModel.items[1].state == ShopRecomFollowState.UNFOLLOW )
+                assert((newListResult[5] as ShopRecomWidgetModel).shopRecomUiModel.items[1].state == ShopRecomFollowState.UNFOLLOW)
                 assert(newListResult[6] == currentDataList[6])
                 assert((newListResult[7] as TopadsHeadLineV2Model).feedXCard.followers.isFollowed)
                 assert(
-                    (newListResult[7] as TopadsHeadLineV2Model).cpmModel!!.data[0].cpm.cpmShop.isFollowed)
+                    (newListResult[7] as TopadsHeadLineV2Model).cpmModel!!.data[0].cpm.cpmShop.isFollowed
+                )
                 assert((newListResult[8] as TopadsHeadLineV2Model).feedXCard.followers.isFollowed)
                 assert(!(newListResult[9] as TopadsShopUiModel).dataList[0].isFavorit)
                 assert((newListResult[9] as TopadsShopUiModel).dataList[1] == (currentDataList[9] as TopadsShopUiModel).dataList[1])
@@ -1375,7 +1376,6 @@ class FeedViewModelTest {
                 )
             )
         )
-
 
         coEvery { mockFollowingUsecase(any()) } coAnswers { throw MessageErrorException("Failed") }
 
