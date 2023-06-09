@@ -53,11 +53,11 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
     }
 
     override fun getTokenType(): Flow<String> {
-        return getUserSessionFlow().map { it.tokenType }
+        return getUserSessionFlow().map { it.tokenType.ifEmpty { "Bearer" } }
     }
 
     override fun getRefreshToken(): Flow<String> {
-        return getUserSessionFlow().map { it.refreshToken }
+        return getUserSessionFlow().map { it.refreshToken.ifEmpty { "Bearer" } }
     }
 
     override fun getUserId(): Flow<String> {
@@ -245,11 +245,28 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         }
     }
 
+    override suspend fun setTwitterAccessToken(token: String) {
+        userSessionSetter {
+            setTwitterAccessToken(token)
+        }
+    }
+
+    override suspend fun setTwitterAccessTokenSecret(token: String) {
+        userSessionSetter {
+            setTwitterAccessTokenSecret(token)
+        }
+    }
+
+    override suspend fun setTwitterShouldPost(shouldPost: Boolean) {
+        userSessionSetter {
+            setTwitterShouldPost(shouldPost)
+        }
+    }
+
     override suspend fun clearToken() {
         userSessionSetter {
             clearAccessToken()
             clearTokenType()
-            clearRefreshToken()
         }
     }
 
@@ -268,14 +285,15 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
             clearTokenType()
             clearAccessToken()
             clearProfilePicture()
-            clearGcToken()
-            clearShopAvatar()
-            clearIsPowerMerchantIdle()
-            clearTwitterAccessToken()
-            clearTwitterAccessToken()
-            clearLoginMethod()
+            gcToken = ""
+            shopAvatar = ""
+            isPowerMerchantIdle = false
+            loginMethod = ""
             clearTwitterShouldPost()
             clearIsShopOfficialStore()
+            clearTwitterAccessToken()
+            clearTwitterAccessTokenSecret()
+            twitterShouldPost = false
         }
     }
 
@@ -431,19 +449,18 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
         }
     }
 
-    override suspend fun getAndroidId(context: Context): Flow<String> {
-        val adsId = getUserSessionFlow().map { it.androidId }
-        return if (adsId.first().isEmpty()) {
-            val newAndroidId = md5(
-                Settings.Secure.getString(
-                    context.contentResolver,
-                    Settings.Secure.ANDROID_ID
+    override fun getAndroidId(context: Context): Flow<String> {
+        return getUserSessionFlow().map {
+            it.androidId.ifEmpty {
+                val newAndroidId = md5(
+                    Settings.Secure.getString(
+                        context.contentResolver,
+                        Settings.Secure.ANDROID_ID
+                    )
                 )
-            )
-            setAndroidId(newAndroidId)
-            adsId
-        } else {
-            adsId
+                setAndroidId(newAndroidId)
+                newAndroidId
+            }
         }
     }
 
@@ -469,6 +486,5 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
         private const val DEFAULT_EMPTY_SHOP_ID = "0"
         private const val DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1"
-
     }
 }

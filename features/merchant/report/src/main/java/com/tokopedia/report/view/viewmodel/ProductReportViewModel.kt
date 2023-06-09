@@ -3,12 +3,12 @@ package com.tokopedia.report.view.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common_compose.utils.UiText
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.nest.principles.utils.UiText
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
