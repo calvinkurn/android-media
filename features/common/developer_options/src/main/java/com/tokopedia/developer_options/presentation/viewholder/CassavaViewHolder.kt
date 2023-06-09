@@ -7,6 +7,7 @@ import com.tokopedia.analyticsdebugger.cassava.ui.MainValidatorActivity.Companio
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.CassavaUiModel
 import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.unifycomponents.UnifyButton
 
 class CassavaViewHolder(
@@ -20,7 +21,7 @@ class CassavaViewHolder(
     override fun bind(element: CassavaUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.cassava_btn)
         btn.setOnClickListener {
-            DevOpsTracker.trackEntryEvent(this::class.simpleName.toString())
+            DevOpsTracker.trackEntryEvent(DevopsFeature.CASSAVA)
             itemView.context.apply { startActivity(newInstance(this)) }
         }
     }

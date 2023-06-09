@@ -12,7 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-object DevOpsTracker {
+internal object DevOpsTracker {
 
     private val scope =
         CoroutineScope(
@@ -43,7 +43,7 @@ object DevOpsTracker {
         }
     }
 
-    fun trackEntryEvent(page: String) {
+    fun trackEntryEvent(page: DevopsFeature) {
         if (influx == null) return
         scope.launch(Dispatchers.IO) {
             influx?.send(
