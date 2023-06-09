@@ -505,6 +505,7 @@ open class DynamicProductDetailFragment :
 
     // Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
+    private var isAffiliateShareIcon = false
 
     // View
     private lateinit var actionButtonView: PartialButtonActionView
@@ -3874,7 +3875,8 @@ open class DynamicProductDetailFragment :
                 productInfo.basic.productID,
                 viewModel.userId,
                 zeroIfEmpty(productInfo.data.campaign.campaignID),
-                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId)
+                zeroIfEmpty(pdpUiUpdater?.productBundlingData?.bundleInfo?.bundleId),
+                isAffiliateShareIcon
             )
             shareProduct(productInfo)
         }
@@ -4370,6 +4372,7 @@ open class DynamicProductDetailFragment :
 
     private fun updateToolbarShareAffiliate() {
         if (isShareAffiliateIconEnabled() && !GlobalConfig.isSellerApp()) {
+            isAffiliateShareIcon = true
             navToolbar?.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST) ?: return
         }
     }

@@ -363,6 +363,7 @@ class ShopPageHeaderFragment :
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
+    private var isAffiliateShareIcon = false
 
     // tab icons
     private val iconTabHomeInactive: Int get() = IconUnify.SHOP
@@ -1413,6 +1414,7 @@ class ShopPageHeaderFragment :
         newNavigationToolbar?.let {
             if (isEnableAffiliateShareIcon() && isAffiliate && !isMyShop) {
                 it.updateIcon(IconList.ID_SHARE, IconList.ID_SHARE_AB_TEST)
+                isAffiliateShareIcon = true
             }
         }
     }
@@ -1602,7 +1604,7 @@ class ShopPageHeaderFragment :
     }
 
     private fun clickShopShare() {
-        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
+        shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId, isAffiliateShareIcon)
         if (!isMyShop) {
             shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
         }
