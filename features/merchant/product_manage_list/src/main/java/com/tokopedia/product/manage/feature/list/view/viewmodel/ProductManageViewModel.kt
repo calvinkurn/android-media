@@ -629,7 +629,9 @@ class ProductManageViewModel @Inject constructor(
                 result = editProductStock(productId, productName, it, status)
             }
 
-            _editStockResult.postValue(result)
+            result?.let {
+                _editStockResult.postValue(it)
+            }
         }) {
             val message =
                 com.tokopedia.product.manage.common.R.string.product_stock_reminder_toaster_failed_desc.toString()

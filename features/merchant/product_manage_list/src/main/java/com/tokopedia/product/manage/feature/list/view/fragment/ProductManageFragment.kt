@@ -146,6 +146,7 @@ import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageVie
 import com.tokopedia.product.manage.feature.multiedit.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
+import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiVariantToastMessage
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
@@ -399,13 +400,13 @@ open class ProductManageFragment :
                 val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
                 val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
                 if (!coachMark?.isDismissed.orFalse() && (
-                    positionCoachMark !in
-                        firstVisibleIndex..lastVisibleIndex || (
-                        view != null && getVisiblePercent(
+                        positionCoachMark !in
+                            firstVisibleIndex..lastVisibleIndex || (
+                            view != null && getVisiblePercent(
                                 view
                             ) == -1
+                            )
                         )
-                    )
                 ) {
                     coachMark?.dismissCoachMark()
                 }
@@ -811,6 +812,7 @@ open class ProductManageFragment :
     }
 
     override fun deleteMultipleProducts() {
+
         viewModel.onDeleteMultipleProducts()
         ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
@@ -1657,7 +1659,7 @@ open class ProductManageFragment :
 
     private fun showMessageToast(message: String) {
         view?.let {
-            val actionLabel = getString(com.tokopedia.abstraction.R.string.close)
+            val actionLabel = getString(R.string.label_oke)
             Toaster.build(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionLabel)
                 .show()
         }
@@ -1779,14 +1781,27 @@ open class ProductManageFragment :
     }
 
     private fun onSuccessMultiEditProducts(result: MultiEditResult) {
-        val haveDTProducts = itemsChecked.filter { it.isDTInbound }
+        when (result) {
+            is EditByStatus -> {
+                val haveDTProducts = itemsChecked.filter { it.isDTInbound }
+                if (result.status == INACTIVE) {
+                    if (haveDTProducts.isNotEmpty()) {
+                        showEditDTProductsInActiveConfirmationDialog()
+                        showMultiEditToast(result, true)
+                    } else {
+                        showMultiEditToast(result)
+                        updateEditProductList(result)
+                    }
+                } else {
+                    showMultiEditToast(result)
 
-        if (haveDTProducts.isNotEmpty()) {
-            showEditDTProductsInActiveConfirmationDialog()
-            showMultiEditToast(result, true)
-        } else {
-            updateEditProductList(result)
-            showMultiEditToast(result)
+                }
+            }
+
+            is EditByMenu -> {
+                updateEditProductList(result)
+                showMultiEditToast(result)
+            }
         }
     }
 
@@ -1808,6 +1823,15 @@ open class ProductManageFragment :
 
     private fun showMultiEditToast(result: MultiEditResult, isHaveNextProcess: Boolean = false) {
         context?.let { context ->
+            if (result.failedDT.isNotEmpty()) {
+                showInfoNotAllowedToDeleteProductDT(
+                    getString(
+                        com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
+                        result.failedDT.size.toString()
+                    ),
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc),
+                )
+            }
             if (result.failed.isNotEmpty()) {
                 val okeLabel =
                     getString(R.string.label_oke)
@@ -1815,7 +1839,11 @@ open class ProductManageFragment :
 
                 showErrorToast(retryMessage, okeLabel)
             } else if (result.success.isNotEmpty()) {
-                val message = getSuccessMessage(context, result)
+                val itemCheckedNonDT = itemsChecked.filter {
+                    !it.isDTInbound
+                }.toMutableList()
+
+                val message = getSuccessMessage(context, result, itemCheckedNonDT)
                 showMessageToast(message)
                 if (!isHaveNextProcess) {
                     clearSelectedProduct()
@@ -3194,10 +3222,7 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.editVariantStockResult) {
             when (it) {
                 is Success -> {
-                    val message = context?.getString(
-                        com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_stock_success,
-                        it.data.productName
-                    ).orEmpty()
+                    val message = MultiVariantToastMessage.getSuccessMessage(context,it.data)
                     updateVariantStock(it.data)
                     showMessageToast(message)
                 }
