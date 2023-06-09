@@ -14,5 +14,7 @@ object TrackerConstants {
     object General {
         const val VIEW_PAGE_EVENT = "view page"
         const val SOURCE_OTHER_PAGE = "medali_other_page"
+        const val MDP_EVENT_ACTION = "medali detail page"
+        const val BACK_BUTTON_CLICK = "click back"
     }
 }
