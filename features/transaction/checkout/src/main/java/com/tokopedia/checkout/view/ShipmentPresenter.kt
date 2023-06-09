@@ -348,7 +348,6 @@ class ShipmentPresenter @Inject constructor(
         var totalPurchaseProtectionItem = 0
         var shippingFee = 0.0
         var insuranceFee = 0.0
-        var orderPriorityFee = 0.0
         var totalBookingFee = 0
         var hasAddOnSelected = false
         var totalAddOnPrice = 0.0
@@ -385,7 +384,6 @@ class ShipmentPresenter @Inject constructor(
                 }
                 if (shipmentData.selectedShipmentDetailData != null && !shipmentData.isError) {
                     val useInsurance = shipmentData.selectedShipmentDetailData!!.useInsurance
-                    val isOrderPriority = shipmentData.selectedShipmentDetailData!!.isOrderPriority
                     val isTradeInPickup = isTradeInByDropOff
                     if (isTradeInPickup) {
                         if (shipmentData.selectedShipmentDetailData!!.selectedCourierTradeInDropOff != null) {
@@ -395,16 +393,11 @@ class ShipmentPresenter @Inject constructor(
                                 insuranceFee += shipmentData.selectedShipmentDetailData!!
                                     .selectedCourierTradeInDropOff!!.insurancePrice.toDouble()
                             }
-                            if (isOrderPriority != null && isOrderPriority) {
-                                orderPriorityFee += shipmentData.selectedShipmentDetailData!!
-                                    .selectedCourierTradeInDropOff!!.priorityPrice.toDouble()
-                            }
                             additionalFee += shipmentData.selectedShipmentDetailData!!
                                 .selectedCourierTradeInDropOff!!.additionalPrice.toDouble()
                         } else {
                             shippingFee = 0.0
                             insuranceFee = 0.0
-                            orderPriorityFee = 0.0
                             additionalFee = 0.0
                         }
                     } else if (shipmentData.selectedShipmentDetailData!!.selectedCourier != null) {
@@ -413,10 +406,6 @@ class ShipmentPresenter @Inject constructor(
                         if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentData.selectedShipmentDetailData!!
                                 .selectedCourier!!.selectedShipper.insurancePrice.toDouble()
-                        }
-                        if (isOrderPriority != null && isOrderPriority) {
-                            orderPriorityFee += shipmentData.selectedShipmentDetailData!!
-                                .selectedCourier!!.priorityPrice.toDouble()
                         }
                         additionalFee += shipmentData.selectedShipmentDetailData!!
                             .selectedCourier!!.additionalPrice.toDouble()
@@ -440,7 +429,7 @@ class ShipmentPresenter @Inject constructor(
             finalShippingFee = 0.0
         }
         totalPrice =
-            totalItemPrice + finalShippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
+            totalItemPrice + finalShippingFee + insuranceFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
             shipmentCost.productDiscountAmount - tradeInPrice + totalAddOnPrice
         shipmentCost.totalWeight = totalWeight
         shipmentCost.additionalFee = additionalFee
@@ -448,7 +437,6 @@ class ShipmentPresenter @Inject constructor(
         shipmentCost.totalItem = totalItem
         shipmentCost.shippingFee = shippingFee
         shipmentCost.insuranceFee = insuranceFee
-        shipmentCost.priorityFee = orderPriorityFee
         shipmentCost.totalPurchaseProtectionItem = totalPurchaseProtectionItem
         shipmentCost.purchaseProtectionFee = totalPurchaseProtectionPrice
         shipmentCost.tradeInPrice = tradeInPrice

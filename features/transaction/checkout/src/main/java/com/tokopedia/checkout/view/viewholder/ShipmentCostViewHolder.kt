@@ -36,7 +36,6 @@ class ShipmentCostViewHolder(
         binding.tvShippingFeeLabel.text = binding.tvShippingFeeLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee)
         binding.tvShippingFee.setTextAndContentDescription(getPriceFormat(binding.tvShippingFeeLabel, binding.tvShippingFee, shipmentCost.shippingFee), R.string.content_desc_tv_shipping_fee_summary)
         binding.tvInsuranceFee.setTextAndContentDescription(getPriceFormat(binding.tvInsuranceFeeLabel, binding.tvInsuranceFee, shipmentCost.insuranceFee), R.string.content_desc_tv_insurance_fee_summary)
-        binding.tvOrderPrioritasPrice.text = getPriceFormat(binding.tvOrderPrioritasLabel, binding.tvOrderPrioritasPrice, shipmentCost.priorityFee)
         binding.tvPurchaseProtectionLabel.text = getTotalPurchaseProtectionItemLabel(binding.tvPurchaseProtectionLabel.context, shipmentCost.totalPurchaseProtectionItem)
         binding.tvPurchaseProtectionFee.text = getPriceFormat(binding.tvPurchaseProtectionLabel, binding.tvPurchaseProtectionFee, shipmentCost.purchaseProtectionFee)
         binding.tvPromo.text = String.format(

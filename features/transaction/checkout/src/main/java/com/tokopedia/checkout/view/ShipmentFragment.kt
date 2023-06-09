@@ -3693,18 +3693,6 @@ class ShipmentFragment :
     // endregion
 
     // region adapter
-    override fun onPriorityChecked(position: Int) {
-        if (binding?.rvShipment?.isComputingLayout == true) {
-            binding?.rvShipment?.post {
-                shipmentPresenter.updateShipmentCostModel()
-                shipmentAdapter.updateItemAndTotalCost(position)
-            }
-        } else {
-            shipmentPresenter.updateShipmentCostModel()
-            shipmentAdapter.updateItemAndTotalCost(position)
-        }
-    }
-
     override fun onInsuranceChecked(position: Int) {
         if (binding?.rvShipment?.isComputingLayout == true) {
             binding?.rvShipment?.post {
@@ -3732,17 +3720,6 @@ class ShipmentFragment :
             val intent = newInstance(
                 it,
                 CartConstant.TERM_AND_CONDITION_URL,
-                getString(R.string.title_activity_checkout_tnc_webview)
-            )
-            startActivity(intent)
-        }
-    }
-
-    override fun onPriorityTncClicker() {
-        context?.let {
-            val intent = newInstance(
-                it,
-                CartConstant.PRIORITY_TNC_URL,
                 getString(R.string.title_activity_checkout_tnc_webview)
             )
             startActivity(intent)
