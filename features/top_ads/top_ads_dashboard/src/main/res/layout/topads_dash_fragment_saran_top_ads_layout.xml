@@ -34,7 +34,19 @@
                     android:layout_height="wrap_content"
                     app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
-                    <include layout="@layout/topads_dash_saran_topads_top_widget_layout" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <include layout="@layout/topads_dash_saran_topads_top_widget_layout" />
+                        <androidx.legacy.widget.Space
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"/>
+                        <include
+                            android:id="@+id/topads_insight_center_product_widget_potential"
+                            layout = "@layout/topads_insight_center_product_widget"/>
+                    </LinearLayout>
+
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
