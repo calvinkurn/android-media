@@ -1,6 +1,8 @@
 package com.tokopedia.byteplus.effect.util
 
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import okhttp3.ResponseBody
 import java.io.*
 import java.util.zip.ZipEntry
@@ -16,12 +18,14 @@ object FileUtil {
     fun unzipFile(filePath: String, dirPath: String): Boolean {
         val dstDir = File(dirPath)
         if (!dstDir.exists() && !dstDir.mkdirs()) {
+            EffectLogger.sendErrorCreateDir(dstDir.absolutePath)
             throw IllegalStateException("mkdir failed")
         }
         try {
             val zipInputStream = ZipInputStream(FileInputStream(File(filePath)))
             return unzipFile(zipInputStream, dstDir)
-        } catch (e: java.lang.Exception) {
+        } catch (e: Exception) {
+            EffectLogger.sendErrorUnzip(e, dstDir.absolutePath)
             if (GlobalConfig.DEBUG) e.printStackTrace()
         }
         return false
@@ -40,6 +44,7 @@ object FileUtil {
             val futureFile = File(dirPath, fileName)
 
             if (!dir.exists() && !dir.mkdirs()) {
+                EffectLogger.sendErrorCreateDir(dir.absolutePath)
                 throw IllegalStateException("mkdir failed")
             }
             var inputStream: InputStream? = null
@@ -61,12 +66,14 @@ object FileUtil {
                 outputStream.flush()
                 true
             } catch (e: IOException) {
+                EffectLogger.sendErrorWriteToDisk(e, dirPath, fileName)
                 false
             } finally {
                 inputStream?.close()
                 outputStream?.close()
             }
         } catch (e: IOException) {
+            EffectLogger.sendErrorWriteToDisk(e, dirPath, fileName)
             false
         }
     }
@@ -101,6 +108,7 @@ object FileUtil {
                 }
             } while (null != entry)
         } catch (e: Exception) {
+            EffectLogger.sendErrorUnzip(e, dstDir.absolutePath)
             e.printStackTrace()
             return false
         } finally {
