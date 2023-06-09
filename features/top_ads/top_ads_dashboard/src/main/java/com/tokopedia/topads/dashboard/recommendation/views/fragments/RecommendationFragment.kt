@@ -242,12 +242,12 @@ class RecommendationFragment : BaseDaggerFragment() {
             saranAdsTypeTab?.hide()
             saranTopAdsViewPager?.hide()
             renderEmptyStates()
-        } else if (count < 10) {
-            insightWidgetTitle?.text = "Tingkatkan performa 5 grup iklanmu, yuk!"
+        } else if (count <= 10) {
+            insightWidgetTitle?.text = "Tingkatkan performa $count grup iklanmu, yuk!"
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
-                    R.drawable.perfomace_widget_optimized_icon
+                    R.drawable.performance_widget_default_icon
                 )
             )
         } else {

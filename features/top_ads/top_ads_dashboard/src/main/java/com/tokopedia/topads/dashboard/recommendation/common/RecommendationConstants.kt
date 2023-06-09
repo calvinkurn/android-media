@@ -58,4 +58,21 @@ object RecommendationConstants {
         const val INSIGHT_TYPE_DAILY_BUDGET_NAME = "Anggaran Harian"
         const val INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME = "Kata Kunci Negatif"
     }
+
+    object InsightGqlInputSource {
+        // topadsGetShopInfoV2_1
+        // topAdsGetTotalAdGroupsWithInsightByShopID
+        // topAdsListAllInsightCounts
+        const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center.landing_page"
+
+        // topAdsGetTotalAdGroupsWithInsightByShopID
+        // topAdsListAllInsightCounts
+        // topAdsBatchGetKeywordInsightByGroupIDV3
+        // topAdsBatchGetAdGroupBidInsightByGroupID
+        const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center.group_detail_page"
+
+        // topAdsGetTotalAdGroupsWithInsightByShopID
+        // topAdsListAllInsightCounts
+        const val SOURCE_TOP_ADS_DASHBOARD = "android.top_ads_dashboard"
+    }
 }
