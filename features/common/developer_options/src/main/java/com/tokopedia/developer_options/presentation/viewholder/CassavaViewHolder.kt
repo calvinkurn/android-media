@@ -20,7 +20,7 @@ class CassavaViewHolder(
     override fun bind(element: CassavaUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.cassava_btn)
         btn.setOnClickListener {
-            DevOpsTracker.trackClickEvent(this::class.simpleName.toString())
+            DevOpsTracker.trackEntryEvent(this::class.simpleName.toString())
             itemView.context.apply { startActivity(newInstance(this)) }
         }
     }

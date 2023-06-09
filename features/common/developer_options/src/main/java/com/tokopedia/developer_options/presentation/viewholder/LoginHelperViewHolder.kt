@@ -20,7 +20,7 @@ class LoginHelperViewHolder(
     override fun bind(element: LoginHelperUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.login_helper_btn)
         btn.setOnClickListener {
-            DevOpsTracker.trackClickEvent(this::class.simpleName.toString())
+            DevOpsTracker.trackEntryEvent(this::class.simpleName.toString())
             loginHelperListener.routeToLoginHelperActivity()
         }
     }

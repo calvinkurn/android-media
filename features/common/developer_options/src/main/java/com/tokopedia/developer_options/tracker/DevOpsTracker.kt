@@ -30,7 +30,7 @@ object DevOpsTracker {
                 val id = UserSession(context).androidId
                 scope.launch(Dispatchers.IO) {
                     val i = InfluxInteractor.Builder("tkpd:tkpd")
-                        .measurement("devops_tracker")
+                        .measurement("devops_analytics")
                         .setIdentity(IdType.CUSTOM(id))
                         .build()
                     if (i.ping()) {
@@ -43,13 +43,54 @@ object DevOpsTracker {
         }
     }
 
-    fun trackClickEvent(page: String) {
+    fun trackEntryEvent(page: String) {
         if (influx == null) return
         scope.launch(Dispatchers.IO) {
             influx?.send(
-                tags = mapOf("page" to page, "event" to "click"),
-                values = mapOf("count" to 1)
+                tags = mapOf("eventType" to "entry"),
+                values = mapOf("feature" to page)
             )
         }
     }
+}
+
+internal enum class DevopsFeature {
+    LOGIN_HELPER,
+    ENABLE_DEVOPS_ON_NOTIF,
+    PRODUCT_DETAIL_DEV,
+    SYSTEM_APPS,
+    NON_SYSTEM_APPS,
+    RESET_ONBOARDING,
+    FORCE_LOGOUT,
+    FORCE_CRASH,
+    SCREEN_RECORDER,
+    ENABLE_NEW_TYPO_GUIDE,
+    FORCE_DARKMODE,
+    ROUTEMANAGER_ROUTE,
+    VIEW_APPLINK_LIST,
+    TRANSLATOR_TOGGLE,
+    TRANSLATOR_SET_KEY,
+    CONVERT_RESOURCE_ID,
+    VIEW_HANSELPATCH,
+    SEND_FIREBASE_EXCEPTION,
+    VIEW_NETWORK_LOG,
+    VIEW_TOPADS_LOG,
+    VIEW_APPLINK_LOG,
+    VIEW_JOURNEY_LOG,
+    VIEW_FPM_LOG,
+    CASSAVA,
+    VIEW_ANALYTICS_LOG,
+    REMOTE_CONFIG_EDITOR,
+    SEND_LOG_TO_SERVER,
+    VIEW_SERVER_LOGGER,
+    SHARED_PREF_EDITOR,
+    VERSION_CHANGER,
+    ENV_CHANGER,
+    VIEW_FAKE_RESPONSE,
+    VIEW_DATA_EXPLORER,
+    AB_TEST_MANUAL_APPLY,
+    VIEW_AB_TEST_LIST,
+    VIEW_SSE_LOGGING,
+    VIEW_PLAY_WEBSOCKET_LOG,
+    VIEW_TOPCHAT_WEBSOCKET_LOG
 }
