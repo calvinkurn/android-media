@@ -338,30 +338,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-
-        getScreenLocation()
-    }
-
-    private fun getScreenLocation() {
-        fun setupDraggable() {
-            view?.setOnTouchListener { vw, motionEvent ->
-                if (vw.x >= DIALOG_VISIBILITY_THRESHOLD) {
-//                    dismiss()
-                    return@setOnTouchListener false
-                }
-                gestureDetector.onTouchEvent(motionEvent)
-                vw.performClick()
-                true
-            }
-        }
-        viewLifecycleOwner.lifecycleScope.launch {
-            view?.awaitLayout()
-            setupDraggable()
-        }
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -418,17 +394,6 @@ class PlayExploreWidgetFragment @Inject constructor(
         )
     }
 
-//    override fun dismiss() {
-//        if (!isVisible) return
-// //        viewModel.submitAction(DismissExploreWidget)
-//        super.dismiss()
-//    }
-
-//    override fun onCancel(dialog: DialogInterface) {
-// //        viewModel.submitAction(DismissExploreWidget)
-//        super.onCancel(dialog)
-//    }
-
     private fun showEmpty(needToShow: Boolean) {
         if (needToShow) {
             binding.srExploreWidget.gone()
@@ -437,11 +402,6 @@ class PlayExploreWidgetFragment @Inject constructor(
             binding.srExploreWidget.visible()
             binding.viewExploreWidgetEmpty.root.gone()
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-//        dismiss()
     }
 
     override fun onDetach() {

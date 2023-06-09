@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.explorewidget
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,17 +12,19 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.sidesheet.SideSheetBehavior
 import com.google.android.material.sidesheet.SideSheetCallback
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.PlayDialogExploreWidgetBinding
 import com.tokopedia.play.view.dialog.PlayExploreWidgetFragment
+import com.tokopedia.play.view.uimodel.action.DismissExploreWidget
+import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
@@ -64,6 +67,16 @@ class PlayExploreWidget @Inject constructor(
 
     private var _binding: PlayDialogExploreWidgetBinding? = null
     private val binding: PlayDialogExploreWidgetBinding get() = _binding!!
+
+    private var factory: Factory? = null
+    private lateinit var viewModel: PlayViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val vmFactory = factory?.getViewModelFactory() ?: ViewModelProvider(this)
+        viewModel = vmFactory[PlayViewModel::class.java]
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -124,9 +137,24 @@ class PlayExploreWidget @Inject constructor(
         if (!isAdded) showNow(manager, TAG)
     }
 
+    fun setFactory(factory: Factory){
+        this.factory = factory
+    }
+
     override fun dismiss() {
         if (!isVisible) return
+        viewModel.submitAction(DismissExploreWidget)
         super.dismiss()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+         viewModel.submitAction(DismissExploreWidget)
+        super.onCancel(dialog)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
     }
 
     internal class Adapter(
@@ -139,6 +167,10 @@ class PlayExploreWidget @Inject constructor(
 
         override fun createFragment(position: Int): Fragment =
             tabs.values.elementAt(position) //TODO() handle null or else
+    }
+
+    interface Factory {
+        fun getViewModelFactory() : ViewModelProvider
     }
 
     companion object {

@@ -2063,6 +2063,11 @@ class PlayUserInteractionFragment @Inject constructor(
         eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked)
         PlayExploreWidget
             .getOrCreate(childFragmentManager, requireActivity().classLoader)
+            .apply {
+                setFactory(object : PlayExploreWidget.Factory {
+                    override fun getViewModelFactory(): ViewModelProvider = getPlayViewModelProvider()
+                })
+            }
             .showNow(childFragmentManager)
     }
 
