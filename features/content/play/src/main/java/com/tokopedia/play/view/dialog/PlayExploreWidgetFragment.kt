@@ -48,7 +48,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -69,7 +68,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
 
-
     private val coordinator: PlayExploreWidgetCoordinator =
         PlayExploreWidgetCoordinator(this).apply {
             setListener(this@PlayExploreWidgetFragment)
@@ -89,7 +87,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val scrollListener by lazy(LazyThreadSafetyMode.NONE) {
         object : EndlessRecyclerViewScrollListener(binding.rvWidgets.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.submitAction(NextPageWidgets)
+                viewModel.submitAction(NextPageWidgets(ExploreWidgetType.Default))
             }
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
@@ -108,10 +106,11 @@ class PlayExploreWidgetFragment @Inject constructor(
                 if (dx < 0 && dy < 0) return
                 val lastVisibleItem = widgetLayoutManager.findLastVisibleItemPosition()
                 val firstVisibleItem = widgetLayoutManager.findFirstVisibleItemPosition()
-                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage)
+                if ((firstVisibleItem == 0 && lastVisibleItem == layoutManager.itemCount - 1) && hasNextPage) {
                     loadMoreNextPage()
-                else
+                } else {
                     super.checkLoadMore(view, dx, dy)
+                }
             }
         }
     }
@@ -191,8 +190,6 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
     }
 
     private var analytic: PlayAnalytic2? = null
@@ -272,7 +269,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 ) {
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
-                        cachedState.value.exploreWidget.data.widgets,
+                        cachedState.value.exploreWidget.data.widgets
                     )
                 }
 
@@ -309,7 +306,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun renderWidgets(
         state: ExploreWidgetState,
-        widget: List<WidgetUiModel>,
+        widget: List<WidgetUiModel>
     ) {
         setLayoutManager(state)
         showEmpty(state is ExploreWidgetState.Empty)
@@ -318,7 +315,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             ExploreWidgetState.Success -> {
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
-                //scrollListener.setHasNextPage(param.hasNextPage)
+                // scrollListener.setHasNextPage(param.hasNextPage)
             }
             ExploreWidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
@@ -337,7 +334,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 )
             }
             else -> {
-                //no-op
+                // no-op
             }
         }
     }
@@ -423,12 +420,12 @@ class PlayExploreWidgetFragment @Inject constructor(
 
 //    override fun dismiss() {
 //        if (!isVisible) return
-////        viewModel.submitAction(DismissExploreWidget)
+// //        viewModel.submitAction(DismissExploreWidget)
 //        super.dismiss()
 //    }
 
 //    override fun onCancel(dialog: DialogInterface) {
-////        viewModel.submitAction(DismissExploreWidget)
+// //        viewModel.submitAction(DismissExploreWidget)
 //        super.onCancel(dialog)
 //    }
 
@@ -453,7 +450,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setLayoutManager(state: ExploreWidgetState) {
-        if(state is ExploreWidgetState.Fail) return
+        if (state is ExploreWidgetState.Fail) return
 
         binding.rvWidgets.layoutManager = if (state is ExploreWidgetState.Loading) shimmerLayoutManager else widgetLayoutManager
         scrollListener.updateLayoutManager(binding.rvWidgets.layoutManager)

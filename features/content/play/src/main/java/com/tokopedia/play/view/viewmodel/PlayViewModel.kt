@@ -380,7 +380,7 @@ class PlayViewModel @AssistedInject constructor(
         _engagementUiState,
         _followPopUpUiState,
         _explore.distinctUntilChanged(),
-        _combinedState,
+        _combinedState
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, address,
@@ -404,7 +404,7 @@ class PlayViewModel @AssistedInject constructor(
             engagement = engagement,
             followPopUp = followPopUp,
             exploreWidget = explore,
-            combinedState = combinedState,
+            combinedState = combinedState
         )
     }.stateIn(
         viewModelScope,
@@ -1107,12 +1107,23 @@ class PlayViewModel @AssistedInject constructor(
             is FetchWidgets -> {
                 _isBottomSheetsShown.update { true }
                 widgetQuery.value = widgetQuery.value.mapValues {
-                    if (action.type == it.key) it.value.copy(isRefresh = true)
-                    else it.value
+                    if (action.type == it.key) {
+                        it.value.copy(isRefresh = true)
+                    } else {
+                        it.value
+                    }
                 }
             }
             is ClickChipWidget -> onChipAction(action.item)
-            NextPageWidgets -> {}
+            is NextPageWidgets -> {
+                widgetQuery.value = widgetQuery.value.mapValues {
+                    if (action.type == it.key) {
+                        it.value.copy(isRefresh = true)
+                    } else {
+                        it.value
+                    }
+                }
+            }
             RefreshWidget -> {}
             is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
             DismissExploreWidget -> {
@@ -1129,7 +1140,7 @@ class PlayViewModel @AssistedInject constructor(
                 viewModelScope.launch {
                     _uiEvent.emit(CommentVisibilityEvent(action.isOpen))
                 }
-                if(!action.isOpen) return
+                if (!action.isOpen) return
                 updateCommentConfig()
             }
         }
@@ -1943,7 +1954,7 @@ class PlayViewModel @AssistedInject constructor(
                 setupInteractive(interactive)
             }
             is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
-                //TODO() separate class
+                // TODO() separate class
                 _channelDetail.update { channel ->
                     channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName, categoryGroup = result.group, hasCategory = result.hasCategory))
                 }
@@ -2881,7 +2892,7 @@ class PlayViewModel @AssistedInject constructor(
      * Explore Widget
      */
     private fun setExploreWidgetParam(config: ExploreWidgetConfig) {
-        widgetQuery.value = mapOf (
+        widgetQuery.value = mapOf(
             ExploreWidgetType.Category to WidgetParamUiModel(group = config.categoryGroup, sourceId = config.categorySourceId, sourceType = config.categorySourceType),
             ExploreWidgetType.Default to WidgetParamUiModel(group = config.group, sourceId = config.sourceId, sourceType = config.sourceType)
         )
@@ -2896,10 +2907,10 @@ class PlayViewModel @AssistedInject constructor(
             }
 
             when {
-                param.group ==_channelDetail.value.exploreWidgetConfig.group -> {
+                param.group == _channelDetail.value.exploreWidgetConfig.group -> {
                     _exploreWidget.update { widget -> widget.copy(chips = widget.chips.copy(state = ResultState.Loading)) }
-                } //initial state - check
-                _exploreWidget.value.widgets.isEmpty()-> {
+                } // initial state - check
+                _exploreWidget.value.widgets.isEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
                 }
             }
@@ -2916,8 +2927,9 @@ class PlayViewModel @AssistedInject constructor(
 
             when {
                 chips.items.isNotEmpty() -> {
-                    if (!response.isSubSlotAvailable)
+                    if (!response.isSubSlotAvailable) {
                         throw MessageErrorException()
+                    }
                     _exploreWidget.update { widget -> widget.copy(chips = chips) }
                     onChipAction(chips.items.first())
                 }
@@ -2925,13 +2937,16 @@ class PlayViewModel @AssistedInject constructor(
                     _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success) }
                     widgetQuery.update { query ->
                         query.mapValues {
-                            if (it.key == ExploreWidgetType.Default) it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
-                            else it.value
+                            if (it.key == ExploreWidgetType.Default) {
+                                it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
+                            } else {
+                                it.value
+                            }
                         }
                     }
                 }
             }
-        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) }}
+        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) } }
     }
 
     private fun updateCategoryWidget(param: WidgetParamUiModel) {
@@ -2955,8 +2970,11 @@ class PlayViewModel @AssistedInject constructor(
             _categoryWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success) }
             widgetQuery.update { query ->
                 query.mapValues {
-                    if (it.key == ExploreWidgetType.Category) it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
-                    else it.value
+                    if (it.key == ExploreWidgetType.Category) {
+                        it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
+                    } else {
+                        it.value
+                    }
                 }
             }
         }) { exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception)) } }
@@ -2979,8 +2997,11 @@ class PlayViewModel @AssistedInject constructor(
         }
         widgetQuery.update { query ->
             query.mapValues {
-                if (it.key == ExploreWidgetType.Default) it.value.copy(sourceId = element.sourceId, sourceType = element.sourceType, group = element.group, cursor = "", isRefresh = true)
-                else it.value
+                if (it.key == ExploreWidgetType.Default) {
+                    it.value.copy(sourceId = element.sourceId, sourceType = element.sourceType, group = element.group, cursor = "", isRefresh = true)
+                } else {
+                    it.value
+                }
             }
         }
     }
@@ -3036,7 +3057,7 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val response = repo.getCountComment(channelId)
             _channelDetail.update { it.copy(commentConfig = response) }
-        }){}
+        }) {}
     }
     private fun handleEmptyExplore(type: ExploreWidgetType) {
         if (type == ExploreWidgetType.Category) {
@@ -3051,7 +3072,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectedReason(id: Int) {
-        val selected = _userReportItems.value.reasoningList.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find {  it.reasoningId == id }
+        val selected = _userReportItems.value.reasoningList.filterIsInstance<PlayUserReportReasoningUiModel.Reasoning>().find { it.reasoningId == id }
         _userReportSubmission.update {
             it.copy(selectedReasoning = selected)
         }
@@ -3122,7 +3143,7 @@ class PlayViewModel @AssistedInject constructor(
          */
         private const val DELAY_UPDATE_CART_AFTER_BUY = 500L
 
-        //Explore Widget
+        // Explore Widget
         private const val DEFAULT_TAB = "Eksplor"
     }
 }

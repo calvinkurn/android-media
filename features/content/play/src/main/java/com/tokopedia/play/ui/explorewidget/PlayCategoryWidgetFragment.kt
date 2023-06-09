@@ -26,6 +26,7 @@ import com.tokopedia.play.view.uimodel.ExploreWidgetState
 import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.action.EmptyPageWidget
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
+import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.uimodel.action.RefreshWidget
 import com.tokopedia.play.view.uimodel.event.ExploreWidgetNextTab
 import com.tokopedia.play.view.uimodel.getCategoryShimmering
@@ -58,7 +59,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
     private val scrollListener by lazyThreadSafetyNone {
         object : EndlessRecyclerViewScrollListener(binding.rvPlayCategoryWidget.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                // viewModel.submitAction(NextPageWidgets)
+                viewModel.submitAction(NextPageWidgets(ExploreWidgetType.Category))
             }
         }
     }
@@ -114,7 +115,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
             LinkMovementMethod.getInstance()
 
-        //TODO() temp
+        // TODO() temp
         viewModel.submitAction(
             FetchWidgets(ExploreWidgetType.Category)
         )
@@ -172,7 +173,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
 
     private fun goToNextPage() {
         if (requireParentFragment() !is PlayExploreWidget) return
-        (requireParentFragment() as  PlayExploreWidget).moveTab(1)
+        (requireParentFragment() as PlayExploreWidget).moveTab(1)
     }
 
     override fun onDestroyView() {
