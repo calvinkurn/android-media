@@ -1636,13 +1636,19 @@ open class ProductManageFragment :
             deleteProductResult.error?.message
         }
         message?.let {
-            val retryMessage =
-                getString(R.string.label_oke)
-            showErrorToast(it, retryMessage) {
-                viewModel.deleteSingleProduct(
-                    deleteProductResult.productName,
-                    deleteProductResult.productId
-                )
+            if (deleteProductResult.error is NetworkErrorException) {
+                val retryMessage =
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry)
+                showErrorToast(it, retryMessage) {
+                    viewModel.deleteSingleProduct(
+                        deleteProductResult.productName,
+                        deleteProductResult.productId
+                    )
+                }
+            } else {
+                val okeMessage =
+                    getString(R.string.retry_label)
+                showErrorToast(it, okeMessage)
             }
         }
     }
