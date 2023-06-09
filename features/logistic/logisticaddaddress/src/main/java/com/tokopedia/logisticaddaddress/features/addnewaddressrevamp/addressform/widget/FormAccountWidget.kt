@@ -114,7 +114,7 @@ class FormAccountWidget : LinearLayout {
 
     fun setupOnTextChangeListener(
         hasFocusInputReceiverName: () -> Unit,
-        hasFocusInputPhoneNumber: () -> Unit,
+        hasFocusInputPhoneNumber: () -> Unit
     ) {
         binding?.apply {
             etNomorHp.textFieldInput.apply {

@@ -12,12 +12,10 @@ import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.AddAddressPinpointTracker
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
 class PinpointWebviewViewModel @Inject constructor(
-    private val repo: KeroRepository,
-    private val saveAddressMapper: SaveAddressMapper
+    private val repo: KeroRepository
 ) : ViewModel() {
 
     private val _pinpointState = MutableLiveData<PinpointWebviewState>()
@@ -44,7 +42,7 @@ class PinpointWebviewViewModel @Inject constructor(
                     it.districtName = data.districtName
                 }
                 if (saveAddressDataModel != null) {
-                    saveAddressDataModel = saveAddressMapper.map(data, null, saveAddressDataModel)
+                    saveAddressDataModel = SaveAddressMapper.map(data, null, saveAddressDataModel)
                 }
                 sendSuccessTracker()
                 _pinpointState.value = PinpointWebviewState.AddressDetailResult.Success(

@@ -3,7 +3,9 @@ package com.tokopedia.logisticaddaddress.common.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticaddaddress.databinding.ChipsItemBinding
+import com.tokopedia.logisticaddaddress.databinding.ChipsUnifyItemBinding
+import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_NORMAL
+import com.tokopedia.unifycomponents.ChipsUnify.Companion.TYPE_SELECTED
 
 /**
  * Created by fwidjaja on 2019-05-29.
@@ -17,7 +19,7 @@ class ZipCodeChipsAdapter(private var actionListener: ActionListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ChipsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ChipsUnifyItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -32,16 +34,16 @@ class ZipCodeChipsAdapter(private var actionListener: ActionListener) :
     }
 
     inner class ViewHolder(
-        private val binding: ChipsItemBinding
+        private val binding: ChipsUnifyItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(zipCode: String) {
             val res = binding.root.context.resources
-            binding.tvChipsItem.apply {
-                text = zipCode
-                setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            binding.chipsItem.apply {
+                chipText = zipCode
+                chipType = TYPE_NORMAL
                 setOnClickListener {
-                    setTextColor(res.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G300))
+                    chipType = TYPE_SELECTED
                     actionListener.onZipCodeClicked(zipCode)
                 }
             }

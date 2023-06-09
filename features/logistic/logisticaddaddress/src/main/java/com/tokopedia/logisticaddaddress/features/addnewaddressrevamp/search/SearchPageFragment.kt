@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -51,6 +52,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_LONG
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_REF
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_SAVE_DATA_UI_MODEL
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.databinding.FragmentSearchAddressBinding
@@ -144,6 +146,26 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         initDataFromArguments()
     }
 
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    hitAnalyticOnBackPress()
+                    activity?.finish()
+                }
+            }
+        )
+    }
+
+    private fun hitAnalyticOnBackPress() {
+        if (isEdit) {
+            EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+        } else {
+            AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+        }
+    }
+
     private fun initDataFromArguments() {
         arguments?.apply {
             isPositiveFlow = getBoolean(EXTRA_IS_POSITIVE_FLOW)
@@ -156,6 +178,9 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             currentLong = getDouble(EXTRA_LONG, DEFAULT_LONG)
             getParcelable<SaveAddressDataModel>(EXTRA_SAVE_DATA_UI_MODEL)?.apply {
                 saveAddressDataModel = this
+            }
+            getString(EXTRA_REF)?.takeIf { !isEdit }?.let { from ->
+                AddNewAddressRevampAnalytics.sendScreenName(from)
             }
         }
     }
@@ -181,6 +206,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         setSearchView()
         setViewListener()
         initObserver()
+        setOnBackPressed()
     }
 
     private fun checkGms() {
@@ -323,6 +349,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 it.tvMessageSearch.visibility = View.GONE
                 it.tvSearchCurrentLocation.text =
                     getString(R.string.tv_discom_current_location_text)
+            }
+            it.headerSearchAddress.run {
+                setNavigationOnClickListener {
+                    hitAnalyticOnBackPress()
+                    activity?.finish()
+                }
             }
         }
     }
@@ -571,11 +603,12 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                    ContextCompat.checkSelfPermission(
+                ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-                } != PackageManager.PERMISSION_GRANTED) {
+            } != PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }
@@ -665,12 +698,15 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         bundle.putString(PARAM_SOURCE, source)
         bundle.putBoolean(EXTRA_GMS_AVAILABILITY, isGmsAvailable)
         if (!isEdit && !isGetPinPointOnly) {
-            startActivityForResult(context?.let {
-                PinpointNewPageActivity.createIntent(
-                    it,
-                    bundle
-                )
-            }, REQUEST_PINPOINT_PAGE)
+            startActivityForResult(
+                context?.let {
+                    PinpointNewPageActivity.createIntent(
+                        it,
+                        bundle
+                    )
+                },
+                REQUEST_PINPOINT_PAGE
+            )
         } else {
             activity?.run {
                 setResult(
@@ -718,6 +754,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     putBoolean(EXTRA_IS_POLYGON, bundle.getBoolean(EXTRA_IS_POLYGON))
                     putBoolean(EXTRA_IS_EDIT, bundle.getBoolean(EXTRA_IS_EDIT))
                     putString(PARAM_SOURCE, bundle.getString(PARAM_SOURCE, ""))
+                    putString(EXTRA_REF, bundle.getString(EXTRA_REF, ""))
                     putBoolean(
                         EXTRA_IS_GET_PINPOINT_ONLY,
                         bundle.getBoolean(EXTRA_IS_GET_PINPOINT_ONLY)

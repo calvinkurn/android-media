@@ -84,7 +84,6 @@ class DiscomBottomSheetRevamp :
     private var isKodePosShown: Boolean = false
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
-    private var staticDimen8dp: Int? = 0
     private var page: Int = 1
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
     private val searchHandler = Handler()
@@ -455,9 +454,10 @@ class DiscomBottomSheetRevamp :
     private fun setupRvZipCodeChips() {
         viewBinding?.rvKodeposChips?.apply {
             visibility = View.GONE
-            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
             layoutManager = chipsLayoutManagerZipCode
             adapter = zipCodeChipsAdapter
+            val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+            addItemDecoration(ChipsItemDecoration(dist))
         }
     }
 

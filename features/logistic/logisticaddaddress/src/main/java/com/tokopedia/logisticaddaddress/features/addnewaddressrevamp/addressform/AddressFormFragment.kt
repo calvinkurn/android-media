@@ -9,6 +9,7 @@ import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
@@ -155,9 +156,6 @@ class AddressFormFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var saveAddressMapper: SaveAddressMapper
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -178,6 +176,31 @@ class AddressFormFragment :
         initData()
         checkMapsAvailability()
         permissionCheckerHelper = PermissionCheckerHelper()
+    }
+
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (!isEdit) {
+                        if (isPositiveFlow) {
+                            AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+                        } else {
+                            AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+                        }
+                        activity?.finish()
+                    } else {
+                        EditAddressRevampAnalytics.onClickBackArrowEditAddress(userSession.userId)
+                        if (isBackDialogClicked) {
+                            activity?.finish()
+                        } else {
+                            showDialogBackButton()
+                        }
+                    }
+                }
+            }
+        )
     }
 
     private fun initData() {
@@ -225,6 +248,7 @@ class AddressFormFragment :
         super.onViewCreated(view, savedInstanceState)
         prepareData(savedInstanceState)
         initObserver()
+        setOnBackPressed()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1437,7 +1461,7 @@ class AddressFormFragment :
         postalCode: String,
         isPinpoint: Boolean
     ) {
-        viewModel.saveDataModel = saveAddressMapper.mapAddressModeltoSaveAddressDataModel(
+        viewModel.saveDataModel = SaveAddressMapper.mapAddressModeltoSaveAddressDataModel(
             districtAddress,
             postalCode,
             viewModel.saveDataModel

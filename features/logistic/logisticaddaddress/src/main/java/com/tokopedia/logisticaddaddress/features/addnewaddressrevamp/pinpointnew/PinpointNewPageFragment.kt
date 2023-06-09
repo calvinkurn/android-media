@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -110,9 +111,6 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var saveAddressMapper: SaveAddressMapper
-
     private val viewModel: PinpointNewPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(PinpointNewPageViewModel::class.java)
     }
@@ -189,7 +187,24 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setOnBackPressed()
         checkMapsAvailability(savedInstanceState)
+    }
+
+    private fun setOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (isEdit) {
+                        EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+                    } else {
+                        AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+                    }
+                    activity?.finish()
+                }
+            }
+        )
     }
 
     private fun checkMapsAvailability(savedInstanceState: Bundle?) {
@@ -732,7 +747,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
 
-        val savedModel = saveAddressMapper.map(data, null, viewModel.getAddress())
+        val savedModel = SaveAddressMapper.map(data, null, viewModel.getAddress())
         viewModel.setAddress(savedModel)
         with(data.errMessage) {
             if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {
@@ -1098,12 +1113,12 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
                     }
                     setResultAddressFormNegative()
                 }
-                val saveAddress = saveAddressMapper.map(data, null, viewModel.getAddress())
+                val saveAddress = SaveAddressMapper.map(data, null, viewModel.getAddress())
                 viewModel.setAddress(saveAddress)
                 updateGetDistrictBottomSheet(saveAddress)
             }
         } else {
-            val saveAddress = saveAddressMapper.map(data, null, viewModel.getAddress())
+            val saveAddress = SaveAddressMapper.map(data, null, viewModel.getAddress())
             viewModel.setAddress(saveAddress)
             updateGetDistrictBottomSheet(saveAddress)
         }

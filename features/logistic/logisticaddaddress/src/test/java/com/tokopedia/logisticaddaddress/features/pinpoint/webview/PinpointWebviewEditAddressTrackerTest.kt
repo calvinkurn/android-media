@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.pinpoint.webview
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
-import com.tokopedia.logisticaddaddress.domain.mapper.SaveAddressMapper
 import com.tokopedia.logisticaddaddress.features.pinpoint.webview.analytics.EditAddressPinpointTracker
 import io.mockk.Runs
 import io.mockk.every
@@ -31,7 +30,7 @@ class PinpointWebviewEditAddressTrackerTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = PinpointWebviewViewModel(repo, SaveAddressMapper())
+        viewModel = PinpointWebviewViewModel(repo)
         viewModel.pinpointState.observeForever(liveDataObserver)
         viewModel.setSource("EDIT_ADDRESS")
         every { liveDataObserver.onChanged(any()) } just Runs

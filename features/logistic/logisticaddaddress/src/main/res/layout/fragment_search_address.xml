@@ -7,6 +7,17 @@
     android:background="@color/Unify_Background"
     android:orientation="vertical">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/header_search_address"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="@string/title_toolbar_search_address"
+        app:unify_header_subtitle="@string/subtitle_toolbar_search_address"/>
+
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_page_input"
         android:layout_width="match_parent"

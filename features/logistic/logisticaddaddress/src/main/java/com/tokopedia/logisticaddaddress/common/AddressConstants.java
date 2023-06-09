@@ -24,6 +24,7 @@ public class AddressConstants {
 
     public static final String EXTRA_LAT = "EXTRA_LAT";
     public static final String EXTRA_LONG = "EXTRA_LONG";
+    public static final String EXTRA_REF = "EXTRA_REF";
     public static final String EXTRA_SHOW_AUTOCOMPLETE = "EXTRA_SHOW_AUTOCOMPLETE";
     public static final String EXTRA_IS_MISMATCH = "EXTRA_IS_MISMATCH";
     public static final String EXTRA_IS_MISMATCH_SOLVED = "EXTRA_IS_ORIGIN_MISMATCH_SOLVED";

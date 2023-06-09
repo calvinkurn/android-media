@@ -4,9 +4,8 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.common.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import javax.inject.Inject
 
-class SaveAddressMapper @Inject constructor() {
+object SaveAddressMapper {
 
     fun map(
         autoFillModel: Data,
