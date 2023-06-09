@@ -150,6 +150,7 @@ class TokoChatGeneralTest : BaseTokoChatTest() {
         // When
         ConsentRobot.clickCheckBoxConsent()
         ConsentRobot.clickSubmitConsent()
+        Thread.sleep(1000)
 
         // Then
         ConsentResult.assertConsentChatBottomSheet(isDisplayed = false)
