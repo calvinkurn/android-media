@@ -32,5 +32,4 @@ class DistrictRecommendationMapper @Inject constructor() {
             }
         } as ArrayList<Address>
     }
-
 }

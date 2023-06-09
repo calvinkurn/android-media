@@ -16,9 +16,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.containsMapOf
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.Companion.INTENT_DISTRICT_RECOMMENDATION_ADDRESS
 import com.tokopedia.logisticaddaddress.interceptor.AddAddressInterceptor
 import com.tokopedia.logisticaddaddress.test.R
@@ -37,7 +37,7 @@ class DiscomActivityTest {
 
     @get:Rule
     val activityRule =
-            IntentsTestRule(DiscomActivity::class.java, false, false)
+        IntentsTestRule(DiscomActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
@@ -64,17 +64,19 @@ class DiscomActivityTest {
         Thread.sleep(DiscomFragment.DEBOUNCE_DELAY_IN_MILIS)
 
         onView(withId(R.id.recycler_view))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
+            .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
         assertThat(activityRule.activityResult, hasResultCode(Activity.RESULT_OK))
-        assertThat(activityRule.activityResult,
-                hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS)))
+        assertThat(
+            activityRule.activityResult,
+            hasResultData(hasExtraWithKey(INTENT_DISTRICT_RECOMMENDATION_ADDRESS))
+        )
 
         val query = mapOf(
-                "event" to "clickShipping",
-                "eventCategory" to "cart change address",
-                "eventAction" to "click checklist kota atau kecamatan pada \\+ address",
-                "eventLabel" to ".*"
+            "event" to "clickShipping",
+            "eventCategory" to "cart change address",
+            "eventAction" to "click checklist kota atau kecamatan pada \\+ address",
+            "eventLabel" to ".*"
         )
         assertThat(cassavaTestRule.getRecent(), containsMapOf(query, CassavaTestRule.MODE_SUBSET))
     }
@@ -85,8 +87,10 @@ class DiscomActivityTest {
     }
 
     private fun createIntent(): Intent {
-        return Intent(InstrumentationRegistry.getInstrumentation().targetContext,
-                DiscomActivity::class.java).also {
+        return Intent(
+            InstrumentationRegistry.getInstrumentation().targetContext,
+            DiscomActivity::class.java
+        ).also {
             it.data = Uri.parse(ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
             it.putExtra(IS_LOCALIZATION, false)
         }

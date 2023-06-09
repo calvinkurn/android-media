@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class DistrictBoundaryResponse(
 
-	@SerializedName("keroGetDistrictBoundaryArray")
-	val keroGetDistrictBoundaryArray: KeroGetDistrictBoundaryArray = KeroGetDistrictBoundaryArray()
+    @SerializedName("keroGetDistrictBoundaryArray")
+    val keroGetDistrictBoundaryArray: KeroGetDistrictBoundaryArray = KeroGetDistrictBoundaryArray()
 )

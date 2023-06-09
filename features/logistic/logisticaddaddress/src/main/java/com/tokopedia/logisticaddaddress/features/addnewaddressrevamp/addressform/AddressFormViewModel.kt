@@ -109,8 +109,10 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         }
     }
 
-    fun saveAddress(consentJson: String,
-    sourceValue: String) {
+    fun saveAddress(
+        consentJson: String,
+        sourceValue: String
+    ) {
         saveDataModel?.let { model ->
             viewModelScope.launch {
                 try {

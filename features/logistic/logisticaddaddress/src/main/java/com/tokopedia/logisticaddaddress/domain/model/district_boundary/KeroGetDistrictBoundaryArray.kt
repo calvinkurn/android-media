@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class KeroGetDistrictBoundaryArray(
 
-	@SerializedName("geometry")
-	val geometry: Geometry = Geometry()
+    @SerializedName("geometry")
+    val geometry: Geometry = Geometry()
 )

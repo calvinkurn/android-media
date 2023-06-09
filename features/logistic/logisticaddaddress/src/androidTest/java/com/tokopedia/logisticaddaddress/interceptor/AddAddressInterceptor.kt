@@ -8,8 +8,9 @@ object AddAddressInterceptor {
 
     fun setupGraphqlMockResponse(context: Context) {
         GraphqlClient.reInitRetrofitWithInterceptors(
-                listOf(logisticInterceptor),
-                context)
+            listOf(logisticInterceptor),
+            context
+        )
     }
 
     fun resetAllCustomResponse() {

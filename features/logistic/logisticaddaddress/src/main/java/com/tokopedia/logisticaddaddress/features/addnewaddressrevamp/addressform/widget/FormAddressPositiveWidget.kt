@@ -162,13 +162,15 @@ class FormAddressPositiveWidget : LinearLayout {
 
     fun setupRvLabelAddressChips(
         staticDimen8dp: Int?,
-        labelAlamatChipsLayoutManager: ChipsLayoutManager,
-        labelAlamatChipsAdapter: LabelAlamatChipsAdapter
+        labelAlamatChipsLayoutManager: ChipsLayoutManager?,
+        labelAlamatChipsAdapter: LabelAlamatChipsAdapter?
     ) {
-        rvLabelAddressChips?.apply {
-            staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
-            layoutManager = labelAlamatChipsLayoutManager
-            adapter = labelAlamatChipsAdapter
+        if (labelAlamatChipsLayoutManager != null && labelAlamatChipsAdapter != null) {
+            rvLabelAddressChips?.apply {
+                staticDimen8dp?.let { ChipsItemDecoration(it) }?.let { addItemDecoration(it) }
+                layoutManager = labelAlamatChipsLayoutManager
+                adapter = labelAlamatChipsAdapter
+            }
         }
     }
 }

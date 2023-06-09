@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class KeroDistrictRecommendation(
 
-	@SerializedName("district")
-	val district: List<DistrictItem> = emptyList(),
+    @SerializedName("district")
+    val district: List<DistrictItem> = emptyList(),
 
-	@SerializedName("next_available")
-	val nextAvailable: Boolean = false
+    @SerializedName("next_available")
+    val nextAvailable: Boolean = false
 )

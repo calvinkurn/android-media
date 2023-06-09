@@ -14,4 +14,3 @@ data class MapsGeocodeParam(
         val address: String = ""
     ) : GqlParam
 }
-

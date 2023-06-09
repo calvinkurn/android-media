@@ -87,7 +87,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         ViewModelProvider(this, viewModelFactory).get(SearchPageViewModel::class.java)
     }
 
-    private lateinit var autoCompleteAdapter: AutoCompleteListAdapter
+    private var autoCompleteAdapter: AutoCompleteListAdapter? = null
 
     private var bottomSheetLocUndefined: BottomSheetUnify? = null
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -588,7 +588,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         if (suggestedPlace.data.isNotEmpty()) {
             binding?.rvAddressList?.visibility = View.VISIBLE
             binding?.layoutEmptyState?.visibility = View.GONE
-            autoCompleteAdapter.setData(suggestedPlace.data)
+            autoCompleteAdapter?.setData(suggestedPlace.data)
         }
     }
 

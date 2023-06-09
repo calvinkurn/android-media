@@ -66,7 +66,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
-    /*Search Page*/
+    // Search Page
     fun onClickFieldCariLokasi(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -193,7 +193,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    /*Pinpoint Page*/
+    // Pinpoint Page
     fun onImpressBottomSheetAlamatTidakTerdeteksi(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -418,7 +418,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    /*ANA Positive*/
+    // ANA Positive
     fun onClickFieldLabelAlamatPositive(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -587,7 +587,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    /*ANA Negative*/
+    // ANA Negative
     fun onClickFieldLabelAlamatNegative(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -784,7 +784,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    /*Discom Bottomsheet ANA Negative*/
+    // Discom Bottomsheet ANA Negative
     fun onClickFieldCariKotaKecamatanNegative(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
@@ -897,7 +897,7 @@ object AddNewAddressRevampAnalytics : BaseTrackerConst() {
         )
     }
 
-    /**/
+    //
     fun onClickBackArrowKodePos(userId: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()

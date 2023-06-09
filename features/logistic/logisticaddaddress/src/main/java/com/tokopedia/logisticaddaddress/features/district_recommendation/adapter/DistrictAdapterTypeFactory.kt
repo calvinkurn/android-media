@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.logisticaddaddress.domain.model.Address
@@ -21,5 +20,4 @@ class DistrictAdapterTypeFactory : BaseAdapterTypeFactory(), DistrictTypeFactory
             DistrictViewHolder(parent)
         } else super.createViewHolder(parent, type)
     }
-
 }

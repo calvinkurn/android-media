@@ -3,9 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointne
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Geometry
-import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Location
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
@@ -14,8 +11,6 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticaddaddress.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.common.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.KeroAddressGeocode
-import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase

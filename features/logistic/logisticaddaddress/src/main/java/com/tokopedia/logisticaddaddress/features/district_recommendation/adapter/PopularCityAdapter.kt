@@ -1,11 +1,10 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticaddaddress.databinding.ChipsUnifyItemBinding
 import com.tokopedia.unifycomponents.ChipsUnify
-
 
 /**
  * Created by fwidjaja on 2019-05-29.

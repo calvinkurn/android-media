@@ -11,8 +11,8 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
@@ -77,7 +77,6 @@ class EditAddressRevampRobot {
         return EditAddressResultRobot().apply(func)
     }
 
-
     fun clickManualForm() {
         onView(withId(R.id.tv_message_search)).perform(click())
     }
@@ -126,7 +125,6 @@ class EditAddressRevampRobot {
     private fun waitForData(millis: Long = 1000L) {
         Thread.sleep(millis)
     }
-
 }
 
 class EditAddressResultRobot {

@@ -129,7 +129,7 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private var isGmsAvailable: Boolean = true
     private var currentPlaceId: String? = ""
 
-    /*to differentiate positive flow or negative flow*/
+    // to differentiate positive flow or negative flow
     private var isPositiveFlow: Boolean = true
     private var showIllustrationMap: Boolean = false
     private var isFromAddressForm: Boolean = false
@@ -878,11 +878,11 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (activity?.let {
-                ContextCompat.checkSelfPermission(
+                    ContextCompat.checkSelfPermission(
                         it,
                         permission
                     )
-            } != PackageManager.PERMISSION_GRANTED
+                } != PackageManager.PERMISSION_GRANTED
             ) {
                 return false
             }

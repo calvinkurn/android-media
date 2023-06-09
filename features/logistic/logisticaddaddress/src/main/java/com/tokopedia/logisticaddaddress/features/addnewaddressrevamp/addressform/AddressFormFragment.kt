@@ -81,8 +81,8 @@ class AddressFormFragment :
     var isBackDialogClicked: Boolean = false
     private var backDialog: DialogUnify? = null
 
-    private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
-    private lateinit var labelAlamatChipsLayoutManager: ChipsLayoutManager
+    private var labelAlamatChipsAdapter: LabelAlamatChipsAdapter? = null
+    private var labelAlamatChipsLayoutManager: ChipsLayoutManager? = null
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var districtBottomSheet: DiscomBottomSheetRevamp? = null
     private var isGmsAvailable: Boolean = true
@@ -1005,7 +1005,7 @@ class AddressFormFragment :
         )
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
-        } catch (e: ActivityNotFoundException) {
+        } catch (@Suppress("SwallowedException") e: ActivityNotFoundException) {
             showToaster(
                 message = getString(R.string.contact_not_found),
                 toasterType = Toaster.TYPE_ERROR
@@ -1161,13 +1161,13 @@ class AddressFormFragment :
             it.first.contains(text, true)
         }
         if (!isEdit) {
-            labelAlamatChipsAdapter.submitList(filterList)
+            labelAlamatChipsAdapter?.submitList(filterList)
         } else {
             if (text.isNotEmpty() && filterList.isEmpty()) {
                 rvChips?.gone()
             } else {
                 rvChips?.visible()
-                labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
+                labelAlamatChipsAdapter?.submitList(labelAlamatList.toList())
             }
         }
     }
@@ -1179,7 +1179,7 @@ class AddressFormFragment :
             binding?.formAddressNegativeWidget?.showLabelAddressList()
         }
         binding?.formAddressPositiveWidget?.setLayoutDirection()
-        labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
+        labelAlamatChipsAdapter?.submitList(labelAlamatList.toList())
     }
 
     private fun doSaveAddress() {

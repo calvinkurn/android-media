@@ -1,8 +1,8 @@
 package com.tokopedia.logisticaddaddress.common
 
 import android.graphics.Rect
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Created by fwidjaja on 2019-05-29.

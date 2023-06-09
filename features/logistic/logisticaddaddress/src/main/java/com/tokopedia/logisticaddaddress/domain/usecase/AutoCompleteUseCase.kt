@@ -44,5 +44,4 @@ class AutoCompleteUseCase
     fun unsubscribe() {
         gql.unsubscribe()
     }
-
 }

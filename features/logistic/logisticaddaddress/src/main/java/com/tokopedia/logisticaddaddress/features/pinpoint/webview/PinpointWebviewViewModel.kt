@@ -51,7 +51,7 @@ class PinpointWebviewViewModel @Inject constructor(
                     lat,
                     long
                 )
-            } catch (e: Throwable) {
+            } catch (@Suppress("SwallowedException") e: Throwable) {
                 sendFailedTracker()
                 _pinpointState.value =
                     PinpointWebviewState.AddressDetailResult.Fail(e.message)
@@ -143,7 +143,7 @@ class PinpointWebviewViewModel @Inject constructor(
         data.takeIf { value -> value.isNotEmpty() }?.run {
             try {
                 source = PinpointSource.valueOf(this)
-            } catch (e: IllegalArgumentException) {
+            } catch (@Suppress("SwallowedException") e: IllegalArgumentException) {
                 // no op
             }
         }

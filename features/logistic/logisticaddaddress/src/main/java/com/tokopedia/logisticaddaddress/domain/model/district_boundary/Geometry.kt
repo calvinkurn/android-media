@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class Geometry(
 
-	@SerializedName("coordinates")
-	val coordinates: List<List<List<List<Double>>>> = emptyList()
+    @SerializedName("coordinates")
+    val coordinates: List<List<List<List<Double>>>> = emptyList()
 )

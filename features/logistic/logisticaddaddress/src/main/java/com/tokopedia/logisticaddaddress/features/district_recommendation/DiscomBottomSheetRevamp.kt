@@ -75,7 +75,7 @@ class DiscomBottomSheetRevamp :
     private val popularCityAdapter by lazy { PopularCityAdapter(this) }
     private val listDistrictAdapter by lazy { DiscomAdapterRevamp(this) }
     private var discomRevampListener: DiscomRevampListener? = null
-    private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
+    private var chipsLayoutManagerZipCode: ChipsLayoutManager? = null
     private var isPinpoint: Boolean = false
     private var isEdit: Boolean = false
     private var isGmsAvailable: Boolean = true

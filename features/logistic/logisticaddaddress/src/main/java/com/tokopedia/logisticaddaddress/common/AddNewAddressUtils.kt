@@ -19,7 +19,6 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_GRAN
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.PERMISSION_NOT_DEFINED
 import kotlin.math.abs
 
-
 /**
  * Created by fwidjaja on 2019-06-22.
  */
@@ -49,16 +48,15 @@ object AddNewAddressUtils {
             val locationManager = it.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val mSettingsClient = LocationServices.getSettingsClient(it)
 
-
             val mLocationSettingsRequest = requestLocationBuilder()?.build()
             if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 isGpsOn = true
             } else {
                 mSettingsClient
-                        .checkLocationSettings(mLocationSettingsRequest)
-                        .addOnSuccessListener(context as Activity) {
-                            isGpsOn = true
-                        }
+                    .checkLocationSettings(mLocationSettingsRequest)
+                    .addOnSuccessListener(context as Activity) {
+                        isGpsOn = true
+                    }
             }
 
             isGpsOn = isLocationEnabled(it) && isGpsOn
@@ -73,7 +71,7 @@ object AddNewAddressUtils {
     }
 
     @JvmStatic
-    fun getLocationRequest() : LocationRequest {
+    fun getLocationRequest(): LocationRequest {
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = LOCATION_REQUEST_INTERVAL
@@ -86,18 +84,21 @@ object AddNewAddressUtils {
         val diffLat = lat - AddressConstants.DEFAULT_LAT
         val diffLong = long - AddressConstants.DEFAULT_LONG
 
-        return if (exact) (diffLat == 0.0 && diffLong == 0.0)
-        else (abs(diffLat) < threshold && abs(diffLong) < threshold)
+        return if (exact) {
+            (diffLat == 0.0 && diffLong == 0.0)
+        } else {
+            (abs(diffLat) < threshold && abs(diffLong) < threshold)
+        }
     }
 
-    fun getPermissionStateFromResult(activity: Activity, context: Context, permissions: Array<out String>) : Int {
+    fun getPermissionStateFromResult(activity: Activity, context: Context, permissions: Array<out String>): Int {
         var state = PERMISSION_NOT_DEFINED
         for (permission in permissions) {
             state = when {
                 ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED -> {
                     PERMISSION_GRANTED
                 }
-                ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)  -> {
+                ActivityCompat.shouldShowRequestPermissionRationale(activity, permission) -> {
                     PERMISSION_DENIED
                 }
                 else -> {
