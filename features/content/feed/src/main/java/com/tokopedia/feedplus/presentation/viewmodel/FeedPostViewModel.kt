@@ -209,9 +209,8 @@ class FeedPostViewModel @Inject constructor(
                             }
                         }.toList()
 
-                        _shouldShowNoMoreContent =
-                            _feedHome.value?.items.orEmpty()
-                            .isNotEmpty() && items.isEmpty() && source == FeedBaseFragment.TAB_TYPE_FOLLOWING
+                        _shouldShowNoMoreContent = items.isEmpty() &&
+                            source == FeedBaseFragment.TAB_TYPE_FOLLOWING
 
                         Success(
                             data = feedPosts.data.copy(
