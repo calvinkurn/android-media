@@ -10,6 +10,9 @@
     <string name="login_helper_enter_email">Enter Email/Feature </string>
     <string name="login_helper_app_restart">Please restart the app</string>
     <string name="login_helper_btn_go_to_accounts_settings">Go to Account Settings</string>
+    <string name="login_helper_data_fetching_from_remote">Fetching From Remote</string>
+    <string name="login_helper_data_fetching_from_local">Fetching From Local</string>
+
 
     <string name="login_helper_accounts_settings">Account Settings</string>
     <string name="login_helper_btn_add_account">Add Account</string>

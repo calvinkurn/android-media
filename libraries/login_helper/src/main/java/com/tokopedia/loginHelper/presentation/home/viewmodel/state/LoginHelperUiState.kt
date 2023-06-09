@@ -1,5 +1,6 @@
 package com.tokopedia.loginHelper.presentation.home.viewmodel.state
 
+import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -11,5 +12,6 @@ data class LoginHelperUiState(
     val loginToken: com.tokopedia.usecase.coroutines.Result<LoginToken>? = null,
     val profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>? = null,
     val searchText: String = "",
-    val filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null
+    val filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null,
+    val dataSourceType: LoginHelperDataSourceType = LoginHelperDataSourceType.REMOTE
 )

@@ -15,6 +15,7 @@ import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
+import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
 import com.tokopedia.loginHelper.domain.uiModel.LocalUsersDataUiModel
@@ -104,6 +105,9 @@ class LoginHelperViewModel @Inject constructor(
             }
             is LoginHelperEvent.GoToAccountsSetting -> {
                 handleGoToAccountSettings()
+            }
+            is LoginHelperEvent.ChangeDataSourceType -> {
+                changeDataSourceType(event.dataSourceType)
             }
         }
     }
@@ -284,6 +288,14 @@ class LoginHelperViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 envType = envType
+            )
+        }
+    }
+
+    private fun changeDataSourceType(dataSourceType: LoginHelperDataSourceType) {
+        _uiState.update {
+            it.copy(
+                dataSourceType = dataSourceType
             )
         }
     }

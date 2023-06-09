@@ -1,6 +1,7 @@
 package com.tokopedia.loginHelper.presentation.home.viewmodel.state
 
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
+import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 
 sealed class LoginHelperEvent {
@@ -13,6 +14,6 @@ sealed class LoginHelperEvent {
     object GoToLoginPage : LoginHelperEvent()
     object LogOutUser : LoginHelperEvent()
     data class SaveUserDetailsFromAssets(val userDetails: LoginDataResponse) : LoginHelperEvent()
-
     object GoToAccountsSetting : LoginHelperEvent()
+    data class ChangeDataSourceType(val dataSourceType: LoginHelperDataSourceType): LoginHelperEvent()
 }

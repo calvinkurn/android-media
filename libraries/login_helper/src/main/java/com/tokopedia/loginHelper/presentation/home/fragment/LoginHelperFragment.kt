@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
+import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
@@ -79,6 +80,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             setUpView()
             handleChipClick()
             bindSearch()
+            setUpDataSourceSwitcher()
         }
         setUpClickListener()
         observeUiState()
@@ -95,8 +97,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiState.collect {
-                    state ->
+            viewModel.uiState.collect { state ->
                 handleUiState(state)
             }
         }
@@ -104,8 +105,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun observeUiAction() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.uiAction.collect {
-                    action ->
+            viewModel.uiAction.collect { action ->
                 handleAction(action)
             }
         }
@@ -385,12 +385,41 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun getTextListener(): TextWatcher {
         return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) =
+                Unit
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
 
             override fun afterTextChanged(s: Editable?) {
                 viewModel.processEvent(LoginHelperEvent.QueryEmail(getMessage()))
+            }
+        }
+    }
+
+    private fun FragmentLoginHelperBinding.setUpDataSourceSwitcher() {
+        dataSourceSelector.isChecked = true
+        dataSourceSelector.setOnClickListener {
+            val isChecked = dataSourceSelector.isChecked
+            if (isChecked) {
+                dataSourceSelector.text =
+                    context?.resources?.getString(
+                        com.tokopedia.loginHelper.R.string.login_helper_data_fetching_from_remote
+                    )
+                viewModel.processEvent(
+                    LoginHelperEvent.ChangeDataSourceType(
+                        LoginHelperDataSourceType.REMOTE
+                    )
+                )
+            } else {
+                dataSourceSelector.text =
+                    context?.resources?.getString(
+                        com.tokopedia.loginHelper.R.string.login_helper_data_fetching_from_local
+                    )
+                viewModel.processEvent(
+                    LoginHelperEvent.ChangeDataSourceType(
+                        LoginHelperDataSourceType.LOCAL
+                    )
+                )
             }
         }
     }
