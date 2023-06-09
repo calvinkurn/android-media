@@ -2948,14 +2948,15 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
             }
-        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception)) } }
+        }) { exception -> _exploreWidget.update { it.copy(state = ExploreWidgetState.Fail(exception){ refreshWidget(ExploreWidgetType.Default) }) } }
     }
 
     private fun updateCategoryWidget(param: WidgetParamUiModel) {
         if (!param.isRefresh) return
 
         viewModelScope.launchCatchError(block = {
-            _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
+            if(_categoryWidget.value.data.isEmpty())
+                _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Loading) }
 
             val cursor = when {
                 param.hasNextPage -> param.cursor
@@ -2979,7 +2980,7 @@ class PlayViewModel @AssistedInject constructor(
                     }
                 }
             }
-        }) { exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception)) } }
+        }) { exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception) {refreshWidget(ExploreWidgetType.Category)}) } }
     }
 
     private fun onChipAction(element: ChipWidgetUiModel) {
