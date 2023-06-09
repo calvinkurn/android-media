@@ -23,6 +23,10 @@ fun Int.toLocalUserHeaderUiModel(): HeaderUiModel {
     return HeaderUiModel(this, "Local Users")
 }
 
+fun Int.toRemoteUserHeaderUiModel(): HeaderUiModel {
+    return HeaderUiModel(this, "Remote Users")
+}
+
 fun ArrayList<UserDataUiModel>.toUserDataResponse(): List<UserDataResponse> {
     return this.map {
         UserDataResponse(

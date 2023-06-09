@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.loginHelper.data.mapper.LoginHelperHomeMapper
 import com.tokopedia.loginHelper.data.mapper.toLocalUserHeaderUiModel
+import com.tokopedia.loginHelper.data.mapper.toRemoteUserHeaderUiModel
 import com.tokopedia.loginHelper.data.mapper.toUserDataUiModel
 import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
@@ -108,15 +109,20 @@ class LoginHelperViewModel @Inject constructor(
     }
 
     // Can be directly used when moved to REST endpoints
-     fun getLoginData() {
+    private fun getLoginData() {
         launchCatchError(
             dispatchers.io,
             block = {
                 val userDetails = getUserDetailsRestUseCase.makeNetworkCall()
                 Log.d("FATAL", "getLoginData: $userDetails")
-//              Log.d("FATAL", userDetails)
-                //       val userList = LoginDataUiModel(userDetails.count, sortedUserList)
-                //        updateUserDataList(Success(userList))
+                val loginData = userDetails.body()
+
+                val userList = LoginDataUiModel(
+                    loginData?.count?.toRemoteUserHeaderUiModel(),
+                    loginData?.users?.toUserDataUiModel()
+                )
+                Log.d("FATAL", "getLoginData: $userList")
+                updateUserDataList(Success(userList))
             },
             onError = {
                 updateUserDataList(Fail(it))
@@ -163,7 +169,7 @@ class LoginHelperViewModel @Inject constructor(
                 decryptedLocalUserDetails.toUserDataUiModel()
             )
 
-        updateUserDataList(Success(userList))
+        //     updateUserDataList(Success(userList))
     }
 
     private fun encrypt(text: String): String {
@@ -338,6 +344,6 @@ class LoginHelperViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
         loginTokenV2UseCase.cancelJobs()
         generatePublicKeyUseCase.cancelJobs()
-    //    getUserDetailsRestUseCase.cancelJobs()
+        //    getUserDetailsRestUseCase.cancelJobs()
     }
 }

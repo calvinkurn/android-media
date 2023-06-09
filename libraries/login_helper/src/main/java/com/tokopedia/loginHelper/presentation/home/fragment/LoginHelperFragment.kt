@@ -3,6 +3,7 @@ package com.tokopedia.loginHelper.presentation.home.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,7 +85,6 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         observeUiAction()
         setEnvValue()
         viewModel.processEvent(LoginHelperEvent.GetLoginData)
-        viewModel.getLoginData()
     }
 
     private fun setUpClickListener() {
@@ -204,7 +204,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             TokopediaUrl.init(it)
             viewModel.processEvent(LoginHelperEvent.LogOutUser)
             binding?.footer?.showToasterError(
-                context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_app_restart)
+                context?.resources?.getString(
+                    com.tokopedia.loginHelper.R.string.login_helper_app_restart
+                )
                     .toBlankOrString()
             )
         }
@@ -226,7 +228,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 
     private fun HeaderUnify.setUpHeader() {
         title =
-            context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_header_title)
+            context?.resources?.getString(
+                com.tokopedia.loginHelper.R.string.login_helper_header_title
+            )
                 .toBlankOrString()
         setNavigationOnClickListener {
             viewModel.processEvent(LoginHelperEvent.TapBackButton)
@@ -241,6 +245,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginUserDataList(state: LoginHelperUiState) {
+        Log.d("FATAL", "handleLoginUserDataList: ${state.loginDataList}")
         if (state.searchText.isEmpty()) {
             when (val loginDataList = state.loginDataList) {
                 is Success -> {
@@ -329,7 +334,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     override fun getScreenName(): String {
-        return context?.resources?.getString(com.tokopedia.loginHelper.R.string.login_helper_header_title)
+        return context?.resources?.getString(
+            com.tokopedia.loginHelper.R.string.login_helper_header_title
+        )
             .toBlankOrString()
     }
 
