@@ -59,7 +59,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
     @Inject
     @JvmField
     var viewModelFactory: ViewModelFactory? = null
-    private var insetBottom = 0
 
     private var medaliSlug = ""
     private var sourceName = ""
@@ -152,11 +151,12 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun showToastAndNavigateToLink(id: Int?, message: String?, appLink: String?, url: String?) {
         binding.viewMedalFooter.showLoading(id, false)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            val height = getNavigationBarHeight()
-            Toaster.toasterCustomBottomHeight = height
+        Toaster.apply {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                toasterCustomBottomHeight = getNavigationBarHeight()
+            }
         }
-        Toaster.build(activity?.window?.decorView!!, message.orEmpty())
+            .build(activity?.window?.decorView!!, message.orEmpty())
             .addCallback(object : Snackbar.Callback() {
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
@@ -166,7 +166,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
             .show()
     }
 
-    // For Testing
     private fun getNavigationBarHeight(): Int {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -364,7 +363,6 @@ class MedalDetailFragment : BaseDaggerFragment() {
             }
             binding.root.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = insets.bottom
-                insetBottom = insets.bottom
             }
             WindowInsetsCompat.CONSUMED
         }
