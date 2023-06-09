@@ -17,6 +17,7 @@ import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
 import com.tokopedia.shop.campaign.util.tracker.VoucherListBottomSheetTracker
+import com.tokopedia.shop.campaign.util.tracker.VoucherWidgetTracker
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
@@ -76,6 +77,9 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var tracker: VoucherListBottomSheetTracker
+
+    @Inject
+    lateinit var voucherWidgetTracker: VoucherWidgetTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ExclusiveLaunchVoucherListViewModel::class.java] }
@@ -158,11 +162,36 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
             setOnVoucherClick { selectedVoucherPosition ->
                 val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClick
                 showVoucherDetailBottomSheet(selectedVoucher)
+                recordTracker(selectedVoucher)
             }
-            setOnVoucherClaimClick { selectedVoucherPosition ->
-                val selectedVoucher = exclusiveLaunchAdapter.getItemAtOrNull(selectedVoucherPosition) ?: return@setOnVoucherClaimClick
-                showVoucherDetailBottomSheet(selectedVoucher)
+            setOnVoucherImpression { voucher ->
+                voucherWidgetTracker.sendVoucherImpression(
+                    shopId = shopId,
+                    campaignId = "",
+                    widgetId = voucher.id.toString()
+                )
             }
+        }
+    }
+
+    private fun recordTracker(selectedVoucher: ExclusiveLaunchVoucher) {
+        val isVoucherQuotaEmpty = selectedVoucher.isDisabledButton
+        if (isVoucherQuotaEmpty) return
+
+        val isVoucherRedeemed = selectedVoucher.couponCode.isNotEmpty()
+
+        if (isVoucherRedeemed) {
+            voucherWidgetTracker.sendRedeemedVoucherClickEvent(
+                shopId = shopId,
+                campaignId = "",
+                widgetId = selectedVoucher.id.toString()
+            )
+        } else {
+            voucherWidgetTracker.sendUnredeemedVoucherClickEvent(
+                shopId = shopId,
+                campaignId = "",
+                widgetId = selectedVoucher.id.toString()
+            )
         }
     }
 

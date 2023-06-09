@@ -5,6 +5,9 @@ import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+/**
+ * Tracker: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4008
+ */
 class VoucherListBottomSheetTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
     fun sendVoucherDetailBottomSheetImpression(shopId: String) {

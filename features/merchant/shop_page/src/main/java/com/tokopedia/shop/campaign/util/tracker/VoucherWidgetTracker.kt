@@ -8,18 +8,20 @@ import javax.inject.Inject
 /**
  * Tracker: https://mynakama.tokopedia.com/datatracker/requestdetail/view/4008
  */
-class VoucherDetailBottomSheetTracker @Inject constructor(private val userSession: UserSessionInterface) {
+class VoucherWidgetTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-
-    fun sendVoucherDetailBottomSheetImpression (campaignId: String, widgetId:String, shopId: String) {
+    fun sendVoucherImpression(shopId: String, campaignId: String, widgetId: String) {
         val eventLabel = "$campaignId - $widgetId"
 
         Tracker.Builder()
             .setEvent(ShopPageTrackingConstant.Event.VIEW_PG_IRIS)
-            .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_DETAIL_IMPRESSION)
+            .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_IMPRESSION)
             .setEventCategory(ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty(ShopPageTrackingConstant.TRACKER_ID, ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION)
+            .setCustomProperty(
+                ShopPageTrackingConstant.TRACKER_ID,
+                ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_IMPRESSION
+            )
             .setBusinessUnit(ShopPageTrackingConstant.PHYSICAL_GOODS_PASCAL_CASE)
             .setCurrentSite(ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
@@ -29,15 +31,18 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
     }
 
 
-    fun sendRedeemVoucherEvent (campaignId: String, shopId: String) {
-        val eventLabel = "klaim - $campaignId"
+    fun sendUnredeemedVoucherClickEvent(shopId: String, campaignId: String, widgetId: String) {
+        val eventLabel = "klaim - $campaignId - $widgetId}"
 
         Tracker.Builder()
             .setEvent(ShopPageTrackingConstant.CLICK_PG)
-            .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_DETAIL_CLICK)
+            .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_CLICK)
             .setEventCategory(ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty(ShopPageTrackingConstant.TRACKER_ID, ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK)
+            .setCustomProperty(
+                ShopPageTrackingConstant.TRACKER_ID,
+                ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB
+            )
             .setBusinessUnit(ShopPageTrackingConstant.PHYSICAL_GOODS_PASCAL_CASE)
             .setCurrentSite(ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
@@ -46,15 +51,18 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
             .send()
     }
 
-    fun sendUseVoucherEvent (campaignId: String, shopId: String) {
-        val eventLabel = "gunakan - $campaignId"
+    fun sendRedeemedVoucherClickEvent(shopId: String, campaignId: String, widgetId: String) {
+        val eventLabel = "pakai - $campaignId - $widgetId}"
 
         Tracker.Builder()
             .setEvent(ShopPageTrackingConstant.CLICK_PG)
-            .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_DETAIL_CLICK)
+            .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_CLICK)
             .setEventCategory(ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty(ShopPageTrackingConstant.TRACKER_ID, ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK)
+            .setCustomProperty(
+                ShopPageTrackingConstant.TRACKER_ID,
+                ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB
+            )
             .setBusinessUnit(ShopPageTrackingConstant.PHYSICAL_GOODS_PASCAL_CASE)
             .setCurrentSite(ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
@@ -62,4 +70,5 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
             .build()
             .send()
     }
+
 }

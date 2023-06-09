@@ -402,6 +402,8 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_TAB_COUPON_DETAIL_IMPRESSION = "campaign tab - impression kupon detail"
         const val CAMPAIGN_TAB_COUPON_DETAIL_CLICK = "campaign tab - click kupon detail"
         const val CAMPAIGN_TAB_COUPON_LIST_IMPRESSION = "campaign tab - impression kupon list"
+        const val CAMPAIGN_TAB_COUPON_IMPRESSION = "campaign tab - impression kupon"
+        const val CAMPAIGN_TAB_COUPON_CLICK = "campaign tab - click kupon"
     }
 
     object EventCategory {
@@ -448,6 +450,8 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION = "44415"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK = "44416"
         const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_LIST_IMPRESSION = "44408"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_IMPRESSION = "44348"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB = "44349"
     }
 
     object Key {

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
@@ -32,8 +33,8 @@ class ExclusiveLaunchVoucherAdapter :
 
     private val differ = AsyncListDiffer(this, differCallback)
     private var onVoucherClick: (Int) -> Unit = {}
-    private var onVoucherClaimClick: (Int) -> Unit = {}
     private var useDarkBackground = true
+    private var onVoucherImpression: (ExclusiveLaunchVoucher) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemExclusiveLaunchVoucherBinding.inflate(
@@ -56,12 +57,12 @@ class ExclusiveLaunchVoucherAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.elVoucher.setOnPrimaryCtaClick { onVoucherClaimClick(bindingAdapterPosition) }
-            binding.root.setOnClickListener { onVoucherClick(bindingAdapterPosition) }
+            binding.elVoucher.setOnClickListener { onVoucherClick(bindingAdapterPosition) }
         }
 
         fun bind(voucher: ExclusiveLaunchVoucher) {
             binding.elVoucher.apply {
+                addOnImpressionListener(voucher) { onVoucherImpression(voucher) }
                 setMinimumPurchase(
                     context.getString(
                         R.string.shop_page_placeholder_minimal_purchase,
@@ -78,13 +79,7 @@ class ExclusiveLaunchVoucherAdapter :
                 setVoucherName(voucher.voucherName)
 
                 val ctaText = voucher.buttonStr
-                setPrimaryCta(
-                    ctaText = ctaText,
-                    onClick = {
-                        onVoucherClaimClick(bindingAdapterPosition)
-                    }
-                )
-
+                setPrimaryCta(ctaText = ctaText, isClickable = !voucher.isDisabledButton)
                 if (useDarkBackground) useDarkBackground() else useLightBackground()
             }
         }
@@ -100,8 +95,8 @@ class ExclusiveLaunchVoucherAdapter :
         this.onVoucherClick = onVoucherClick
     }
 
-    fun setOnVoucherClaimClick(onVoucherClaimClick: (Int) -> Unit) {
-        this.onVoucherClaimClick = onVoucherClaimClick
+    fun setOnVoucherImpression(onVoucherImpression: (ExclusiveLaunchVoucher) -> Unit) {
+        this.onVoucherImpression = onVoucherImpression
     }
 
     fun setUseDarkBackground(useDarkBackground: Boolean) {
@@ -116,7 +111,7 @@ class ExclusiveLaunchVoucherAdapter :
         }
     }
 
-    fun snapshot(): List<ExclusiveLaunchVoucher> {
+    private fun snapshot(): List<ExclusiveLaunchVoucher> {
         return differ.currentList
     }
 }

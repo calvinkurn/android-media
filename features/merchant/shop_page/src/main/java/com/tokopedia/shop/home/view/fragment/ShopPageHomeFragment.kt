@@ -528,7 +528,7 @@ open class ShopPageHomeFragment :
         observeLatestShopHomeWidgetLayoutData()
         observeShowHomeTabConfetti()
         isLoadInitialData = true
-        //showVoucherListBottomsheet()
+        showVoucherListBottomsheet()
     }
 
     private fun showVoucherListBottomsheet() {
@@ -542,7 +542,9 @@ open class ShopPageHomeFragment :
                 "CFDDJUN",
                 "KFSJUN",
                 "AUTO423",
-                "SHOPASHJUNE"
+                "SHOPASHJUNE",
+                "FMCG623",
+                "SPORT623"
             )
         )
         bottomSheet.setOnVoucherClaimSuccess {
