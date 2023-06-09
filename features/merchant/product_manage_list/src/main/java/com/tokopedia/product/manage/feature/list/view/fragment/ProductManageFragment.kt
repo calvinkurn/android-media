@@ -400,13 +400,13 @@ open class ProductManageFragment :
                 val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
                 val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
                 if (!coachMark?.isDismissed.orFalse() && (
-                        positionCoachMark !in
-                            firstVisibleIndex..lastVisibleIndex || (
-                            view != null && getVisiblePercent(
+                    positionCoachMark !in
+                        firstVisibleIndex..lastVisibleIndex || (
+                        view != null && getVisiblePercent(
                                 view
                             ) == -1
-                            )
                         )
+                    )
                 ) {
                     coachMark?.dismissCoachMark()
                 }
@@ -812,7 +812,6 @@ open class ProductManageFragment :
     }
 
     override fun deleteMultipleProducts() {
-
         viewModel.onDeleteMultipleProducts()
         ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
@@ -1592,14 +1591,14 @@ open class ProductManageFragment :
         when {
             status != null -> {
                 if (status == INACTIVE) {
-                    showToaster(
+                    showMessageToast(
                         getString(
                             com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_status_inactive_success,
                             productName
                         )
                     )
                 } else {
-                    showToaster(
+                    showMessageToast(
                         getString(
                             com.tokopedia.product.manage.common.R.string.product_manage_quick_edit_status_active_success,
                             productName
@@ -1794,7 +1793,6 @@ open class ProductManageFragment :
                     }
                 } else {
                     showMultiEditToast(result)
-
                 }
             }
 
@@ -1829,7 +1827,7 @@ open class ProductManageFragment :
                         com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_bulkedit_title,
                         result.failedDT.size.toString()
                     ),
-                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc),
+                    getString(com.tokopedia.product.manage.common.R.string.product_manage_deletion_product_dt_desc)
                 )
             }
             if (result.failed.isNotEmpty()) {
@@ -3222,7 +3220,7 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.editVariantStockResult) {
             when (it) {
                 is Success -> {
-                    val message = MultiVariantToastMessage.getSuccessMessage(context,it.data)
+                    val message = MultiVariantToastMessage.getSuccessMessage(context, it.data)
                     updateVariantStock(it.data)
                     showMessageToast(message)
                 }
