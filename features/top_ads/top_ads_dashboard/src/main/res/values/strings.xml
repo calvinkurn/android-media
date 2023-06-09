@@ -561,5 +561,7 @@
     <string name="topads_insight_performance_info_heading">Perhitungan dari persentase jumlah tampil teratas dibagi total tampil.</string>
     <string name="wide">Luas</string>
     <string name="specific">Spesifik</string>
+
+    <string name="topads_url_format_template">%s?url=%s</string>
 </resources>
 

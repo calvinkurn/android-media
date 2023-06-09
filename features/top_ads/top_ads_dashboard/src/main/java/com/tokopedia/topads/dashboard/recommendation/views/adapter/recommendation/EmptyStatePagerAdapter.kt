@@ -5,12 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStatesUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.Locale
 
 class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewHolder>() {
 
@@ -30,7 +33,7 @@ class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewH
     override fun getItemCount(): Int = emptyStatePages.size
 
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val emptyStateTitle: Typography = view.findViewById(R.id.emptyStateTitle)
         private val emptyStateAnimation: LottieAnimationView =
             view.findViewById(R.id.emptyStateAnimation)
@@ -47,6 +50,22 @@ class EmptyStatePagerAdapter : RecyclerView.Adapter<EmptyStatePagerAdapter.ViewH
             } else {
                 btnEmptyState.text = item.buttonText
                 btnEmptyState.show()
+            }
+            setClickAction(item.landingUrl)
+        }
+
+        private fun setClickAction(landingUrl: String) {
+            if (landingUrl.isEmpty()) return
+            btnEmptyState.setOnClickListener {
+                RouteManager.route(
+                    view.context,
+                    String.format(
+                        Locale.getDefault(),
+                        view.context.getString(R.string.topads_url_format_template),
+                        ApplinkConst.WEBVIEW,
+                        landingUrl
+                    )
+                )
             }
         }
     }
