@@ -749,6 +749,7 @@ class FeedFragment :
                         it.rvFeedPost.currentItem >= (adapter!!.itemCount - MINIMUM_ENDLESS_CALL) &&
                         !feedPostViewModel.shouldShowNoMoreContent
                     ) {
+                        adapter?.showLoading()
                         feedPostViewModel.fetchFeedPosts(data?.type ?: "")
                     }
 
