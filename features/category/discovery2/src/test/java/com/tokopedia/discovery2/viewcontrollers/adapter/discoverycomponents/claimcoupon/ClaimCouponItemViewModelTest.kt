@@ -3,12 +3,10 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cla
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.claim_coupon.CatalogWithCouponList
 import com.tokopedia.discovery2.data.claimcoupon.RedeemCouponResponse
 import com.tokopedia.discovery2.usecase.ClaimCouponClickUseCase
@@ -63,6 +61,10 @@ class ClaimCouponItemViewModelTest {
     fun `test for application`() {
         assert(viewModel.application === application)
     }
+    @Test
+    fun `test for componentData`() {
+        assert(viewModel.getComponentData().value === componentsItem)
+    }
 
     @Test
     fun `test for claimCouponClickUseCase useCase`() {
@@ -91,10 +93,8 @@ class ClaimCouponItemViewModelTest {
     @Test
     fun getClaimCouponData() {
         val claimString = "claimString"
-        val data = arrayListOf(CatalogWithCouponList(status = claimString))
+        val data = arrayListOf(CatalogWithCouponList(buttonStr = claimString))
         every { componentsItem.claimCouponList } returns data
-
-        viewModel.onAttachToViewHolder()
 
         assertEquals(viewModel.getClaimCouponData(), data.firstOrNull())
     }
@@ -103,8 +103,6 @@ class ClaimCouponItemViewModelTest {
     fun `getComponentData when dataItem is null`() {
         every { componentsItem.claimCouponList } returns null
 
-        viewModel.onAttachToViewHolder()
-
         assertEquals(viewModel.getClaimCouponData(), null)
     }
 
@@ -112,8 +110,6 @@ class ClaimCouponItemViewModelTest {
     fun `getComponentData when claimButtonStr is null`() {
         val data = arrayListOf(CatalogWithCouponList())
         every { componentsItem.claimCouponList } returns data
-
-        viewModel.onAttachToViewHolder()
 
         assertEquals(viewModel.getClaimCouponData()?.status, HABIS)
     }

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.utils.URLParser
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -35,7 +36,8 @@ class CalendarWidgetCarouselViewModelTest {
     private val application: Application = mockk()
     private val context = mockk<Context>(relaxed = true)
 
-    private val viewModel: CalendarWidgetCarouselViewModel = spyk(CalendarWidgetCarouselViewModel(application, componentsItem, 99))
+    private val viewModel: CalendarWidgetCarouselViewModel =
+        spyk(CalendarWidgetCarouselViewModel(application, componentsItem, 99))
 
     private val calenderWidgetUseCase: ProductCardsUseCase by lazy {
         mockk()
@@ -61,15 +63,16 @@ class CalendarWidgetCarouselViewModelTest {
     }
 
     @Test
-    fun `test for handleErrorState`(){
+    fun `test for handleErrorState`() {
         every { componentsItem.verticalProductFailState } returns true
 
         viewModel.onAttachToViewHolder()
 
-        assertEquals(viewModel.getCalendarLoadState().value ,true)
+        assertEquals(viewModel.getCalendarLoadState().value, true)
     }
+
     @Test
-    fun `test for handleErrorState when verticalProductFailState is false`(){
+    fun `test for handleErrorState when verticalProductFailState is false`() {
         viewModel.calenderWidgetUseCase = calenderWidgetUseCase
         val list = ArrayList<ComponentsItem>()
         val dataList = arrayListOf<DataItem>()
@@ -81,11 +84,21 @@ class CalendarWidgetCarouselViewModelTest {
         val tempProperties = Properties(calendarType = Constant.Calendar.DYNAMIC)
         every { componentsItem.properties } returns tempProperties
         coEvery { application.applicationContext } returns context
-        coEvery { viewModel.calenderWidgetUseCase.loadFirstPageComponents(any(),any(),any()) } returns true
-        val dataArray : ArrayList<DataItem> = mockk(relaxed = true)
+        coEvery {
+            calenderWidgetUseCase.loadFirstPageComponents(
+                any(),
+                any(),
+                any()
+            )
+        } returns true
+        val dataArray: ArrayList<DataItem> = mockk(relaxed = true)
         every {
             runBlocking {
-                dataArray.getMaxHeightForCarouselView(context = context, coroutineDispatcher = rule1.dispatchers.default , Constant.Calendar.DYNAMIC )
+                dataArray.getMaxHeightForCarouselView(
+                    context = context,
+                    coroutineDispatcher = rule1.dispatchers.default,
+                    Constant.Calendar.DYNAMIC
+                )
             }
         } answers {
             1
@@ -93,7 +106,7 @@ class CalendarWidgetCarouselViewModelTest {
 
         viewModel.onAttachToViewHolder()
 
-        assertEquals(viewModel.getCalendarLoadState().value ,false)
+        assertEquals(viewModel.getCalendarLoadState().value, false)
     }
 
     @Test
@@ -118,7 +131,13 @@ class CalendarWidgetCarouselViewModelTest {
         every { componentsItem.properties } returns properties1
         every { componentsItem.shouldRefreshComponent } returns false
         every { viewModel.getCalendarList() } returns mockk(relaxed = true)
-        coEvery { viewModel.calenderWidgetUseCase.loadFirstPageComponents(any(),any(),any()) } returns true
+        coEvery {
+            viewModel.calenderWidgetUseCase.loadFirstPageComponents(
+                any(),
+                any(),
+                any()
+            )
+        } returns true
 
         viewModel.fetchProductCarouselData()
 
@@ -129,7 +148,13 @@ class CalendarWidgetCarouselViewModelTest {
         every { componentsItem.properties } returns properties2
         every { componentsItem.shouldRefreshComponent } returns false
         every { viewModel.getCalendarList() } returns mockk(relaxed = true)
-        coEvery { viewModel.calenderWidgetUseCase.loadFirstPageComponents(any(),any(),any()) } throws Exception("error")
+        coEvery {
+            viewModel.calenderWidgetUseCase.loadFirstPageComponents(
+                any(),
+                any(),
+                any()
+            )
+        } throws Exception("error")
 
         viewModel.fetchProductCarouselData()
 
@@ -138,7 +163,30 @@ class CalendarWidgetCarouselViewModelTest {
     }
 
     @Test
-    fun `test for fetchCarouselPaginatedCalendars`(){
+    fun `test for fetchCarouselPaginatedCalendars`() {
+        runBlocking {
+            coEvery {
+                viewModel.calenderWidgetUseCase.getCarouselPaginatedData(
+                    any(),
+                    any(),
+                    any()
+                )
+            } returns true
+            every { viewModel.getCalendarList() } returns arrayListOf<ComponentsItem>(spyk())
+            coEvery { viewModel.reSyncProductCardHeight(any()) } returns 100
+            mockkObject(Utils)
+            every { Utils.nextPageAvailable(componentsItem, any()) } returns true
+
+            viewModel.fetchCarouselPaginatedCalendars()
+            val respList = viewModel.getCalendarCarouselItemsListData().value!!
+            assertEquals(viewModel.isLoadingData(), false)
+            assertEquals(respList.size, 2)
+            assertEquals(respList[respList.size - 1].name, ComponentNames.LoadMore.componentName)
+        }
+    }
+
+    @Test
+    fun `test for fetchCarouselPaginatedCalendars returns false`() {
         runBlocking {
             coEvery {
                 viewModel.calenderWidgetUseCase.getCarouselPaginatedData(
@@ -148,15 +196,42 @@ class CalendarWidgetCarouselViewModelTest {
                 )
             } returns true
             every { viewModel.getCalendarList() } returns mockk(relaxed = true)
+            coEvery { viewModel.reSyncProductCardHeight(any()) } returns 100
 
             viewModel.fetchCarouselPaginatedCalendars()
 
             assertEquals(viewModel.isLoadingData(), false)
+            assertEquals(viewModel.syncData.value, true)
         }
     }
 
     @Test
-    fun `test for getCalendarList`(){
+    fun `test for fetchCarouselPaginatedCalendars throws error`() {
+        runBlocking {
+            coEvery {
+                viewModel.calenderWidgetUseCase.getCarouselPaginatedData(
+                    any(),
+                    any(),
+                    any()
+                )
+            } throws Error("err")
+            every { viewModel.getCalendarList() } returns mockk(relaxed = true)
+            coEvery { viewModel.reSyncProductCardHeight(any()) } returns 100
+
+            viewModel.fetchCarouselPaginatedCalendars()
+
+            assertEquals(viewModel.isLoadingData(), false)
+            assertEquals(viewModel.syncData.value, true)
+            val respList = viewModel.getCalendarCarouselItemsListData().value!!
+            assertEquals(
+                respList[respList.size - 1].name,
+                ComponentNames.CarouselErrorLoad.componentName
+            )
+        }
+    }
+
+    @Test
+    fun `test for getCalendarList`() {
         val componentItem = mockk<ArrayList<ComponentsItem>>(relaxed = true)
         every { componentsItem.getComponentsItem() } returns componentItem
 
@@ -164,27 +239,37 @@ class CalendarWidgetCarouselViewModelTest {
     }
 
     @Test
-    fun `test for isLastPage`(){
-        every { Utils.nextPageAvailable(any(),any()) } returns false
+    fun `test for isLastPage`() {
+        every { Utils.nextPageAvailable(any(), any()) } returns false
 
         assert(viewModel.isLastPage())
     }
 
     @Test
-    fun `test for getPageSize`(){
+    fun `test for getPageSize`() {
         assert(viewModel.getPageSize() == 10)
     }
 
     @Test
-    fun `test for resetComponent`(){
+    fun `test for resetComponent`() {
         viewModel.resetComponent()
 
         assertEquals(viewModel.components.noOfPagesLoaded, 0)
     }
 
     @Test
-    fun `test for component passed to VM`(){
+    fun `test for component passed to VM`() {
         assertEquals(viewModel.components, componentsItem)
+    }
+
+    @Test
+    fun `test for position passed`() {
+        assert(viewModel.position == 99)
+    }
+
+    @Test
+    fun `test for application passed`() {
+        assert(viewModel.application == application)
     }
 
 }
