@@ -88,6 +88,7 @@
     <string name="add_text_background_content_title_color">Pilihan Warna:</string>
     <string name="add_text_background_content_title_template">Pilih Template:</string>
     <string name="add_text_background_content_btn_text">Lanjut</string>
+    <string name="add_text_background_selection_title">Warna &amp; Template</string>
 
     <!-- Add Text dialog text -->
     <string name="add_text_dialog_save_title">Mau simpan buat template?</string>

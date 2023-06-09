@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment.bottomsheet
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.media.editor.databinding.AddTextBackgroundBottomsheetLayoutBinding
 import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.widget.AddTextBackgroundBtmItemView
@@ -16,7 +18,6 @@ import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
@@ -30,14 +31,14 @@ class AddTextBackgroundBottomSheet(
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
     private var templateModelRef: ArrayList<AddTextBackgroundBtmItemView> = arrayListOf()
-    private var mNextButton: UnifyButton? = null
-    private var mColorButtonContainerRef: LinearLayout? = null
 
     // 0 -> black || 1 -> white
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
 
     private var backgroundColorCollection = mapOf<Int, String>()
+
+    private var viewBinding: AddTextBackgroundBottomsheetLayoutBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -49,23 +50,21 @@ class AddTextBackgroundBottomSheet(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        inflater.inflate(editorR.layout.add_text_background_bottomsheet_layout, container)?.apply {
-            setChild(this)
+        viewBinding = AddTextBackgroundBottomsheetLayoutBinding.inflate(LayoutInflater.from(inflater.context))
+        setChild(viewBinding?.root)
 
-            initializeView(this)
-            initializeActiveState()
-            initializeButtonListener()
-            setBackgroundItem()
-        }
+        initializeView(inflater.context)
+        initializeActiveState()
+        initializeButtonListener()
+        setBackgroundItem()
 
-        setTitle(TITLE)
+        setTitle(getString(editorR.string.add_text_background_selection_title))
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initializeView(parent: View) {
-        parent.apply {
-            mColorButtonContainerRef = findViewById(editorR.id.btmsht_add_text_color_container)
-
+    private fun initializeView(context: Context) {
+        viewBinding?.apply {
             backgroundColorCollection = addTextColorProvider.getListOfTextWithBackgroundColor()
             backgroundColorCollection.mapValues { (color, text) ->
                 val chip = ChipsUnify(context).apply {
@@ -84,20 +83,18 @@ class AddTextBackgroundBottomSheet(
                     }
                 }
                 colorButtonRef.add(chip)
-                mColorButtonContainerRef?.addView(chip)
+                btmshtAddTextColorContainer.addView(chip)
             }
 
             templateModelRef.add(
-                findViewById(editorR.id.btmsht_add_text_template_model_full)
+                btmshtAddTextTemplateModelFull
             )
             templateModelRef.add(
-                findViewById(editorR.id.btmsht_add_text_template_model_floating)
+                btmshtAddTextTemplateModelFloating
             )
             templateModelRef.add(
-                findViewById(editorR.id.btmsht_add_text_template_model_side_cut)
+                btmshtAddTextTemplateModelSideCut
             )
-
-            mNextButton = findViewById(editorR.id.btmsht_add_text_action_lanjut)
         }
     }
 
@@ -119,15 +116,12 @@ class AddTextBackgroundBottomSheet(
         }
 
         templateModelRef.forEachIndexed { index, view ->
-            view.setClickListener {
-                modelRefClick(index)
-            }
             view.setOnClickListener {
                 modelRefClick(index)
             }
         }
 
-        mNextButton?.setOnClickListener {
+        viewBinding?.btmshtAddTextActionLanjut?.setOnClickListener {
             onFinish(
                 backgroundColorCollection.toList()[colorSelectionIndex].first,
                 modelSelectionIndex
@@ -195,7 +189,6 @@ class AddTextBackgroundBottomSheet(
     }
 
     companion object {
-        private const val TITLE = "Warna & Template"
         private const val CHIP_PADDING = 16
     }
 }
