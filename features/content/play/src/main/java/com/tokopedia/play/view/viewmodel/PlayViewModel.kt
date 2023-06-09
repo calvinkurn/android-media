@@ -1954,9 +1954,15 @@ class PlayViewModel @AssistedInject constructor(
                 setupInteractive(interactive)
             }
             is ChannelDetailsWithRecomResponse.ExploreWidgetConfig -> {
-                // TODO() separate class
                 _channelDetail.update { channel ->
                     channel.copy(exploreWidgetConfig = channel.exploreWidgetConfig.copy(categoryName = result.categoryName, categoryGroup = result.group, hasCategory = result.hasCategory))
+                }
+                widgetQuery.value = widgetQuery.value.mapValues {
+                    if (ExploreWidgetType.Default == it.key) {
+                        it.value.copy(isRefresh = true, group = result.group, sourceType = result.sourceType, sourceId = result.sourceId)
+                    } else {
+                        it.value
+                    }
                 }
             }
         }
