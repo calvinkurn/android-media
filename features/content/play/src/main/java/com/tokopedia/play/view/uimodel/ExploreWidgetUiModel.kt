@@ -11,7 +11,6 @@ import com.tokopedia.play_common.model.result.ResultState
  * @author by astidhiyaa on 28/11/22
  */
 data class ExploreWidgetUiModel(
-    val param: WidgetParamUiModel,
     val chips: TabMenuUiModel,
     val widgets: List<WidgetItemUiModel>,
     val state: ExploreWidgetState
@@ -20,7 +19,6 @@ data class ExploreWidgetUiModel(
         val Empty: ExploreWidgetUiModel
             get() = ExploreWidgetUiModel(
                 chips = TabMenuUiModel.Empty,
-                param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
                 state = ExploreWidgetState.Loading
             )
@@ -45,6 +43,8 @@ data class WidgetParamUiModel(
             )
     }
 }
+
+fun WidgetParamUiModel?.orEmpty() = WidgetParamUiModel.Empty
 
 sealed class ChipWidgetsUiModel
 data class ChipWidgetUiModel(

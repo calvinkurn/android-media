@@ -273,7 +273,6 @@ class PlayExploreWidgetFragment @Inject constructor(
                     renderWidgets(
                         cachedState.value.exploreWidget.data.state,
                         cachedState.value.exploreWidget.data.widgets,
-                        cachedState.value.exploreWidget.data.param
                     )
                 }
 
@@ -311,7 +310,6 @@ class PlayExploreWidgetFragment @Inject constructor(
     private fun renderWidgets(
         state: ExploreWidgetState,
         widget: List<WidgetUiModel>,
-        param: WidgetParamUiModel
     ) {
         setLayoutManager(state)
         showEmpty(state is ExploreWidgetState.Empty)
@@ -320,7 +318,7 @@ class PlayExploreWidgetFragment @Inject constructor(
             ExploreWidgetState.Success -> {
                 widgetAdapter.setItemsAndAnimateChanges(widget)
                 scrollListener.updateStateAfterGetData()
-                scrollListener.setHasNextPage(param.hasNextPage)
+                //scrollListener.setHasNextPage(param.hasNextPage)
             }
             ExploreWidgetState.Loading -> {
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
