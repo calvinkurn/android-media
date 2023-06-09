@@ -260,8 +260,8 @@ class UploadPrescriptionViewModel @Inject constructor(
         result: EPharmacyPrescriptionUploadResponse?,
         uniquePositionId: Int
     ) {
-        val images = _prescriptionImages.value
-        images?.get(uniquePositionId)?.apply {
+        val images = _prescriptionImages.value ?: arrayListOf()
+        images[uniquePositionId]?.apply {
             result?.data?.firstOrNull()?.let { uploadResult ->
                 if (uploadResult.prescriptionId != null && uploadResult.prescriptionId != DEFAULT_ZERO_VALUE) {
                     isUploadSuccess = true
