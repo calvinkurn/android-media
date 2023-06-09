@@ -44,8 +44,6 @@ data class WidgetParamUiModel(
     }
 }
 
-fun WidgetParamUiModel?.orEmpty() = WidgetParamUiModel.Empty
-
 sealed class ChipWidgetsUiModel
 data class ChipWidgetUiModel(
     val isSelected: Boolean = false,

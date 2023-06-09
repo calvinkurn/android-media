@@ -561,6 +561,8 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
+    private val widgetQuery = MutableStateFlow(emptyMap<ExploreWidgetType, WidgetParamUiModel>())
+
     val exploreWidgetTabs: List<String>
         get() {
             val config = _channelDetail.value.exploreWidgetConfig
@@ -699,6 +701,14 @@ class PlayViewModel @AssistedInject constructor(
                     doOnForbidden()
                 }
             }
+        }
+
+        viewModelScope.launch {
+            widgetQuery.distinctUntilChanged { old, new -> old == new }
+                .collectLatest { param ->
+                    updateCategoryWidget(param.getOrElse(ExploreWidgetType.Category) { WidgetParamUiModel.Empty })
+                    updateDefaultWidget(param.getOrElse(ExploreWidgetType.Default) { WidgetParamUiModel.Empty })
+                }
         }
     }
 
@@ -1096,9 +1106,9 @@ class PlayViewModel @AssistedInject constructor(
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
             is FetchWidgets -> {
                 _isBottomSheetsShown.update { true }
-                widgetQuery.update { q ->
-                    q[action.type] = q[action.type]?.copy(isRefresh = true).orEmpty()
-                    q
+                widgetQuery.value = widgetQuery.value.mapValues {
+                    if (action.type == it.key) it.value.copy(isRefresh = true)
+                    else it.value
                 }
             }
             is ClickChipWidget -> onChipAction(action.item)
@@ -1195,7 +1205,6 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelInfo(channelData)
         updateCartCount()
         updateCommentConfig()
-        getWidget()
 
         sendInitialLog()
     }
@@ -2871,33 +2880,11 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * Explore Widget
      */
-    private val widgetQuery = MutableStateFlow(mutableMapOf<ExploreWidgetType, WidgetParamUiModel>())
-
     private fun setExploreWidgetParam(config: ExploreWidgetConfig) {
-        widgetQuery.update {
-            q -> q.putAll(
-            mutableMapOf(
-                ExploreWidgetType.Category to WidgetParamUiModel(
-                    group = config.categoryGroup,
-                    sourceId = config.categorySourceId,
-                    sourceType = config.categorySourceType
-                ),
-                ExploreWidgetType.Default to WidgetParamUiModel(
-                    group = config.group,
-                    sourceId = config.sourceId,
-                    sourceType = config.sourceType
-                )))
-            q
-        }
-    }
-    private fun getWidget() {
-        viewModelScope.launch {
-            widgetQuery.distinctUntilChanged { old, new ->  old == new }
-                .collectLatest { param ->
-                        updateCategoryWidget(param[ExploreWidgetType.Category] ?: WidgetParamUiModel.Empty)
-                        updateDefaultWidget(param[ExploreWidgetType.Default] ?: WidgetParamUiModel.Empty)
-                    }
-            }
+        widgetQuery.value = mapOf (
+            ExploreWidgetType.Category to WidgetParamUiModel(group = config.categoryGroup, sourceId = config.categorySourceId, sourceType = config.categorySourceType),
+            ExploreWidgetType.Default to WidgetParamUiModel(group = config.group, sourceId = config.sourceId, sourceType = config.sourceType)
+        )
     }
 
     private fun updateDefaultWidget(param: WidgetParamUiModel) {
@@ -2932,16 +2919,15 @@ class PlayViewModel @AssistedInject constructor(
                     if (!response.isSubSlotAvailable)
                         throw MessageErrorException()
                     _exploreWidget.update { widget -> widget.copy(chips = chips) }
-                    widgetQuery.update {
-                            query -> query[ExploreWidgetType.Default] = query[ExploreWidgetType.Default]?.copy(group = chips.items.first().group, sourceType = chips.items.first().sourceType, sourceId = chips.items.first().sourceId).orEmpty()
-                        query
-                    }
+                    onChipAction(chips.items.first())
                 }
                 widgets.isNotEmpty() -> {
                     _exploreWidget.update { widget -> widget.copy(widgets = widget.widgets + widgets, state = ExploreWidgetState.Success) }
-                    widgetQuery.update {
-                            query -> query[ExploreWidgetType.Default] = query[ExploreWidgetType.Default]?.copy(cursor = response.getConfig.cursor, isRefresh = false).orEmpty()
-                        query
+                    widgetQuery.update { query ->
+                        query.mapValues {
+                            if (it.key == ExploreWidgetType.Default) it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
+                            else it.value
+                        }
                     }
                 }
             }
@@ -2967,9 +2953,11 @@ class PlayViewModel @AssistedInject constructor(
             )
             val widgets = response.getChannelBlocks.getChannelCards
             _categoryWidget.update { widget -> widget.copy(data = widget.data + widgets, state = ExploreWidgetState.Success) }
-            widgetQuery.update {
-                query -> query[ExploreWidgetType.Category] = query[ExploreWidgetType.Category]?.copy(cursor = response.getConfig.cursor, isRefresh = false).orEmpty()
-                query
+            widgetQuery.update { query ->
+                query.mapValues {
+                    if (it.key == ExploreWidgetType.Category) it.value.copy(cursor = response.getConfig.cursor, isRefresh = false)
+                    else it.value
+                }
             }
         }) { exception -> _categoryWidget.update { widget -> widget.copy(state = ExploreWidgetState.Fail(exception)) } }
     }
@@ -2989,9 +2977,11 @@ class PlayViewModel @AssistedInject constructor(
                 )
             )
         }
-        widgetQuery.update {
-                query -> query[ExploreWidgetType.Default] = query[ExploreWidgetType.Default]?.copy(sourceId = element.sourceId, sourceType = element.sourceType, group = element.group, cursor = "", isRefresh = true).orEmpty()
-            query
+        widgetQuery.update { query ->
+            query.mapValues {
+                if (it.key == ExploreWidgetType.Default) it.value.copy(sourceId = element.sourceId, sourceType = element.sourceType, group = element.group, cursor = "", isRefresh = true)
+                else it.value
+            }
         }
     }
     private fun updateReminderWidget(channelId: String, reminderType: PlayWidgetReminderType) =
