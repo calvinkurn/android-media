@@ -110,7 +110,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     @Inject lateinit var affiliateUsecase: AffiliateEligibilityCheckUseCase
 
-    @Inject lateinit var tracker: UniversalSharebottomSheetTracker
+    @Inject lateinit var shareTracker: UniversalSharebottomSheetTracker
 
     @Inject lateinit var imagePolicyUseCase: ImagePolicyUseCase
 
@@ -1033,7 +1033,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            tracker.viewOnAffiliateRegisterTicker(true, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(true, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
             userType = KEY_AFFILIATE_USER
             return
         }
@@ -1056,12 +1056,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            tracker.viewOnAffiliateRegisterTicker(false, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(false, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
 
             val id = affiliatePDPQueryData?.getIdFactory() ?: ""
             val page = affiliatePDPQueryData?.pageType ?: ""
             affiliateRegisterContainer?.setOnClickListener { _ ->
-                tracker.onClickRegisterTicker(false, id, page)
+                shareTracker.onClickRegisterTicker(false, id, page)
                 dismiss()
                 RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString())
             }
