@@ -267,7 +267,9 @@ class GotoKycTransparentFragment : BaseDaggerFragment() {
     }
 
     private fun showAwaitingApprovalBottomSheet() {
-        val awaitingApprovalGopayBottomSheet = AwaitingApprovalGopayBottomSheet()
+        val awaitingApprovalGopayBottomSheet = AwaitingApprovalGopayBottomSheet.newInstance(
+            projectId = viewModel.projectId
+        )
 
         awaitingApprovalGopayBottomSheet.show(
             childFragmentManager,

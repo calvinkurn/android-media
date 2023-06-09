@@ -49,7 +49,7 @@ object GotoKycAnalytics {
     private const val ACTION_VIEW_STATUS_PAGE = "view on kyc status page"
     private const val ACTION_VIEW_DOB_PAGE = "view on kyc dob page"
     private const val ACTION_VIEW_DOB_PAGE_FAILED = "view on kyc failed dob page"
-    private const val ACTION_VIEW_CONNECTION_ISSUE_PAGE = "view on kyc connection issue page"
+    private const val ACTION_VIEW_ERROR_PAGE = "view on error page"
     private const val ACTION_VIEW_GUIDE_SELFIE_PAGE = "view on persiapan selfie page"
     private const val ACTION_VIEW_SELFIE_PAGE = "view on selfie page"
     private const val ACTION_VIEW_REVIEW_PAGE = "view on kyc review page"
@@ -337,7 +337,7 @@ object GotoKycAnalytics {
     fun sendViewOnErrorPageEvent(errorMessage: String, projectId: String) {
         Tracker.Builder()
             .setEvent(EVENT_VIEW_ACCOUNT_IRIS)
-            .setEventAction(ACTION_VIEW_CONNECTION_ISSUE_PAGE)
+            .setEventAction(ACTION_VIEW_ERROR_PAGE)
             .setEventCategory(CATEGORY_ERROR_PAGE)
             .setEventLabel("$errorMessage - $projectId")
             .setCustomProperty(KEY_TRACKER_ID, VALUE_TRACKER_ID_43614)

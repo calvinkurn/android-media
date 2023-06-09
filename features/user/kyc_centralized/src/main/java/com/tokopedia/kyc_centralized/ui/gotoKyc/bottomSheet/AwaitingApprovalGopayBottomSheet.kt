@@ -71,7 +71,7 @@ class AwaitingApprovalGopayBottomSheet : BottomSheetUnify() {
         private const val PROJECT_ID = "project_id"
 
         fun newInstance(projectId: String) =
-            OnboardNonProgressiveBottomSheet().apply {
+            AwaitingApprovalGopayBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(PROJECT_ID, projectId)
                 }
