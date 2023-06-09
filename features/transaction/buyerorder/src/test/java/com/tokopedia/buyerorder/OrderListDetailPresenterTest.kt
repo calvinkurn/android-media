@@ -9,8 +9,6 @@ import com.tokopedia.buyerorder.detail.data.SendEventEmail
 import com.tokopedia.buyerorder.detail.data.recommendation.recommendationMPPojo2.RecommendationDigiPersoResponse
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase
 import com.tokopedia.buyerorder.detail.domain.SetActionButtonUseCase
-import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract
-import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
