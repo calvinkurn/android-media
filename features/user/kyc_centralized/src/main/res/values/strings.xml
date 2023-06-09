@@ -293,5 +293,7 @@
     <string name="goto_kyc_awaiting_approval_title">Tunggu ya, lagi ada proses verifikasi di GoPay</string>
     <string name="goto_kyc_awaiting_approval_description">Prosesnya maks. 24 jam setelah kamu verifikasi di GoPay. Setelah selesai, kamu bisa verifikasi di Tokopedia.</string>
     <string name="goto_kyc_awaiting_approval_button">Oke, Siap!</string>
+    <string name="goto_kyc_try_again">Coba Lagi</string>
+    <string name="goto_kyc_direct_to_setting">Ke Pengaturan</string>
 
 </resources>
