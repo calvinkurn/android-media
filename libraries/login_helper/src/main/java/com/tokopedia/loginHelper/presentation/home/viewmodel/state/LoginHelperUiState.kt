@@ -13,5 +13,6 @@ data class LoginHelperUiState(
     val profilePojo: com.tokopedia.usecase.coroutines.Result<ProfilePojo>? = null,
     val searchText: String = "",
     val filteredUserList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null,
-    val dataSourceType: LoginHelperDataSourceType = LoginHelperDataSourceType.REMOTE
+    val dataSourceType: LoginHelperDataSourceType = LoginHelperDataSourceType.REMOTE,
+    val localLoginDataList: com.tokopedia.usecase.coroutines.Result<LoginDataUiModel>? = null
 )

@@ -81,7 +81,7 @@ class LoginHelperViewModel @Inject constructor(
             is LoginHelperEvent.TapBackButton -> {
                 handleBackButtonTap()
             }
-            is LoginHelperEvent.GetLoginData -> {
+            is LoginHelperEvent.GetRemoteLoginData -> {
                 // Removed now, Can be directly used when moved to REST endpoint
                 getLoginData()
             }
@@ -101,13 +101,16 @@ class LoginHelperViewModel @Inject constructor(
                 logOutUser()
             }
             is LoginHelperEvent.SaveUserDetailsFromAssets -> {
-                storeUserDetailsInState(event.userDetails)
+                storeUserDetailsInState()
             }
             is LoginHelperEvent.GoToAccountsSetting -> {
                 handleGoToAccountSettings()
             }
             is LoginHelperEvent.ChangeDataSourceType -> {
                 changeDataSourceType(event.dataSourceType)
+            }
+            is LoginHelperEvent.GetLocalLoginData -> {
+                getLocalUserLoginData(event.userDetails)
             }
         }
     }
@@ -134,7 +137,8 @@ class LoginHelperViewModel @Inject constructor(
         )
     }
 
-    private fun storeUserDetailsInState(loginData: LoginDataResponse) {
+    // From Persistent Cache
+    private fun storeUserDetailsInState() {
         val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
 
 //        val decryptedUserDetails = mutableListOf<UserDataResponse>()
@@ -174,6 +178,30 @@ class LoginHelperViewModel @Inject constructor(
             )
 
         //     updateUserDataList(Success(userList))
+    }
+
+    // From the File
+    private fun getLocalUserLoginData(loginData: LoginDataResponse) {
+        val decryptedUserDetails = mutableListOf<UserDataResponse>()
+        loginData.users?.forEach {
+            decryptedUserDetails.add(
+                UserDataResponse(
+                    decrypt(it.email.toBlankOrString()),
+                    decrypt(it.password.toBlankOrString()),
+                    it.tribe
+                )
+            )
+        }
+        val sortedUserList = decryptedUserDetails.sortedBy {
+            it.email
+        }
+
+        val userList =
+            LoginDataUiModel(
+                sortedUserList.size.toLocalUserHeaderUiModel(),
+                sortedUserList.toUserDataUiModel()
+            )
+        updateLocalUserDataList(Success(userList))
     }
 
     private fun encrypt(text: String): String {
@@ -280,6 +308,14 @@ class LoginHelperViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 loginDataList = userDataList
+            )
+        }
+    }
+
+    private fun updateLocalUserDataList(userDataList: Result<LoginDataUiModel>) {
+        _uiState.update {
+            it.copy(
+                localLoginDataList = userDataList
             )
         }
     }

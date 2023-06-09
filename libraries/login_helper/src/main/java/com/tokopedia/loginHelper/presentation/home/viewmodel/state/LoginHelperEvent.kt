@@ -7,13 +7,14 @@ import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 sealed class LoginHelperEvent {
     data class ChangeEnvType(val envType: LoginHelperEnvType) : LoginHelperEvent()
     object TapBackButton : LoginHelperEvent()
-    object GetLoginData : LoginHelperEvent()
+    object GetRemoteLoginData : LoginHelperEvent()
+    data class GetLocalLoginData(val userDetails: LoginDataResponse) : LoginHelperEvent()
     data class LoginUser(val email: String, val password: String, val useHash: Boolean = true) : LoginHelperEvent()
     data class QueryEmail(val email: String) : LoginHelperEvent()
     object GetUserInfo : LoginHelperEvent()
     object GoToLoginPage : LoginHelperEvent()
     object LogOutUser : LoginHelperEvent()
-    data class SaveUserDetailsFromAssets(val userDetails: LoginDataResponse) : LoginHelperEvent()
+    object SaveUserDetailsFromAssets : LoginHelperEvent()
     object GoToAccountsSetting : LoginHelperEvent()
-    data class ChangeDataSourceType(val dataSourceType: LoginHelperDataSourceType): LoginHelperEvent()
+    data class ChangeDataSourceType(val dataSourceType: LoginHelperDataSourceType) : LoginHelperEvent()
 }

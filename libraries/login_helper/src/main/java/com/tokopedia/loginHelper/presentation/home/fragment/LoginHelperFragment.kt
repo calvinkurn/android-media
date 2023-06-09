@@ -3,7 +3,6 @@ package com.tokopedia.loginHelper.presentation.home.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -86,7 +85,8 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         observeUiState()
         observeUiAction()
         setEnvValue()
-        viewModel.processEvent(LoginHelperEvent.GetLoginData)
+        viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
+        viewModel.processEvent(LoginHelperEvent.SaveUserDetailsFromAssets)
     }
 
     private fun setUpClickListener() {
@@ -167,7 +167,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             }
         }
         val loginUserDetails = Gson().fromJson(jsonString, LoginDataResponse::class.java)
-        viewModel.processEvent(LoginHelperEvent.SaveUserDetailsFromAssets(loginUserDetails))
+        viewModel.processEvent(LoginHelperEvent.GetLocalLoginData(loginUserDetails))
     }
 
     private fun FragmentLoginHelperBinding.setUpView() {
@@ -245,9 +245,36 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     }
 
     private fun handleLoginUserDataList(state: LoginHelperUiState) {
-        Log.d("FATAL", "handleLoginUserDataList: ${state.loginDataList}")
-        if (state.searchText.isEmpty()) {
-            when (val loginDataList = state.loginDataList) {
+        if (state.dataSourceType == LoginHelperDataSourceType.REMOTE) {
+            if (state.searchText.isEmpty()) {
+                fillRecyclerViewData(state.searchText, state.loginDataList)
+//                when (val loginDataList = state.loginDataList) {
+//                    is Success -> {
+//                        handleLoginUserDataListSuccess(loginDataList.data)
+//                    }
+//                    is Fail -> {
+//                        handleLoginUserDataListFailure(loginDataList.throwable)
+//                    }
+//                }
+            } else {
+                fillRecyclerViewData(state.searchText, state.filteredUserList)
+//                when (val loginDataList = state.filteredUserList) {
+//                    is Success -> {
+//                        handleLoginUserDataListSuccess(loginDataList.data)
+//                    }
+//                    is Fail -> {
+//                        handleLoginUserDataListFailure(loginDataList.throwable)
+//                    }
+//                }
+            }
+        } else {
+            fillRecyclerViewData(state.searchText, state.localLoginDataList)
+        }
+    }
+
+    private fun fillRecyclerViewData(searchText: String, loginDataList: Result<LoginDataUiModel>?) {
+        if (searchText.isEmpty()) {
+            when (val loginDataList = loginDataList) {
                 is Success -> {
                     handleLoginUserDataListSuccess(loginDataList.data)
                 }
@@ -256,7 +283,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
                 }
             }
         } else {
-            when (val loginDataList = state.filteredUserList) {
+            when (val loginDataList = loginDataList) {
                 is Success -> {
                     handleLoginUserDataListSuccess(loginDataList.data)
                 }
@@ -287,7 +314,7 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         handleLoader(shouldShow = false)
         binding?.globalError?.run {
             setActionClickListener {
-                viewModel.processEvent(LoginHelperEvent.GetLoginData)
+                viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
             }
             show()
         }

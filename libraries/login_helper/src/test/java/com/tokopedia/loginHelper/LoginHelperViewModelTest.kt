@@ -150,7 +150,7 @@ class LoginHelperViewModelTest {
     @Test
     fun `processEvent with QueryEmail`() {
         runBlockingTest {
-            viewModel.processEvent(LoginHelperEvent.GetLoginData)
+            viewModel.processEvent(LoginHelperEvent.GetRemoteLoginData)
 
             viewModel.processEvent(LoginHelperEvent.QueryEmail("pbs"))
             val result = viewModel.uiState.value.searchText
