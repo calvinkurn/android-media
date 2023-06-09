@@ -4,8 +4,8 @@ import android.app.Activity
 import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.bannerenvironment.BannerEnvironment
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.BannerEnvironmentUiModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -20,15 +20,12 @@ class BannerEnvironmentViewHolder(
 
     private val context = itemView.context
 
-
     override fun bind(element: BannerEnvironmentUiModel) {
 
         val cb = itemView.findViewById<CheckboxUnify>(R.id.banner_environment)
-
-
-        cb.isChecked = BaseActivity.isBannerEnvironmentEnabled(context)
+        cb.isChecked = BannerEnvironment().isBannerEnvironmentEnabled(context)
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
-            BaseActivity.setBannerEnvironmentEnabled(context, state)
+            BannerEnvironment().setBannerEnvironmentEnabled(context, state)
             (context as Activity).recreate()
         }
     }

@@ -24,7 +24,4 @@
     <color name="font_black_secondary_54">#8a000000</color>
     <color name="font_black_disabled_38">#61000000</color>
 
-<!--    banner debug color-->
-    <color name="banner_debug_staging">#10490F</color>
-    <color name="banner_debug_beta">#10490F</color>
 </resources>

@@ -1,12 +1,10 @@
 package com.tokopedia.abstraction.base.view.activity;
 
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +22,7 @@ import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.debugbanner.DebugBanner;
+import com.tokopedia.abstraction.base.view.bannerenvironment.BannerEnvironment;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener;
 import com.tokopedia.abstraction.base.view.listener.DispatchTouchListener;
@@ -33,12 +31,8 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.graphql.interceptor.BannerDebugInterceptor;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -62,8 +56,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
 
-    public static final String DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED";
-    public static final String IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED = "IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED";
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
@@ -78,6 +70,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     private int REDIRECTION_HOME = 1;
     private int REDIRECTION_WEBVIEW = 2;
+
     private int REDIRECTION_DEFAULT = 0;
 
     @Override
@@ -102,44 +95,8 @@ public abstract class BaseActivity extends AppCompatActivity implements
             }
         };
 
-        setupBannerEnvironment();
+         new BannerEnvironment().setupBannerEnvironment(this);
     }
-
-    private void setupBannerEnvironment() {
-        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(this);
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BANNER_ENVIRONMENT, false)) {
-            if (isBannerEnvironmentEnabled(this) && GlobalConfig.isAllowDebuggingTools()) {
-                new DebugBanner().initView((Activity) this, getLiveStatus());
-            }
-        }
-    }
-
-    public static boolean isBannerEnvironmentEnabled(Context context) {
-        SharedPreferences cache = context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE);
-        return cache.getBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, false);
-    }
-
-    public static void setBannerEnvironmentEnabled(Context context, boolean isDevOptOnNotifEnabled) {
-        context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
-                .edit()
-                .putBoolean(
-                        IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED,
-                        isDevOptOnNotifEnabled
-                )
-                .apply();
-    }
-
-
-    private String getLiveStatus() {
-        if (TokopediaUrl.Companion.getInstance().getGQL().contains("staging")) {
-            return "STAGING";
-        } else if (BannerDebugInterceptor.isBeta(getApplicationContext())) {
-            return "BETA";
-        } else {
-            return "LIVE";
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();

@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.debugbanner
+package com.tokopedia.abstraction.base.view.bannerenvironment
 
 import android.content.Context
 import android.graphics.Point

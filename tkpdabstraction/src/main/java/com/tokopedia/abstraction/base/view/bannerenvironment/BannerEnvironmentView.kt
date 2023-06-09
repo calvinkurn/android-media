@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.debugbanner
+package com.tokopedia.abstraction.base.view.bannerenvironment
 
 import android.content.Context
 import android.graphics.Canvas
@@ -14,13 +14,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 
-internal class DebugBannerView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+internal class BannerEnvironmentView(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.RED }
     private val path: Path = Path()
     private val textView: TextView by lazy { TextView(context) }
     private val bannerHeight: Float by lazy { dip(30).toFloat() }
-    var bannerGravity: BannerGravity = BannerGravity.START
+    var bannerGravity: BannerEnvironmentGravity = BannerEnvironmentGravity.START
 
     init {
         textView.apply {
@@ -54,7 +54,7 @@ internal class DebugBannerView(context: Context, attrs: AttributeSet? = null) : 
         if (textView.x == 0f) {
             textView.x = -bannerHeight / 4
             textView.y = -bannerHeight / 4
-            if (bannerGravity == BannerGravity.END) {
+            if (bannerGravity == BannerEnvironmentGravity.END) {
                 rotation = 90f
                 translationX = context.getScreenWidth() - measuredHeight
             }
