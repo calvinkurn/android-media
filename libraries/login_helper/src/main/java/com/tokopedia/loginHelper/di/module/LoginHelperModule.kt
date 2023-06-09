@@ -8,8 +8,10 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.encryption.security.AESEncryptorCBC
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.loginHelper.data.api.LoginHelperApiService
 import com.tokopedia.loginHelper.di.scope.LoginHelperScope
 import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
+import com.tokopedia.loginHelper.util.LOGIN_HELPER_BASE_URL
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
 import com.tokopedia.user.session.UserSession
@@ -19,7 +21,10 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.crypto.SecretKey
 
 @Module
@@ -75,5 +80,32 @@ class LoginHelperModule {
     @Provides
     fun provideEncryptSecretKey(aesEncryptorCBC: AESEncryptorCBC): SecretKey {
         return aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
+    }
+
+    @LoginHelperScope
+    @Provides
+    fun provideProfileService(retrofit: Retrofit): LoginHelperApiService = retrofit.create(
+        LoginHelperApiService::class.java
+    )
+
+    @LoginHelperScope
+    @Provides
+    fun provideNetwork(client: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(LOGIN_HELPER_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
+    @LoginHelperScope
+    @Provides
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
+        val client = OkHttpClient.Builder()
+        client.addInterceptor(loggingInterceptor)
+        client.hostnameVerifier { _, _ -> true }
+        return client.build()
     }
 }

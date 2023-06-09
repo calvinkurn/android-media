@@ -1,6 +1,7 @@
 package com.tokopedia.loginHelper.util
 
 const val ENCRYPTION_KEY = "Login_Helper_Dev"
+const val LOGIN_HELPER_BASE_URL = "https://172.21.56.230:3224"
 
 object BundleConstants {
     const val LOGIN_HELPER_ADD_EDIT_ACCOUNT_MODE = "add_edit_account"

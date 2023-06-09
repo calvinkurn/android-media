@@ -1,5 +1,6 @@
 package com.tokopedia.loginHelper.presentation.home.viewmodel
 
+import android.util.Log
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.PersistentCacheManager
@@ -52,7 +53,7 @@ import javax.crypto.SecretKey
 import javax.inject.Inject
 
 class LoginHelperViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
+    val dispatchers: CoroutineDispatchers,
     private val getUserDetailsRestUseCase: GetUserDetailsRestUseCase,
     private val loginTokenV2UseCase: LoginTokenV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
@@ -79,7 +80,8 @@ class LoginHelperViewModel @Inject constructor(
                 handleBackButtonTap()
             }
             is LoginHelperEvent.GetLoginData -> {
-                // Removed now, Can be directly used when moved to REST endpoint      getLoginData()
+                // Removed now, Can be directly used when moved to REST endpoint
+                getLoginData()
             }
             is LoginHelperEvent.LoginUser -> {
                 loginUser(event.email, event.password, event.useHash)
@@ -106,23 +108,21 @@ class LoginHelperViewModel @Inject constructor(
     }
 
     // Can be directly used when moved to REST endpoints
-//    private fun getLoginData() {
-//        launchCatchError(
-//            dispatchers.io,
-//            block = {
-//
-//                val userDetails = listOfUsers(_uiState.value.envType)
-//                val sortedUserList = userDetails.users?.sortedBy {
-//                    it.email
-//                }
-//                val userList = LoginDataUiModel(userDetails.count, sortedUserList)
-//                updateUserDataList(Success(userList))
-//            },
-//            onError = {
-//                updateUserDataList(Fail(it))
-//            }
-//        )
-//    }
+     fun getLoginData() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val userDetails = getUserDetailsRestUseCase.makeNetworkCall()
+                Log.d("FATAL", "getLoginData: $userDetails")
+//              Log.d("FATAL", userDetails)
+                //       val userList = LoginDataUiModel(userDetails.count, sortedUserList)
+                //        updateUserDataList(Success(userList))
+            },
+            onError = {
+                updateUserDataList(Fail(it))
+            }
+        )
+    }
 
     private fun storeUserDetailsInState(loginData: LoginDataResponse) {
         val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
@@ -338,6 +338,6 @@ class LoginHelperViewModel @Inject constructor(
         getProfileUseCase.unsubscribe()
         loginTokenV2UseCase.cancelJobs()
         generatePublicKeyUseCase.cancelJobs()
-        getUserDetailsRestUseCase.cancelJobs()
+    //    getUserDetailsRestUseCase.cancelJobs()
     }
 }

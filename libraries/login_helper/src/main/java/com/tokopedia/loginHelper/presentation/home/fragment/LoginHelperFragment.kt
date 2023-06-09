@@ -83,6 +83,8 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         observeUiState()
         observeUiAction()
         setEnvValue()
+        viewModel.processEvent(LoginHelperEvent.GetLoginData)
+        viewModel.getLoginData()
     }
 
     private fun setUpClickListener() {
