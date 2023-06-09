@@ -129,7 +129,6 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver(view: View) {
-        loadUserConsent()
         viewModel.userProjectInfo.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
