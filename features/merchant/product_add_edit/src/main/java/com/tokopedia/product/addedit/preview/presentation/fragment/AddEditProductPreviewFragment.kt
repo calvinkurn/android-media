@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -610,7 +609,7 @@ class AddEditProductPreviewFragment :
             if (isChecked && viewModel.isVariantEmpty.value == false) {
                 activateVariantStatusConfirmation(productInputModel.variantInputModel.getStockStatus())
             } else if (!isChecked && productInputModel.hasDTStock) {
-                deactivateProductStatusConfirmation()
+                deactivateProductStatusConfirmation(productInputModel.detailInputModel.productName)
             } else {
                 viewModel.updateProductStatus(isChecked)
                 viewModel.setIsDataChanged(true)
@@ -1727,12 +1726,13 @@ class AddEditProductPreviewFragment :
         }.show()
     }
 
-    private fun deactivateProductStatusConfirmation() {
+    private fun deactivateProductStatusConfirmation(productName: String) {
         viewModel.updateProductStatus(true)
         productStatusSwitch?.isChecked = true
         val dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
         val descriptionText = getString(
             productManageR.string.product_manage_confirm_inactive_dt_product_desc).parseAsHtml()
+        val successMessage = getString(R.string.product_add_edit_success_to_deactivate_format, productName)
         dialog.apply {
             setTitle(getString(productManageR.string.product_manage_confirm_inactive_dt_product_title))
             setDescription(descriptionText)
@@ -1741,6 +1741,12 @@ class AddEditProductPreviewFragment :
             setPrimaryCTAClickListener {
                 productStatusSwitch?.isChecked = false
                 viewModel.updateProductStatus(false)
+                Toaster.build(
+                    view?:return@setPrimaryCTAClickListener,
+                    successMessage,
+                    Toaster.LENGTH_LONG,
+                    actionText = getString(R.string.action_oke)
+                ).show()
                 dismiss()
             }
             setSecondaryCTAClickListener {
