@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ConvertResourceIdUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,6 +34,7 @@ class ConvertResourceIdViewHolder(
         btnConvertResourceId.setOnClickListener {
             val resourceName = convertResourceIdToResourceName(tvInputResourceId.textFieldInput.text.toString())
             if (resourceName.isNotBlank()) {
+                DevOpsTracker.trackEntryEvent(DevopsFeature.CONVERT_RESOURCE_ID)
                 tvResultResourceName.text = resourceName
                 tvResultResourceName.show()
             } else {

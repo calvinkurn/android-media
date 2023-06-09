@@ -1,5 +1,7 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.view.View
@@ -10,12 +12,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.hansel.HanselActivity
 import com.tokopedia.developer_options.presentation.model.ViewHanselPatchUiModel
+import com.tokopedia.developer_options.tracker.DevOpsTracker
+import com.tokopedia.developer_options.tracker.DevopsFeature
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import android.content.ClipData
-import android.content.ClipboardManager
-import com.tokopedia.unifycomponents.Toaster
 
 class ViewHanselPatchViewHolder(itemView: View) : AbstractViewHolder<ViewHanselPatchUiModel>(itemView) {
 
@@ -44,6 +46,7 @@ class ViewHanselPatchViewHolder(itemView: View) : AbstractViewHolder<ViewHanselP
         tvTestDevice.text = itemView.context.getString(R.string.label_is_device_test, isTestDevice.toString())
         button.text = itemView.context.resources.getString(com.tokopedia.developer_options.R.string.title_button_hansel_patch_list)
         button.setOnClickListener {
+            DevOpsTracker.trackEntryEvent(DevopsFeature.VIEW_HANSELPATCH)
             val intent = Intent(itemView.context, HanselActivity::class.java)
             itemView.context.startActivity(intent)
         }
@@ -60,7 +63,7 @@ class ViewHanselPatchViewHolder(itemView: View) : AbstractViewHolder<ViewHanselP
         val prefs = itemView.context.getSharedPreferences(PREFERENCE_NAME_HANSEL, Context.MODE_PRIVATE)
         val value = prefs.getString(KEY_STATIC_CRITERIA_VERSION, "") ?: ""
         if (value.isNotEmpty()) {
-            val jsonValue = Gson().fromJson<Map<String, Any>>(value, object: TypeToken<Map<String, Any>>() {}.type)
+            val jsonValue = Gson().fromJson<Map<String, Any>>(value, object : TypeToken<Map<String, Any>>() {}.type)
             val deviceId = jsonValue[KEY_DEVICE_ID] ?: ""
             return deviceId.toString()
         }
