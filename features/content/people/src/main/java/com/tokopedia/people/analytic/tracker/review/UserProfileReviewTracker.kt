@@ -1,5 +1,7 @@
 package com.tokopedia.people.analytic.tracker.review
 
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
+
 /**
  * Created By : Jonathan Darwin on June 07, 2023
  */
@@ -25,7 +27,7 @@ interface UserProfileReviewTracker {
     /** Row 40 */
     fun clickLikeReview(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
 
-    /** Row 41 */ /** TODO: send as list or? */
+    /** Row 41 */
     fun impressReviewCard(userId: String, feedbackId: String, isSelf: Boolean, productId: String, position: Int)
 
     /** Row 42 */
@@ -35,5 +37,5 @@ interface UserProfileReviewTracker {
     fun clickReviewSeeMoreDescription(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
 
     /** Row 48 */
-    fun clickReviewProductInfo(userId: String, feedbackId: String, isSelf: Boolean, productId: String)
+    fun clickReviewProductInfo(userId: String, feedbackId: String, isSelf: Boolean, productReview: UserReviewUiModel.Product)
 }

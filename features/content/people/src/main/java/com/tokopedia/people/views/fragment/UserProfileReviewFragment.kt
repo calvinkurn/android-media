@@ -112,7 +112,7 @@ class UserProfileReviewFragment @Inject constructor(
                         userId = viewModel.profileUserID,
                         feedbackId = review.feedbackID,
                         isSelf = viewModel.isSelfProfile,
-                        productId = review.product.productID,
+                        productReview = review.product,
                     )
                     viewModel.submitAction(UserProfileAction.ClickProductInfo(review))
                 }

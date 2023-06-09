@@ -59,6 +59,7 @@ class UserProfileAnalytics {
         const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val PRODUCT_CLICK = "productClick"
         const val ALLOW = "Allow"
         const val DENY = "Deny"
         const val IZINKAN_AKSES = "Izinkan Akses"
@@ -75,6 +76,14 @@ class UserProfileAnalytics {
         const val CREATIVE_SLOT = "creative_slot"
         const val ITEM_ID = "item_id"
         const val ITEM_NAME = "item_name"
+        const val ITEM_BRAND = "item_brand"
+        const val ITEM_CATEOGRY = "item_category"
+        const val ITEM_VARIANT = "item_variant"
+        const val ITEM_PRICE = "price"
+        const val INDEX = "index"
+        const val ITEM_LIST = "item_list"
+        const val CLICK = "click"
+        const val PRODUCTS = "products"
     }
 
     object Event {

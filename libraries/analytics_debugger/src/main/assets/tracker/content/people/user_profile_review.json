@@ -113,14 +113,11 @@
       "item_list": "/user profile - review tab",
       "items": [
         {
-          "dimension40": "",
-          "index": "",
           "item_brand": "",
           "item_category": "",
           "item_id": ".*",
           "item_name": ".*",
-          "item_variant": ".*",
-          "price": ""
+          "item_variant": ".*"
         }
       ],
       "sessionIris": ".*",

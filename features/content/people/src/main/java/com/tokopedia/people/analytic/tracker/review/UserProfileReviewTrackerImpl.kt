@@ -1,6 +1,7 @@
 package com.tokopedia.people.analytic.tracker.review
 
 import com.tokopedia.people.analytic.UserProfileAnalytics
+import com.tokopedia.people.views.uimodel.UserReviewUiModel
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -132,26 +133,32 @@ class UserProfileReviewTrackerImpl @Inject constructor(
         userId: String,
         feedbackId: String,
         isSelf: Boolean,
-        productId: String
+        productReview: UserReviewUiModel.Product,
     ) {
         trackingQueue.putEETracking(
             EventModel(
-                event = UserProfileAnalytics.Constants.PROMO_CLICK,
-                category = UserProfileAnalytics.Constants.CONTENT,
+                event = UserProfileAnalytics.Constants.PRODUCT_CLICK,
+                category = UserProfileAnalytics.Category.FEED_USER_PROFILE,
                 action = "click - product on review",
-                label = generateCompleteEventAction(userId, feedbackId, isSelf, productId),
+                label = generateCompleteEventAction(userId, feedbackId, isSelf, productReview.productID),
             ),
             hashMapOf(
                 UserProfileAnalytics.Constants.ECOMMERCE to hashMapOf(
-                    UserProfileAnalytics.Constants.PROMO_CLICK to hashMapOf(
-                        UserProfileAnalytics.Constants.PROMOTIONS to listOf(
-                            /** TODO: adjust it later */
-                            mapOf<String, String>()
+                    UserProfileAnalytics.Constants.CLICK to hashMapOf(
+                        UserProfileAnalytics.Constants.PRODUCTS to listOf(
+                            mapOf(
+                                UserProfileAnalytics.Constants.ITEM_BRAND to "",
+                                UserProfileAnalytics.Constants.ITEM_CATEOGRY to "",
+                                UserProfileAnalytics.Constants.ITEM_NAME to productReview.productName,
+                                UserProfileAnalytics.Constants.ITEM_ID to productReview.productID,
+                                UserProfileAnalytics.Constants.ITEM_VARIANT to productReview.productVariant.variantName,
+                            )
                         )
                     )
                 )
             ),
             hashMapOf(
+                UserProfileAnalytics.Constants.ITEM_LIST to "/user profile - review tab",
                 UserProfileAnalytics.Constants.CURRENT_SITE to UserProfileAnalytics.Variable.currentSite,
                 UserProfileAnalytics.Constants.SESSION_IRIS to UserProfileAnalytics.Variable.sessionIris,
                 UserProfileAnalytics.Constants.USER_ID to userId,
