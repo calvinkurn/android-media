@@ -8,10 +8,9 @@ import android.text.TextPaint
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
-import androidx.core.graphics.toColorInt
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.data.entity.AddTextColorManager
+import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.ui.uimodel.BitmapCreation
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel
@@ -31,7 +30,7 @@ interface AddTextFilterRepository {
 
 class AddTextFilterRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val colorCollection: AddTextColorManager,
+    private val colorProvider: AddTextColorProvider,
     private val bitmapCreationRepository: BitmapCreationRepository
 ) : AddTextFilterRepository {
 
@@ -65,6 +64,9 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         size: Pair<Int, Int>,
         data: EditorAddTextUiModel
     ): Bitmap? {
+        paddingFloating = 0f
+        floatingWidthAdjustment = 0f
+
         val originalImageWidth = size.first
         val originalImageHeight = size.second
 
@@ -80,7 +82,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
             backgroundModel = data.getBackgroundTemplate()?.addTextBackgroundModel
             fontSize = originalImageHeight * FONT_SIZE_PERCENTAGE
 
-            val mTextPaint = createTextPaint(data.textColor.toColorInt(), data.getTypeFaceStyle())
+            val mTextPaint = createTextPaint(data.textColor, data.getTypeFaceStyle())
 
             var mTextLayout: StaticLayout? = null
 
@@ -157,7 +159,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
         }.apply {
             this?.let {
                 ContextCompat.getDrawable(context, it)?.let { backgroundDrawable ->
-                    colorCollection.implementDrawableColor(backgroundDrawable, backgroundDetail.addTextBackgroundColor)
+                    colorProvider.implementDrawableColor(backgroundDrawable, backgroundDetail.addTextBackgroundColor)
                     return backgroundDrawable
                 }
             }

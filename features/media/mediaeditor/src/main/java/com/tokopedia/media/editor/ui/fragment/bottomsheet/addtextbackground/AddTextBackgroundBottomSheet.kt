@@ -8,9 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.media.editor.data.entity.AddTextColorManager
+import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -22,11 +21,11 @@ import javax.inject.Inject
 
 class AddTextBackgroundBottomSheet(
     private val imgUrl: String?,
-    val onFinish: (color: String, backgroundModel: Int) -> Unit
+    val onFinish: (color: Int, backgroundModel: Int) -> Unit
 ) : BottomSheetUnify() {
 
     @Inject
-    lateinit var addTextColorManager: AddTextColorManager
+    lateinit var addTextColorProvider: AddTextColorProvider
 
     private var colorButtonRef: ArrayList<ChipsUnify> = arrayListOf()
     private var templateModelRef: ArrayList<AddTextBackgroundBtmItem> = arrayListOf()
@@ -36,6 +35,8 @@ class AddTextBackgroundBottomSheet(
     // 0 -> black || 1 -> white
     private var colorSelectionIndex = 0
     private var modelSelectionIndex = 0
+
+    private var backgroundColorCollection = mapOf<Int, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -64,27 +65,25 @@ class AddTextBackgroundBottomSheet(
         parent.apply {
             mColorButtonContainerRef = findViewById(editorR.id.btmsht_add_text_color_container)
 
-            addTextColorManager.listOfTextWithBackgroundColor.forEachIndexed { index, pair ->
-                pair.let { (hex, text) ->
-                    val chip = ChipsUnify(context).apply {
-                        layoutParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-                        setMargin(0, 0, CHIP_PADDING.toPx(), 0)
-                        chip_text.text = text
-                        chip_image_icon.type = ImageUnify.TYPE_CIRCLE
+            backgroundColorCollection = addTextColorProvider.getListOfTextWithBackgroundColor()
+            backgroundColorCollection.mapValues { (color, text) ->
+                val chip = ChipsUnify(context).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    setMargin(0, 0, CHIP_PADDING.toPx(), 0)
+                    chip_text.text = text
+                    chip_image_icon.type = ImageUnify.TYPE_CIRCLE
 
-                        val colorInt = hex.toColorInt()
-                        chipImageResource = if (colorInt == Color.BLACK) {
-                            ColorDrawable(colorInt)
-                        } else {
-                            ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
-                        }
+                    chipImageResource = if (color == Color.BLACK) {
+                        ColorDrawable(color)
+                    } else {
+                        ContextCompat.getDrawable(context, editorR.drawable.add_text_white_circle)
                     }
-                    colorButtonRef.add(chip)
-                    mColorButtonContainerRef?.addView(chip)
                 }
+                colorButtonRef.add(chip)
+                mColorButtonContainerRef?.addView(chip)
             }
 
             templateModelRef.add(
@@ -128,10 +127,11 @@ class AddTextBackgroundBottomSheet(
         }
 
         mNextButton?.setOnClickListener {
-            addTextColorManager.listOfTextWithBackgroundColor[colorSelectionIndex].let {(hex, _) ->
-                onFinish(hex, modelSelectionIndex)
-                dismiss()
-            }
+            onFinish(
+                backgroundColorCollection.toList()[colorSelectionIndex].first,
+                modelSelectionIndex
+            )
+            dismiss()
         }
     }
 
@@ -180,7 +180,7 @@ class AddTextBackgroundBottomSheet(
 
                 // please refer index with EditorAddTextUiModel.TEXT_BACKGROUND_TEMPLATE_FULL
                 // please refer color with EditorAddTextUiModel.TEXT_BACKGROUND_TEMPLATE_BLACK
-                item.setBackgroundModel(index, colorSelectionIndex)
+                item.setBackgroundModel(index, colorSelectionIndex, addTextColorProvider)
             }
         }
     }

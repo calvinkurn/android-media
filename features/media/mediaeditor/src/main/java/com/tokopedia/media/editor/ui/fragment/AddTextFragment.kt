@@ -17,7 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.entity.AddTextColorManager
+import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.databinding.FragmentAddTextLayoutBinding
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextActivity
 import com.tokopedia.media.editor.ui.activity.addtext.AddTextViewModel
@@ -40,7 +40,7 @@ import com.tokopedia.media.editor.R as editorR
 
 class AddTextFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
-    addTextColorManager: AddTextColorManager
+    addTextColorProvider: AddTextColorProvider
 ) : BaseEditorFragment() {
 
     private val viewBinding: FragmentAddTextLayoutBinding? by viewBinding()
@@ -48,7 +48,7 @@ class AddTextFragment @Inject constructor(
 
     private var defaultPadding = 0
 
-    private var colorList = addTextColorManager.listOfTextColor
+    private var colorList = addTextColorProvider.getListOfTextColor()
 
     /**
      * 0 -> regular
@@ -313,13 +313,12 @@ class AddTextFragment @Inject constructor(
     }
 
     private fun initFontColor() {
-        colorList.forEachIndexed { index, colorRef ->
+        colorList.forEachIndexed { index, color ->
             viewBinding?.fontColorContainer?.addView(
                 AddTextColorItemView(requireContext()).apply {
-                    val colorInt = colorRef.toColorInt()
-                    setColor(colorInt)
+                    setColor(color)
                     setOnClickListener {
-                        changeFontColor(colorInt)
+                        changeFontColor(color)
                         textColorItemRef[index]?.setActive()
                         textColorItemRef[activeColorIndex]?.setInactive()
 
@@ -327,7 +326,7 @@ class AddTextFragment @Inject constructor(
                     }
                     if (index == activeColorIndex) {
                         this.setActive()
-                        changeFontColor(colorInt)
+                        changeFontColor(color)
                     }
 
                     textColorItemRef[index] = this

@@ -5,8 +5,8 @@ import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsImpl
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
-import com.tokopedia.media.editor.data.entity.AddTextColorManager
-import com.tokopedia.media.editor.data.entity.AddTextColorManagerImpl
+import com.tokopedia.media.editor.utils.AddTextColorProvider
+import com.tokopedia.media.editor.utils.AddTextColorProviderImpl
 import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.picker.common.cache.*
 import dagger.Binds
@@ -114,6 +114,6 @@ abstract class EditorModule {
     @Binds
     @ActivityScope
     internal abstract fun provideAddTextColorCollection(
-        textColorCollection: AddTextColorManagerImpl
-    ): AddTextColorManager
+        textColorCollection: AddTextColorProviderImpl
+    ): AddTextColorProvider
 }

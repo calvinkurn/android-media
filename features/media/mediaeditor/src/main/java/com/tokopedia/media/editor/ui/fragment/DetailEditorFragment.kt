@@ -34,7 +34,7 @@ import com.tokopedia.media.editor.analytics.removeBackgroundToText
 import com.tokopedia.media.editor.analytics.watermarkToText
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
-import com.tokopedia.media.editor.data.entity.AddTextColorManager
+import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.editor.ui.component.RotateToolUiComponent.Companion.ROTATE_BTN_DEGREE
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
@@ -89,7 +89,7 @@ class DetailEditorFragment @Inject constructor(
     private val pickerParam: PickerCacheManager,
     private val addLogoCacheManager: EditorAddLogoCacheManager,
     private val addTextCacheManager: EditorAddTextCacheManager,
-    private val addTextColorManager: AddTextColorManager
+    private val addTextColorProvider: AddTextColorProvider
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -452,7 +452,7 @@ class DetailEditorFragment @Inject constructor(
                     addTextBackgroundModel = model
                 ))
 
-                it.textColor = addTextColorManager.getTextColorOnBackgroundMode(color)
+                it.textColor = addTextColorProvider.getTextColorOnBackgroundMode(color)
             }
 
             implementAddTextData()
@@ -1262,10 +1262,12 @@ class DetailEditorFragment @Inject constructor(
                 viewModel.rotateSliderValue.toInt()
             }
             val addLogoValue = addLogoToText(addLogoComponent.getLogoState())
-            val addTextValue = addTextToText(
-                data.addTextValue,
-                addTextColorManager.getTextFromHex(data.addTextValue?.textColor)
-            )
+            val addTextValue = data.addTextValue?.let {
+                addTextToText(
+                    it,
+                    addTextColorProvider.getTextColorName(it.textColor)
+                )
+            } ?: ""
 
             val currentEditorText =
                 requireContext().getText(getToolEditorText(data.editorToolType)).toString()
@@ -1492,7 +1494,7 @@ class DetailEditorFragment @Inject constructor(
         startActivityForResult(intent, AddTextActivity.ADD_TEXT_REQUEST_CODE)
     }
 
-    private fun showAddTextBackgroundSelection(onFinish: (color: String, backgroundModel: Int) -> Unit) {
+    private fun showAddTextBackgroundSelection(onFinish: (color: Int, backgroundModel: Int) -> Unit) {
         AddTextBackgroundBottomSheet(
             data.resultUrl,
             onFinish

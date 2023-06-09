@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
@@ -273,12 +274,4 @@ fun roundedBitmap(
     roundedBitmap.cornerRadius = if (isCircular) (source.width.toFloat() / 2) else cornerRadius
 
     return roundedBitmap.toBitmap()
-}
-
-fun Drawable.toWhite() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        colorFilter = BlendModeColorFilter(Color.WHITE, BlendMode.SRC_ATOP)
-    } else {
-        setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
-    }
 }

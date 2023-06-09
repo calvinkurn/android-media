@@ -105,4 +105,8 @@
     <string name="add_text_toaster_template_save_error">Oops, gagal menyimpan template.</string>
     <string name="add_text_toaster_template_load">Template berhasil dipasang</string>
     <string name="add_text_toaster_template_load_error">Oops, template gagal dipasang.</string>
+
+    <!-- Add Text color text -->
+    <string name="add_text_color_name_black">Hitam</string>
+    <string name="add_text_color_name_white">Putih</string>
 </resources>

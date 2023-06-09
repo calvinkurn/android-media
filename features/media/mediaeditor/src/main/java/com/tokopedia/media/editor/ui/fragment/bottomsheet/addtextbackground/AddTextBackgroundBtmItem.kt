@@ -15,15 +15,16 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_SIDE_CUT
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_BLACK
 import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT_BACKGROUND_TEMPLATE_WHITE
-import com.tokopedia.media.editor.utils.toWhite
+import com.tokopedia.media.editor.utils.AddTextColorProvider
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.unifyprinciples.R as principleR
 
-class AddTextBackgroundBtmItem(context: Context, attributeSet: AttributeSet) :
-    ConstraintLayout(context, attributeSet) {
-
+class AddTextBackgroundBtmItem constructor(
+    context: Context,
+    attributeSet: AttributeSet
+) : ConstraintLayout(context, attributeSet) {
     private var mImageRef: AppCompatImageView? = null
     private var mItemConstraint: ConstraintLayout? = null
     private var mItemChecklist: View? = null
@@ -70,14 +71,19 @@ class AddTextBackgroundBtmItem(context: Context, attributeSet: AttributeSet) :
         mItemChecklist?.hide()
     }
 
-    fun setBackgroundModel(backgroundTemplate: Int, backgroundColor: Int = TEXT_BACKGROUND_TEMPLATE_BLACK) {
-        when(backgroundTemplate) {
+    fun setBackgroundModel(
+        backgroundTemplate: Int,
+        backgroundColor: Int = TEXT_BACKGROUND_TEMPLATE_BLACK,
+        colorProvider: AddTextColorProvider
+    ) {
+        when (backgroundTemplate) {
             TEXT_BACKGROUND_TEMPLATE_FULL -> editorR.drawable.add_text_background_full
             TEXT_BACKGROUND_TEMPLATE_FLOATING -> {
                 val margin = 4.toPx()
-                mItemBackground?.setMargin(margin, 0,margin,margin)
+                mItemBackground?.setMargin(margin, 0, margin, margin)
                 editorR.drawable.add_text_background_floating
             }
+
             TEXT_BACKGROUND_TEMPLATE_SIDE_CUT -> editorR.drawable.add_text_background_cut
             else -> 0
         }.let {
@@ -86,7 +92,7 @@ class AddTextBackgroundBtmItem(context: Context, attributeSet: AttributeSet) :
             // define is background color for item preview
             if (backgroundColor == TEXT_BACKGROUND_TEMPLATE_WHITE) {
                 ContextCompat.getDrawable(context, it)?.let { backgroundDrawable ->
-                    backgroundDrawable.toWhite()
+                    colorProvider.drawableToWhite(backgroundDrawable)
                     mItemBackground?.background = backgroundDrawable
                 }
             } else {
