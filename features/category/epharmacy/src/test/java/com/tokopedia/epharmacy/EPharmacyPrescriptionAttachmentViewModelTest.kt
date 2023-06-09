@@ -11,6 +11,7 @@ import com.tokopedia.epharmacy.network.response.InitiateConsultation
 import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
 import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
 import com.tokopedia.epharmacy.utils.EPHARMACY_ANDROID_SOURCE
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationToaster
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -66,6 +67,20 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         viewModel.getPrepareProductGroup()
         assert(viewModel.productGroupLiveDataResponse.value is Success)
         assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
+    }
+
+    @Test
+    fun `getGroupsSuccessTest button data`() {
+        val response = EPharmacyPrepareProductsGroupResponse(responseData)
+        coEvery {
+            ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
+        } coAnswers {
+            firstArg<(EPharmacyPrepareProductsGroupResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getPrepareProductGroup()
+        assert(viewModel.productGroupLiveDataResponse.value is Success)
+        assert(viewModel.buttonLiveData.value == response.detailData?.groupsData?.papPrimaryCTA)
+        assert(viewModel.uploadError.value is EPharmacyMiniConsultationToaster)
     }
 
     @Test
@@ -227,5 +242,34 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
             (viewModel.consultationDetails.value as Fail).throwable,
             mockThrowable
         )
+    }
+
+    @Test
+    fun testGetShopIds() {
+        // Test case 1: ePharmacyGroupId matches and contains shopIds
+        val ePharmacyGroupId = "1"
+        val expectedShopIds = listOf("23")
+
+        val ePharmacyPrepareProductsGroupResponseData = responseData
+        viewModel.ePharmacyPrepareProductsGroupResponseData = EPharmacyPrepareProductsGroupResponse(ePharmacyPrepareProductsGroupResponseData)
+        val actualShopIds = viewModel.getShopIds(ePharmacyGroupId)
+
+        Assert.assertEquals(expectedShopIds, actualShopIds)
+
+        // Test case 2: ePharmacyGroupId matches, but does not contain shopIds
+        val emptyShopIdsGroupId = "2"
+        val expectedEmptyShopIds = emptyList<String>()
+
+        val actualEmptyShopIds = viewModel.getShopIds(emptyShopIdsGroupId)
+
+        Assert.assertEquals(expectedEmptyShopIds, actualEmptyShopIds)
+
+        // Test case 3: ePharmacyGroupId does not match, should return an empty list
+        val invalidGroupId = "invalid"
+        val expectedEmptyList = emptyList<String>()
+
+        val actualEmptyList = viewModel.getShopIds(invalidGroupId)
+
+        Assert.assertEquals(expectedEmptyList, actualEmptyList)
     }
 }

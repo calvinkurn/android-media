@@ -284,6 +284,40 @@ class UploadPrescriptionViewModelTest {
     }
 
     @Test
+    fun `uploadIdsSuccessTestOrder id is zero`() {
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(true))
+        coEvery {
+            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(), any(), any())
+        } coAnswers {
+            firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
+        }
+        val prescriptionImage = PrescriptionImage("", 0, "", "", localPath = "", prescriptionData = null)
+        viewModel.onSuccessGetPrescriptionImages(
+            arrayListOf(
+                prescriptionImage
+            )
+        )
+        viewModel.uploadPrescriptionIdsInOrder(0L)
+    }
+
+    @Test
+    fun `uploadIdsSuccessTestOrder id is not zero`() {
+        val response = EPharmacyUploadPrescriptionIdsResponse(EPharmacyUploadPrescriptionIdsResponse.EPharmacyUploadPrescriptionData(true))
+        coEvery {
+            postPrescriptionIdUseCase.postPrescriptionIdsCheckout(any(), any(), any(), any())
+        } coAnswers {
+            firstArg<(EPharmacyUploadPrescriptionIdsResponse) -> Unit>().invoke(response)
+        }
+        val prescriptionImage = PrescriptionImage("", 1, "", "", localPath = "", prescriptionData = null)
+        viewModel.onSuccessGetPrescriptionImages(
+            arrayListOf(
+                prescriptionImage
+            )
+        )
+        viewModel.uploadPrescriptionIdsInOrder(0L)
+    }
+
+    @Test
     fun `uploadIdsSuccessTestOrder null data`() {
         val response = EPharmacyUploadPrescriptionIdsResponse(null)
         coEvery {
