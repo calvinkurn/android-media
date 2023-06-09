@@ -372,21 +372,23 @@ class AddEditProductVariantDetailFragment :
     }
 
     private fun observeSelectedVariantSize() {
-        viewModel.selectedVariantSize.observe(viewLifecycleOwner, { size ->
+        viewModel.selectedVariantSize.observe(viewLifecycleOwner) { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
             if (hasVariantCombination) {
-                val selectedVariantList = viewModel.productInputModel.value?.variantInputModel?.selections
+                val selectedVariantList =
+                    viewModel.productInputModel.value?.variantInputModel?.selections
                 selectedVariantList?.run { setupVariantDetailCombinationFields(selectedVariantList) }
             } else {
-                val selectedVariant = viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
+                val selectedVariant =
+                    viewModel.productInputModel.value?.variantInputModel?.selections?.firstOrNull()
                 val selectedUnitValues = selectedVariant?.options
                 selectedUnitValues?.run { setupVariantDetailFields(selectedUnitValues) }
             }
-        })
+        }
     }
 
     private fun observeHasWholesale() {

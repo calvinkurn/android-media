@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -51,6 +50,7 @@ class VariantDetailFieldsViewHolder(
 
     private var visitablePosition = 0
     private var isPriceFieldEdited = false
+    private var hasDTStock = false
 
     init {
         unitValueLabel = itemView?.findViewById(R.id.tv_unit_value_label)
@@ -141,7 +141,7 @@ class VariantDetailFieldsViewHolder(
         statusSwitch?.setOnClickListener {
             val isChecked = statusSwitch?.isChecked ?: false
             // put back last state if isChecked value
-            if (!isChecked && !enableVariantStatusChange) {
+            if (!isChecked && !enableVariantStatusChange && hasDTStock) {
                 statusSwitch?.isChecked = true
                 variantDetailFieldsViewHolderListener.onDisabledVariantStatusChanged(visitablePosition)
             }
@@ -188,6 +188,7 @@ class VariantDetailFieldsViewHolder(
                 showCoachmark()
                 displayWeightCoachmark = false
             }
+            hasDTStock = variantDetailInputLayoutModel.hasDTStock
         }
     }
 

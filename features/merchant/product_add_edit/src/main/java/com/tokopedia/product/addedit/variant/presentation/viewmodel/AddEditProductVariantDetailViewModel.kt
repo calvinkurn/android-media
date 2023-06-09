@@ -375,7 +375,8 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 isSkuFieldVisible = isSkuFieldVisible,
                 unitValueLabel = unitValueLabel,
                 isPrimary = isPrimary,
-                combination = combination)
+                combination = combination,
+                hasDTStock = productVariant.hasDTStock)
     }
 
     fun getInputDataValidStatus() = !inputLayoutModelMap.any {
