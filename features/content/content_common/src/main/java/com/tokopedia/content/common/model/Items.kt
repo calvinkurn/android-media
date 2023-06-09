@@ -1,18 +1,18 @@
-package com.tokopedia.feedplus.data
+package com.tokopedia.content.common.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Live(
+data class Items(
     @SerializedName("isActive")
     val isActive: Boolean = false,
+    @SerializedName("position")
+    val position: Int = 0,
+    @SerializedName("type")
+    val type: String = "",
     @SerializedName("title")
     val title: String = "",
-    @SerializedName("image")
-    val image: String = "",
-    @SerializedName("weblink")
-    val weblink: String = "",
-    @SerializedName("applink")
-    val applink: String = "",
+    @SerializedName("key")
+    val key: String = "",
     @SerializedName("__typename")
     val typeName: String = ""
 )

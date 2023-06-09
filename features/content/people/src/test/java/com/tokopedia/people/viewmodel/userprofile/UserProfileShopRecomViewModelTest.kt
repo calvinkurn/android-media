@@ -13,7 +13,12 @@ import com.tokopedia.people.model.userprofile.MutationUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileUiModelBuilder
 import com.tokopedia.people.model.userprofile.ProfileWhitelistUiModelBuilder
 import com.tokopedia.people.robot.UserProfileViewModelRobot
-import com.tokopedia.people.util.*
+import com.tokopedia.people.util.andThen
+import com.tokopedia.people.util.assertEmpty
+import com.tokopedia.people.util.assertEvent
+import com.tokopedia.people.util.assertFalse
+import com.tokopedia.people.util.assertTrue
+import com.tokopedia.people.util.equalTo
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -49,7 +54,7 @@ class UserProfileShopRecomViewModelTest {
     private val mockMutationSuccess = mutationBuilder.buildSuccess()
     private val mockMutationError = mutationBuilder.buildError()
     private val mockException = commonBuilder.buildException()
-    private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockCreationInfo = profileWhitelistBuilder.buildCreationInfoModel()
     private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsShown(nextCursor = "", isShown = false)
     private val mockShopRecomIsShownNoLoadMore = shopRecomBuilder.buildModelIsShown(nextCursor = "")
@@ -91,7 +96,7 @@ class UserProfileShopRecomViewModelTest {
     @Before
     fun setUp() {
         coEvery { mockUserSession.userId } returns mockOwnUserId
-        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
+        coEvery { mockRepo.getCreationInfo() } returns mockCreationInfo
         coEvery { mockRepo.getUserProfileTab(any()) } returns mockTabsModel
     }
 

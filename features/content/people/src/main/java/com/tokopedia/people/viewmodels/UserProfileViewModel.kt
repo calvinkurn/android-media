@@ -3,23 +3,27 @@ package com.tokopedia.people.viewmodels
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
-import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.people.data.UserFollowRepository
 import com.tokopedia.people.data.UserProfileRepository
-import com.tokopedia.people.model.PlayGetContentSlot
-import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
-import com.tokopedia.people.views.uimodel.profile.*
+import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileType
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -31,7 +35,6 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +45,7 @@ class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
     private val followRepo: UserFollowRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -84,21 +87,17 @@ class UserProfileViewModel @AssistedInject constructor(
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
 
-    val isWhitelist: Boolean
-        get() = isSelfProfile && _profileWhitelist.value.isWhitelist
-
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 
-    val needOnboarding: Boolean
-        get() = _profileWhitelist.value.hasAcceptTnc.not()
-
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
+
+    val isShortVideoEntryPointShow: Boolean get() = _creationInfo.value.showShortVideo
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
-    private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
+    private val _creationInfo = MutableStateFlow(ProfileCreationInfoUiModel())
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
@@ -116,20 +115,28 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileInfo,
         _followInfo,
         _profileType,
-        _profileWhitelist,
+        _creationInfo,
         _shopRecom,
         _profileTab,
         _feedPostsContent,
         _videoPostContent,
         _isLoading,
         _error
-    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
-        isLoading, error ->
+    ) { profileInfo,
+        followInfo,
+        profileType,
+        creationInfo,
+        shopRecom,
+        profileTab,
+        feedPostsContent,
+        videoPostContent,
+        isLoading,
+        error ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
             profileType = profileType,
-            profileWhitelist = profileWhitelist,
+            creationInfo = creationInfo,
             shopRecom = shopRecom,
             profileTab = profileTab,
             feedPostsContent = feedPostsContent,
@@ -520,7 +527,7 @@ class UserProfileViewModel @AssistedInject constructor(
             return
         }
 
-        if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
+        if (profileType == ProfileType.Self) _creationInfo.update { repo.getCreationInfo() }
 
         if (isRefresh) loadProfileTab()
     }
