@@ -58,7 +58,6 @@ android {
     }
     defaultConfig {
         minSdkVersion 21
-        multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
         versionCode 391100000
@@ -147,4 +146,5 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.homeAccountUser)
 }

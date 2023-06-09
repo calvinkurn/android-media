@@ -23,13 +23,14 @@ buildCache {
 apply from: 'buildconfig/aar/settings-helper.gradle'
 apply from: 'tools/dynamic_feature_inclusion.gradle'
 //apply from: "buildconfig/appcompile/compile-testing.gradle"
-apply from: "buildconfig/appcompile/compile-libraries.gradle"
-apply from: "buildconfig/appcompile/compile-customerapp.gradle"
-apply from: "buildconfig/appcompile/compile-customerapp_pro.gradle"
-apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-libraries.gradle"
+//apply from: "buildconfig/appcompile/compile-customerapp.gradle"
+//apply from: "buildconfig/appcompile/compile-customerapp_pro.gradle"
+//apply from: "buildconfig/appcompile/compile-sellerapp.gradle"
 //apply from: "buildconfig/appcompile/compile-testapp.gradle"
 //apply from: "buildconfig/appcompile/compile-macrobenchmark.gradle"
-apply from: "buildconfig/appcompile/compile-wearosapp.gradle"
+//apply from: "buildconfig/appcompile/compile-wearosapp.gradle"
+apply from: "buildconfig/appcompile/compile-testapp-plugin.gradle"
 
 
 apply from: "tools/composite_build_settings.gradle"
