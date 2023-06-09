@@ -32,14 +32,15 @@ class RemoveCartTokofoodUseCase @Inject constructor(repository: GraphqlRepositor
     suspend fun execute(removeCartParam: RemoveCartTokofoodParam): CartGeneralRemoveCartData {
         if (removeCartParam.getIsCartIdsEmpty()) {
             throw MessageErrorException(ERROR_NO_CART_ID_MESSAGE)
-        }
-        val param = generateParams(removeCartParam)
-        setRequestParams(param)
-        val response = executeOnBackground()
-        if (response.isSuccess()) {
-            return response.cartGeneralRemoveCart.data
         } else {
-            throw MessageErrorException(response.cartGeneralRemoveCart.data.message)
+            val param = generateParams(removeCartParam)
+            setRequestParams(param)
+            val response = executeOnBackground()
+            if (response.isSuccess()) {
+                return response.cartGeneralRemoveCart.data
+            } else {
+                throw MessageErrorException(response.cartGeneralRemoveCart.data.message)
+            }
         }
     }
 
