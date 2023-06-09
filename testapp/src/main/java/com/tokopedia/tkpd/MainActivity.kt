@@ -14,6 +14,7 @@ import androidx.compose.runtime.setValue
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.navigation.presentation.activity.MainParentActivity
 import com.tokopedia.nest.principles.ui.NestTheme
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -151,11 +152,12 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        if (model.value.applink.isNotBlank()) {
-            RouteManager.route(this, model.value.applink)
-        } else {
-            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-        }
+//        if (model.value.applink.isNotBlank()) {
+//            RouteManager.route(this, model.value.applink)
+//        } else {
+//            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+//        }
+        startActivity(Intent(this, MainParentActivity::class.java))
     }
 
     private fun getDefaultAppLink(): String {

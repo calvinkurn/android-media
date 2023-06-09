@@ -83,6 +83,10 @@ class PlayWidgetCardCarouselUpcomingView : FrameLayout {
         mListener = listener
     }
 
+    fun setUnClickable(isUnClickable: Boolean) {
+        binding.viewPlayWidgetNoClick.root.showWithCondition(isUnClickable)
+    }
+
     fun showReminderButton(shouldShow: Boolean, animate: Boolean = true) {
         if (animate) {
             TransitionManager.beginDelayedTransition(

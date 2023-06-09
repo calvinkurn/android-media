@@ -69,6 +69,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                 data.isSelected && dataSource.canAutoPlay(data.channel)
             )
             if (!data.isSelected) channelView.resetProductPosition()
+            channelView.setUnClickable(!data.isSelected)
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
@@ -86,6 +87,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                             data.isSelected && dataSource.canAutoPlay(data.channel)
                         )
                         if (!data.isSelected) channelView.resetProductPosition()
+                        channelView.setUnClickable(!data.isSelected)
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_TOTAL_VIEW_CHANGE -> {
                         channelView.updateTotalView(data.channel.totalView.totalViewFmt)
@@ -196,6 +198,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
             }
             upcomingView.setModel(data.channel)
             upcomingView.showReminderButton(data.isSelected)
+            upcomingView.setUnClickable(!data.isSelected)
         }
 
         internal fun bind(data: PlayWidgetCarouselAdapter.Model, payloads: Set<String>) {
@@ -210,6 +213,7 @@ class PlayWidgetCarouselViewHolder private constructor() {
                     }
                     PlayWidgetCarouselDiffCallback.PAYLOAD_SELECTED_CHANGE -> {
                         upcomingView.showReminderButton(data.isSelected)
+                        upcomingView.setUnClickable(!data.isSelected)
                     }
                 }
             }

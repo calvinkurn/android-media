@@ -184,6 +184,10 @@ class PlayWidgetCardCarouselChannelView : FrameLayout, PlayVideoPlayerReceiver {
         binding.viewPlayWidgetTotalViews.tvTotalViews.text = totalView
     }
 
+    fun setUnClickable(isUnClickable: Boolean) {
+        binding.viewPlayWidgetNoClick.root.showWithCondition(isUnClickable)
+    }
+
     fun showMuteButton(shouldShow: Boolean, animate: Boolean = true) {
         if (animate) {
             TransitionManager.beginDelayedTransition(
