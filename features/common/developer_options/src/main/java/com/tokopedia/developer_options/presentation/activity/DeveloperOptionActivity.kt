@@ -396,7 +396,7 @@ class DeveloperOptionActivity :
 
     override fun onSubmitDevOptsPassword(password: String, isAuto: Boolean) {
         val serverPassword = remoteConfig.getString(RemoteConfigKey.DEV_OPTS_AUTHORIZATION, "")
-        if (true) {
+        if (password == serverPassword) {
             loginSession.setLoginSession(password)
             adapter.setValueIsAuthorized(true)
             adapter.initializeList()
