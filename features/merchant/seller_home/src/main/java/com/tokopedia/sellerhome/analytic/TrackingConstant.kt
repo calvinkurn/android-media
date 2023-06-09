@@ -96,6 +96,10 @@ object TrackingConstant {
     const val IMPRESSION_FIRST_TRANSACTION_POPUP = "impression first transaction pop up"
     const val CLICK_FIRST_TRANSACTION_POPUP_NANTI_SAJA = "click on first transaction pop up - nanti saja"
     const val CLICK_FIRST_TRANSACTION_POPUP_PROSES_PESANAN = "click on first transaction pop up - proses pesanan"
+    const val CLICK_WIDGET_MRP_ELIGIBLE = "click widget mrp - click cta eligible"
+    const val IMPRESSION_WIDGET_MRP_ELIGIBLE = "impression widget mrp - eligible"
+    const val CLICK_WIDGET_MRP_NOT_ELIGIBLE = "click widget mrp - click cta not eligible"
+    const val IMPRESSION_WIDGET_MRP_NOT_ELIGIBLE = "impression widget mrp - not eligible"
 
     //search
     const val CLICK_SEARCH = "clickSearch"

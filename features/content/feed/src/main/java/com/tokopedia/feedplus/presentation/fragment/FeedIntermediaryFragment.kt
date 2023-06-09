@@ -58,7 +58,7 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
             replace(
                 binding.root.id,
                 fragment.apply {
-                     arguments = this@FeedIntermediaryFragment.arguments
+                    arguments = this@FeedIntermediaryFragment.arguments
                 },
                 FRAGMENT_TAG
             )
@@ -93,9 +93,18 @@ class FeedIntermediaryFragment : Fragment(), FragmentListener {
     }
 
     override fun isLightThemeStatusBar(): Boolean {
-        val fragment = getCurrentFragment() ?: return false
+        val fragment = getCurrentFragment() ?: return isUsingImmersiveFeed()
         return if (fragment is FragmentListener) {
             fragment.isLightThemeStatusBar
+        } else {
+            false
+        }
+    }
+
+    override fun isForceDarkModeNavigationBar(): Boolean {
+        val fragment = getCurrentFragment() ?: return isUsingImmersiveFeed()
+        return if (fragment is FragmentListener) {
+            fragment.isForceDarkModeNavigationBar
         } else {
             false
         }

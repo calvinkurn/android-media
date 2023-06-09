@@ -103,7 +103,6 @@ includeIfEnabled("features:discovery:global_nav_widget")
 includeIfEnabled("features:discovery:video_widget")
 
 includeIfEnabled("features:fintech:home_credit")
-includeIfEnabled("features:fintech:ovo_pay_with_qr")
 includeIfEnabled("features:fintech:saldo_details")
 includeIfEnabled("features:fintech:common_wallet")
 includeIfEnabled("features:fintech:wallet")
@@ -186,8 +185,6 @@ includeIfEnabled("features:tokopedianow")
 includeIfEnabled("features:operational:contact_us")
 includeIfEnabled("features:operational:csat_rating")
 
-includeIfEnabled("features:ovop2p")
-
 includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 includeIfEnabled("features:ordermanagement:buyer_order_detail")
@@ -200,8 +197,6 @@ includeIfEnabled("features:payment:gopay.kyc")
 includeIfEnabled("features:payment:pms")
 includeIfEnabled("features:payment:withdraw")
 includeIfEnabled("features:payment:payment_setting")
-
-includeIfEnabled("features:merchant:gallery")
 
 includeIfEnabled("features:promo:gamification")
 includeIfEnabled("features:promo:merchant_voucher")
