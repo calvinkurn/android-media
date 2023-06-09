@@ -357,7 +357,28 @@ class LoginHelperViewModel @Inject constructor(
         val searchEmail = _uiState.value.searchText
         var list: List<UserDataUiModel>?
         var filteredUserList: Result<LoginDataUiModel>? = null
-        _uiState.value.loginDataList.apply {
+
+        if (_uiState.value.dataSourceType == LoginHelperDataSourceType.REMOTE) {
+            filteredUserList = getFilteredUserList(searchEmail, _uiState.value.loginDataList)
+            _uiState.update {
+                it.copy(
+                    filteredUserList = filteredUserList
+                )
+            }
+        } else {
+            filteredUserList = getFilteredUserList(searchEmail, _uiState.value.localLoginDataList)
+            _uiState.update {
+                it.copy(
+                    localFilteredLoginDataList = filteredUserList
+                )
+            }
+        }
+    }
+
+    private fun getFilteredUserList(searchEmail: String, userList: Result<LoginDataUiModel>?): Result<LoginDataUiModel>? {
+        var list: List<UserDataUiModel>?
+        var filteredUserList: Result<LoginDataUiModel>? = null
+        userList.apply {
             when (this) {
                 is Success -> {
                     list = this.data.users?.filter { userDataUiModel ->
@@ -371,12 +392,7 @@ class LoginHelperViewModel @Inject constructor(
                 is Fail -> Unit
             }
         }
-
-        _uiState.update {
-            it.copy(
-                filteredUserList = filteredUserList
-            )
-        }
+        return filteredUserList
     }
 
     private fun goToLoginPage() {

@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -268,7 +269,11 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
 //                }
             }
         } else {
-            fillRecyclerViewData(state.searchText, state.localLoginDataList)
+            if (state.searchText.isEmpty()) {
+                fillRecyclerViewData(state.searchText, state.localLoginDataList)
+            } else {
+                fillRecyclerViewData(state.searchText, state.localFilteredLoginDataList)
+            }
         }
     }
 
@@ -426,6 +431,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     private fun FragmentLoginHelperBinding.setUpDataSourceSwitcher() {
         dataSourceSelector.isChecked = true
         dataSourceSelector.setOnClickListener {
+            viewModel.processEvent(LoginHelperEvent.QueryEmail(""))
+            searchBar.searchBarTextField.text?.clear()
+            globalError.hide()
             val isChecked = dataSourceSelector.isChecked
             if (isChecked) {
                 dataSourceSelector.text =
