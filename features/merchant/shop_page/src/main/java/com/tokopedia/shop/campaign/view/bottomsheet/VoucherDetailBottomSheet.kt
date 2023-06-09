@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.shop.R
-import com.tokopedia.applink.ApplinkConst
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -25,8 +24,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
+import com.tokopedia.shop.campaign.util.tracker.VoucherDetailBottomSheetTracker
 import com.tokopedia.shop.databinding.BottomsheetVoucherDetailBinding
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -68,6 +66,9 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker: VoucherDetailBottomSheetTracker
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[VoucherDetailViewModel::class.java] }
@@ -114,6 +115,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         observePromoVoucherRedeemResult()
         observeUseVoucherPromoResult()
         viewModel.getVoucherDetail(voucherSlug)
+        tracker.sendVoucherDetailBottomSheetImpression("", "", shopId)
     }
 
 
@@ -211,8 +213,10 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
 
     private fun handlePromoVoucher(promoVoucherCode: String) {
         if (promoVoucherCode.isEmpty()) {
+            tracker.sendRedeemVoucherEvent("", shopId)
             showClaimPromoVoucherButton()
         } else {
+            tracker.sendUseVoucherEvent("", shopId)
             showUsePromoVoucherButton()
         }
     }

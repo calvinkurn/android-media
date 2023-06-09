@@ -16,6 +16,7 @@ import com.tokopedia.shop.campaign.di.component.DaggerShopCampaignComponent
 import com.tokopedia.shop.campaign.di.module.ShopCampaignModule
 import com.tokopedia.shop.campaign.domain.entity.ExclusiveLaunchVoucher
 import com.tokopedia.shop.campaign.domain.entity.RedeemPromoVoucherResult
+import com.tokopedia.shop.campaign.util.tracker.VoucherListBottomSheetTracker
 import com.tokopedia.shop.campaign.view.adapter.ExclusiveLaunchVoucherAdapter
 import com.tokopedia.shop.campaign.view.viewmodel.ExclusiveLaunchVoucherListViewModel
 import com.tokopedia.shop.common.extension.applyPaddingToLastItem
@@ -73,6 +74,9 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var tracker: VoucherListBottomSheetTracker
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[ExclusiveLaunchVoucherListViewModel::class.java] }
 
@@ -113,6 +117,7 @@ class ExclusiveLaunchVoucherListBottomSheet : BottomSheetUnify() {
         setupView()
         observeVouchers()
         viewModel.getPromoVouchers(voucherSlugs)
+        tracker.sendVoucherDetailBottomSheetImpression(shopId)
     }
 
     private fun observeVouchers() {
