@@ -224,6 +224,6 @@
     <string name="label_oke">Oke</string>
 
     <string name="product_manage_toaster_campaign_deactivate">Status produk tidak dapat diubah karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
-    <string name="product_manage_multi_edit_failed_toaster_campaign_deactivate">%1$d produk gagal dihapus karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
+    <string name="product_manage_multi_edit_failed_toaster_campaign_deactivate">%1$d produk gagal dinonaktifkan karena sedang dijadwalkan untuk memiliki promosi diskon.</string>
 
 </resources>
