@@ -46,7 +46,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.ALL_SHOWCASE_ID
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
-import com.tokopedia.shop.common.constant.ShopPageConstant.SHOP_COMPARISON_WIDGET_PAGE_NAME
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -1329,7 +1328,9 @@ class ShopHomeViewModel @Inject constructor(
         return getComparisonProductUseCase.get().getData(
             GetRecommendationRequestParam(
                 shopIds = listOf(shopId),
-                pageName = SHOP_COMPARISON_WIDGET_PAGE_NAME
+                productIds = listOf("9842065204"),
+                //need to be hardcoded for testing purpose
+                pageName = "shop_comparison",
             )
         )
     }
