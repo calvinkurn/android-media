@@ -2061,7 +2061,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
         eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked)
-        PlayExploreWidget.getOrCreate(childFragmentManager, requireActivity().classLoader)
+        PlayExploreWidget
+            .getOrCreate(childFragmentManager, requireActivity().classLoader)
             .showNow(childFragmentManager)
     }
 

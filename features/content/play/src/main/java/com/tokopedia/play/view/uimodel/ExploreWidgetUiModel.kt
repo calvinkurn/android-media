@@ -31,7 +31,8 @@ data class WidgetParamUiModel(
     val group: String,
     val sourceType: String,
     val sourceId: String,
-    val cursor: String
+    val cursor: String = "",
+    val isRefresh: Boolean = false,
 ) {
     companion object {
         val Empty: WidgetParamUiModel
@@ -39,7 +40,8 @@ data class WidgetParamUiModel(
                 group = "",
                 sourceId = "",
                 sourceType = "",
-                cursor = ""
+                cursor = "",
+                isRefresh = false,
             )
     }
 }
@@ -170,9 +172,8 @@ enum class ExploreWidgetType {
 data class CategoryWidgetUiModel(
     val data: List<PlayWidgetItemUiModel>,
     val state: ExploreWidgetState,
-    val pagingConfig: PageConfig,
 ) {
     companion object {
-        val Empty get() = CategoryWidgetUiModel(data = emptyList(), state = ExploreWidgetState.Loading, pagingConfig = PageConfig.Empty)
+        val Empty get() = CategoryWidgetUiModel(data = emptyList(), state = ExploreWidgetState.Loading)
     }
 }
