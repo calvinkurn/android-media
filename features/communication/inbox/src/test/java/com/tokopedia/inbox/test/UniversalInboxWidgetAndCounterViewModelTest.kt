@@ -38,7 +38,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
         isError = false
     )
     private val dummyWidgetUiError = UniversalInboxWidgetMetaUiModel(
-        isError = false
+        isError = true
     )
 
     @Test
@@ -66,7 +66,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
                 (viewModel.allCounter.value as Success).data
             )
             Assert.assertEquals(
-                dummyWidgetUi,
+                Pair(dummyWidgetUi, dummyCounterResponse),
                 viewModel.widget.value
             )
         }
@@ -97,7 +97,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
                 (viewModel.allCounter.value as Fail).throwable.message
             )
             Assert.assertEquals(
-                dummyWidgetUi,
+                Pair(dummyWidgetUi, null),
                 viewModel.widget.value
             )
         }
@@ -128,7 +128,7 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
                 (viewModel.allCounter.value as Success).data
             )
             Assert.assertEquals(
-                dummyWidgetUiError,
+                Pair(dummyWidgetUiError, dummyCounterResponse),
                 viewModel.widget.value
             )
         }
@@ -159,8 +159,8 @@ class UniversalInboxWidgetAndCounterViewModelTest : UniversalInboxViewModelTestF
                 (viewModel.allCounter.value as Success).data
             )
             Assert.assertEquals(
-                true,
-                viewModel.widget.value?.isError
+                dummyWidgetUiError.isError,
+                viewModel.widget.value?.first?.isError
             )
         }
     }
