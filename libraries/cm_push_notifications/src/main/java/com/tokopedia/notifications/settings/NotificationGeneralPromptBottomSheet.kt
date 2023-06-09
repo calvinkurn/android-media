@@ -247,7 +247,9 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private fun sendNotificationUserSetting() {
         val context = context?.applicationContext ?: return
-        NotificationUserSettingsTracker(context).sendNotificationUserSettings()
+        if (userSession.isLoggedIn) {
+            NotificationUserSettingsTracker(context).sendNotificationUserSettings()
+        }
     }
 
     override fun onDestroyView() {

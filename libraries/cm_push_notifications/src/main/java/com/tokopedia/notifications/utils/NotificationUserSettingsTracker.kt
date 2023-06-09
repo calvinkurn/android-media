@@ -10,17 +10,14 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifications.domain.NotificationSettingTrackerUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-
 class NotificationUserSettingsTracker @Inject constructor(
     val context: Context
-): CoroutineScope {
+) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
@@ -29,19 +26,14 @@ class NotificationUserSettingsTracker @Inject constructor(
         GraphqlInteractor.getInstance().graphqlRepository
     }
 
-    private val userSession: UserSessionInterface by lazy(LazyThreadSafetyMode.NONE) {
-        UserSession(context)
-    }
-
     private val sharedPreference: SharedPreferences by lazy(LazyThreadSafetyMode.NONE) {
         context.getSharedPreferences(TRACKER_PREF_NAME, BaseActivity.MODE_PRIVATE)
     }
 
-
     private val postNotificationPermission = "android.permission.POST_NOTIFICATIONS"
     private val sdkLevel33 = 33
 
-    private fun getSettingTrackerUseCase() : NotificationSettingTrackerUseCase {
+    private fun getSettingTrackerUseCase(): NotificationSettingTrackerUseCase {
         return NotificationSettingTrackerUseCase(graphRepository)
     }
 
@@ -53,14 +45,17 @@ class NotificationUserSettingsTracker @Inject constructor(
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 try {
-                    val isSettingsSent: Boolean =
+                    var isSettingsSent: Boolean =
                         sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
+                    if (GlobalConfig.isSellerApp()) {
+                        isSettingsSent =
+                            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY_SA, false)
+                    }
                     if (!isSettingsSent) {
                         getSettingTrackerUseCase().sendTrackerUserSettings({}, {})
                         saveSettingsInCache(true)
                     }
                 } catch (_: Exception) {
-
                 }
             } else {
                 saveSettingsInCache(false)
@@ -69,23 +64,21 @@ class NotificationUserSettingsTracker @Inject constructor(
     }
 
     private fun saveSettingsInCache(isPermissionGranted: Boolean) {
-        if (GlobalConfig.isSellerApp() && userSession.isLoggedIn) {
-            saveInSharedPreference(isPermissionGranted)
+        if (GlobalConfig.isSellerApp()) {
+            saveInSharedPreference(isPermissionGranted, NOTIFICATION_USER_SETTING_KEY_SA)
         } else {
-            if (userSession.isLoggedIn) {
-                saveInSharedPreference(isPermissionGranted)
-            }
+            saveInSharedPreference(isPermissionGranted, NOTIFICATION_USER_SETTING_KEY)
         }
     }
 
-    private fun saveInSharedPreference(isPermissionGranted: Boolean) {
+    private fun saveInSharedPreference(isPermissionGranted: Boolean, key: String) {
         if (isPermissionGranted) {
             sharedPreference.edit()
-                .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
+                .putBoolean(key, true)
                 .apply()
         } else {
             sharedPreference.edit()
-                .putBoolean(NOTIFICATION_USER_SETTING_KEY_SA, false)
+                .putBoolean(key, false)
                 .apply()
         }
     }
@@ -95,4 +88,4 @@ class NotificationUserSettingsTracker @Inject constructor(
         const val NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent"
         const val NOTIFICATION_USER_SETTING_KEY_SA = "isSellerSettingSent"
     }
- }
+}
