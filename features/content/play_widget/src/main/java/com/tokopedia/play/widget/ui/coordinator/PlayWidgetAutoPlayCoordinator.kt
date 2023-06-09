@@ -37,9 +37,11 @@ class PlayWidgetAutoPlayCoordinator(
 
     override fun onWidgetCardsScrollChanged(widgetCardsContainer: RecyclerView) {
         val visibleCards = getVisibleWidgetInRecyclerView(widgetCardsContainer)
-        startAutoPlay(visibleCards.map {
-            WidgetInList(it.card, it.position)
-        })
+        startAutoPlay(
+            visibleCards.map {
+                WidgetInList(it.card, it.position)
+            }
+        )
     }
 
     override fun onFocusedWidgetsChanged(focusedWidgets: List<WidgetInList>) {
@@ -198,6 +200,6 @@ class PlayWidgetAutoPlayCoordinator(
 
     companion object {
         private const val DELAY_BEFORE_PAUSE = 200L
-        private const val DELAY_BEFORE_PLAY = 1500L
+        private const val DELAY_BEFORE_PLAY = 500L
     }
 }
