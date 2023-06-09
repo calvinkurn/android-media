@@ -37,6 +37,13 @@ class NotificationUserSettingsTracker @Inject constructor(
         return NotificationSettingTrackerUseCase(graphRepository)
     }
 
+    private fun isSettingsSent(): Boolean {
+        if (GlobalConfig.isSellerApp()) {
+            return sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY_SA, false)
+        }
+        return sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
+    }
+
     fun sendNotificationUserSettings() {
         if (Build.VERSION.SDK_INT >= sdkLevel33) {
             if (ContextCompat.checkSelfPermission(
@@ -45,20 +52,16 @@ class NotificationUserSettingsTracker @Inject constructor(
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 try {
-                    var isSettingsSent: Boolean =
-                        sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY, false)
-                    if (GlobalConfig.isSellerApp()) {
-                        isSettingsSent =
-                            sharedPreference.getBoolean(NOTIFICATION_USER_SETTING_KEY_SA, false)
-                    }
-                    if (!isSettingsSent) {
+                    if (!isSettingsSent()) {
                         getSettingTrackerUseCase().sendTrackerUserSettings({}, {})
                         saveSettingsInCache(true)
                     }
                 } catch (_: Exception) {
                 }
             } else {
-                saveSettingsInCache(false)
+                if (isSettingsSent()) {
+                    saveSettingsInCache(false)
+                }
             }
         }
     }
