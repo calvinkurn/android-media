@@ -1,6 +1,10 @@
 package com.tokopedia.feedplus.domain.mapper
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.content.common.report_content.model.FeedContentData
+import com.tokopedia.content.common.report_content.model.FeedMenuIdentifier
+import com.tokopedia.content.common.report_content.model.FeedMenuItem
+import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.FeedXAuthor
 import com.tokopedia.feedplus.data.FeedXCampaign
 import com.tokopedia.feedplus.data.FeedXCard
@@ -39,13 +43,16 @@ import com.tokopedia.feedplus.presentation.model.FeedPaginationModel
 import com.tokopedia.feedplus.presentation.model.FeedScoreModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
 import com.tokopedia.feedplus.presentation.model.FeedViewModel
+import com.tokopedia.feedplus.presentation.model.type.AuthorType
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Muhammad Furqan on 01/03/23
  */
-class MapperFeedHome @Inject constructor(
+class MapperFeedXHome @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
     fun transform(data: FeedXHomeEntity): FeedModel =
@@ -81,7 +88,6 @@ class MapperFeedHome @Inject constructor(
             text = card.text,
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
-
                     texts = cta.texts,
                     color = cta.color,
                     colorGradient = cta.colorGradient.map { color ->
@@ -121,23 +127,13 @@ class MapperFeedHome @Inject constructor(
                 imageUrl = medias.firstOrNull()?.mediaUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            reportable = isReportable(card),
-            editable = false,
-            deletable = card.deletable,
+            menuItems = getMenuItems(author, card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             maxDiscountPercentage = card.maximumDiscountPercentage,
             maxDiscountPercentageFmt = card.maximumDiscountPercentageFmt,
             topAdsId = if (isTopAdsPost(card)) card.id else ""
         )
-    }
-    
-    private fun isReportable(card: FeedXCard): Boolean {
-        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
-            return card.author.id != userSession.shopId
-        } else {
-            card.reportable
-        }
     }
 
     private fun transformToFeedCardVideo(card: FeedXCard): FeedCardVideoContentModel {
@@ -153,7 +149,6 @@ class MapperFeedHome @Inject constructor(
             text = card.text,
             cta = card.cta.let { cta ->
                 FeedCardCtaModel(
-
                     color = cta.color,
                     texts = cta.texts,
                     colorGradient = cta.colorGradient.map { color ->
@@ -191,9 +186,7 @@ class MapperFeedHome @Inject constructor(
                 imageUrl = medias.firstOrNull()?.coverUrl.orEmpty()
             ),
             followers = transformFollow(card.followers),
-            reportable = card.reportable,
-            editable = false,
-            deletable = card.deletable,
+            menuItems = getMenuItems(author, card),
             detailScore = card.detailScore.map { score -> transformDetailScore(score) },
             publishedAt = card.publishedAt,
             playChannelId = card.playChannelId
@@ -229,12 +222,11 @@ class MapperFeedHome @Inject constructor(
 
     private fun transformAuthor(author: FeedXAuthor): FeedAuthorModel = FeedAuthorModel(
         id = author.id,
-        type = author.type,
+        type = AuthorType.from(author.type),
         name = MethodChecker.fromHtml(author.name).toString(),
-        description = author.description,
         badgeUrl = author.badgeUrl,
         logoUrl = author.logoUrl,
-        applink = author.applink,
+        appLink = author.applink,
         encryptedUserId = author.encryptedUserId,
         isLive = author.isLive
     )
@@ -326,12 +318,11 @@ class MapperFeedHome @Inject constructor(
                     author = item.author.let { author ->
                         FeedAuthorModel(
                             id = author.id,
-                            type = author.type,
+                            type = AuthorType.from(author.type),
                             name = author.name,
-                            description = author.description,
                             badgeUrl = author.badgeUrl,
                             logoUrl = author.logoUrl,
-                            applink = author.applink,
+                            appLink = author.applink,
                             encryptedUserId = author.encryptedUserId,
                             isLive = author.isLive
                         )
@@ -366,6 +357,81 @@ class MapperFeedHome @Inject constructor(
         label = score.label,
         value = score.value
     )
+
+    private fun isReportable(card: FeedXCard): Boolean {
+        return if (card.typename == TYPE_FEED_X_CARD_PRODUCTS_HIGHLIGHT) {
+            return card.author.id != userSession.shopId
+        } else {
+            card.reportable
+        }
+    }
+
+    private fun isMyContent(author: FeedAuthorModel): Boolean {
+        return (author.type.isShop && author.id == userSession.shopId) ||
+            (author.type.isUser && author.id == userSession.userId)
+    }
+
+    private fun getMenuItems(author: FeedAuthorModel, card: FeedXCard): List<FeedMenuItem> {
+        val contentData = FeedContentData(
+            card.text,
+            card.id,
+            card.author.id
+        )
+        return buildList {
+            if (isMyContent(author)) {
+                if (card.performanceSummaryPageLink.isNotBlank()) {
+                    add(
+                        FeedMenuItem(
+                            iconUnify = IconUnify.GRAPH,
+                            name = contentCommonR.string.performance_see,
+                            type = FeedMenuIdentifier.SeePerformance,
+                            appLink = card.performanceSummaryPageLink,
+                            contentData = contentData
+                        )
+                    )
+                }
+                if (card.insightSummaryPageLink.isNotBlank()) {
+                    add(
+                        FeedMenuItem(
+                            iconUnify = IconUnify.GRAPH_REPORT,
+                            name = contentCommonR.string.performance_learn_video_insight,
+                            type = FeedMenuIdentifier.LearnVideoInsight,
+                            appLink = card.insightSummaryPageLink,
+                            contentData = contentData
+                        )
+                    )
+                }
+            }
+            add(
+                FeedMenuItem(
+                    iconUnify = IconUnify.VISIBILITY,
+                    name = R.string.feed_watch_mode,
+                    type = FeedMenuIdentifier.WatchMode,
+                    contentData = contentData
+                )
+            )
+            if (isReportable(card)) {
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.WARNING,
+                        name = contentCommonR.string.content_common_menu_report,
+                        type = FeedMenuIdentifier.Report,
+                        contentData = contentData
+                    )
+                )
+            }
+            if (card.deletable) {
+                add(
+                    FeedMenuItem(
+                        iconUnify = IconUnify.DELETE,
+                        name = contentCommonR.string.content_common_menu_delete,
+                        type = FeedMenuIdentifier.Delete,
+                        contentData = contentData
+                    )
+                )
+            }
+        }
+    }
 
     private fun isImagesPost(card: FeedXCard): Boolean {
         return (

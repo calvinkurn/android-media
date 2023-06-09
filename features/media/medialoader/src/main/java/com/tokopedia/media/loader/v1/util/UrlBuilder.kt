@@ -8,7 +8,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import java.lang.ref.WeakReference
 
-class UrlBuilder constructor(
+internal class UrlBuilder constructor(
     private val context: Context
 ) {
 

@@ -3,7 +3,6 @@ package com.tokopedia.product.detail.common.data.model.variant
 import androidx.collection.ArrayMap
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.detail.common.VariantConstant.DEFAULT_MAX_ORDER
 import com.tokopedia.product.detail.common.data.model.pdplayout.ThematicCampaign
 
@@ -88,28 +87,10 @@ data class VariantChild(
             }
         }
 
-    val slashPriceDouble: Double
-        get() {
-            return if (campaign?.isActive == true) {
-                campaign.originalPrice ?: 0.0
-            } else {
-                0.0
-            }
-        }
-
     val discountPercentage: String
         get() {
             return if (campaign?.isActive == true) {
                 campaign.discountedPercentage.toString()
-            } else {
-                ""
-            }
-        }
-
-    val roundedDiscountPercentage: String
-        get() {
-            return if (campaign?.isActive == true) {
-                campaign.discountedPercentage.toIntSafely().toString()
             } else {
                 ""
             }
@@ -127,16 +108,8 @@ data class VariantChild(
     val isBuyable: Boolean
         get() = getVariantFinalStock() > 0 && stock?.isBuyable ?: false
 
-    val isInactive:Boolean
-        get() = getVariantFinalStock() > 0 && stock?.isBuyable == false
-
     val isFlashSale: Boolean
         get() = campaign?.isActive == true
-
-    val hasPicture: Boolean
-        get() = picture != null &&
-                (picture.original?.isNotEmpty() == true
-                        || picture.thumbnail?.isNotEmpty() == true)
 
     fun getOptionStringList(variantReference: List<Variant>?): List<String> {
         if (variantReference != null && variantReference.isNotEmpty()) {
