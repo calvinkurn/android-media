@@ -1,8 +1,8 @@
 package com.tokopedia.developer_options.tracker
 
-import IdType
-import InfluxInteractor
 import android.content.Context
+import com.tokopedia.skynet.IdType
+import com.tokopedia.skynet.InfluxInteractor
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineName
@@ -10,7 +10,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 object DevOpsTracker {
@@ -30,7 +29,7 @@ object DevOpsTracker {
             try {
                 val id = UserSession(context).androidId
                 scope.launch(Dispatchers.IO) {
-                    val i = InfluxInteractor.Builder()
+                    val i = InfluxInteractor.Builder("tkpd:tkpd")
                         .measurement("devops_tracker")
                         .setIdentity(IdType.CUSTOM(id))
                         .build()
@@ -46,13 +45,11 @@ object DevOpsTracker {
 
     fun trackClickEvent(page: String) {
         if (influx == null) return
-        scope.launch {
-            withContext(Dispatchers.IO) {
-                influx?.send(
-                    tags = mapOf("page" to page, "event" to "click"),
-                    values = mapOf("count" to 1)
-                )
-            }
+        scope.launch(Dispatchers.IO) {
+            influx?.send(
+                tags = mapOf("page" to page, "event" to "click"),
+                values = mapOf("count" to 1)
+            )
         }
     }
 }
