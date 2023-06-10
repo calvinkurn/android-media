@@ -44,6 +44,10 @@ data class RecommendationWidgetState(
         )
     )
 
+    fun error(model: RecommendationWidgetModel): RecommendationWidgetState = copy(
+        widgetMap = widgetMap + mapOf(model.id to emptyList())
+    )
+
     fun clear() = copy(
         widgetMap = mapOf()
     )
