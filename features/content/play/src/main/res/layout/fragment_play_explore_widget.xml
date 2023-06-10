@@ -9,23 +9,30 @@
     android:background="@color/Unify_Background"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_chips"
+    <com.tokopedia.play.util.scroll.NestedScrollableHost
+        android:id="@+id/host_chips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_8"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:paddingEnd="@dimen/content_common_space_16"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginStart="@dimen/content_common_space_16"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="3"
-        tools:listitem="@layout/view_widget_chips" />
+        app:lockScroll="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_chips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/content_common_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/content_common_space_16"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"
+            tools:listitem="@layout/view_widget_chips" />
+    </com.tokopedia.play.util.scroll.NestedScrollableHost>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/sr_explore_widget"
@@ -38,7 +45,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_chips"
+        app:layout_constraintTop_toBottomOf="@+id/host_chips"
         app:layout_constraintVertical_bias="1.0">
 
         <FrameLayout
@@ -66,7 +73,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/rv_chips"
-        app:layout_constraintStart_toStartOf="@+id/rv_chips"
-        app:layout_constraintTop_toBottomOf="@+id/rv_chips" />
+        app:layout_constraintEnd_toEndOf="@+id/host_chips"
+        app:layout_constraintStart_toStartOf="@+id/host_chips"
+        app:layout_constraintTop_toBottomOf="@+id/host_chips" />
 </androidx.constraintlayout.widget.ConstraintLayout>
