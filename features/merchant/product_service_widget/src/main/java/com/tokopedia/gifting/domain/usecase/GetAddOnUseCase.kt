@@ -28,6 +28,10 @@ class GetAddOnUseCase @Inject constructor(
                   InfoURL
                   PromoText
                 }
+                AggregatedData {
+                  Title
+                  Price
+                }
                 AddOnByIDResponse{
                   Basic{
                     ID
@@ -63,12 +67,14 @@ class GetAddOnUseCase @Inject constructor(
         setTypeClass(GetAddOnResponse::class.java)
     }
 
-    fun setParams(addOnId: String) {
+    fun setParams(addOnIds: List<String>) {
         val requestParams = RequestParams.create()
         requestParams.putObject(PARAM_INPUT, GetAddOnRequest(
-            addOnRequest = AddOnRequest(addOnId),
+            addOnRequest = addOnIds.mapToAddonRequest(),
             source = Source(usecase = USECASE_GIFTING_VALUE, squad = SQUAD_VALUE)
         ))
         setRequestParams(requestParams.parameters)
     }
+
+    private fun List<String>.mapToAddonRequest() = map { AddOnRequest(it) }
 }

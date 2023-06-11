@@ -9,7 +9,7 @@ data class GetAddOnRequest(
     val requestData: RequestData = RequestData(),
     @SerializedName("GetAddOnRequest")
     @Expose
-    val addOnRequest: AddOnRequest = AddOnRequest(),
+    val addOnRequest: List<AddOnRequest> = emptyList(),
     @SerializedName("Source")
     @Expose
     val source: Source = Source()
