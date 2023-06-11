@@ -25,7 +25,8 @@ object AddOnMapper {
                     priceFormatted = it.inventory.price.getCurrencyFormatted(),
                     price = it.inventory.price.toLong(),
                     isSelected = it.basic.rules.autoSelect,
-                    addOnType = it.basic.addOnType.convertToAddonEnum()
+                    addOnType = it.basic.addOnType.convertToAddonEnum(),
+                    eduLink = it.basic.metadata.infoURL.eduPageURL
                 )
             }
             AddOnGroupUIModel(
@@ -47,15 +48,6 @@ object AddOnMapper {
             }
         }
         return addonGroupList
-    }
-
-    fun mapAddonUiToType(addOnUIModel: AddOnUIModel): String {
-        return when(addOnUIModel.addOnType) {
-            AddOnType.INSTALLATION_TYPE -> "" // webpage not ready yet
-            AddOnType.PRODUCT_PROTECTION_INSURANCE_TYPE -> "" // webpage not ready yet
-            else -> ""
-        }
-
     }
 
     fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {

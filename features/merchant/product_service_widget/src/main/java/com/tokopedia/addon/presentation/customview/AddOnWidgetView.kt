@@ -13,8 +13,8 @@ import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.addon.presentation.viewmodel.AddOnViewModel
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalFintech
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_service_widget.R
@@ -55,14 +55,6 @@ class AddOnWidgetView : BaseCustomView {
             viewModel.isAddonDataEmpty.observe(this) {
                 if (it) listener?.onDataEmpty()
                 this@AddOnWidgetView.isVisible = !it
-            }
-            viewModel.getEduUrlResult.observe(this) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalFintech.INSURANCE_INFO)
-                intent.putExtra(
-                    ApplinkConstInternalFintech.PARAM_INSURANCE_INFO_URL,
-                    it
-                )
-                context.startActivity(intent)
             }
             viewModel.totalPrice.observe(this) {
                 listener?.onTotalPriceCalculated(it)
@@ -117,7 +109,7 @@ class AddOnWidgetView : BaseCustomView {
 
     private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
         listener?.onAddonHelpClick(position, addOnUIModel)
-        viewModel.getEduUrl(addOnUIModel)
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${addOnUIModel.eduLink}")
     }
 
     fun setTitleText(text: String) {

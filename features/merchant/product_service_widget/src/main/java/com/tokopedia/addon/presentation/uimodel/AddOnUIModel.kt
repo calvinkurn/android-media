@@ -8,7 +8,8 @@ data class AddOnUIModel(
     var priceFormatted: String = "",
     var price: Long = 0L,
     var isSelected: Boolean = false,
-    var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE
+    var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE,
+    var eduLink: String = ""
 )
 
 data class AddOnGroupUIModel(

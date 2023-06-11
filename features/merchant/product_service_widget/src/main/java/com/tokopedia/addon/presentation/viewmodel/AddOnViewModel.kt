@@ -26,9 +26,6 @@ class AddOnViewModel @Inject constructor(
         AddOnMapper.mapAddOnWithSelectedIds(it, selectedAddonIds)
     }
 
-    private val mGetEduUrlResult = MutableLiveData<String>()
-    val getEduUrlResult: LiveData<String> get() = mGetEduUrlResult
-
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
@@ -59,10 +56,6 @@ class AddOnViewModel @Inject constructor(
 
     fun setSelectedAddOn(selectedAddonIds: List<String>) {
         this.selectedAddonIds = selectedAddonIds
-    }
-
-    fun getEduUrl(addOnUIModel: AddOnUIModel) {
-        mGetEduUrlResult.value = AddOnMapper.mapAddonUiToType(addOnUIModel)
     }
 
     fun saveAddOnState() {
