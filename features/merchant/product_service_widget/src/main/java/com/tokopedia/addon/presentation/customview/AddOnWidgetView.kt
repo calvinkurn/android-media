@@ -64,6 +64,9 @@ class AddOnWidgetView : BaseCustomView {
                 )
                 context.startActivity(intent)
             }
+            viewModel.totalPrice.observe(this) {
+                listener?.onTotalPriceCalculated(it)
+            }
         }
     }
 
@@ -109,6 +112,7 @@ class AddOnWidgetView : BaseCustomView {
         addOnGroupUIModels: List<AddOnGroupUIModel>
     ) {
         listener?.onAddonComponentClick(index, indexChild, addOnGroupUIModels)
+        viewModel.setSelectedAddons(addOnGroupUIModels)
     }
 
     private fun onHelpClickListener(position: Int, addOnUIModel: AddOnUIModel) {
@@ -130,5 +134,9 @@ class AddOnWidgetView : BaseCustomView {
 
     fun setSelectedAddons(selectedAddonIds: List<String>) {
         viewModel.setSelectedAddOn(selectedAddonIds)
+    }
+
+    fun saveAddOnState() {
+        viewModel.saveAddOnState()
     }
 }

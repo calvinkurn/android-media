@@ -10,12 +10,15 @@ import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
+import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddOnViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getAddOnUseCase: GetAddOnByProductUseCase
+    private val getAddOnUseCase: GetAddOnByProductUseCase,
+    private val saveAddOnStateUseCase: SaveAddOnStateUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
@@ -29,8 +32,15 @@ class AddOnViewModel @Inject constructor(
     private val mErrorThrowable = MutableLiveData<Throwable>()
     val errorThrowable: LiveData<Throwable> get() = mErrorThrowable
 
+    private val mSelectedAddOn = MutableLiveData<List<AddOnUIModel>>()
+    val selectedAddon: LiveData<List<AddOnUIModel>> get() = mSelectedAddOn
+
     val isAddonDataEmpty = Transformations.map(getAddOnResult) {
         it.isEmpty()
+    }
+
+    val totalPrice = Transformations.map(selectedAddon) { selectedAddons ->
+        selectedAddons.sumOf { it.price }
     }
 
     var selectedAddonIds: List<String> = emptyList()
@@ -53,5 +63,21 @@ class AddOnViewModel @Inject constructor(
 
     fun getEduUrl(addOnUIModel: AddOnUIModel) {
         mGetEduUrlResult.value = AddOnMapper.mapAddonUiToType(addOnUIModel)
+    }
+
+    fun saveAddOnState() {
+        saveAddOnStateUseCase.setParams(SaveAddOnStateRequest())
+        saveAddOnStateUseCase.execute(
+            onSuccess = {
+
+            },
+            onError = {
+
+            }
+        )
+    }
+
+    fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>) {
+        mSelectedAddOn.value = AddOnMapper.getSelectedAddons(addOnGroupUIModels)
     }
 }

@@ -23,6 +23,7 @@ object AddOnMapper {
                     id = it.basic.basicId,
                     name = it.basic.name,
                     priceFormatted = it.inventory.price.getCurrencyFormatted(),
+                    price = it.inventory.price.toLong(),
                     isSelected = it.basic.rules.autoSelect,
                     addOnType = it.basic.addOnType.convertToAddonEnum()
                 )
@@ -55,5 +56,15 @@ object AddOnMapper {
             else -> ""
         }
 
+    }
+
+    fun getSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>): List<AddOnUIModel> {
+        val resultValue: MutableList<AddOnUIModel> = mutableListOf()
+        addOnGroupUIModels.forEach { addOnGroupUIModel ->
+            resultValue.addAll(
+                addOnGroupUIModel.addon.filter { it.isSelected }
+            )
+        }
+        return resultValue
     }
 }

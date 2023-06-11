@@ -9,6 +9,8 @@ import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -64,6 +66,9 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
             setSelectedAddons(selectedAddonIds.orEmpty())
             getAddonData(productId.toString(), warehouseId.toString(), isTokocabang)
         }
+        binding?.btnSave?.apply {
+            binding?.addonWidget?.saveAddOnState()
+        }
     }
 
     override fun onAddonComponentError(throwable: Throwable) {
@@ -71,7 +76,11 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
     }
 
     override fun onAddonComponentClick(index: Int, indexChild: Int, addOnGroupUIModels: List<AddOnGroupUIModel>) {
-        println("" + index + "---" + indexChild)
+
+    }
+
+    override fun onTotalPriceCalculated(price: Long) {
+        binding?.tfAddonTotal?.text = price.getCurrencyFormatted()
     }
 
     override fun onDataEmpty() {

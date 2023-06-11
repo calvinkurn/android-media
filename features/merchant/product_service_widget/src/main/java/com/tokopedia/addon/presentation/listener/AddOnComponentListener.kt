@@ -15,5 +15,7 @@ interface AddOnComponentListener {
 
     fun onAddonHelpClick(position: Int, addOnUIModel: AddOnUIModel) {}
 
-    fun onDataEmpty()
+    fun onDataEmpty() {}
+
+    fun onTotalPriceCalculated(price: Long) {}
 }

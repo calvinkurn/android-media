@@ -90,5 +90,6 @@
     <!-- add on -->
     <string name="addon_total_text">Total Tambahan</string>
     <string name="addon_bottomsheet_title">Tambahan buat produkmu</string>
+    <string name="addon_total_default_text">-</string>
 
 </resources>

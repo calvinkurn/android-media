@@ -47,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     tool:text="Rp20.000"
+                    android:text="@string/addon_total_default_text"
                     app:typographyType="paragraph_2"
                     app:typographyWeight="bold"
                     app:layout_constraintStart_toStartOf="parent"

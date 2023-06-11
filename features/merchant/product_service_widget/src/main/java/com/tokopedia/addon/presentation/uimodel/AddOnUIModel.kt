@@ -6,6 +6,7 @@ data class AddOnUIModel(
     var id: String = "",
     var name: String = "",
     var priceFormatted: String = "",
+    var price: Long = 0L,
     var isSelected: Boolean = false,
     var addOnType: AddOnType = PRODUCT_PROTECTION_INSURANCE_TYPE
 )
