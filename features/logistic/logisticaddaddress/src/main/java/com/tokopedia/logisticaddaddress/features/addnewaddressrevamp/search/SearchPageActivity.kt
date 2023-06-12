@@ -8,24 +8,25 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_search_address.*
 
-class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent> {
+class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent>, SearchPageFragment.AddressFormListener {
 
     private var isEdit: Boolean? = false
+    private var isFromPinPoint: Boolean = false
+
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
 
     override fun getComponent(): AddNewAddressRevampComponent {
         return DaggerAddNewAddressRevampComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +38,12 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (isEdit == true) {
-            EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
-        } else {
-            AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+        if (!isFromPinPoint) {
+            if (isEdit == true) {
+                EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            } else {
+                AddNewAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
+            }
         }
     }
 
@@ -62,8 +65,11 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         }
     }
 
+    override fun setIsFromPinPoint(isFromPinpoint: Boolean) {
+        isFromPinPoint = isFromPinpoint
+    }
+
     companion object {
         private const val EXTRA_REF = "EXTRA_REF"
     }
-
 }
