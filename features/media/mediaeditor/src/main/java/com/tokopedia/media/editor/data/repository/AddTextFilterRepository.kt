@@ -20,6 +20,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorAddTextUiModel.Companion.TEXT
 import com.tokopedia.media.editor.ui.uimodel.BackgroundTemplateDetail
 import com.tokopedia.unifyprinciples.getTypeface
 import javax.inject.Inject
+import kotlin.math.ceil
 
 interface AddTextFilterRepository {
     fun generateTextOverlay(
@@ -133,7 +134,7 @@ class AddTextFilterRepositoryImpl @Inject constructor(
 
             // background only on bottom & right
             getAddTextBackgroundDrawable(data.getBackgroundTemplate())?.let {
-                val backgroundHeight = (mTextLayout!!.height + paddingVertical + adjustmentPadding).toInt()
+                val backgroundHeight = ceil((mTextLayout!!.height + paddingVertical + adjustmentPadding)).toInt()
                 backgroundWidth -= floatingWidthAdjustment.toInt()
 
                 it.toBitmap().scale(backgroundWidth, backgroundHeight).apply {
