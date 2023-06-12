@@ -4,6 +4,8 @@ import android.graphics.Color
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerhomecommon.common.DarkModeHelper
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
@@ -15,6 +17,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableHeaderUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
+import com.tokopedia.utils.view.DarkModeUtil
 import javax.inject.Inject
 
 /**
@@ -39,13 +42,6 @@ class TableMapper @Inject constructor(
         private const val COLUMN_HTML_WITH_ICON = 8
 
         private const val MAX_ROWS_PER_PAGE = 5
-
-        private const val COLOR = "color"
-        private const val BACKGROUND_COLOR = "background-color"
-        private const val APOSTROPHE = "\""
-
-        private const val CONST_ZERO = 0
-        private const val CONST_ONE = 1
     }
 
     private var dataKeys: List<DataKeyModel> = emptyList()
@@ -56,7 +52,7 @@ class TableMapper @Inject constructor(
     ): List<TableDataUiModel> {
         return response.fetchSearchTableWidgetData.data.mapIndexed { i, table ->
             var maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ROWS_PER_PAGE
-            maxDisplay = if (maxDisplay == CONST_ZERO) {
+            maxDisplay = if (maxDisplay == Int.ZERO) {
                 MAX_ROWS_PER_PAGE
             } else {
                 maxDisplay
@@ -88,8 +84,8 @@ class TableMapper @Inject constructor(
         var rows = mutableListOf<TableRowsUiModel>()
         val rowCount = tableRows.size
 
-        val zeroRowCount = CONST_ZERO
-        val oneRowCount = CONST_ONE
+        val zeroRowCount = Int.ZERO
+        val oneRowCount = Int.ONE
         tableRows.forEachIndexed { i, row ->
             val firstTextColumn = row.columns.firstOrNull {
                 it.type == COLUMN_TEXT || it.type == COLUMN_HTML || it.type == COLUMN_HTML_WITH_ICON
@@ -97,30 +93,36 @@ class TableMapper @Inject constructor(
             row.columns.forEachIndexed { j, col ->
                 if (j < headers.size) {
                     val width = headers[j].width
+                    val valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value)
                     val rowColumn: TableRowsUiModel = when (col.type) {
-                        COLUMN_TEXT -> TableRowsUiModel.RowColumnText(
-                            valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value),
-                            width = width,
-                            meta = getTableRowMeta(col.meta),
-                            isLeftAlign = firstTextColumn == col
-                        )
+                        COLUMN_TEXT -> {
+                            TableRowsUiModel.RowColumnText(
+                                valueStr = valueStr,
+                                width = width,
+                                meta = getTableRowMeta(col.meta),
+                                isLeftAlign = firstTextColumn == col
+                            )
+                        }
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-                        COLUMN_HTML -> TableRowsUiModel.RowColumnHtml(
-                            valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value),
-                            width = width,
-                            meta = getTableRowMeta(col.meta),
-                            isLeftAlign = firstTextColumn == col,
-                            colorInt = getColorFromHtml(col.value)
-                        )
-                        else ->
+                        COLUMN_HTML -> {
+                            TableRowsUiModel.RowColumnHtml(
+                                valueStr = valueStr,
+                                width = width,
+                                meta = getTableRowMeta(col.meta),
+                                isLeftAlign = firstTextColumn == col,
+                                colorInt = getColorFromHtml(valueStr)
+                            )
+                        }
+                        else -> {
                             TableRowsUiModel.RowColumnHtmlWithIcon(
-                                valueStr = darkModeHelper.makeHtmlDarkModeSupport(col.value),
+                                valueStr = valueStr,
                                 width = width,
                                 icon = col.iconUrl.orEmpty(),
                                 meta = getTableRowMeta(col.meta),
                                 isLeftAlign = firstTextColumn == col,
-                                colorInt = getColorFromHtml(col.value)
+                                colorInt = getColorFromHtml(valueStr)
                             ) // it's COLUMN_HTML WITH ICON
+                        }
                     }
                     rows.add(rowColumn)
                 }
@@ -152,7 +154,7 @@ class TableMapper @Inject constructor(
 
     private fun getHeaders(headers: List<HeaderModel>): List<TableHeaderUiModel> {
         val firstHeader = headers.firstOrNull { it.title.isNotBlank() }
-        val noWidth = CONST_ZERO
+        val noWidth = Int.ZERO
         return headers.map { header ->
             val headerWidth = if (header.width < noWidth) noWidth else header.width
             return@map TableHeaderUiModel(header.title, headerWidth, header == firstHeader)
@@ -167,44 +169,15 @@ class TableMapper @Inject constructor(
      * @return  color of the text from html string
      */
     private fun getColorFromHtml(htmlString: String): Int? {
-        return try {
-            // Example: <font color = "red">Example Text</font>
-            val colorFromFontTagRegex = "<(.*)font(.+)color*=*(.+)".toRegex()
-            // Example: <span style=color:#the_hex_color;><b>Habis</b></span>
-            val colorFromStyleTagRegex = "(<+)(.+)style*=*(\"*)(.+)color*:*(.+)".toRegex()
-
-            val colorString =
-                when {
-                    htmlString.matches(colorFromFontTagRegex) -> getColorFromFontTag(htmlString)
-                    htmlString.matches(colorFromStyleTagRegex) -> getColorFromStyleAttribute(
-                        htmlString
-                    )
-                    else -> null
-                }
-
-            if (colorString.isNullOrEmpty()) {
-                null
-            } else {
-                Color.parseColor(colorString)
+        runCatching {
+            val regex = DarkModeUtil.HEX_COLOR_REGEX.toRegex()
+            val result = regex.find(htmlString)
+            val hexColor = result?.groupValues?.getOrNull(Int.ONE)
+            hexColor?.let {
+                return Color.parseColor(hexColor)
             }
-        } catch (ex: Exception) {
-            null
+            return null
         }
-    }
-
-    private fun getColorFromFontTag(htmlString: String): String {
-        // If font tag was used, get the value by delimiting between the apostrophes of color value
-        val colorFromFont = htmlString.substringAfter(COLOR)
-        val indexOfFirstApostrophe = colorFromFont.indexOf(APOSTROPHE)
-        val indexOfSecondApostrophe = colorFromFont.indexOf(APOSTROPHE, indexOfFirstApostrophe + 1)
-        return colorFromFont.substring(indexOfFirstApostrophe + CONST_ONE, indexOfSecondApostrophe)
-    }
-
-    private fun getColorFromStyleAttribute(htmlString: String): String {
-        // We remove background-color style attribute to be able to substring the color of the text only
-        val colorWithoutBackgroundColor = htmlString.replace(BACKGROUND_COLOR, "")
-        return colorWithoutBackgroundColor.substringAfter(COLOR)
-            .substringBefore("\"").substringBefore(";")
-            .replace("[^A-Za-z0-9#]+".toRegex(), "")
+        return null
     }
 }

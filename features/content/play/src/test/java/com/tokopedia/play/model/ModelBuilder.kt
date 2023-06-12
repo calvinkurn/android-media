@@ -14,7 +14,6 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
-import com.tokopedia.variant_common.model.GetProductVariantResponse
 
 /**
  * Created by jegul on 20/02/20
@@ -1284,9 +1283,6 @@ class ModelBuilder {
     fun buildNonPublic(): ProductSection.Response =
         gson.fromJson(channelNoPublicVoucher, ProductSection.Response::class.java)
 
-    fun buildProductVariant(): GetProductVariantResponse =
-        gson.fromJson(productVariant, GetProductVariantResponse::class.java)
-
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
     fun buildAddToCartModelResponseSuccess() = CartFeedbackResponseModel(
@@ -1368,7 +1364,7 @@ class ModelBuilder {
         isProductNumerationShown: Boolean = false,
         number: String = "0",
         rating: String = "",
-        soldQuantity : String = "",
+        soldQuantity: String = ""
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1387,7 +1383,7 @@ class ModelBuilder {
         isNumerationShown = isProductNumerationShown,
         number = number,
         rating = rating,
-        soldQuantity = soldQuantity,
+        soldQuantity = soldQuantity
     )
 
     fun buildProductStockAvailable(
@@ -1438,12 +1434,10 @@ class ModelBuilder {
 
     fun buildBottomInsetsMap(
         keyboardState: BottomInsetsState = buildBottomInsetsState(),
-        productSheetState: BottomInsetsState = buildBottomInsetsState(),
-        variantSheetState: BottomInsetsState = buildBottomInsetsState()
+        productSheetState: BottomInsetsState = buildBottomInsetsState()
     ) = mapOf(
         BottomInsetsType.Keyboard to keyboardState,
-        BottomInsetsType.ProductSheet to productSheetState,
-        BottomInsetsType.VariantSheet to variantSheetState
+        BottomInsetsType.ProductSheet to productSheetState
     )
 
     fun buildBottomInsetsState(
