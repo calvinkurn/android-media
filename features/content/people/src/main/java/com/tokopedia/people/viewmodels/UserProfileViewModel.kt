@@ -179,6 +179,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
             is UserProfileAction.ClickProductInfo -> handleClickProductInfo(action.review)
             is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
+            is UserProfileAction.UpdateLikeStatus -> handleUpdateLikeStatus(action.feedbackId, action.likeStatus)
             else -> {}
         }
     }
@@ -621,6 +622,14 @@ class UserProfileViewModel @AssistedInject constructor(
                     mediaPosition = mediaPosition,
                 )
             )
+        }
+    }
+
+    private fun handleUpdateLikeStatus(feedbackId: String, likeStatus: Int) {
+        val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return
+
+        if (review.likeDislike.likeStatus != likeStatus) {
+            toggleLikeDislikeStatus(feedbackId)
         }
     }
 

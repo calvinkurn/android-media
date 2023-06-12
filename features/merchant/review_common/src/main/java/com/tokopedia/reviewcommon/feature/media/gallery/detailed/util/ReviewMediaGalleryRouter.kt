@@ -20,6 +20,9 @@ object ReviewMediaGalleryRouter {
     const val EXTRAS_SHOW_SEE_MORE = "extrasShowSeeMore"
     const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
 
+    private const val EXTRAS_FEEDBACK_ID_RESULT = "extrasFeedbackIdResult"
+    private const val EXTRAS_LIKE_STATUS_RESULT = "extrasLikeStatusResult"
+
     fun routeToReviewMediaGallery(
         context: Context,
         @PageSource pageSource: Int,
@@ -45,6 +48,24 @@ object ReviewMediaGalleryRouter {
             putExtra(EXTRAS_CACHE_MANAGER_ID, cacheManager.id.orEmpty())
             putExtra(EXTRAS_PAGE_SOURCE, pageSource)
         }
+    }
+
+    fun setResultData(
+        feedbackId: String,
+        likeStatus: Int
+    ): Intent {
+        return Intent().apply {
+            putExtra(EXTRAS_FEEDBACK_ID_RESULT, feedbackId)
+            putExtra(EXTRAS_LIKE_STATUS_RESULT, likeStatus)
+        }
+    }
+
+    fun getFeedbackIdResult(intent: Intent): String {
+        return intent.getStringExtra(EXTRAS_FEEDBACK_ID_RESULT).orEmpty()
+    }
+
+    fun getLikeStatusResult(intent: Intent): Int {
+        return intent.getIntExtra(EXTRAS_LIKE_STATUS_RESULT, -1)
     }
 
     @Retention(AnnotationRetention.SOURCE)

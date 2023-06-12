@@ -516,4 +516,12 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     fun getUserID(): String {
         return userSession.userId
     }
+
+    fun getFeedbackId(): String {
+        return _detailedReviewMediaResult.value?.detail?.reviewDetail?.firstOrNull()?.feedbackId.orEmpty()
+    }
+
+    fun getLikeStatus(): Int {
+        return _toggleLikeRequest.value?.second ?: -1
+    }
 }
