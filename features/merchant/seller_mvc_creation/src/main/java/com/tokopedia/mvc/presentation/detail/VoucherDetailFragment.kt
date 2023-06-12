@@ -302,7 +302,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupRecapSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus != VoucherStatus.ENDED) return
+            if (data.voucherStatus != VoucherStatus.ENDED || data.isSubsidy == FALSE) return
             if (layoutRecap.parent != null) {
                 layoutRecap.inflate()
             }
@@ -515,7 +515,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupPerformanceSection(data: VoucherDetailData) {
         binding?.run {
-            if (data.voucherStatus != VoucherStatus.ONGOING) return
+            if (data.voucherStatus != VoucherStatus.ONGOING || data.isSubsidy == FALSE) return
             if (layoutPerformance.parent != null) {
                 layoutPerformance.inflate()
             }
