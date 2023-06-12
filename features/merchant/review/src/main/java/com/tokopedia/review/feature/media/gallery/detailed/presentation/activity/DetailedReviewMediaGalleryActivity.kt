@@ -150,6 +150,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         setupMainLayout()
         setupFragments()
         initUiStateCollectors()
+        impressPage()
     }
 
     override fun onResume() {
@@ -489,6 +490,16 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         collectOverlayVisibilityUpdate()
         collectMediaCounterUpdate()
         collectReviewerBasicInfo()
+    }
+
+    private fun impressPage() {
+        reviewDetailTracker.trackImpressionReviewDetailPage(
+            loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
+            feedbackId = sharedReviewMediaGalleryViewModel.getFeedbackID(),
+            productId = sharedReviewMediaGalleryViewModel.getProductId(),
+            reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+            isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
+        )
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {

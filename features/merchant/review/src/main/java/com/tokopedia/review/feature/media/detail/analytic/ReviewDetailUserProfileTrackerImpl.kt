@@ -16,23 +16,6 @@ import javax.inject.Inject
  */
 class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTracker {
 
-    override fun trackOnLikeReviewClicked(
-        feedbackId: String,
-        isLiked: Boolean,
-        productId: String,
-        isFromGallery: Boolean
-    ) {
-        /** No need to track */
-    }
-
-    override fun trackOnShopReviewLikeReviewClicked(
-        feedbackId: String,
-        isLiked: Boolean,
-        shopId: String
-    ) {
-        /** No need to track */
-    }
-
     override fun trackOnSeeAllClicked(
         loggedInUserId: String,
         feedbackId: String,
@@ -52,28 +35,6 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
             .appendTrackerIdIfNotBlank("44109")
             .appendSessionIris(TrackApp.getInstance().gtm.irisSessionId)
             .sendGeneralEvent()
-    }
-
-    override fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
-        /** No need to track */
-    }
-
-    override fun trackClickReviewerName(
-        isFromGallery: Boolean,
-        feedbackId: String,
-        userId: String,
-        statistics: String,
-        productId: String,
-        currentUserId: String,
-        label: String,
-        trackerId: String
-    ) {
-        /** No need to track */
-    }
-
-    private fun getSelfOrVisitor(isReviewOwner: Boolean): String {
-        return if (isReviewOwner) ReviewDetailUserProfileTrackerConstant.SELF
-        else ReviewDetailUserProfileTrackerConstant.VISITOR
     }
 
     override fun trackImpressOnSeeMoreBottomSheet(
@@ -96,6 +57,16 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
             .sendGeneralEvent()
     }
 
+    override fun trackImpressionReviewDetailPage(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ) {
+        /** TODO: implement this */
+    }
+
     private fun getEventLabel(
         feedbackId: String,
         productId: String,
@@ -103,5 +74,44 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
         isReviewOwner: Boolean
     ): String {
         return "$feedbackId - $reviewUserId - ${getSelfOrVisitor(isReviewOwner)} - $productId"
+    }
+
+    private fun getSelfOrVisitor(isReviewOwner: Boolean): String {
+        return if (isReviewOwner) ReviewDetailUserProfileTrackerConstant.SELF
+        else ReviewDetailUserProfileTrackerConstant.VISITOR
+    }
+
+    override fun trackOnLikeReviewClicked(
+        feedbackId: String,
+        isLiked: Boolean,
+        productId: String,
+        isFromGallery: Boolean
+    ) {
+        /** No need to track */
+    }
+
+    override fun trackOnShopReviewLikeReviewClicked(
+        feedbackId: String,
+        isLiked: Boolean,
+        shopId: String
+    ) {
+        /** No need to track */
+    }
+
+    override fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
+        /** No need to track */
+    }
+
+    override fun trackClickReviewerName(
+        isFromGallery: Boolean,
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        productId: String,
+        currentUserId: String,
+        label: String,
+        trackerId: String
+    ) {
+        /** No need to track */
     }
 }

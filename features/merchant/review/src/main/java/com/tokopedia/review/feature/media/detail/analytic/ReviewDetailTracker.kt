@@ -50,4 +50,12 @@ interface ReviewDetailTracker {
         reviewUserId: String,
         isReviewOwner: Boolean,
     )
+
+    fun trackImpressionReviewDetailPage(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
+    )
 }
