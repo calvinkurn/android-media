@@ -19,6 +19,8 @@ import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -46,9 +48,7 @@ import com.tokopedia.mvc.presentation.summary.SummaryActivity
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.tracker.ProductListPageTracker
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class ProductListFragment : BaseDaggerFragment() {
@@ -495,7 +495,8 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun HeaderUnify.useCloseIcon() {
         isShowBackButton = false
-        navigationIcon = ContextCompat.getDrawable(activity ?: return, R.drawable.ic_smvc_close)
+        val icon = getIconUnifyDrawable(context ?: return, IconUnify.CLOSE)
+        icon?.let { navigationIcon = icon }
     }
 
 }
