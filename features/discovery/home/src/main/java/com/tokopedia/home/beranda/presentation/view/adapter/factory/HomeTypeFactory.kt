@@ -38,8 +38,6 @@ interface HomeTypeFactory {
 
     fun type(reviewDataModel: ReviewDataModel): Int
 
-    fun type(playCard: PlayCardDataModel): Int
-
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
     fun type(homeRetryModel: HomeRetryModel): Int

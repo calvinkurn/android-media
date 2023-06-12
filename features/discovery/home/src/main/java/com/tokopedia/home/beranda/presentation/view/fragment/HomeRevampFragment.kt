@@ -284,7 +284,6 @@ open class HomeRevampFragment :
         private const val SEND_SCREEN_MIN_INTERVAL_MILLIS: Long = 1000
         private const val DEFAULT_SOURCE = "home_notif"
         private const val SEE_ALL_CARD = "android_mainapp_home_see_all_card_config"
-        private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET = 258
         private const val REQUEST_CODE_USER_LOGIN_PLAY_WIDGET_REMIND_ME = 257
         private const val ENABLE_ASYNC_HOME_DAGGER = "android_async_home_dagger"
@@ -407,7 +406,6 @@ open class HomeRevampFragment :
     private var isOnRecyclerViewLayoutAdded = false
     private var fragmentCreatedForFirstTime = false
     private var recommendationWishlistItem: RecommendationItem? = null
-    private var shouldPausePlay = true
     private var lock = Object()
     private var autoRefreshFlag = HomeFlag()
     private var autoRefreshHandler = Handler()
@@ -992,7 +990,6 @@ open class HomeRevampFragment :
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
-        if (!shouldPausePlay) adapter?.onResumePlayWidget()
         adapter?.onResumeBanner()
         conditionalViewModelRefresh()
         if (activityStateListener != null) {
@@ -1001,7 +998,6 @@ open class HomeRevampFragment :
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             setAutoRefreshOnHome(autoRefreshFlag)
         }
-        shouldPausePlay = true
         if (getHomeViewModel().isFirstLoad) {
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
@@ -1059,7 +1055,6 @@ open class HomeRevampFragment :
     override fun onPause() {
         playWidgetOnVisibilityChanged(isViewResumed = false)
         super.onPause()
-        adapter?.onPausePlayWidget(shouldPausePlay)
         adapter?.onPauseBanner()
         getTrackingQueueObj()?.sendAll()
         if (activityStateListener != null) {
@@ -1085,7 +1080,6 @@ open class HomeRevampFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter?.onDestroy()
         homeRecyclerView?.adapter = null
         adapter = null
         homeRecyclerView?.layoutManager = null
@@ -1690,11 +1684,6 @@ open class HomeRevampFragment :
                     getHomeViewModel().onRemoveSuggestedReview()
                 }
             }
-            REQUEST_CODE_PLAY_ROOM -> if (data != null) {
-                val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID)
-                val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW)
-                getHomeViewModel().updateBannerTotalView(channelId, totalView)
-            }
             REQUEST_CODE_PLAY_ROOM_PLAY_WIDGET -> if (data != null) {
                 notifyPlayWidgetTotalView(data)
                 notifyPlayWidgetReminder(data)
@@ -2172,7 +2161,6 @@ open class HomeRevampFragment :
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (this::viewModel.isInitialized) {
-            resetAutoPlay(isVisibleToUser)
             trackScreen(isVisibleToUser)
             if (isVisibleToUser) {
                 conditionalViewModelRefresh()
@@ -2199,15 +2187,6 @@ open class HomeRevampFragment :
             else -> {
                 //no-op
             }
-        }
-    }
-
-    private fun resetAutoPlay(isVisibleToUser: Boolean) {
-        shouldPausePlay = !isVisibleToUser
-        if (isVisibleToUser) {
-            adapter?.onResumePlayWidget()
-        } else {
-            adapter?.onPausePlayWidget(shouldPausePlay)
         }
     }
 
@@ -2502,20 +2481,6 @@ open class HomeRevampFragment :
                 RouteManager.route(activity, applink)
             }
         }
-    }
-
-    override fun onOpenPlayChannelList(appLink: String) {
-        openApplink(appLink, "")
-    }
-
-    override fun onOpenPlayActivity(root: View, channelId: String?) {
-        shouldPausePlay = false
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalContent.PLAY_DETAIL, channelId)
-        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-            requireActivity(),
-            Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
-        )
-        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle())
     }
 
     private fun needToPerformanceMonitoring(data: List<Visitable<*>>): Boolean {

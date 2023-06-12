@@ -57,7 +57,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonWallet)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
-    implementation projectOrAar(rootProject.ext.features.dynamicBanner)
     implementation projectOrAar(rootProject.ext.features.homeComponent)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.loyalty)

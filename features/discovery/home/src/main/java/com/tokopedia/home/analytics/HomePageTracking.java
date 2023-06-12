@@ -8,7 +8,6 @@ import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerRecommendationDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel;
@@ -381,21 +380,6 @@ public class HomePageTracking {
                 )
         );
         tracker.sendEnhanceEcommerceEvent(data);
-    }
-
-    public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardDataModel playCardDataModel) {
-        trackingQueue.putEETracking((HashMap<String, Object>) playCardDataModel.getEnhanceImpressionPlayBanner());
-    }
-
-    public static HashMap<String, Object> eventEnhanceImpressionIrisPlayBanner(PlayCardDataModel playCardDataModel) {
-        return  (HashMap<String, Object>) playCardDataModel.getEnhanceImpressionIrisPlayBanner();
-    }
-
-    public static void eventClickPlayBanner(PlayCardDataModel playCardDataModel) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(playCardDataModel.getEnhanceClickPlayBanner());
-        }
     }
 
     public static HashMap<String, Object> getEventEnhanceImpressionBannerGif(DynamicHomeChannel.Channels bannerChannel) {

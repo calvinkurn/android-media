@@ -26,7 +26,6 @@
 /features/discovery/autocomplete_component/             @tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget/              	@tokopedia/android-miniondave-dev
 /features/discovery/global_nav_widget_samples/      	@tokopedia/android-miniondave-dev
-/features/home/dynamicbanner/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation/                          	@tokopedia/android-miniondave-dev
 /features/home/navigation-common/                   	@tokopedia/android-miniondave-dev
 /features/home/searchbar/                           	@tokopedia/android-miniondave-dev

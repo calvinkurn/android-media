@@ -137,9 +137,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> {
                     createReviewWidget(channel = channel)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> {
-                    createPlayWidget(channel)
-                }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
                     createMixTopComponent(channel, position, isCache)
                 }
@@ -287,13 +284,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createDynamicChannelLoadingMore() {
         visitableList.add(DynamicChannelLoadingModel())
-    }
-
-    private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
-        if (!isCache) {
-            val playBanner = PlayCardDataModel(channel, null)
-            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
-        }
     }
 
     private fun createDynamicChannel(

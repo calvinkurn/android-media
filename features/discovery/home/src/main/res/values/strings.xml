@@ -14,7 +14,6 @@
     <string name="widget_gagal_ditampilkan">Hiks, kontennya nggak mau muncul</string>
 
     <string name="home_error_connection">Oops, internet terputus. Cek ulang koneksimu.</string>
-    <string name="home_transition_root">root_play</string>
     <string name="home_transition_video">video_play</string>
 
     <string name="discovery_home_title_error">Ada gangguan di rumah Toped</string>
@@ -48,7 +47,6 @@
     <string name="content_desc_background_spotlight">Background spotlight</string>
     <string name="content_desc_background_business">Background business</string>
     <string name="content_desc_loading_icon_business">Loading icon business</string>
-    <string name="content_desc_thumbnail_image_play">Thumbnail image Play</string>
     <string name="content_desc_reload">Reload</string>
     <string name="content_desc_image_home_error">Gambar error home</string>
 

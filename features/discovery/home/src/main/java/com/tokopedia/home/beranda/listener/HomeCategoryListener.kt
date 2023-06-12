@@ -47,11 +47,7 @@ interface HomeCategoryListener {
 
     fun openShop()
 
-    fun onOpenPlayChannelList(appLink: String)
-
     fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>)
-
-    fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 
     fun actionAppLinkWalletHeader(appLinkBalance: String)
 

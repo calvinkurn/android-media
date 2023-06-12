@@ -39,7 +39,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomePayLaterWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerDataModel
@@ -65,7 +64,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -406,14 +404,6 @@ open class HomeRevampViewModel @Inject constructor(
                     _errorEventLiveData.postValue(Event(Throwable()))
                 }
             }
-        }
-    }
-
-    fun updateBannerTotalView(channelId: String?, totalView: String?) {
-        if (channelId == null || totalView == null) return
-        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId }) { playCard, index ->
-            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
-            updateWidget(newPlayCard, index)
         }
     }
 

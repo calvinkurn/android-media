@@ -278,7 +278,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_BANNER_ORGANIC: String = "banner_organic"
             const val LAYOUT_BANNER_CAROUSEL: String = "banner_carousel"
             const val LAYOUT_REVIEW: String = "product_review"
-            const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_PLAY_CAROUSEL_BANNER: String = "play_carousel"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
