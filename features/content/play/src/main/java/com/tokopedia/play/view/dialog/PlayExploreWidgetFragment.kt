@@ -97,7 +97,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore(viewModel.widgetInfo, ExploreWidgetType.Default)
             }
 
             override fun checkLoadMore(view: RecyclerView?, dx: Int, dy: Int) {
@@ -375,10 +375,11 @@ class PlayExploreWidgetFragment @Inject constructor(
         channelPositionInList: Int
     ) {
         analytic?.clickContentCard(
-            item,
-            channelPositionInList,
-            viewModel.selectedChips,
-            viewModel.exploreWidgetConfig.autoPlay
+            selectedChannel = item,
+            position = channelPositionInList,
+            widgetInfo = viewModel.widgetInfo.copy(categoryName = viewModel.selectedChips),
+            config = viewModel.exploreWidgetConfig,
+            type = ExploreWidgetType.Default
         )
         router.route(context, item.appLink)
     }
@@ -390,10 +391,11 @@ class PlayExploreWidgetFragment @Inject constructor(
         channelPositionInList: Int
     ) {
         analytic?.impressChannelCard(
-            item,
-            config,
-            channelPositionInList,
-            viewModel.selectedChips
+            item = item,
+            position = channelPositionInList,
+            widgetInfo = viewModel.widgetInfo.copy(categoryName = viewModel.selectedChips),
+            config = viewModel.exploreWidgetConfig,
+            type = ExploreWidgetType.Default
         )
     }
 

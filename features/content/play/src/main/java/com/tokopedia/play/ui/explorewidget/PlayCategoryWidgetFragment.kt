@@ -57,12 +57,12 @@ class PlayCategoryWidgetFragment @Inject constructor(
     private val categoryAdapter by lazyThreadSafetyNone {
         CategoryWidgetAdapter(object : CategoryWidgetViewHolder.Item.Listener {
             override fun onClicked(item: PlayWidgetChannelUiModel, position: Int) {
-                analytic?.clickContentCard(selectedChannel = item, position = position, categoryName = viewModel.widgetInfo.categoryName, isAutoplay = false)
+                analytic?.clickContentCard(selectedChannel = item, position = position, widgetInfo = viewModel.widgetInfo, config = viewModel.exploreWidgetConfig, type = ExploreWidgetType.Category)
                 router.route(context, item.appLink)
             }
 
             override fun onImpressed(item: PlayWidgetChannelUiModel, position: Int) {
-                analytic?.impressChannelCard(item = item, position = position, categoryName = viewModel.widgetInfo.categoryName, config = viewModel.exploreWidgetConfig)
+                analytic?.impressChannelCard(item = item, position = position, widgetInfo = viewModel.widgetInfo, config = viewModel.exploreWidgetConfig, type = ExploreWidgetType.Category)
             }
         })
     }
@@ -75,7 +75,7 @@ class PlayCategoryWidgetFragment @Inject constructor(
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore(viewModel.widgetInfo, ExploreWidgetType.Category)
             }
         }
     }
