@@ -9,15 +9,12 @@ import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
 import com.tokopedia.reviewcommon.extension.appendUserId
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 26, 2023
  */
-class ReviewDetailUserProfileTrackerImpl @Inject constructor(
-//    private val userSession: UserSessionInterface,
-): ReviewDetailTracker {
+class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTracker {
 
     override fun trackOnLikeReviewClicked(
         feedbackId: String,
@@ -37,6 +34,7 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(
     }
 
     override fun trackOnSeeAllClicked(
+        loggedInUserId: String,
         feedbackId: String,
         productId: String,
         isFromGallery: Boolean,
@@ -50,7 +48,7 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(
             eventLabel = "$feedbackId - $reviewUserId - ${getSelfOrVisitor(isReviewOwner)} - $productId"
         ).appendBusinessUnit(ReviewDetailUserProfileTrackerConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
-//            .appendUserId(userSession.userId)
+            .appendUserId(loggedInUserId)
             .appendTrackerIdIfNotBlank("44109")
             .appendSessionIris(TrackApp.getInstance().gtm.irisSessionId)
             .sendGeneralEvent()

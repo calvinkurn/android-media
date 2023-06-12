@@ -5,8 +5,8 @@ package com.tokopedia.review.feature.media.detail.analytic
  */
 object ReviewDetailUserProfileTrackerConstant {
 
-    const val EVENT_ACTION_CLICK_SEE_ALL_FROM_USER_PROFILE = "click - product on review"
-    const val EVENT_CATEGORY_FEED_USER_PROFILE = "feed user profile"
+    const val EVENT_ACTION_CLICK_SEE_ALL_FROM_USER_PROFILE = "click - review selengkapnya"
+    const val EVENT_CATEGORY_FEED_USER_PROFILE = "feed user profile - review media detail"
     const val BUSINESS_UNIT = "content"
     const val CURRENT_SITE = "tokopediamarketc"
 

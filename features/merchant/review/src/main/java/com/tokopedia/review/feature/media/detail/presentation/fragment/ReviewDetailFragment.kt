@@ -295,11 +295,12 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
         override fun onDescriptionSeeMoreClicked() {
             if (sharedReviewMediaGalleryViewModel.isProductReview()) {
                 reviewDetailTracker.trackOnSeeAllClicked(
-                    reviewDetailViewModel.getFeedbackID().orEmpty(),
-                    sharedReviewMediaGalleryViewModel.getProductId(),
-                    sharedReviewMediaGalleryViewModel.isFromGallery(),
-                    sharedReviewMediaGalleryViewModel.getReviewUserID(),
-                    sharedReviewMediaGalleryViewModel.isReviewOwner,
+                    loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
+                    feedbackId = reviewDetailViewModel.getFeedbackID().orEmpty(),
+                    productId = sharedReviewMediaGalleryViewModel.getProductId(),
+                    isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery(),
+                    reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                    isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
                 )
             } else {
                 reviewDetailTracker.trackOnShopReviewSeeAllClicked(
