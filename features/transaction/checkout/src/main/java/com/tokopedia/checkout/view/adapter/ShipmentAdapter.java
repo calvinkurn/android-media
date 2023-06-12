@@ -215,7 +215,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return new ShipmentButtonPaymentViewHolder(view, shipmentAdapterActionListener, compositeSubscription);
         } else if (viewType == TickerAnnouncementViewHolder.Companion.getLAYOUT()) {
-            return new ShipmentTickerAnnouncementViewHolder(view, null);
+            return new ShipmentTickerAnnouncementViewHolder(view);
         } else if (viewType == ShippingCompletionTickerViewHolder.Companion.getITEM_VIEW_TICKER_SHIPPING_COMPLETION()) {
             return new ShippingCompletionTickerViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR()) {

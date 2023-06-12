@@ -212,6 +212,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     data?.price?.priceFmt = it.data.price.value.getCurrencyFormatted()
 
                     shouldShowCampaign = ongoingCampaignData == null
+                    isWishlisted = it.data.isWishlist
                 }
             }
 

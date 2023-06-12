@@ -46,6 +46,8 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_PROMOTIONS = "promotions"
         const val KEY_CREATIVE_NAME = "creative_name"
         const val KEY_CREATIVE_SLOT = "creative_slot"
+        const val KEY_DIMENSION_117 = "dimension117"
+        const val KEY_DIMENSION_118 = "dimension118"
         const val KEY_DIMENSION_104 = "dimension104"
         const val KEY_DIMENSION_100 = "dimension100"
         const val KEY_DIMENSION_38 = "dimension38"

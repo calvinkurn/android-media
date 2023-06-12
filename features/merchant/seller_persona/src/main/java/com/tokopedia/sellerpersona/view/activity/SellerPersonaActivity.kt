@@ -31,7 +31,7 @@ import com.tokopedia.sellerpersona.view.model.PERSONA_STATUS_NOT_ROLLED_OUT
 import com.tokopedia.sellerpersona.view.viewmodel.PersonaSharedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.resources.isAppDarkMode
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import javax.inject.Inject
 
 /**
@@ -164,7 +164,7 @@ class SellerPersonaActivity : BaseActivity(), HasComponent<SellerPersonaComponen
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            setLightStatusBar(!isAppDarkMode())
+            setLightStatusBar(!isDarkMode())
         }
     }
 

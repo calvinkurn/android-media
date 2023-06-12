@@ -2,7 +2,6 @@ package com.tokopedia.utils.resources
 
 import android.content.Context
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatDelegate
 
 fun Context.isDarkMode(): Boolean {
     return try {
@@ -16,9 +15,4 @@ fun Context.isDarkMode(): Boolean {
     } catch (ignored: Exception) {
         false
     }
-}
-
-fun isAppDarkMode(): Boolean {
-    val currentNightMode = AppCompatDelegate.getDefaultNightMode()
-    return currentNightMode == AppCompatDelegate.MODE_NIGHT_YES
 }

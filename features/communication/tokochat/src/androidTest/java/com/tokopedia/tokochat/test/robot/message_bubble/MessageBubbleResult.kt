@@ -49,18 +49,6 @@ object MessageBubbleResult {
         ).check(matcher)
     }
 
-    fun assertImageAttachmentLoadingVisibility(position: Int, isVisible: Boolean) {
-        val matcher = if (isVisible) {
-            matches(isDisplayed())
-        } else {
-            matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE))
-        }
-        onView(
-            withRecyclerView(R.id.tokochat_chatroom_rv)
-                .atPositionOnView(position, R.id.tokochat_loader_image_bubble)
-        ).check(matcher)
-    }
-
     fun assertMessageBubbleVisibility(position: Int, isVisible: Boolean) {
         val matcher = if (isVisible) {
             matches(isDisplayed())
