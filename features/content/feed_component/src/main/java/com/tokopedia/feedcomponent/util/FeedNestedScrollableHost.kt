@@ -36,7 +36,7 @@ import kotlin.math.sign
  * This solution has limitations when using multiple levels of nested scrollable elements
  * (e.g. a horizontal RecyclerView in a vertical RecyclerView in a horizontal ViewPager).
  */
-class NestedScrollableHost : FrameLayout {
+class FeedNestedScrollableHost : FrameLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -68,8 +68,8 @@ class NestedScrollableHost : FrameLayout {
     }
 
     private fun initWithAttrs(context: Context, attrs: AttributeSet) {
-        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.NestedScrollableHost)
-        isScrollLocked = attributeArray.getBoolean(R.styleable.NestedScrollableHost_lockScroll, false)
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.FeedNestedScrollableHost)
+        isScrollLocked = attributeArray.getBoolean(R.styleable.FeedNestedScrollableHost_lockScroll, false)
         attributeArray.recycle()
     }
 
