@@ -79,7 +79,7 @@ object DeeplinkMapperTokopediaNow {
         val indexCategoryId = 4
         return if (content.getOrElse(indexCategoryId) { "" } == PARAM_L1) {
             val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId+1) { "" }}"
-            "${ApplinkConstInternalTokopediaNow.CATEGORY_MAIN}?$categoryL1$queryString"
+            "${ApplinkConstInternalTokopediaNow.CATEGORY}?$categoryL1$queryString"
         } else {
             val categoryL1 = "$PARAM_CATEGORY_L1=${content.getOrElse(indexCategoryId) { "" }}"
             val categoryL2 = content.getOrElse(indexCategoryId+1) { "" }.let {

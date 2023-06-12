@@ -611,7 +611,7 @@ public interface ApplinkConst {
         String TOKOPEDIA_NOW_STAGING_SHOP_ID = "480552";
         String SEARCH = "tokopedia://now/search";
         String OLD_CATEGORY = "tokopedia://now/category";
-        String CATEGORY_MAIN = "tokopedia://now/category/l1";
+        String CATEGORY = "tokopedia://now/category/l1";
         String REPURCHASE = "tokopedia://now/repurchase-page";
         String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
         String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";

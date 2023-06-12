@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         if (model.value.applink.isNotBlank()) {
             RouteManager.route(this, model.value.applink)
         } else {
-            RouteManager.route(this, "tokopedia://now/category/l1/4681")
+            Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
         }
     }
 

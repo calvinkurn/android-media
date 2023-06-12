@@ -594,7 +594,7 @@ object DeeplinkMapper {
         DLP.startWith(ApplinkConst.ORDER_BUYER_CANCELLATION_REQUEST_PAGE) { _, _, _, _ -> DeeplinkMapperOrder.getBuyerCancellationRequestInternalAppLink() },
         DLP.exact(ApplinkConst.TokopediaNow.HOME) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowHome(deeplink) },
         DLP.startWith(ApplinkConst.TokopediaNow.SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowSearch(deeplink) },
-        DLP.startWith(ApplinkConst.TokopediaNow.CATEGORY_MAIN) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(deeplink) },
+        DLP.startWith(ApplinkConst.TokopediaNow.CATEGORY) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(deeplink) },
         DLP.startWith(ApplinkConst.TokopediaNow.OLD_CATEGORY) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowCategory(deeplink) },
         DLP.startWith(ApplinkConst.TokopediaNow.REPURCHASE) { _, _, _, _ -> ApplinkConstInternalTokopediaNow.REPURCHASE },
         DLP.matchPattern(ApplinkConst.TokopediaNow.RECIPE_DETAIL) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeDetail(deeplink) },
