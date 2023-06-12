@@ -8,6 +8,7 @@ ext {
     jacocoVersion = "0.8.7"
     kotlinVersion = "1.7.10"
     kotlinMetaDataVersion = "0.5.0"
+    kspVersion = "1.7.10-1.0.6"
 
     navigationVersion = "2.5.3"
     lifeCycleVersion = "2.5.1"
@@ -251,6 +252,7 @@ ext {
             javaPoet              : 'com.squareup:javapoet:1.11.1',
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
             kotlinPoet            : "com.squareup:kotlinpoet:1.4.3",
+            ksp                   : "com.google.devtools.ksp:symbol-processing-api:$kspVersion",
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",
