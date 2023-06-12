@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
-import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalytic
 import com.tokopedia.play.broadcaster.analytic.beautification.PlayBroadcastBeautificationAnalyticStateHolder
 import com.tokopedia.play.broadcaster.databinding.FragmentBeautificationSetupBinding
@@ -34,9 +33,11 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import com.tokopedia.unifyprinciples.R as unifyR
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -61,6 +62,8 @@ class BeautificationSetupFragment @Inject constructor(
 
     private var isSliderPreviouslyShown: Boolean = false
     private var prevBottomSheetState: Int = BottomSheetBehavior.STATE_HIDDEN
+
+    private var sliderTrackerJob: Job? = null
 
     private val bottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
@@ -137,6 +140,8 @@ class BeautificationSetupFragment @Inject constructor(
         super.onDestroyView()
         bottomSheetBehavior.removeBottomSheetCallback(bottomSheetBehaviorCallback)
 
+        sliderTrackerJob?.cancel()
+
         _binding = null
         _bottomSheetBehavior = null
     }
@@ -209,24 +214,19 @@ class BeautificationSetupFragment @Inject constructor(
     private fun setupListener() {
         binding.sliderBeautification.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
             override fun onSliderMove(p0: Pair<Int, Int>) {
-
                 when(selectedTabIdx) {
                     BeautificationTabFragment.Companion.Type.FaceFilter.value -> {
-                        beautificationAnalytic.clickSliderBeautyFilter(
-                            account = viewModel.selectedAccount,
-                            page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
-                            tab = PlayBroadcastBeautificationAnalytic.Tab.FaceShaping,
-                            filterName = viewModel.selectedFaceFilter?.id.orEmpty(),
-                        )
                         viewModel.submitAction(PlayBroadcastAction.ChangeFaceFilterValue(p0.first))
+                        debounceHitSliderTracker(
+                            PlayBroadcastBeautificationAnalytic.Tab.FaceShaping,
+                            viewModel.selectedFaceFilter?.id.orEmpty()
+                        )
                     }
                     BeautificationTabFragment.Companion.Type.Preset.value -> {
                         viewModel.submitAction(PlayBroadcastAction.ChangePresetValue(p0.first))
-                        beautificationAnalytic.clickSliderBeautyFilter(
-                            account = viewModel.selectedAccount,
-                            page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
-                            tab = PlayBroadcastBeautificationAnalytic.Tab.Makeup,
-                            filterName = viewModel.selectedPreset?.id.orEmpty(),
+                        debounceHitSliderTracker(
+                            PlayBroadcastBeautificationAnalytic.Tab.Makeup,
+                            viewModel.selectedPreset?.id.orEmpty()
                         )
                     }
                     else -> {}
@@ -376,6 +376,23 @@ class BeautificationSetupFragment @Inject constructor(
         beautificationUiBridge.eventBus.emit(BeautificationUiBridge.Event.BeautificationBottomSheetDismissed)
     }
 
+    private fun debounceHitSliderTracker(
+        tab: PlayBroadcastBeautificationAnalytic.Tab,
+        filterName: String,
+    ) {
+        sliderTrackerJob?.cancel()
+        sliderTrackerJob = viewLifecycleOwner.lifecycleScope.launch {
+            delay(DEBOUNCE_SLIDER_TRACKER_DELAY)
+
+            beautificationAnalytic.clickSliderBeautyFilter(
+                account = viewModel.selectedAccount,
+                page = beautificationAnalyticStateHolder.getPageSourceForAnalytic(),
+                tab = tab,
+                filterName = filterName,
+            )
+        }
+    }
+
     fun showFaceSetupBottomSheet(pageSource: PageSource) {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -401,6 +418,8 @@ class BeautificationSetupFragment @Inject constructor(
 
     companion object {
         private const val SLIDER_STEP_SIZE = 10
+
+        private const val DEBOUNCE_SLIDER_TRACKER_DELAY = 500L
 
         const val TAG = "BeautificationSetupFragment"
 
