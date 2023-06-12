@@ -12,6 +12,8 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -87,6 +89,8 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Matchers.anyString
 import rx.Observable
@@ -2419,6 +2423,36 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId) }
         coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify isWithList in getDynamicProductInfoP1 is true after add wishlist`() {
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        `verify add to wishlistv2 returns success`()
+        Assert.assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+    }
+
+    @Test
+    fun `verify wishlist value from p1 replace with previous value`() {
+        viewModel.getDynamicProductInfoP1 = null
+        `on success get product info non login`()
+        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1()
+        `on success get product info non login`()
+        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
+
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+            data = ComponentData(isWishlist = true)
+        )
+        `on success get product info non login`()
+        assertTrue(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orFalse())
+
+        viewModel.getDynamicProductInfoP1 = DynamicProductInfoP1(
+            data = ComponentData(isWishlist = false)
+        )
+        `on success get product info non login`()
+        assertFalse(viewModel.getDynamicProductInfoP1?.data?.isWishlist.orTrue())
     }
 
     @Test
