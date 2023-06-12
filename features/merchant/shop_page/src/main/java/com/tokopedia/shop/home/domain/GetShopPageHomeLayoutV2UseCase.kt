@@ -91,6 +91,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           textColor
                           status
                       }
+                      campaignID
                     }
                     ... on EtalaseWidget {
                       imageUrl

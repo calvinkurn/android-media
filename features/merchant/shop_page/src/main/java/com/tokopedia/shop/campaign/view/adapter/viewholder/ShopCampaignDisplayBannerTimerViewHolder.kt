@@ -243,7 +243,7 @@ class ShopCampaignDisplayBannerTimerViewHolder(
 
     private fun setBannerImage(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         val imageBannerUrl = uiModel.data?.imageUrl.orEmpty()
-        imageBanner?.setImageUrl(imageBannerUrl, heightRatio = getHeightRatio(uiModel))
+        imageBanner?.setImageUrl(imageBannerUrl)
     }
 
     private fun setRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {

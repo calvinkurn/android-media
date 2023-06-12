@@ -270,37 +270,4 @@ class ShopCampaignTabAdapter(
         }
     }
 
-    fun showBannerTimerRemindMeLoading() {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
-            nplCampaignUiModel.let {
-                it.data?.showRemindMeLoading = true
-                it.isNewData = true
-            }
-        }
-        submitList(newList)
-    }
-
-    fun updateBannerTimerWidgetData(
-        isRemindMe: Boolean? = null,
-        isClickRemindMe: Boolean = false
-    ) {
-        val newList = getNewVisitableItems()
-        newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
-            nplCampaignUiModel.data?.let {
-                isRemindMe?.let { isRemindMe ->
-                    it.isRemindMe = isRemindMe
-                    if (isClickRemindMe) {
-                        if (isRemindMe)
-                            ++it.totalNotify
-                        else
-                            --it.totalNotify
-                    }
-                }
-                it.showRemindMeLoading = false
-                nplCampaignUiModel.isNewData = true
-            }
-        }
-        submitList(newList)
-    }
 }

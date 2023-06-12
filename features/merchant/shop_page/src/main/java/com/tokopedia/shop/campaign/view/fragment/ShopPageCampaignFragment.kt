@@ -953,7 +953,9 @@ class ShopPageCampaignFragment :
     override fun onClickRemindMe(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         viewModel?.let {
             if (it.isLogin) {
-                shopCampaignTabAdapter.showBannerTimerRemindMeLoading()
+                viewModelCampaign?.showBannerTimerRemindMeLoading(
+                    shopCampaignTabAdapter.getNewVisitableItems()
+                )
                 handleBannerTimerClickRemindMe(uiModel)
             } else {
                 redirectToLoginPage()
@@ -966,7 +968,11 @@ class ShopPageCampaignFragment :
             NotifyMeAction.REGISTER.action,
             ignoreCase = true
         )
-        shopCampaignTabAdapter.updateBannerTimerWidgetData(isRegisterCampaign, true)
+        viewModelCampaign?.updateBannerTimerWidgetData(
+            shopCampaignTabAdapter.getNewVisitableItems(),
+            isRegisterCampaign,
+            true
+        )
         view?.let {
             Toaster.build(
                 it,
@@ -988,7 +994,11 @@ class ShopPageCampaignFragment :
                 getString(R.string.shop_string_ok)
             ).show()
         }
-        shopCampaignTabAdapter.updateBannerTimerWidgetData()
+        viewModelCampaign?.updateBannerTimerWidgetData(
+            shopCampaignTabAdapter.getNewVisitableItems(),
+            isRemindMe = false,
+            isClickRemindMe = false
+        )
     }
 
 }

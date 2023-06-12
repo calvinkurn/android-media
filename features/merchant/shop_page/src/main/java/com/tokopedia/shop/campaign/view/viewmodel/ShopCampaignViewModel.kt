@@ -243,6 +243,45 @@ class ShopCampaignViewModel @Inject constructor(
         return ShopPageHomeMapper.mapToShopHomeWidgetLayoutData(layoutData.data.homeLayoutData)
     }
 
+    fun showBannerTimerRemindMeLoading(newList: MutableList<Visitable<*>>) {
+        launchCatchError(dispatcherProvider.io, block = {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>().onEach { nplCampaignUiModel ->
+                nplCampaignUiModel.let {
+                    it.data?.showRemindMeLoading = true
+                    it.isNewData = true
+                }
+            }
+            _campaignWidgetListVisitable.postValue(Success(newList))
+        }) {throwable ->
+            _campaignWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
+
+    fun updateBannerTimerWidgetData(
+        newList: MutableList<Visitable<Any>>,
+        isRemindMe: Boolean,
+        isClickRemindMe: Boolean
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            newList.filterIsInstance<ShopWidgetDisplayBannerTimerUiModel>()
+                .onEach { nplCampaignUiModel ->
+                    nplCampaignUiModel.data?.let {
+                        it.isRemindMe = isRemindMe
+                        if (isClickRemindMe) {
+                            if (isRemindMe)
+                                ++it.totalNotify
+                            else
+                                --it.totalNotify
+                        }
+                        it.showRemindMeLoading = false
+                        nplCampaignUiModel.isNewData = true
+                    }
+                }
+            _campaignWidgetListVisitable.postValue(Success(newList))
+        }) { throwable ->
+            _campaignWidgetListVisitable.postValue(Fail(throwable))
+        }
+    }
 
 
 }

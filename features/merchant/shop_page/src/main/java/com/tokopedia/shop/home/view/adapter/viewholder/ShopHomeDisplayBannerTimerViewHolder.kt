@@ -266,7 +266,7 @@ class ShopHomeDisplayBannerTimerViewHolder(
     private fun setBannerImage(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
         val imageBannerUrl = uiModel.data?.imageUrl.orEmpty()
         imageBanner?.apply {
-            setImageUrl(imageBannerUrl, heightRatio = getHeightRatio(uiModel))
+            setImageUrl(imageBannerUrl)
             setOnClickListener {
                 listener.onDisplayBannerTimerClicked(bindingAdapterPosition, uiModel)
             }
