@@ -697,7 +697,7 @@ open class EmoneyPdpFragment :
             product.attributes.pricePlain,
             userSession.userId
         )
-        val bottomSheet = EmoneyProductDetailBottomSheet(product)
+        val bottomSheet = EmoneyProductDetailBottomSheet.newBottomSheet(product)
         bottomSheet.show(childFragmentManager, TAG)
     }
 
