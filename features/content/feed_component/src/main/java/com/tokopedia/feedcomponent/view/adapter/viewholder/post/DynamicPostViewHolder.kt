@@ -69,6 +69,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_dynamic_post.view.*
 import kotlinx.android.synthetic.main.item_posttag.view.*
 import java.net.URLEncoder
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * @author by milhamj on 28/11/18.
@@ -233,17 +234,17 @@ open class DynamicPostViewHolder(
                 itemView.authorBadge.show()
                 itemView.authorBadge.loadImage(header.avatarBadgeImage)
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4),
+                    itemView.getDimens(contentCommonR.dimen.content_common_dp_4),
                     0,
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
                     0
                 )
             } else {
                 itemView.authorBadge.hide()
                 itemView.authorTitle.setMargin(
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
                     0,
-                    itemView.getDimens(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_8),
+                    itemView.getDimens(contentCommonR.dimen.content_common_space_8),
                     0
                 )
             }
@@ -267,7 +268,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(R.string.feed_header_time_format),
+                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -364,7 +365,7 @@ open class DynamicPostViewHolder(
     private fun animateFooter() {
         Handler().postDelayed({
             itemView.footerBackground.animation =
-                AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
+                AnimationUtils.loadAnimation(itemView.context, contentCommonR.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
         }, ANIMATION_DURATION)
     }
@@ -605,7 +606,8 @@ open class DynamicPostViewHolder(
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 val text: String =
-                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
+                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
+                    else getString(com.tokopedia.content.common.R.string.kol_action_like)
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
@@ -619,12 +621,16 @@ open class DynamicPostViewHolder(
 
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
-            if (comment.value == 0) if (comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
+            if (comment.value == 0) {
+                if (comment.fmt.isNotEmpty()) comment.fmt
+                else getString(com.tokopedia.content.common.R.string.kol_action_comment)
+            }
             else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun bindPostTag(
         postId: String,
         postTag: PostTag,

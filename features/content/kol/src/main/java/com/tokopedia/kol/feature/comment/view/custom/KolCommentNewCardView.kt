@@ -95,9 +95,9 @@ class KolCommentNewCardView : LinearLayout {
     fun setModel(element: KolCommentNewModel, canComment: Boolean) {
         ImageHandler.loadImageCircle2(avatar.context, avatar, element.avatarUrl)
         element.time?.let {
-            if (it == context.getString(com.tokopedia.kolcommon.R.string.post_time_just_now))
+            if (it == context.getString(com.tokopedia.content.common.R.string.post_time_just_now))
                 time.text =
-                    context.getString(com.tokopedia.feedcomponent.R.string.post_time_few_moments_ago)
+                    context.getString(com.tokopedia.content.common.R.string.post_time_few_moments_ago)
             else
                 time.text = TimeConverter.generateTimeNewForComment(context, it)
         }

@@ -19,7 +19,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
 
@@ -121,7 +125,7 @@ class ProductPostTagViewHolderNew(
         }
         menuBtn.showWithCondition((item.isFlashSaleToko || item.isRilisanSpl).not())
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
-        val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
+        val soldInfoText = getString(com.tokopedia.content.common.R.string.feed_common_terjual) + " " + item.totalSold.toString()
         soldInfo.text = soldInfoText
         star.showWithCondition(item.rating != 0)
         divider.showWithCondition(item.rating != 0 && item.totalSold != 0)
@@ -143,7 +147,7 @@ class ProductPostTagViewHolderNew(
             addToCartBtn.apply {
                 isEnabled = false
                 text =
-                    getString(R.string.btn_add_to_cart_text_disabled)
+                    getString(com.tokopedia.content.common.R.string.btn_add_to_cart_text_disabled)
             }
         }
 

@@ -90,6 +90,10 @@ class PlayGameViewHolder {
         private val binding: ItemPlayInteractiveLeaderboardWinnerBinding,
         private val listener: Listener
     ) : BaseViewHolder(binding.root) {
+
+        init {
+            binding.imgCrown.setImageResource(R.drawable.ic_play_interactive_crown_yellow)
+        }
         fun bind(winner: LeaderboardGameUiModel.Winner) {
             with(binding) {
                 tvWinnerNumber.text = winner.rank.toString()
@@ -127,7 +131,7 @@ class PlayGameViewHolder {
         BaseViewHolder(binding.root) {
         fun bind(item: LeaderboardGameUiModel.Footer) {
             val text = if (item.totalParticipant > 0) item.otherParticipantText
-            else item.emptyLeaderBoardCopyText
+            else item.emptyLeaderBoardCopyText.ifEmpty { getString(R.string.play_interactive_empty) }
 
             binding.tvLeaderboardFooter.showWithCondition(text.isNotBlank())
             binding.tvLeaderboardFooter.text = text

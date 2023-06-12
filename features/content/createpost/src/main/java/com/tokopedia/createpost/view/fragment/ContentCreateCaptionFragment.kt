@@ -112,7 +112,6 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
             contentPreviewRv?.visible()
         else
             contentPreviewRv?.gone()
-        contentPreviewRv?.setHasFixedSize(true)
         contentPreviewRv?.layoutManager =
             LinearLayoutManager(parentFragment?.context, LinearLayoutManager.HORIZONTAL, false)
         contentPreviewRv?.adapter = adapter

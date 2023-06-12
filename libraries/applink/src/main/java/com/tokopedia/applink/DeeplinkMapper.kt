@@ -349,7 +349,7 @@ object DeeplinkMapper {
         ),
         DLP.startWith(ApplinkConst.BUYER_ORDER_EXTENSION, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION),
         DLP.startWith(ApplinkConst.BUYER_PARTIAL_ORDER_FULFILLMENT, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_PARTIAL_ORDER_FULFILLMENT),
-        DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
+        DLP.startWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
         DLP.startWith(ApplinkConst.TELKOMSEL_OMNI) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
@@ -804,7 +804,6 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isShopVoucherDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForShopVoucherDetail(deeplink)
                 DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
-                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale()
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerTokopediaUpcomingFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleUpcoming()
                 DeeplinkMapperMerchant.isSellerTokopediaRegisteredFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleRegistered()

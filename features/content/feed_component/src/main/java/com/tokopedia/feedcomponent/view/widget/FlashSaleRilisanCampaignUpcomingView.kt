@@ -18,7 +18,6 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -70,10 +69,10 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
                     mFeedXCard?.campaign?.campaignId ?: 0
                 )
             ) {
-                text = context.getString(R.string.btn_asgc_flash_remind_btn_text_disabled)
+                text = context.getString(com.tokopedia.content.common.R.string.btn_asgc_flash_remind_btn_text_disabled)
                 buttonType = UnifyButton.Type.ALTERNATE
             } else {
-                text = context.getString(R.string.btn_asgc_flash_remind_btn_text)
+                text = context.getString(com.tokopedia.content.common.R.string.btn_asgc_flash_remind_btn_text)
                 buttonType = UnifyButton.Type.MAIN
 
             }

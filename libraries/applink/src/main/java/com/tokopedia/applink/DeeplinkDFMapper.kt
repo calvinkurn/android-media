@@ -58,7 +58,6 @@ import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -127,7 +126,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INV
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GEOLOCATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.INBOX
@@ -412,7 +410,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PINPOINT) }, DF_BASE, R.string.path_pinpoint))
 
             // Merchant
-            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_SELLER, R.string.title_open_shop))
+            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
 
@@ -434,6 +432,17 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(PM_BENEFIT_PACKAGE)
                     || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
+
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
+                    || it.startsWith(SHOP_SCORE_DETAIL)
+                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                    || it.startsWith(SHOP_PENALTY)
+                    || it.startsWith(SHOP_PENALTY_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            }, DF_MERCHANT_SELLER, R.string.title_shop_score_sellerapp))
+
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
                 val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
@@ -587,7 +596,6 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
 
             // Travel
-            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) || it.startsWith(INTERNAL_FLIGHT) }, DF_TRAVEL, R.string.title_flight, { DFWebviewFallbackUrl.TRAVEL_FLIGHT }))
             add(DFP({ it.startsWith(HOTEL) || it.startsWith(INTERNAL_HOTEL)}, DF_TRAVEL, R.string.title_hotel, {DFWebviewFallbackUrl.TRAVEL_HOTEL}))
 
@@ -661,7 +669,6 @@ object DeeplinkDFMapper : CoroutineScope {
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
-            add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
             add(DFP({ it.startsWith(ONE_CLICK_CHECKOUT) }, DF_BASE, R.string.title_one_click_checkout))
             add(DFP({ it.startsWith(PROMO_CHECKOUT_MARKETPLACE) }, DF_BASE, R.string.promo_checkout_marketplace_module_title_activity_promo_list))
             add(DFP({ it.startsWith(WISHLIST_V2) }, DF_BASE, R.string.title_wishlist))

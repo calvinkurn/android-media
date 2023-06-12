@@ -3,12 +3,7 @@ package com.tokopedia.common_compose.components.ticker
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -26,12 +21,12 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestTicker(
-    modifier: Modifier = Modifier,
     title: CharSequence,
+    type: TickerType,
     description: CharSequence,
+    modifier: Modifier = Modifier,
     onDismissed: () -> Unit = {},
-    closeButtonVisibility: Boolean = true,
-    type: TickerType
+    closeButtonVisibility: Boolean = true
 ) {
     val style = when (type) {
         TickerType.WARNING -> TickerColor(
@@ -175,11 +170,11 @@ enum class TickerType {
 fun NestTickerAnnouncementPreview() {
     NestTheme {
         NestTicker(
-            modifier = Modifier,
             title = "Info",
+            type = TickerType.ANNOUNCEMENT,
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            type = TickerType.ANNOUNCEMENT
+            modifier = Modifier,
+            onDismissed = {}
         )
     }
 }
@@ -189,11 +184,11 @@ fun NestTickerAnnouncementPreview() {
 fun NestTickerAnnouncementDarkPreview() {
     NestTheme {
         NestTicker(
-            modifier = Modifier,
             title = "Info",
+            type = TickerType.ANNOUNCEMENT,
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            type = TickerType.ANNOUNCEMENT
+            modifier = Modifier,
+            onDismissed = {}
         )
     }
 }
@@ -203,11 +198,11 @@ fun NestTickerAnnouncementDarkPreview() {
 fun DescriptionOnlyTicker() {
     NestTheme {
         NestTicker(
-            modifier = Modifier,
             title = "",
+            type = TickerType.ANNOUNCEMENT,
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            type = TickerType.ANNOUNCEMENT
+            modifier = Modifier,
+            onDismissed = {}
         )
     }
 }
@@ -217,11 +212,11 @@ fun DescriptionOnlyTicker() {
 fun NestTickerWarningPreview() {
     NestTheme {
         NestTicker(
-            modifier = Modifier,
             title = "Info",
+            type = TickerType.WARNING,
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            type = TickerType.WARNING
+            modifier = Modifier,
+            onDismissed = {}
         )
     }
 }
@@ -231,11 +226,11 @@ fun NestTickerWarningPreview() {
 fun NestTickerErrorPreview() {
     NestTheme {
         NestTicker(
-            modifier = Modifier,
             title = "Info",
+            type = TickerType.ERROR,
             description = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
-            onDismissed = {},
-            type = TickerType.ERROR
+            modifier = Modifier,
+            onDismissed = {}
         )
     }
 }

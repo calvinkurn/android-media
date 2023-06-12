@@ -97,9 +97,9 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun saveToGallery(
+    fun finishPage(
         dataList: List<EditorUiModel>,
-        onFinish: (result: List<String>?, exception: Exception?) -> Unit
+        onFinish: (result: List<String>?) -> Unit
     ) {
         // store list image of camera picker that need to be saved
         val cameraImageList = mutableListOf<String>()
@@ -127,16 +127,7 @@ class EditorViewModel @Inject constructor(
             }
         }
 
-        // save camera image that didn't have edit state
-        if (cameraImageList.size != 0) {
-            saveImageRepository.saveToGallery(cameraImageList) { _, _ -> }
-        }
-
-        saveImageRepository.saveToGallery(
-            filteredData
-        ) { listData, exception ->
-            onFinish(listData, exception)
-        }
+        onFinish(filteredData)
     }
 
     fun saveToCache(

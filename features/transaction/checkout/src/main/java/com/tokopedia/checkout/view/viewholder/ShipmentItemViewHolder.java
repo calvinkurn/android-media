@@ -367,8 +367,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     mActionListener.onPurchaseProtectionLogicError();
                 }
             }
-            mActionListener.onNeedUpdateRequestData();
             mActionListener.onPurchaseProtectionChangeListener(getAdapterPosition());
+            mActionListener.onNeedUpdateRequestData();
         }
     }
 
@@ -1573,7 +1573,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         mActionListener.onInsuranceCheckedForTrackingAnalytics();
                     }
                     mActionListener.onInsuranceChecked(getAdapterPosition());
-                    mActionListener.onNeedUpdateRequestData();
                     if (saveStateDebounceListener != null) {
                         saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
                     }
