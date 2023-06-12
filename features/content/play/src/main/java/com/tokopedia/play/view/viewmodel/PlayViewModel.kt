@@ -2960,8 +2960,8 @@ class PlayViewModel @AssistedInject constructor(
                 _uiEvent.emit(ExploreWidgetNextTab)
             }
         } else {
-            val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected }
-            val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position.plus(1)
+            val position = _exploreWidget.value.chips.items.indexOfFirst { it.isSelected } + 1
+            val finalPosition = if (position >= _exploreWidget.value.chips.items.size) 0 else position
             onChipAction(_exploreWidget.value.chips.items[finalPosition])
         }
     }
