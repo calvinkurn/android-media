@@ -163,4 +163,6 @@
 
     <dimen name="product_card_button_see_other_product_margin_top">4dp</dimen>
     <dimen name="product_card_button_see_other_product_height">32dp</dimen>
+
+    <dimen name="product_card_top_stock_bar_background_height">30dp</dimen>
 </resources>

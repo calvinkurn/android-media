@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <gradient
+      android:startColor="@color/Unify_YN400"
+      android:endColor="@color/Unify_YN300" />
+
+  <corners android:topRightRadius="12dp" android:bottomRightRadius="12dp"/>
+</shape>

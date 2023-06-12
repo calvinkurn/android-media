@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.FrameLayout
-import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
@@ -31,7 +30,7 @@ class DynamicChannelHeaderView : FrameLayout {
 
     private val channelHeaderContainer: ConstraintLayout
     private var channelTitle: Typography? = null
-    private var channelSubtitle: TextView? = null
+    private var channelSubtitle: Typography? = null
     private var countDownView: TimerUnifySingle? = null
 
     private var headerColorMode: Int = COLOR_MODE_NORMAL
@@ -158,7 +157,7 @@ class DynamicChannelHeaderView : FrameLayout {
             layoutStrategy.renderSubtitle(
                 context,
                 channel.channelHeader,
-                channelTitle,
+                channelSubtitle,
                 headerColorMode
             )
         } else {
