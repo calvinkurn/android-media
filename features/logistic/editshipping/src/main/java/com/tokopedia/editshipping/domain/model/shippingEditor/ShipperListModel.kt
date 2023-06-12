@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.domain.model.shippingEditor
 
+import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
@@ -35,7 +36,32 @@ data class ShipperModel(
 data class FeatureInfoModel(
     var header: String = "",
     var body: String = ""
-) : Parcelable
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(header)
+        parcel.writeString(body)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<FeatureInfoModel> {
+        override fun createFromParcel(parcel: Parcel): FeatureInfoModel {
+            return FeatureInfoModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<FeatureInfoModel?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 @Parcelize
 data class ShipperProductModel(
@@ -43,7 +69,36 @@ data class ShipperProductModel(
     var shipperProductName: String = "",
     var isActive: Boolean = false,
     var isAvailable: Boolean = true
-) : Parcelable
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString().orEmpty(),
+        parcel.readString().orEmpty(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readByte() != 0.toByte()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(shipperProductId)
+        parcel.writeString(shipperProductName)
+        parcel.writeByte(if (isActive) 1 else 0)
+        parcel.writeByte(if (isAvailable) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ShipperProductModel> {
+        override fun createFromParcel(parcel: Parcel): ShipperProductModel {
+            return ShipperProductModel(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ShipperProductModel?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 data class TickerModel(
     var header: String = "",

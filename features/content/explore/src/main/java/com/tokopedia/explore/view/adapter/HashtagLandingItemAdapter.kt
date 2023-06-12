@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.adapter
 
+import android.annotation.SuppressLint
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
@@ -21,7 +22,14 @@ import com.tokopedia.explore.domain.entity.Tracking
 import com.tokopedia.explore.view.type.ExploreCardType
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_explore_hashtag_landing_item.view.*
 import java.net.URLEncoder
 
@@ -39,7 +47,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     private val emptyModel: EmptyModel by lazy {
         EmptyModel().apply {
-            iconRes = R.drawable.ic_af_empty
+            iconRes = com.tokopedia.affiliatecommon.R.drawable.ic_af_empty
             contentRes = R.string.af_empty_hashtag_post
         }
     }
@@ -111,6 +119,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(data: List<PostKolUiModel>) {
         val dataNew = data.map { Data(it) }
         list.clear()
@@ -182,11 +191,11 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     }
                     when {
                         item.content.size > 1 -> {
-                            badge.loadImageDrawable(R.drawable.ic_affiliate_multi)
+                            badge.loadImageDrawable(com.tokopedia.feedcomponent.R.drawable.ic_affiliate_multi)
                             badge.visible()
                         }
                         thumbnail.type == ExploreCardType.Video.typeString -> {
-                            badge.loadImageDrawable(R.drawable.ic_affiliate_video)
+                            badge.loadImageDrawable(com.tokopedia.feedcomponent.R.drawable.ic_affiliate_video)
                             badge.visible()
                         }
                         else -> badge.gone()

@@ -85,6 +85,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val textCategoryBottom: Typography? by lazy(NONE) {
         findViewById(R.id.textCategoryBottom)
     }
+    private val mediaAnchorProduct: Space? by lazy(NONE) {
+        findViewById(R.id.mediaAnchorProduct)
+    }
     private val imageProduct: ImageView? by lazy(NONE) {
         findViewById(R.id.productCardImage)
     }
@@ -128,8 +131,11 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     private val remoteConfig : RemoteConfig by lazy(NONE) {
         FirebaseRemoteConfigImpl(context)
     }
-    private val productCardFooterLayoutContainer: FrameLayout by lazy(NONE) {
+    private val productCardFooterLayoutContainer: FrameLayout? by lazy(NONE) {
         findViewById(R.id.productCardFooterLayoutContainer)
+    }
+    private val buttonSeeOtherProduct: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeOtherProduct)
     }
     private var isUsingViewStub = false
 
@@ -151,7 +157,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         val footerView = View.inflate(context, R.layout.product_card_footer_layout, null)
         footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-        productCardFooterLayoutContainer.addView(footerView)
+        productCardFooterLayoutContainer?.addView(footerView)
     }
 
     private fun initWithAttrs(attrs: AttributeSet?){
@@ -173,7 +179,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         footerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
 
-        productCardFooterLayoutContainer.addView(footerView)
+        productCardFooterLayoutContainer?.addView(footerView)
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
@@ -289,6 +295,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
     }
 
+    fun setSeeOtherProductOnClickListener(seeOtherProductOnClickListener: (View) -> Unit) {
+        buttonSeeOtherProduct?.setOnClickListener(seeOtherProductOnClickListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
@@ -305,10 +315,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     private fun resizeImageProductSize() {
-        val layoutParams = imageProduct?.layoutParams
+        val layoutParams = mediaAnchorProduct?.layoutParams
         layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
-        imageProduct?.layoutParams = layoutParams
+        mediaAnchorProduct?.layoutParams = layoutParams
     }
 
     override fun recycle() {

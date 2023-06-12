@@ -1,6 +1,7 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("sellerapp")
 
+includeIfEnabled("features:merchant:seller_shop_nib")
 includeIfEnabled("features:merchant:seller_mvc_creation")
 includeIfEnabled("features:merchant:shop_discount")
 includeIfEnabled("features:category:tradein")
@@ -129,8 +130,6 @@ includeIfEnabled("features:payment:payment")
 includeIfEnabled("features:payment:withdraw")
 includeIfEnabled("features:payment:payment_setting")
 
-includeIfEnabled("features:merchant:gallery")
-
 includeIfEnabled("features:promo:loyalty")
 includeIfEnabled("features:promo:loyalty_common")
 includeIfEnabled("features:promo:merchant_voucher")
@@ -201,7 +200,6 @@ includeIfEnabled("features:user:telephony_masking")
 includeIfEnabled("features:category:age_restriction")
 includeIfEnabled("features:category:basemvvm")
 includeIfEnabled("features:category:common_sdk_affiliate_toko")
-includeIfEnabled("features:fintech:merchant_lending_widget")
 includeIfEnabled("features:category:common_sdk_affiliate_toko")
 
 includeIfEnabled(":features:watch")

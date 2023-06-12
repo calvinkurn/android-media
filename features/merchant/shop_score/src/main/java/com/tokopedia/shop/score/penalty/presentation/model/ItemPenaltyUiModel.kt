@@ -15,6 +15,7 @@ data class ItemPenaltyUiModel(
     val prefixDatePenalty: String = "",
     val reasonPenalty: String = "",
     val deductionPoint: String = "",
+    val productName: String? = null,
     @ColorRes val colorPenalty: Int? = null,
     var isSelected: Boolean = false
 ) : BasePenaltyPage {
