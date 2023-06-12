@@ -3,7 +3,6 @@ package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
@@ -34,7 +33,7 @@ class GroupDetailAdapterFactoryImpl(
     private val onInsightItemClick: (list: ArrayList<AdGroupUiModel>, item: AdGroupUiModel) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)?,
     private val onAccordianItemClick: ((element: GroupInsightsUiModel) -> Unit),
-    private val onInsightAction:(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+    private val onInsightAction:(hasErrors: Boolean) -> Unit
 ) :
     BaseAdapterTypeFactory(), GroupDetailAdapterFactory {
     override fun type(insightTypeChipsUiModel: InsightTypeChipsUiModel): Int {

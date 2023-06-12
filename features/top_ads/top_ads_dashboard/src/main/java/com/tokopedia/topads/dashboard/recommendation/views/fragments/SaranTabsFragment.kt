@@ -6,7 +6,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -189,7 +188,6 @@ class SaranTabsFragment(private val tabType: Int) : BaseDaggerFragment() {
     private fun onRecyclerViewListener(layoutManager: LinearLayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                Toast.makeText(context, "scdjn", Toast.LENGTH_LONG).show()
                 val selected = chipsAdapter?.getSelectedChips()
                 val nextCursor = mapper.insightDataMap[selected]?.nextCursor
                 if (nextCursor?.isNotEmpty() == true) {

@@ -9,20 +9,22 @@ import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianDailyBudgetUiModel
 
 class AccordianDailyBudgetViewHolder(
     private val view: View,
-    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+    private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<AccordianDailyBudgetUiModel>(view) {
 
     private val currentBudget : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.currentBudget)
     private val recommendedBudget : com.tokopedia.unifyprinciples.Typography = itemView.findViewById(R.id.recommendedBudget)
     private val dailyBudget : com.tokopedia.unifycomponents.TextFieldUnify2 = itemView.findViewById(R.id.dailyBudgetInput)
+    private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
+    private var hasError : Boolean = false
 
     override fun bind(element: AccordianDailyBudgetUiModel?) {
+        topadsManagePromoGroupProductInput = element?.input
         currentBudget.text = String.format("Rp%s", element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toString())
         recommendedBudget.text = String.format("Rp%s", element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
 
@@ -32,20 +34,31 @@ class AccordianDailyBudgetViewHolder(
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun afterTextChanged(text: Editable?) {
-                onInsightAction.invoke(
-                    TopadsManagePromoGroupProductInput(
-                        groupInput = GroupEditInput(
-                            action = ACTION_EDIT_PARAM,
-                            group = GroupEditInput.Group(
-                                dailyBudget = text.toString().toDoubleOrZero()
-                            )
-                        )
-                    ), TYPE_DAILY_BUDGET
+                checkForErrors(text.toString().toDoubleOrZero(), element)
+                topadsManagePromoGroupProductInput?.groupInput = GroupEditInput(
+                    action = ACTION_EDIT_PARAM,
+                    group = GroupEditInput.Group(
+                        dailyBudget = text.toString().toDoubleOrZero()
+                    )
                 )
+                onInsightAction.invoke(hasError)
             }
         })
 
         dailyBudget.editText.setText(element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toString())
+    }
+
+    private fun checkForErrors(budget: Double, element: AccordianDailyBudgetUiModel?){
+        if(budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily ?: 0){
+            hasError = true
+            dailyBudget.isInputError = true
+        } else if(budget > 10000000){
+            dailyBudget.isInputError = true
+            hasError = true
+        } else {
+            dailyBudget.isInputError = false
+            hasError = false
+        }
     }
 
     companion object {

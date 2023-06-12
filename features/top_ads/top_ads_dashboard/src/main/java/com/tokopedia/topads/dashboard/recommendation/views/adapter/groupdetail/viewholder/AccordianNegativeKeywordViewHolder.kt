@@ -19,7 +19,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianN
 
 class AccordianNegativeKeywordViewHolder(
     private val view: View,
-    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+    private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<AccordianNegativeKeywordUiModel>(view) {
     inner class NegativeKeywordItemsAdapter :
@@ -51,11 +51,9 @@ class AccordianNegativeKeywordViewHolder(
                     if(isChecked){
                         addTopadsManagePromoGroupProductInput(element)
                     } else {
-                        topadsManagePromoGroupProductInput.keywordOperation = topadsManagePromoGroupProductInput.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
+                        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
                     }
-                    onInsightAction.invoke(topadsManagePromoGroupProductInput,
-                        RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
-                    )
+                    onInsightAction.invoke(false)
                 }
             }
         }
@@ -87,9 +85,10 @@ class AccordianNegativeKeywordViewHolder(
     private val adapter by lazy { NegativeKeywordItemsAdapter() }
     private val negatifKataKunciRv: RecyclerView = itemView.findViewById(R.id.negatifKataKunciRv)
     private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
-    private val topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
+    private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
 
     override fun bind(element: AccordianNegativeKeywordUiModel?) {
+        topadsManagePromoGroupProductInput = element?.input
         negatifKataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         negatifKataKunciRv.adapter = adapter
@@ -119,22 +118,20 @@ class AccordianNegativeKeywordViewHolder(
                     )
                 )
                 ) }
-                topadsManagePromoGroupProductInput.keywordOperation = list
+                topadsManagePromoGroupProductInput?.keywordOperation = list
             } else {
-                topadsManagePromoGroupProductInput.keywordOperation = listOf()
+                topadsManagePromoGroupProductInput?.keywordOperation = listOf()
             }
             element?.newNegativeKeywordsRecom?.forEach { it.isSelected = isChecked }
             element?.newNegativeKeywordsRecom?.let {
                 adapter.updateList(it)
             }
-            onInsightAction.invoke(topadsManagePromoGroupProductInput,
-                RecommendationConstants.TYPE_POSITIVE_KEYWORD
-            )
+            onInsightAction.invoke(false)
         }
     }
 
     fun addTopadsManagePromoGroupProductInput(element: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom ){
-        val list = topadsManagePromoGroupProductInput.keywordOperation?.toMutableList()
+        val list = topadsManagePromoGroupProductInput?.keywordOperation?.toMutableList()
         list?.add(
             KeywordEditInput(
                 ACTION_CREATE_PARAM,
@@ -148,7 +145,7 @@ class AccordianNegativeKeywordViewHolder(
             )
         )
         )
-        topadsManagePromoGroupProductInput.keywordOperation = list
+        topadsManagePromoGroupProductInput?.keywordOperation = list
     }
 
     companion object {

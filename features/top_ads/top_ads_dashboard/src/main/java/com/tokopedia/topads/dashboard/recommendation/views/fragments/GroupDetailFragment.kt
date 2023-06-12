@@ -5,11 +5,11 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.dialog.DialogUnify
@@ -41,7 +41,9 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.G
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailsChipsAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
@@ -50,11 +52,13 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var insightType: Int = 0
     private var insightList: ArrayList<AdGroupUiModel>? = null
     private var adGroupId: String? = ""
+    private var adGroupName: String? = ""
     private var groupDetailsRecyclerView: RecyclerView? = null
     private var groupDetailChipsRv: RecyclerView? = null
     private var saveButton: UnifyButton? = null
     private var groupChipsLayout: View? = null
     private var groupDetailPageShimmer: View? = null
+    private var confirmationDailog: DialogUnify? = null
     private val groupDetailAdapter by lazy {
         GroupDetailAdapter(
             GroupDetailAdapterFactoryImpl(
@@ -70,8 +74,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
     private var onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit = { element ->
         viewModel.reSyncDetailPageData(adGroupType = utils.convertAdTypeToInt(adType), element.type)
         saveButton?.visibility = if(element.isExpanded) View.VISIBLE else View.GONE
-        // fun updateButtonText()
-
+        saveButton?.tag = element.type
+        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(element.type),false)
+        updateButtonTitle(viewModel.getInputDataFromMapper(element.type))
     }
 
     private var groupDetailsChipsAdapter: GroupDetailsChipsAdapter? = null
@@ -105,15 +110,15 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         setUpRecyclerView()
         setUpChipsRecyclerView()
         observeLiveData()
-        handlingViewsListeners()
+        attachViewClickListeners()
     }
 
     private fun retrieveInitialData() {
         insightList =
             arguments?.getParcelableArrayList<AdGroupUiModel>("insightTypeList") ?: arrayListOf()
         adType = arguments?.getString("adType")
-        val adGroupName = arguments?.getString("adGroupName")
-        val adGroupId = arguments?.getString("groupId") ?: ""
+        adGroupName = arguments?.getString("adGroupName")
+        adGroupId = arguments?.getString("groupId") ?: ""
         insightType = arguments?.getInt("insightType") ?: 0
         viewModel.loadInsightTypeChips(adType, insightList ?: arrayListOf(), adGroupName)
         viewModel.selectDefaultChips(insightType)
@@ -122,6 +127,38 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 if (PRODUCT_KEY == adType) TYPE_PRODUCT_VALUE else TYPE_SHOP_VALUE,
                 adGroupId
             )
+        }
+    }
+
+    private fun updateButtonTitle(input: TopadsManagePromoGroupProductInput?){
+        input?.let {
+            saveButton?.text = when (saveButton?.tag) {
+                TYPE_POSITIVE_KEYWORD -> {
+                    String.format(
+                        getString(R.string.topads_insight_positive_keywords_cta_text_format),
+                        input.keywordOperation?.size
+                    )
+                }
+                TYPE_KEYWORD_BID -> {
+                    String.format(
+                        getString(R.string.topads_insight_existing_keywords_cta_text_format),
+                        input.keywordOperation?.size
+                    )
+                }
+                TYPE_GROUP_BID -> {
+                    getString(R.string.topads_insight_biaya_iklan_cta_text)
+                }
+                TYPE_DAILY_BUDGET -> {
+                    getString(R.string.topads_insight_daily_budget_cta_text)
+                }
+                TYPE_NEGATIVE_KEYWORD_BID -> {
+                    String.format(
+                        getString(R.string.topads_insight_negative_keywords_cta_text_format),
+                        input.keywordOperation?.size
+                    )
+                }
+                else -> ""
+            }
         }
     }
 
@@ -138,9 +175,9 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         // adGroupId is null/Empty in case ad type is changed in which case new groups list is fetched and first group in list is pre-selected.
                         list.firstOrNull().apply {
                             adGroupId = ((this as? InsightTypeChipsUiModel)?.adGroupList?.firstOrNull() as? AdGroupUiModel)?.adGroupID
+                            adGroupName = ((this as? InsightTypeChipsUiModel)?.adGroupList?.firstOrNull() as? AdGroupUiModel)?.adGroupName
                         }
                     }
-                    Toast.makeText(context, "fejrfberf", Toast.LENGTH_SHORT).show()
                     groupDetailPageShimmer?.hide()
                 }
                 is TopAdsListAllInsightState.Fail -> {
@@ -150,41 +187,38 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                 }
             }
         }
-        //updateButtonText()
 
-//        viewModel.topadsManagePromoGroupProductInput.observe(viewLifecycleOwner) {
-//            when (it.second) {
-//                TYPE_POSITIVE_KEYWORD -> {
-//                    saveButton?.text = String.format(
-//                        getString(R.string.topads_insight_positive_keywords_cta_text_format),
-//                        it.first?.keywordOperation?.size
-//                    )
-//                }
-//                TYPE_KEYWORD_BID -> {
-//                    saveButton?.text = String.format(
-//                        getString(R.string.topads_insight_existing_keywords_cta_text_format),
-//                        it.first?.keywordOperation?.size
-//                    )
-//                }
-//                TYPE_GROUP_BID -> {
-//                    saveButton?.text = getString(R.string.topads_insight_biaya_iklan_cta_text)
-//                }
-//                TYPE_DAILY_BUDGET -> {
-//                    saveButton?.text = getString(R.string.topads_insight_daily_budget_cta_text)
-//                }
-//                TYPE_NEGATIVE_KEYWORD_BID -> {
-//                    saveButton?.text = String.format(
-//                        getString(R.string.topads_insight_negative_keywords_cta_text_format),
-//                        it.first?.keywordOperation?.size
-//                    )
-//                }
-//                else -> {}
-//            }
-//        }
+        viewModel.editInsightLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    confirmationDailog?.dismiss()
+                    showSuccessToast("Berhasil menambahkan kata kunci.")
+                    loadData(
+                        utils.convertAdTypeToInt(adType),
+                        adGroupId
+                    )
+                }
+                else -> {
+
+                }
+            }
+        }
     }
 
-    private fun loadData(adGroupType: Int, groupId: String) {
-        viewModel.loadDetailPage(adGroupType, groupId)
+    private fun showSuccessToast(text: String){
+        view?.let {
+            Toaster.build(
+                it,
+                text,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)
+            ).show()
+        }
+    }
+
+    private fun loadData(adGroupType: Int, groupId: String?) {
+        groupId?.let { viewModel.loadDetailPage(adGroupType, it) }
     }
 
     private fun setUpChipsRecyclerView() {
@@ -258,30 +292,42 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         saveButton = view?.findViewById(R.id.saveButton)
     }
 
-    private fun handlingViewsListeners(){
-        saveButton?.tag = 7
+    private fun attachViewClickListeners(){
         saveButton?.setOnClickListener {
-            var dialog =
-                DialogUnify(
-                    requireContext(),
-                    DialogUnify.HORIZONTAL_ACTION,
-                    DialogUnify.WITH_ILLUSTRATION
-                )
-            dialog.setImageUrl("https://pakar.co.id/storage/2021/07/tokopedia-logo-7AC053EC2E-seeklogo.com_.png")
-            dialog.setDescription(
-                "5 kata kunci akan ditambahkan ke grup Cuci Gudang Agustus 2022 - Atasan Wanita."
-            )
-            dialog.setTitle("Terapkan perubahan ini untuk iklanmu?")
-            dialog.setPrimaryCTAText("Ya, Terapkan")
-            dialog.setSecondaryCTAText("batal")
-            dialog.setPrimaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
+            val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
+            showConfirmationDialog(input)
         }
+    }
+
+    private fun showConfirmationDialog(input: TopadsManagePromoGroupProductInput?) {
+        confirmationDailog?.dismiss() //if already showing
+        confirmationDailog =
+            DialogUnify(
+                requireContext(),
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.WITH_ILLUSTRATION
+            )
+        val description : String = when(saveButton?.tag){
+            TYPE_POSITIVE_KEYWORD -> String.format("%d kata kunci akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
+            TYPE_KEYWORD_BID -> "Biaya kata kunci baru akan diterapkan ke grup $adGroupName"
+            TYPE_GROUP_BID -> "Biaya iklan baru akan diterapkan ke grup $adGroupName"
+            TYPE_DAILY_BUDGET -> "Anggaran harian baru akan diterapkan ke grup $adGroupName"
+            TYPE_NEGATIVE_KEYWORD_BID -> String.format("%d kata kunci negatif akan ditambahkan ke grup %s", input?.keywordOperation?.size ?: 0, adGroupName)
+            else -> ""
+        }
+        confirmationDailog?.setDescription(description)
+        confirmationDailog?.setImageUrl("https://pakar.co.id/storage/2021/07/tokopedia-logo-7AC053EC2E-seeklogo.com_.png")
+        confirmationDailog?.setTitle("Terapkan perubahan ini untuk iklanmu?")
+        confirmationDailog?.setPrimaryCTAText("Ya, Terapkan")
+        confirmationDailog?.setSecondaryCTAText("Batal")
+        confirmationDailog?.setPrimaryCTAClickListener {
+            confirmationDailog?.dialogPrimaryCTA?.isLoading = true
+            viewModel.applyInsight2(input, adGroupId)
+        }
+        confirmationDailog?.setSecondaryCTAClickListener {
+            confirmationDailog?.dismiss()
+        }
+        confirmationDailog?.show()
     }
 
     private val onChipClick: (Int) -> Unit = {
@@ -344,6 +390,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         // adType changes with choose ad type bottomsheet & vice versa for choose group bottomsheet
         this.adType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY
         this.adGroupId = groupId
+        this.adGroupName = groupName
         this.insightType = if (adType == TYPE_PRODUCT_VALUE) 0 else 5
         viewModel.selectDefaultChips(insightType)
         viewModel.loadDetailPageOnAction(
@@ -355,12 +402,28 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         )
     }
 
-    val onInsightAction = { input: TopadsManagePromoGroupProductInput, type: Int ->
-        //TODO something
+    val onInsightAction = {hasErrors: Boolean ->
+        saveButton?.isEnabled = checkButtonStatus(viewModel.getInputDataFromMapper(saveButton?.tag as? Int), hasErrors)
+        updateButtonTitle(viewModel.getInputDataFromMapper(saveButton?.tag as? Int))
     }
 
-    private fun applyInsights(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput) {
-        viewModel.applyInsight2(topAdsManagePromoGroupProductInput)
+    private fun checkButtonStatus(input: TopadsManagePromoGroupProductInput?, hasErrors: Boolean): Boolean{
+        if(hasErrors)
+            return false
+        else {
+            input?.let {
+                return when (saveButton?.tag) {
+                    TYPE_POSITIVE_KEYWORD, TYPE_KEYWORD_BID, TYPE_NEGATIVE_KEYWORD_BID -> {
+                        !input.keywordOperation.isNullOrEmpty() && input.keywordOperation?.firstOrNull() != null
+                    }
+                    TYPE_GROUP_BID, TYPE_DAILY_BUDGET -> {
+                        input.groupInput != null
+                    }
+                    else -> true
+                }
+            }
+            return true
+        }
     }
 
     companion object {

@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,18 +10,19 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 
 class AccordianKataKunciViewHolder(
     private val itemView: View,
-    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+    private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<AccordianKataKunciUiModel>(itemView) {
 
@@ -54,10 +57,21 @@ class AccordianKataKunciViewHolder(
                     if(isChecked){
                         addTopadsManagePromoGroupProductInput(element)
                     } else {
-                        topadsManagePromoGroupProductInput.keywordOperation = topadsManagePromoGroupProductInput.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
+                        topadsManagePromoGroupProductInput?.keywordOperation = topadsManagePromoGroupProductInput?.keywordOperation?.filter { it?.keyword?.tag != element.keywordTag }
                     }
-                    onInsightAction.invoke(topadsManagePromoGroupProductInput,TYPE_POSITIVE_KEYWORD)
+                    onInsightAction.invoke(hasErrors)
                 }
+
+                keywordCost.editText.addTextChangedListener(object : TextWatcher{
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                    override fun afterTextChanged(text: Editable?) {
+                        element.priceBid = text.toString().toIntOrZero()
+                    }
+
+                })
             }
         }
 
@@ -88,9 +102,11 @@ class AccordianKataKunciViewHolder(
     private val adapter by lazy { KataKunciItemsAdapter() }
     private val kataKunciRv: RecyclerView = itemView.findViewById(R.id.kataKunciRv)
     private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
-    private val topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
+    private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
+    private var hasErrors: Boolean = false
 
     override fun bind(element: AccordianKataKunciUiModel?) {
+        topadsManagePromoGroupProductInput = element?.input
         kataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         kataKunciRv.adapter = adapter
@@ -107,43 +123,47 @@ class AccordianKataKunciViewHolder(
         selectAllCheckbox.setOnCheckedChangeListener { btn, isChecked ->
             if(isChecked) {
                 val list = mutableListOf<KeywordEditInput>()
-                element?.newPositiveKeywordsRecom?.forEach { list.add(KeywordEditInput(
-                    ACTION_CREATE_PARAM,
-                    keyword = KeywordEditInput.Keyword(
-                        type = it.keywordType,
-                        status = it.keywordStatus,
-                        tag = it.keywordTag,
-                        suggestionPriceBid = it.suggestionBid.toDouble(),
-                        price_bid = it.suggestionBid.toDouble(),
-                        source = it.keywordSource
+                element?.newPositiveKeywordsRecom?.forEach {
+                    list.add(
+                        KeywordEditInput(
+                            ACTION_CREATE_PARAM,
+                            keyword = KeywordEditInput.Keyword(
+                                type = it.keywordType,
+                                status = it.keywordStatus,
+                                tag = it.keywordTag,
+                                suggestionPriceBid = it.suggestionBid.toDouble(),
+                                price_bid = if(it.priceBid.isZero()) it.suggestionBid.toDouble() else it.priceBid.toDouble(),
+                                source = it.keywordSource
+                            )
+                        )
                     )
-                )) }
-                topadsManagePromoGroupProductInput.keywordOperation = list
+                }
+                topadsManagePromoGroupProductInput?.keywordOperation = list
             } else {
-                topadsManagePromoGroupProductInput.keywordOperation = listOf()
+                topadsManagePromoGroupProductInput?.keywordOperation = listOf()
             }
             element?.newPositiveKeywordsRecom?.forEach { it.isSelected = isChecked }
             element?.newPositiveKeywordsRecom?.let {
                 adapter.updateList(it)
             }
-            onInsightAction.invoke(topadsManagePromoGroupProductInput, TYPE_POSITIVE_KEYWORD)
+            onInsightAction.invoke(hasErrors)
         }
     }
 
-    fun addTopadsManagePromoGroupProductInput(element: NewPositiveKeywordsRecom ){
-        val list = topadsManagePromoGroupProductInput.keywordOperation?.toMutableList()
+    fun addTopadsManagePromoGroupProductInput(element: NewPositiveKeywordsRecom){
+        val list = topadsManagePromoGroupProductInput?.keywordOperation?.toMutableList()
         list?.add(KeywordEditInput(
             ACTION_CREATE_PARAM,
             keyword = KeywordEditInput.Keyword(
                 type = element.keywordType,
                 status = element.keywordStatus,
                 tag = element.keywordTag,
-                price_bid = element.suggestionBid.toDouble(),
+                price_bid = if(element.priceBid.isZero()) element.suggestionBid.toDouble() else element.priceBid.toDouble(),
                 suggestionPriceBid = element.suggestionBid.toDouble(),
                 source = element.keywordSource
             )
         ))
-        topadsManagePromoGroupProductInput.keywordOperation = list
+        topadsManagePromoGroupProductInput?.keywordOperation = list
     }
 
     companion object {

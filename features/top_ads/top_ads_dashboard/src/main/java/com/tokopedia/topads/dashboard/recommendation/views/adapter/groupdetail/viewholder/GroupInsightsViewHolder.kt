@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.accordion.AccordionUnify
-import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupDetailDataModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.GroupInsightsUiModel
@@ -20,7 +19,7 @@ class GroupInsightsViewHolder(
     private val onChipClick: (Int) -> Unit,
     private val onInsightTypeChipClick: ((MutableList<InsightListUiModel>?) -> Unit)? = null,
     private val onAccordianItemClick: (element: GroupInsightsUiModel) -> Unit,
-    private val onInsightAction: (topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput, type: Int) -> Unit
+    private val onInsightAction: (hasErrors: Boolean) -> Unit
 ) :
     AbstractViewHolder<GroupInsightsUiModel>(view) {
 

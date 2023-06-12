@@ -28,8 +28,6 @@ data class TopAdsAdGroupBidInsightResponse(
                 val predictedTotalImpression: String = "",
                 @SerializedName("suggestionBidSettings")
                 val suggestionBidSettings: List<Any> = listOf(),
-
-                var isSelected : Boolean = false
             )
         }
     }

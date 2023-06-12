@@ -23,7 +23,6 @@ object RecommendationConstants {
     const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
     const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
     const val INVALID_INSIGHT_TYPE = -1
-    const val INVALID_INSIGHT_TYPE2 = -1
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
 }

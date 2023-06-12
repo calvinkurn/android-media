@@ -82,7 +82,7 @@ data class TopAdsBatchGroupInsightResponse(
                     val suggestionBid: Int = 0,
                     @SerializedName("totalSearch")
                     val totalSearch: String = "",
-
+                    var priceBid : Int = suggestionBid,
                     var isSelected: Boolean = false
                 )
             }
