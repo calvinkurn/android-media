@@ -110,7 +110,7 @@ includeIfEnabled("features:fintech:paylater")
 includeIfEnabled("features:fintech:pdp_fintech_widget")
 includeIfEnabled("features:fintech:fintech_home_widget")
 includeIfEnabled("features:fintech:insurance")
-includeIfEnabled("features:fintech:indodana")
+includeIfEnabled("features:fintech:partner_kyc")
 
 
 includeIfEnabled("features:home:dynamicbanner")

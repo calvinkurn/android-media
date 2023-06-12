@@ -41,10 +41,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'indodana'
+    artifactId = 'partner_kyc'
     groupId = 'com.tokopedia.fintech'
     versionName = "0.0.2"
-    artifactName ="indodana"
+    artifactName ="partner_kyc"
 }
 
 apply from: '../../../publish_local.gradle'

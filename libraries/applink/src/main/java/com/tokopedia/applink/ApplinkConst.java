@@ -400,7 +400,6 @@ public interface ApplinkConst {
     String OPTIMIZED_CHECKOUT = "tokopedia://fintech/opt-checkout";
     String INBOX_HOST = "inbox";
     String INBOX = "tokopedia://inbox";
-    String INDODANA = "tokopedia://indodana";
 
     String PLAY_WEBVIEW = "tokopedia://play/webview?url={url}&titlebar={has_titlebar}";
     String SMC_REFERRAL = "tokopedia://smc-referral";

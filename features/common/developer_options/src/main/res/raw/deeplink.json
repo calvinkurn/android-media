@@ -2495,8 +2495,8 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.LOGIN_HELPER"
      },
      {
-          "destination_activity": "com.tokopedia.indodana.presentation.view.activity.IndodanaActivity",
-          "deeplink": "tokopedia-android-internal://indodana",
-          "deeplink_variable": "ApplinkConstInternalFintech.INDODANA"
+          "destination_activity": "com.tokopedia.partnerkyc.presentation.view.activity.PartnerKycActivity",
+          "deeplink": "tokopedia-android-internal://partner-kyc",
+          "deeplink_variable": "ApplinkConstInternalFintech.PARTNER_KYC"
      }
 ]

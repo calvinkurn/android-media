@@ -15,7 +15,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
 import com.tokopedia.homecredit.view.fragment.HomeCreditCameraV2Fragment
 import com.tokopedia.indodana.presentation.utils.PartnerWebAppInterface
-import com.tokopedia.indodana.presentation.view.activity.IndodanaActivity
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
 import timber.log.Timber

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.indodana">
+    package="com.tokopedia.partnerkyc">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -60,7 +60,7 @@
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_fintech"
-                    android:path="/indodana" />
+                    android:path="@string/path_partner_kyc" />
             </intent-filter>
         </activity>
     </application>
