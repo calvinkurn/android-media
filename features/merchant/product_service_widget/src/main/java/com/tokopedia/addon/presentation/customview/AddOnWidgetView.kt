@@ -59,6 +59,9 @@ class AddOnWidgetView : BaseCustomView {
             viewModel.totalPrice.observe(this) {
                 listener?.onTotalPriceCalculated(it)
             }
+            viewModel.aggregatedData.observe(this) {
+                listener?.onAggregatedDataObtained(it)
+            }
         }
     }
 
@@ -130,5 +133,9 @@ class AddOnWidgetView : BaseCustomView {
 
     fun saveAddOnState() {
         viewModel.saveAddOnState()
+    }
+
+    fun getAddOnAggregatedData(addOnIds: List<String>) {
+        viewModel.getAddOnAggregatedData(addOnIds)
     }
 }

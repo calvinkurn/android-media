@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.addon.presentation.listener.AddOnComponentListener
 import com.tokopedia.addon.presentation.uimodel.AddOnExtraConstant
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
+import com.tokopedia.gifting.domain.model.GetAddOnByID
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_service_widget.databinding.FragmentBottomsheetAddonBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -85,5 +85,9 @@ class AddOnFragment: BaseDaggerFragment(), AddOnComponentListener {
 
     override fun onDataEmpty() {
         println("empty")
+    }
+
+    override fun onAggregatedDataObtained(aggregatedData: GetAddOnByID.AggregatedData) {
+        println(aggregatedData.toString())
     }
 }

@@ -9,7 +9,10 @@ import com.tokopedia.addon.domain.usecase.GetAddOnByProductUseCase
 import com.tokopedia.addon.presentation.uimodel.AddOnGroupUIModel
 import com.tokopedia.addon.presentation.uimodel.AddOnMapper
 import com.tokopedia.addon.presentation.uimodel.AddOnUIModel
+import com.tokopedia.gifting.domain.model.GetAddOnByID
+import com.tokopedia.gifting.domain.usecase.GetAddOnUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.common.feature.addons.data.request.SaveAddOnStateRequest
 import com.tokopedia.purchase_platform.common.feature.addons.domain.SaveAddOnStateUseCase
 import kotlinx.coroutines.withContext
@@ -18,7 +21,8 @@ import javax.inject.Inject
 class AddOnViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getAddOnUseCase: GetAddOnByProductUseCase,
-    private val saveAddOnStateUseCase: SaveAddOnStateUseCase
+    private val saveAddOnStateUseCase: SaveAddOnStateUseCase,
+    private val getAddOnDetailUseCase: GetAddOnUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val mGetAddOnResult = MutableLiveData<List<AddOnGroupUIModel>>()
@@ -31,6 +35,9 @@ class AddOnViewModel @Inject constructor(
 
     private val mSelectedAddOn = MutableLiveData<List<AddOnUIModel>>()
     val selectedAddon: LiveData<List<AddOnUIModel>> get() = mSelectedAddOn
+
+    private val mAggregatedData = MutableLiveData<GetAddOnByID.AggregatedData>()
+    val aggregatedData: LiveData<GetAddOnByID.AggregatedData> get() = mAggregatedData
 
     val isAddonDataEmpty = Transformations.map(getAddOnResult) {
         it.isEmpty()
@@ -72,5 +79,26 @@ class AddOnViewModel @Inject constructor(
 
     fun setSelectedAddons(addOnGroupUIModels: List<AddOnGroupUIModel>) {
         mSelectedAddOn.value = AddOnMapper.getSelectedAddons(addOnGroupUIModels)
+    }
+
+    fun getAddOnAggregatedData(addOnIds: List<String>) {
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                getAddOnDetailUseCase.setParams(addOnIds)
+                getAddOnDetailUseCase.executeOnBackground().getAddOnByID
+            }
+            mAggregatedData.value = result.aggregatedData
+            getServerError(result)
+        }, onError = {
+            mErrorThrowable.value = it
+        })
+    }
+
+    fun getServerError(result: GetAddOnByID) {
+        result.error.let {
+            if (it.messages.isNotEmpty()) {
+                mErrorThrowable.value = MessageErrorException(it.messages, it.errorCode)
+            }
+        }
     }
 }
