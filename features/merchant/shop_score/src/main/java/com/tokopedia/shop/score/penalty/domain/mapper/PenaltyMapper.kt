@@ -46,6 +46,7 @@ class PenaltyMapper @Inject constructor(
             deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
             endDateDetail = itemPenaltyUiModel.endDateDetail,
             prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
+            productName = itemPenaltyUiModel.productName,
             stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
@@ -321,6 +322,10 @@ class PenaltyMapper @Inject constructor(
                         typePenalty = it.typeName,
                         invoicePenalty = it.invoiceNumber,
                         reasonPenalty = it.reason,
+                        productName = mapPenaltyDetailToProductInfo(
+                            it.penaltyTypeGroup,
+                            it.productDetail
+                        ),
                         colorPenalty = colorTypePenalty,
                         prefixDatePenalty = prefixDatePenaltyDetail,
                         descStatusPenalty = descStatusPenaltyDetail
@@ -547,6 +552,18 @@ class PenaltyMapper @Inject constructor(
     }
 
     fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<BaseFilterPenaltyPage>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
+    private fun mapPenaltyDetailToProductInfo(
+        penaltyTypeGroup: Int,
+        productDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.ProductDetail
+    ): String? {
+        return if (penaltyTypeGroup == ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.PENALTY_TYPE_PRODUCT) {
+            productDetail.name.takeIf { it.isNotBlank() }
+        } else {
+            null
+        }
+    }
+
+    fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val mapItemSortFilterWrapper =
             mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
         penaltyFilterList.filterIsInstance<PenaltyFilterUiModel>().find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.map {

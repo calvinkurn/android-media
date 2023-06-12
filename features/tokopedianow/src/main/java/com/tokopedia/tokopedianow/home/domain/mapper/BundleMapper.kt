@@ -8,7 +8,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 
 object BundleMapper {
     fun mapToProductBundleLayout(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        val bundleUiModel = TokoNowBundleUiModel(id = response.id, title = response.name)
+        val bundleUiModel = TokoNowBundleUiModel(id = response.id, title = response.header.name)
         return HomeLayoutItemUiModel(bundleUiModel, state)
     }
 

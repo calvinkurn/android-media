@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -9,6 +10,7 @@ import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -46,7 +48,7 @@ import com.tokopedia.unifycomponents.setNew
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.resources.isAppDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 
 /**
@@ -127,6 +129,11 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     override fun startNetworkPerformanceMonitoring() {
@@ -365,7 +372,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-            setLightStatusBar(!isAppDarkMode())
+            setLightStatusBar(!isDarkMode())
         }
     }
 
