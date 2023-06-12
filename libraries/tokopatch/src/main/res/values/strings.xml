@@ -1,5 +1,0 @@
-<resources>
-    <string name="app_name">hotfixsdk</string>
-    <string name="applied_from_local">Applied patch from local</string>
-    <string name="tester_message">Registered as Robust test device</string>
-</resources>

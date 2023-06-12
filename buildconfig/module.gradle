@@ -91,7 +91,6 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.autopatchbase
 
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.testDependencies.junit
