@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
@@ -101,8 +102,8 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 is TopAdsListAllInsightState.Fail -> {
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
                         TYPE_DAILY_BUDGET,
-                        "Anggaran harian",
-                        "Kunjungan embellish menurun. Pakai kata kunci...",
+                        INSIGHT_TYPE_DAILY_BUDGET_NAME,
+                        "Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +2.005 klik/hari.",
                         true,
 //                            false,
                         AccordianDailyBudgetUiModel(

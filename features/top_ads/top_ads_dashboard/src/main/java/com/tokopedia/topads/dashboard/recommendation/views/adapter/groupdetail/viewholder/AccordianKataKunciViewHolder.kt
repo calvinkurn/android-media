@@ -68,7 +68,19 @@ class AccordianKataKunciViewHolder(
                     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
                     override fun afterTextChanged(text: Editable?) {
-                        element.priceBid = text.toString().toIntOrZero()
+                        val bid = text.toString().toIntOrZero()
+                        if(bid < 400){
+                            keywordCost.isInputError = true
+                            keywordCost.editText.error = "Min. biaya Rp400."
+                        } else if(bid > 10000){
+                            keywordCost.isInputError = true
+                            keywordCost.editText.error = "Maks. biaya Rp10.000."
+                        } else if(bid % 50 != 0){
+                            keywordCost.isInputError = true
+                            keywordCost.editText.error = "Harus kelipatan Rp50."
+                        } else {
+                            element.priceBid = text.toString().toIntOrZero()
+                        }
                     }
 
                 })

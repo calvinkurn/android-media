@@ -56,6 +56,7 @@ import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Fail
 import javax.inject.Inject
 
 class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
@@ -234,8 +235,80 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
                         adGroupId
                     )
                 }
-                else -> {
+                is Fail -> {
+                    confirmationDailog?.let {
+                        if (it.isShowing) {
+                            var title = ""
+                            var description = "Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya."
+                            val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
 
+                            it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
+                            when (saveButton?.tag) {
+                                TYPE_POSITIVE_KEYWORD -> {
+                                    title = "${input?.keywordOperation?.size ?: 0} kata kunci gagal ditambahkan"
+                                }
+                                TYPE_KEYWORD_BID -> {
+                                    title = "${input?.keywordOperation?.size ?: 0} biaya kata kunci gagal diubah"
+                                }
+                                TYPE_GROUP_BID -> {
+                                    title = "Perubahan biaya iklan gagal diterapkan"
+                                }
+                                TYPE_DAILY_BUDGET -> {
+                                    title = "Perubahan pada anggaran harian gagal diterapkan"
+                                }
+                                TYPE_NEGATIVE_KEYWORD_BID -> {
+                                    title = "${input?.keywordOperation?.size ?: 0} kata kunci negatif gagal ditambahkan"
+                                }
+                                else -> ""
+                            }
+                            it.setTitle(title)
+                            it.setDescription(description)
+
+                            if(it.dialogPrimaryCTA.isLoading)
+                                it.dialogPrimaryCTA.isLoading = false
+
+                            it.setPrimaryCTAText("Coba Lagi")
+                            it.setSecondaryCTAText("Tutup")
+                        }
+                    }
+                }
+            }
+        }
+
+        viewModel.editHeadlineInsightLiveData.observe(viewLifecycleOwner){
+            when (it) {
+                is Success -> {
+                    confirmationDailog?.dismiss()
+                    showSuccessToast("Berhasil menambahkan kata kunci.")
+                    loadData(
+                        utils.convertAdTypeToInt(adType),
+                        adGroupId
+                    )
+                }
+                is Fail -> {
+                    confirmationDailog?.let {
+                        if (it.isShowing) {
+                            var title = ""
+                            var description = "Oops, ada gangguan pada sistem. Klik Coba Lagi untuk tambahkan kata kunci baru, ya."
+                            val input = viewModel.getInputDataFromMapper(saveButton?.tag as? Int)
+
+                            it.setImageUrl(unsuccessfulSubmitInsightDialogImageUrl)
+                            when (saveButton?.tag) {
+                                TYPE_POSITIVE_KEYWORD -> {
+                                    title = "${input?.keywordOperation?.size ?: 0} kata kunci gagal ditambahkan"
+                                }
+                                else -> ""
+                            }
+                            it.setTitle(title)
+                            it.setDescription(description)
+
+                            if(it.dialogPrimaryCTA.isLoading)
+                                it.dialogPrimaryCTA.isLoading = false
+
+                            it.setPrimaryCTAText("Coba Lagi")
+                            it.setSecondaryCTAText("Tutup")
+                        }
+                    }
                 }
             }
         }
@@ -360,7 +433,7 @@ class GroupDetailFragment : BaseDaggerFragment(), OnItemSelectChangeListener {
         confirmationDailog?.setSecondaryCTAText("Batal")
         confirmationDailog?.setPrimaryCTAClickListener {
             confirmationDailog?.dialogPrimaryCTA?.isLoading = true
-            viewModel.applyInsight2(input, adGroupId)
+            viewModel.applyInsight2(input, adGroupId, adType, saveButton?.tag as? Int, adGroupName)
         }
         confirmationDailog?.setSecondaryCTAClickListener {
             confirmationDailog?.dismiss()

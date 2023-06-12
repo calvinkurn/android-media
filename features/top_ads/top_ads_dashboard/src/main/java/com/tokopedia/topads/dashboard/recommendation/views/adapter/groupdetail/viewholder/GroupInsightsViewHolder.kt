@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
 import android.view.View
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -13,6 +14,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightLis
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.GroupDetailAdapter
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactoryImpl
 import com.tokopedia.unifycomponents.toPx
+import kotlinx.android.synthetic.main.item_tab_layout.view.*
 
 class GroupInsightsViewHolder(
     private val view: View,

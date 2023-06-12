@@ -12,6 +12,8 @@ object RecommendationConstants {
     const val TYPE_EMPTY_STATE = 8
     const val TYPE_UN_OPTIMIZED_GROUP = 9
 
+    const val PRODUCT_BID_TYPE_SEARCH = "product_search"
+    const val PRODUCT_BID_TYPE_BROWSE = "product_browse"
     const val TYPE_PRODUCT_VALUE = 1
     const val TYPE_SHOP_VALUE = 3
     const val PRODUCT_KEY = "product"
@@ -25,6 +27,7 @@ object RecommendationConstants {
     const val INVALID_INSIGHT_TYPE = -1
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
+    const val ACTIVE_KEYWORD = "active"
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"

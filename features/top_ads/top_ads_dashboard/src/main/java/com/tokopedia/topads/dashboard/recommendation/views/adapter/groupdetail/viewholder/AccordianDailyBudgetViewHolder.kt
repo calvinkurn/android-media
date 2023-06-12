@@ -52,9 +52,11 @@ class AccordianDailyBudgetViewHolder(
         if(budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily ?: 0){
             hasError = true
             dailyBudget.isInputError = true
+            dailyBudget.editText.error = "Min. anggaran Rp$element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily"
         } else if(budget > 10000000){
             dailyBudget.isInputError = true
             hasError = true
+            dailyBudget.editText.error = "Maks. anggaran Rp10.000.000"
         } else {
             dailyBudget.isInputError = false
             hasError = false

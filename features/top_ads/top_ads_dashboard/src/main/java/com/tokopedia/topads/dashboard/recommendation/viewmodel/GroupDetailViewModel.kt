@@ -6,17 +6,24 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.top_ads_headline_usecase.CreateHeadlineAdsUseCase
+import com.tokopedia.top_ads_headline_usecase.model.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
-import com.tokopedia.topads.common.data.model.InsightTypeApplyInput
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_INSIGHT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
@@ -38,6 +45,7 @@ class GroupDetailViewModel @Inject constructor(
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val groupDetailMapper: GroupDetailMapper,
+    private val createHeadlineAdsUseCase: CreateHeadlineAdsUseCase,
     private val utils: Utils,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
@@ -50,6 +58,10 @@ class GroupDetailViewModel @Inject constructor(
     private val _editInsightLiveData = MutableLiveData<com.tokopedia.usecase.coroutines.Result<FinalAdResponse>>()
     val editInsightLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<FinalAdResponse>>
         get() = _editInsightLiveData
+
+    private val _editHeadlineInsightLiveData = MutableLiveData<com.tokopedia.usecase.coroutines.Result<TopadsManageHeadlineAdResponse.Data>>()
+    val editHeadlineInsightLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<TopadsManageHeadlineAdResponse.Data>>
+        get() = _editHeadlineInsightLiveData
 
     fun loadDetailPage(
         adGroupType: Int,
@@ -83,7 +95,7 @@ class GroupDetailViewModel @Inject constructor(
                 if (PRODUCT_KEY == adType) "Iklan Produk" else "Iklan Toko",
                 adGroupName ?: ""
             )
-        groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
+        groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
             InsightTypeChipsUiModel(list, insightList.toMutableList())
     }
 
@@ -103,7 +115,7 @@ class GroupDetailViewModel @Inject constructor(
                     if (adType == TYPE_PRODUCT_VALUE) "Iklan Produk" else "Iklan Toko",
                     data.topAdsListAllInsightCounts.adGroups.firstOrNull()?.adGroupName ?: ""
                 )
-                groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
+                groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
                     InsightTypeChipsUiModel(
                         list,
                         groupDetailMapper.toAdGroupUiModelList(
@@ -121,10 +133,10 @@ class GroupDetailViewModel @Inject constructor(
                     if (adType == TYPE_PRODUCT_VALUE) "Iklan Produk" else "Iklan Toko",
                     groupName
                 )
-                groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] =
+                groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] =
                     InsightTypeChipsUiModel(
                         list,
-                        (groupDetailMapper.detailPageDataMap[RecommendationConstants.TYPE_INSIGHT] as InsightTypeChipsUiModel).adGroupList
+                        (groupDetailMapper.detailPageDataMap[TYPE_INSIGHT] as InsightTypeChipsUiModel).adGroupList
                     )
             }
         }, onError = {
@@ -142,24 +154,38 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
-    fun applyInsight(insightTypeApplyInput: InsightTypeApplyInput) {
-        val requestParams = topAdsCreateUseCase.createRequestParamForInsight(insightTypeApplyInput)
-        launchCatchError(dispatcher.main, block = {
-            topAdsCreateUseCase.execute(requestParams)
-        }, onError = {})
-    }
-
-    fun applyInsight2(topAdsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput?, groupId: String?) {
-        topAdsManagePromoGroupProductInput?.let {
-            it.groupID = groupId ?: ""
-            it.shopID = userSession.shopId
-            it.source = "test-gql"
-            val requestParams =
-                topAdsCreateUseCase.createRequestParamForInsight2(it)
-            launchCatchError(dispatcher.main, block = {
-                val data = topAdsCreateUseCase.execute(requestParams)
-                _editInsightLiveData.value = Success(data)
-            }, onError = {})
+    fun applyInsight2(input: TopadsManagePromoGroupProductInput?, groupId: String?, adType: String?, InsightType: Int?, groupName: String?) {
+        if(adType == HEADLINE_KEY && InsightType == TYPE_POSITIVE_KEYWORD){
+            val data = groupDetailMapper.convertToTopAdsManageHeadlineInput2(input, userSession.shopId, groupId, "test-gql",groupName)
+            launchCatchError(
+                block = {
+                    createHeadlineAdsUseCase.setParams(data)
+                    val response : TopadsManageHeadlineAdResponse.Data = createHeadlineAdsUseCase.executeOnBackground()
+                    if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
+                        _editHeadlineInsightLiveData.value = Success(response)
+                    }
+                    if (response.topadsManageHeadlineAd.errors.isNotEmpty()) {
+                        _editHeadlineInsightLiveData.value = Fail(Throwable())
+                    }
+                },
+                onError = {
+                    _editHeadlineInsightLiveData.value = Fail(it)
+                }
+            )
+        } else {
+            input?.let {
+                it.groupID = groupId ?: ""
+                it.shopID = userSession.shopId
+                it.source = "test-gql"
+                val requestParams =
+                    topAdsCreateUseCase.createRequestParamForInsight2(it)
+                launchCatchError(dispatcher.main, block = {
+                    val data = topAdsCreateUseCase.execute(requestParams)
+                    _editInsightLiveData.value = Success(data)
+                }, onError = {
+                    _editInsightLiveData.value = Fail(it)
+                })
+            }
         }
     }
 
@@ -187,10 +213,10 @@ class GroupDetailViewModel @Inject constructor(
                 )
             )
         }
-        if (!groupDetailMapper.insightCountMap[RecommendationConstants.TYPE_SHOP_VALUE].isZero()) {
+        if (!groupDetailMapper.insightCountMap[TYPE_SHOP_VALUE].isZero()) {
             list.add(
                 ItemListUiModel(
-                    adType = RecommendationConstants.TYPE_SHOP_VALUE,
+                    adType = TYPE_SHOP_VALUE,
                     title = titleList.getOrNull(CONST_1) ?: "",
                     isSelected = (adGroupType != PRODUCT_KEY)
                 )
@@ -201,11 +227,11 @@ class GroupDetailViewModel @Inject constructor(
 
     fun getInputDataFromMapper(insightType: Int?): TopadsManagePromoGroupProductInput?{
         return when(insightType){
-            RecommendationConstants.TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
-            RecommendationConstants.TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
-            RecommendationConstants.TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
-            RecommendationConstants.TYPE_DAILY_BUDGET -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
-            RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
+            TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
+            TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
+            TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
+            TYPE_DAILY_BUDGET -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
+            TYPE_NEGATIVE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
             else -> null
         }
     }

@@ -541,6 +541,7 @@
     <string name="topads_insight_number_of_searches">Jumlah Pencarian</string>
     <string name="topads_insight_show_potential">Potensi Tampil</string>
     <string name="topads_insight_keyword_cost">Biaya Kata Kunci</string>
+    <string name="topads_insight_advertising_cost">Biaya Iklan</string>
     <string name="topads_what_is_saran_topads_question">Apa itu Saran TopAds?</string>
     <string name="topads_insight_current_cost">Biaya Saat Ini</string>
     <string name="topads_insight_recommended">Disarankan</string>
@@ -568,5 +569,7 @@
     <string name="topads_insight_positive_keywords_cta_text_format">Tambah %d Kata Kunci</string>
     <string name="topads_insight_existing_keywords_cta_text_format">Terapkan %d Biaya Kata Kunci</string>
     <string name="topads_insight_negative_keywords_cta_text_format">Tambah %d Kata Kunci Negatif</string>
+    <string name="topads_insight_ads_in_search">Iklan di Pencarian</string>
+    <string name="topads_insight_ads_in_recommendations">Iklan di Rekomendasi</string>
 </resources>
 

@@ -1,7 +1,19 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_EXACT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
@@ -24,6 +36,7 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.Empty
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.findPositionOfSelected
+import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import javax.inject.Inject
 
 class GroupDetailMapper @Inject constructor() {
@@ -162,10 +175,15 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     fun convertToAccordianKataKunciUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+        var impressionSum = 0
+        groupData?.newPositiveKeywordsRecom?.forEach {
+            impressionSum += it.predictedImpression.toIntOrZero()
+        }
+
         return GroupInsightsUiModel(
             TYPE_POSITIVE_KEYWORD,
-            "Kata Kunci",
-            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            INSIGHT_TYPE_POSITIVE_KEYWORD_NAME,
+            "Kunjungan pembeli menurun. Pakai kata kunci populer untuk potensi tampil +$impressionSum kali/hari.",
             !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
 //                            false,
             AccordianKataKunciUiModel(
@@ -177,10 +195,15 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     fun convertToAccordianKeywordBidUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+        var impressionSum = 0
+        groupData?.existingKeywordsBidRecom?.forEach {
+            impressionSum += it.predictedImpression.toIntOrZero()
+        }
+
         return GroupInsightsUiModel(
             TYPE_KEYWORD_BID,
-            "Biaya Kata Kunci",
-            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            INSIGHT_TYPE_KEYWORD_BID_NAME,
+            "Kata kuncimu kalah saing. Sesuaikan biaya kata kunci untuk potensi tampil +$impressionSum kali/hari.",
             !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
 //                        false,
             AccordianKeywordBidUiModel(
@@ -191,10 +214,15 @@ class GroupDetailMapper @Inject constructor() {
     }
 
     fun convertToAccordianNegativeKeywordUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+        var impressionSum = 0
+        groupData?.newNegativeKeywordsRecom?.forEach {
+            impressionSum += it.predictedImpression.toIntOrZero()
+        }
+
         return GroupInsightsUiModel(
             TYPE_NEGATIVE_KEYWORD_BID,
-            "Kata Kunci Negatif",
-            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME,
+            "Iklanmu kurang efektif & boros. Potensi hemat Rp$impressionSum/hari dengan kata kunci negatif.",
             !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
 //                            false,
             AccordianNegativeKeywordUiModel(
@@ -209,8 +237,8 @@ class GroupDetailMapper @Inject constructor() {
             groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID.groups.firstOrNull()?.adGroupBidInsightData
         return GroupInsightsUiModel(
             TYPE_GROUP_BID,
-            "Biaya Iklan",
-            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            INSIGHT_TYPE_GROUP_BID_NAME,
+            "Total tampil menurun, nih. Tambah biaya iklan untuk potensi tampil +${data?.predictedTotalImpression} kali/hari.",
             !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
 //                            false,
             AccordianGroupBidUiModel(
@@ -224,13 +252,52 @@ class GroupDetailMapper @Inject constructor() {
         val data = sellerInsightData.data.getSellerInsightData.sellerInsightData
         return GroupInsightsUiModel(
             TYPE_DAILY_BUDGET,
-            "Anggaran harian",
-            "Kunjungan embellish menurun. Pakai kata kunci...",
+            INSIGHT_TYPE_DAILY_BUDGET_NAME,
+            "Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +${sellerInsightData.data.getSellerInsightData.sellerInsightData.dailyBudgetData.firstOrNull()?.topSlotImpression} klik/hari.",
             data.dailyBudgetData.isNotEmpty(),
 //                            false,
             AccordianDailyBudgetUiModel(
                 text = "Biaya Iklan",
                 data
+            )
+        )
+    }
+
+    fun convertToTopAdsManageHeadlineInput2(
+        input: TopadsManagePromoGroupProductInput?,
+        shopId: String,
+        groupId: String?,
+        source: String,
+        groupName: String?
+    ): TopAdsManageHeadlineInput2 {
+        val keywords = mutableListOf<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>()
+        input?.keywordOperation?.forEachIndexed { index, keywordEditInput ->
+            keywords.add(
+                TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation(
+                    action = keywordEditInput?.action.toString(),
+                    keyword = TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation.Keyword(
+                        priceBid = keywordEditInput?.keyword?.price_bid?.toLong() ?: 0,
+//                        status = keywordEditInput?.keyword?.status.toString(),
+                        status = ACTIVE_KEYWORD,
+                        tag = keywordEditInput?.keyword?.tag.toString(),
+//                        type = keywordEditInput?.keyword?.type.toString()
+                        type = KEYWORD_TYPE_POSITIVE_EXACT,
+                    )
+                )
+            )
+        }
+
+        return TopAdsManageHeadlineInput2(
+            source = source,
+            operation = TopAdsManageHeadlineInput2.Operation(
+                action = ACTION_EDIT_PARAM,
+                group = TopAdsManageHeadlineInput2.Operation.Group(
+                    id = groupId.toString(),
+                    shopID = shopId,
+                    keywordOperations = keywords,
+                    status = "published",
+                    name = groupName.toString()
+                )
             )
         )
     }
