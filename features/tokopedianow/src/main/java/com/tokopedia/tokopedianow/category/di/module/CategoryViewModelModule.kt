@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokopedianow.category.di.scope.CategoryScope
-import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
+import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.searchcategory.di.GraphqlModule
 import dagger.Binds
 import dagger.Module
@@ -21,6 +21,6 @@ abstract class CategoryViewModelModule {
     @CategoryScope
     @Binds
     @IntoMap
-    @ViewModelKey(TokoNowCategoryMainViewModel::class)
-    internal abstract fun categoryMainViewModel(viewModel: TokoNowCategoryMainViewModel): ViewModel
+    @ViewModelKey(TokoNowCategoryViewModel::class)
+    internal abstract fun categoryMainViewModel(viewModel: TokoNowCategoryViewModel): ViewModel
 }

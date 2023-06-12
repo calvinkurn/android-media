@@ -21,7 +21,7 @@ import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCa
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.MiniCartMapper
-import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel.Companion.BATCH_SHOWCASE_TOTAL
+import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.BATCH_SHOWCASE_TOTAL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.GetTargetedTickerResponse
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
@@ -63,7 +63,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
      * protected variable section
      */
 
-    protected lateinit var viewModel: TokoNowCategoryMainViewModel
+    protected lateinit var viewModel: TokoNowCategoryViewModel
     protected lateinit var addressData: LocalCacheModel
 
     protected val categoryIdL1: String = "123"
@@ -127,7 +127,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
 
         MockKAnnotations.init(this)
 
-        viewModel = TokoNowCategoryMainViewModel(
+        viewModel = TokoNowCategoryViewModel(
             getCategoryDetailUseCase = getCategoryDetailUseCase,
             getCategoryProductUseCase = getCategoryProductUseCase,
             categoryIdL1 = categoryIdL1,

@@ -6,7 +6,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper.createProductRecommendation
-import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel.Companion.NO_WAREHOUSE_ID
+import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel.Companion.NO_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail

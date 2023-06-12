@@ -11,9 +11,12 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule.Companion.NOW_CATEGORY_L1
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
+import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.DEFAULT_PRODUCT_QUANTITY
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryMenu
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryNavigation
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.addCategoryShowcase
@@ -27,11 +30,15 @@ import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.mapCate
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.removeItem
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.category.domain.mapper.VisitableMapper.updateWishlistStatus
+import com.tokopedia.tokopedianow.category.domain.response.CategoryDetailResponse
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryDetailUseCase
 import com.tokopedia.tokopedianow.category.domain.usecase.GetCategoryProductUseCase
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryAtcTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryL2Model
+import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
+import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase.Companion.CATEGORY_PAGE
@@ -48,7 +55,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
-class TokoNowCategoryMainViewModel @Inject constructor(
+class TokoNowCategoryViewModel @Inject constructor(
     private val getCategoryDetailUseCase: GetCategoryDetailUseCase,
     private val getCategoryProductUseCase: GetCategoryProductUseCase,
     @Named(NOW_CATEGORY_L1)
@@ -62,7 +69,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
     affiliateService: NowAffiliateService,
     getTargetedTickerUseCase: GetTargetedTickerUseCase,
     dispatchers: CoroutineDispatchers
-): TokoNowCategoryBaseViewModel(
+): BaseTokoNowViewModel(
     userSession = userSession,
     getMiniCartUseCase = getMiniCartUseCase,
     addToCartUseCase = addToCartUseCase,
@@ -78,36 +85,32 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         const val NO_WAREHOUSE_ID = "0"
     }
 
+    init {
+        miniCartSource = MiniCartSource.TokonowCategoryPage
+    }
+
     private val layout: MutableList<Visitable<*>> = mutableListOf()
     private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
     private var categoryRecommendation: TokoNowCategoryMenuUiModel? = null
     private var moreShowcaseJob: Job? = null
 
+    private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
+    private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
+    private val _atcDataTracker: MutableLiveData<CategoryAtcTrackerModel> = MutableLiveData()
     private val _categoryHeader = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _categoryPage = MutableLiveData<List<Visitable<*>>>()
     private val _scrollNotNeeded = MutableLiveData<Unit>()
     private val _refreshState = MutableLiveData<Unit>()
     private val _oosState = MutableLiveData<Unit>()
 
+    val updateToolbarNotification: LiveData<Boolean> = _updateToolbarNotification
+    val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
+    val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
     val categoryHeader: LiveData<Result<List<Visitable<*>>>> = _categoryHeader
     val categoryPage: LiveData<List<Visitable<*>>> = _categoryPage
     val scrollNotNeeded: LiveData<Unit> = _scrollNotNeeded
     val refreshState: LiveData<Unit> = _refreshState
     val oosState: LiveData<Unit> = _oosState
-
-    override fun updateProductCartQuantity(
-        productId: String,
-        quantity: Int,
-        layoutType: CategoryLayoutType
-    ) {
-        super.updateProductCartQuantity(productId, quantity, layoutType)
-        layout.updateProductQuantity(
-            productId = productId,
-            quantity = quantity,
-            layoutType = layoutType
-        )
-        _categoryPage.postValue(layout)
-    }
 
     override fun onSuccessGetMiniCartData(
         miniCartData: MiniCartSimplifiedData
@@ -215,6 +218,10 @@ class TokoNowCategoryMainViewModel @Inject constructor(
         }
     }
 
+    private fun updateToolbarNotification() {
+        _updateToolbarNotification.postValue(true)
+    }
+
     private fun getMoreShowcases() {
         moreShowcaseJob = launch {
             getBatchShowcase(
@@ -232,6 +239,31 @@ class TokoNowCategoryMainViewModel @Inject constructor(
                 categoryRecommendation = null
             }
         }
+    }
+
+    private fun sendOpenScreenTracker(detailResponse: CategoryDetailResponse) {
+        _openScreenTracker.postValue(
+            CategoryOpenScreenTrackerModel(
+                id = detailResponse.categoryDetail.data.id,
+                name = detailResponse.categoryDetail.data.name,
+                url = detailResponse.categoryDetail.data.url
+            )
+        )
+    }
+
+    private fun getUniqueId() = if (isLoggedIn()) AuthHelper.getMD5Hash(getUserId()) else AuthHelper.getMD5Hash(getDeviceId())
+
+    private fun updateProductCartQuantity(
+        productId: String,
+        quantity: Int,
+        layoutType: CategoryLayoutType
+    ) {
+        layout.updateProductQuantity(
+            productId = productId,
+            quantity = quantity,
+            layoutType = layoutType
+        )
+        _categoryPage.postValue(layout)
     }
 
     fun getCategoryHeader(
@@ -335,5 +367,55 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             )
             _categoryPage.postValue(layout)
         }
+    }
+
+    fun onCartQuantityChanged(
+        productId: String,
+        quantity: Int,
+        stock: Int,
+        shopId: String,
+        position: Int,
+        isOos: Boolean,
+        name: String,
+        categoryIdL1: String,
+        price: Int,
+        headerName: String,
+        layoutType: CategoryLayoutType,
+    ) {
+        onCartQuantityChanged(
+            isVariant = false,
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity,
+            stock = stock,
+            onSuccessAddToCart = {
+                updateProductCartQuantity(productId, quantity, layoutType)
+                updateToolbarNotification()
+                _atcDataTracker.postValue(
+                    CategoryAtcTrackerModel(
+                        categoryIdL1 = categoryIdL1,
+                        index = position,
+                        productId = productId,
+                        warehouseId = getWarehouseId(),
+                        isOos = isOos,
+                        name = name,
+                        price = price,
+                        headerName = headerName,
+                        quantity = quantity
+                    )
+                )
+            },
+            onSuccessUpdateCart = { _, _ ->
+                updateProductCartQuantity(productId, quantity, layoutType)
+                updateToolbarNotification()
+            },
+            onSuccessDeleteCart = { _, _ ->
+                updateProductCartQuantity(productId, DEFAULT_PRODUCT_QUANTITY, layoutType)
+                updateToolbarNotification()
+            },
+            onError = {
+                updateProductCartQuantity(productId, quantity, layoutType)
+            }
+        )
     }
 }

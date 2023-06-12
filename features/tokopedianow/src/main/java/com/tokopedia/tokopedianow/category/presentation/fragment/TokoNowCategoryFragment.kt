@@ -58,7 +58,7 @@ import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowChooseAd
 import com.tokopedia.tokopedianow.category.presentation.callback.TokoNowViewCallback
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryShowcaseItemUiModel
 import com.tokopedia.tokopedianow.category.presentation.util.CategoryLayoutType
-import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryMainViewModel
+import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.common.constant.RequestCode
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.GlobalErrorUtil
@@ -111,7 +111,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
      */
 
     @Inject
-    lateinit var viewModel: TokoNowCategoryMainViewModel
+    lateinit var viewModel: TokoNowCategoryViewModel
 
     @Inject
     lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
