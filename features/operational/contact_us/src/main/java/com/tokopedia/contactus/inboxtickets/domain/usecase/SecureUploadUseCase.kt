@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxtickets.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.contactus.inboxtickets.data.ContactUsRepository
@@ -100,6 +101,7 @@ class SecureUploadUseCase @Inject constructor(private val repository: ContactUsR
                 reviewPhotos?.put(uniqIDs[index], imageUrlEncode)
             }
         } catch (e: JSONException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             return ""
         }
         return reviewPhotos?.toString()?.replace("\\n", "").orEmpty()
