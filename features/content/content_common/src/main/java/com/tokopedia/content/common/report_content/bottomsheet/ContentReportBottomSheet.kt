@@ -28,6 +28,12 @@ class ContentReportBottomSheet : BottomSheetUnify() {
 
     private var mListener: Listener? = null
 
+    private val tvHeader = PlayUserReportSection(
+        type = PlayUserReportSectionType.Header,
+        title = commonR.string.play_user_report_header,
+        isUrl = false
+    )
+
     private val tvFooter = PlayUserReportSection(
         type = PlayUserReportSectionType.Footer,
         title = commonR.string.content_user_report_footer,
@@ -84,6 +90,7 @@ class ContentReportBottomSheet : BottomSheetUnify() {
         when (result) {
             is Success -> {
                 val data = buildList {
+                    add(tvHeader)
                     addAll(result.data)
                     add(tvFooter)
                 }

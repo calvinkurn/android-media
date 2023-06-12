@@ -31,7 +31,7 @@ class PlayUserReportSheetViewComponent(
 
     private val tvHeader = PlayUserReportSection(
         type = PlayUserReportSectionType.Header,
-        title = R.string.play_user_report_header,
+        title = commonR.string.play_user_report_header,
         isUrl = false
     )
 

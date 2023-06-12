@@ -94,7 +94,6 @@
     <string name="play_kebab_watch_mode">Mode Nonton</string>
 
     <!--User Report-->
-    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
     <string name="play_user_report_verification_dialog_title">Lanjutkan laporkan Produk</string>
     <string name="play_user_report_verification_dialog_desc">Dengan klik \"Lapor\", saya menyatakan bahwa segala informasi yang dilaporkan memang benar dan bertanggung jawab atas informasi tersebut.</string>
     <string name="play_user_report_verification_dialog_btn_ok">Lapor</string>
