@@ -313,7 +313,13 @@ class ShopPenaltyPageFragment: BaseListFragment<Visitable<*>, PenaltyPageAdapter
     }
 
     override fun onDescriptionClicked() {
-        // TODO: Go To Edu
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                ShopScoreConstant.PRODUCT_PENALTY_CALCULATION_URL
+            )
+        }
     }
 
     override fun stopPreparePerformancePageMonitoring() {

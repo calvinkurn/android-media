@@ -33,120 +33,12 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUi
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPeriodDetailPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenaltyUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyDataWrapperOld
 import com.tokopedia.shop.score.penalty.presentation.old.model.PenaltyFilterUiModelOld
 import javax.inject.Inject
 import kotlin.math.abs
 
 open class PenaltyMapperOld @Inject constructor(@ApplicationContext val context: Context?) {
-
-    fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel): ShopPenaltyDetailUiModel {
-        return ShopPenaltyDetailUiModel(
-            titleDetail = itemPenaltyUiModel.typePenalty,
-            descStatusPenalty = itemPenaltyUiModel.descStatusPenalty,
-            startDateDetail = itemPenaltyUiModel.startDate,
-            summaryDetail = itemPenaltyUiModel.reasonPenalty,
-            deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
-            endDateDetail = itemPenaltyUiModel.endDateDetail,
-            prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
-            stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
-        )
-    }
-
-    private fun mapToStepperPenaltyDetail(statusPenalty: String): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
-        return mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>().apply {
-            when (statusPenalty) {
-                POINTS_NOT_YET_DEDUCTED -> {
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isBold = true,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_penalty_over,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                        )
-                    )
-                }
-                ON_GOING -> {
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isBold = true,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_penalty_over,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                        )
-                    )
-                }
-                PENALTY_DONE -> {
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_penalty_over,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isBold = true
-                        )
-                    )
-                }
-            }
-        }
-    }
 
     fun mapToPenaltyData(
         shopScorePenaltySummaryWrapper: ShopPenaltySummaryTypeWrapper,

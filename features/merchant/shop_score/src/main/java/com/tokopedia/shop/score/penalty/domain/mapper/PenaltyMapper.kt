@@ -26,7 +26,6 @@ import com.tokopedia.shop.score.penalty.presentation.model.ItemSortFilterPenalty
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyDataWrapper
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterDateUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.PenaltyFilterUiModel
-import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import javax.inject.Inject
 import kotlin.math.abs
 
@@ -34,116 +33,6 @@ class PenaltyMapper @Inject constructor(
     @ApplicationContext val context: Context?,
     private val shopScorePrefManager: ShopScorePrefManager
 ) {
-
-    private val MAX_SHOWN_FILTER_CHIPS = 4
-
-    fun mapToPenaltyDetail(itemPenaltyUiModel: ItemPenaltyUiModel): ShopPenaltyDetailUiModel {
-        return ShopPenaltyDetailUiModel(
-            titleDetail = itemPenaltyUiModel.typePenalty,
-            descStatusPenalty = itemPenaltyUiModel.descStatusPenalty,
-            startDateDetail = itemPenaltyUiModel.startDate,
-            summaryDetail = itemPenaltyUiModel.reasonPenalty,
-            deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
-            endDateDetail = itemPenaltyUiModel.endDateDetail,
-            prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
-            productName = itemPenaltyUiModel.productName,
-            stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
-        )
-    }
-
-    private fun mapToStepperPenaltyDetail(statusPenalty: String): List<ShopPenaltyDetailUiModel.StepperPenaltyDetail> {
-        return mutableListOf<ShopPenaltyDetailUiModel.StepperPenaltyDetail>().apply {
-            when (statusPenalty) {
-                ShopScoreConstant.POINTS_NOT_YET_DEDUCTED -> {
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isBold = true,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_penalty_over,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                        )
-                    )
-                }
-                ShopScoreConstant.ON_GOING -> {
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isBold = true,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_NN300,
-                            titleStepper = R.string.title_penalty_over,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                        )
-                    )
-                }
-                ShopScoreConstant.PENALTY_DONE -> {
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_point_have_not_been_deducted,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_on_going,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isDividerShow = true
-                        )
-                    )
-                    add(
-                        ShopPenaltyDetailUiModel.StepperPenaltyDetail(
-                            colorDotStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            colorLineStepper = com.tokopedia.unifyprinciples.R.color.Unify_GN500,
-                            titleStepper = R.string.title_penalty_over,
-                            colorStatusTitle = com.tokopedia.unifyprinciples.R.color.Unify_NN900,
-                            isBold = true
-                        )
-                    )
-                }
-            }
-        }
-    }
 
     fun mapToPenaltyData(
         @ShopPenaltyPageType pageType: String,
@@ -552,18 +441,6 @@ class PenaltyMapper @Inject constructor(
     }
 
     fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<BaseFilterPenaltyPage>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
-    private fun mapPenaltyDetailToProductInfo(
-        penaltyTypeGroup: Int,
-        productDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.ProductDetail
-    ): String? {
-        return if (penaltyTypeGroup == ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.PENALTY_TYPE_PRODUCT) {
-            productDetail.name.takeIf { it.isNotBlank() }
-        } else {
-            null
-        }
-    }
-
-    fun mapToSortFilterItemFromPenaltyList(penaltyFilterList: List<PenaltyFilterUiModel>): List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper> {
         val mapItemSortFilterWrapper =
             mutableListOf<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>()
         penaltyFilterList.filterIsInstance<PenaltyFilterUiModel>().find { it.title == ShopScoreConstant.TITLE_TYPE_PENALTY }?.chipsFilterList?.map {
@@ -576,6 +453,17 @@ class PenaltyMapper @Inject constructor(
             )
         }
         return mapItemSortFilterWrapper
+    }
+
+    private fun mapPenaltyDetailToProductInfo(
+        penaltyTypeGroup: Int,
+        productDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.ProductDetail
+    ): String? {
+        return if (penaltyTypeGroup == ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.PENALTY_TYPE_PRODUCT) {
+            productDetail.name.takeIf { it.isNotBlank() }
+        } else {
+            null
+        }
     }
 
     fun transformUpdateFilterSelected(
@@ -690,4 +578,9 @@ class PenaltyMapper @Inject constructor(
         return penaltyFilterUiModel.filterIsInstance<PenaltyFilterUiModel>()
             .find { it.title == titleFilter }?.chipsFilterList ?: emptyList()
     }
+
+    companion object {
+        private const val MAX_SHOWN_FILTER_CHIPS = 4
+    }
+
 }
