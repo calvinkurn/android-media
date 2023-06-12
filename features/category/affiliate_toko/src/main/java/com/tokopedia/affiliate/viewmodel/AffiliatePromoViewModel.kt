@@ -54,6 +54,7 @@ class AffiliatePromoViewModel @Inject constructor(
     private var tokoNowBottomSheetData = MutableLiveData<GenerateAffiliateLinkEligibility?>()
     private val ssaShopList = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
     private val _unreadNotificationCount = MutableLiveData(Int.ZERO)
+    fun getUnreadNotificationCount(): LiveData<Int> = _unreadNotificationCount
 
     companion object {
         private const val SUCCESS = 1

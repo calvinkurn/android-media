@@ -308,4 +308,26 @@ class AffiliatePromoViewModelTest {
         assertEquals(affiliatePromoViewModel.isUserLoggedIn(), isLoggedIn)
     }
 
+    @Test
+    fun `successfully getting unread notification count`() {
+        coEvery {
+            affiliateGetUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        affiliatePromoViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliatePromoViewModel.getUnreadNotificationCount().value)
+    }
+
+    @Test
+    fun `should reset notification count to zero`() {
+        coEvery {
+            affiliateGetUnreadNotificationUseCase.getUnreadNotifications()
+        } returns 5
+
+        affiliatePromoViewModel.fetchUnreadNotificationCount()
+        assertEquals(5, affiliatePromoViewModel.getUnreadNotificationCount().value)
+
+        affiliatePromoViewModel.resetNotificationCount()
+        assertEquals(0, affiliatePromoViewModel.getUnreadNotificationCount().value)
+    }
 }

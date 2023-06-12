@@ -496,6 +496,11 @@ class AffiliatePromoFragment :
                 ssaAdapter.setVisitables(it)
             }
         }
+        affiliatePromoViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+            binding?.promoNavToolbar?.apply {
+                setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
+            }
+        }
     }
 
     private fun sendDiscoLihatEvent() {
