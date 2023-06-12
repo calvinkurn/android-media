@@ -1,4 +1,4 @@
-package com.tokopedia.indodana.presentation.utils
+package com.tokopedia.partnerkyc.presentation.utils
 
 import android.webkit.JavascriptInterface
 import org.json.JSONObject

@@ -1,8 +1,8 @@
-package com.tokopedia.indodana.presentation.view.activity
+package com.tokopedia.partnerkyc.presentation.view.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.indodana.presentation.view.fragment.PartnerKycFragment
+import com.tokopedia.partnerkyc.presentation.view.fragment.PartnerKycFragment
 
 class PartnerKycActivity : BaseSimpleActivity() {
 

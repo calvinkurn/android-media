@@ -1,4 +1,4 @@
-package com.tokopedia.indodana.presentation.view.fragment
+package com.tokopedia.partnerkyc.presentation.view.fragment
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -14,7 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity
 import com.tokopedia.homecredit.view.fragment.HomeCreditCameraV2Fragment
-import com.tokopedia.indodana.presentation.utils.PartnerWebAppInterface
+import com.tokopedia.partnerkyc.presentation.utils.PartnerWebAppInterface
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
 import timber.log.Timber
