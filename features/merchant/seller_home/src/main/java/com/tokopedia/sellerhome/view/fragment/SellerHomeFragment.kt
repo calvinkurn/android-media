@@ -253,7 +253,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     lateinit var sharedPref: SellerHomeSharedPref
 
     private val sellerHomeViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory)[SellerHomeViewModel::class.java]
     }
 
     private val deviceDisplayHeight: Float
