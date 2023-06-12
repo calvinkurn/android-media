@@ -285,11 +285,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
     private var emptyState: EmptyStateUnify? = null
-    private var rebateWidgetView: View? = null
     private var navigationView: View? = null
     private var otherMenuView: View? = null
     private var unificationWidgetTitleView: View? = null
-    private var rebateCoachMark: CoachMark2? = null
     private var unificationWidgetCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
@@ -383,7 +381,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         super.onHiddenChanged(hidden)
 
         if (hidden) {
-            rebateCoachMark?.dismissCoachMark()
             unificationWidgetCoachMark?.dismissCoachMark()
         } else {
             SellerHomeTracking.sendScreen(screenName)
@@ -393,7 +390,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
             recyclerView?.post {
                 resetWidgetImpressionHolder()
-                showRebateCoachMark()
                 showUnificationCoachMarkWhenVisible()
             }
 
@@ -797,24 +793,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendUnificationTabImpressionEvent(element.dataKey, selectedTab)
     }
 
-    override fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
-        if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY) {
-            if (this.rebateWidgetView == null) {
-                this.rebateWidgetView = view
-
-                rebateCoachMark = CoachMark2(requireContext()).apply {
-                    simpleCloseIcon?.setOnClickListener {
-                        coachMarkPrefHelper.saveRebateCoachMarkMvpFlag()
-                        rebateWidgetView = null
-                        dismissCoachMark()
-                    }
-                }
-                showRebateCoachMark()
-            }
-        }
-    }
-
     override fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {
         val param = SubmitWidgetDismissUiModel(
             action = SubmitWidgetDismissUiModel.Action.KEEP,
@@ -841,24 +819,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
         sendCancelDismissalTracker(element)
-    }
-
-    override fun showProgressBarCoachMark(dataKey: String, view: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus()
-        if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY) {
-            if (this.rebateWidgetView == null) {
-                this.rebateWidgetView = view
-
-                rebateCoachMark = CoachMark2(requireContext()).apply {
-                    simpleCloseIcon?.setOnClickListener {
-                        coachMarkPrefHelper.saveRebateCoachMarkUltimateFlag()
-                        rebateWidgetView = null
-                        dismissCoachMark()
-                    }
-                }
-                showRebateCoachMark()
-            }
-        }
     }
 
     override fun sendMilestoneMissionImpressionEvent(
@@ -1011,16 +971,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getWidgetLayout(deviceHeight)
     }
 
-    private fun showRebateCoachMark() {
-        rebateCoachMark?.let { coachMark ->
-            val coachMarkItems = getCoachMarkRebateProgram()
-            if (coachMarkItems.isNotEmpty()) {
-                coachMark.isDismissed = false
-                coachMark.showCoachMark(coachMarkItems)
-            }
-        }
-    }
-
     private fun showUnificationWidgetCoachMark() {
         unificationWidgetCoachMark?.let { coachMark ->
             val coachMarkItems = getCoachMarkUnification()
@@ -1149,7 +1099,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
-                handleRebateCoachMark()
                 showUnificationCoachMarkWhenVisible()
             }
         }
@@ -1579,7 +1528,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.startRenderPerformanceMonitoring()
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean) {
         performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
@@ -2111,7 +2059,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.stopCustomMetric(tag)
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun <D : BaseDataUiModel> List<D>.setOnSuccessWidgetState(
         widgetType: String
     ) {
@@ -2527,27 +2474,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel && this !is DescriptionWidgetUiModel
     }
 
-    private fun handleRebateCoachMark() {
-        if (rebateWidgetView == null) return
-
-        getSellerHomeLayoutManager()?.let { layoutManager ->
-            val rebateWidget = adapter.data.indexOfFirst {
-                val isRebateMvp =
-                    it.dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
-                val isRebateUltimate =
-                    !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() && it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
-                return@indexOfFirst isRebateMvp || isRebateUltimate
-            }
-            val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-            val lastVisibleIndex = layoutManager.findLastCompletelyVisibleItemPosition()
-            if (rebateWidget != RecyclerView.NO_POSITION && rebateWidget in firstVisibleIndex..lastVisibleIndex) {
-                showRebateCoachMark()
-            } else {
-                rebateCoachMark?.dismissCoachMark()
-            }
-        }
-    }
-
     private fun showUnificationCoachMarkWhenVisible() {
         if (unificationWidgetTitleView == null) return
 
@@ -2565,21 +2491,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getSellerHomeLayoutManager(): SellerHomeLayoutManager? {
         return recyclerView?.layoutManager as? SellerHomeLayoutManager
-    }
-
-    private fun getCoachMarkRebateProgram(): ArrayList<CoachMark2Item> {
-        val coachMarkItems = arrayListOf<CoachMark2Item>()
-        rebateWidgetView?.let { view ->
-            coachMarkItems.add(
-                CoachMark2Item(
-                    anchorView = view,
-                    title = view.context.getString(R.string.sah_rebate_coach_mark_title),
-                    description = view.context.getString(R.string.sah_rebate_coach_mark_description),
-                    position = CoachMark2.POSITION_BOTTOM
-                )
-            )
-        }
-        return coachMarkItems
     }
 
     private fun getCoachMarkUnification(): ArrayList<CoachMark2Item> {
