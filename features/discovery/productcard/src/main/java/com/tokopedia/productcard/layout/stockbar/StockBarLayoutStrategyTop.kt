@@ -63,7 +63,7 @@ internal class StockBarLayoutStrategyTop: StockBarLayoutStrategy {
             )
             progressBarStock.translationY = -(progressBarStock.context.resources.getDimension(com.tokopedia.productcard.utils.FIRE_HEIGHT).toDp() - ProgressBarUnify.SIZE_MEDIUM)
         } else {
-            progressBarStock.setProgressIcon(null, 0f, 0, 0)
+            progressBarStock.setProgressIcon(null, 0f, ProgressBarUnify.SIZE_MEDIUM, ProgressBarUnify.SIZE_MEDIUM)
             progressBarStock.translationY = 0f
         }
         val color = ContextCompat.getColor(progressBarStock.context, getProgressBarColor(productCardModel))
