@@ -476,7 +476,12 @@ class DigitalCartFragment :
                     val consentPayload = it.checkoutBottomViewWidget.getProductConsentPayload()
                     viewModel.updateProductConsentPayload(consentPayload)
                 }
-                if (it.checkoutBottomViewWidget.isCrossSellConsentWidgetVisible()) {
+                if ((
+                    viewModel.requestCheckoutParam.isSubscriptionChecked &&
+                        it.checkoutBottomViewWidget.isProductConsentWidgetVisible()
+                    ) ||
+                    it.checkoutBottomViewWidget.isCrossSellConsentWidgetVisible()
+                ) {
                     val consentPayload = it.checkoutBottomViewWidget.getCrossSellConsentPayload()
                     viewModel.updateSubscriptionMetadata(consentPayload)
                 }
