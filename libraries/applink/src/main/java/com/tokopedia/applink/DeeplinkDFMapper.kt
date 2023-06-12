@@ -56,9 +56,9 @@ import com.tokopedia.applink.ApplinkConst.SHOP_TALK
 import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
+import com.tokopedia.applink.ApplinkConst.SellerApp.STATISTIC_DASHBOARD
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -296,6 +296,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
+    const val DF_STATISTIC = "df_statistic"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -883,7 +884,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
                 regexMatcherExternalAppLink.matches(it)
             }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
-            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
@@ -977,6 +977,15 @@ object DeeplinkDFMapper : CoroutineScope {
                     { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
                     DF_SELLER_FEEDBACK,
                     R.string.title_seller_feedback
+                )
+            )
+            add(
+                DFP(
+                    {
+                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) || it.startsWithPattern(
+                            MERCHANT_STATISTIC_DASHBOARD
+                        ) || it.startsWithPattern(STATISTIC_DASHBOARD)
+                    }, DF_STATISTIC, R.string.title_statistic
                 )
             )
         }

@@ -231,12 +231,6 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     }
 
     @Test
-    fun `check merchant statistic dashboard appLink then should return DF_BASE in sellerapp`() {
-        val appLink = "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/statistic_dashboard"
-        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
-    }
-
-    @Test
     fun `check admin invitation internal appLink then should return DF_BASE_SELLER_APP in sellerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_SELLERAPP}://shop-admin/invitation-page"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_BASE_SELLER_APP)
@@ -330,5 +324,23 @@ class DeepLinkDFMapperSellerAppTest : DeepLinkDFMapperTestFixture() {
     fun `check seller feedback appLink should return DF_SELLER_FEEDBACK in seller app`() {
         val appLink = ApplinkConstInternalSellerapp.INTERNAL_SELLERAPP + "/seller-feedback"
         assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_SELLER_FEEDBACK)
+    }
+
+    @Test
+    fun `check external statistic appLink should return DF_STATISTIC in seller app`() {
+        val statisticExternal = ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD
+        assertEqualDeepLinkSellerApp(statisticExternal, DeeplinkDFMapper.DF_STATISTIC)
+    }
+
+    @Test
+    fun `check sellerapp external statistic appLink should return DF_STATISTIC in seller app`() {
+        val appLink = ApplinkConst.SellerApp.STATISTIC_DASHBOARD
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_STATISTIC)
+    }
+
+    @Test
+    fun `check internal statistic appLink should return DF_STATISTIC in seller app`() {
+        val appLink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD
+        assertEqualDeepLinkSellerApp(appLink, DeeplinkDFMapper.DF_STATISTIC)
     }
 }
