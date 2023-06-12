@@ -15,6 +15,7 @@ object AnalyticConstant {
     const val KEY_USER_ID = "userId"
     const val KEY_TRACKER_ID = "trackerId"
     const val KEY_PAGE_SOURCE = "pageSource"
+    const val KEY_SESSION_IRIS = "sessionIris"
 
     const val KEY_EE_CREATIVE_NAME = "creative_name"
     const val KEY_EE_CREATIVE_SLOT = "creative_slot"

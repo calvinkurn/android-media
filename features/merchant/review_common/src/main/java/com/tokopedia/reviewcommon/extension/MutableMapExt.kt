@@ -100,6 +100,11 @@ fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeSlot(positi
     return this
 }
 
+fun MutableMap<String, Any>.appendSessionIris(sessionIris: String): MutableMap<String, Any> {
+    put(AnalyticConstant.KEY_SESSION_IRIS, sessionIris)
+    return this
+}
+
 fun Bundle.appendGeneralEventData(
     eventName: String,
     eventCategory: String,
