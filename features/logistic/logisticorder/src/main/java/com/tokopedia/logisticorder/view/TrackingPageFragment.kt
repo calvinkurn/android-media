@@ -12,6 +12,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -21,7 +22,10 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imageassets.TokopediaImageUrl
+import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.logisticCommon.data.constant.PodConstant
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.logisticorder.R
@@ -205,6 +209,29 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
         initClickToCopy(model.shippingRefNum.toHyphenIfEmptyOrNull())
+        setContactUsIcon(model)
+    }
+
+    private fun setContactUsIcon(model: TrackOrderModel) {
+        binding?.headerTrackingPage?.let { header ->
+            header.addRightIcon(0).apply {
+                clearImage()
+                setImageDrawable(getIconUnifyDrawable(context, IconUnify.CALL_CENTER))
+
+                setColorFilter(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN1000
+                    ),
+                    android.graphics.PorterDuff.Mode.MULTIPLY
+                )
+
+                setOnClickListener {
+                    userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
+                    RouteManager.route(activity, APPLINK_MENU)
+                }
+            }
+        }
     }
 
     private fun setTextInfo(model: TrackOrderModel) {
