@@ -100,7 +100,7 @@ class SecureUploadUseCase @Inject constructor(private val repository: ContactUsR
                 reviewPhotos?.put(uniqIDs[index], imageUrlEncode)
             }
         } catch (e: JSONException) {
-            e.printStackTrace()
+            return ""
         }
         return reviewPhotos?.toString()?.replace("\\n", "").orEmpty()
     }
