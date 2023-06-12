@@ -130,3 +130,6 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
 internal fun BottomSheetUnify.setBottomSheetActionBold() {
     bottomSheetAction.typeface = Typeface.DEFAULT_BOLD
 }
+
+internal fun <T> Collection<T>.equalsIgnoreOrder(elements: Collection<T>) =
+    this.size == elements.size && this.toSet() == elements.toSet()
