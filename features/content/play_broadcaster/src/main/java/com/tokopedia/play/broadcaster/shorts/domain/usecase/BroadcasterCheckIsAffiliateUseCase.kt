@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.domain.usecase
 
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,6 +18,7 @@ class BroadcasterCheckIsAffiliateUseCase @Inject constructor(
         return try {
             repository.request(graphqlQuery(), params)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             throw MessageErrorException(e.message)
         }
     }
