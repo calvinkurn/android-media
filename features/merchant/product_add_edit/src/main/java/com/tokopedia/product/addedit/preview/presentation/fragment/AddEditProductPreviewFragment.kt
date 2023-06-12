@@ -601,7 +601,8 @@ class AddEditProductPreviewFragment :
             val isChecked = productStatusSwitch?.isChecked ?: false
             val productInputModel = viewModel.productInputModel.value ?: return@setOnClickListener
 
-            if (productInputModel.isCampaignActive) {
+            if (productInputModel.isCampaignActive ||
+                productInputModel.variantInputModel.isVariantCampaignActive()) {
                 showToasterErrorSetStatusCampaignActive(isChecked)
                 return@setOnClickListener
             }

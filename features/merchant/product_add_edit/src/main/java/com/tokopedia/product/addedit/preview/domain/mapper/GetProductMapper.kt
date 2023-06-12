@@ -103,7 +103,8 @@ class GetProductMapper @Inject constructor() {
                 it.isPrimary,
                 convertToGram(it.weight, it.weightUnit),
                 UNIT_GRAM_STRING,
-                it.hasDTStock
+                it.hasDTStock,
+                it.isCampaign
             )
         }
         return ArrayList(variantCombination)

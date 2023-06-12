@@ -44,6 +44,8 @@ data class VariantInputModel(
         fun getImageUrl(colorVariantLevel: Int, index: Int) = products.find {
                 it.combination.getOrNull(colorVariantLevel) == index
         }?.pictures?.firstOrNull()
+
+        fun isVariantCampaignActive() = products.any { it.isCampaign }
 }
 
 @Parcelize
@@ -58,7 +60,8 @@ data class ProductVariantInputModel(
         var isPrimary: Boolean = false,
         var weight: Int? = null,
         var weightUnit: String = UNIT_GRAM_STRING,
-        var hasDTStock: Boolean = false
+        var hasDTStock: Boolean = false,
+        var isCampaign: Boolean = false
 ) : Parcelable
 
 @Parcelize

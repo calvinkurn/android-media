@@ -140,6 +140,7 @@ class GetProductUseCase @Inject constructor(
                         weight
                         weightUnit
                         hasDTStock
+                        isCampaign
                         pictures {
                           picID
                           description
