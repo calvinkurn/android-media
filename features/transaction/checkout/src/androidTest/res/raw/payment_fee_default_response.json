@@ -10,7 +10,7 @@
             "title": "biaya jasa aplikasi",
             "fee": 3000,
             "show_tooltip": true,
-            "tooltip_info": "testing",
+            "tooltip_info": "Terima kasih sudah belanja di Tokopedia! Biaya jasa aplikasi akan kami pakai untuk terus berikan layanan terbaik buat kamu. Jumlah biaya jasa aplikasi disesuaikan dengan total tagihan dan metode pembayaran kamu. testing",
             "show_slashed": false,
             "slashed_fee": 0,
             "range_min": 0,

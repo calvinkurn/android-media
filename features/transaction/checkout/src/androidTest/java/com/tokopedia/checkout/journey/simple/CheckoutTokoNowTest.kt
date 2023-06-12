@@ -33,6 +33,7 @@ class CheckoutTokoNowTest {
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, ratesResponse), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_tokonow_default_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(PAYMENT_FEE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.payment_fee_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
@@ -145,6 +146,7 @@ class CheckoutTokoNowTest {
         private const val SAVE_SHIPMENT_KEY = "save_shipment"
         private const val RATES_V3_KEY = "ratesV3"
         private const val VALIDATE_USE_KEY = "validate_use_promo_revamp"
+        private const val PAYMENT_FEE_KEY = "getPaymentFeeCheckout"
         private const val CHECKOUT_KEY = "checkout"
     }
 }

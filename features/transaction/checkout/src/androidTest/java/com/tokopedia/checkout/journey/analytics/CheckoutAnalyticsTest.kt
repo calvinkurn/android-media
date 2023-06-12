@@ -40,7 +40,7 @@ class CheckoutAnalyticsTest {
             addMockResponse(RATES_V3_KEY, InstrumentationMockHelper.getRawString(context, R.raw.ratesv3_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(VALIDATE_USE_KEY, InstrumentationMockHelper.getRawString(context, R.raw.validate_use_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(CHECKOUT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.checkout_analytics_default_response), MockModelConfig.FIND_BY_CONTAINS)
-            addMockResponse(GET_PAYMENT_FEE_CHECKOUT, InstrumentationMockHelper.getRawString(context, R.raw.get_payment_fee_checkout_response), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(GET_PAYMENT_FEE_CHECKOUT, InstrumentationMockHelper.getRawString(context, R.raw.payment_fee_default_response), MockModelConfig.FIND_BY_CONTAINS)
         }
     }
 

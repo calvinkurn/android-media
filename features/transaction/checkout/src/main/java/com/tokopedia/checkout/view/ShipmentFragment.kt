@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -68,8 +67,7 @@ import com.tokopedia.checkout.view.ShipmentContract.AnalyticsActionListener
 import com.tokopedia.checkout.view.adapter.ShipmentAdapter
 import com.tokopedia.checkout.view.converter.RatesDataConverter
 import com.tokopedia.checkout.view.converter.RatesDataConverter.Companion.getLogisticPromoCode
-import com.tokopedia.checkout.view.di.CheckoutModule
-import com.tokopedia.checkout.view.di.DaggerCheckoutComponent
+import com.tokopedia.checkout.view.di.CheckoutComponentFactory
 import com.tokopedia.checkout.view.dialog.ExpireTimeDialogListener
 import com.tokopedia.checkout.view.dialog.ExpiredTimeDialog.Companion.newInstance
 import com.tokopedia.checkout.view.helper.ShipmentScheduleDeliveryMapData
@@ -331,12 +329,14 @@ class ShipmentFragment :
     // region fragment lifecycle
     override fun initInjector() {
         if (activity != null) {
-            val baseMainApplication = activity!!.application as BaseMainApplication
-            DaggerCheckoutComponent.builder()
-                .baseAppComponent(baseMainApplication.baseAppComponent)
-                .checkoutModule(CheckoutModule(this))
-                .build()
+            CheckoutComponentFactory.instance.createComponent(activity!!.application, this)
                 .inject(this)
+//            val baseMainApplication = activity!!.application as BaseMainApplication
+//            DaggerCheckoutComponent.builder()
+//                .baseAppComponent(baseMainApplication.baseAppComponent)
+//                .checkoutModule(CheckoutModule(this))
+//                .build()
+//                .inject(this)
         }
     }
 
@@ -621,11 +621,13 @@ class ShipmentFragment :
             val actionText =
                 activity!!.getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
             toasterErrorAkamai = build(
-                view!!, message!!,
+                view!!,
+                message!!,
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 actionText,
-                View.OnClickListener { view: View? -> })
+                View.OnClickListener { view: View? -> }
+            )
         }
         if (toasterErrorAkamai?.isShownOrQueued == false) {
             toasterErrorAkamai?.show()
