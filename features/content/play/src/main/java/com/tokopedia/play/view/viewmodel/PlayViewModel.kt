@@ -553,6 +553,9 @@ class PlayViewModel @AssistedInject constructor(
     val exploreWidgetConfig: PlayWidgetConfigUiModel
         get() = _exploreWidget.value.widgets.firstOrNull()?.item?.config ?: PlayWidgetConfigUiModel.Empty
 
+    val widgetInfo : ExploreWidgetConfig
+        get() = _channelDetail.value.exploreWidgetConfig
+
     private val widgetQuery = MutableStateFlow(emptyMap<ExploreWidgetType, WidgetParamUiModel>())
 
     val exploreWidgetTabs: List<String>

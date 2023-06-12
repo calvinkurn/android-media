@@ -1,7 +1,9 @@
 package com.tokopedia.play.ui.explorewidget.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryCardBinding
 import com.tokopedia.play.databinding.ItemPlayExploreCategoryShimmerBinding
@@ -17,10 +19,16 @@ internal class CategoryWidgetViewHolder {
         private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private val impressHolder = ImpressHolder()
+
         fun bind(item: PlayWidgetChannelUiModel) {
             with(binding) {
                 root.setOnClickListener {
-                    listener.onClicked(item)
+                    listener.onClicked(item, absoluteAdapterPosition)
+                }
+
+                root.addOnImpressionListener(impressHolder){
+                    listener.onImpressed(item, absoluteAdapterPosition)
                 }
 
                 ivCategoryVideo.loadImage(item.video.coverUrl)
@@ -35,7 +43,8 @@ internal class CategoryWidgetViewHolder {
         }
 
         interface Listener {
-            fun onClicked(item: PlayWidgetChannelUiModel)
+            fun onClicked(item: PlayWidgetChannelUiModel, position: Int)
+            fun onImpressed(item: PlayWidgetChannelUiModel, position: Int)
         }
     }
 

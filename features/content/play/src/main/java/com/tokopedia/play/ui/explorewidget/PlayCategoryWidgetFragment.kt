@@ -56,8 +56,13 @@ class PlayCategoryWidgetFragment @Inject constructor(
 
     private val categoryAdapter by lazyThreadSafetyNone {
         CategoryWidgetAdapter(object : CategoryWidgetViewHolder.Item.Listener {
-            override fun onClicked(item: PlayWidgetChannelUiModel) {
+            override fun onClicked(item: PlayWidgetChannelUiModel, position: Int) {
+                analytic?.clickContentCard(selectedChannel = item, position = position, categoryName = viewModel.widgetInfo.categoryName, isAutoplay = false)
                 router.route(context, item.appLink)
+            }
+
+            override fun onImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+                analytic?.impressChannelCard(item = item, position = position, categoryName = viewModel.widgetInfo.categoryName, config = viewModel.exploreWidgetConfig)
             }
         })
     }
@@ -186,6 +191,7 @@ class PlayCategoryWidgetFragment @Inject constructor(
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     actionListener = {
+                        analytic?.clickRetryToaster()
                         //onRetry
                     }
                 )
