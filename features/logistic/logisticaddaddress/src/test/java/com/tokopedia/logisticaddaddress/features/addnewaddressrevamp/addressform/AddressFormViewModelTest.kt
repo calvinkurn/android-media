@@ -138,6 +138,34 @@ class AddressFormViewModelTest {
     }
 
     @Test
+    fun `Save Address Data Not Success`() {
+        // Inject
+        val fakeResponse = spyk(
+            AddAddressResponse(
+                keroAddAddress = spyk(
+                    KeroAddAddress(
+                        data = spyk(
+                            DataAddAddress(
+                                isSuccess = 0
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        // Given
+        coEvery { repo.saveAddress(any(), any(), any()) } returns fakeResponse
+
+        // When
+        addressFormViewModel.saveDataModel = saveAddressDataModel
+        addressFormViewModel.saveAddress("", sourceValue)
+
+        // Then
+        verify(exactly = 0) { saveAddressObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
     fun `Save Address Data Fail`() {
         coEvery { repo.saveAddress(any(), any(), any()) } throws defaultThrowable
         addressFormViewModel.saveDataModel = saveAddressDataModel
@@ -319,11 +347,35 @@ class AddressFormViewModelTest {
     }
 
     @Test
-    fun `verify isHaveLatLong is correctly`() {
+    fun `verify isHaveLatLong when has latitude and longitude`() {
         // when
         addressFormViewModel.saveDataModel = saveAddressDataModel.apply {
             latitude = "1.0"
             longitude = "1.0"
+        }
+
+        // Then
+        Assert.assertTrue(addressFormViewModel.isHaveLatLong)
+    }
+
+    @Test
+    fun `verify isHaveLatLong when has latitude`() {
+        // when
+        addressFormViewModel.saveDataModel = saveAddressDataModel.apply {
+            latitude = ""
+            longitude = "1.0"
+        }
+
+        // Then
+        Assert.assertTrue(addressFormViewModel.isHaveLatLong)
+    }
+
+    @Test
+    fun `verify isHaveLatLong when has longitude`() {
+        // when
+        addressFormViewModel.saveDataModel = saveAddressDataModel.apply {
+            latitude = "1.0"
+            longitude = ""
         }
 
         // Then
@@ -1070,5 +1122,65 @@ class AddressFormViewModelTest {
                 address2 = "$latitude,$longitude"
             )
         )
+    }
+
+    @Test
+    fun `verify when generateSaveDataModel when parameter saveDataModel is null`() {
+        // Inject
+        val defaultName = "Mike"
+        val defaultPhone = "0817389274839"
+
+        // Given
+        val saveDataModel = addressFormViewModel.generateSaveDataModel(
+            saveDataModel = null,
+            defaultName = defaultName,
+            defaultPhone = defaultPhone
+        )
+
+        // Then
+        with(saveDataModel) {
+            Assert.assertEquals(receiverName, defaultName)
+            Assert.assertEquals(phone, defaultPhone)
+        }
+    }
+
+    @Test
+    fun `verify when generateSaveDataModel when default name & phone is not empty`() {
+        // Inject
+        val defaultName = "Mike"
+        val defaultPhone = "0817389274839"
+
+        // Given
+        val saveDataModel = addressFormViewModel.generateSaveDataModel(
+            saveDataModel = spyk(),
+            defaultName = defaultName,
+            defaultPhone = defaultPhone
+        )
+
+        // Then
+        with(saveDataModel) {
+            Assert.assertEquals(receiverName, defaultName)
+            Assert.assertEquals(phone, defaultPhone)
+        }
+    }
+
+    @Test
+    fun `verify when generateSaveDataModel when default name & phone is empty`() {
+        // Inject
+        val defaultName = ""
+        val defaultPhone = ""
+
+        // Given
+        val saveDataModel = addressFormViewModel.generateSaveDataModel(
+            saveDataModel = spyk(),
+            defaultName = defaultName,
+            defaultPhone = defaultPhone
+        )
+
+        // Then
+        with(saveDataModel) {
+            Assert.assertEquals(receiverName, defaultName)
+            Assert.assertEquals(phone, defaultPhone)
+        }
     }
 }

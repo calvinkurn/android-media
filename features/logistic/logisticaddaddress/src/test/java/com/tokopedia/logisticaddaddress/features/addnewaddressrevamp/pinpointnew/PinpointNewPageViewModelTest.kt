@@ -3,6 +3,9 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointne
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Geometry
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.Location
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
@@ -11,6 +14,8 @@ import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
 import com.tokopedia.logisticaddaddress.common.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.common.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.KeroAddressGeocode
+import com.tokopedia.logisticaddaddress.data.entity.mapsgeocode.MapsGeocodeResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.MapsGeocodeUseCase
@@ -21,12 +26,15 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -139,5 +147,192 @@ class PinpointNewPageViewModelTest {
         )
         pinpointNewPageViewModel.setAddress(address)
         Assert.assertEquals(pinpointNewPageViewModel.getAddress(), address)
+    }
+
+    @Test
+    fun `verify set district and city name when has district value and city name is null`() {
+        pinpointNewPageViewModel.setDistrictAndCityName(
+            districtName = "solo",
+            cityName = null
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertTrue(districtName.isBlank())
+            assertTrue(cityName.isBlank())
+        }
+    }
+
+    @Test
+    fun `verify set district and city name when has district value and city name is empty`() {
+        pinpointNewPageViewModel.setDistrictAndCityName(
+            districtName = "solo",
+            cityName = ""
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertTrue(districtName.isBlank())
+            assertTrue(cityName.isBlank())
+        }
+    }
+
+    @Test
+    fun `verify set district and city name when has city name value and distrcit name is null`() {
+        pinpointNewPageViewModel.setDistrictAndCityName(
+            districtName = null,
+            cityName = "Solo"
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertTrue(districtName.isBlank())
+            assertTrue(cityName.isBlank())
+        }
+    }
+
+    @Test
+    fun `verify set district and city name when has city name value and distrcit name is empty`() {
+        pinpointNewPageViewModel.setDistrictAndCityName(
+            districtName = "",
+            cityName = "Solo"
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertTrue(districtName.isBlank())
+            assertTrue(cityName.isBlank())
+        }
+    }
+
+    @Test
+    fun `verify set district and city name when district name and city name null`() {
+        pinpointNewPageViewModel.setDistrictAndCityName(
+            districtName = null,
+            cityName = null
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertTrue(districtName.isBlank())
+            assertTrue(cityName.isBlank())
+        }
+    }
+
+    @Test
+    fun `verify set district and city name when district name and city name has data`() {
+        pinpointNewPageViewModel.setDistrictAndCityName(
+            districtName = "Bantul",
+            cityName = "Yogyakarta"
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertTrue(districtName.isNotBlank())
+            assertTrue(cityName.isNotBlank())
+        }
+    }
+
+    @Test
+    fun `verify set lat long is correctly`() {
+        val latitude = -6.121435
+        val longitude = 106.774124
+
+        pinpointNewPageViewModel.setLatLong(
+            lat = latitude,
+            long = longitude
+        )
+
+        with(pinpointNewPageViewModel.getAddress()) {
+            assertEquals(this.latitude, latitude.toString())
+            assertEquals(this.longitude, longitude.toString())
+        }
+    }
+
+    @Test
+    fun `verify when getGeocodeByDistrictAndCityName is success`() {
+        val mockLocation = spyk(Location())
+
+        val mockResponse = spyk(
+            MapsGeocodeResponse(
+                keroAddressGeocode = spyk(
+                    KeroAddressGeocode(
+                        data = arrayListOf(
+                            spyk(
+                                CoordinateModel().apply {
+                                    geometry = spyk(
+                                        Geometry().apply {
+                                            location = mockLocation
+                                        }
+                                    )
+                                }
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        coEvery {
+            mapsGeocodeUseCase.invoke(any())
+        } returns mockResponse
+
+        pinpointNewPageViewModel.getGeocodeByDistrictAndCityName()
+
+        verify {
+            mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Success(mockLocation))
+        }
+    }
+
+    @Test
+    fun `verify when getGeocodeByDistrictAndCityName empty location`() {
+        val mockResponse = spyk(MapsGeocodeResponse())
+
+        coEvery {
+            mapsGeocodeUseCase.invoke(any())
+        } returns mockResponse
+
+        pinpointNewPageViewModel.getGeocodeByDistrictAndCityName()
+
+        verify {
+            mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Fail(PinpointNewPageFragment.LOCATION_NOT_FOUND_MESSAGE))
+        }
+    }
+
+    @Test
+    fun `verify when getGeocodeByDistrictAndCityName error`() {
+        val mockResponse = spyk(MapsGeocodeResponse())
+
+        coEvery {
+            mapsGeocodeUseCase.invoke(any())
+        } returns mockResponse
+
+        pinpointNewPageViewModel.getGeocodeByDistrictAndCityName()
+
+        verify {
+            mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Fail(PinpointNewPageFragment.LOCATION_NOT_FOUND_MESSAGE))
+        }
+    }
+
+    @Test
+    fun `verify when send share address request error with error message`() {
+        val errorMessage = "error"
+
+        coEvery {
+            mapsGeocodeUseCase.invoke(any())
+        } throws Exception(errorMessage)
+
+        pinpointNewPageViewModel.getGeocodeByDistrictAndCityName()
+
+        verify {
+            mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Fail(errorMessage))
+        }
+    }
+
+    @Test
+    fun `verify when send share address request error without error message`() {
+        coEvery {
+            mapsGeocodeUseCase.invoke(any())
+        } throws Exception()
+
+        pinpointNewPageViewModel.getGeocodeByDistrictAndCityName()
+
+        verify {
+            mapsGeocodeStateObserver.onChanged(MapsGeocodeState.Fail(""))
+        }
     }
 }
