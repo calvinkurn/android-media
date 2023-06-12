@@ -24,6 +24,7 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
@@ -278,7 +279,16 @@ class AffiliateAdpViewModelTest {
         val range: AffiliateDatePickerData = mockk(relaxed = true)
         affiliateAdpViewModel.onRangeChanged(range)
 
-        assertEquals(affiliateAdpViewModel.getRangeChanged().value, true)
+        assertEquals(true, affiliateAdpViewModel.getRangeChanged().value)
+    }
+
+    @Test
+    fun onRangeChangeTestFailure() {
+        val range: AffiliateDatePickerData = mockk()
+        every { range.text } returns AffiliateBottomDatePicker.THIRTY_DAYS
+        affiliateAdpViewModel.onRangeChanged(range)
+
+        assertEquals(null, affiliateAdpViewModel.getRangeChanged().value)
     }
 
     @Test
