@@ -19,8 +19,8 @@ class GetCollectionPointWithConsentUseCase @Inject constructor(
 
     override fun graphqlQuery(): String {
         return """
-            query GetCollectionPointWithConsent(${'$'}collectionID: String!, ${'$'}version: String) {
-              GetCollectionPointWithConsent(collectionID: ${'$'}collectionID, version: ${'$'}version) {
+            query GetCollectionPointWithConsent(${'$'}collectionID: String!, ${'$'}version: String, ${'$'}dataElements: [DataElement]) {
+              GetCollectionPointWithConsent(collectionID: ${'$'}collectionID, version: ${'$'}version, dataElements: ${'$'}dataElements) {
                 success
                 refId
                 errorMessages

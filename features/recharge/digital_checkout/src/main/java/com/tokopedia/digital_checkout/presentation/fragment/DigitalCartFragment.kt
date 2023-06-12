@@ -44,6 +44,7 @@ import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.data.model.CollectionPointMetadata
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
+import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 import com.tokopedia.digital_checkout.databinding.FragmentDigitalCheckoutPageBinding
 import com.tokopedia.digital_checkout.di.DigitalCheckoutComponent
 import com.tokopedia.digital_checkout.presentation.adapter.DigitalCartDetailInfoAdapter
@@ -88,6 +89,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.userconsent.domain.collection.ConsentCollectionParam
+import com.tokopedia.usercomponents.userconsent.domain.submission.DataElements
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -417,7 +419,10 @@ class DigitalCartFragment :
                     cartInfo.collectionPointId,
                     cartInfo.collectionPointVersion
                 )
-                renderProductConsentWidget(productCollectionPointMetadata)
+                renderProductConsentWidget(
+                    productCollectionPointMetadata,
+                    cartInfo.collectionDataElements
+                )
                 it.checkoutBottomViewWidget.showProductConsent()
                 it.checkoutBottomViewWidget.isCheckoutButtonEnabled = false
             }
@@ -773,14 +778,20 @@ class DigitalCartFragment :
         }
     }
 
-    private fun renderProductConsentWidget(collectionPointData: CollectionPointMetadata) {
+    private fun renderProductConsentWidget(
+        collectionPointData: CollectionPointMetadata,
+        collectionDataElements: List<RechargeGetCart.CollectionDataElements>
+    ) {
         binding?.run {
             if (collectionPointData.collectionPointId.isNotEmpty()) {
                 renderProductConsentJob?.cancel()
                 renderProductConsentJob = lifecycleScope.launch {
                     val consentParam = ConsentCollectionParam(
                         collectionPointData.collectionPointId,
-                        collectionPointData.collectionPointVersion
+                        collectionPointData.collectionPointVersion,
+                        collectionDataElements.map {
+                            DataElements(it.key, it.value)
+                        }.toMutableList()
                     )
                     checkoutBottomViewWidget.setProductConsentWidget(
                         viewLifecycleOwner,
