@@ -266,7 +266,14 @@ class TokoNowCategoryViewModel @Inject constructor(
         _categoryPage.postValue(layout)
     }
 
-    fun getCategoryHeader(
+    fun onViewCreated(
+        navToolbarHeight: Int
+    ) {
+        initAffiliateCookie()
+        loadCategoryPage(navToolbarHeight)
+    }
+
+    fun loadCategoryPage(
         navToolbarHeight: Int
     ) {
         launchCatchError(
@@ -360,13 +367,16 @@ class TokoNowCategoryViewModel @Inject constructor(
         productId: String,
         hasBeenWishlist: Boolean
     ) {
-        launch {
-            layout.updateWishlistStatus(
-                productId = productId,
-                hasBeenWishlist = hasBeenWishlist
-            )
-            _categoryPage.postValue(layout)
-        }
+        launchCatchError(
+            block =  {
+                layout.updateWishlistStatus(
+                    productId = productId,
+                    hasBeenWishlist = hasBeenWishlist
+                )
+                _categoryPage.postValue(layout)
+            },
+            onError = { /* nothing to do */ }
+        )
     }
 
     fun onCartQuantityChanged(

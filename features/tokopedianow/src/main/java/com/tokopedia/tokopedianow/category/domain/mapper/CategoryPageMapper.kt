@@ -57,7 +57,7 @@ internal object CategoryPageMapper {
         @TokoNowLayoutState state: Int
     ): CategoryShowcaseUiModel = CategoryShowcaseUiModel(
         id = categoryIdL2,
-        productListUiModels = productList.map { product ->
+        productListUiModels = productList.take(MAX_SHOWCASE_PRODUCT).map { product ->
             CategoryShowcaseItemUiModel(
                 productCardModel = mapAceSearchProductToProductCard(
                     product = product,

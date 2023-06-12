@@ -35,7 +35,7 @@ class GetCategoryProductUseCase @Inject constructor(
         const val USE_PAGE_VALUE = "true"
         const val SOURCE_VALUE = "category_tokonow_directory"
         const val PAGE_VALUE = "1"
-        const val ROWS_VALUE = "6"
+        const val ROWS_VALUE = "7"
     }
 
     private val graphql by lazy { GraphqlUseCase<AceSearchProductModel>(graphqlRepository) }

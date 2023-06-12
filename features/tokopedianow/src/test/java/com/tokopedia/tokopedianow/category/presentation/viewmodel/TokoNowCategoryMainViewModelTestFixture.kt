@@ -343,7 +343,9 @@ open class TokoNowCategoryMainViewModelTestFixture {
     ) {
         categoryNavigationList.take(BATCH_SHOWCASE_TOTAL).forEach { itemUiModel ->
             categoryProductResponseMap[itemUiModel.id]?.apply {
-                if (this.searchProduct.data.productList.isEmpty()) {
+                val productList = searchProduct.data.productList.filter { !it.isOos() }
+
+                if (productList.isEmpty()) {
                     resultList.remove(itemUiModel)
                     return@forEach
                 }
@@ -352,6 +354,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
                     if (expectedCategoryIdL2Failed != itemUiModel.id) {
                         resultList.add(
                             mapToShowcaseProductCard(
+                                productList = productList,
                                 categoryIdL2 = itemUiModel.id,
                                 title = itemUiModel.title,
                                 state = TokoNowLayoutState.SHOW,

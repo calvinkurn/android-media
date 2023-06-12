@@ -31,7 +31,7 @@ class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture
             )
         )
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
         viewModel.getFirstPage()

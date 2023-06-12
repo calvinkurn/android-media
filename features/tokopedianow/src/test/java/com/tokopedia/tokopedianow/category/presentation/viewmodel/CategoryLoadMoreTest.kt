@@ -34,7 +34,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
             )
         )
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
         viewModel.getFirstPage()
@@ -129,7 +129,7 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
             )
         )
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
         viewModel.getFirstPage()

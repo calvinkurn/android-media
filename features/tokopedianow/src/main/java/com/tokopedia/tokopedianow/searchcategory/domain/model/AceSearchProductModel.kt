@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory.domain.model
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 
 data class AceSearchProductModel(
@@ -394,7 +395,7 @@ data class AceSearchProductModel(
             @Expose
             val stock: Int = 0
     ) {
-        private fun getOosLabelGroup() = labelGroupList.firstOrNull { stock < minOrder && it.isStatusPosition() && it.isTransparentBlackColor() }
+        private fun getOosLabelGroup() = labelGroupList.firstOrNull { (stock < minOrder || stock == Int.ZERO) && it.isStatusPosition() && it.isTransparentBlackColor() }
 
         fun isOos() = getOosLabelGroup() != null
     }

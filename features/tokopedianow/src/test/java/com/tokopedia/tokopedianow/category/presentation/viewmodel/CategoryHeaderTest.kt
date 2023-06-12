@@ -21,7 +21,7 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
 
@@ -86,7 +86,7 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenThrows()
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
 
@@ -139,7 +139,7 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
     fun `getCategoryHeader should return failed because category detail throws an exception`() {
         onCategoryDetail_thenThrows()
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
 
@@ -153,7 +153,7 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
             shopId = shopId
         )
 
-        viewModel.getCategoryHeader(
+        viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
 

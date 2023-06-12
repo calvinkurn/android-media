@@ -205,9 +205,11 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         setupScreenshotDetector()
         setupUi()
-        initAffiliateCookie()
-        getCategoryHeader()
-        observer()
+        setupObserver()
+
+        binding?.navToolbar?.post {
+            viewModel.onViewCreated(navToolbarHeight)
+        }
     }
 
     override fun getScreenName(): String = String.EMPTY
@@ -679,15 +681,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun getMiniCart() = viewModel.getMiniCart()
 
-    private fun getCategoryHeader() {
-        binding?.navToolbar?.post {
-            viewModel.getCategoryHeader(navToolbarHeight)
-        }
-    }
-
-    private fun initAffiliateCookie() = viewModel.initAffiliateCookie()
-
-    private fun observer() {
+    private fun setupObserver() {
         observeCategoryHeader()
         observeCategoryPage()
         observeScrollNotNeeded()
@@ -848,7 +842,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
                 rvCategory.removeOnScrollListener(onScrollListener)
                 rvCategory.addOnScrollListener(onScrollListener)
             }
-            viewModel.getCategoryHeader(navToolbarHeight)
+            viewModel.loadCategoryPage(navToolbarHeight)
         }
     }
 
