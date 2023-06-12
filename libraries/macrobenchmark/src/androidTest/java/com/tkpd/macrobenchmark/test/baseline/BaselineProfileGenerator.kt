@@ -36,6 +36,8 @@ class BaselineProfileGenerator {
     @Test
     fun appStartupAndUserJourney() {
         rule.collectBaselineProfile(MacroArgs.TKPD_PACKAGE_NAME) {
+            MacroDevOps.skipOnboarding()
+
             startApplicationJourney()
             scrollRecyclerViewJourney()
             goToDetailJourney()
