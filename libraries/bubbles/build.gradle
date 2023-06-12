@@ -24,6 +24,10 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
 

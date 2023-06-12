@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat.util
 
 import android.os.Build
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -49,6 +50,7 @@ object TokoChatValueUtil {
                 ""
             ) == RollenceKey.TOKOCHAT_BUBBLES
         } catch (e: Throwable) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             false
         }
     }

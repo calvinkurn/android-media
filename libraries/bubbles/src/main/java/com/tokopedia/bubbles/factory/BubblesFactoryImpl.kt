@@ -15,6 +15,7 @@ import androidx.core.content.LocusIdCompat
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.bubbles.analytics.BubblesTracker
 import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel
@@ -74,7 +75,7 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
                 }
             }
         } catch (e: Exception) {
-            // no op
+            FirebaseCrashlytics.getInstance().recordException(e)
         }
     }
 

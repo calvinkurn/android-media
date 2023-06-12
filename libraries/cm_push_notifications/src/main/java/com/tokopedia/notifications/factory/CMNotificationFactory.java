@@ -12,7 +12,7 @@ import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
-import com.tokopedia.notifications.factory.custom_notifications.BubbleChatNotification;
+import com.tokopedia.notifications.factory.custom_notifications.TokoChatBubbleChatNotification;
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -56,8 +56,8 @@ public class CMNotificationFactory {
                     return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
                 } else if (baseNotificationModel.isReplyChat()) {
                     return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel, getTopChatNotificationModelList(baseNotificationModelList));
-                } else if (isEnableBubble(baseNotificationModel)) {
-                    return new BubbleChatNotification(context.getApplicationContext(), baseNotificationModel, getTokoChatNotificationModelList(baseNotificationModelList), null);
+                } else if (isEnableTokoChatBubble(baseNotificationModel)) {
+                    return new TokoChatBubbleChatNotification(context.getApplicationContext(), baseNotificationModel, getTokoChatNotificationModelList(baseNotificationModelList), null);
                 } else {
                     return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel, baseNotificationModelList);
                 }
@@ -112,7 +112,7 @@ public class CMNotificationFactory {
         }
         return topChatNotificationModelList;
     }
-    private static boolean isEnableBubble(BaseNotificationModel baseNotificationModel) {
+    private static boolean isEnableTokoChatBubble(BaseNotificationModel baseNotificationModel) {
         boolean isEnableBubble = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
         return isEnableBubble && getIsBubbleRollenceEnabled() && isTokoChatPNIdExist(baseNotificationModel);
     }

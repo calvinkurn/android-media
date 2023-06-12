@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.app.NotificationCompat
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel
 import com.tokopedia.bubbles.data.model.BubbleNotificationModel
@@ -18,7 +19,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 import timber.log.Timber
 import kotlin.math.max
 
-class BubbleChatNotification(
+class TokoChatBubbleChatNotification(
     context: Context,
     baseNotificationModel: BaseNotificationModel,
     private val baseNotificationList: List<BaseNotificationModel>,
@@ -151,6 +152,7 @@ class BubbleChatNotification(
                 }
             }
         } catch (e: NullPointerException) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             "0"
         }
     }

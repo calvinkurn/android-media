@@ -112,6 +112,10 @@ dependencies {
 
     implementation rootProject.ext.testDependencies.espressoIdlingResource
 
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
+
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cassavaTest
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.remoteConfig)
