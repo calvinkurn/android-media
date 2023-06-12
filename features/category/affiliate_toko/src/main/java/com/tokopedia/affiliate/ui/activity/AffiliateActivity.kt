@@ -223,7 +223,8 @@ class AffiliateActivity :
                     disableTouch()
                     when (currentIndex) {
                         1 -> {
-                            if (currentCoachIndex == 2) handleBackButton(true)
+                            // commenting below statement in favor of future implementation of coachmark
+//                            if (currentCoachIndex == 2) handleBackButton(true)
                         }
 
                         2 -> {
@@ -478,32 +479,35 @@ class AffiliateActivity :
     }
 
     override fun handleBackButton(fromCoacher: Boolean) {
-        if (!fromCoacher) {
-            coachMark?.isDismissed = true
-            coachMark?.dismiss()
-        }
-        if (!fragmentStack.empty()) {
-            fragmentStack.pop()
-            if (!fragmentStack.empty()) {
-                handleBackStack()
-            } else {
-                super.onBackPressed()
-            }
-        } else {
-            super.onBackPressed()
-        }
+        finish()
+//        if (!fromCoacher) {
+//            coachMark?.isDismissed = true
+//            coachMark?.dismiss()
+//        }
+//        if (!fragmentStack.empty()) {
+//            fragmentStack.pop()
+//            if (!fragmentStack.empty()) {
+//                handleBackStack()
+//            } else {
+//                super.onBackPressed()
+//            }
+//        } else {
+//            super.onBackPressed()
+//        }
     }
 
-    private fun handleBackStack() {
-        val ft = supportFragmentManager.beginTransaction()
-        showSelectedFragment(
-            fragmentStack.peek(),
-            supportFragmentManager,
-            ft
-        )
-        setBottomState(fragmentStack.peek())
-        ft.commitNowAllowingStateLoss()
-    }
+    // Commenting below function in favor of future implementation of coachmark
+
+//    private fun handleBackStack() {
+//        val ft = supportFragmentManager.beginTransaction()
+//        showSelectedFragment(
+//            fragmentStack.peek(),
+//            supportFragmentManager,
+//            ft
+//        )
+//        setBottomState(fragmentStack.peek())
+//        ft.commitNowAllowingStateLoss()
+//    }
 
     private fun setBottomState(peek: String?) {
         when (peek) {
