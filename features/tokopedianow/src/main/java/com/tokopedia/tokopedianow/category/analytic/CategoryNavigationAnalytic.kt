@@ -9,7 +9,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDash
 import com.tokopedia.track.builder.Tracker
@@ -32,7 +31,7 @@ class CategoryNavigationAnalytic {
             .setEventCategory(EVENT_CATEGORY_PAGE_L1)
             .setEventLabel(joinDash(categoryIdL1, categoryIdL2, warehouseId))
             .setCustomProperty(KEY_TRACKER_ID, ID_IMPRESS_CATEGORY_L2)
-            .setBusinessUnit(BUSINESS_UNIT_PHYSICAL_GOODS)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
             .build()
             .send()

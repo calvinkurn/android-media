@@ -1,26 +1,23 @@
 package com.tokopedia.tokopedianow.category.analytic
 
-import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.ACTION.EVENT_ACTION_CLICK_CART_BUTTON_TOP_NAV
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.ACTION.EVENT_ACTION_CLICK_CART_BUTTON
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
-import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.CATEGORY.EVENT_CATEGORY_TOKONOW_CATEGORY_PAGE
-import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.CATEGORY.EVENT_CATEGORY_TOP_NAV_TOKONOW_CATEGORY_PAGE
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.ACTION.EVENT_ACTION_CLICK_WIDGET_CHOOSE_ADDRESS
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.CATEGORY.EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.TRACKER_ID.ID_CLICK_CART_BUTTON
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.TRACKER_ID.ID_CLICK_CHOOSE_ADDRESS_WIDGET
+import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.TRACKER_ID.ID_CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.VALUE.ADDITIONAL_MAP_CATEGORY
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.VALUE.ADDITIONAL_MAP_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.VALUE.SCREEN_NAME_CATEGORY
 import com.tokopedia.tokopedianow.category.analytic.CategoryAnalytic.VALUE.SCREEN_NAME_TOKONOW_OOC
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOP_NAV
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CURRENT_SITE
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_GROCERIES
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.constant.TrackerConstant.EVENT
-import com.tokopedia.track.constant.TrackerConstant.EVENT_ACTION
-import com.tokopedia.track.constant.TrackerConstant.EVENT_CATEGORY
-import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.joinDash
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -45,18 +42,18 @@ class CategoryAnalytic @Inject constructor(
         const val EVENT_ACTION_CLICK_CATEGORY_RECOM_WIDGET = "click category recom widget"
         const val EVENT_ACTION_CLICK_ATC_ON_SHOWCASE = "click atc on showcase - l2"
         const val EVENT_ACTION_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET = "click atc carousel widget"
-        const val EVENT_ACTION_CLICK_CART_BUTTON_TOP_NAV = "click cart button top nav"
+        const val EVENT_ACTION_CLICK_CART_BUTTON = "click cart button"
         const val EVENT_ACTION_CLICK_SEARCH_BAR = "click search bar"
         const val EVENT_ACTION_CLICK_PRODUCT = "click product oos bottomsheet"
         const val EVENT_ACTION_CLICK_ADD_TO_CART = "add to cart product oos bottomsheet"
         const val EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET = "click close bottomsheet"
         const val EVENT_ACTION_IMPRESSION_EMPTY_STATE = "impression empty state bottomsheet"
+        const val EVENT_ACTION_CLICK_WIDGET_CHOOSE_ADDRESS = "click widget choose address"
     }
 
     internal object CATEGORY {
         const val EVENT_CATEGORY_PAGE_L1 = "tokonow - category page - l1"
-        const val EVENT_CATEGORY_TOP_NAV_TOKONOW_CATEGORY_PAGE =  "top nav - tokonow category page"
-        const val EVENT_CATEGORY_TOKONOW_CATEGORY_PAGE = "tokonow category page"
+        const val EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1 = "tokonow - top nav - category page - l1"
     }
 
     internal object VALUE {
@@ -84,6 +81,9 @@ class CategoryAnalytic @Inject constructor(
         const val ID_CLICK_CATEGORY_RECOM_WIDGET = "43859"
         const val ID_CLICK_ATC_ON_SHOWCASE= "43860"
         const val ID_CLICK_ATC_ON_PRODUCT_RECOM_WIDGET = "43862"
+        const val ID_CLICK_CHOOSE_ADDRESS_WIDGET = "44681"
+        const val ID_CLICK_CART_BUTTON = "44680"
+        const val ID_CLICK_SEARCH_BAR = "44678"
     }
 
     val categoryTitleAnalytics: CategoryTitleAnalytic
@@ -125,33 +125,54 @@ class CategoryAnalytic @Inject constructor(
         )
     }
 
-    fun sendSearchBarClickEvent(categoryId: String) {
-        sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, EVENT_CLICK_TOP_NAV,
-                EVENT_ACTION, EVENT_ACTION_CLICK_SEARCH_BAR,
-                EVENT_CATEGORY, EVENT_CATEGORY_TOP_NAV_TOKONOW_CATEGORY_PAGE,
-                EVENT_LABEL, categoryId,
-                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
-                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-            )
-        )
+    // Tracker ID: 44678
+    fun sendClickSearchBarEvent (
+        categoryIdL1: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_GROCERIES)
+            .setEventAction(EVENT_ACTION_CLICK_SEARCH_BAR)
+            .setEventCategory(EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1)
+            .setEventLabel(joinDash(categoryIdL1, warehouseId))
+            .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_SEARCH_BAR)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .build()
+            .send()
     }
 
-    fun sendCartClickEvent(categoryId: String) {
-        sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, EVENT_CLICK_TOKONOW,
-                EVENT_ACTION, EVENT_ACTION_CLICK_CART_BUTTON_TOP_NAV,
-                EVENT_CATEGORY, EVENT_CATEGORY_TOKONOW_CATEGORY_PAGE,
-                EVENT_LABEL, categoryId,
-                KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
-                KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-            )
-        )
+    // Tracker ID: 44680
+    fun sendClickCartButtonEvent(
+        categoryIdL1: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_GROCERIES)
+            .setEventAction(EVENT_ACTION_CLICK_CART_BUTTON)
+            .setEventCategory(EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1)
+            .setEventLabel(joinDash(categoryIdL1, warehouseId))
+            .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CART_BUTTON)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .build()
+            .send()
     }
 
-    fun sendGeneralEvent(dataLayer: Map<String, Any>) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    // Tracker ID: 44681
+    fun sendClickWidgetChooseAddressEvent(
+        categoryIdL1: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_GROCERIES)
+            .setEventAction(EVENT_ACTION_CLICK_WIDGET_CHOOSE_ADDRESS)
+            .setEventCategory(EVENT_CATEGORY_TOP_NAV_CATEGORY_PAGE_L1)
+            .setEventLabel(joinDash(categoryIdL1, warehouseId))
+            .setCustomProperty(KEY_TRACKER_ID, ID_CLICK_CHOOSE_ADDRESS_WIDGET)
+            .setBusinessUnit(BUSINESS_UNIT_GROCERIES)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .build()
+            .send()
     }
 }

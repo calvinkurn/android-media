@@ -480,7 +480,10 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
             RouteManager.route(context, finalAppLink)
 
-            analytic.sendSearchBarClickEvent(categoryIdL1)
+            analytic.sendClickSearchBarEvent(
+                categoryIdL1 = categoryIdL1,
+                warehouseId = viewModel.getWarehouseId()
+            )
         },
         disableDefaultGtmTracker = true,
     )
@@ -516,7 +519,10 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         disableRouteManager = false,
         disableDefaultGtmTracker = true
     ) {
-        analytic.sendCartClickEvent(categoryIdL1)
+        analytic.sendClickCartButtonEvent(
+            categoryIdL1 = categoryIdL1,
+            warehouseId = viewModel.getWarehouseId()
+        )
     }
 
     private fun createShareTokonow(): ShareTokonow = ShareTokonow(
@@ -1251,7 +1257,12 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         onImpressCategoryMenu = ::impressCategoryMenu
     )
 
-    private fun createTokoNowChooseAddressWidgetCallback() = TokoNowChooseAddressWidgetCallback()
+    private fun createTokoNowChooseAddressWidgetCallback() = TokoNowChooseAddressWidgetCallback {
+        analytic.sendClickWidgetChooseAddressEvent(
+            categoryIdL1 = categoryIdL1,
+            warehouseId = viewModel.getWarehouseId()
+        )
+    }
 
     private fun createProductRecommendationCallback() = CategoryProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
