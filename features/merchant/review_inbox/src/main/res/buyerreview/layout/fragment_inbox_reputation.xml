@@ -52,7 +52,7 @@
         android:paddingBottom="@dimen/dp_6"
         app:layout_anchor="@id/review_list"
         app:layout_anchorGravity="bottom|center_horizontal"
-        app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior">
+        app:layout_behavior="com.tokopedia.review.feature.inbox.buyerreview.view.behavior.QuickReturnFooterBehavior">
 
         <include
             android:id="@+id/filter_button"
@@ -60,9 +60,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_6"
-            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginLeft="6dp"
             android:layout_centerHorizontal="true"/>
 
     </LinearLayout>
