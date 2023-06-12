@@ -30,7 +30,8 @@ interface UserConsentDescriptionDelegate {
 
 class UserConsentDescription constructor(
     private val delegate: UserConsentDescriptionDelegate,
-    private val collectionDataModel: CollectionPointDataModel = CollectionPointDataModel()
+    private val collectionDataModel: CollectionPointDataModel = CollectionPointDataModel(),
+    private val collectionId: String
 ) {
 
     private val userConsentAnalytics = UserConsentAnalytics()
@@ -63,10 +64,16 @@ class UserConsentDescription constructor(
                             purposes.let { purposes ->
                                 when(it.key) {
                                     KEY_TNC -> {
-                                        userConsentAnalytics.trackOnTnCHyperLinkClicked(purposes)
+                                        userConsentAnalytics.trackOnTnCHyperLinkClicked(
+                                            purposes = purposes,
+                                            collectionId = collectionId
+                                        )
                                     }
                                     KEY_PRIVACY -> {
-                                        userConsentAnalytics.trackOnPolicyHyperLinkClicked(purposes)
+                                        userConsentAnalytics.trackOnPolicyHyperLinkClicked(
+                                            purposes = purposes,
+                                            collectionId = collectionId
+                                        )
                                     }
                                 }
 

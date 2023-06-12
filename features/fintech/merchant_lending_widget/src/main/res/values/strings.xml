@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">merchant_lending_widget</string>
-    <string name="mlp_header">Layanan Finansial</string>
-    <string name="mlp_popuptext">Saldo Prioritas sudah kembali aktif</string>
-    <string name="mlp_popupdismiss">OK</string>
-</resources>
