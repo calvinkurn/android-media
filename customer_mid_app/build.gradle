@@ -105,7 +105,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
     implementation projectOrAar(rootProject.ext.features.tokochat_config_common)
-    implementation projectOrAar(rootProject.ext.features.partnerKyc)
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     if (rootProject.ext.debugToolsEnabled) {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
