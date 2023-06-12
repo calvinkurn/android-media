@@ -14,4 +14,5 @@ data class ExploreWidgetConfig(
     val categoryName: String = "",
     val categorySourceType: String = "",
     val categorySourceId: String = "",
+    val categoryLevel: Int = 0,
 )

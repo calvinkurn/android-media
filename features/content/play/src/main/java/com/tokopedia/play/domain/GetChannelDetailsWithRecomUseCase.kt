@@ -151,6 +151,7 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       has_dominant_category
                       category_name
                       category_id
+                      category_level
                     }
                     channel_archived_screen {
                       title

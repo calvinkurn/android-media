@@ -299,6 +299,9 @@ data class ChannelDetailsWithRecomResponse(
 
         @SerializedName("category_id")
         val categoryId: String = "",
+
+        @SerializedName("category_level")
+        val categoryLvl: Int = 0,
     )
 
     data class ArchivedData(
