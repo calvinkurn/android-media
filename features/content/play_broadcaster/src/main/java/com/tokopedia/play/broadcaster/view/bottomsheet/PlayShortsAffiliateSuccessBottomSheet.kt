@@ -92,7 +92,10 @@ class PlayShortsAffiliateSuccessBottomSheet @Inject constructor(
         }
 
         binding.btnNext.setOnClickListener {
-            if (it.isEnabled) dismiss()
+            if (it.isEnabled) {
+                mListener?.onClickNext()
+                dismiss()
+            }
         }
     }
 

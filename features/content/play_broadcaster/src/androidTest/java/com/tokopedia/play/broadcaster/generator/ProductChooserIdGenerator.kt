@@ -34,6 +34,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -69,7 +70,13 @@ class ProductChooserIdGenerator {
                 discountPercent = 50,
                 discountedPrice = "500",
                 discountedPriceNumber = 500.0
-            )
+            ),
+            hasCommission = false,
+            commissionFmt = "",
+            commission = 0L,
+            extraCommission = false,
+            pinStatus = PinProductUiModel.Empty,
+            number = "",
         )
     )
 
@@ -166,7 +173,8 @@ class ProductChooserIdGenerator {
             },
             ProductSummaryBottomSheet::class.java to {
                 ProductSummaryBottomSheet(
-                    analytic = mockk(relaxed = true)
+                    analytic = mockk(relaxed = true),
+                    coachMarkSharedPref = mockk(relaxed = true),
                 )
             },
             ProductChooserBottomSheet::class.java to {
@@ -191,7 +199,8 @@ class ProductChooserIdGenerator {
             },
             ProductSummaryBottomSheet::class.java to {
                 ProductSummaryBottomSheet(
-                    mockk(relaxed = true)
+                    mockk(relaxed = true),
+                    mockk(relaxed = true),
                 )
             },
             ProductSortBottomSheet::class.java to {
