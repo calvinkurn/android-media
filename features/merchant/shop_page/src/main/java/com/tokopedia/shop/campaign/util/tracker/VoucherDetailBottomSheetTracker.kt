@@ -11,7 +11,11 @@ import javax.inject.Inject
 class VoucherDetailBottomSheetTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
 
-    fun sendVoucherDetailBottomSheetImpression (campaignId: String, widgetId:String, shopId: String) {
+    fun sendVoucherDetailBottomSheetImpression(
+        campaignId: String,
+        widgetId: String,
+        shopId: String
+    ) {
         val eventLabel = "$campaignId - $widgetId"
 
         Tracker.Builder()
@@ -19,7 +23,10 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
             .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_DETAIL_IMPRESSION)
             .setEventCategory(ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty(ShopPageTrackingConstant.TRACKER_ID, ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION)
+            .setCustomProperty(
+                ShopPageTrackingConstant.TRACKER_ID,
+                ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION
+            )
             .setBusinessUnit(ShopPageTrackingConstant.PHYSICAL_GOODS_PASCAL_CASE)
             .setCurrentSite(ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
@@ -29,7 +36,7 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
     }
 
 
-    fun sendRedeemVoucherEvent (campaignId: String, shopId: String) {
+    fun sendRedeemVoucherEvent(campaignId: String, shopId: String) {
         val eventLabel = "klaim - $campaignId"
 
         Tracker.Builder()
@@ -37,7 +44,10 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
             .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_DETAIL_CLICK)
             .setEventCategory(ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty(ShopPageTrackingConstant.TRACKER_ID, ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK)
+            .setCustomProperty(
+                ShopPageTrackingConstant.TRACKER_ID,
+                ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK
+            )
             .setBusinessUnit(ShopPageTrackingConstant.PHYSICAL_GOODS_PASCAL_CASE)
             .setCurrentSite(ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
@@ -46,7 +56,7 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
             .send()
     }
 
-    fun sendUseVoucherEvent (campaignId: String, shopId: String) {
+    fun sendUseVoucherEvent(campaignId: String, shopId: String) {
         val eventLabel = "gunakan - $campaignId"
 
         Tracker.Builder()
@@ -54,7 +64,10 @@ class VoucherDetailBottomSheetTracker @Inject constructor(private val userSessio
             .setEventAction(ShopPageTrackingConstant.EventAction.CAMPAIGN_TAB_COUPON_DETAIL_CLICK)
             .setEventCategory(ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER)
             .setEventLabel(eventLabel)
-            .setCustomProperty(ShopPageTrackingConstant.TRACKER_ID, ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK)
+            .setCustomProperty(
+                ShopPageTrackingConstant.TRACKER_ID,
+                ShopPageTrackingConstant.TrackerId.TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK
+            )
             .setBusinessUnit(ShopPageTrackingConstant.PHYSICAL_GOODS_PASCAL_CASE)
             .setCurrentSite(ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE)
             .setShopId(shopId)
