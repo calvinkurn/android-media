@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryTitleUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryTitleBinding
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryTitleViewHolder(
@@ -21,12 +22,12 @@ class CategoryTitleViewHolder(
 
     private var binding: ItemTokopedianowCategoryTitleBinding? by viewBinding()
 
-    override fun bind(element: CategoryTitleUiModel) {
+    override fun bind(data: CategoryTitleUiModel) {
         binding?.apply {
-            tpTitle.text = element.title
+            tpTitle.text = data.title
             root.setBackgroundColor(
                 safeParseColor(
-                    color = element.backgroundColor,
+                    color = if (root.context.isDarkMode()) data.backgroundDarkColor else data.backgroundLightColor,
                     defaultColor = ContextCompat.getColor(
                         itemView.context,
                         R.color.tokopedianow_card_dms_color

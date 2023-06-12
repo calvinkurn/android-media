@@ -12,6 +12,7 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowTickerBinding
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowTickerViewHolder(
@@ -63,10 +64,10 @@ class TokoNowTickerViewHolder(
     private fun ItemTokopedianowTickerBinding.setBackgroundColor(
         data: TokoNowTickerUiModel
     ) {
-        if (data.backgroundColor.isNotBlank()) {
+        if (data.backgroundLightColor.isNotBlank() || data.backgroundDarkColor.isNotBlank()) {
             root.setBackgroundColor(
                 ViewUtil.safeParseColor(
-                    color = data.backgroundColor,
+                    color = if (root.context.isDarkMode()) data.backgroundDarkColor else data.backgroundLightColor,
                     defaultColor = ContextCompat.getColor(
                         itemView.context,
                         R.color.tokopedianow_card_dms_color

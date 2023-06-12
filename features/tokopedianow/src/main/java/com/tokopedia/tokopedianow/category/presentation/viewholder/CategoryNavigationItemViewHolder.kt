@@ -13,6 +13,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryNavigationItemUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryNavigationItemBinding
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryNavigationItemViewHolder(
@@ -47,7 +48,7 @@ class CategoryNavigationItemViewHolder(
         ivCategoryImage.loadImage(data.imageUrl)
         ivCategoryImage.setBackgroundColor(
             ViewUtil.safeParseColor(
-                color = data.backgroundColor,
+                color = if (root.context.isDarkMode()) data.backgroundDarkColor else data.backgroundLightColor,
                 defaultColor = ContextCompat.getColor(
                     itemView.context,
                     R.color.tokopedianow_card_dms_color

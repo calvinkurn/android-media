@@ -14,7 +14,7 @@ internal object CategoryNavigationMapper {
                 title = it.name,
                 imageUrl = it.imageUrl,
                 appLink = it.applinks,
-                backgroundColor = it.color,
+                backgroundLightColor = it.color,
                 headerName = String.EMPTY
             )
         },

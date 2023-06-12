@@ -12,7 +12,8 @@ data class CategoryNavigationItemUiModel(
     val appLink: String = String.EMPTY,
     val warehouseId: String = String.EMPTY,
     val headerName: String = String.EMPTY,
-    val backgroundColor: String = String.EMPTY
+    val backgroundLightColor: String = String.EMPTY,
+    val backgroundDarkColor: String = String.EMPTY
 ): Visitable<CategoryNavigationItemTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: CategoryNavigationItemTypeFactory): Int = typeFactory.type(this)
 }

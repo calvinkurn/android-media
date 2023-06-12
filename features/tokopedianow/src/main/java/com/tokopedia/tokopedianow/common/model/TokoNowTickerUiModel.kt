@@ -8,7 +8,8 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 data class TokoNowTickerUiModel (
         val id: String = String.EMPTY,
         val tickers: List<TickerData>,
-        val backgroundColor: String = String.EMPTY
+        val backgroundLightColor: String = String.EMPTY,
+        val backgroundDarkColor: String = String.EMPTY
 ) : Visitable<TokoNowTickerTypeFactory> {
     override fun type(typeFactory: TokoNowTickerTypeFactory): Int {
         return typeFactory.type(this)

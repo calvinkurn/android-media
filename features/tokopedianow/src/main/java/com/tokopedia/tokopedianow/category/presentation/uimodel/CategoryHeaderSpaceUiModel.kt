@@ -8,7 +8,8 @@ import com.tokopedia.tokopedianow.category.presentation.adapter.typefactory.list
 data class CategoryHeaderSpaceUiModel(
     val id: String = String.EMPTY,
     val space: Int = Int.ZERO,
-    val backgroundColor: String = String.EMPTY
+    val backgroundLightColor: String = String.EMPTY,
+    val backgroundDarkColor: String = String.EMPTY
 ): Visitable<CategoryTypeFactory> {
     override fun type(typeFactory: CategoryTypeFactory): Int = typeFactory.type(this)
 }

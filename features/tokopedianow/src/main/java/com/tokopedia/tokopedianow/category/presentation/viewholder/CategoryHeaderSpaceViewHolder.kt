@@ -6,9 +6,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.uimodel.CategoryHeaderSpaceUiModel
-import com.tokopedia.tokopedianow.common.util.ViewUtil
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryHeaderSpaceBinding
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryHeaderSpaceViewHolder(
@@ -21,12 +21,12 @@ class CategoryHeaderSpaceViewHolder(
 
     private var binding: ItemTokopedianowCategoryHeaderSpaceBinding? by viewBinding()
 
-    override fun bind(element: CategoryHeaderSpaceUiModel) {
+    override fun bind(data: CategoryHeaderSpaceUiModel) {
         binding?.root?.apply {
-            layoutParams.height = element.space
+            layoutParams.height = data.space
             setBackgroundColor(
                 safeParseColor(
-                    color = element.backgroundColor,
+                    color = if (context.isDarkMode()) data.backgroundDarkColor else data.backgroundLightColor,
                     defaultColor = ContextCompat.getColor(
                         itemView.context,
                         R.color.tokopedianow_card_dms_color

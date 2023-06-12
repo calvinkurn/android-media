@@ -10,22 +10,22 @@ import com.tokopedia.unifycomponents.ticker.TickerData
 internal object CategoryDetailMapper {
     fun CategoryDetailResponse.mapToHeaderSpace(space: Int): CategoryHeaderSpaceUiModel = CategoryHeaderSpaceUiModel(
         space = space,
-        backgroundColor = categoryDetail.data.color
+        backgroundLightColor = categoryDetail.data.color
     )
 
     fun CategoryDetailResponse.mapToChooseAddress(): TokoNowChooseAddressWidgetUiModel = TokoNowChooseAddressWidgetUiModel(
-        backgroundColor = categoryDetail.data.color
+        backgroundLightColor = categoryDetail.data.color
     )
 
     fun CategoryDetailResponse.mapToCategoryTitle(): CategoryTitleUiModel = CategoryTitleUiModel(
         title = categoryDetail.data.name,
-        backgroundColor = categoryDetail.data.color
+        backgroundLightColor = categoryDetail.data.color
     )
 
     fun CategoryDetailResponse.mapToTicker(
         tickerData: Pair<Boolean, List<TickerData>>
     ) = TokoNowTickerUiModel(
         tickers = tickerData.second,
-        backgroundColor = categoryDetail.data.color
+        backgroundLightColor = categoryDetail.data.color
     )
 }
