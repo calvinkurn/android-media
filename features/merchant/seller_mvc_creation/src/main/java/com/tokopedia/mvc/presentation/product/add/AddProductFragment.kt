@@ -26,6 +26,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -147,6 +148,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupView()
         observeUiEffect()
         observeUiState()
@@ -178,7 +180,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         setupSearchBar()
         setupButton()
         setupToolbar()
-        binding?.cardUnify2?.cardType = CardUnify2.TYPE_CLEAR
     }
 
     private fun setupToolbar() {
