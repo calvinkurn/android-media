@@ -7,10 +7,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.common.UniversalShareTestActivity
 import com.tokopedia.common.di.AppStubModule
 import com.tokopedia.common.di.DaggerAppStubComponent
 import com.tokopedia.common.stub.UniversalShareBottomSheetStub
+import com.tokopedia.common.view.UniversalShareTestActivity
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import org.junit.After

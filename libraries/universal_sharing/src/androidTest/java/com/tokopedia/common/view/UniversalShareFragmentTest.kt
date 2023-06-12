@@ -1,4 +1,4 @@
-package com.tokopedia.common
+package com.tokopedia.common.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.model.AffiliateInput
 
 class UniversalShareFragmentTest : Fragment() {
 
