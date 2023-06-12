@@ -1,20 +1,27 @@
 package com.tokopedia.review.feature.media.detail.analytic
 
+import com.tokopedia.review.feature.media.gallery.base.analytic.ReviewMediaGalleryTrackerConstant
 import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
+import com.tokopedia.reviewcommon.extension.appendProductId
+import com.tokopedia.reviewcommon.extension.appendPromotionsEnhancedEcommerce
 import com.tokopedia.reviewcommon.extension.appendSessionIris
 import com.tokopedia.reviewcommon.extension.appendTrackerIdIfNotBlank
 import com.tokopedia.reviewcommon.extension.appendUserId
+import com.tokopedia.reviewcommon.extension.queueEnhancedEcommerce
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on May 26, 2023
  */
-class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTracker {
+class ReviewDetailUserProfileTrackerImpl @Inject constructor(
+    private val trackingQueue: TrackingQueue
+): ReviewDetailTracker {
 
     override fun trackOnLikeReviewClicked(
         loggedInUserId: String,
@@ -59,6 +66,30 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
             .sendGeneralEvent()
     }
 
+    override fun trackImpressionReviewDetailPage(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = ReviewMediaGalleryTrackerConstant.EVENT_NAME_PROMO_VIEW,
+            eventCategory = ReviewDetailUserProfileTrackerConstant.EVENT_CATEGORY_FEED_USER_PROFILE,
+            eventAction = ReviewDetailUserProfileTrackerConstant.EVENT_ACTION_IMPRESS_REVIEW_MEDIA_FROM_USER_PROFILE,
+            eventLabel = getEventLabel(feedbackId, productId, reviewUserId, isReviewOwner)
+        ).appendUserId(loggedInUserId)
+            .appendTrackerIdIfNotBlank("44105")
+            .appendBusinessUnit(ReviewDetailUserProfileTrackerConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
+            .appendPromotionsEnhancedEcommerce(
+                creativeName = "",
+                creativeSlot = "",
+                itemId = feedbackId,
+                itemName = "/feed user profile - review media",
+            ).queueEnhancedEcommerce(trackingQueue)
+    }
+
     override fun trackImpressOnSeeMoreBottomSheet(
         loggedInUserId: String,
         feedbackId: String,
@@ -77,16 +108,6 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
             .appendTrackerIdIfNotBlank("44106")
             .appendSessionIris(TrackApp.getInstance().gtm.irisSessionId)
             .sendGeneralEvent()
-    }
-
-    override fun trackImpressionReviewDetailPage(
-        loggedInUserId: String,
-        feedbackId: String,
-        productId: String,
-        reviewUserId: String,
-        isReviewOwner: Boolean
-    ) {
-        /** TODO: implement this */
     }
 
     private fun getEventLabel(

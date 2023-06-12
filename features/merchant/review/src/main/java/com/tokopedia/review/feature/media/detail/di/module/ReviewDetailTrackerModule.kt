@@ -4,6 +4,7 @@ import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerImp
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailUserProfileTrackerImpl
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
 
@@ -16,9 +17,9 @@ class ReviewDetailTrackerModule(
 ) {
 
     @Provides
-    fun provideReviewDetailTracker(): ReviewDetailTracker {
+    fun provideReviewDetailTracker(trackingQueue: TrackingQueue): ReviewDetailTracker {
         return if (pageSource == ReviewMediaGalleryRouter.PageSource.USER_PROFILE) {
-            ReviewDetailUserProfileTrackerImpl()
+            ReviewDetailUserProfileTrackerImpl(trackingQueue)
         } else {
             ReviewDetailTrackerImpl()
         }
