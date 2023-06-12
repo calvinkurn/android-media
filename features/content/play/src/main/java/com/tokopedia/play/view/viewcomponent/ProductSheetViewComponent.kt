@@ -194,6 +194,10 @@ class ProductSheetViewComponent(
             override fun onIconClicked(view: BottomSheetHeader) {
                 listener.onCartClicked(this@ProductSheetViewComponent)
             }
+
+            override fun impressIcon(view: BottomSheetHeader) {
+                listener.onImpressedCart(this@ProductSheetViewComponent)
+            }
         })
     }
 
@@ -451,5 +455,6 @@ class ProductSheetViewComponent(
         fun onInfoVoucherImpressed(view: ProductSheetViewComponent, voucher: PlayVoucherUiModel.Merchant)
 
         fun onCartClicked(view: ProductSheetViewComponent)
+        fun onImpressedCart(view: ProductSheetViewComponent)
     }
 }

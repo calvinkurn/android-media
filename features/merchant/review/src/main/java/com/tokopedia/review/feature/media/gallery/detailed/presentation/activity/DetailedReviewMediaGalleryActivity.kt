@@ -536,7 +536,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private fun finishActivity() {
         if (sharedReviewMediaGalleryViewModel.hasSuccessToggleLikeStatus()) {
-            setResult(Activity.RESULT_OK)
+            setResult(
+                Activity.RESULT_OK,
+                ReviewMediaGalleryRouter.setResultData(
+                    sharedReviewMediaGalleryViewModel.getFeedbackId(),
+                    sharedReviewMediaGalleryViewModel.getLikeStatus(),
+                )
+            )
         }
         finish()
     }

@@ -6,7 +6,10 @@ import com.tokopedia.content.common.util.combine
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -19,8 +22,12 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileType
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.people.views.uimodel.getReviewSettings
-import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
 import com.tokopedia.people.views.uimodel.state.UserProfileUiState
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -89,16 +96,12 @@ class UserProfileViewModel @AssistedInject constructor(
     val isSelfProfile: Boolean
         get() = _profileType.value == ProfileType.Self
 
-    val isWhitelist: Boolean
-        get() = isSelfProfile && _profileWhitelist.value.isWhitelist
-
     val profileWebLink: String
         get() = _profileInfo.value.shareLink.webLink
 
-    val needOnboarding: Boolean
-        get() = _profileWhitelist.value.hasAcceptTnc.not()
-
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
+
+    val isShortVideoEntryPointShow: Boolean get() = _creationInfo.value.showShortVideo
 
     val profileTab: ProfileTabUiModel
         get() = _profileTab.value
@@ -106,7 +109,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
-    private val _profileWhitelist = MutableStateFlow(ProfileWhitelistUiModel.Empty)
+    private val _creationInfo = MutableStateFlow(ProfileCreationInfoUiModel())
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
@@ -126,7 +129,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileInfo,
         _followInfo,
         _profileType,
-        _profileWhitelist,
+        _creationInfo,
         _shopRecom,
         _profileTab,
         _feedPostsContent,
@@ -134,14 +137,24 @@ class UserProfileViewModel @AssistedInject constructor(
         _reviewContent,
         _isLoading,
         _error,
-        _reviewSettings
-    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
-        reviewContent, isLoading, error, reviewSettings ->
+        _reviewSettings,
+    ) { profileInfo,
+        followInfo,
+        profileType,
+        creationInfo,
+        shopRecom,
+        profileTab,
+        feedPostsContent,
+        videoPostContent,
+        reviewContent,
+        isLoading,
+        error,
+        reviewSettings ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
             profileType = profileType,
-            profileWhitelist = profileWhitelist,
+            creationInfo = creationInfo,
             shopRecom = shopRecom,
             profileTab = profileTab,
             feedPostsContent = feedPostsContent,
@@ -179,6 +192,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.ClickReviewTextSeeMore -> handleClickReviewTextSeeMore(action.review)
             is UserProfileAction.ClickProductInfo -> handleClickProductInfo(action.review)
             is UserProfileAction.ClickReviewMedia -> handleClickReviewMedia(action.feedbackID, action.attachment)
+            is UserProfileAction.UpdateLikeStatus -> handleUpdateLikeStatus(action.feedbackId, action.likeStatus)
             else -> {}
         }
     }
@@ -626,6 +640,14 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleUpdateLikeStatus(feedbackId: String, likeStatus: Int) {
+        val review = _reviewContent.value.reviewList.firstOrNull { it.feedbackID == feedbackId } ?: return
+
+        if (review.likeDislike.likeStatus != likeStatus) {
+            toggleLikeDislikeStatus(feedbackId)
+        }
+    }
+
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
         val profileInfo = repo.getProfile(username)
@@ -662,7 +684,7 @@ class UserProfileViewModel @AssistedInject constructor(
             return
         }
 
-        if (profileType == ProfileType.Self) _profileWhitelist.update { repo.getWhitelist() }
+        if (profileType == ProfileType.Self) _creationInfo.update { repo.getCreationInfo() }
 
         if (isRefresh) loadProfileTab()
     }

@@ -440,7 +440,7 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
     }
 }
 
-private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
+internal fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
     when {
         productCardModel.stockBarLabelColor.isNotEmpty() ->
             safeParseColor(

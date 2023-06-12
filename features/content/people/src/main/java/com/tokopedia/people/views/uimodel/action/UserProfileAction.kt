@@ -57,4 +57,9 @@ sealed interface UserProfileAction {
         val feedbackID: String,
         val attachment: UserReviewUiModel.Attachment
     ) : UserProfileAction
+
+    data class UpdateLikeStatus(
+        val feedbackId: String,
+        val likeStatus: Int,
+    ) : UserProfileAction
 }
