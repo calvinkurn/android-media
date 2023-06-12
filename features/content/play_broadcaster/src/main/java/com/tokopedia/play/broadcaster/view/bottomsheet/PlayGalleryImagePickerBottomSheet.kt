@@ -234,8 +234,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     private fun hideMediaLayout() = with(binding) {
-        containerPlayGalleryHeader.visible()
-        rvPlayGallery.visible()
+        containerPlayGalleryHeader.gone()
+        rvPlayGallery.gone()
     }
 
     private fun showAlbumLayout() {
@@ -243,7 +243,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
     }
 
     private fun hideAlbumLayout() {
-        binding.rvPlayAlbum.visible()
+        binding.rvPlayAlbum.gone()
     }
 
     private fun onAlbumLoadedCursor(cursor: Cursor?) {
