@@ -21,6 +21,7 @@ class UniversalInboxGetWidgetMetaUseCase @Inject constructor(
               subtext
               applink
               type
+              is_dynamic
             }
           }
         }
@@ -29,5 +30,4 @@ class UniversalInboxGetWidgetMetaUseCase @Inject constructor(
     override suspend fun execute(params: Unit): UniversalInboxWidgetWrapperResponse {
         return repository.request(graphqlQuery(), params)
     }
-
 }

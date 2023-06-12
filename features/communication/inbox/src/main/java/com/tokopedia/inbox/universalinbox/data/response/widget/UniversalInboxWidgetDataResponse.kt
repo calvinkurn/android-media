@@ -19,6 +19,6 @@ data class UniversalInboxWidgetDataResponse(
     @SerializedName("type")
     val type: Int = Int.ZERO,
 
-    @SerializedName("isDynamic")
+    @SerializedName("is_dynamic")
     val isDynamic: Boolean = false
 )
