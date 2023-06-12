@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_REDIRECTION_APPLINK
 import com.tokopedia.affiliate.AFFILIATE_GAMIFICATION_VISIBILITY
 import com.tokopedia.affiliate.AFFILIATE_NC
+import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate.AFFILIATE_SSA_SHOP
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_BANNER
 import com.tokopedia.affiliate.AFFILIATE_TOKONOW_DATA
@@ -63,6 +64,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -91,12 +93,14 @@ class AffiliatePromoFragment :
     ProductClickInterface {
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
-    private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
+    private var affiliatePromoViewModel: AffiliatePromoViewModel? = null
 
     private val tabFragments = arrayListOf<Fragment>()
     private var remoteConfig: RemoteConfig? = null
@@ -113,7 +117,7 @@ class AffiliatePromoFragment :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
                 setUserDetails()
-                affiliatePromoViewModel.getAffiliateValidateUser()
+                affiliatePromoViewModel?.getAffiliateValidateUser()
             } else {
                 activity?.finish()
             }
@@ -124,6 +128,12 @@ class AffiliatePromoFragment :
             AFFILIATE_NC,
             ""
         ) == AFFILIATE_NC
+
+    private val isAffiliatePromoteHomeEnabled =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_PROMOTE_HOME,
+            ""
+        ) == AFFILIATE_PROMOTE_HOME
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
@@ -168,25 +178,31 @@ class AffiliatePromoFragment :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             AffiliateAnalytics.ScreenKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
+
     private fun sendNotificationClickEvent() {
         AffiliateAnalytics.sendEvent(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
+
     private fun afterViewCreated() {
+        binding?.navHeaderGroup?.isVisible = isAffiliatePromoteHomeEnabled
+        binding?.promotionInfoTitle?.isVisible = !isAffiliatePromoteHomeEnabled
+        binding?.promotionInfoDesc?.isVisible = !isAffiliatePromoteHomeEnabled
+
         binding?.promoNavToolbar?.run {
             val iconBuilder = IconBuilder()
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    affiliatePromoViewModel.resetNotificationCount()
+                    affiliatePromoViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -198,7 +214,11 @@ class AffiliatePromoFragment :
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.label_affiliate)
+                if (isAffiliatePromoteHomeEnabled) {
+                    getString(R.string.label_affiliate)
+                } else {
+                    getString(R.string.affiliate_promo)
+                }
             setOnBackButtonClickListener {
                 (activity as? AffiliateActivity)?.handleBackButton(false)
             }
@@ -209,7 +229,7 @@ class AffiliatePromoFragment :
         }
 
         isAffiliateSSAShopEnabled().let {
-            affiliatePromoViewModel.fetchSSAShopList()
+            affiliatePromoViewModel?.fetchSSAShopList()
         }
 
         if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
@@ -221,7 +241,7 @@ class AffiliatePromoFragment :
                 show()
                 setOnClickListener {
                     tokoNowData = affiliateTokoNowData()
-                    affiliatePromoViewModel.getTokoNowBottomSheetInfo(getTokoNowPageId())
+                    affiliatePromoViewModel?.getTokoNowBottomSheetInfo(getTokoNowPageId())
                 }
             }
         }
@@ -238,20 +258,20 @@ class AffiliatePromoFragment :
         showDefaultState()
         setAffiliateGreeting()
         setUserDetails()
-        if (!affiliatePromoViewModel.isUserLoggedIn()) {
+        if (affiliatePromoViewModel?.isUserLoggedIn() == false) {
             loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
         } else {
-            affiliatePromoViewModel.getAffiliateValidateUser()
+            affiliatePromoViewModel?.getAffiliateValidateUser()
         }
         if (RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 AFFILIATE_DISCO_PROMO,
                 ""
             ) == AFFILIATE_DISCO_PROMO
         ) {
-            affiliatePromoViewModel.getDiscoBanners(page = 0, limit = 7)
+            affiliatePromoViewModel?.getDiscoBanners(page = 0, limit = 7)
         }
         if (isAffiliateNCEnabled()) {
-            affiliatePromoViewModel.fetchUnreadNotificationCount()
+            affiliatePromoViewModel?.fetchUnreadNotificationCount()
         }
     }
 
@@ -266,7 +286,7 @@ class AffiliatePromoFragment :
             AffiliateAnalytics.ActionKeys.CLICK_SSA_SHOP_BANNER,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -289,8 +309,9 @@ class AffiliatePromoFragment :
 
     private fun setUserDetails() {
         view?.findViewById<ImageUnify>(R.id.user_image)
-            ?.loadImageCircle(affiliatePromoViewModel.getUserProfilePicture())
-        view?.findViewById<Typography>(R.id.user_name)?.text = affiliatePromoViewModel.getUserName()
+            ?.loadImageCircle(affiliatePromoViewModel?.getUserProfilePicture())
+        view?.findViewById<Typography>(R.id.user_name)?.text =
+            affiliatePromoViewModel?.getUserName()
     }
 
     private fun setAffiliateGreeting() {
@@ -358,12 +379,12 @@ class AffiliatePromoFragment :
             eventAction,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun setObservers() {
-        affiliatePromoViewModel.progressBar().observe(this) { visibility ->
+        affiliatePromoViewModel?.progressBar()?.observe(this) { visibility ->
             if (visibility != null) {
                 if (visibility) {
                     hideAllElements()
@@ -374,7 +395,7 @@ class AffiliatePromoFragment :
             }
         }
 
-        affiliatePromoViewModel.getErrorMessage().observe(this) { _ ->
+        affiliatePromoViewModel?.getErrorMessage()?.observe(this) { _ ->
             binding?.root?.let {
                 Toaster.build(
                     it,
@@ -385,10 +406,10 @@ class AffiliatePromoFragment :
             }
         }
 
-        affiliatePromoViewModel.getValidateUserdata().observe(this) { validateUserdata ->
+        affiliatePromoViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         }
-        affiliatePromoViewModel.getAffiliateAnnouncement().observe(this) {
+        affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(this) {
             if (it.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
                     it.getAffiliateAnnouncementV2?.data?.type,
@@ -401,7 +422,7 @@ class AffiliatePromoFragment :
                 )
             }
         }
-        affiliatePromoViewModel.getDiscoCampaignBanners().observe(this) {
+        affiliatePromoViewModel?.getDiscoCampaignBanners()?.observe(this) {
             if (!it?.recommendedAffiliateDiscoveryCampaign?.data?.items.isNullOrEmpty()) {
                 binding?.discoPromotionGroup?.show()
                 binding?.discoInspirationLihatSemua?.setOnClickListener {
@@ -419,7 +440,7 @@ class AffiliatePromoFragment :
                             affiliateAdapterFactory = AffiliateAdapterFactory(
                                 promotionClickInterface = this@AffiliatePromoFragment
                             ),
-                            userId = userSessionInterface.userId
+                            userId = userSessionInterface?.userId.orEmpty()
                         )
                     discoBannerAdapter.setVisitables(
                         it.recommendedAffiliateDiscoveryCampaign?.data?.items?.mapNotNull { campaign ->
@@ -430,8 +451,8 @@ class AffiliatePromoFragment :
                 }
             }
         }
-        affiliatePromoViewModel.getTokoNowBottomSheetData()
-            .observe(viewLifecycleOwner) { eligibility ->
+        affiliatePromoViewModel?.getTokoNowBottomSheetData()
+            ?.observe(viewLifecycleOwner) { eligibility ->
                 val pageId = getTokoNowPageId().toString()
                 AffiliatePromotionBottomSheet.newInstance(
                     AffiliatePromotionBottomSheetParams(
@@ -458,7 +479,7 @@ class AffiliatePromoFragment :
                     null
                 ).show(childFragmentManager, "")
             }
-        affiliatePromoViewModel.getSSAShopList().observe(viewLifecycleOwner) {
+        affiliatePromoViewModel?.getSSAShopList()?.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 binding?.ssaPromotionGroup?.show()
                 binding?.rvSsa?.adapter = ssaAdapter
@@ -481,7 +502,7 @@ class AffiliatePromoFragment :
             AffiliateAnalytics.ActionKeys.CLICK_LIHAT_DISCO_BANNER,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -495,7 +516,7 @@ class AffiliatePromoFragment :
                 PAGE_ANNOUNCEMENT_PROMOSIKAN,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION,
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -508,7 +529,7 @@ class AffiliatePromoFragment :
         binding?.recommendedLayout?.hide()
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
@@ -565,13 +586,13 @@ class AffiliatePromoFragment :
     }
 
     override fun onSystemDown() {
-        affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
-        affiliatePromoViewModel.getAnnouncementInformation()
+        affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
+        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onReviewed() {
-        affiliatePromoViewModel.setValidateUserType(ON_REVIEWED)
-        affiliatePromoViewModel.getAnnouncementInformation()
+        affiliatePromoViewModel?.setValidateUserType(ON_REVIEWED)
+        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onUserNotRegistered() {
@@ -589,8 +610,8 @@ class AffiliatePromoFragment :
     }
 
     override fun onUserValidated() {
-        affiliatePromoViewModel.getAnnouncementInformation()
-        affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
+        affiliatePromoViewModel?.getAnnouncementInformation()
+        affiliatePromoViewModel?.setValidateUserType(ON_REGISTERED)
     }
 
     override fun enterLinkButtonClicked() {

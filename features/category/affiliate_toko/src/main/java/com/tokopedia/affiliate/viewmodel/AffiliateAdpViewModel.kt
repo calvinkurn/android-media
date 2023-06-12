@@ -194,6 +194,18 @@ class AffiliateAdpViewModel @Inject constructor(
         )
     }
 
+    fun getUserName(): String {
+        return userSessionInterface.name
+    }
+
+    fun getUserProfilePicture(): String {
+        return userSessionInterface.profilePicture
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        return userSessionInterface.isLoggedIn
+    }
+
     private fun convertDataToVisitable(
         data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
         performanceList: AffiliateUserPerformaListItemData?,
@@ -254,6 +266,7 @@ class AffiliateAdpViewModel @Inject constructor(
                 0 ->
                     item.isSelected =
                         lastSelectedChip == null || lastSelectedChip?.name == item.name
+
                 else -> item.isSelected = lastSelectedChip?.name == item.name
             }
         }
@@ -356,9 +369,6 @@ class AffiliateAdpViewModel @Inject constructor(
 
     fun resetNotificationCount() {
         _unreadNotificationCount.value = Int.ZERO
-    }
-    fun isUserLoggedIn(): Boolean {
-        return userSessionInterface.isLoggedIn
     }
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getDataShimmerVisibility(): LiveData<Boolean> = dataPlatformShimmerVisibility

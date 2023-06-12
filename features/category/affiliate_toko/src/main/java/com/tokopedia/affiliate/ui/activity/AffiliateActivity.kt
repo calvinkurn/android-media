@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
+import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.FIRST_TAB
@@ -47,6 +48,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -106,20 +108,25 @@ class AffiliateActivity :
                 it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
                     startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
                 }
+
                 it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
                     startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
                 }
+
                 it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
                     selectItem(PROMO_MENU, R.id.menu_promo_affiliate, true)
                 }
+
                 it.contains(PAGE_SEGMENT_EDU_PAGE) || it.contains(PAGE_SEGMENT_HELP) -> {
                     fromAppLink = it.contains(PAGE_SEGMENT_EDU_PAGE)
                     fromHelpAppLink = it.contains(PAGE_SEGMENT_HELP)
                     selectItem(EDUKASI_MENU, R.id.menu_edukasi_affiliate, true)
                 }
+
                 it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
                     selectItem(INCOME_MENU, R.id.menu_withdrawal_affiliate, true)
                 }
+
                 it.contains(PAGE_SEGMENT_ONBOARDING) -> {
                     if (intent?.data?.queryParameterNames.isNullOrEmpty()) {
                         showLoginPortal()
@@ -127,6 +134,7 @@ class AffiliateActivity :
                         showLoginPortal(intent?.data?.getQueryParameter(intent.data?.queryParameterNames?.first()))
                     }
                 }
+
                 else -> {}
             }
         }
@@ -217,6 +225,7 @@ class AffiliateActivity :
                         1 -> {
                             if (currentCoachIndex == 2) handleBackButton(true)
                         }
+
                         2 -> {
                             getPromoFragmentView()?.let {
                                 if (!viewFound) {
@@ -279,21 +288,29 @@ class AffiliateActivity :
     }
 
     private fun initBottomNavigationView() {
-        var selectedTab = PROMO_MENU
+        var selectedTab = if (isAffiliatePromoteHomeEnabled) {
+            PROMO_MENU
+        } else {
+            ADP_MENU
+        }
         Uri.parse(intent?.data?.path ?: "").pathSegments.firstOrNull()?.let {
             when {
                 it.contains(PAGE_SEGMENT_HELP) || it.contains(PAGE_SEGMENT_EDU_PAGE) -> {
                     selectedTab = EDUKASI_MENU
                 }
+
                 it.contains(PAGE_SEGMENT_TRANSACTION_HISTORY) -> {
                     selectedTab = INCOME_MENU
                 }
+
                 it.contains(PAGE_SEGMENT_PROMO_PAGE) -> {
                     selectedTab = PROMO_MENU
                 }
+
                 it.contains(PAGE_SEGMENT_SSA_SHOP_LIST) -> {
                     startActivity(Intent(this, AffiliateSSAShopListActivity::class.java))
                 }
+
                 it.contains(PAGE_SEGMENT_DISCO_PAGE_LIST) -> {
                     startActivity(Intent(this, AffiliateDiscoPromoListActivity::class.java))
                 }
@@ -320,6 +337,7 @@ class AffiliateActivity :
                     this
                 )
             )
+
             EDUKASI_MENU -> openFragment(
                 AffiliateEducationLandingPage.getFragmentInstance(
                     fromAppLink = fromAppLink,
@@ -362,6 +380,7 @@ class AffiliateActivity :
                         Toaster.TYPE_ERROR
                     ).show()
                 }
+
                 else -> {
                     showLoginPortal()
                 }
@@ -420,10 +439,24 @@ class AffiliateActivity :
     }
 
     companion object MenuItems {
-        var PROMO_MENU = FIRST_TAB
-        var ADP_MENU = SECOND_TAB
-        var INCOME_MENU = THIRD_TAB
-        var EDUKASI_MENU = FOURTH_TAB
+        val isAffiliatePromoteHomeEnabled =
+            RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+                AFFILIATE_PROMOTE_HOME,
+                ""
+            ) == AFFILIATE_PROMOTE_HOME
+
+        val PROMO_MENU = if (isAffiliatePromoteHomeEnabled) {
+            FIRST_TAB
+        } else {
+            SECOND_TAB
+        }
+        val ADP_MENU = if (isAffiliatePromoteHomeEnabled) {
+            SECOND_TAB
+        } else {
+            FIRST_TAB
+        }
+        const val INCOME_MENU = THIRD_TAB
+        const val EDUKASI_MENU = FOURTH_TAB
     }
 
     override fun selectItem(position: Int, id: Int, isNotFromBottom: Boolean) {
@@ -477,12 +510,15 @@ class AffiliateActivity :
             AffiliateAdpFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 ADP_MENU
             )
+
             AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 PROMO_MENU
             )
+
             AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 INCOME_MENU
             )
+
             AffiliateEducationLandingPage::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 EDUKASI_MENU
             )

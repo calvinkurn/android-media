@@ -191,6 +191,7 @@ const val AFFILIATE_SSA_SHOP = "aff_ssa_portal"
 const val AFFILIATE_DISCO_PROMO = "aff_disco_link_gen"
 const val AFFILIATE_TOKONOW_BANNER = "aff_now_att"
 const val AFFILIATE_NC = "Affiliate_NC"
+const val AFFILIATE_PROMOTE_HOME = "aff_promote_home"
 
 const val AFFILIATE_GAMIFICATION_VISIBILITY = "affil_banner_gami"
 const val AFFILIATE_GAMIFICATION_REDIRECTION = "affil_gami_disco"

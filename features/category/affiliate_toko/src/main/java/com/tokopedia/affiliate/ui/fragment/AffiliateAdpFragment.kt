@@ -15,14 +15,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.affiliate.AFFILIATE_NC
+import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.CLICK_TYPE
-import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TIME_EIGHTEEN
+import com.tokopedia.affiliate.TIME_ELEVEN
+import com.tokopedia.affiliate.TIME_FIFTEEN
+import com.tokopedia.affiliate.TIME_SIX
+import com.tokopedia.affiliate.TIME_SIXTEEN
+import com.tokopedia.affiliate.TIME_TEN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
@@ -54,29 +59,31 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFound
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
 import com.tokopedia.affiliate.viewmodel.AffiliateAdpViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.affiliate_toko.databinding.AffiliateAdpFragmentLayoutBinding
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class AffiliateAdpFragment :
     AffiliateBaseFragment<AffiliateAdpViewModel>(),
@@ -89,28 +96,41 @@ class AffiliateAdpFragment :
     private var listSize = 0
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
+    var binding by autoClearedNullable<AffiliateAdpFragmentLayoutBinding>()
+
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null
     private var affiliateActivityInterface: AffiliateActivityInterface? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
-    private lateinit var affiliateAdpViewModel: AffiliateAdpViewModel
-    lateinit var adapter: AffiliateAdapter
+    private var affiliateAdpViewModel: AffiliateAdpViewModel? = null
+    private val adapter: AffiliateAdapter by lazy {
+        AffiliateAdapter(
+            AffiliateAdapterFactory(
+                productClickInterface = this,
+                onDateRangeClickInterface = this,
+                onPerformaGridClick = this,
+                bottomNavBarClickListener = bottomNavBarClickListener,
+                affiliatePerformanceChipClick = this
+            ),
+            source = AffiliateAdapter.PageSource.SOURCE_HOME,
+            userId = userSessionInterface?.userId.orEmpty()
+        )
+    }
     private var isUserBlackListed = false
     private var isNoPromoItem = false
     private var isNoMoreData = false
-    private var productRV: RecyclerView? = null
-    private var swipeRefresh: SwipeToRefresh? = null
-    private var navToolbar: NavToolbar? = null
-    private var loader: LoaderUnify? = null
 
     private val loginRequest =
         registerForActivityResult(StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
-                affiliateAdpViewModel.getAffiliateValidateUser()
+                setUserDetails()
+                affiliateAdpViewModel?.getAffiliateValidateUser()
             } else {
                 activity?.finish()
             }
@@ -121,6 +141,12 @@ class AffiliateAdpFragment :
             AFFILIATE_NC,
             ""
         ) == AFFILIATE_NC
+
+    private val isAffiliatePromoteHomeEnabled =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_PROMOTE_HOME,
+            ""
+        ) == AFFILIATE_PROMOTE_HOME
 
     private val linkHistory = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
@@ -151,22 +177,7 @@ class AffiliateAdpFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initAdapter()
         setObservers()
-    }
-
-    private fun initAdapter() {
-        adapter = AffiliateAdapter(
-            AffiliateAdapterFactory(
-                productClickInterface = this,
-                onDateRangeClickInterface = this,
-                onPerformaGridClick = this,
-                bottomNavBarClickListener = bottomNavBarClickListener,
-                affiliatePerformanceChipClick = this
-            ),
-            source = AffiliateAdapter.PageSource.SOURCE_HOME,
-            userId = userSessionInterface.userId
-        )
     }
 
     override fun onCreateView(
@@ -174,7 +185,8 @@ class AffiliateAdpFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.affiliate_adp_fragment_layout, container, false)
+        binding = AffiliateAdpFragmentLayoutBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -187,36 +199,34 @@ class AffiliateAdpFragment :
         AffiliateAnalytics.sendOpenScreenEvent(
             AffiliateAnalytics.EventKeys.OPEN_SCREEN,
             "${AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_FRAGMENT}register",
-            userSessionInterface.isLoggedIn,
-            userSessionInterface.userId
+            userSessionInterface?.isLoggedIn.orFalse(),
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
     private fun afterViewCreated() {
-        productRV = view?.findViewById(R.id.products_rv)
-        swipeRefresh = view?.findViewById(R.id.swipe_refresh_layout)
-        navToolbar = view?.findViewById(R.id.home_navToolbar)
-        loader = view?.findViewById(R.id.affiliate_progress_bar)
-        if (!affiliateAdpViewModel.isUserLoggedIn()) {
+        if (affiliateAdpViewModel?.isUserLoggedIn() == false) {
             loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
         } else {
-            affiliateAdpViewModel.getAffiliateValidateUser()
+            affiliateAdpViewModel?.getAffiliateValidateUser()
         }
+        setAffiliateGreeting()
+        binding?.navHeaderGroup?.isVisible = isAffiliatePromoteHomeEnabled
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
-        productRV?.layoutManager = layoutManager
-        swipeRefresh?.setOnRefreshListener {
+        binding?.productsRv?.layoutManager = layoutManager
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             isSwipeRefresh = true
             resetItems()
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
-        productRV?.adapter = adapter
-        loadMoreTriggerListener?.let { productRV?.addOnScrollListener(it) }
-        navToolbar?.run {
+        binding?.productsRv?.adapter = adapter
+        loadMoreTriggerListener?.let { binding?.productsRv?.addOnScrollListener(it) }
+        binding?.homeNavToolbar?.run {
             val iconBuilder = IconBuilder()
             if (isAffiliateNCEnabled()) {
                 iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-                    affiliateAdpViewModel.resetNotificationCount()
+                    affiliateAdpViewModel?.resetNotificationCount()
                     sendNotificationClickEvent()
                     RouteManager.route(
                         context,
@@ -231,21 +241,26 @@ class AffiliateAdpFragment :
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                getString(R.string.performa_affiliate)
+                if (isAffiliatePromoteHomeEnabled) {
+                    getString(R.string.performa_affiliate)
+                } else {
+                    getString(R.string.label_affiliate)
+                }
             setOnBackButtonClickListener {
                 activity?.finish()
             }
         }
 
-        if (!CoachMarkPreference.hasShown(
-                requireContext(),
-                COACHMARK_TAG
-            )
-        ) {
-            affiliateActivityInterface?.showCoachMarker()
-        }
+//        if (!CoachMarkPreference.hasShown(
+//                requireContext(),
+//                COACHMARK_TAG
+//            )
+//        ) {
+//            affiliateActivityInterface?.showCoachMarker()
+//        }
+        setUserDetails()
         if (isAffiliateNCEnabled()) {
-            affiliateAdpViewModel.fetchUnreadNotificationCount()
+            affiliateAdpViewModel?.fetchUnreadNotificationCount()
         }
     }
 
@@ -255,7 +270,7 @@ class AffiliateAdpFragment :
             AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -270,14 +285,29 @@ class AffiliateAdpFragment :
         linkHistory.launch(intent)
     }
 
+    private fun setUserDetails() {
+        binding?.userImage?.loadImageCircle(affiliateAdpViewModel?.getUserProfilePicture())
+        binding?.userName?.text = affiliateAdpViewModel?.getUserName()
+    }
+
     private fun resetItems() {
         loadMoreTriggerListener?.resetState()
         listSize = 0
         adapter.resetList()
-        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
+        affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
         if (isAffiliateNCEnabled()) {
-            affiliateAdpViewModel.fetchUnreadNotificationCount()
+            affiliateAdpViewModel?.fetchUnreadNotificationCount()
         }
+    }
+
+    private fun setAffiliateGreeting() {
+        view?.findViewById<Typography>(R.id.affiliate_greeting)?.text =
+            when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                in TIME_SIX..TIME_TEN -> getString(R.string.affiliate_morning)
+                in TIME_ELEVEN..TIME_FIFTEEN -> getString(R.string.affiliate_noon)
+                in TIME_SIXTEEN..TIME_EIGHTEEN -> getString(R.string.affiliate_afternoon)
+                else -> getString(R.string.affiliate_night)
+            }
     }
 
     private fun getEndlessRecyclerViewListener(
@@ -286,44 +316,44 @@ class AffiliateAdpFragment :
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isNoPromoItem && !isNoMoreData) {
-                    affiliateAdpViewModel.getAffiliatePerformance(page - 1)
+                    affiliateAdpViewModel?.getAffiliatePerformance(page - 1)
                 }
             }
         }
     }
 
     private fun setObservers() {
-        affiliateAdpViewModel.getShimmerVisibility().observe(this) { visibility ->
+        affiliateAdpViewModel?.getShimmerVisibility()?.observe(this) { visibility ->
             setShimmerVisibility(visibility)
         }
-        affiliateAdpViewModel.getDataShimmerVisibility().observe(this) { visibility ->
+        affiliateAdpViewModel?.getDataShimmerVisibility()?.observe(this) { visibility ->
             setDataShimmerVisibility(visibility)
         }
-        affiliateAdpViewModel.getRangeChanged().observe(this) { changed ->
+        affiliateAdpViewModel?.getRangeChanged()?.observe(this) { changed ->
             if (changed) resetItems()
         }
-        affiliateAdpViewModel.progressBar().observe(this) { visibility ->
-            loader?.isVisible = visibility.orFalse()
+        affiliateAdpViewModel?.progressBar()?.observe(this) { visibility ->
+            binding?.affiliateProgressBar?.isVisible = visibility.orFalse()
         }
-        affiliateAdpViewModel.getErrorMessage().observe(this) { error ->
+        affiliateAdpViewModel?.getErrorMessage()?.observe(this) { error ->
             onGetError(error)
         }
-        affiliateAdpViewModel.getValidateUserdata().observe(this) { validateUserdata ->
-            loader?.gone()
-            swipeRefresh?.show()
+        affiliateAdpViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
+            binding?.affiliateProgressBar?.gone()
+            binding?.swipeRefreshLayout?.show()
             onGetValidateUserData(validateUserdata)
         }
 
-        affiliateAdpViewModel.getAffiliateDataItems().observe(this) { dataList ->
+        affiliateAdpViewModel?.getAffiliateDataItems()?.observe(this) { dataList ->
             isNoPromoItem = dataList.firstOrNull { it is AffiliateNoPromoItemFoundModel } != null
 
             onGetAffiliateDataItems(dataList)
         }
 
-        affiliateAdpViewModel.getAffiliateAnnouncement().observe(this) { announcementData ->
+        affiliateAdpViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
             if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
-                    if (it.getString(USER_ID, null) != userSessionInterface.userId || it.getLong(
+                    if (it.getString(USER_ID, null) != userSessionInterface?.userId.orEmpty() || it.getLong(
                             TICKER_ID,
                             -1
                         ) != announcementData.getAffiliateAnnouncementV2?.data?.id
@@ -333,7 +363,7 @@ class AffiliateAdpFragment :
                                 TICKER_ID,
                                 announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
                             )
-                            putString(USER_ID, userSessionInterface.userId)
+                            putString(USER_ID, userSessionInterface?.userId.orEmpty())
                             apply()
                         }
 
@@ -348,19 +378,18 @@ class AffiliateAdpFragment :
                     announcementData.getAffiliateAnnouncementV2?.data?.type,
                     announcementData.getAffiliateAnnouncementV2?.data?.id
                 )
-                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)
-                    ?.setAnnouncementData(
-                        announcementData,
-                        activity,
-                        source = PAGE_ANNOUNCEMENT_HOME
-                    )
+                binding?.affiliateAnnouncementTicker?.setAnnouncementData(
+                    announcementData,
+                    activity,
+                    source = PAGE_ANNOUNCEMENT_HOME
+                )
             }
         }
-        affiliateAdpViewModel.noMoreDataAvailable().observe(this) { noDataAvailable ->
+        affiliateAdpViewModel?.noMoreDataAvailable()?.observe(this) { noDataAvailable ->
             isNoMoreData = noDataAvailable
         }
-        affiliateAdpViewModel.getUnreadNotificationCount().observe(this) { count ->
-            navToolbar?.apply {
+        affiliateAdpViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+            binding?.homeNavToolbar?.apply {
                 setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
             }
         }
@@ -376,7 +405,7 @@ class AffiliateAdpFragment :
                 PAGE_ANNOUNCEMENT_HOME,
                 tickerId!!,
                 AffiliateAnalytics.ItemKeys.AFFILIATE_HOME_TICKER_COMMUNICATION,
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
@@ -384,7 +413,7 @@ class AffiliateAdpFragment :
     private fun onGetAffiliateDataItems(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
         adapter.removeShimmer(listSize)
         if (isSwipeRefresh) {
-            swipeRefresh?.isRefreshing = false
+            binding?.swipeRefreshLayout?.isRefreshing = false
             isSwipeRefresh = !isSwipeRefresh
         }
         if (dataList.isNotEmpty()) {
@@ -396,7 +425,7 @@ class AffiliateAdpFragment :
     }
 
     private fun onGetError(error: Throwable?) {
-        view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
+        binding?.homeGlobalError?.run {
             when (error) {
                 is UnknownHostException, is SocketTimeoutException -> {
                     setType(GlobalError.NO_CONNECTION)
@@ -410,11 +439,11 @@ class AffiliateAdpFragment :
                     setType(GlobalError.SERVER_ERROR)
                 }
             }
-            swipeRefresh?.hide()
+            binding?.swipeRefreshLayout?.hide()
             show()
             setActionClickListener {
                 hide()
-                affiliateAdpViewModel.getAffiliateValidateUser()
+                affiliateAdpViewModel?.getAffiliateValidateUser()
             }
         }
     }
@@ -448,7 +477,7 @@ class AffiliateAdpFragment :
         }
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
@@ -499,11 +528,11 @@ class AffiliateAdpFragment :
             range.value,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_FILTER
         )
-        affiliateAdpViewModel.onRangeChanged(range)
+        affiliateAdpViewModel?.onRangeChanged(range)
         if (range.value == RANGE_TODAY) {
-            affiliateAdpViewModel.startSSE()
+            affiliateAdpViewModel?.startSSE()
         } else {
-            affiliateAdpViewModel.stopSSE()
+            affiliateAdpViewModel?.stopSSE()
         }
     }
 
@@ -514,7 +543,7 @@ class AffiliateAdpFragment :
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE
         )
         AffiliateBottomDatePicker.newInstance(
-            affiliateAdpViewModel.getSelectedDate(),
+            affiliateAdpViewModel?.getSelectedDate().orEmpty(),
             this,
             IDENTIFIER_HOME
         ).show(childFragmentManager, "")
@@ -526,7 +555,7 @@ class AffiliateAdpFragment :
             eventAction,
             eventCategory,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -549,7 +578,7 @@ class AffiliateAdpFragment :
             title,
             desc,
             metrics,
-            affiliateAdpViewModel.getSelectedDate(),
+            affiliateAdpViewModel?.getSelectedDate().orEmpty(),
             tickerInfo = tickerInfo
         ).show(childFragmentManager, "")
     }
@@ -570,19 +599,19 @@ class AffiliateAdpFragment :
                 action,
                 AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
                 "",
-                userSessionInterface.userId
+                userSessionInterface?.userId.orEmpty()
             )
         }
     }
 
     override fun onSystemDown() {
-        affiliateAdpViewModel.getAnnouncementInformation()
-        swipeRefresh?.hide()
+        affiliateAdpViewModel?.getAnnouncementInformation()
+        binding?.swipeRefreshLayout?.hide()
     }
 
     override fun onReviewed() {
-        affiliateAdpViewModel.getAnnouncementInformation()
-        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
+        affiliateAdpViewModel?.getAnnouncementInformation()
+        affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
     }
 
     override fun onUserNotRegistered() {
@@ -600,15 +629,15 @@ class AffiliateAdpFragment :
     }
 
     override fun onUserValidated() {
-        affiliateAdpViewModel.getAnnouncementInformation()
-        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
+        affiliateAdpViewModel?.getAnnouncementInformation()
+        affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
     }
 
     override fun onChipClick(type: ItemTypesItem?) {
         sendFilterClickEvent(type)
-        affiliateAdpViewModel.lastSelectedChip = type
+        affiliateAdpViewModel?.lastSelectedChip = type
         partialReset()
-        affiliateAdpViewModel.getAffiliatePerformance(PAGE_ZERO)
+        affiliateAdpViewModel?.getAffiliatePerformance(PAGE_ZERO)
     }
 
     private fun sendFilterClickEvent(type: ItemTypesItem?) {
@@ -617,7 +646,7 @@ class AffiliateAdpFragment :
             AffiliateAnalytics.ActionKeys.CLICK_PROMOTED_PAGE_FILTER_TAB,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
             "${type?.name?.lowercase()}",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -632,7 +661,7 @@ class AffiliateAdpFragment :
             adapter.notifyItemRangeRemoved(index, listSize - index)
         }
         loadMoreTriggerListener?.resetState()
-        listSize = affiliateAdpViewModel.staticSize
+        listSize = affiliateAdpViewModel?.staticSize.orZero()
         isNoMoreData = false
     }
 }

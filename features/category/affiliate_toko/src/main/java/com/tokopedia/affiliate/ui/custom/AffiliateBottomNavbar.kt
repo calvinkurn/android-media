@@ -1,8 +1,10 @@
 package com.tokopedia.affiliate.ui.custom
 
 import android.content.Context
+import com.tokopedia.affiliate.AFFILIATE_PROMOTE_HOME
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 class AffiliateBottomNavbar(
     private val bottomNavigation: LottieBottomNavbar?,
@@ -19,7 +21,20 @@ class AffiliateBottomNavbar(
         private const val ANIM_TO_ENABLED_SPEED = 3f
     }
 
+    private val isAffiliatePromoteHomeEnabled =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_PROMOTE_HOME,
+            ""
+        ) == AFFILIATE_PROMOTE_HOME
+
     fun populateBottomNavigationView() {
+        val secondTabText = context.resources.getString(
+            if (isAffiliatePromoteHomeEnabled) {
+                R.string.affiliate_performa
+            } else {
+                R.string.affiliate_promo
+            }
+        )
         menu.add(
             BottomMenu(
                 R.id.menu_promo_affiliate,
@@ -38,7 +53,7 @@ class AffiliateBottomNavbar(
         menu.add(
             BottomMenu(
                 R.id.menu_performa_affiliate,
-                context.resources.getString(R.string.affiliate_performa),
+                secondTabText,
                 null,
                 null,
                 R.drawable.ic_bottom_nav_promo_active_performa,

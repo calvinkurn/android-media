@@ -149,7 +149,8 @@ class AffiliateEducationLandingPage :
         searchTextField?.imeOptions = EditorInfo.IME_ACTION_SEARCH
         searchTextField?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && searchTextField.text.toString().trim()
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && searchTextField.text.toString()
+                        .trim()
                         .isNotEmpty()
                 ) {
                     context?.let {
@@ -272,23 +273,19 @@ class AffiliateEducationLandingPage :
     }
 
     fun handleBack() {
-        if (arguments?.getBoolean(IS_APP_LINK, false) == true) {
-            if (activity?.isTaskRoot == true) {
-                context?.let {
-                    startActivity(
-                        RouteManager.getIntent(
-                            it,
-                            ApplinkConst.HOME
-                        )
-                    ).also {
-                        activity?.finish()
-                    }
+        if (arguments?.getBoolean(IS_APP_LINK, false) == true && activity?.isTaskRoot == true) {
+            context?.let {
+                startActivity(
+                    RouteManager.getIntent(
+                        it,
+                        ApplinkConst.HOME
+                    )
+                ).also {
+                    activity?.finish()
                 }
-            } else {
-                activity?.finish()
             }
         } else {
-            (activity as? AffiliateActivity)?.handleBackButton(false)
+            activity?.finish()
         }
     }
 }
