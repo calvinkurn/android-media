@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -36,6 +37,12 @@ class ProductChooserAnalyticTest {
             imageUrl = "",
             stock = 1,
             price = OriginalPrice("Rp ${it}000", it * 1000.0),
+            hasCommission = false,
+            commissionFmt = "",
+            commission = 0L,
+            extraCommission = false,
+            pinStatus = PinProductUiModel.Empty,
+            number = "",
         )
     }
 

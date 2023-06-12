@@ -51,7 +51,6 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -62,7 +61,6 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
     private val userSession: UserSessionInterface,
     private val router: Router,
-    private val viewModelFactory: ViewModelProvider.Factory,
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator
 ) : PlayBaseBroadcastFragment(),
     TagListViewComponent.Listener,
@@ -371,4 +369,5 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
         }
         parentViewModel.submitAction(PlayBroadcastAction.SetCoverUploadedSource(source))
     }
+
 }

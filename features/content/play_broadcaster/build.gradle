@@ -93,6 +93,9 @@ dependencies {
     implementation (rootProject.ext.tkpdLibDependencies.ucrop){
         exclude group: 'com.android.support'
     }
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid

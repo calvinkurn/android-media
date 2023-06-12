@@ -284,6 +284,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     override fun getPageSource(): PlayBroPageSource {
                         return PlayBroPageSource.Live
                     }
+
+                    override fun fetchCommissionProduct(): Boolean {
+                        return false
+                    }
                 })
 
                 childFragment.setListener(object : ProductSetupFragment.Listener {

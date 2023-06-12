@@ -16,17 +16,16 @@ import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiMod
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.BaseProductSetupBottomSheet
 import com.tokopedia.play.broadcaster.type.PriceUnknown
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -59,6 +58,12 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                             imageUrl = it.cover,
                             stock = 1,
                             price = PriceUnknown,
+                            hasCommission = false,
+                            commissionFmt = "",
+                            commission = 0L,
+                            extraCommission = false,
+                            pinStatus = PinProductUiModel.Empty,
+                            number = "",
                         )
                     }
                 )

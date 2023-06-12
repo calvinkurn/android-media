@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -30,7 +30,10 @@ interface PlayBroProductRepository {
 
     suspend fun setProductTags(channelId: String, productIds: List<String>)
 
-    suspend fun getProductTagSummarySection(channelID: String): List<ProductTagSectionUiModel>
+    suspend fun getProductTagSummarySection(
+        channelID: String,
+        fetchCommission: Boolean = false,
+    ): List<ProductTagSectionUiModel>
 
     suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean
 }

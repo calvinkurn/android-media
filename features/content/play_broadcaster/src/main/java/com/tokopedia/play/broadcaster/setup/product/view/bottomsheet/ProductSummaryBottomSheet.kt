@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.ui.model.orUnknown
-import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
+import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref.Key.ProductSummaryCommission
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -26,8 +27,9 @@ import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -35,6 +37,7 @@ import javax.inject.Inject
  */
 class ProductSummaryBottomSheet @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
+    private val coachMarkSharedPref: ContentCoachMarkSharedPref,
 ) : BaseProductSetupBottomSheet(), ProductSummaryListViewComponent.Listener {
 
     private var mListener: Listener? = null
@@ -130,7 +133,7 @@ class ProductSummaryBottomSheet @Inject constructor(
     private fun setupObserve() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.summaryUiState.withCache().collectLatest { (prevState, state) ->
-                when(state.productTagSummary) {
+                when (state.productTagSummary) {
                     is ProductTagSummaryUiModel.Loading -> {
                         showLoading(true)
                         binding.globalError.visibility = View.GONE
@@ -144,6 +147,7 @@ class ProductSummaryBottomSheet @Inject constructor(
                         binding.flBtnDoneContainer.visibility = View.VISIBLE
 
                         productSummaryListView.setProductList(state.productTagSectionList, viewModel.isEligibleForPin, viewModel.isNumerationShown)
+                        setupProductCommissionCoachMark()
 
                         if(state.productTagSectionList.isEmpty()) {
                             binding.globalError.productTagSummaryEmpty { handleAddMoreProduct() }
@@ -151,14 +155,14 @@ class ProductSummaryBottomSheet @Inject constructor(
                             binding.flBtnDoneContainer.visibility = View.GONE
                         }
                     }
-                    else -> {}
+                    else -> return@collectLatest
                 }
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when(event) {
+                when (event) {
                     is PlayBroProductChooserEvent.GetDataError -> {
                         toaster.showError(
                             err = event.throwable,
@@ -171,7 +175,10 @@ class ProductSummaryBottomSheet @Inject constructor(
                     }
                     is PlayBroProductChooserEvent.DeleteProductSuccess -> {
                         toaster.showToaster(
-                            message = getString(R.string.play_bro_product_summary_success_delete_product, event.deletedProductCount),
+                            message = getString(
+                                R.string.play_bro_product_summary_success_delete_product,
+                                event.deletedProductCount
+                            ),
                         )
                     }
                     is PlayBroProductChooserEvent.DeleteProductError -> {
@@ -187,33 +194,29 @@ class ProductSummaryBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.FailPinUnPinProduct -> {
                         if (event.isPinned) analytic.onImpressFailUnPinProductBottomSheet()
                         else analytic.onImpressFailPinProductBottomSheet()
-
-                        if(event.throwable is PinnedProductException){
+                        if (event.throwable is PinnedProductException) {
                             analytic.onImpressColdDownPinProductSecondEvent(false)
                             toaster.showToaster(
                                 message = if (event.throwable.message.isEmpty()) getString(R.string.play_bro_pin_product_failed) else event.throwable.message,
                                 type = Toaster.TYPE_ERROR
                             )
-                        }else {
+                        } else {
                             toaster.showError(
                                 err = event.throwable
                             )
                         }
                     }
-                    else -> {
-                        //no-op
-                    }
+                    else -> return@collect
                 }
             }
         }
     }
 
     private fun showLoading(isShow: Boolean) {
-        if(isShow) {
-            if(!isLoadingDialogVisible())
+        if (isShow) {
+            if (!isLoadingDialogVisible())
                 loadingDialogFragment.show(childFragmentManager)
-        }
-        else if(loadingDialogFragment.isAdded) {
+        } else if (loadingDialogFragment.isAdded) {
             loadingDialogFragment.dismiss()
         }
     }
@@ -223,10 +226,15 @@ class ProductSummaryBottomSheet @Inject constructor(
     }
 
     private fun setTitle(productCount: Int?) {
-        if(productCount != null) {
-            setTitle(getString(R.string.play_bro_product_summary_title_with_count, productCount, viewModel.maxProduct))
-        }
-        else {
+        if (productCount != null) {
+            setTitle(
+                getString(
+                    R.string.play_bro_product_summary_title_with_count,
+                    productCount,
+                    viewModel.maxProduct
+                )
+            )
+        } else {
             setTitle(getString(R.string.play_bro_product_summary_title))
         }
     }
@@ -239,9 +247,32 @@ class ProductSummaryBottomSheet @Inject constructor(
         mListener = listener
     }
 
+    private fun setupProductCommissionCoachMark() {
+        if (coachMarkSharedPref.hasBeenShown(ProductSummaryCommission)) return
+        coachMarkSharedPref.setHasBeenShown(ProductSummaryCommission)
+
+        mListener?.onProductSummaryCommissionShown()
+        productSummaryListView.getProductCommissionCoachMark { firstTextCommission ->
+            val coachMark = CoachMark2(requireContext())
+            val coachMarkItem = CoachMark2Item(
+                anchorView = firstTextCommission,
+                title = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_title),
+                description = getString(R.string.play_shorts_affiliate_coach_mark_product_summary_commission_subtitle),
+                position = CoachMark2.POSITION_BOTTOM,
+            )
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(DELAY_COACH_MARK_DURATION)
+                coachMark.isOutsideTouchable = true
+                coachMark.showCoachMark(arrayListOf(coachMarkItem))
+            }
+        }
+    }
+
     companion object {
         private const val TAG = "ProductSummaryBottomSheet"
         private const val SCREEN_HEIGHT_DIVIDER = 0.85f
+        private const val DELAY_COACH_MARK_DURATION = 1000L
 
         fun getFragment(
             fragmentManager: FragmentManager,
@@ -264,6 +295,8 @@ class ProductSummaryBottomSheet @Inject constructor(
         fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>)
 
         fun onShouldAddProduct(bottomSheet: ProductSummaryBottomSheet)
+
+        fun onProductSummaryCommissionShown() {}
 
         fun onFinish(bottomSheet: ProductSummaryBottomSheet)
     }

@@ -8,6 +8,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -39,7 +40,7 @@ class PlaySetupSelectProductViewModelTest {
 
     @Test
     fun `when user select product, it should emit uiState with new selected products`() {
-        val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+        val mockAddedProduct = ProductUiModel("100", "Product 100", false, "", 0, false, "", 10, OriginalPrice("Rp 12.000", 12000.0), PinProductUiModel.Empty, "")
 
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
         expectedSelectedProducts.add(mockAddedProduct)
@@ -62,7 +63,7 @@ class PlaySetupSelectProductViewModelTest {
 
     @Test
     fun `when user select product but exceed the max product allowed, it shouldnt change the selected products`() {
-        val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+        val mockAddedProduct = ProductUiModel("100", "Product 100", false, "", 0, false,"", 10, OriginalPrice("Rp 12.000", 12000.0), PinProductUiModel.Empty, "")
 
         val expectedSelectedProducts = mockSelectedProducts.toMutableList()
 
@@ -111,7 +112,7 @@ class PlaySetupSelectProductViewModelTest {
 
     @Test
     fun `when user select product, it should emit saveState with canSave is true`() {
-        val mockAddedProduct = ProductUiModel("100", "Product 100", "", 10, OriginalPrice("Rp 12.000", 12000.0))
+        val mockAddedProduct = ProductUiModel("100", "Product 100", false, "", 0, false,"", 10, OriginalPrice("Rp 12.000", 12000.0), PinProductUiModel.Empty, "")
         val mockNewProductTagSectionList = mockProductTagSectionList.toMutableList()
         val mockNewProductList = mockNewProductTagSectionList.last().products.toMutableList()
         val mockSection = mockNewProductTagSectionList.last()
@@ -137,7 +138,7 @@ class PlaySetupSelectProductViewModelTest {
 
     @Test
     fun `when user unselect all product, it should emit saveState with canSave is false`() {
-        val mockProduct = ProductUiModel("1", "", "", 1, OriginalPrice("Rp 12.000", 12_000.0))
+        val mockProduct = ProductUiModel("1", "", false, "", 0, false,"", 1, OriginalPrice("Rp 12.000", 12_000.0), PinProductUiModel.Empty, "")
         val mockInitialProductTagSectionList = listOf(
             ProductTagSectionUiModel(
                 name = "Test 1",
@@ -168,9 +169,15 @@ class PlaySetupSelectProductViewModelTest {
             ProductUiModel(
                 it.toString(),
                 "",
+                false,
+                "",
+                0,
+                false,
                 "",
                 1,
-                OriginalPrice("Rp 12.000", 12_000.0)
+                OriginalPrice("Rp 12.000", 12_000.0),
+                PinProductUiModel.Empty,
+                ""
             )
         }
         val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
@@ -198,9 +205,15 @@ class PlaySetupSelectProductViewModelTest {
             ProductUiModel(
                 it.toString(),
                 "",
+                false,
+                "",
+                0,
+                false,
                 "",
                 1,
-                OriginalPrice("Rp 12.000", 12_000.0)
+                OriginalPrice("Rp 12.000", 12_000.0),
+                PinProductUiModel.Empty,
+                "",
             )
         }
         val mockInitialProductTagSectionList = listOf(
@@ -211,9 +224,15 @@ class PlaySetupSelectProductViewModelTest {
                     ProductUiModel(
                         (it*5001).toString(),
                         "",
+                        false,
+                        "",
+                        0,
+                        false,
                         "",
                         1,
-                        OriginalPrice("Rp 12.000", 12_000.0)
+                        OriginalPrice("Rp 12.000", 12_000.0),
+                        PinProductUiModel.Empty,
+                        ""
                     )
                 }
             )
@@ -242,9 +261,15 @@ class PlaySetupSelectProductViewModelTest {
             ProductUiModel(
                 it.toString(),
                 "",
+                false,
+                "",
+                0,
+                false,
                 "",
                 1,
-                OriginalPrice("Rp 12.000", 12_000.0)
+                OriginalPrice("Rp 12.000", 12_000.0),
+                PinProductUiModel.Empty,
+                ""
             )
         }
         val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
