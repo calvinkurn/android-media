@@ -289,12 +289,14 @@ class ShopPageHeaderFragment :
         private const val PATH_FEED = "feed"
         private const val PATH_REVIEW = "review"
         private const val PATH_NOTE = "note"
+        private const val PATH_CAMPAIGN = "campaign"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
         private const val QUERY_AFFILIATE_CHANNEL = "channel"
         private const val QUERY_CAMPAIGN_ID = "campaign_id"
         private const val QUERY_VARIANT_ID = "variant_id"
+        private const val QUERY_TAB = "tab"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -442,6 +444,7 @@ class ShopPageHeaderFragment :
         val layoutParams = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.root?.layoutParams as? LinearLayout.LayoutParams
         layoutParams?.bottomMargin.orZero()
     }
+    private var queryParamTab: String = ""
 
     override fun getComponent() = activity?.run {
         DaggerShopPageHeaderComponent.builder().shopPageHeaderModule(ShopPageHeaderModule())
@@ -1116,6 +1119,9 @@ class ShopPageHeaderFragment :
                     if (lastPathSegment.orEmpty() == PATH_NOTE) {
                         shouldOpenShopNoteBottomSheet = true
                     }
+                    if (lastPathSegment.orEmpty() == PATH_CAMPAIGN) {
+                        queryParamTab = getQueryParameter(QUERY_TAB).orEmpty()
+                    }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                     checkAffiliateAppLink(this)
@@ -1337,7 +1343,7 @@ class ShopPageHeaderFragment :
             isRefresh = isRefresh,
             widgetUserAddressLocalData = localCacheModel ?: LocalCacheModel(),
             extParam = extParam,
-            selectedTabName = getSelectedTabName()
+            tabName = getSelectedTabName().takeIf { it.isNotEmpty() } ?: queryParamTab
         )
     }
 
@@ -1807,8 +1813,8 @@ class ShopPageHeaderFragment :
                 getTabAt(i)?.customView = getTabView(i)
             }
         }
-        setShopLayoutDataToSelectedTab()
         viewPager?.setCurrentItem(selectedPosition, false)
+        setShopLayoutDataToSelectedTab()
         tabLayout?.getTabAt(selectedPosition)?.select()
         tabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab) {
@@ -1852,8 +1858,7 @@ class ShopPageHeaderFragment :
 
     private fun setShopLayoutDataToSelectedTab() {
         val shopLayoutData = getShopLayoutDataBasedOnSelectedTab()
-        val selectedFragment = getSelectedFragmentInstance()
-        when (selectedFragment) {
+        when (val selectedFragment = getSelectedFragmentInstance()) {
             is ShopPageCampaignFragment -> {
                 selectedFragment.setListWidgetLayoutData(shopLayoutData)
             }
@@ -1917,6 +1922,9 @@ class ShopPageHeaderFragment :
                     }
                     shouldOverrideTabToFeed -> {
                         ShopPageHeaderTabName.FEED
+                    }
+                    shouldOverrideTabToReview -> {
+                        ShopPageHeaderTabName.REVIEW
                     }
                     shouldOverrideTabToReview -> {
                         ShopPageHeaderTabName.REVIEW

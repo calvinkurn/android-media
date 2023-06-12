@@ -510,6 +510,10 @@ object DeeplinkMapper {
             targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
         ),
         DLP.matchPattern(
+            ApplinkConst.SHOP_CAMPAIGN,
+            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
+        ),
+        DLP.matchPattern(
             ApplinkConst.SHOP_ETALASE,
             targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, idList?.getOrNull(0), idList?.getOrNull(1)), idList?.getOrNull(0).orEmpty()) }
         ),

@@ -37,7 +37,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
         private const val KEY_CITY_ID = "cityId"
         private const val KEY_LATITUDE = "latitude"
         private const val KEY_LONGITUDE = "longitude"
-        private const val KEY_SELECTED_TAB_NAME = "selectedTabName"
+        private const val KEY_TAB_NAME = "tabName"
 
         @JvmStatic
         fun createParams(
@@ -45,7 +45,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
             shopDomain: String,
             extParam: String,
             widgetUserAddressLocalData: LocalCacheModel,
-            selectedTabName: String
+            tabName: String
         ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_ID, shopId)
             putObject(PARAM_SHOP_DOMAIN, shopDomain)
@@ -54,7 +54,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
             putObject(KEY_CITY_ID, widgetUserAddressLocalData.city_id)
             putObject(KEY_LATITUDE, widgetUserAddressLocalData.lat)
             putObject(KEY_LONGITUDE, widgetUserAddressLocalData.long)
-            putObject(KEY_SELECTED_TAB_NAME, selectedTabName)
+            putObject(KEY_TAB_NAME, tabName)
         }
     }
 
@@ -69,7 +69,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
         val cityId: String = params.getString(KEY_CITY_ID, "")
         val latitude: String = params.getString(KEY_LATITUDE, "")
         val longitude: String = params.getString(KEY_LONGITUDE, "")
-        val selectedTabName: String = params.getString(KEY_SELECTED_TAB_NAME, "")
+        val tabName: String = params.getString(KEY_TAB_NAME, "")
 
         val listRequest = mutableListOf<GraphqlRequest>().apply {
             add(
@@ -80,7 +80,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
                     cityId,
                     latitude,
                     longitude,
-                    selectedTabName
+                    tabName
                 )
             )
             add(getShopInfoCoreAndAssetsDataRequest(shopId, shopDomain))
@@ -115,7 +115,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
         cityId: String,
         latitude: String,
         longitude: String,
-        selectedTabName: String
+        tabName: String
     ): GraphqlRequest {
         val params = GqlShopPageGetDynamicTabUseCase.createParams(
             shopId = shopId.toIntOrZero(),
@@ -124,7 +124,7 @@ class GetShopPageP1DataUseCase @Inject constructor(
             cityId = cityId,
             latitude = latitude,
             longitude = longitude,
-            tabName = selectedTabName
+            tabName = tabName
         )
         return createGraphqlRequest<ShopPageGetDynamicTabResponse>(
             query = GqlShopPageGetDynamicTabUseCase.QUERY,
