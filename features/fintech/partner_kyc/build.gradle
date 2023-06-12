@@ -1,29 +1,22 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply from: "../../../compile-instrument-test.gradle"
-apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-kapt.gradle"
 apply plugin: 'kotlin-parcelize'
-
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-
-repositories {
-    google()
-    mavenCentral()
-}
+apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
 android {
-    defaultConfig {
-        multiDexEnabled true
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -35,9 +28,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.homecredit)
     implementation projectOrAar(rootProject.ext.libraries.webview)
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
 }
 
 project.ext {
@@ -50,4 +41,3 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
-apply plugin: 'org.jetbrains.kotlin.android'

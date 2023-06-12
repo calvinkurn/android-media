@@ -99,6 +99,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.wallet)
     implementation projectOrAar(rootProject.ext.features.paylater)
     implementation projectOrAar(rootProject.ext.features.insurance)
+    implementation projectOrAar(rootProject.ext.features.partner_kyc)
 
     //IM
     //implementation projectOrAar(rootProject.ext.features.referral) //Need to fix the structure
