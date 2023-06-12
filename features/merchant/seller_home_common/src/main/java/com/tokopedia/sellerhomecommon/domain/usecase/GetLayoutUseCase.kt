@@ -103,7 +103,6 @@ class GetLayoutUseCase(
         private const val KEY_SHOP_ID = "shopID"
         private const val KEY_PAGE = "page"
         private const val KEY_EVENT = "event"
-        private const val USER_EVENT_FORMAT = "{\"event\":\"%s\"}"
 
         fun getRequestParams(
             shopId: String, pageName: String, trigger: String = String.EMPTY
@@ -112,13 +111,9 @@ class GetLayoutUseCase(
                 putLong(KEY_SHOP_ID, shopId.toLongOrZero())
                 putString(KEY_PAGE, pageName)
                 if (trigger.isNotBlank()) {
-                    putString(KEY_EVENT, getUserEvent(trigger))
+                    putString(KEY_EVENT, trigger)
                 }
             }
-        }
-
-        private fun getUserEvent(trigger: String): String {
-            return String.format(USER_EVENT_FORMAT, trigger)
         }
     }
 }
