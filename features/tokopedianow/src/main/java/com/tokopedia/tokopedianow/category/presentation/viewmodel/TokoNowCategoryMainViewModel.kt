@@ -134,7 +134,8 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
         categoryL2Models.remove(categoryL2Model)
 
-        if (categoryPage.searchProduct.data.productList.isEmpty()) {
+        val productList = categoryPage.searchProduct.data.productList.filter { !it.isOos() }
+        if (productList.isEmpty()) {
             layout.removeItem(
                 id = categoryL2Model.id
             )
@@ -143,7 +144,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
 
         if (hasAdded) {
             layout.mapCategoryShowcase(
-                model = categoryPage,
+                productList = productList,
                 categoryIdL2 = categoryL2Model.id,
                 title = categoryL2Model.title,
                 seeAllAppLink = categoryL2Model.appLink,
@@ -152,7 +153,7 @@ class TokoNowCategoryMainViewModel @Inject constructor(
             )
         } else {
             layout.addCategoryShowcase(
-                model = categoryPage,
+                productList = productList,
                 categoryIdL2 = categoryL2Model.id,
                 title = categoryL2Model.title,
                 state = TokoNowLayoutState.SHOW,

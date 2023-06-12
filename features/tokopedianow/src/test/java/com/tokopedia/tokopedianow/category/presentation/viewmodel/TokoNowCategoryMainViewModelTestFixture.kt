@@ -364,7 +364,7 @@ open class TokoNowCategoryMainViewModelTestFixture {
                     }
                 } else {
                     resultList.add(
-                        AceSearchProductModel().mapToShowcaseProductCard(
+                        mapToShowcaseProductCard(
                             categoryIdL2 = itemUiModel.id,
                             title = String.EMPTY,
                             state = TokoNowLayoutState.LOADING,

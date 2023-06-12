@@ -47,7 +47,8 @@ internal object CategoryPageMapper {
         hasBlockedAddToCart = hasBlockedAddToCart
     )
 
-    fun AceSearchProductModel.mapToShowcaseProductCard(
+    fun mapToShowcaseProductCard(
+        productList: List<AceSearchProductModel.Product> = listOf(),
         categoryIdL2: String,
         title: String,
         seeAllAppLink: String,
@@ -56,7 +57,7 @@ internal object CategoryPageMapper {
         @TokoNowLayoutState state: Int
     ): CategoryShowcaseUiModel = CategoryShowcaseUiModel(
         id = categoryIdL2,
-        productListUiModels = searchProduct.data.productList.take(MAX_SHOWCASE_PRODUCT).map { product ->
+        productListUiModels = productList.map { product ->
             CategoryShowcaseItemUiModel(
                 productCardModel = mapAceSearchProductToProductCard(
                     product = product,
@@ -68,7 +69,7 @@ internal object CategoryPageMapper {
             )
         },
         title = title,
-        seeAllAppLink = if (searchProduct.header.totalData > MAX_SHOWCASE_PRODUCT) seeAllAppLink else String.EMPTY,
+        seeAllAppLink = if (productList.count() > MAX_SHOWCASE_PRODUCT) seeAllAppLink else String.EMPTY,
         state = state
     )
 }

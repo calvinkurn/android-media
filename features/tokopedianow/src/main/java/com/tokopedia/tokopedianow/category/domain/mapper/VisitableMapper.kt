@@ -104,7 +104,7 @@ internal object VisitableMapper {
      */
 
     fun MutableList<Visitable<*>>.addCategoryShowcase(
-        model: AceSearchProductModel = AceSearchProductModel(),
+        productList: List<AceSearchProductModel.Product> = listOf(),
         categoryIdL2: String = String.EMPTY,
         title: String = String.EMPTY,
         seeAllAppLink: String = String.EMPTY,
@@ -113,7 +113,8 @@ internal object VisitableMapper {
         @TokoNowLayoutState state: Int
     ) {
         add(
-            model.mapToShowcaseProductCard(
+            mapToShowcaseProductCard(
+                productList = productList,
                 categoryIdL2 = categoryIdL2,
                 title = title,
                 state = state,
@@ -125,7 +126,7 @@ internal object VisitableMapper {
     }
 
     fun MutableList<Visitable<*>>.mapCategoryShowcase(
-        model: AceSearchProductModel,
+        productList: List<AceSearchProductModel.Product>,
         categoryIdL2: String,
         title: String,
         seeAllAppLink: String,
@@ -135,7 +136,8 @@ internal object VisitableMapper {
         updateItemById(
             id = categoryIdL2,
             block = {
-                model.mapToShowcaseProductCard(
+                mapToShowcaseProductCard(
+                    productList = productList,
                     categoryIdL2 = categoryIdL2,
                     title = title,
                     state = TokoNowLayoutState.SHOW,
