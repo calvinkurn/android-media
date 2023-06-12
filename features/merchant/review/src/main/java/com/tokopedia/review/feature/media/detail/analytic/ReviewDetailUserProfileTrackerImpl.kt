@@ -45,7 +45,7 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
             eventName = AnalyticConstant.EVENT_CLICK_CONTENT,
             eventCategory = ReviewDetailUserProfileTrackerConstant.EVENT_CATEGORY_FEED_USER_PROFILE,
             eventAction = ReviewDetailUserProfileTrackerConstant.EVENT_ACTION_CLICK_SEE_ALL_FROM_USER_PROFILE,
-            eventLabel = "$feedbackId - $reviewUserId - ${getSelfOrVisitor(isReviewOwner)} - $productId"
+            eventLabel = getEventLabel(feedbackId, productId, reviewUserId, isReviewOwner)
         ).appendBusinessUnit(ReviewDetailUserProfileTrackerConstant.BUSINESS_UNIT)
             .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .appendUserId(loggedInUserId)
@@ -74,5 +74,34 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
     private fun getSelfOrVisitor(isReviewOwner: Boolean): String {
         return if (isReviewOwner) ReviewDetailUserProfileTrackerConstant.SELF
         else ReviewDetailUserProfileTrackerConstant.VISITOR
+    }
+
+    override fun trackImpressOnSeeMoreBottomSheet(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = AnalyticConstant.EVENT_VIEW_CONTENT_IRIS,
+            eventCategory = ReviewDetailUserProfileTrackerConstant.EVENT_CATEGORY_FEED_USER_PROFILE,
+            eventAction = ReviewDetailUserProfileTrackerConstant.EVENT_ACTION_IMPRESS_SEE_ALL_BOTTOM_SHEET_FROM_USER_PROFILE,
+            eventLabel = getEventLabel(feedbackId, productId, reviewUserId, isReviewOwner)
+        ).appendBusinessUnit(ReviewDetailUserProfileTrackerConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
+            .appendUserId(loggedInUserId)
+            .appendTrackerIdIfNotBlank("44106")
+            .appendSessionIris(TrackApp.getInstance().gtm.irisSessionId)
+            .sendGeneralEvent()
+    }
+
+    private fun getEventLabel(
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ): String {
+        return "$feedbackId - $reviewUserId - ${getSelfOrVisitor(isReviewOwner)} - $productId"
     }
 }

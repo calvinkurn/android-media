@@ -115,4 +115,14 @@ class ReviewDetailTrackerImpl : ReviewDetailTracker {
             .appendTrackerIdIfNotBlank(trackerId)
             .sendGeneralEvent()
     }
+
+    override fun trackImpressOnSeeMoreBottomSheet(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean
+    ) {
+        /** No need to track */
+    }
 }

@@ -42,4 +42,12 @@ interface ReviewDetailTracker {
         label: String,
         trackerId: String
     )
+
+    fun trackImpressOnSeeMoreBottomSheet(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
+    )
 }
