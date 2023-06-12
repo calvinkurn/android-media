@@ -803,6 +803,7 @@ class ShipmentFragment :
     // endregion
 
     // region first render
+
     private fun renderErrorPage(message: String?) {
         binding?.rvShipment?.visibility = View.GONE
         binding?.llNetworkErrorView?.visibility = View.VISIBLE

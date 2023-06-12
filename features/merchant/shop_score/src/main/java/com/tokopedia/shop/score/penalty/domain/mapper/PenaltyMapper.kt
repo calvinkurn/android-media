@@ -49,6 +49,7 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
             deductionPointPenalty = itemPenaltyUiModel.deductionPoint,
             endDateDetail = itemPenaltyUiModel.endDateDetail,
             prefixDateDetail = itemPenaltyUiModel.prefixDatePenalty,
+            productName = itemPenaltyUiModel.productName,
             stepperPenaltyDetailList = mapToStepperPenaltyDetail(itemPenaltyUiModel.statusPenalty)
         )
     }
@@ -302,6 +303,10 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                         typePenalty = it.typeName,
                         invoicePenalty = it.invoiceNumber,
                         reasonPenalty = it.reason,
+                        productName = mapPenaltyDetailToProductInfo(
+                            it.penaltyTypeGroup,
+                            it.productDetail
+                        ),
                         colorPenalty = colorTypePenalty,
                         prefixDatePenalty = prefixDatePenaltyDetail,
                         descStatusPenalty = descStatusPenaltyDetail
@@ -408,6 +413,17 @@ open class PenaltyMapper @Inject constructor(@ApplicationContext val context: Co
                     )
                 )
             }
+        }
+    }
+
+    private fun mapPenaltyDetailToProductInfo(
+        penaltyTypeGroup: Int,
+        productDetail: ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.ProductDetail
+    ): String? {
+        return if (penaltyTypeGroup == ShopScorePenaltyDetailResponse.ShopScorePenaltyDetail.Result.PENALTY_TYPE_PRODUCT) {
+            productDetail.name.takeIf { it.isNotBlank() }
+        } else {
+            null
         }
     }
 

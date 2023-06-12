@@ -46,7 +46,6 @@ import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligib
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import rx.subjects.PublishSubject
 
-
 /**
  * @author Irfan Khoirul on 24/04/18.
  */

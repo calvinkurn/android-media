@@ -287,7 +287,7 @@ class ShipmentAdapter @Inject constructor(
             }
 
             LAYOUT -> {
-                return ShipmentTickerAnnouncementViewHolder(view, null)
+                return ShipmentTickerAnnouncementViewHolder(view)
             }
 
             ITEM_VIEW_TICKER_SHIPPING_COMPLETION -> {
