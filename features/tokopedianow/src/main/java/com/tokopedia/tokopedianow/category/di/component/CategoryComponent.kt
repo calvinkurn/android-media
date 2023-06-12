@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule
 import com.tokopedia.tokopedianow.category.di.module.CategoryViewModelModule
 import com.tokopedia.tokopedianow.category.di.scope.CategoryScope
-import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryMainFragment
+import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.di.UserSessionModule
 import dagger.Component
 
@@ -19,5 +19,5 @@ import dagger.Component
         ],
         dependencies = [BaseAppComponent::class])
 interface CategoryComponent {
-    fun inject(fragment: TokoNowCategoryMainFragment)
+    fun inject(fragment: TokoNowCategoryFragment)
 }

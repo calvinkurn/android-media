@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.category.di.module.CategoryContextModule
 import com.tokopedia.tokopedianow.category.di.module.CategoryParamModule
 import com.tokopedia.tokopedianow.common.base.activity.BaseTokoNowActivity
 import com.tokopedia.tokopedianow.category.di.component.DaggerCategoryComponent
-import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryMainFragment
+import com.tokopedia.tokopedianow.category.presentation.fragment.TokoNowCategoryFragment
 
 class TokoNowCategoryActivity: BaseTokoNowActivity(), HasComponent<CategoryComponent> {
     companion object {
@@ -29,7 +29,7 @@ class TokoNowCategoryActivity: BaseTokoNowActivity(), HasComponent<CategoryCompo
                 .build()
     }
 
-    override fun getFragment() = TokoNowCategoryMainFragment.newInstance()
+    override fun getFragment() = TokoNowCategoryFragment.newInstance()
 
     private fun Uri?.getCategoryL1(): String = this?.getQueryParameter(PARAM_CATEGORY_L1).orEmpty()
 
