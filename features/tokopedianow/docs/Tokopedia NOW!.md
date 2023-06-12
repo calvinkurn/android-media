@@ -1,8 +1,4 @@
----
-Tokopedia NOW!
----
-
-
+<!--left header table-->
 | **Status** |  <!--start status:GREEN-->RELEASE<!--end status-->  |
 | --- | --- |
 | Contributor | [Yogie Susdyastama Putra](https://tokopedia.atlassian.net/wiki/people/5c6bf2e6f1a05835f933bf30?ref=confluence) [Said Faisal](https://tokopedia.atlassian.net/wiki/people/5e25eee0ee264b0e745862c3?ref=confluence) [Firmanda Mulyawan Nugroho](https://tokopedia.atlassian.net/wiki/people/5d91c148fdfa560dcc3a040f?ref=confluence) [Reza Gama Hidayat](https://tokopedia.atlassian.net/wiki/people/5def15952702bc0ec7e775c5?ref=confluence) [Darian Thedy](https://tokopedia.atlassian.net/wiki/people/5c94aa568c3aae2d15117504?ref=confluence) [Misael Jonathan](https://tokopedia.atlassian.net/wiki/people/60051d42e64c95006fbaad73?ref=confluence) [Steven Fredian Andy Putra](https://tokopedia.atlassian.net/wiki/people/557058:20782bf2-2a29-413c-b75c-ce30c92cad9e?ref=confluence)  |
@@ -14,19 +10,7 @@ Tokopedia NOW!
 | Product PRD | <https://docs.google.com/document/d/1pWsEA_85v9vZWmfxXo5DC0xsb7QWDu_cTNjMMQpnFsk/edit> |
 | Module Location |  `features/tokopedianow` |
 
-## Table of Contents
-
-- [Table of Contents](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Table-of-Contents)
-- [Overview](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Overview)
-
-
-	- [Project Description](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Project-Description)
-- [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Useful-Links)
-
-
-	- [Figma](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Figma)
-	- [Thanos](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Thanos)
-	- [Pages](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1576539971/Tokopedia+NOW#Pages)
+<!--toc-->
 
 ## Release Notes
 

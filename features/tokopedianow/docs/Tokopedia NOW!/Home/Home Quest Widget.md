@@ -14,15 +14,9 @@
 | Tracker | <https://mynakama.tokopedia.com/datatracker/requestdetail/view/2664>  |
 | Module Location | `features/tokopedianow/home/presentation/viewholder` |
 
-## Table of Contents
+<!--toc-->
 
-- [Table of Contents](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2149450712/Home+Quest+Widget#Table-of-Contents)
-- [Description](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2149450712/Home+Quest+Widget#Description)
-- [Status](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2149450712/Home+Quest+Widget#Status)
-- [Requirements](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2149450712/Home+Quest+Widget#Requirements)
-- [How to Customize](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2149450712/Home+Quest+Widget#How-to-Customize)
-
-![](../../res/home_quest.png)
+![image](../../res/home_quest.png)
 
 ## Description
 
@@ -34,13 +28,13 @@ There are 3 status for the widget:
 
 - **On progress**: active quest & clickable to detail quest (hardcoded url + `questId` : `https://www.tokopedia.com/seru/topquest/detail/{questId}`).
 
-![](../../res/home_quest_on_progress.png)
+![image](../../res/home_quest_on_progress.png)
 
-![](../../res/home_quest_detail_page.png)
+![image](../../res/home_quest_detail_page.png)
 
 - **Idle**: waiting for the previous quest to be done & not clickable (locked & grey out).
 
-![](../../res/home_quest_idle.png)
+![image](../../res/home_quest_idle.png)
 
 - **Claimed**: the quest is done & gone from the quest widget.
 
@@ -54,7 +48,7 @@ There are some requirements need to fulfill when developed this page, the requir
 - Widget position will use widget type `tokonow_main_quest` from dynamic channel response.
 - If all quests are finished there will be different UI shown with info if user already got all of the rewards, if user click it will redirect to my coupon page (hardcoded appLink : `tokopedia://rewards/kupon-saya`).
 
-![](res/Screen%20Shot%202023-01-28%20at%2022.57.47.png)
+![image](../../res/home_quest_all_rewards_claimed.png)
 
 ## Contract Used
 

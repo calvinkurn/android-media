@@ -14,16 +14,6 @@
 
 <!--toc-->
 
-	- [Product List / SRP Page](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#Product-List-/-SRP-Page)
-	- [Carousel](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#Carousel)
-- [Capabilities](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#Capabilities)
-
-
-	- [Quantity Editor](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#Quantity-Editor)
-	- [Wishlist Button](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#Wishlist-Button)
-	- [Similar Product](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#Similar-Product)
-- [How to Use](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2128609830/Tokopedia+Now+Product+Card#How-to-Use)
-
 ## Overview
 
 Currently users need to browse more products per session which are shown by NOW! ABS is around 7-8 items, compared to the 1-2 items in PG. However, the construct of our pages is limited by the present product card design that can only fit a maximum of four products per page. Thus, browsing behavior in the groceries category is quite different than in PG, as our products are mostly standardized and most users might need less information to enable them to make ATC decisions due to their intention in quick shopping.
