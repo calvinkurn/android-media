@@ -23,7 +23,7 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_F
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
+import com.tokopedia.catalog_library.viewmodel.CatalogLandingPageViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -44,6 +44,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     private var catalogLandingRecyclerView: RecyclerView? = null
     private val productsTrackingSet = HashSet<String>()
     private val topCatalogsTrackingSet = HashSet<String>()
+    private var trackingSent = false
 
     @JvmField
     @Inject
@@ -59,7 +60,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     private val landingPageViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogLandingPageVM::class.java)
+            ViewModelProvider(this, it).get(CatalogLandingPageViewModel::class.java)
         }
     }
 
@@ -166,6 +167,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
             landingPageViewModel?.categoryName?.observe(viewLifecycleOwner) { categoryName ->
                 this.categoryName = categoryName
+                sendOpenScreenEvent()
                 view?.let { v -> initHeaderTitle(v) }
             }
         }
@@ -300,5 +302,17 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
     override fun onPause() {
         super.onPause()
         trackingQueue?.sendAll()
+    }
+
+    private fun sendOpenScreenEvent() {
+        if (!trackingSent) {
+            CatalogAnalyticsCategoryLandingPage.openScreenCategoryLandingPage(
+                categoryName,
+                userSessionInterface?.isLoggedIn.toString(),
+                categoryIdStr,
+                userSessionInterface?.userId ?: ""
+            )
+        }
+        trackingSent = true
     }
 }

@@ -138,4 +138,5 @@ data class CommentVisibilityEvent(val isOpen: Boolean): PlayViewerNewUiEvent()
 
 object ExploreWidgetNextTab: PlayViewerNewUiEvent()
 
+data class ShowVariantSheet(val product: PlayProductUiModel.Product, val forcePushTop: Boolean): PlayViewerNewUiEvent()
 

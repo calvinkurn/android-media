@@ -15,13 +15,14 @@ import java.util.regex.Pattern
 
 object SellerHomeCommonUtils {
 
+    private const val URL_REGEX =
+        "((https|ftp|gopher|telnet|file|tokopedia|sellerapp):(()|(\\\\))+[\\w\\d:#@%;\$()~_?\\+-=\\\\\\.&]*)"
+
     /**
      * Returns list of links contained in given text
      */
     fun extractUrls(text: String): List<String> {
-        val urlRegex =
-            "((https?|ftp|gopher|telnet|file|tokopedia):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?\\+-=\\\\\\.&]*)"
-        val pattern: Pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE)
+        val pattern: Pattern = Pattern.compile(URL_REGEX, Pattern.CASE_INSENSITIVE)
         val urlMatcher: Matcher = pattern.matcher(text)
         val containedUrls = mutableListOf<String>()
         while (urlMatcher.find()) {

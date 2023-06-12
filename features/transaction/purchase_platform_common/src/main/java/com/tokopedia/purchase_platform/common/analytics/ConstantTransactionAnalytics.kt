@@ -192,7 +192,6 @@ object ConstantTransactionAnalytics {
         const val VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS = "validation error kota / kecamatan pada + address"
         const val VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS = "validation error kode pos pada + address"
         const val VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS = "validation error alamat pada + address"
-        const val VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART = "view information and warning ticker in cart"
 
         // PHASE 2
         const val CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain"
@@ -399,6 +398,10 @@ object ConstantTransactionAnalytics {
         const val VIEW_GOTOPLUS_CROSS_SELL_BATAL = "view gotoplus cross sell - batal"
         const val CLICK_GOTOPLUS_CROSS_SELL_CEK_PLUS = "click gotoplus cross sell - cek plus"
         const val CLICK_GOTOPLUS_CROSS_SELL_BATAL = "click gotoplus cross sell - batal"
+
+        // Platform Fee
+        const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "click info button in platform fee"
+        const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "view platform fee in checkout page"
     }
 
     object EventLabel {
@@ -469,6 +472,7 @@ object ConstantTransactionAnalytics {
         const val PROMO_FLAG = "promoFlag"
         const val TRACKER_ID = "trackerId"
         const val PROMOTIONS = "promotions"
+        const val PLATFORM_FEE = "platformFee"
     }
 
     object ScreenName {
@@ -514,5 +518,9 @@ object ConstantTransactionAnalytics {
 
         // Cart Shop Group Ticker
         const val CLICK_CART_SHOP_GROUP_TICKER_BUNDLE_CROSS_SELL = "41252"
+
+        // Platform Fee
+        const val CLICK_INFO_BUTTON_IN_PLATFORM_FEE = "43346"
+        const val VIEW_PLATFORM_FEE_IN_CHECKOUT_PAGE = "43710"
     }
 }

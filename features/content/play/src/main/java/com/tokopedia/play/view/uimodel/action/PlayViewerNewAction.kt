@@ -6,7 +6,6 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -89,13 +88,8 @@ data class SharePermissionAction(val label: String) : PlayViewerNewAction()
  */
 object RetryGetTagItemsAction : PlayViewerNewAction()
 data class BuyProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
-data class BuyProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class AtcProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
-data class AtcProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
 data class OCCProductAction(val sectionInfo: ProductSectionUiModel.Section, val product: PlayProductUiModel.Product) : PlayViewerNewAction()
-data class OCCProductVariantAction(val id: String, val sectionInfo: ProductSectionUiModel.Section) : PlayViewerNewAction()
-data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : PlayViewerNewAction()
-
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
 
 object OpenKebabAction : PlayViewerNewAction()
@@ -122,3 +116,5 @@ object DismissExploreWidget : PlayViewerNewAction()
 data class EmptyPageWidget(val type: ExploreWidgetType) : PlayViewerNewAction()
 
 data class CommentVisibilityAction(val isOpen: Boolean) : PlayViewerNewAction()
+//Atc Variant
+data class ShowVariantAction(val product: PlayProductUiModel.Product, val forcePushTop: Boolean) : PlayViewerNewAction()

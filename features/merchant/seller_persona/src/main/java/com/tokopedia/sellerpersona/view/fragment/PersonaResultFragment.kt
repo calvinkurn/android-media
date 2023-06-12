@@ -33,6 +33,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.resources.isDarkMode
 import javax.inject.Inject
 
 /**
@@ -222,7 +223,7 @@ class PersonaResultFragment : BaseFragment<FragmentPersonaResultBinding>() {
             imgSpResultBackdrop.loadImage(persona.backgroundImage)
             rvSpResultInfoList.adapter = PersonaSimpleListAdapter().apply {
                 setItems(persona.itemList)
-                isSelectedMode = true
+                isSelectedMode = !root.context.isDarkMode()
             }
             tvSpSellerType.text = String.format(PERSONA_TITLE, persona.headerTitle)
             tvSpSellerTypeNote.text = root.context.getString(

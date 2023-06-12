@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantA
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product.detail.common.data.model.rates.WarehouseData
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -312,9 +313,16 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
 
     private fun generateTokoNow(chooseAddress: LocalCacheModel): TokoNowParam {
         return TokoNowParam(
-            chooseAddress.shop_id,
-            chooseAddress.warehouse_id,
-            chooseAddress.service_type
+            shopId = chooseAddress.shop_id,
+            warehouseId = chooseAddress.warehouse_id,
+            serviceType = chooseAddress.service_type,
+            warehouses = chooseAddress.warehouses
+                .filter {
+                    it.warehouse_id != 0L
+                }
+                .map {
+                    WarehouseData(it.warehouse_id.toString(), it.service_type)
+                }
         )
     }
 }

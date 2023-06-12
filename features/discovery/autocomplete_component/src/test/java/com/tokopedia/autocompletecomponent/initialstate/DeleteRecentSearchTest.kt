@@ -3,13 +3,14 @@ package com.tokopedia.autocompletecomponent.initialstate
 import com.tokopedia.autocompletecomponent.initialstate.data.InitialStateUniverse
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
-import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchSeeMoreDataView
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.jsonToObject
+import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -20,6 +21,7 @@ import rx.Subscriber
 
 private const val initialStateWith4DataSeeMoreRecentSearch = "autocomplete/initialstate/with-4-data-show-more-recent-search.json"
 private const val initialStateWith5DataSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
+private const val singleRecentSearchResponse = "autocomplete/initialstate/single-recent-search-response.json"
 
 internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
 
@@ -83,6 +85,29 @@ internal class DeleteRecentSearchTest: InitialStatePresenterTestFixtures() {
         assert(!recentSearchDataView.list.contains(item)) {
             "Recent Search ${item.title} should be deleted"
         }
+    }
+
+    @Test
+    fun `Test delete recent search data with type keyword on single recent search`() {
+        val item = BaseItemInitialStateSearch(
+            template = "list_single_line",
+            applink = "tokopedia://search?q=samsung&source=universe&st=product",
+            url = "/search?q=samsung&source=universe&st=product",
+            title = "samsung",
+            label = "keyword",
+            type = "keyword",
+            productId = "0",
+            shortcutImage = "https://shortcut"
+        )
+
+        val singleRecentSearchData = singleRecentSearchResponse.jsonToObject<InitialStateUniverse>()
+
+        `Test Delete Recent Search Data`(singleRecentSearchData, item)
+        `Then verify visitable list does not have recent search`()
+    }
+
+    private fun `Then verify visitable list does not have recent search`() {
+        slotDeletedVisitableList.last().none { it is RecentSearchDataView } shouldBe true
     }
 
     @Test

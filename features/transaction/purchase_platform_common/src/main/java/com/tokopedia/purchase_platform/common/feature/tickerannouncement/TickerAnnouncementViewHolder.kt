@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-open class TickerAnnouncementViewHolder(itemView: View, val actionListener: TickerAnnouncementActionListener?) : RecyclerView.ViewHolder(itemView) {
+open class TickerAnnouncementViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val cartTicker: Ticker? = itemView.findViewById(R.id.cartTicker)
 
@@ -24,8 +24,6 @@ open class TickerAnnouncementViewHolder(itemView: View, val actionListener: Tick
             )
             cartTicker?.requestLayout()
         }
-
-        actionListener?.onShowCartTicker(tickerAnnouncementData.id)
     }
 
     companion object {

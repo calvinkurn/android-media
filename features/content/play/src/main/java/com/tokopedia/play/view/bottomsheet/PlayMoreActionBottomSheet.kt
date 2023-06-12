@@ -99,7 +99,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     com.tokopedia.unifycomponents.R.color.Unify_NN900
                 )
             ),
-            subtitleRes = R.string.play_kebab_see_performance,
+            subtitleRes = contentCommonR.string.performance_see,
             onClick = {
                 playPerformanceDashboardEntryPointAnalytic.onClickReportPageEntryPointGroupChatRoom(
                     playViewModel.shopId,
@@ -125,7 +125,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
                     com.tokopedia.unifycomponents.R.color.Unify_NN900
                 )
             ),
-            subtitleRes = contentCommonR.string.performance_dashboard_wording_entry_point,
+            subtitleRes = contentCommonR.string.performance_learn_video_insight,
             onClick = {
                 playPerformanceDashboardEntryPointAnalytic.onClickPerformanceDashboardEntryPointChannelPage(
                     playViewModel.shopId,

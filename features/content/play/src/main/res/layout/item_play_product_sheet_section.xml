@@ -31,7 +31,7 @@
         app:layout_constraintVertical_bias="0.0"
         app:typographyType="body_3"
         tools:text="Berakhir dalam"
-        android:translationZ="@dimen/play_dp_1"
+        android:translationZ="@dimen/content_common_space_1"
         tools:visibility="visible"
         />
 

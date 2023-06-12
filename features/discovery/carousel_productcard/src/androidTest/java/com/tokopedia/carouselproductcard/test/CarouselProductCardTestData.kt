@@ -24,6 +24,7 @@ internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>
     it.add(createCarouselProductCardStockBarAndAddToCartNonVariant())
     it.add(createCarouselProductCardStockBarAndAddToCartVariant())
     it.add(createCarouselShortProductCardWithStockBar())
+    it.add(createCarouselMPS())
 }
 
 private fun createSmallProductCard(): ProductCardModel {
@@ -635,5 +636,47 @@ private fun createCarouselShortProductCardWithStockBar(): List<ProductCardModel>
         createSmallProductCard(),
         createSmallProductCard(),
         createSmallProductCard(),
+    )
+}
+
+fun createCarouselMPS(): List<ProductCardModel> {
+    return listOf(
+        ProductCardModel(
+            productName = "Charger IPhone 12 fast charging ORIGINAL",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp179.000",
+            slashedPrice = "Rp1.000.000",
+            discountPercentage = "20%",
+            countSoldRating = "4.5",
+            labelGroupList = listOf(
+                LabelGroup(position = "integrity", title = "Terjual 7", type = "textDarkGrey"),
+            ),
+            hasAddToCartButton = true,
+            seeOtherProductText = "Lihat 5 Lainnya"
+        ),
+        ProductCardModel(
+            productName = "Charger IPhone 11 fast charging ORIGINAL",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp179.000",
+            slashedPrice = "Rp1.000.000",
+            discountPercentage = "20%",
+            countSoldRating = "4.5",
+            labelGroupList = listOf(
+                LabelGroup(position = "integrity", title = "Terjual 7", type = "textDarkGrey"),
+            ),
+            hasAddToCartButton = true,
+            seeOtherProductText = "Lihat 5 Lainnya"
+        ),
+        ProductCardModel(
+            productName = "Charger IPhone 10 fast charging ORIGINAL",
+            productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
+            formattedPrice = "Rp179.000",
+            countSoldRating = "4.5",
+            labelGroupList = listOf(
+                LabelGroup(position = "integrity", title = "Terjual 7", type = "textDarkGrey"),
+            ),
+            hasAddToCartButton = true,
+            seeOtherProductText = "Lihat 5 Lainnya"
+        ),
     )
 }

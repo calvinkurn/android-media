@@ -15,6 +15,9 @@ class MapperFeedModelToTrackerDataModel(
 
     companion object {
         private const val DEFAULT_CAMPAIGN_NO_STATUS = "no"
+
+        private const val UPCOMING_STATUS = "upcoming"
+        private const val PRE_STATUS = "pre"
     }
 
     fun transformVideoContentToTrackerModel(
@@ -22,8 +25,11 @@ class MapperFeedModelToTrackerDataModel(
     ) =
         FeedTrackerDataModel(
             activityId = model.id,
-            authorId = if (model.author.isShop) model.products.firstOrNull()?.shopId
-                ?: "" else model.author.id,
+            authorId = if (model.author.type.isShop) {
+                model.products.firstOrNull()?.shopId.orEmpty()
+            } else {
+                model.author.id
+            },
             tabType = tabType,
             typename = model.typename,
             type = model.type,
@@ -32,7 +38,14 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
+            campaignStatus = model.campaign.status
+                .let {
+                    when (it.lowercase()) {
+                        UPCOMING_STATUS -> PRE_STATUS
+                        "" -> DEFAULT_CAMPAIGN_NO_STATUS
+                        else -> it
+                    }
+                },
             entryPoint = entryPoint
         )
 
@@ -41,8 +54,11 @@ class MapperFeedModelToTrackerDataModel(
     ) =
         FeedTrackerDataModel(
             activityId = model.id,
-            authorId = if (model.author.isShop) model.products.firstOrNull()?.shopId
-                ?: "" else model.author.id,
+            authorId = if (model.author.type.isShop) {
+                model.products.firstOrNull()?.shopId.orEmpty()
+            } else {
+                model.author.id
+            },
             tabType = tabType,
             typename = model.typename,
             type = model.type,
@@ -51,18 +67,27 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
+            campaignStatus = model.campaign.status
+                .let {
+                    when (it.lowercase()) {
+                        UPCOMING_STATUS -> PRE_STATUS
+                        "" -> DEFAULT_CAMPAIGN_NO_STATUS
+                        else -> it
+                    }
+                },
             entryPoint = entryPoint
         )
-
 
     fun transformLiveContentToTrackerModel(
         model: FeedCardLivePreviewContentModel
     ) =
         FeedTrackerDataModel(
             activityId = model.id,
-            authorId = if (model.author.isShop) model.products.firstOrNull()?.shopId
-                ?: "" else model.author.id,
+            authorId = if (model.author.type.isShop) {
+                model.products.firstOrNull()?.shopId.orEmpty()
+            } else {
+                model.author.id
+            },
             tabType = tabType,
             typename = model.typename,
             type = model.type,
@@ -71,8 +96,14 @@ class MapperFeedModelToTrackerDataModel(
             isFollowing = model.followers.isFollowed,
             contentScore = model.contentScore,
             hasVoucher = model.hasVoucher,
-            campaignStatus = model.campaign.status.ifEmpty { DEFAULT_CAMPAIGN_NO_STATUS },
+            campaignStatus = model.campaign.status
+                .let {
+                    when (it.lowercase()) {
+                        UPCOMING_STATUS -> PRE_STATUS
+                        "" -> DEFAULT_CAMPAIGN_NO_STATUS
+                        else -> it
+                    }
+                },
             entryPoint = entryPoint
         )
-
 }

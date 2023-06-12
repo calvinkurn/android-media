@@ -2,6 +2,7 @@ package com.tokopedia.play_common.websocket
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
@@ -42,6 +43,12 @@ class PlayWebSocketImpl(
         }
     }
 
+    private val deviceVersion: String
+        get() = "android-${GlobalConfig.VERSION_NAME}"
+
+    private val appName: String
+        get() = GlobalConfig.getPackageApplicationName()
+
     init {
         clientBuilder.pingInterval(DEFAULT_PING, TimeUnit.MILLISECONDS)
         client = clientBuilder
@@ -72,7 +79,16 @@ class PlayWebSocketImpl(
         override fun onMessage(webSocket: WebSocket, text: String) {
             val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
             webSocketFlow.tryEmit(newMessage)
-            webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString())
+
+            /**
+             * Send tracking Id
+             */
+            val trackingParam = sendTracking(newMessage.message.tracking.id)
+            webSocketLogger.send(newMessage.message.type, newMessage.message.jsonElement.toString() + trackingParam)
+
+            if (!newMessage.message.isTrackingIdAvailable) return
+            webSocket.send(trackingParam)
+            webSocketLogger.send(PARAM_SEND_TYPE_TRACKING, trackingParam)
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
@@ -123,7 +139,7 @@ class PlayWebSocketImpl(
         )
 
         return buildString {
-            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId$PLAY_WEB_SOCKET_GROUP_CHAT_WH$warehouseId")
+            append("$wsBaseUrl$PLAY_WEB_SOCKET_GROUP_CHAT$channelId$PLAY_WEB_SOCKET_GROUP_CHAT_WH$warehouseId$PLAY_WEB_SOCKET_X_DEVICE$deviceVersion$PLAY_WEB_SOCKET_X_APP_NAME$appName")
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
     }
@@ -133,7 +149,8 @@ class PlayWebSocketImpl(
             "source" to source.ifEmpty { "\"\"" },
             "channelId" to channelId.ifEmpty { "\"\"" },
             "warehouseId" to warehouseId.ifEmpty { "\"\"" },
-            "gcToken" to gcToken.ifEmpty { "\"\"" }
+            "gcToken" to gcToken.ifEmpty { "\"\"" },
+            "header" to deviceVersion.ifEmpty { "\"\"" }
         )
     }
 
@@ -142,15 +159,26 @@ class PlayWebSocketImpl(
             .header("Origin", TokopediaUrl.getInstance().WEB)
             .header("Accounts-Authorization", "Bearer $accessToken")
             .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
-            .header("x_device", "android-" + GlobalConfig.VERSION_NAME)
-            .header("x_app_name", GlobalConfig.getPackageApplicationName())
             .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
             .build()
+    }
+
+    private fun sendTracking(trackingId: String): String {
+        val param = JsonObject()
+        param.addProperty(PARAM_SEND_TYPE_TRACKING_ID, trackingId)
+
+        val bundle = JsonObject()
+        bundle.addProperty(PARAM_SEND_TYPE, PARAM_SEND_TYPE_TRACKING)
+        bundle.add(PARAM_SEND_TYPE_TRACKING_FIELD, param)
+
+        return bundle.toString()
     }
 
     companion object {
         private const val PLAY_WEB_SOCKET_GROUP_CHAT = "/ws/groupchat?channel_id="
         private const val PLAY_WEB_SOCKET_GROUP_CHAT_WH = "&warehouse_id="
+        private const val PLAY_WEB_SOCKET_X_DEVICE = "&x_device="
+        private const val PLAY_WEB_SOCKET_X_APP_NAME = "&x_app_name="
 
         private const val KEY_GROUPCHAT_DEVELOPER_OPTION_PREFERENCES = "ip_groupchat"
 
@@ -158,5 +186,10 @@ class PlayWebSocketImpl(
         private const val HEADER_ACCEPT = "Accept"
 
         private const val HEADER_VALUE_CONTENT_TYPE_JSON = "application/json"
+
+        private const val PARAM_SEND_TYPE = "type"
+        private const val PARAM_SEND_TYPE_TRACKING = "TRACKING"
+        private const val PARAM_SEND_TYPE_TRACKING_ID = "id"
+        private const val PARAM_SEND_TYPE_TRACKING_FIELD = "tracking"
     }
 }
