@@ -90,6 +90,7 @@ import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.listener.DynamicIconComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
+import com.tokopedia.home_component.listener.FlashSaleWidgetListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.listener.Lego6AutoBannerListener
@@ -115,6 +116,7 @@ import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerSixAutoViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.viewholders.FlashSaleViewHolder
 import com.tokopedia.home_component.viewholders.Lego4AutoBannerViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
 import com.tokopedia.home_component.viewholders.MerchantVoucherViewHolder
@@ -141,6 +143,7 @@ import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
+import com.tokopedia.home_component.visitable.FlashSaleDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
@@ -205,7 +208,8 @@ class HomeAdapterFactory(
     private val categoryWidgetV2Listener: CategoryWidgetV2Listener,
     private val missionWidgetComponentListener: MissionWidgetComponentListener,
     private val legoProductListener: LegoProductListener,
-    private val todoWidgetComponentListener: TodoWidgetComponentListener
+    private val todoWidgetComponentListener: TodoWidgetComponentListener,
+    private val flashSaleWidgetListener: FlashSaleWidgetListener
 ) : BaseAdapterTypeFactory(),
     HomeTypeFactory,
     HomeComponentTypeFactory,
@@ -476,6 +480,10 @@ class HomeAdapterFactory(
         return DealsWidgetViewHolder.LAYOUT
     }
 
+    override fun type(flashSaleDataModel: FlashSaleDataModel): Int {
+        return FlashSaleViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -717,6 +725,7 @@ class HomeAdapterFactory(
                     )
             DealsWidgetViewHolder.LAYOUT ->
                 viewHolder = DealsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
+            FlashSaleViewHolder.LAYOUT -> viewHolder = FlashSaleViewHolder(view, flashSaleWidgetListener, homeComponentListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

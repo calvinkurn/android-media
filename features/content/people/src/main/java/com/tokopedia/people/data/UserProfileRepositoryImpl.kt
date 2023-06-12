@@ -1,7 +1,8 @@
 package com.tokopedia.people.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.usecase.GetWhiteListUseCase
+import com.tokopedia.content.common.model.FeedXHeaderRequestFields.CREATION
+import com.tokopedia.content.common.usecase.FeedXHeaderUseCase
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
@@ -25,9 +26,9 @@ import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
-import com.tokopedia.people.views.uimodel.profile.ProfileWhitelistUiModel
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.withContext
@@ -44,12 +45,12 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val playVodUseCase: PlayPostContentUseCase,
     private val profileIsFollowing: ProfileTheyFollowedUseCase,
     private val videoPostReminderUseCase: VideoPostReminderUseCase,
-    private val getWhitelistUseCase: GetWhiteListUseCase,
     private val shopRecomUseCase: ShopRecomUseCase,
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
     private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
     private val postBlockUserUseCase: PostBlockUserUseCase,
     private val updateChannelUseCase: UpdateChannelUseCase,
+    private val feedXHeaderUseCase: FeedXHeaderUseCase,
     private val getProfileSettingsUseCase: GetProfileSettingsUseCase,
     private val setProfileSettingsUseCase: SetProfileSettingsUseCase,
 ) : UserProfileRepository {
@@ -70,11 +71,13 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getWhitelist(): ProfileWhitelistUiModel {
+    override suspend fun getCreationInfo(): ProfileCreationInfoUiModel {
         return withContext(dispatcher.io) {
-            val result = getWhitelistUseCase(GetWhiteListUseCase.WhiteListType.EntryPoint)
-
-            mapper.mapUserWhitelist(result)
+            feedXHeaderUseCase.setRequestParams(
+                FeedXHeaderUseCase.createParam(listOf(CREATION.value))
+            )
+            val result = feedXHeaderUseCase.executeOnBackground()
+            mapper.mapCreationInfo(result.feedXHeaderData.data.creation)
         }
     }
 
