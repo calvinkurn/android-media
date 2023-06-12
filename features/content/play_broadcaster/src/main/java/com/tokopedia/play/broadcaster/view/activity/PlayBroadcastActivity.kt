@@ -92,6 +92,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 19/05/20.
  */
+
+@Suppress("LateinitUsage")
 class PlayBroadcastActivity : BaseActivity(),
     PlayBaseCoordinator,
     PlayBroadcasterContract,

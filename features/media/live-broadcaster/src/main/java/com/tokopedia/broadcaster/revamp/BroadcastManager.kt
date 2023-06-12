@@ -338,7 +338,7 @@ class BroadcastManager @Inject constructor(
                     mCodecSurface = WindowSurface(mEglCore, mStreamerWrapper?.pusherStreamer?.encoderSurface, false)
                 }
             }
-            catch (e: ExceptionInInitializerError) {
+            catch (_: ExceptionInInitializerError) {
                 broadcastInitStateChanged(
                     BroadcastInitState.ByteplusInitializationError(
                         BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)

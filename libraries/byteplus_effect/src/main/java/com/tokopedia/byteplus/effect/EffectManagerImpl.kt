@@ -11,7 +11,6 @@ import android.view.Surface
 import android.widget.ImageView
 import com.bef.effectsdk.OpenGLUtils
 import com.bytedance.labcv.effectsdk.BytedEffectConstants
-import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode
 import com.bytedance.labcv.effectsdk.BytedEffectConstants.BytedResultCode.BEF_RESULT_SUC
 import com.bytedance.labcv.effectsdk.RenderManager
 import com.tokopedia.config.GlobalConfig
@@ -82,8 +81,8 @@ class EffectManagerImpl @Inject constructor(
 
         try {
             RenderManager.loadLib()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (_: Exception) {
+
         }
 
         val renderManager = RenderManager()
@@ -97,7 +96,7 @@ class EffectManagerImpl @Inject constructor(
             renderApi,
         )
 
-        if(statusCode != BytedResultCode.BEF_RESULT_SUC) {
+        if(statusCode != BEF_RESULT_SUC) {
             throw ExceptionInInitializerError(
                 "Error while initializing RenderManager, error code: $statusCode, more info https://docs.byteplus.com/effects/docs/error-code-table"
             )
@@ -151,7 +150,7 @@ class EffectManagerImpl @Inject constructor(
                     )
 
                     listener.onRenderFrame(destinationTexture, mTextureWidth, mTextureHeight)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
 
                 }
             }

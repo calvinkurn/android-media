@@ -1884,7 +1884,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 downloadInitialBeautificationAsset(beautificationConfig)
                 setupOnDemandAsset(beautificationConfig)
                 addPreparationMenu(DynamicPreparationMenu.createFaceFilter(isMandatory = false))
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _beautificationConfig.value = BeautificationConfigUiModel.Empty
 
                 removePreparationMenu(DynamicPreparationMenu.Menu.FaceFilter)

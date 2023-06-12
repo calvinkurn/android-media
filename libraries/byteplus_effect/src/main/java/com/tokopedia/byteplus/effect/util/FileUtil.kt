@@ -26,7 +26,6 @@ object FileUtil {
             return unzipFile(zipInputStream, dstDir)
         } catch (e: Exception) {
             EffectLogger.sendErrorUnzip(e, dstDir.absolutePath)
-            if (GlobalConfig.DEBUG) e.printStackTrace()
         }
         return false
     }
@@ -109,7 +108,6 @@ object FileUtil {
             } while (null != entry)
         } catch (e: Exception) {
             EffectLogger.sendErrorUnzip(e, dstDir.absolutePath)
-            e.printStackTrace()
             return false
         } finally {
             zipInputStream.close()
