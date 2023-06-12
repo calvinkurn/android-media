@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,13 +19,16 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.global.IRecommendationWidgetView
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
  * Created by frenzel on 27/03/23
  */
 class RecommendationCarouselWidgetView :
     ConstraintLayout,
-    IRecommendationWidgetView<RecommendationCarouselModel>, RecommendationHeaderListener {
+    IRecommendationWidgetView<RecommendationCarouselModel>,
+    RecommendationHeaderListener,
+    DefaultLifecycleObserver {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -34,12 +39,15 @@ class RecommendationCarouselWidgetView :
     )
 
     private var binding: RecommendationWidgetCarouselLayoutBinding? = null
+    private val trackingQueue: TrackingQueue = TrackingQueue(context)
 
     init {
         binding = RecommendationWidgetCarouselLayoutBinding.inflate(
             LayoutInflater.from(context),
             this
         )
+
+        (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
     }
 
     override fun bind(model: RecommendationCarouselModel) {
@@ -80,7 +88,12 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.imageUrl,
                     )
 
-                RecommendationCarouselTracking.sendEventItemImpression()
+                RecommendationCarouselTracking.sendEventItemImpression(
+                    trackingQueue,
+                    model.widget,
+                    productRecommendation,
+                    model.trackingModel
+                )
             }
         }
 
@@ -103,7 +116,11 @@ class RecommendationCarouselWidgetView :
                         productRecommendation.imageUrl
                     )
 
-                RecommendationCarouselTracking.sendEventItemClick()
+                RecommendationCarouselTracking.sendEventItemClick(
+                    model.widget,
+                    productRecommendation,
+                    model.trackingModel
+                )
 
                 RouteManager.route(
                     context,
@@ -131,6 +148,11 @@ class RecommendationCarouselWidgetView :
 
     override fun onChannelExpired(widget: RecommendationWidget) {
 
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        super.onPause(owner)
+        trackingQueue.sendAll()
     }
 
     companion object {

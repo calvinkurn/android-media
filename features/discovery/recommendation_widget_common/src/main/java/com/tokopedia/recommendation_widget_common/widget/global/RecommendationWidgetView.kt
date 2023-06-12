@@ -9,6 +9,8 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -55,6 +57,9 @@ class RecommendationWidgetView : LinearLayout {
 
     private fun bind(visitableList: List<RecommendationVisitable>?) {
         removeAllViews()
+
+        if (visitableList.isNullOrEmpty()) hide()
+        else show()
 
         visitableList?.forEach { visitable ->
             try { tryBindView(visitable) }
