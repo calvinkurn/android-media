@@ -31,9 +31,6 @@ class BaselineProfileGenerator {
     @Before
     fun setup() {
         MacroDevOps.skipOnboarding()
-//        Thread.sleep(5000)
-//        MacroDevOps.resetHomeState()
-
     }
 
     @Test
