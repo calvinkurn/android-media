@@ -29,8 +29,6 @@ import com.tokopedia.play.broadcaster.ui.model.beautification.BeautificationConf
 import com.tokopedia.play.broadcaster.ui.model.config.BroadcastingConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
-import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
@@ -271,13 +269,6 @@ class UiModelBuilder {
             )
         }
     }
-
-    fun buildPinnedProduct(isPinned: Boolean = false) =
-        ProductUiModel(
-            "Product 1", "Product 1", "", 1,
-            price = OriginalPrice("Rp1000.00", 1000.0),
-            pinStatus = PinProductUiModel(isPinned = isPinned, canPin = true, isLoading = false),
-        )
 
     fun buildCoverSetupStateUploaded(
         localImage: Uri? = mockk(relaxed = true),

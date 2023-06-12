@@ -3,11 +3,13 @@ package com.tokopedia.play.broadcaster.shorts.view.custom
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.play.broadcaster.databinding.ViewDynamicPreparationMenuBinding
 import com.tokopedia.play.broadcaster.R
 
@@ -23,6 +25,7 @@ class DynamicPreparationMenuView : FrameLayout {
         attrs,
         defStyleAttr
     )
+
     constructor(
         context: Context,
         attrs: AttributeSet?,
@@ -67,6 +70,21 @@ class DynamicPreparationMenuView : FrameLayout {
             )
         }
         adapter.setItemsAndAnimateChanges(finalMenuList)
+    }
+    fun getMenuView(
+        menu: DynamicPreparationMenu.Menu,
+        menuView: (menuView: View) -> Unit,
+    ) {
+        binding.rvMenu.addOneTimeGlobalLayoutListener {
+            val menuIdx = adapter.getItems().indexOfFirst {
+                it.data.menu.id == menu.id
+            }
+            if (menuIdx == -1) return@addOneTimeGlobalLayoutListener
+
+            val holder = binding.rvMenu.findViewHolderForAdapterPosition(menuIdx)
+            val menuItem = holder?.itemView?.findViewById<IconUnify>(R.id.ic_menu) ?: return@addOneTimeGlobalLayoutListener
+            menuView.invoke(menuItem)
+        }
     }
 
     fun showCoachMark(

@@ -3,7 +3,9 @@ package com.tkpd.macrobenchmark.util
 import android.content.Intent
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
 
 object MacroDevOps {
     fun setupEnvironment(intent: Intent) {
@@ -14,7 +16,33 @@ object MacroDevOps {
         killProcess(device, MacroIntent.TKPD_PACKAGE_NAME)
     }
 
-    private fun killProcess(device: UiDevice, packageName: String) {
+    fun skipOnboarding() {
+        try {
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            instrumentation.targetContext.startActivity(
+                MacroIntent.Home.getHomeIntent().apply {
+                    this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            )
+            val device = UiDevice.getInstance(instrumentation)
+            val packageName = "${MacroIntent.TKPD_PACKAGE_NAME}.df_base"
+
+            device.wait(
+                Until.hasObject(By.res(packageName, "skipDynamicOnbaording")),
+                2000L
+            )
+            val btn = device.findObject(By.res(packageName, "skipDynamicOnbaording"));
+            btn.click()
+
+            Thread.sleep(3000L)
+            device.pressBack()
+
+            Thread.sleep(300L)
+            killProcess(device, MacroIntent.TKPD_PACKAGE_NAME)
+        } catch (e: Exception) {}
+    }
+
+    fun killProcess(device: UiDevice, packageName: String) {
         Log.d("TkpdMacroBenchmark", "Killing process $packageName")
         device.executeShellCommand("am force-stop $packageName")
     }

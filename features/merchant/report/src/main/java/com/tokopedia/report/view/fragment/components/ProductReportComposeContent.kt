@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.tokopedia.common_compose.extensions.tag
-import com.tokopedia.common_compose.utils.getString
+import com.tokopedia.nest.principles.utils.getString
+import com.tokopedia.nest.principles.utils.tag
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent

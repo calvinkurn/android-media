@@ -67,16 +67,17 @@ private class ProductCardInPositionMatcher(
         return this.getChildren().filter { productCardComponent ->
             !itemMatcherList.any {
                 productCardComponent.id == it.key
-                        // Ignore, because Label Variant does not have Id
-                        || productCardComponent.tag == LABEL_VARIANT_TAG
-                        // These 3 layout will always be shown
-                        || productCardComponent.id == R.id.cardViewProductCard
-                        || productCardComponent.id == R.id.constraintLayoutProductCard
-                        || productCardComponent.id == R.id.productCardContentLayout
-                        || productCardComponent.id == R.id.productCardFooterLayout
-                        || productCardComponent.id == R.id.productCardFooterLayoutContainer
-                        // Ignore spaces, barriers, and not visible view helpers
-                        || (productCardComponent is Space)
+                    // Ignore, because Label Variant does not have Id
+                    || productCardComponent.tag == LABEL_VARIANT_TAG
+                    // These layouts will always be shown
+                    || productCardComponent.id == R.id.containerCardViewProductCard
+                    || productCardComponent.id == R.id.cardViewProductCard
+                    || productCardComponent.id == R.id.constraintLayoutProductCard
+                    || productCardComponent.id == R.id.productCardContentLayout
+                    || productCardComponent.id == R.id.productCardFooterLayout
+                    || productCardComponent.id == R.id.productCardFooterLayoutContainer
+                    // Ignore spaces, barriers, and not visible view helpers
+                    || (productCardComponent is Space)
             }
         }
     }
