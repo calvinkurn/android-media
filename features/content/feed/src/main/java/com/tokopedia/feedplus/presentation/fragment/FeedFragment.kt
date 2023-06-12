@@ -768,6 +768,7 @@ class FeedFragment :
 
     private fun initView() {
         binding.let {
+            it.swipeRefreshFeedLayout.setContentChildViewPullRefresh(it.feedPullRefreshIcon)
             it.swipeRefreshFeedLayout.setOnRefreshListener {
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
