@@ -16,10 +16,13 @@ import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 class ReviewDetailTrackerImpl : ReviewDetailTracker {
 
     override fun trackOnLikeReviewClicked(
+        loggedInUserId: String,
         feedbackId: String,
-        isLiked: Boolean,
         productId: String,
-        isFromGallery: Boolean
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
+        isLiked: Boolean
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
             AnalyticConstant.EVENT_CLICK_PDP,

@@ -240,10 +240,13 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
             if (feedbackID != null && invertedLikeStatus != null) {
                 if (sharedReviewMediaGalleryViewModel.isProductReview()) {
                     reviewDetailTracker.trackOnLikeReviewClicked(
+                        loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
                         feedbackId = feedbackID,
-                        isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                         productId = sharedReviewMediaGalleryViewModel.getProductId(),
-                        isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery()
+                        isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery(),
+                        reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
+                        isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,
+                        isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
                     )
                 } else {
                     reviewDetailTracker.trackOnShopReviewLikeReviewClicked(

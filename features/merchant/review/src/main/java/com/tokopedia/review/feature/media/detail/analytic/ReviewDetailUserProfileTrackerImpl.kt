@@ -16,6 +16,28 @@ import javax.inject.Inject
  */
 class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTracker {
 
+    override fun trackOnLikeReviewClicked(
+        loggedInUserId: String,
+        feedbackId: String,
+        productId: String,
+        isFromGallery: Boolean,
+        reviewUserId: String,
+        isReviewOwner: Boolean,
+        isLiked: Boolean
+    ) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            eventName = AnalyticConstant.EVENT_CLICK_CONTENT,
+            eventCategory = ReviewDetailUserProfileTrackerConstant.EVENT_CATEGORY_FEED_USER_PROFILE,
+            eventAction = ReviewDetailUserProfileTrackerConstant.EVENT_ACTION_CLICK_LIKE_FROM_USER_PROFILE,
+            eventLabel = getEventLabel(feedbackId, productId, reviewUserId, isReviewOwner)
+        ).appendBusinessUnit(ReviewDetailUserProfileTrackerConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
+            .appendUserId(loggedInUserId)
+            .appendTrackerIdIfNotBlank("44107")
+            .appendSessionIris(TrackApp.getInstance().gtm.irisSessionId)
+            .sendGeneralEvent()
+    }
+
     override fun trackOnSeeAllClicked(
         loggedInUserId: String,
         feedbackId: String,
@@ -79,15 +101,6 @@ class ReviewDetailUserProfileTrackerImpl @Inject constructor(): ReviewDetailTrac
     private fun getSelfOrVisitor(isReviewOwner: Boolean): String {
         return if (isReviewOwner) ReviewDetailUserProfileTrackerConstant.SELF
         else ReviewDetailUserProfileTrackerConstant.VISITOR
-    }
-
-    override fun trackOnLikeReviewClicked(
-        feedbackId: String,
-        isLiked: Boolean,
-        productId: String,
-        isFromGallery: Boolean
-    ) {
-        /** No need to track */
     }
 
     override fun trackOnShopReviewLikeReviewClicked(
