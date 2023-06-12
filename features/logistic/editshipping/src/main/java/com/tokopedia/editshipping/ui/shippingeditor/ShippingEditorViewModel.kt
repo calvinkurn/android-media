@@ -19,7 +19,7 @@ import com.tokopedia.editshipping.domain.model.shippingEditor.ValidateShippingEd
 import com.tokopedia.editshipping.util.EditShippingConstant
 import com.tokopedia.logisticCommon.data.repository.ShopLocationRepository
 import com.tokopedia.logisticCommon.data.response.shippingeditor.SaveShippingResponse
-import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
+import com.tokopedia.logisticCommon.data.response.shoplocation.KeroGetRolloutEligibility
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,8 +32,8 @@ class ShippingEditorViewModel @Inject constructor(
     private val detailMapper: ShipperDetailMapper
 ) : ViewModel() {
 
-    private val _shopWhitelist = MutableLiveData<ShippingEditorState<ShopLocWhitelist>>()
-    val shopWhitelist: LiveData<ShippingEditorState<ShopLocWhitelist>>
+    private val _shopWhitelist = MutableLiveData<ShippingEditorState<KeroGetRolloutEligibility>>()
+    val shopWhitelist: LiveData<ShippingEditorState<KeroGetRolloutEligibility>>
         get() = _shopWhitelist
 
     private val _shipperList = MutableLiveData<ShippingEditorState<ShipperListModel>>()
@@ -61,7 +61,7 @@ class ShippingEditorViewModel @Inject constructor(
         _shopWhitelist.value = ShippingEditorState.Loading
         viewModelScope.launch(onErrorGetWhitelistData) {
             val getWhitelistShop = repo.getShopLocationWhitelist(shopId)
-            _shopWhitelist.value = ShippingEditorState.Success(getWhitelistShop.shopLocWhitelist)
+            _shopWhitelist.value = ShippingEditorState.Success(getWhitelistShop.keroGetRolloutEligibility)
         }
     }
 
