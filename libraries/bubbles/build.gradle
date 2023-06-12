@@ -21,7 +21,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    kapt rootProject.ext.networkDependencies.glideProcessor
+    ksp rootProject.ext.networkDependencies.glideKsp
     implementation rootProject.ext.networkDependencies.glide
 
 }
