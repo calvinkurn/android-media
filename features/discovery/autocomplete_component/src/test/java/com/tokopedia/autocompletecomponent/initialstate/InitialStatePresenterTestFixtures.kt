@@ -97,6 +97,7 @@ internal open class InitialStatePresenterTestFixtures {
             initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.disableMps()
         }
         confirmVerified(initialStateView)
     }
@@ -109,6 +110,7 @@ internal open class InitialStatePresenterTestFixtures {
             initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.disableMps()
             initialStateView.onRefreshPopularSearch()
             initialStateView.chooseAddressData
         }
@@ -123,6 +125,7 @@ internal open class InitialStatePresenterTestFixtures {
             initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
             initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
+            initialStateView.disableMps()
             initialStateView.chooseAddressData
         }
         confirmVerified(initialStateView)
@@ -131,6 +134,13 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify view interaction for load data failed with exception`() {
         verify {
             initialStateView.chooseAddressData
+        }
+        confirmVerified(initialStateView)
+    }
+    protected fun `Then verify view interaction for load data with empty item`() {
+        verify {
+            initialStateView.chooseAddressData
+            initialStateView.disableMps()
         }
         confirmVerified(initialStateView)
     }
