@@ -355,11 +355,10 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         )
         binding?.userList?.layoutManager = layoutManager
         loginHelperAdapter?.clearAllElements()
-        loginHelperAdapter?.addData(loginDataList)
         cachedLoginData?.let {
             loginHelperAdapter?.addData(it)
         }
-
+        loginHelperAdapter?.addData(loginDataList)
         binding?.userList?.apply {
             adapter = loginHelperAdapter
         }

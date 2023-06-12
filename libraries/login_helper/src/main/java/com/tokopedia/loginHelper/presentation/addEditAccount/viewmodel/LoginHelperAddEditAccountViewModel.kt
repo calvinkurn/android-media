@@ -1,14 +1,17 @@
 package com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.encryption.security.AESEncryptorCBC
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.loginHelper.data.mapper.toEnvString
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.uiModel.LocalUsersDataUiModel
 import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.usecase.AddUserRestUseCase
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountAction
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountUiState
@@ -25,7 +28,8 @@ import javax.inject.Inject
 class LoginHelperAddEditAccountViewModel @Inject constructor(
     private val aesEncryptorCBC: AESEncryptorCBC,
     private val gson: Gson,
-    dispatchers: CoroutineDispatchers
+    private val addUserRestUseCase: AddUserRestUseCase,
+    val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiAction = MutableSharedFlow<LoginHelperAddEditAccountAction>(replay = 1)
@@ -64,13 +68,30 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
         val encryptedPassword = encrypt(password)
         val cacheManager = PersistentCacheManager.instance
         val savedData = getLocalData(cacheManager)
-
-        Log.d("FATAL", "handleAddUserToLocalDB: $savedData")
         savedData?.userDataUiModel?.add(UserDataUiModel(encryptedEmail, encryptedPassword, ""))
         saveData(cacheManager, savedData)
     }
 
     private fun handleAddUserToRemoteDB(email: String, password: String, tribe: String) {
+        viewModelScope.launchCatchError(
+            dispatchers.io,
+            {
+                val addUserResponse = addUserRestUseCase.makeApiCall(
+                    email,
+                    password,
+                    tribe,
+                    _uiState.value.envType.toEnvString()
+                )
+                if (addUserResponse?.code == SUCCESS_STATUS) {
+                    _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnSuccessAddDataToRest)
+                } else {
+                    _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
+                }
+            },
+            onError = {
+                _uiAction.tryEmit(LoginHelperAddEditAccountAction.OnFailureAddDataToRest)
+            }
+        )
     }
 
     private fun getLocalData(cacheManager: PersistentCacheManager): LocalUsersDataUiModel? {
@@ -115,5 +136,9 @@ class LoginHelperAddEditAccountViewModel @Inject constructor(
 
     private fun handleGoToLoginHelperHome() {
         _uiAction.tryEmit(LoginHelperAddEditAccountAction.GoToLoginHelperHome)
+    }
+
+    companion object {
+        const val SUCCESS_STATUS = 201L
     }
 }

@@ -31,7 +31,9 @@
     <string name="login_helper_save_to_db">Save Account to DB</string>
     <string name="login_helper_save_to_local">Save Account Locally</string>
     <string name="login_helper_save_to_local_successful">Account details has been successfully saved locally</string>
+    <string name="login_helper_save_to_remote_successful">Account details has been successfully saved on DB</string>
     <string name="login_helper_save_to_local_go_to_home">Go to Login Helper Home</string>
+    <string name="login_helper_save_to_remote_failure">Failure in saving in DB</string>
 
     <string name="login_helper_account_removal">Account Removal</string>
     <string name="login_helper_confirm_removal">Are you sure you want to remove %s account from the db?</string>

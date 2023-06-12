@@ -29,6 +29,7 @@ import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.Log
 import com.tokopedia.loginHelper.presentation.addEditAccount.viewmodel.state.LoginHelperAddEditAccountEvent
 import com.tokopedia.loginHelper.util.BundleConstants
 import com.tokopedia.loginHelper.util.showToaster
+import com.tokopedia.loginHelper.util.showToasterError
 import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -134,10 +135,22 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
             }
             is LoginHelperAddEditAccountAction.GoToLoginHelperHome -> {
                 binding?.btnSaveToLocal?.isLoading = false
-                binding?.btnSaveToDb?.isLoading = false
-                showToastGoToHomePage()
+                setSaveToDbBtnLoadingState(false)
+                showSuccessAndGoToHomePage()
+            }
+            is LoginHelperAddEditAccountAction.OnSuccessAddDataToRest -> {
+                setSaveToDbBtnLoadingState(false)
+                showSuccessAndGoToHomePage(isRemote = true)
+            }
+            is LoginHelperAddEditAccountAction.OnFailureAddDataToRest -> {
+                showErrorOnFailure()
+                setSaveToDbBtnLoadingState(false)
             }
         }
+    }
+
+    private fun setSaveToDbBtnLoadingState(state: Boolean) {
+        binding?.btnSaveToDb?.isLoading = state
     }
 
     private fun goToAccountSettingsScreen() {
@@ -145,10 +158,32 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    private fun showToastGoToHomePage() {
+    private fun showSuccessAndGoToHomePage(isRemote : Boolean = false) {
+        if (isRemote) {
+            context?.resources?.let {
+                binding?.footer?.showToaster(
+                    it.getString(R.string.login_helper_save_to_remote_successful),
+                    it.getString(R.string.login_helper_save_to_local_go_to_home)
+                ) {
+                    RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
+                }
+            }
+        } else {
+            context?.resources?.let {
+                binding?.footer?.showToaster(
+                    it.getString(R.string.login_helper_save_to_local_successful),
+                    it.getString(R.string.login_helper_save_to_local_go_to_home)
+                ) {
+                    RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
+                }
+            }
+        }
+    }
+
+    private fun showErrorOnFailure() {
         context?.resources?.let {
-            binding?.footer?.showToaster(
-                it.getString(R.string.login_helper_save_to_local_successful),
+            binding?.footer?.showToasterError(
+                it.getString(R.string.login_helper_save_to_remote_failure),
                 it.getString(R.string.login_helper_save_to_local_go_to_home)
             ) {
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGIN_HELPER)
@@ -175,7 +210,7 @@ class LoginHelperAddEditAccountFragment : BaseDaggerFragment() {
             val email = binding?.etUsername?.editText?.text.toString()
             val password = binding?.etPassword?.editText?.text.toString()
             val tribe = binding?.etTribe?.editText?.text.toString()
-            binding?.btnSaveToDb?.isLoading = true
+            setSaveToDbBtnLoadingState(true)
             viewModel.processEvent(
                 LoginHelperAddEditAccountEvent.AddUserToRemoteDB(
                     email,
