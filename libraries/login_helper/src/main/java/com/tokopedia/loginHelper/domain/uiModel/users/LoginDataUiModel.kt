@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.domain.uiModel
+package com.tokopedia.loginHelper.domain.uiModel.users
 
 data class LoginDataUiModel(
     val count: HeaderUiModel?,

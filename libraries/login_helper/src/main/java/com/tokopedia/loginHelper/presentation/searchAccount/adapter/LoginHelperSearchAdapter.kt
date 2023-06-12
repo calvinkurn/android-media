@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.loginHelper.databinding.ItemLoginSearchBinding
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.listener.LoginHelperSearchListener
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.viewholder.LoginHelperSearchViewHolder
 

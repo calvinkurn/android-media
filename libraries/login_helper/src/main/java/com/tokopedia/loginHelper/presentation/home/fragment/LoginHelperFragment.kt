@@ -27,8 +27,8 @@ import com.tokopedia.loginHelper.databinding.FragmentLoginHelperBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.presentation.home.adapter.LoginHelperRecyclerAdapter
 import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHelperClickListener
 import com.tokopedia.loginHelper.presentation.home.viewmodel.LoginHelperViewModel
@@ -284,7 +284,12 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     private fun handleLoginUserDataList(state: LoginHelperUiState) {
         if (state.dataSourceType == LoginHelperDataSourceType.REMOTE) {
             if (state.searchText.isEmpty()) {
-                fillRecyclerViewData(state.searchText, state.loginDataList, state.cachedLoginData, state.dataSourceType)
+                fillRecyclerViewData(
+                    state.searchText,
+                    state.loginDataList,
+                    state.cachedLoginData,
+                    state.dataSourceType
+                )
             } else {
                 fillRecyclerViewData(
                     state.searchText,

@@ -24,8 +24,8 @@ import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.databinding.FragmentLoginHelperSearchAccountBinding
 import com.tokopedia.loginHelper.di.component.DaggerLoginHelperComponent
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.presentation.accountSettings.LoginHelperAccountSettingsActivity
 import com.tokopedia.loginHelper.presentation.addEditAccount.LoginHelperAddEditAccountActivity
 import com.tokopedia.loginHelper.presentation.searchAccount.adapter.LoginHelperSearchAdapter

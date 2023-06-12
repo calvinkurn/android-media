@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.domain.uiModel
+package com.tokopedia.loginHelper.domain.uiModel.addedit
 
 data class LoginHelperAddUserUiModel(
     val message: String? = null,

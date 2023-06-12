@@ -1,7 +1,7 @@
 package com.tokopedia.loginHelper.presentation.home.adapter.factory
 
-import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 
 interface LoginHelperAdapterFactory {
 

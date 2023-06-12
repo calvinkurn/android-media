@@ -6,10 +6,10 @@ import com.tokopedia.loginHelper.data.response.LoginHelperAddUserResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
 import com.tokopedia.loginHelper.domain.pojo.LoginHelperAddUserPojo
-import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
-import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
-import com.tokopedia.loginHelper.domain.uiModel.LoginHelperAddUserUiModel
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.addedit.LoginHelperAddUserUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 
 fun LoginDataResponse.toLoginUiModel(): LoginDataUiModel {
     return LoginDataUiModel(

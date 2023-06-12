@@ -16,10 +16,10 @@ import com.tokopedia.loginHelper.data.response.LoginDataResponse
 import com.tokopedia.loginHelper.data.response.UserDataResponse
 import com.tokopedia.loginHelper.domain.LoginHelperDataSourceType
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
-import com.tokopedia.loginHelper.domain.uiModel.LocalUsersDataUiModel
-import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LocalUsersDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.domain.usecase.GetUserDetailsRestUseCase
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAction
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent

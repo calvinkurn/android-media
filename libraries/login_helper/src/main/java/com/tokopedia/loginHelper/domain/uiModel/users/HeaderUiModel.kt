@@ -1,4 +1,4 @@
-package com.tokopedia.loginHelper.domain.uiModel
+package com.tokopedia.loginHelper.domain.uiModel.users
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.loginHelper.presentation.home.adapter.factory.LoginHelperAdapterFactory

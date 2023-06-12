@@ -4,13 +4,14 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.loginHelper.domain.uiModel.HeaderUiModel
-import com.tokopedia.loginHelper.domain.uiModel.UserDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.HeaderUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.UserDataUiModel
 import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginDataViewHolder
 import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHeaderViewHolder
 import com.tokopedia.loginHelper.presentation.home.adapter.viewholder.LoginHelperClickListener
 
-class LoginHelperAdapterFactoryImpl(private val listener: LoginHelperClickListener) : BaseAdapterTypeFactory(),
+class LoginHelperAdapterFactoryImpl(private val listener: LoginHelperClickListener) :
+    BaseAdapterTypeFactory(),
     LoginHelperAdapterFactory {
     override fun type(model: UserDataUiModel): Int {
         return LoginDataViewHolder.RES_LAYOUT

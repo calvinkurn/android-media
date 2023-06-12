@@ -1,7 +1,7 @@
 package com.tokopedia.loginHelper.presentation.searchAccount.viewmodel.state
 
 import com.tokopedia.loginHelper.domain.LoginHelperEnvType
-import com.tokopedia.loginHelper.domain.uiModel.LoginDataUiModel
+import com.tokopedia.loginHelper.domain.uiModel.users.LoginDataUiModel
 
 data class LoginHelperSearchAccountUiState(
     val envType: LoginHelperEnvType = LoginHelperEnvType.STAGING,
