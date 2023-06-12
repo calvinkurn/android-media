@@ -26,8 +26,6 @@ class BaselineProfileGenerator {
     @get:Rule
     val rule = BaselineProfileRule()
 
-
-
     @Before
     fun setup() {
         MacroDevOps.skipOnboarding()
@@ -36,8 +34,6 @@ class BaselineProfileGenerator {
     @Test
     fun appStartupAndUserJourney() {
         rule.collectBaselineProfile(MacroArgs.TKPD_PACKAGE_NAME) {
-            MacroDevOps.skipOnboarding()
-
             startApplicationJourney()
             scrollRecyclerViewJourney()
             goToDetailJourney()
@@ -47,6 +43,7 @@ class BaselineProfileGenerator {
     fun MacrobenchmarkScope.startApplicationJourney() {
         pressHome()
         startActivityAndWait(MacroIntent.Home.getHomeIntent())
+        MacroDevOps.skipOnboardingPage()
         Thread.sleep(1_000)
 
         device.wait(Until.hasObject(By.res(MacroArgs.TKPD_PACKAGE_NAME, MacroIntent.Home.RV_RESOURCE_ID)), MacroInteration.DEFAULT_TIMEOUT)

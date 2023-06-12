@@ -27,6 +27,23 @@ object MacroDevOps {
             )
             val device = UiDevice.getInstance(instrumentation)
 
+            skipOnboardingPage()
+
+            Thread.sleep(3000L)
+            device.pressBack()
+
+            Thread.sleep(300L)
+            killProcess(device, MacroIntent.TKPD_PACKAGE_NAME)
+        } catch (e: Exception) {
+            //no-op
+        }
+    }
+
+    fun skipOnboardingPage() {
+        try {
+            val instrumentation = InstrumentationRegistry.getInstrumentation()
+            val device = UiDevice.getInstance(instrumentation)
+
             device.wait(
                 Until.hasObject(By.text(LEWATI_BTN)),
                 5000L
@@ -34,12 +51,13 @@ object MacroDevOps {
             val btn = device.findObject(By.text(LEWATI_BTN));
             btn.click()
 
-            Thread.sleep(5000L)
-            device.pressBack()
+            Thread.sleep(3000L)
 
-            Thread.sleep(300L)
-            killProcess(device, MacroIntent.TKPD_PACKAGE_NAME)
-        } catch (e: Exception) {}
+            //in case there is dialog/bottomsheet
+            device.pressBack()
+        } catch (e: Exception) {
+            //no-op
+        }
     }
 
     fun killProcess(device: UiDevice, packageName: String) {
