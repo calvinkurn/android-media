@@ -142,7 +142,7 @@ class AffiliateAdpFragment :
             ""
         ) == AFFILIATE_NC
 
-    private val isAffiliatePromoteHomeEnabled =
+    private fun isAffiliatePromoteHomeEnabled() =
         RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
             AFFILIATE_PROMOTE_HOME,
             ""
@@ -211,7 +211,7 @@ class AffiliateAdpFragment :
             affiliateAdpViewModel?.getAffiliateValidateUser()
         }
         setAffiliateGreeting()
-        binding?.navHeaderGroup?.isVisible = isAffiliatePromoteHomeEnabled
+        binding?.navHeaderGroup?.isVisible = !isAffiliatePromoteHomeEnabled()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         binding?.productsRv?.layoutManager = layoutManager
@@ -241,7 +241,7 @@ class AffiliateAdpFragment :
                     .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                if (isAffiliatePromoteHomeEnabled) {
+                if (isAffiliatePromoteHomeEnabled()) {
                     getString(R.string.performa_affiliate)
                 } else {
                     getString(R.string.label_affiliate)

@@ -288,7 +288,7 @@ class AffiliateActivity :
     }
 
     private fun initBottomNavigationView() {
-        var selectedTab = if (isAffiliatePromoteHomeEnabled) {
+        var selectedTab = if (isAffiliatePromoteHomeEnabled()) {
             PROMO_MENU
         } else {
             ADP_MENU
@@ -439,18 +439,18 @@ class AffiliateActivity :
     }
 
     companion object MenuItems {
-        val isAffiliatePromoteHomeEnabled =
+        fun isAffiliatePromoteHomeEnabled() =
             RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
                 AFFILIATE_PROMOTE_HOME,
                 ""
             ) == AFFILIATE_PROMOTE_HOME
 
-        val PROMO_MENU = if (isAffiliatePromoteHomeEnabled) {
+        val PROMO_MENU = if (isAffiliatePromoteHomeEnabled()) {
             FIRST_TAB
         } else {
             SECOND_TAB
         }
-        val ADP_MENU = if (isAffiliatePromoteHomeEnabled) {
+        val ADP_MENU = if (isAffiliatePromoteHomeEnabled()) {
             SECOND_TAB
         } else {
             FIRST_TAB

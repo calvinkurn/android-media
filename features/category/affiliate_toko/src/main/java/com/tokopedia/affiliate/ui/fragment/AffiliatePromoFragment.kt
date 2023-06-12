@@ -129,7 +129,7 @@ class AffiliatePromoFragment :
             ""
         ) == AFFILIATE_NC
 
-    private val isAffiliatePromoteHomeEnabled =
+    private fun isAffiliatePromoteHomeEnabled() =
         RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
             AFFILIATE_PROMOTE_HOME,
             ""
@@ -194,9 +194,11 @@ class AffiliatePromoFragment :
     }
 
     private fun afterViewCreated() {
-        binding?.navHeaderGroup?.isVisible = isAffiliatePromoteHomeEnabled
-        binding?.promotionInfoTitle?.isVisible = !isAffiliatePromoteHomeEnabled
-        binding?.promotionInfoDesc?.isVisible = !isAffiliatePromoteHomeEnabled
+        isAffiliatePromoteHomeEnabled().let { promoteHomeEnabled ->
+            binding?.navHeaderGroup?.isVisible = promoteHomeEnabled
+            binding?.promotionInfoTitle?.isVisible = !promoteHomeEnabled
+            binding?.promotionInfoDesc?.isVisible = !promoteHomeEnabled
+        }
 
         binding?.promoNavToolbar?.run {
             val iconBuilder = IconBuilder()
@@ -214,7 +216,7 @@ class AffiliatePromoFragment :
                 .addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
-                if (isAffiliatePromoteHomeEnabled) {
+                if (isAffiliatePromoteHomeEnabled()) {
                     getString(R.string.label_affiliate)
                 } else {
                     getString(R.string.affiliate_promo)
