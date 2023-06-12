@@ -154,7 +154,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
@@ -202,7 +201,6 @@ class CartFragment :
     CartItemAdapter.ActionListener,
     RefreshHandler.OnRefreshHandlerListener,
     CartToolbarListener,
-    TickerAnnouncementActionListener,
     SellerCashbackListener,
     CartBundlingBottomSheetListener {
 
@@ -604,7 +602,7 @@ class CartFragment :
             DaggerCartComponent.builder().baseAppComponent(baseMainApplication.baseAppComponent)
                 .build().inject(this)
         }
-        cartAdapter = CartAdapter(this, this, this, this, userSession)
+        cartAdapter = CartAdapter(this, this, this, userSession)
     }
 
     private fun initRemoteConfig() {
@@ -2171,10 +2169,6 @@ class CartFragment :
             linearSmoothScroller.targetPosition = cartAdapter.disabledItemHeaderPosition
             it.startSmoothScroll(linearSmoothScroller)
         }
-    }
-
-    override fun onShowCartTicker(tickerId: String) {
-        cartPageAnalytics.eventViewInformationAndWarningTickerInCart(tickerId)
     }
 
     override fun getDefaultCartErrorMessage(): String {

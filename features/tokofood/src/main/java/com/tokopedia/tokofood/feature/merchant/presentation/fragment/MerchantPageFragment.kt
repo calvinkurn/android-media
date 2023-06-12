@@ -1274,6 +1274,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         productId: String,
         cardPositions: Pair<Int, Int>
     ) {
+        KeyboardHandler.hideSoftKeyboard(activity)
         viewModel.productMap[productId] = cardPositions
         activityViewModel?.deleteProduct(
             cartId = cartId,

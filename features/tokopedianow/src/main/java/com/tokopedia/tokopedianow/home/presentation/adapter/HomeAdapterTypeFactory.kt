@@ -115,6 +115,7 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeC
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.claimcoupon.HomeClaimCouponWidgetViewHolder.HomeClaimCouponWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowTickerViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowProductCardViewHolder.TokoNowProductCardListener
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -123,7 +124,8 @@ class HomeAdapterTypeFactory(
     private val bannerComponentListener: BannerComponentListener? = null,
     private val homeProductRecomOocListener: TokoNowRecommendationCarouselListener? = null,
     private val homeProductRecomListener: HomeProductRecomListener? = null,
-    private val tokoNowProductCardListener: TokoNowRepurchaseProductListener? = null,
+    private val tokoNowProductCardListener: TokoNowProductCardListener? = null,
+    private val tokoNowRepurchaseListener: TokoNowRepurchaseProductListener? = null,
     private val homeSharingEducationListener: HomeSharingListener? = null,
     private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
     private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
@@ -149,6 +151,7 @@ class HomeAdapterTypeFactory(
     TokoNowTickerTypeFactory,
     TokoNowCategoryMenuTypeFactory,
     TokoNowRepurchaseTypeFactory,
+    com.tokopedia.tokopedianow.common.adapter.oldrepurchase.TokoNowRepurchaseTypeFactory,
     TokoNowChooseAddressWidgetTypeFactory,
     TokoNowEmptyStateOocTypeFactory,
     TokoNowServerErrorTypeFactory,
@@ -160,6 +163,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: TokoNowCategoryMenuUiModel): Int = TokoNowCategoryMenuViewHolder.LAYOUT
     override fun type(uiModel: TokoNowChooseAddressWidgetUiModel): Int = TokoNowChooseAddressWidgetViewHolder.LAYOUT
     override fun type(uiModel: TokoNowRepurchaseUiModel): Int = TokoNowRepurchaseViewHolder.LAYOUT
+    override fun type(uiModel: com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel): Int = com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowRepurchaseViewHolder.LAYOUT
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
     override fun type(uiModel: TokoNowServerErrorUiModel): Int = TokoNowServerErrorViewHolder.LAYOUT
     override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
@@ -208,7 +212,8 @@ class HomeAdapterTypeFactory(
         return when (type) {
             // region Common TokoNow Component
             TokoNowCategoryMenuViewHolder.LAYOUT -> TokoNowCategoryMenuViewHolder(view, tokoNowCategoryMenuListener)
-            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener, tokoNowView)
+            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowRepurchaseListener, tokoNowView)
+            com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowRepurchaseViewHolder.LAYOUT -> com.tokopedia.tokopedianow.common.viewholder.oldrepurchase.TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener, tokoNowView)
             TokoNowChooseAddressWidgetViewHolder.LAYOUT -> TokoNowChooseAddressWidgetViewHolder(view, tokoNowView, tokoNowChooseAddressWidgetListener)
             TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
             TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)

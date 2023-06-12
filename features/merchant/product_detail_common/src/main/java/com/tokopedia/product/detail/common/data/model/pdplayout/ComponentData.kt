@@ -155,9 +155,6 @@ data class ComponentData(
         private const val PRODUCT_IMAGE_TYPE = "image"
     }
 
-    val hasWholesale: Boolean
-        get() = wholesale != null && wholesale.isNotEmpty()
-
     fun getFirstProductImage(): String? {
         if (media.isEmpty()) return null
 
@@ -182,31 +179,6 @@ data class ComponentData(
         return media.find {
             it.type == PRODUCT_IMAGE_TYPE
         }?.uRLThumbnail
-    }
-
-    fun getImagePathExceptVideo(): ArrayList<String>? {
-        val imageData =
-            media.filter { it.type == PRODUCT_IMAGE_TYPE && it.uRLOriginal.isNotEmpty() }
-                .map { it.uRLOriginal }
-        val arrayList = arrayListOf<String>()
-        return if (imageData.isEmpty()) {
-            null
-        } else {
-            arrayList.addAll(imageData)
-            arrayList
-        }
-    }
-
-    fun getImagePath(): ArrayList<String> {
-        return ArrayList(
-            media.map {
-                if (it.type == PRODUCT_IMAGE_TYPE) {
-                    it.uRLOriginal
-                } else {
-                    it.uRLThumbnail
-                }
-            }
-        )
     }
 
     fun getGalleryItems(): List<ProductDetailGallery.Item> {

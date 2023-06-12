@@ -23,7 +23,7 @@ import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_TOP_F
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.SORT_TYPE_VIRAL
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_TOP_FIVE
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant.TOTAL_ROWS_VIRAL
-import com.tokopedia.catalog_library.viewmodels.CatalogLandingPageVM
+import com.tokopedia.catalog_library.viewmodel.CatalogLandingPageViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -60,7 +60,7 @@ class CatalogLandingPageFragment : CatalogProductsBaseFragment(), CatalogLibrary
 
     private val landingPageViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it).get(CatalogLandingPageVM::class.java)
+            ViewModelProvider(this, it).get(CatalogLandingPageViewModel::class.java)
         }
     }
 
