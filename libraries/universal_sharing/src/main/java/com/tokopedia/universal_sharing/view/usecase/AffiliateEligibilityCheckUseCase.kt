@@ -1,5 +1,6 @@
 package com.tokopedia.universal_sharing.view.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -7,9 +8,10 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import javax.inject.Inject
 
-class AffiliateEligibilityCheckUseCase constructor(
-    private val graphqlRepository: GraphqlRepository
+class AffiliateEligibilityCheckUseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
 ) : GraphqlUseCase<GenerateAffiliateLinkEligibility>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()

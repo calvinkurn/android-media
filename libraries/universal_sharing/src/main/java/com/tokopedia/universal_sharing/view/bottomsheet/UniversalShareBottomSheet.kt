@@ -114,6 +114,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     @Inject lateinit var imagePolicyUseCase: ImagePolicyUseCase
 
+    @Inject lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
+
     // View
     private var fragmentView: View? = null
     private var bottomSheetListener: ShareBottomsheetListener? = null
@@ -164,10 +166,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var savedImagePath: String = ""
     private var shareText: String = ""
     private var subjectShare: String = ""
-
     private var linkProperties: LinkProperties? = null
-
-    private var affiliatePDPQueryData: AffiliateInput? = null
+    private var affiliateInput: AffiliateInput? = null
     private var affiliateInputTemp: AffiliateInput? = null
     private var userType: String = KEY_GENERAL_USER
 
@@ -195,7 +195,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     // Flag to control Image generator option
     private var getImageFromMedia = false
-    private lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
     // Dynamic Social Media ordering from Remote Config
     private var socialMediaOrderHashMap: HashMap<String, Int>? = null
@@ -232,7 +231,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     }
 
     override fun getComponent(): UniversalShareComponent? {
-        return DaggerUniversalShareComponent.builder().baseAppComponent((LinkerManager.getInstance().context as BaseMainApplication).baseAppComponent)
+        return DaggerUniversalShareComponent.builder().baseAppComponent((LinkerManager.getInstance().context.applicationContext as BaseMainApplication).baseAppComponent)
             .universalShareModule(UniversalShareModule()).universalShareUseCaseModule(UniversalShareUseCaseModule()).build()
     }
 
@@ -250,6 +249,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initImageOptionsRecyclerView()
+        println("init affiliate")
         initAffiliate()
     }
 
@@ -358,13 +358,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
      */
     @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataReceived(validRequest: Boolean) {
+        println("request data received")
         if (userSession.isLoggedIn && validRequest && isAffiliateEnabled()) {
             executeAffiliateEligibilityUseCase()
+            println("execute data received")
             showLoader = true
             loaderUnify?.visibility = View.VISIBLE
         } else {
             clearLoader()
-            affiliatePDPQueryData = null
+            affiliateInput = null
         }
     }
 
@@ -426,12 +428,12 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun setAffiliateRequestHolder(affiliateInput: AffiliateInput) {
         if (userSession.isLoggedIn) {
-            this.affiliatePDPQueryData = affiliateInput
+            this.affiliateInput = affiliateInput
         }
     }
 
     fun getAffiliateRequestHolder(): AffiliateInput? {
-        return affiliatePDPQueryData
+        return affiliateInput
     }
 
     fun setBottomSheetTitle(title: String) {
@@ -920,7 +922,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             uri = linkProperties?.desktopUrl
             deepLink = linkProperties?.deeplink
             id = linkProperties?.id
-            linkAffiliateType = affiliatePDPQueryData?.affiliateLinkType?.value
+            linkAffiliateType = affiliateInput?.affiliateLinkType?.value
         }
         return LinkerShareData().apply {
             this.linkerData = linkerData
@@ -952,8 +954,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         gqlCallJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
-                    params = AffiliateEligibilityCheckUseCase.createParam(affiliatePDPQueryData!!)
+                    println("apply params $affiliateUsecase")
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput!!)
                 }.executeOnBackground()
+                println("cek result $generateAffiliateLinkEligibility")
                 var deeplink = ""
                 if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
                     deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
@@ -963,7 +967,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }, onError = {
-                clearLoader()
+            println("error execute ${it.message}")
+            clearLoader()
                 removeHandlerTimeout()
                 it.printStackTrace()
             })
@@ -974,7 +979,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 gqlCallJob?.cancel()
             }
             if (affiliateCommissionTextView?.visibility != View.VISIBLE) {
-                affiliatePDPQueryData = null
+                affiliateInput = null
             }
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
@@ -994,7 +999,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String = "") {
         clearLoader()
         removeHandlerTimeout()
-
+        println("show affiliate ticker ${generateAffiliateLinkEligibility}")
         if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
             showAffiliateCommission(generateAffiliateLinkEligibility)
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
@@ -1018,7 +1023,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             generateAffiliateLinkEligibility.banner != null &&
                 generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == false
             ) && userSession.isLoggedIn &&
-            userSession.shopId != affiliatePDPQueryData?.shop?.shopID
+            userSession.shopId != affiliateInput?.shop?.shopID
     }
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
@@ -1033,11 +1038,11 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            shareTracker.viewOnAffiliateRegisterTicker(true, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(true, affiliateInput?.getIdFactory() ?: "", affiliateInput?.pageType ?: "")
             userType = KEY_AFFILIATE_USER
             return
         }
-        affiliatePDPQueryData = null
+        affiliateInput = null
     }
 
     private fun showCommissionExtra(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
@@ -1056,10 +1061,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            shareTracker.viewOnAffiliateRegisterTicker(false, affiliatePDPQueryData?.getIdFactory() ?: "", affiliatePDPQueryData?.pageType ?: "")
+            shareTracker.viewOnAffiliateRegisterTicker(false, affiliateInput?.getIdFactory() ?: "", affiliateInput?.pageType ?: "")
 
-            val id = affiliatePDPQueryData?.getIdFactory() ?: ""
-            val page = affiliatePDPQueryData?.pageType ?: ""
+            val id = affiliateInput?.getIdFactory() ?: ""
+            val page = affiliateInput?.pageType ?: ""
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 shareTracker.onClickRegisterTicker(false, id, page)
                 dismiss()
@@ -1077,7 +1082,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
             userType = KEY_GENERAL_USER
         }
-        affiliatePDPQueryData = null
+        affiliateInput = null
     }
 
     private fun executeShareOptionClick(shareModel: ShareModel) {
@@ -1168,7 +1173,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     }
 
     private fun setIfAffiliate(shareModel: ShareModel) {
-        if (affiliatePDPQueryData != null &&
+        if (affiliateInput != null &&
             affiliateCommissionTextView?.visibility == View.VISIBLE
         ) {
             shareModel.isAffiliate = true
@@ -1182,7 +1187,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         loaderUnify?.visibility = View.VISIBLE
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
-                imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val response = imageGeneratorUseCase.apply {
                     params = ImageGeneratorUseCase.createParam(sourceId, args)
                 }.executeOnBackground()

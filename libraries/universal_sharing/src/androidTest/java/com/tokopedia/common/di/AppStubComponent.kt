@@ -6,6 +6,6 @@ import dagger.Component
 
 
 @ApplicationScope
-@Component(modules = [AppModuleStub::class])
-interface AppComponentStub : BaseAppComponent
+@Component(modules = [AppStubModule::class])
+interface AppStubComponent : BaseAppComponent
 

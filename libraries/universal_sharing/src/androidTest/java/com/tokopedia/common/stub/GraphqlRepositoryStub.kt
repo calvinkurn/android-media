@@ -6,14 +6,18 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
+import com.tokopedia.universal_sharing.test.R
 
 class GraphqlRepositoryStub : GraphqlRepository {
     override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
-        requests.forEach { request ->
-            when (GqlQueryParser.parse(request.query).first()) {
-                "generateAffiliateLinkEligibility" -> {
-                    return GqlMockUtil.createSuccessResponse()
-                }
+        when (GqlQueryParser.parse(requests).first()) {
+            "generateAffiliateLinkEligibility" -> {
+                println("masuk sini")
+                return GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(R.raw.pdp_eligible_affiliate)
+            }
+            else -> {
+                throw Exception("request empty")
             }
         }
     }

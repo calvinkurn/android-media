@@ -9,9 +9,7 @@ import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.AffiliateInput
 
-abstract class UniversalShareFragmentTest : Fragment() {
-
-    lateinit var bottomSheet: UniversalShareBottomSheet
+class UniversalShareFragmentTest : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -24,18 +22,12 @@ abstract class UniversalShareFragmentTest : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showUniversalShare(getAffiliateInput())
     }
 
+    fun showUniversalBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet) {
+        universalShareBottomSheet.show(requireFragmentManager(), TAG)
+    }
     companion object {
         private val TAG = "UniversalShareTestActivity"
     }
-
-    private fun initializeBottomsheet() {
-        bottomSheet = UniversalShareBottomSheet.createInstance()
-    }
-
-    abstract fun showUniversalShare(affiliateInput: AffiliateInput)
-
-    abstract fun getAffiliateInput(): AffiliateInput
 }
