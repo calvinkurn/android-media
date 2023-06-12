@@ -92,9 +92,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private var hasRequestedLocation: Boolean = false
     private var permissionState: Int = PERMISSION_NOT_DEFINED
     private var isAccessAppPermissionFromSettings: Boolean = false
-
-    private var addressFormListener: AddressFormListener? = null
-
     private val requiredPermissions: Array<String>
         get() = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -148,15 +145,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         setSearchView()
         setViewListener()
         initObserver()
-        initActivityListener()
-    }
-
-    private fun initActivityListener() {
-        val searchPageActivity = requireActivity() as SearchPageActivity?
-        if (searchPageActivity != null) {
-            setListener(searchPageActivity)
-            addressFormListener?.setIsFromPinPoint(viewModel.isFromPinpoint)
-        }
     }
 
     private fun checkGms() {
@@ -175,7 +163,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 REQUEST_PINPOINT_PAGE -> {
                     onResultFromPinpoint(data)
                 }
-
                 REQUEST_ADDRESS_FORM_PAGE -> {
                     onResultFromAddressForm(data)
                 }
@@ -241,13 +228,11 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                     showBottomSheetLocUndefined(false)
                 }
             }
-
             PERMISSION_DENIED -> {
                 if (!viewModel.isEdit) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
-
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
                 if (!viewModel.isEdit) {
@@ -626,14 +611,6 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
                 finish()
             }
         }
-    }
-
-    private fun setListener(listener: AddressFormListener) {
-        this.addressFormListener = listener
-    }
-
-    interface AddressFormListener {
-        fun setIsFromPinPoint(isFromPinpoint: Boolean)
     }
 
     companion object {

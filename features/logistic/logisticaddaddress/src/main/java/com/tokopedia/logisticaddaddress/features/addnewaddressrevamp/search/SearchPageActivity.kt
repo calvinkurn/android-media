@@ -14,10 +14,10 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_search_address.*
 
-class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent>, SearchPageFragment.AddressFormListener {
+class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampComponent> {
 
     private var isEdit: Boolean? = false
-    private var isFromPinPoint: Boolean = false
+    private var isFromPinPoint: Boolean? = false
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
@@ -38,7 +38,7 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (!isFromPinPoint) {
+        if (isFromPinPoint == false) {
             if (isEdit == true) {
                 EditAddressRevampAnalytics.onClickBackArrowSearch(userSession.userId)
             } else {
@@ -52,6 +52,8 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         if (intent != null && intent.extras != null) {
             val extra = intent.extras
             isEdit = extra?.getBoolean(AddressConstants.EXTRA_IS_EDIT)
+            isFromPinPoint = extra?.getBoolean(AddressConstants.EXTRA_FROM_PINPOINT)
+
             extra?.getString(EXTRA_REF).let { from ->
                 if (isEdit == false) {
                     AddNewAddressRevampAnalytics.sendScreenName(from)
@@ -63,10 +65,6 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         btn_back.setOnClickListener {
             onBackPressed()
         }
-    }
-
-    override fun setIsFromPinPoint(isFromPinpoint: Boolean) {
-        isFromPinPoint = isFromPinpoint
     }
 
     companion object {
