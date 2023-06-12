@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase
+import com.tokopedia.checkout.domain.usecase.GetPaymentFeeCheckoutUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV4UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
@@ -104,6 +105,9 @@ open class BaseShipmentPresenterTest {
     @MockK(relaxed = true)
     lateinit var updateDynamicDataPassingUseCase: UpdateDynamicDataPassingUseCase
 
+    @MockK(relaxed = true)
+    lateinit var dynamicPaymentFeeCheckoutUseCase: GetPaymentFeeCheckoutUseCase
+
     val gson = Gson()
 
     private val shipmentDataRequestConverter = ShipmentDataRequestConverter(gson)
@@ -130,6 +134,7 @@ open class BaseShipmentPresenterTest {
             prescriptionIdsUseCase,
             epharmacyUseCase,
             updateDynamicDataPassingUseCase,
+            dynamicPaymentFeeCheckoutUseCase,
             checkoutUseCase,
             shipmentDataConverter,
             shippingCourierConverter,
