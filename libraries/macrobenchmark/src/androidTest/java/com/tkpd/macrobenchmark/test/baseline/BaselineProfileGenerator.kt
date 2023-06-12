@@ -26,28 +26,16 @@ class BaselineProfileGenerator {
     @get:Rule
     val rule = BaselineProfileRule()
 
+
+
     @Before
     fun setup() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
-        MacroDevOps.setupEnvironment(
-            MacroIntent.Home.getHomeIntent().apply {
-                this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        )
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+        MacroDevOps.skipOnboarding()
     }
 
     @Test
     fun appStartupAndUserJourney() {
         rule.collectBaselineProfile(MacroArgs.TKPD_PACKAGE_NAME) {
-            MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
-            MacroDevOps.setupEnvironment(
-                MacroIntent.Home.getHomeIntent().apply {
-                    this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-            )
-
             startApplicationJourney()
             scrollRecyclerViewJourney()
             goToDetailJourney()
@@ -72,10 +60,12 @@ class BaselineProfileGenerator {
     private fun MacrobenchmarkScope.goToDetailJourney() {
         val recyclerViewHome = device.findObject(By.res(MacroIntent.TKPD_PACKAGE_NAME, MacroIntent.Home.RV_RESOURCE_ID))
         repeat(1) { index ->
-            val author = recyclerViewHome.children[index % (recyclerViewHome.childCount - 1)]
-            author.click()
-            device.wait(Until.gone(By.res(MacroIntent.Home.RV_RESOURCE_ID, MacroIntent.Home.RV_RESOURCE_ID)), 5_000)
-            device.waitForIdle()
+            if (recyclerViewHome != null) {
+                val author = recyclerViewHome.children[index % (recyclerViewHome.childCount - 1)]
+                author.click()
+                device.wait(Until.gone(By.res(MacroIntent.Home.RV_RESOURCE_ID, MacroIntent.Home.RV_RESOURCE_ID)), 5_000)
+                device.waitForIdle()
+            }
         }
     }
 }
