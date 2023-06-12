@@ -204,7 +204,7 @@
         <package android:name="com.creativelabs.appduplicator" />
         <package android:name="com.crowdo.p2pconnect" />
         <package android:name="com.crush.android.game" />
-        <package android:name="com.crush.block.game/" />
+        <package android:name="com.crush.block.game" />
         <package android:name="com.cute.macaron.gp" />
         <package android:name="com.cvjaya.sinarinjmhrpan" />
         <package android:name="com.CyberGhost.RayVpn" />
@@ -438,7 +438,7 @@
         <package android:name="com.kmark.pre.cash" />
         <package android:name="com.kmobi" />
         <package android:name="com.knife.thcut" />
-        <package android:name="com.knifemaster.knifehit.bounty/" />
+        <package android:name="com.knifemaster.knifehit.bounty" />
         <package android:name="com.koinworks.app" />
         <package android:name="com.koki.sakti" />
         <package android:name="com.kolklom.sakukilatapps" />
