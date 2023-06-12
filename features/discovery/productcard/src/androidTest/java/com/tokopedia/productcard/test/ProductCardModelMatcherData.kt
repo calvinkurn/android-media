@@ -117,6 +117,7 @@ internal fun getProductCardModelMatcherData(useViewStub: Boolean): List<ProductC
         testAddToCartButtonWishlist(useViewStub),
         testSeeSimilarProductButtonWishlist(useViewStub),
         testOutOfStock(),
+        testSeeOtherProductButton(),
     )
 }
 
@@ -2667,6 +2668,42 @@ private fun testOutOfStock(): ProductCardModelMatcher {
         R.id.labelProductStatus to isDisplayedWithText(labelProductStatus.title),
         R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
         R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+    )
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testSeeOtherProductButton(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(
+        position = LABEL_INTEGRITY,
+        title = "Terjual 8",
+        type = TEXT_DARK_GREY,
+    )
+
+    val productCardModel = ProductCardModel(
+        productName = "See other Product Button",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        discountPercentage = "20%",
+        slashedPrice = "Rp5.000.000",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelIntegrity),
+        hasAddToCartButton = true,
+        seeOtherProductText = "Lihat 5 Lainnya",
+    )
+
+    val productCardMatcher = mapOf(
+        R.id.productCardImage to isDisplayed(),
+        R.id.textViewProductName to isDisplayedWithText(productCardModel.productName),
+        R.id.textViewPrice to isDisplayedWithText(productCardModel.formattedPrice),
+        R.id.labelDiscount to isDisplayedWithText(productCardModel.discountPercentage),
+        R.id.textViewSlashedPrice to isDisplayedWithText(productCardModel.slashedPrice),
+        R.id.productCardImageSalesRatingFloat to isDisplayed(),
+        R.id.salesRatingFloat to isDisplayedWithText(productCardModel.countSoldRating),
+        R.id.salesRatingFloatLine to isDisplayed(),
+        R.id.textViewSales to isDisplayedWithText(labelIntegrity.title),
+        R.id.buttonAddToCart to isDisplayed(),
+        R.id.buttonSeeOtherProduct to isDisplayed(),
     )
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

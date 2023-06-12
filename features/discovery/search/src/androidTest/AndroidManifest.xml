@@ -10,8 +10,5 @@
         tools:replace="android:debuggable,android:label"
         android:debuggable="true">
 
-        <activity
-            android:name="com.tokopedia.search.env.BlankTestActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 </manifest>
