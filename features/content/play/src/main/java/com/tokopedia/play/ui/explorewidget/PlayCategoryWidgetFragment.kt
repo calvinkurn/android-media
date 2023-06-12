@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.databinding.FragmentPlayCategoryWidgetBinding
 import com.tokopedia.play.ui.explorewidget.adapter.CategoryWidgetAdapter
 import com.tokopedia.play.ui.explorewidget.viewholder.CategoryWidgetViewHolder
@@ -27,7 +29,6 @@ import com.tokopedia.play.view.uimodel.ExploreWidgetType
 import com.tokopedia.play.view.uimodel.action.EmptyPageWidget
 import com.tokopedia.play.view.uimodel.action.FetchWidgets
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
-import com.tokopedia.play.view.uimodel.action.RefreshWidget
 import com.tokopedia.play.view.uimodel.event.ExploreWidgetNextTab
 import com.tokopedia.play.view.uimodel.getCategoryShimmering
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
@@ -35,6 +36,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.buildSpannedString
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -42,7 +44,11 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 23/05/23
  */
-class PlayCategoryWidgetFragment @Inject constructor(private val router: Router) :
+class PlayCategoryWidgetFragment @Inject constructor(
+    private val router: Router,
+    private val trackingQueue: TrackingQueue,
+    private val analyticFactory: PlayAnalytic2.Factory
+) :
     BasePlayFragment() {
 
     private var _binding: FragmentPlayCategoryWidgetBinding? = null
@@ -61,6 +67,11 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 viewModel.submitAction(NextPageWidgets(ExploreWidgetType.Category))
             }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) analytic?.scrollExplore()
+            }
         }
     }
 
@@ -71,8 +82,16 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
     private val clickableSpan by lazy(LazyThreadSafetyMode.NONE) {
         object : ClickableSpan() {
             override fun updateDrawState(tp: TextPaint) {
-                tp.color = MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                tp.color = MethodChecker.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
                 tp.isUnderlineText = false
+                tp.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
+                    requireContext(),
+                    true,
+                    com.tokopedia.unifyprinciples.Typography.DISPLAY_3
+                )
             }
 
             override fun onClick(widget: View) {
@@ -80,6 +99,8 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
             }
         }
     }
+
+    private var analytic: PlayAnalytic2? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,16 +136,19 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
         binding.viewExploreWidgetEmpty.tvDescEmptyExploreWidget.movementMethod =
             LinkMovementMethod.getInstance()
 
-        // TODO() temp
-        viewModel.submitAction(
-            FetchWidgets(ExploreWidgetType.Category)
-        )
+        viewModel.submitAction(FetchWidgets(ExploreWidgetType.Category))
     }
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest { cachedState ->
                 renderCards(cachedState)
+
+                if (analytic != null || cachedState.value.channel.channelInfo.id.isBlank()) return@collectLatest
+                analytic = analyticFactory.create(
+                    trackingQueue = trackingQueue,
+                    channelInfo = cachedState.value.channel.channelInfo
+                )
             }
         }
     }
@@ -136,6 +160,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
                     ExploreWidgetNextTab -> {
                         goToNextPage()
                     }
+
                     else -> {}
                 }
             }
@@ -150,7 +175,10 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
 
         when (result.state) {
             is ExploreWidgetState.Success -> categoryAdapter.setItemsAndAnimateChanges(result.data)
-            ExploreWidgetState.Loading -> categoryAdapter.setItemsAndAnimateChanges(getCategoryShimmering)
+            ExploreWidgetState.Loading -> categoryAdapter.setItemsAndAnimateChanges(
+                getCategoryShimmering
+            )
+
             is ExploreWidgetState.Fail -> {
                 toaster.showToaster(
                     message = generateErrorMessage(result.state.error),
@@ -162,6 +190,7 @@ class PlayCategoryWidgetFragment @Inject constructor(private val router: Router)
                     }
                 )
             }
+
             else -> {}
         }
     }

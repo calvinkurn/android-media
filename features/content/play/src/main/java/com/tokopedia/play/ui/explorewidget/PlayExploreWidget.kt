@@ -43,10 +43,10 @@ class PlayExploreWidget @Inject constructor(
 
     private val fgExplore by lazyThreadSafetyNone {
         PlayExploreWidgetFragment(router, trackingQueue, analyticFactory)
-    } // TODO() setup apply here only passed router
+    }
 
     private val fgCategory by lazyThreadSafetyNone {
-        PlayCategoryWidgetFragment(router) //TODO() dont pass via constructor use lateint
+        PlayCategoryWidgetFragment(router, trackingQueue, analyticFactory)
     }
 
     private val tabs = mutableMapOf<String, Fragment>()

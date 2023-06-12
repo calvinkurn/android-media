@@ -41,13 +41,11 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
-import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -138,6 +136,11 @@ class PlayExploreWidgetFragment @Inject constructor(
             override fun updateDrawState(tp: TextPaint) {
                 tp.color = MethodChecker.getColor(requireContext(), unifyR.color.Unify_GN500)
                 tp.isUnderlineText = false
+                tp.typeface = com.tokopedia.unifyprinciples.Typography.getFontType(
+                    requireContext(),
+                    true,
+                    com.tokopedia.unifyprinciples.Typography.DISPLAY_3
+                )
             }
 
             override fun onClick(widget: View) {
