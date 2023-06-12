@@ -29,6 +29,7 @@ import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import okio.IOException
 import timber.log.Timber
@@ -197,20 +198,21 @@ class AffiliatePromoViewModel @Inject constructor(
             }
         }
     }
+
     fun fetchUnreadNotificationCount() {
-        viewModelScope.launch {
-            try {
-                _unreadNotificationCount.value =
-                    affiliateUnreadNotificationUseCase.getUnreadNotifications()
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
+        val coroutineExceptionHandler = CoroutineExceptionHandler { _, e ->
+            Timber.e(e)
+        }
+        viewModelScope.launch(coroutineContext + coroutineExceptionHandler) {
+            _unreadNotificationCount.value =
+                affiliateUnreadNotificationUseCase.getUnreadNotifications()
         }
     }
 
     fun resetNotificationCount() {
         _unreadNotificationCount.value = Int.ZERO
     }
+
     fun getSSAShopList(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> = ssaShopList
     fun setValidateUserType(onRegistered: String) {
         validateUserState.value = onRegistered
