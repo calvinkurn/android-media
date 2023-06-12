@@ -16,6 +16,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_UN_OPTIMIZED_GROUP
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetPricingDetailsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
@@ -161,7 +162,10 @@ class GroupDetailMapper @Inject constructor() {
         )
     }
 
-    fun convertToAccordianKataKunciUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+    fun convertToAccordianKataKunciUiModel(
+        groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?,
+        pricingDetails: TopAdsGetPricingDetailsResponse
+    ): GroupInsightsUiModel {
         return GroupInsightsUiModel(
             TYPE_POSITIVE_KEYWORD,
             "Kata Kunci",
@@ -170,7 +174,9 @@ class GroupDetailMapper @Inject constructor() {
 //                            false,
             AccordianKataKunciUiModel(
                 "Kata Kunci",
-                groupData?.newPositiveKeywordsRecom
+                groupData?.newPositiveKeywordsRecom,
+                pricingDetails.topAdsGetPricingDetails.maxBid,
+                pricingDetails.topAdsGetPricingDetails.minBid
 
             )
         )

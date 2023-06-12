@@ -5,7 +5,9 @@ import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.f
 
 data class AccordianKataKunciUiModel(
     val text: String = "",
-    val newPositiveKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom>?
+    val newPositiveKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom>?,
+    val maxBid: Int,
+    val minBid: Int
 ) : GroupDetailDataModel {
     override fun type(): String {
         return ""
@@ -14,7 +16,6 @@ data class AccordianKataKunciUiModel(
     override fun type(typeFactory: GroupDetailAdapterFactory): Int {
         return typeFactory.type(this)
     }
-
 
     override fun equalsWith(newItem: GroupDetailDataModel): Boolean {
         return this == newItem
