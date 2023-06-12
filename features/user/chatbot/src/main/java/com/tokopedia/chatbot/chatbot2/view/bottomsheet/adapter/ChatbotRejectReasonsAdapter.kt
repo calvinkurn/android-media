@@ -1,7 +1,6 @@
 package com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +31,6 @@ class ChatbotRejectReasonsAdapter(
                     selectedList.add(item)
                     this.item.chipType = TYPE_SELECTED
                 }
-                Log.d("FATAL", "bind: $rejectReasonsChipListener")
                 rejectReasonsChipListener?.onChipClick(selectedList.size)
             }
         }

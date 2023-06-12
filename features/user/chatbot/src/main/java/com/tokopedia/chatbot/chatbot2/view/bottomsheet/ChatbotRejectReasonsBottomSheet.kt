@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.chatbot2.data.rejectreasons.DynamicAttachmentRejectReasons
 import com.tokopedia.chatbot.chatbot2.view.bottomsheet.adapter.ChatbotRejectReasonsAdapter
@@ -69,8 +69,9 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
                         setMessage(
                             getString(com.tokopedia.chatbot.R.string.chatbot_reject_reasons_min) +
                                 data.reasonMinimumCharacter +
-                                getString(com.tokopedia.chatbot.R.string.chatbot_reject_reasons_character
-                            )
+                                getString(
+                                    com.tokopedia.chatbot.R.string.chatbot_reject_reasons_character
+                                )
                         )
                     }
                 }
@@ -96,7 +97,13 @@ class ChatbotRejectReasonsBottomSheet : BottomSheetUnify() {
     }
 
     private fun getMyLayoutManager(): RecyclerView.LayoutManager {
-        return LinearLayoutManager(context)
+        val gridLayoutManager = GridLayoutManager(context, 2)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (position < 2) 1 else 2
+            }
+        }
+        return gridLayoutManager
     }
 
     fun checkChipCounter(count: Int) {
