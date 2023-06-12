@@ -66,6 +66,7 @@ class FeedAnalytics @Inject constructor(
         const val CLICK_CREATOR_PROFILE_PICTURE = "click - creator profile picture"
         const val CLICK_CONTENT_CAPTION = "click - content caption"
         const val CLICK_CONTENT_PRODUCT_LABEL = "click - product label bottomsheet"
+        const val CLICK_BUTTON_COMMENT = "click - comment button"
         const val CLICK_LIVE_PREVIEW = "click - live preview"
     }
 
@@ -675,6 +676,18 @@ class FeedAnalytics @Inject constructor(
                 Action.CLICK_CONTENT_PRODUCT_LABEL,
                 getEventLabel(trackerData),
                 "41688"
+            )
+        )
+    }
+
+    fun eventClickComment(trackerData: FeedTrackerDataModel) {
+        sendEventTracker(
+            generateGeneralTrackerData(
+                Event.CLICK_CONTENT,
+                CATEGORY_UNIFIED_FEED,
+                Action.CLICK_BUTTON_COMMENT,
+                getEventLabel(trackerData),
+                "41579"
             )
         )
     }

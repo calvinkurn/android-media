@@ -93,7 +93,11 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         )
         if (walletUiModel.isFailed) {
             adapter?.changeItemToShimmer(UiModelMapper.getWalletShimmeringUiModel(walletUiModel))
-            viewModel.getBalanceAndPoint(walletUiModel.id, walletUiModel.hideTitle, walletUiModel.title)
+            viewModel.getBalanceAndPoint(
+                walletUiModel.id,
+                walletUiModel.hideTitle,
+                walletUiModel.title
+            )
         } else if (!walletUiModel.applink.isEmpty()) {
             goToApplink(walletUiModel.applink)
         }
@@ -143,7 +147,7 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
         if (centralizedUserAssetConfig.assetConfigHorizontal.isNotEmpty()) {
             addSubtitleView()
             centralizedUserAssetConfig.assetConfigHorizontal.forEach {
-                if (it.id == AccountConstants.WALLET.CO_BRAND_CC) {
+                if (it.id == AccountConstants.WALLET.CO_BRAND_CC || it.id == AccountConstants.WALLET.GOPAYLATERCICIL) {
                     adapter?.addItemAndAnimateChanges(UiModelMapper.getWalletShimmeringUiModel(it))
                     viewModel.getBalanceAndPoint(it.id, it.hideTitle, it.title)
                 } else {
@@ -165,33 +169,13 @@ open class FundsAndInvestmentFragment : BaseDaggerFragment(), WalletListener {
     }
 
     private fun onSuccessGetBalanceAndPoint(balanceAndPoint: WalletappGetAccountBalance) {
-        if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC && balanceAndPoint.isActive) {
-            val wallet = UiModelMapper.getWalletUiModel(
-                balanceAndPoint
-            ).apply {
-                this.isVertical = false
+        val wallet = UiModelMapper.getWalletUiModel(balanceAndPoint).apply {
+            if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC ||
+                balanceAndPoint.id == AccountConstants.WALLET.GOPAYLATERCICIL) {
+                isVertical = false
             }
-
-            if (balanceAndPoint.isActive) {
-                adapter?.moveWalletAboveSubtitle(wallet)
-                if (adapter?.getSubtitleIndex() == adapter?.lastIndex) {
-                    adapter?.removeSubtitle()
-                }
-            } else {
-                adapter?.changeItemToSuccessBySameId(wallet)
-            }
-        } else {
-            adapter?.changeItemToSuccessBySameId(
-                UiModelMapper.getWalletUiModel(
-                    balanceAndPoint
-                ).apply {
-                    if (balanceAndPoint.id == AccountConstants.WALLET.CO_BRAND_CC) {
-                        this.isActive = true
-                    }
-                    this.isVertical = true
-                }
-            )
         }
+        adapter?.changeItemToSuccessBySameId(wallet)
     }
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
