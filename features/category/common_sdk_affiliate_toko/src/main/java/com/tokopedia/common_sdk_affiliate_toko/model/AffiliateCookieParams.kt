@@ -25,7 +25,7 @@ class AdditionalParam(
 /**
  * Encapsulates all the page details
  *
- * @param[pageId] productId for Product, shopId for Shop, empty for discovery
+ * @param[pageId] productId for Product, shopId for Shop, empty for discovery, wishlistID for wishlist
  * @param[source] [AffiliateSdkPageSource]
  * @param[pageName] campaign slug, empty for Product and Shop
  * @param[siteId] if not provided default value is always 1
@@ -84,6 +84,9 @@ sealed class AffiliateSdkPageSource(
         override fun shouldCallCheckCookie() = true
     }
 
+    /**
+     * Encapsulates info for Wishlist page source.
+     */
     class Wishlist :
         AffiliateSdkPageSource("") {
         override fun getType() = AffiliateSdkConstant.WISHLIST
