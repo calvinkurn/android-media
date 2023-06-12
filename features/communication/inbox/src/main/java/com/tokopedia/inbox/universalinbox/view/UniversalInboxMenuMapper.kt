@@ -13,6 +13,7 @@ import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOUR
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.PAGE_SOURCE_REVIEW_INBOX
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_A
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.ROLLENCE_TYPE_B
+import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.WIDGET_PAGE_NAME
 import com.tokopedia.inbox.universalinbox.util.UniversalInboxValueUtil.getVariant
 import com.tokopedia.inbox.universalinbox.view.uimodel.MenuItemType
 import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxMenuSectionUiModel
@@ -25,7 +26,10 @@ import com.tokopedia.inbox.universalinbox.view.uimodel.UniversalInboxWidgetUiMod
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.recommendation_widget_common.widget.carousel.global.RecommendationCarouselTrackingConst
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetMetadata
 import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetModel
+import com.tokopedia.recommendation_widget_common.widget.global.RecommendationWidgetTrackingModel
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -115,7 +119,7 @@ class UniversalInboxMenuMapper @Inject constructor(
             )
             add(UniversalInboxMenuSeparatorUiModel())
             add(UniversalInboxTopAdsBannerUiModel())
-            add(RecommendationWidgetModel())
+            add(generateRecommendationWidgetModel())
         }
         return othersSectionList
     }
@@ -184,6 +188,20 @@ class UniversalInboxMenuMapper @Inject constructor(
                 type = this.type
             )
         }
+    }
+
+    private fun generateRecommendationWidgetModel(): RecommendationWidgetModel {
+        return RecommendationWidgetModel(
+            metadata = RecommendationWidgetMetadata(
+                pageName = WIDGET_PAGE_NAME
+            ),
+            trackingModel = RecommendationWidgetTrackingModel(
+                androidPageName = RecommendationCarouselTrackingConst.Category.INBOX_PAGE,
+                eventActionImpression = RecommendationCarouselTrackingConst.Action.IMPRESSION_ON_PRODUCT_RECOMMENDATION_INBOX,
+                eventActionClick = RecommendationCarouselTrackingConst.Action.CLICK_ON_PRODUCT_RECOMMENDATION_INBOX,
+                listPageName = RecommendationCarouselTrackingConst.List.INBOX
+            )
+        )
     }
 
     private fun isVariantA(): Boolean {
