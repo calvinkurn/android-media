@@ -138,6 +138,11 @@ open class GetShopPenaltyDetailMergeUseCase @Inject constructor(
                       penaltyStartDate
                       penaltyExpirationDate
                       status
+                      penaltyTypeGroup
+                      productDetail {
+                        id
+                        name
+                      }
                   }
                   hasNext
                   hasPrev

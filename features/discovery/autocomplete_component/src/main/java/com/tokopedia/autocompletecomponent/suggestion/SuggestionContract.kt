@@ -3,12 +3,17 @@ package com.tokopedia.autocompletecomponent.suggestion
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.autocompletecomponent.searchbar.SearchBarKeyword
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 
 interface SuggestionContract {
     interface View : CustomerView {
         fun showSuggestionResult(list: List<Visitable<*>>)
+        fun hideSuggestionResult()
+
+        fun showExceedKeywordLimit()
+        fun hideExceedKeywordLimit()
 
         fun trackEventClickKeyword(
             eventLabel: String,
@@ -89,9 +94,20 @@ interface SuggestionContract {
 
         fun dropKeyBoard()
 
-        fun route(applink: String, searchParameter: Map<String, String>)
+        fun route(
+            applink: String,
+            searchParameter: Map<String, String>,
+            activeKeyword: SearchBarKeyword,
+        )
+
+        fun applySuggestionToSelectedKeyword(
+            suggestedText: String,
+            activeKeyword: SearchBarKeyword,
+        )
 
         fun finish()
+
+        fun showSuggestionCoachMark()
 
         val chooseAddressData: LocalCacheModel?
 
@@ -101,7 +117,9 @@ interface SuggestionContract {
     interface Presenter : CustomerPresenter<View> {
         fun getSearchParameter(): Map<String, String>
 
-        fun getSuggestion(searchParameter: Map<String, String>)
+        fun getActiveKeyword() : SearchBarKeyword
+
+        fun getSuggestion(searchParameter: Map<String, String>, activeKeyword: SearchBarKeyword)
 
         fun setIsTyping(isTyping: Boolean)
 
@@ -115,5 +133,7 @@ interface SuggestionContract {
             baseSuggestionDataView: BaseSuggestionDataView,
             item: BaseSuggestionDataView.ChildItem,
         )
+
+        fun markSuggestionCoachMark()
     }
 }

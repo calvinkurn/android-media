@@ -31,6 +31,6 @@ internal object TopAdsGtmTrackerConstant {
         const val VARIANT = "variant"
         const val CATEGORY = "category"
         const val LIST = "list"
-        const val POSITION = "position"
+        const val INDEX = "index"
     }
 }

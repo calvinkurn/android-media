@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.sellerpersona.databinding.ItemPersonaSimpleListBinding
-import com.tokopedia.utils.resources.isAppDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import timber.log.Timber
 
 /**
@@ -55,7 +55,7 @@ class PersonaSimpleListAdapter : Adapter<PersonaSimpleListAdapter.ResultViewHold
                 tvSpResultInfoItem.text = item
 
                 val textColor = when {
-                    isAppDarkMode() && isSelectedMode -> {
+                    root.context.isDarkMode() && isSelectedMode -> {
                         com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_96
                     }
                     isSelectedMode -> {

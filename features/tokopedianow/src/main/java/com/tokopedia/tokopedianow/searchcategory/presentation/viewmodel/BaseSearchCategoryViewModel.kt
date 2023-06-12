@@ -65,7 +65,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
-import com.tokopedia.tokopedianow.common.model.olderpurchase.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.oldrepurchase.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowTickerUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService

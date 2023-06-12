@@ -63,7 +63,6 @@ data class ProductCardModel (
         val stockBarLabelColor: String = "",
         val stockBarPercentage: Int = 0,
         val isOutOfStock: Boolean = false,
-        @Deprecated("determined from product card")
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
@@ -83,6 +82,7 @@ data class ProductCardModel (
         val cardInteraction: Boolean = false,
         val productListType: ProductListType = ProductListType.CONTROL,
         val isPortrait: Boolean = false,
+        val seeOtherProductText: String = "",
         val isTopStockBar: Boolean = false,
         val cardType: Int = CardUnify2.TYPE_SHADOW,
 ) {
@@ -317,6 +317,8 @@ data class ProductCardModel (
         return productListType == ProductListType.LONG_IMAGE
             || (productListType == ProductListType.PORTRAIT && isPortrait)
     }
+
+    fun willShowButtonSeeOtherProduct() = seeOtherProductText.isNotEmpty()
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
         val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()

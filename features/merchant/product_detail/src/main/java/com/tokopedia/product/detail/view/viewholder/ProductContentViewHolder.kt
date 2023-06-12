@@ -67,8 +67,11 @@ class ProductContentViewHolder(
         itemProductContent.tradeinHeaderContainer.setOnClickListener {
             listener.txtTradeinClicked(getComponentTrackData(element))
         }
-        itemProductContent.fabDetailPdp.setOnClickListener {
-            listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
+
+        itemProductContent.fabDetailPdp.apply {
+            setOnClickListener {
+                listener.onFabWishlistClicked(activeState, getComponentTrackData(element))
+            }
         }
     }
 

@@ -5,12 +5,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 
-data class CartRedirectionResponse(
-        @SerializedName("cartRedirection")
-        @Expose
-        val response: CartRedirection = CartRedirection()
-)
-
 data class CartRedirection(
         @SerializedName("data")
         @Expose

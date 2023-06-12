@@ -10,10 +10,10 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.inbox.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -91,12 +91,12 @@ class ShopReputationView : BaseCustomView {
         reputationLayout?.setOnClickListener {
             val dialog = BottomSheetDialog(context)
             dialog.apply {
-                dialog.setContentView(com.tokopedia.design.R.layout.seller_reputation_bottom_sheet_dialog)
+                dialog.setContentView(com.tokopedia.review.inbox.R.layout.seller_reputation_bottom_sheet_dialog)
                 val point: Typography? =
-                    dialog.findViewById(com.tokopedia.design.R.id.reputation_point)
+                    dialog.findViewById(com.tokopedia.review.inbox.R.id.reputation_point)
                 val pointText: String =
                     if (score.isZero()) context.getString(
-                        com.tokopedia.design.R.string.no_reputation_yet
+                        com.tokopedia.review.inbox.R.string.no_reputation_yet
                     ) else "$score " + context.getString(
                         R.string.point
                     )
@@ -104,10 +104,10 @@ class ShopReputationView : BaseCustomView {
                     point.text = pointText
                 }
                 val ivReputationBadge: ImageUnify? =
-                    dialog.findViewById(com.tokopedia.design.R.id.iv_reputation_badge)
+                    dialog.findViewById(com.tokopedia.review.inbox.R.id.iv_reputation_badge)
                 ivReputationBadge?.loadImage(badgeUrl)
                 val closeButton: Button? = dialog.findViewById(R.id.dialog_close_button)
-                closeButton?.setOnClickListener({ dialog.dismiss() })
+                closeButton?.setOnClickListener { dialog.dismiss() }
                 dialog.show()
             }
         }

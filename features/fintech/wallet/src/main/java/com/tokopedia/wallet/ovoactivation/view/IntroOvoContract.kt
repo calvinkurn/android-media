@@ -15,10 +15,12 @@ interface IntroOvoContract {
 
         fun directPageWithApplink(registeredApplink: String)
 
-        fun directPageWithExtraApplink(unRegisteredApplink: String,
-                                       registeredApplink: String,
-                                       phoneNumber: String,
-                                       changeMsisdnApplink: String)
+        fun directPageWithExtraApplink(
+            unRegisteredApplink: String,
+            registeredApplink: String,
+            phoneNumber: String,
+            changeMsisdnApplink: String
+        )
 
         fun showSnackbarErrorMessage(message: String)
 
@@ -28,7 +30,9 @@ interface IntroOvoContract {
 
         fun hideProgressBar()
 
-        fun showDialogErrorPhoneNumber(phoneActionModel: PhoneActionModel)
+        fun showDialogErrorPhoneNumber(phoneActionModel: PhoneActionModel?)
+
+        fun removeTokoCashCache()
     }
 
     interface Presenter : CustomerPresenter<View> {

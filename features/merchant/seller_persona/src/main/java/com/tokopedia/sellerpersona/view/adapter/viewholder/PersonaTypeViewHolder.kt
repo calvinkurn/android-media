@@ -11,7 +11,7 @@ import com.tokopedia.sellerpersona.common.Constants
 import com.tokopedia.sellerpersona.databinding.ItemPersonaTypeBinding
 import com.tokopedia.sellerpersona.view.adapter.PersonaSimpleListAdapter
 import com.tokopedia.sellerpersona.view.model.PersonaUiModel
-import com.tokopedia.utils.resources.isAppDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -68,7 +68,7 @@ class PersonaTypeViewHolder(
             var labelTextColor = unifyR.color.Unify_NN600
             var personaTextColor = unifyR.color.Unify_NN950
             val sectionTextColor = when {
-                element.isSelected && isAppDarkMode() -> {
+                element.isSelected && root.context.isDarkMode() -> {
                     labelTextColor = unifyR.color.Unify_Static_Black_68
                     personaTextColor = unifyR.color.Unify_Static_Black_96
                     unifyR.color.Unify_Static_Black_96
