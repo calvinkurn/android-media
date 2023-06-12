@@ -78,6 +78,10 @@ class ShippingScheduleWidget : ConstraintLayout {
     ): List<ShippingScheduleWidgetModel> {
         val shippingScheduleWidgets: ArrayList<ShippingScheduleWidgetModel> = arrayListOf()
 
+        scheduleDeliveryUiModel?.apply {
+            shippingScheduleWidgets.add(createOtherOptionWidget())
+        }
+
         shippingScheduleWidgets.add(
             create2HWidget(
                 titleNow2H = titleNow2H,
@@ -86,10 +90,6 @@ class ShippingScheduleWidget : ConstraintLayout {
                 scheduleDeliveryUiModel = scheduleDeliveryUiModel
             )
         )
-
-        scheduleDeliveryUiModel?.apply {
-            shippingScheduleWidgets.add(createOtherOptionWidget())
-        }
 
         return shippingScheduleWidgets
     }
