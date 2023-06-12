@@ -92,6 +92,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           status
                       }
                       campaignID
+                      totalNotify
+                      totalNotifyWording
                     }
                     ... on EtalaseWidget {
                       imageUrl
