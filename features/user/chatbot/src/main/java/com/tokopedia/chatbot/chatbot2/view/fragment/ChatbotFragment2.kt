@@ -337,8 +337,6 @@ class ChatbotFragment2 :
     private var bigReplyBoxBottomSheet: BigReplyBoxBottomSheet? = null
     private var dynamicAttachmentRejectReasons: DynamicAttachmentRejectReasons? = null
     private var reasonsBottomSheet: ChatbotRejectReasonsBottomSheet? = null
-    private var quickReplyList: kotlin.collections.List<QuickReplyUiModel> = emptyList()
-
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
         private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
@@ -1534,9 +1532,11 @@ class ChatbotFragment2 :
 
     private fun openRejectReasonsBottomSheet() {
         dynamicAttachmentRejectReasons?.let {
-            reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
-                it
-            )
+            if (reasonsBottomSheet == null) {
+                reasonsBottomSheet = ChatbotRejectReasonsBottomSheet.newInstance(
+                    it
+                )
+            }
         }
 
         reasonsBottomSheet?.setUpListener(this)
@@ -2864,10 +2864,10 @@ class ChatbotFragment2 :
     }
 
     private fun checkIsChatbotServerActive(isChatbotActive: Boolean) {
-        if (!isChatbotActive)
+        if (!isChatbotActive) {
             setErrorLayoutForServer()
+        }
     }
-
 
     override fun submitRejectReasonsViaSocket(
         selectedReasons: List<DynamicAttachmentRejectReasons.RejectReasonFeedbackForm.RejectReasonReasonChip>,
