@@ -26,11 +26,6 @@ class BaselineProfileGenerator {
     @get:Rule
     val rule = BaselineProfileRule()
 
-    @Before
-    fun setup() {
-        MacroDevOps.skipOnboarding()
-    }
-
     @Test
     fun appStartupAndUserJourney() {
         rule.collectBaselineProfile(MacroArgs.TKPD_PACKAGE_NAME) {
