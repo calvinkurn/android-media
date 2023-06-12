@@ -35,13 +35,15 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_VOUCHER_SLUG = "voucher_slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
         private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val BUNDLE_KEY_WIDGET_ID = "widget_id"
 
         @JvmStatic
         fun newInstance(
             shopId: String,
             voucherSlug: String,
             promoVoucherCode: String,
-            campaignId: String
+            campaignId: String,
+            widgetId: String
         ): VoucherDetailBottomSheet {
             return VoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -49,6 +51,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
                     putString(BUNDLE_KEY_VOUCHER_SLUG, voucherSlug)
                     putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
                     putString(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putString(BUNDLE_KEY_WIDGET_ID, widgetId)
                 }
             }
         }
@@ -84,6 +87,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     private val voucherSlug by lazy { arguments?.getString(BUNDLE_KEY_VOUCHER_SLUG).orEmpty() }
     private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
     private val campaignId by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_ID).orEmpty() }
+    private val widgetId by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_ID).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -200,7 +204,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     private fun displayVoucherDetail(voucherDetail: VoucherDetail) {
         tracker.sendVoucherDetailBottomSheetImpression(
             campaignId = campaignId,
-            widgetId = voucherDetail.id.toString(),
+            widgetId = widgetId,
             shopId = shopId
         )
 

@@ -543,7 +543,8 @@ open class ShopPageHomeFragment :
                 "AUTO423",
                 "SHOPASHJUNE"
             ),
-            campaignId = ""
+            campaignId = "",
+            widgetId = ""
         )
         bottomSheet.setOnVoucherClaimSuccess {
             //TODO: Update voucher widget claim status text to "Diklaim" on campaign tab

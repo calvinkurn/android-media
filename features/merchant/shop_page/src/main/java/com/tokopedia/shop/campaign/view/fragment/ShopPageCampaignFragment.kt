@@ -835,7 +835,8 @@ class ShopPageCampaignFragment :
             shopId = shopId,
             useDarkBackground = isCampaignTabDarkMode(),
             voucherSlugs = listCategorySlug,
-            campaignId = ""
+            campaignId = "", //TODO: replace with real id
+            widgetId = "" //TODO: replace with real id
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -847,7 +848,8 @@ class ShopPageCampaignFragment :
             shopId = shopId,
             voucherSlug = selectedVoucher.slug,
             promoVoucherCode = selectedVoucher.couponCode,
-            campaignId = ""
+            campaignId = "", //TODO: replace with real id
+            widgetId = "" //TODO: replace with real id
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
                 handleRedeemVoucherSuccess(redeemResult)
