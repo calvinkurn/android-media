@@ -11,8 +11,10 @@ import com.tokopedia.content.common.R as commonR
 import com.tokopedia.content.common.databinding.ViewUserReportSubmissionBinding
 import com.tokopedia.content.common.report_content.model.PlayUserReportReasoningUiModel
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.util.lazyThreadSafetyNone
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlin.math.roundToInt
 
 /**
  * @author by astidhiyaa on 31/05/23
@@ -30,6 +32,10 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     private var minChar: Int = 0
 
     private lateinit var item: PlayUserReportReasoningUiModel.Reasoning
+
+    private val maxSheetHeight by lazyThreadSafetyNone {
+        (getScreenHeight() * ContentThreeDotsMenuBottomSheet.HEIGHT_PERCENTAGE).roundToInt()
+    }
 
     private val textWatcher by lazyThreadSafetyNone {
         object : TextWatcher {
@@ -62,7 +68,13 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fg: FragmentManager) {
+        if (isAdded) return
         show(fg, TAG)
+    }
+
+    override fun dismiss() {
+        if (!isAdded) return
+        super.dismiss()
     }
 
     private fun initBottomSheet() {
@@ -80,6 +92,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
     private fun setupView() {
         binding.headerContentReportSubmission.icon = IconUnify.ARROW_BACK
         binding.headerContentReportSubmission.closeListener = View.OnClickListener {
+            dismiss()
             mListener?.onBackButtonListener()
         }
         binding.tvUserReportFooter.text =
@@ -110,6 +123,7 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
 
                 val desc = etDetailReport.editText.text.toString()
                 mListener?.onSubmitReport(desc)
+                dismiss()
             }
         }
     }
@@ -121,6 +135,13 @@ class ContentSubmitReportBottomSheet : BottomSheetUnify() {
 
     fun setData(mData: PlayUserReportReasoningUiModel.Reasoning) {
         item = mData
+    }
+
+    override fun onResume() {
+        binding.clUserReportSubmissionContent.layoutParams = binding.clUserReportSubmissionContent.layoutParams.apply {
+            height = maxSheetHeight
+        }
+        super.onResume()
     }
 
     override fun onDestroyView() {

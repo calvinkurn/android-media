@@ -109,7 +109,13 @@ class ContentReportBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fg: FragmentManager) {
+        if (isAdded) return
         show(fg, TAG)
+    }
+
+    override fun dismiss() {
+        if (!isAdded) return
+        super.dismiss()
     }
 
     fun setListener(listener: Listener) {
