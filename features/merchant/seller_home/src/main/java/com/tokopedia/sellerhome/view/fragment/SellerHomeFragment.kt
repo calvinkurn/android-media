@@ -1844,6 +1844,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun reloadPageOrLoadDataOfErrorWidget() {
         val isAnyErrorWidget = adapter.data.any { !it.data?.error.isNullOrBlank() }
         if (!isAnyErrorWidget) {
+            reloadPage(TRIGGER_ERROR_RELOAD)
             return
         }
 
