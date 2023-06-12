@@ -25,12 +25,7 @@ import org.junit.runners.Parameterized
 @RunWith(Parameterized::class)
 class HomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
     override fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
-        MacroDevOps.setupEnvironment(MacroIntent.Home.getHomeIntent().apply {
-            this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        })
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+        MacroDevOps.skipOnboarding()
     }
 
     override fun setupMock() {

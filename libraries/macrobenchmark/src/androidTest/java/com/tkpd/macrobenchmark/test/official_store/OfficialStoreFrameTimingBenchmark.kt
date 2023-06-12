@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class OfficialStoreFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun setupEnvironment() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
+        MacroDevOps.skipOnboarding()
     }
 
     override fun setupMock() {

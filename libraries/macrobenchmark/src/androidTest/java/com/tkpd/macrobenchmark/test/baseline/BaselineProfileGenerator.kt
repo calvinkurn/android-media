@@ -26,16 +26,14 @@ class BaselineProfileGenerator {
     @get:Rule
     val rule = BaselineProfileRule()
 
+
+
     @Before
     fun setup() {
-        MacroDevOps.setupEnvironment(MacroIntent.Session.getSessionMacroSetupIntent())
-        MacroDevOps.setupEnvironment(
-            MacroIntent.Home.getHomeIntent().apply {
-                this.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-        )
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
-        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+        MacroDevOps.skipOnboarding()
+//        Thread.sleep(5000)
+//        MacroDevOps.resetHomeState()
+
     }
 
     @Test
