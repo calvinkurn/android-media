@@ -25,4 +25,58 @@ object RecommendationConstants {
     const val INVALID_INSIGHT_TYPE = -1
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
+
+    const val KEY_AD_GROUP_TYPES = "adGroupTypes"
+    const val TAB_NAME_PRODUCT = "Iklan Produk"
+    const val TAB_NAME_SHOP = "Iklan Toko"
+
+    const val AD_GROUP_TYPE_KEY = "adGroupType"
+    const val AD_GROUP_NAME_KEY = "adGroupName"
+    const val AD_GROUP_ID_KEY = "groupId"
+    const val AD_GROUP_COUNT_KEY = "count"
+    const val INSIGHT_TYPE_KEY = "insightType"
+    const val INSIGHT_TYPE_LIST_KEY = "insightTypeList"
+    const val GROUP_DETAIL_BUNDLE_KEY = "groupDetailBundle"
+
+    const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
+
+    object InsightTypeConstants {
+        const val INSIGHT_TYPE_ALL = 0
+        const val INSIGHT_TYPE_POSITIVE_KEYWORD = 1
+        const val INSIGHT_TYPE_KEYWORD_BID = 2
+        const val INSIGHT_TYPE_GROUP_BID = 3
+        const val INSIGHT_TYPE_DAILY_BUDGET = 4
+        const val INSIGHT_TYPE_NEGATIVE_KEYWORD = 5
+
+        const val INSIGHT_TYPE_ALL_INPUT = "Semua"
+        const val INSIGHT_TYPE_POSITIVE_KEYWORD_INPUT = "keyword_new_positive"
+        const val INSIGHT_TYPE_KEYWORD_BID_INPUT = "keyword_bid"
+        const val INSIGHT_TYPE_GROUP_BID_INPUT = "group_bid"
+        const val INSIGHT_TYPE_DAILY_BUDGET_INPUT = "group_daily_budget"
+        const val INSIGHT_TYPE_NEGATIVE_KEYWORD_INPUT = "keyword_new_negative"
+
+        const val INSIGHT_TYPE_ALL_NAME = "Semua"
+        const val INSIGHT_TYPE_POSITIVE_KEYWORD_NAME = "Kata Kunci"
+        const val INSIGHT_TYPE_KEYWORD_BID_NAME = "Biaya Kata Kunci"
+        const val INSIGHT_TYPE_GROUP_BID_NAME = "Biaya Iklan"
+        const val INSIGHT_TYPE_DAILY_BUDGET_NAME = "Anggaran Harian"
+        const val INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME = "Kata Kunci Negatif"
+    }
+
+    object InsightGqlInputSource {
+        // topadsGetShopInfoV2_1
+        // topAdsGetTotalAdGroupsWithInsightByShopID
+        // topAdsListAllInsightCounts
+        const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center.landing_page"
+
+        // topAdsGetTotalAdGroupsWithInsightByShopID
+        // topAdsListAllInsightCounts
+        // topAdsBatchGetKeywordInsightByGroupIDV3
+        // topAdsBatchGetAdGroupBidInsightByGroupID
+        const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center.group_detail_page"
+
+        // topAdsGetTotalAdGroupsWithInsightByShopID
+        // topAdsListAllInsightCounts
+        const val SOURCE_TOP_ADS_DASHBOARD = "android.top_ads_dashboard"
+    }
 }

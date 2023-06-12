@@ -5,5 +5,6 @@ data class EmptyStatesUiModel(
     val lottieUrl: String = "",
     val stateType: String = "",
     val stateTypeDescription: String = "",
-    val buttonText: String = ""
+    val buttonText: String = "",
+    val landingUrl:String = ""
 )

@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_1
 import com.tokopedia.topads.common.data.model.InsightTypeApplyInput
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
@@ -14,20 +16,17 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_POSITIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
+import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGetTotalAdGroupsWithInsightUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsGroupDetailUseCase
 import com.tokopedia.topads.dashboard.recommendation.usecase.TopAdsListAllInsightCountsUseCase
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
@@ -36,8 +35,10 @@ class GroupDetailViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val topAdsGroupDetailUseCase: TopAdsGroupDetailUseCase,
     private val topAdsListAllInsightCountsUseCase: TopAdsListAllInsightCountsUseCase,
+    private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
     private val topAdsCreateUseCase: TopAdsCreateUseCase,
     private val groupDetailMapper: GroupDetailMapper,
+    private val utils: Utils,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.main), CoroutineScope {
 
@@ -162,15 +163,50 @@ class GroupDetailViewModel @Inject constructor(
         }
     }
 
+    fun loadInsightCountForOtherAdType(adGroupType: Int) {
+        val otherAdType = if (adGroupType == TYPE_PRODUCT_VALUE) HEADLINE_KEY else PRODUCT_KEY
+        launchCatchError(dispatcher.main, block = {
+            val data = topAdsGetTotalAdGroupsWithInsightUseCase.invoke(listOf(otherAdType))
+            if (data is TopAdsListAllInsightState.Success) {
+                groupDetailMapper.putInsightCount(
+                    utils.convertAdTypeToInt(otherAdType),
+                    data.data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
+                )
+            }
+        }, onError = {})
+    }
+
+    fun getItemListUiModel(titleList: List<String>, adGroupType: String?): List<ItemListUiModel> {
+        val list = arrayListOf<ItemListUiModel>()
+        if (!groupDetailMapper.insightCountMap[TYPE_PRODUCT_VALUE].isZero()) {
+            list.add(
+                ItemListUiModel(
+                    adType = TYPE_PRODUCT_VALUE,
+                    title = titleList.firstOrNull() ?: "",
+                    isSelected = (PRODUCT_KEY == adGroupType)
+                )
+            )
+        }
+        if (!groupDetailMapper.insightCountMap[RecommendationConstants.TYPE_SHOP_VALUE].isZero()) {
+            list.add(
+                ItemListUiModel(
+                    adType = RecommendationConstants.TYPE_SHOP_VALUE,
+                    title = titleList.getOrNull(CONST_1) ?: "",
+                    isSelected = (adGroupType != PRODUCT_KEY)
+                )
+            )
+        }
+        return list
+    }
+
     fun getInputDataFromMapper(insightType: Int?): TopadsManagePromoGroupProductInput?{
         return when(insightType){
-            TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
-            TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
-            TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
-            TYPE_DAILY_BUDGET -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
-            TYPE_NEGATIVE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
+            RecommendationConstants.TYPE_POSITIVE_KEYWORD -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKataKunciUiModel)?.input
+            RecommendationConstants.TYPE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianKeywordBidUiModel)?.input
+            RecommendationConstants.TYPE_GROUP_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianGroupBidUiModel)?.input
+            RecommendationConstants.TYPE_DAILY_BUDGET -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianDailyBudgetUiModel)?.input
+            RecommendationConstants.TYPE_NEGATIVE_KEYWORD_BID -> ((groupDetailMapper.detailPageDataMap.getOrDefault(insightType, null) as? GroupInsightsUiModel)?.expandItemDataModel as? AccordianNegativeKeywordUiModel)?.input
             else -> null
         }
     }
-
 }

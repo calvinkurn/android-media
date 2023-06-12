@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.data.mapper
 
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
@@ -13,6 +14,9 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_UN_OPTIMIZED_GROUP
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.ChipsData.chipsList
@@ -32,6 +36,11 @@ class GroupDetailMapper @Inject constructor() {
         TYPE_GROUP_BID to GroupInsightsUiModel(),
         TYPE_DAILY_BUDGET to GroupInsightsUiModel(),
         TYPE_NEGATIVE_KEYWORD_BID to GroupInsightsUiModel()
+    )
+
+    val insightCountMap: MutableMap<Int, Int> = mutableMapOf(
+        TYPE_PRODUCT_VALUE to CONST_0,
+        TYPE_SHOP_VALUE to CONST_0
     )
 
     fun reSyncDetailPageData(adGroupType: Int, clickedItem: Int = INVALID_INSIGHT_TYPE): MutableMap<Int, GroupDetailDataModel> {
@@ -142,5 +151,91 @@ class GroupDetailMapper @Inject constructor() {
             )
         }
         return list
+    }
+
+    fun mapEmptyState() {
+        (detailPageDataMap[TYPE_CHIPS] as GroupDetailChipsUiModel).isChipsAvailable =
+            false
+        detailPageDataMap[TYPE_EMPTY_STATE] = GroupDetailEmptyStateUiModel(
+            EmptyStateData.getData()
+        )
+    }
+
+    fun convertToAccordianKataKunciUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+        return GroupInsightsUiModel(
+            TYPE_POSITIVE_KEYWORD,
+            "Kata Kunci",
+            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
+//                            false,
+            AccordianKataKunciUiModel(
+                "Kata Kunci",
+                groupData?.newPositiveKeywordsRecom
+
+            )
+        )
+    }
+
+    fun convertToAccordianKeywordBidUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+        return GroupInsightsUiModel(
+            TYPE_KEYWORD_BID,
+            "Biaya Kata Kunci",
+            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
+//                        false,
+            AccordianKeywordBidUiModel(
+                "Biaya Kata Kunci",
+                groupData?.existingKeywordsBidRecom
+            )
+        )
+    }
+
+    fun convertToAccordianNegativeKeywordUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+        return GroupInsightsUiModel(
+            TYPE_NEGATIVE_KEYWORD_BID,
+            "Kata Kunci Negatif",
+            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
+//                            false,
+            AccordianNegativeKeywordUiModel(
+                "Kata Kunci Negatif",
+                groupData?.newNegativeKeywordsRecom
+            )
+        )
+    }
+
+    fun convertToAccordianGroupBidUiModel(groupBidInsight: TopAdsListAllInsightState.Success<TopAdsAdGroupBidInsightResponse>): GroupInsightsUiModel {
+        val data =
+            groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID.groups.firstOrNull()?.adGroupBidInsightData
+        return GroupInsightsUiModel(
+            TYPE_GROUP_BID,
+            "Biaya Iklan",
+            "Kunjungan pembeli menurun. Pakai kata kunci...",
+            !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
+//                            false,
+            AccordianGroupBidUiModel(
+                text = "Biaya Iklan",
+                groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
+            )
+        )
+    }
+
+    fun convertToAccordianDailyBudgetUiModel(sellerInsightData: TopAdsListAllInsightState.Success<TopAdsGetSellerInsightDataResponse>): GroupInsightsUiModel {
+        val data = sellerInsightData.data.getSellerInsightData.sellerInsightData
+        return GroupInsightsUiModel(
+            TYPE_DAILY_BUDGET,
+            "Anggaran harian",
+            "Kunjungan embellish menurun. Pakai kata kunci...",
+            data.dailyBudgetData.isNotEmpty(),
+//                            false,
+            AccordianDailyBudgetUiModel(
+                text = "Biaya Iklan",
+                data
+            )
+        )
+    }
+
+    fun putInsightCount(adGroupType: Int, totalInsight: Int) {
+        insightCountMap[adGroupType] = totalInsight
     }
 }

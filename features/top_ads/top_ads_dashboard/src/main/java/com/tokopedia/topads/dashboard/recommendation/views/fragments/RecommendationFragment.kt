@@ -17,12 +17,16 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.empty_state.EmptyStateUnify
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_PRODUCT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TAB_NAME_SHOP
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_SHOP_VALUE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
@@ -61,13 +65,18 @@ class RecommendationFragment : BaseDaggerFragment() {
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
 
-    private var isTopAds = false
+    private var detailPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
 
+    @JvmField
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    var viewModelFactory: ViewModelFactory? = null
 
-    private val viewModel: RecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(this, viewModelFactory)[RecommendationViewModel::class.java]
+    private val viewModel: RecommendationViewModel? by lazy {
+        if (viewModelFactory == null) {
+            null
+        } else {
+            ViewModelProvider(this, viewModelFactory!!)[RecommendationViewModel::class.java]
+        }
     }
 
     private val pagerAdapter by lazy {
@@ -84,7 +93,6 @@ class RecommendationFragment : BaseDaggerFragment() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
     }
 
-    private lateinit var detailPagerAdapter: TopAdsDashboardBasePagerAdapter
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is TopAdsHeadlineBaseFragment.AppBarActionHeadline) {
@@ -102,6 +110,11 @@ class RecommendationFragment : BaseDaggerFragment() {
             container,
             false
         )
+        initializeViews(view)
+        return view
+    }
+
+    private fun initializeViews(view: View) {
         layoutAppBar = view.findViewById(R.id.appBarLayout)
         saranAdsTypeTab = view.findViewById(R.id.saranAdsTypeTab)
         saranTopAdsViewPager = view.findViewById(R.id.saranTopAdsViewPager)
@@ -113,43 +126,44 @@ class RecommendationFragment : BaseDaggerFragment() {
         recommendationEmptyState = view.findViewById(R.id.recommendationEmptyState)
         emptyStateRecyclerView = view.findViewById(R.id.emptyStateView)
         pageControlEmptyState = view.findViewById(R.id.pageControlEmptyState)
-        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        layoutAppBar?.addOnOffsetChangedListener(
-            AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
-                when {
-                    offset == 0 -> {
-                        if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
-                            onStateChanged(TopAdsProductIklanFragment.State.EXPANDED)
-                        }
-                        mCurrentState = TopAdsProductIklanFragment.State.EXPANDED
-                    }
-                    abs(offset) >= appBarLayout.totalScrollRange -> {
-                        if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
-                            onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED)
-                        }
-                        mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED
-                    }
-                    else -> {
-                        if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
-                            onStateChanged(TopAdsProductIklanFragment.State.IDLE)
-                        }
-                        mCurrentState = TopAdsProductIklanFragment.State.IDLE
-                    }
-                }
-            }
-        )
-        viewModel.loadRecommendationPage()
+        setAppBarListener()
+        viewModel?.loadRecommendationPage()
         setUpObserver()
         settingClickListener()
     }
 
+    private fun setAppBarListener() {
+        layoutAppBar?.addOnOffsetChangedListener { appBarLayout, offset ->
+            when {
+                offset == Int.ZERO -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
+                        onStateChanged(TopAdsProductIklanFragment.State.EXPANDED)
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.EXPANDED
+                }
+                abs(offset) >= appBarLayout.totalScrollRange -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.COLLAPSED) {
+                        onStateChanged(TopAdsProductIklanFragment.State.COLLAPSED)
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.COLLAPSED
+                }
+                else -> {
+                    if (mCurrentState != TopAdsProductIklanFragment.State.IDLE) {
+                        onStateChanged(TopAdsProductIklanFragment.State.IDLE)
+                    }
+                    mCurrentState = TopAdsProductIklanFragment.State.IDLE
+                }
+            }
+        }
+    }
+
     private fun settingClickListener() {
         recommendationEmptyState?.emptyStateCTAID?.setOnClickListener {
-            viewModel.loadRecommendationPage()
+            viewModel?.loadRecommendationPage()
             recommendationEmptyState?.hide()
             recommendationMainContainer?.show()
         }
@@ -158,13 +172,12 @@ class RecommendationFragment : BaseDaggerFragment() {
     override fun getScreenName(): String? = null
 
     private fun setUpObserver() {
-        viewModel.shopInfo.observe(viewLifecycleOwner) {
+        viewModel?.shopInfo?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     hideShimmerBottom()
                     renderTabAndViewPager(it.data)
                     renderTopLevelWidgetForNoTopAds(it.data.isHeadline && it.data.isProduct)
-//                    renderTopLevelWidgetForNoTopAds(false)
                 }
                 is Fail -> {
                     recommendationEmptyState?.show()
@@ -173,13 +186,14 @@ class RecommendationFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel.adGroupWithInsight.observe(viewLifecycleOwner) {
+        viewModel?.adGroupWithInsight?.observe(viewLifecycleOwner) {
             when (it) {
                 is TopAdsListAllInsightState.Success -> {
                     topLevelWidgetShimmer?.hide()
                     renderTopLevelWidget(it.data)
                 }
                 is TopAdsListAllInsightState.Loading -> {
+                    topLevelWidgetShimmer?.show()
                 }
                 is TopAdsListAllInsightState.Fail -> {
                 }
@@ -196,7 +210,7 @@ class RecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun renderTopLevelWidgetForNoTopAds(isTopAds: Boolean) {
-        if (!isTopAds) {
+        if (!isTopAds && context != null) {
             insightWidgetTitle?.text = "Kamu belum punya iklan yang lagi aktif, nih~"
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
@@ -217,7 +231,7 @@ class RecommendationFragment : BaseDaggerFragment() {
         if (context == null) return
         val count =
             data.topAdsGetTotalAdGroupsWithInsightByShopID.totalAdGroupsWithInsight.totalAdGroupsWithInsight
-        if (count == 0) {
+        if (count == Int.ZERO) {
             insightWidgetTitle?.text = "Yay, semua iklanmu sudah maksimal!"
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
@@ -228,12 +242,12 @@ class RecommendationFragment : BaseDaggerFragment() {
             saranAdsTypeTab?.hide()
             saranTopAdsViewPager?.hide()
             renderEmptyStates()
-        } else if (count < 10) {
-            insightWidgetTitle?.text = "Tingkatkan performa 5 grup iklanmu, yuk!"
+        } else if (count <= 10) {
+            insightWidgetTitle?.text = "Tingkatkan performa $count grup iklanmu, yuk!"
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
-                    R.drawable.perfomace_widget_optimized_icon
+                    R.drawable.performance_widget_default_icon
                 )
             )
         } else {
@@ -248,8 +262,8 @@ class RecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun renderEmptyStates() {
-        val indicatorCount = viewModel.emptyStateData.size
-        pagerAdapter.emptyStatePages = viewModel.emptyStateData
+        val indicatorCount = viewModel?.emptyStateData?.size ?: Int.ZERO
+        pagerAdapter.emptyStatePages = viewModel?.emptyStateData ?: listOf()
         emptyStateRecyclerView?.layoutManager = layoutManager
         emptyStateRecyclerView?.adapter = pagerAdapter
         pageControlEmptyState?.setIndicator(indicatorCount)
@@ -258,7 +272,7 @@ class RecommendationFragment : BaseDaggerFragment() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val currentPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
-                if (currentPosition != RecyclerView.NO_POSITION && indicatorCount > 1) {
+                if (currentPosition != RecyclerView.NO_POSITION && indicatorCount > Int.ONE) {
                     pageControlEmptyState?.setCurrentIndicator(currentPosition)
                 }
             }
@@ -272,34 +286,34 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     private fun renderTabAndViewPager(data: TopAdsGetShopInfoUiModel) {
         saranTopAdsViewPager?.adapter = getViewPagerAdapter(data)
-        saranTopAdsViewPager?.offscreenPageLimit = 1
-        saranTopAdsViewPager?.currentItem = 0
+        saranTopAdsViewPager?.offscreenPageLimit = Int.ONE
+        saranTopAdsViewPager?.currentItem = Int.ZERO
         saranTopAdsViewPager?.let { saranAdsTypeTab?.setupWithViewPager(it) }
     }
 
-    private fun getViewPagerAdapter(data: TopAdsGetShopInfoUiModel): PagerAdapter {
+    private fun getViewPagerAdapter(data: TopAdsGetShopInfoUiModel): PagerAdapter? {
         val list: MutableList<FragmentTabItem> = mutableListOf()
         saranAdsTypeTab?.getUnifyTabLayout()?.removeAllTabs()
         saranAdsTypeTab?.customTabMode = TabLayout.MODE_FIXED
         setTabs(list, data)
         detailPagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
-        detailPagerAdapter.setList(list)
+        detailPagerAdapter?.setList(list)
         return detailPagerAdapter
     }
 
     private fun setTabs(list: MutableList<FragmentTabItem>, data: TopAdsGetShopInfoUiModel) {
         if (data.isProduct && data.isHeadline) {
-            saranAdsTypeTab?.addNewTab("Iklan Produk")
-            saranAdsTypeTab?.addNewTab("Iklan Toko")
+            saranAdsTypeTab?.addNewTab(TAB_NAME_PRODUCT)
+            saranAdsTypeTab?.addNewTab(TAB_NAME_SHOP)
             saranAdsTypeTab?.show()
         } else {
             saranAdsTypeTab?.hide()
         }
         if (data.isProduct) {
-            list.add(FragmentTabItem("Iklan Produk", SaranTabsFragment(TYPE_PRODUCT_VALUE)))
+            list.add(FragmentTabItem(TAB_NAME_PRODUCT, SaranTabsFragment.createInstance(TYPE_PRODUCT_VALUE)))
         }
         if (data.isHeadline) {
-            list.add(FragmentTabItem("Iklan Toko", SaranTabsFragment(TYPE_SHOP_VALUE)))
+            list.add(FragmentTabItem(TAB_NAME_SHOP, SaranTabsFragment.createInstance(TYPE_SHOP_VALUE)))
         }
     }
 

@@ -41,7 +41,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.AdGroupUiM
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.EmptyStateUiListModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.InsightListUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
-import com.tokopedia.topads.dashboard.recommendation.views.activities.GroupDetailActivity
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.recommendation.InsightListAdapter
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity.Companion.INSIGHT_PAGE
@@ -71,7 +70,6 @@ import javax.inject.Inject
  */
 open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
-
     private lateinit var binding: FragmentTopadsDashboardBerandaBaseBinding
 
     private val graphLayoutFragment = TopAdsMultiLineGraphFragment()
@@ -98,7 +96,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private var autoTopUpBonus: Double = 0.0
     private var showAutoTopUpOldFlow = true
 
-
     /*
         Insight Widget
     */
@@ -113,7 +110,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     /*
         End
     */
-
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
@@ -152,7 +148,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         initializeView()
         return binding.root
     }
-
 
     override fun initInjector() {
         getComponent(TopAdsDashboardComponent::class.java).inject(this)
@@ -327,7 +322,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         setInsightWidgetBehaviour()
     }
 
-
     private fun observeLiveData() {
         topAdsDashboardViewModel.shopDepositLiveData.observe(viewLifecycleOwner) {
             when (it) {
@@ -396,7 +390,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 }
 
                 is TopAdsListAllInsightState.Fail -> {
-
                 }
                 else -> {}
             }
@@ -431,11 +424,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
                 )
             )
         } else if (count < 10) {
-            insightWidgetTitle?.text = "Tingkatkan performa 5 grup iklanmu, yuk!"
+            insightWidgetTitle?.text = "Tingkatkan performa $count grup iklanmu, yuk!"
             insightWidgetIcon?.loadImage(
                 ContextCompat.getDrawable(
                     context!!,
-                    R.drawable.perfomace_widget_optimized_icon
+                    R.drawable.performance_widget_default_icon
                 )
             )
         } else {
@@ -621,7 +614,6 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun moveToInsightPage() {
         activity?.let {
             if (activity is TopAdsDashboardActivity) {
@@ -630,25 +622,24 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
         }
     }
 
-
     private fun setInsightWidgetBehaviour() {
         insight_widget_see_more?.setOnClickListener {
             moveToInsightPage()
         }
 
         scroll_view?.viewTreeObserver?.addOnScrollChangedListener(object :
-            ViewTreeObserver.OnScrollChangedListener {
-            private var scrollY = 0
+                ViewTreeObserver.OnScrollChangedListener {
+                private var scrollY = 0
 
-            override fun onScrollChanged() {
-                val newScrollY = scroll_view.scrollY
-                if (newScrollY != scrollY && needToHitInsight) {
-                    needToHitInsight = false
-                    fetchInsight()
+                override fun onScrollChanged() {
+                    val newScrollY = scroll_view.scrollY
+                    if (newScrollY != scrollY && needToHitInsight) {
+                        needToHitInsight = false
+                        fetchInsight()
+                    }
+                    scrollY = newScrollY
                 }
-                scrollY = newScrollY
-            }
-        })
+            })
     }
 
     private fun fetchInsight() {

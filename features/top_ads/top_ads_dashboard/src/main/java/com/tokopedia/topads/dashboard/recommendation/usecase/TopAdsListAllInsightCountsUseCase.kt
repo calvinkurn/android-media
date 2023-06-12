@@ -3,6 +3,8 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.common.data.internal.ParamObject.FILTER
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_ID
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.usecase.RequestParams
@@ -13,7 +15,6 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
     private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsListAllInsightCountsResponse>(graphqlRepository) {
-
 
     init {
         setGraphqlQuery(GqlQuery)
@@ -56,9 +57,9 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
     ): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putObject(
-            "filter",
+            FILTER,
             mapOf(
-                "shopID" to userSession.shopId,
+                SHOP_ID to userSession.shopId,
                 "adGroupTypes" to convertStringToList(adGroupType),
                 if (insightType == 0) {
                     "insightTypes" to listOf(
@@ -92,7 +93,6 @@ class TopAdsListAllInsightCountsUseCase @Inject constructor(
             listOf(input)
         }
     }
-
 
     object GqlQuery : GqlQueryInterface {
         private const val OPERATION_NAME = "topAdsListAllInsightCounts"

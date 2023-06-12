@@ -4,7 +4,9 @@ import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.common.data.internal.ParamObject.FILTER
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEY_AD_GROUP_TYPES
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -13,7 +15,7 @@ import javax.inject.Inject
 
 class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,
-    private val userSession: UserSessionInterface,
+    private val userSession: UserSessionInterface
 ) : GraphqlUseCase<TopAdsTotalAdGroupsWithInsightResponse>(graphqlRepository) {
 
     init {
@@ -21,9 +23,9 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
         setTypeClass(TopAdsTotalAdGroupsWithInsightResponse::class.java)
     }
 
-    suspend operator fun invoke():
+    suspend operator fun invoke(adGroupTypeList: List<String>):
         TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {
-        setRequestParams(createRequestParam().parameters)
+        setRequestParams(createRequestParam(adGroupTypeList).parameters)
         val data = executeOnBackground()
 
         return when {
@@ -34,13 +36,14 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
         }
     }
 
-    private fun createRequestParam(): RequestParams {
+    private fun createRequestParam(adGroupTypeList: List<String>): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(ParamObject.SHOP_ID, userSession.shopId)
-        requestParams.putString("source", "gql.get_total_ad_groups_with_insight_by_shop_id.test")
+        requestParams.putString(SOURCE, "gql.get_total_ad_groups_with_insight_by_shop_id.test")
         requestParams.putObject(
-            "filter", mapOf(
-                "adGroupTypes" to listOf(RecommendationConstants.PRODUCT_KEY)
+            FILTER,
+            mapOf(
+                KEY_AD_GROUP_TYPES to adGroupTypeList
             )
         )
         return requestParams
@@ -70,5 +73,4 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
 
         override fun getTopOperationName(): String = OPERATION_NAME
     }
-
 }
