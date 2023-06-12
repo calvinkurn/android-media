@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.viewmodel
 
-import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
@@ -29,7 +28,7 @@ import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -37,13 +36,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @ExperimentalCoroutinesApi
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [Build.VERSION_CODES.P])
 class AffiliateAdpViewModelTest {
     private val userSessionInterface: UserSessionInterface = mockk()
     private val affiliateValidateUserStatus: AffiliateValidateUserStatusUseCase = mockk()
@@ -80,7 +74,7 @@ class AffiliateAdpViewModelTest {
         coEvery { userSessionInterface.email } returns ""
 
         MockKAnnotations.init(this)
-        Dispatchers.setMain(TestCoroutineDispatcher())
+        Dispatchers.setMain(UnconfinedTestDispatcher())
     }
 
     @After

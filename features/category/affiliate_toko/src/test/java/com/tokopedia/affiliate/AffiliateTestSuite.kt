@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate
 
-import android.os.Build
 import com.tokopedia.affiliate.viewmodel.AffiliateAdpViewModelTest
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModelTest
 import com.tokopedia.affiliate.viewmodel.AffiliateDiscoPromoListViewModelTest
@@ -18,10 +17,8 @@ import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModelTest
 import com.tokopedia.affiliate.viewmodel.AffiliateViewModelTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
-import org.robolectric.annotation.Config
 
 @RunWith(Suite::class)
-@Config(sdk = [Build.VERSION_CODES.P])
 @Suite.SuiteClasses(
     AffiliateAdpViewModelTest::class,
     AffiliateIncomeViewModelTest::class,
