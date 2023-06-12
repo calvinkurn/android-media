@@ -31,21 +31,33 @@ class RecommendationWidgetViewModel @Inject constructor(
             updateState { it.loading(model) }
 
             viewModelScope.launch {
-                val recommendationWidgetList = getRecommendationWidgetUseCase.getData(
-                    GetRecommendationRequestParam(
-                        pageNumber = model.metadata.pageNumber,
-                        productIds = model.metadata.productIds,
-                        queryParam = model.metadata.queryParam,
-                        pageName = model.metadata.pageName,
-                        categoryIds = model.metadata.categoryIds,
-                        keywords = model.metadata.keyword,
-                        isTokonow = model.metadata.isTokonow,
-                    )
-                )
-
-                updateState { it.from(model, recommendationWidgetList) }
+                try {
+                    tryGetRecommendationWidget(model)
+                } catch (ignored: Throwable) {
+                    onGetRecommendationWidgetError(model)
+                }
             }
         }
+    }
+
+    private suspend fun tryGetRecommendationWidget(model: RecommendationWidgetModel) {
+        val recommendationWidgetList = getRecommendationWidgetUseCase.getData(
+            GetRecommendationRequestParam(
+                pageNumber = model.metadata.pageNumber,
+                productIds = model.metadata.productIds,
+                queryParam = model.metadata.queryParam,
+                pageName = model.metadata.pageName,
+                categoryIds = model.metadata.categoryIds,
+                keywords = model.metadata.keyword,
+                isTokonow = model.metadata.isTokonow,
+            )
+        )
+
+        updateState { it.from(model, recommendationWidgetList) }
+    }
+
+    private fun onGetRecommendationWidgetError(model: RecommendationWidgetModel) {
+        updateState { it.error(model) }
     }
 
     fun refresh() {
