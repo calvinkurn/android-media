@@ -17,7 +17,7 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.play_common.util.extension.isLocal
-import com.tokopedia.play_common.view.addKeyboardInsetsListener
+import com.tokopedia.content.common.view.addKeyboardInsetsListener
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play_common.viewcomponent.ViewComponentListener
 import com.tokopedia.unifycomponents.LoaderUnify

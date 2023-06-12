@@ -26,6 +26,9 @@ private const val NON_FILTER_USER_PREFIX = "user_"
 private const val NON_FILTER_EXCLUDE_PREFIX = OptionHelper.EXCLUDE_PREFIX
 private val nonFilterParameterKeyList = setOf(
     SearchApiConst.Q,
+    SearchApiConst.Q1,
+    SearchApiConst.Q2,
+    SearchApiConst.Q3,
     SearchApiConst.RF,
     SearchApiConst.ACTIVE_TAB,
     SearchApiConst.SOURCE,

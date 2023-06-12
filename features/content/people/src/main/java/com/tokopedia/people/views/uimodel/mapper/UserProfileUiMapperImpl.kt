@@ -1,16 +1,31 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
-import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.model.AuthorItem
+import com.tokopedia.content.common.model.Authors
+import com.tokopedia.content.common.model.Creation
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.util.remoteconfig.PlayShortsEntryPointRemoteConfig
+import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
-import com.tokopedia.people.model.*
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.UserProfileTabModel
 import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
-import com.tokopedia.people.views.uimodel.content.*
-import com.tokopedia.people.views.uimodel.profile.*
+import com.tokopedia.people.views.uimodel.content.MediaUiModel
+import com.tokopedia.people.views.uimodel.content.PaginationUiModel
+import com.tokopedia.people.views.uimodel.content.PostUiModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.uimodel.content.UserPlayVideoUiModel
+import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.LinkUiModel
+import com.tokopedia.people.views.uimodel.profile.LivePlayChannelUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileCreationInfoUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileStatsUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
+import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -19,6 +34,7 @@ import javax.inject.Inject
  */
 class UserProfileUiMapperImpl @Inject constructor(
     private val userSession: UserSessionInterface,
+    private val playShortsEntryPointRemoteConfig: PlayShortsEntryPointRemoteConfig,
 ) : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
@@ -60,14 +76,32 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
-    override fun mapUserWhitelist(response: GetCheckWhitelistResponse): ProfileWhitelistUiModel {
-        val authorUgc = response.whitelist.authors.find { it.type == ContentCommonUserType.TYPE_USER }
+    override fun mapCreationInfo(response: Creation): ProfileCreationInfoUiModel {
+        fun getAuthorTypeUser(authors: List<Authors>): Authors? {
+            return authors.find { it.type == ContentCommonUserType.TYPE_USER }
+        }
 
-        return ProfileWhitelistUiModel(
-            isWhitelist = authorUgc != null,
-            /** hasUsername has the same value across all content creation type (post, livestream, shortvideo) */
-            hasUsername = authorUgc?.post?.hasUsername ?: false,
-            hasAcceptTnc = authorUgc?.hasAcceptTnc ?: false,
+        fun getButtonTypePost(items: List<AuthorItem>): Boolean {
+            return items.find { it.type == TYPE_POST }?.isActive.orFalse()
+        }
+
+        fun getButtonTypeLiveStream(items: List<AuthorItem>): Boolean {
+            return items.find { it.type == TYPE_LIVE_STREAM }?.isActive.orFalse()
+        }
+
+        fun getButtonTypeShortVideo(items: List<AuthorItem>): Boolean {
+            return items.find { it.type == TYPE_SHORT_VIDEO }?.isActive.orFalse()
+                && playShortsEntryPointRemoteConfig.isShowEntryPoint()
+        }
+
+        val getAuthorItemTypeUser = getAuthorTypeUser(response.authors)?.items
+            ?: return ProfileCreationInfoUiModel()
+
+        return ProfileCreationInfoUiModel(
+            isActive = response.isActive,
+            showPost = getButtonTypePost(getAuthorItemTypeUser),
+            showLiveStream = getButtonTypeLiveStream(getAuthorItemTypeUser),
+            showShortVideo = getButtonTypeShortVideo(getAuthorItemTypeUser),
         )
     }
 
@@ -145,9 +179,11 @@ class UserProfileUiMapperImpl @Inject constructor(
     }
 
     companion object {
+        private const val TYPE_POST = "post"
+        private const val TYPE_LIVE_STREAM = "livestream"
+        private const val TYPE_SHORT_VIDEO = "shortvideo"
         private const val TAB_KEY_FEEDS = "feeds"
         private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
-        private const val SUCCESS_UNFOLLOW_CODE = "1"
     }
 }

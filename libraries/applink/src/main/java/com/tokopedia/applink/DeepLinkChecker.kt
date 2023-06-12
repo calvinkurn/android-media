@@ -20,6 +20,7 @@ object DeepLinkChecker {
     const val WEB_HOST = "www.tokopedia.com"
     const val WEB_HOST_STAGING = "staging.tokopedia.com"
     const val MOBILE_HOST = "m.tokopedia.com"
+    const val WEB_HOST_SELLER = "seller.tokopedia.com"
 
     const val OTHER = -1
     const val BROWSE = 0
@@ -146,9 +147,9 @@ object DeepLinkChecker {
         }
         return try {
             val uriData = Uri.parse(url)
-            if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData))
+            if (isExcludedHostUrl(context, uriData) || isExcludedUrl(context, uriData)) {
                 OTHER
-            else if (isHome(uriData)) {
+            } else if (isHome(uriData)) {
                 HOME
             } else {
                 deeplinkMatcher.match(uriData)
@@ -157,16 +158,18 @@ object DeepLinkChecker {
             e.printStackTrace()
             OTHER
         }
-
     }
 
     @JvmStatic
     fun getRemoveAmpLink(context: Context, uriData: Uri): Uri? {
         val path = uriData.pathSegments
         return if (path != null && path.size > 1 && path[0] == AMP &&
-                !isExcludedAmpPath(context, path[1])) {
+            !isExcludedAmpPath(context, path[1])
+        ) {
             Uri.parse(uriData.toString().replaceFirst(AMP + "/".toRegex(), ""))
-        } else uriData
+        } else {
+            uriData
+        }
     }
 
     @JvmStatic
@@ -192,8 +195,10 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false
-                    || UriUtil.isHostStaging(uriData.host ?: ""))
+            (
+                uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false ||
+                    UriUtil.isHostStaging(uriData.host ?: "")
+                )
     }
 
     @JvmStatic
@@ -240,7 +245,7 @@ object DeepLinkChecker {
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
         val query = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
-        query.replace("-","+")
+        query.replace("-", "+")
         return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
     }
 
@@ -280,10 +285,11 @@ object DeepLinkChecker {
     private fun constructSearchApplink(uriData: Uri): String {
         val q = uriData.getQueryParameter("q")
 
-        val applink = if (TextUtils.isEmpty(q))
+        val applink = if (TextUtils.isEmpty(q)) {
             ApplinkConstInternalDiscovery.AUTOCOMPLETE
-        else
+        } else {
             ApplinkConstInternalDiscovery.SEARCH_RESULT
+        }
 
         return applink + "?" + uriData.query
     }
@@ -297,5 +303,4 @@ object DeepLinkChecker {
     private fun getLinkSegment(url: String): List<String> {
         return Uri.parse(url).pathSegments
     }
-
 }

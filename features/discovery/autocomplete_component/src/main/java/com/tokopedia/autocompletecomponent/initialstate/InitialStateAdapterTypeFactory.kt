@@ -16,6 +16,9 @@ import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateViewHolder
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsDataView
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsInitialStateListener
+import com.tokopedia.autocompletecomponent.initialstate.mps.MpsViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleViewHolder
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchViewHolder
@@ -45,6 +48,7 @@ class InitialStateAdapterTypeFactory(
     private val curatedCampaignListener: CuratedCampaignListener,
     private val chipListener: InitialStateChipListener,
     private val searchBarEducationListener: SearchBarEducationListener,
+    private val mpsChipListener: MpsInitialStateListener,
 ) : BaseAdapterTypeFactory(), InitialStateTypeFactory {
     override fun type(popularSearchTitleDataView: PopularSearchTitleDataView): Int {
         return PopularSearchTitleViewHolder.LAYOUT
@@ -106,6 +110,10 @@ class InitialStateAdapterTypeFactory(
         return SearchBarEducationViewHolder.LAYOUT
     }
 
+    override fun type(mpsDataView: MpsDataView): Int {
+        return MpsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             PopularSearchViewHolder.LAYOUT ->
@@ -138,6 +146,7 @@ class InitialStateAdapterTypeFactory(
                 InitialStateChipWidgetTitleViewHolder(parent)
             SearchBarEducationViewHolder.LAYOUT ->
                 SearchBarEducationViewHolder(parent, searchBarEducationListener)
+            MpsViewHolder.LAYOUT -> MpsViewHolder(parent, mpsChipListener)
             else -> super.createViewHolder(parent, type)
         }
     }

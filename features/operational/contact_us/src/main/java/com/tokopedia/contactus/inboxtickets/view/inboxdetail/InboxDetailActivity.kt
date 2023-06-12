@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.contactus.R
 import com.tokopedia.kotlin.extensions.orFalse
 
@@ -47,6 +49,14 @@ class InboxDetailActivity : BaseSimpleActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val uri = intent.data
+        uri?.let {
+            val paths = UriUtil.destructureUri(ApplinkConst.TICKET_DETAIL, it)
+            if (paths.isNotEmpty()) {
+                val ticketId = paths[0]
+                intent.putExtra(BUNDLE_ID_TICKET, ticketId)
+            }
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.contact_us_activity_inbox_detail)
     }

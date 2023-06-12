@@ -63,16 +63,6 @@ data class ProductVariantAggregatorUiData(
         return ProductCartHelper.getBoTrackerString(boType)
     }
 
-    fun getIsFreeOngkirImageUrl(productId: String): String {
-        val boType = boData.boProduct.firstOrNull {
-            it.productId == productId
-        }?.boType ?: ProductDetailCommonConstant.NO_BEBAS_ONGKIR
-
-        return boData.boImages.firstOrNull {
-            it.boType == boType
-        }?.imageURL ?: ""
-    }
-
     fun isAggregatorEmpty(): Boolean {
         return (!variantData.hasChildren && !variantData.hasVariant) || cardRedirection.isEmpty() || nearestWarehouse.isEmpty()
     }
