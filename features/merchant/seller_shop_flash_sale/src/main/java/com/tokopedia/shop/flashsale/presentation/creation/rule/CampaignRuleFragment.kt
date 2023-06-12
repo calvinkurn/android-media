@@ -296,7 +296,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val isShowOosSection = RemoteConfigUtil.isShowOutOfStockSection(context)
         if (isShowOosSection) {
             binding.viewGroupOosHandling.visible()
-            binding.radioOosOptionCanTransact.apply {
+            binding.tgCampaignFsOosTitle.apply {
                 val txtOosWording: String = getText(R.string.campaign_rule_fs_out_of_stock_title).toString()
                 text = getOosSpan(txtOosWording)
                 movementMethod = LinkMovementMethod.getInstance()
