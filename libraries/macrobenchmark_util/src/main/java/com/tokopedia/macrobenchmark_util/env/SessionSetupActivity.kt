@@ -33,7 +33,7 @@ class SessionSetupActivity : AppCompatActivity(){
 
     private fun handleHomeMacrobenchmarkUri(isLogin: Boolean, userSession: UserSessionInterface) {
         isCoachmmarkShowAllowed = false
-//        userSession.setFirstTimeUserOnboarding(false)
+        userSession.setFirstTimeUserOnboarding(false)
 
         if (isLogin) {
             MacrobenchmarkAuthHelper.loginInstrumentationTestUser1(this)
