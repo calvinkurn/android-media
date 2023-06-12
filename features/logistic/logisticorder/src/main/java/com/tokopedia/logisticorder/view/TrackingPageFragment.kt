@@ -239,8 +239,11 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                 )
 
                 setOnClickListener {
-                    RouteManager.route(activity, model.contactUsUrl)
+                    RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${model.contactUsUrl}")
                 }
+            }
+            header.setNavigationOnClickListener {
+                activity?.finish()
             }
         }
     }

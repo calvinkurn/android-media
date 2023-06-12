@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/label_tracking_activity"
+        app:unify_header_is_show_back_button="true"
         />
 
     <androidx.core.widget.NestedScrollView
