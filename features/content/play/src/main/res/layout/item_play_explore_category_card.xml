@@ -46,7 +46,6 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="@dimen/unify_space_4"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tv_category_video_title"
         app:layout_constraintTop_toBottomOf="@+id/tv_category_video_title"
         tools:srcCompat="@tools:sample/avatars" />

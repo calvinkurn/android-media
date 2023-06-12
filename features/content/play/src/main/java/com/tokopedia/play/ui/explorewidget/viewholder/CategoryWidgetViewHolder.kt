@@ -25,8 +25,8 @@ internal class CategoryWidgetViewHolder {
 
                 ivCategoryVideo.loadImage(item.video.coverUrl)
                 tvCategoryVideoTitle.text = item.title
-                tvCategoryVideoCreator.text = item.partner.name //TODO() check partner image
-                ivCategoryCreator.loadImage(item.video.coverUrl)
+                tvCategoryVideoCreator.text = item.partner.name
+                ivCategoryCreator.loadImage(item.partner.thumbnail)
                 tvCategoryView.text = item.totalView.totalViewFmt
                 layoutLiveBadge.root.showWithCondition(item.channelType == PlayWidgetChannelType.Live)
                 val currentPosition = absoluteAdapterPosition + 1
@@ -40,5 +40,5 @@ internal class CategoryWidgetViewHolder {
     }
 
     internal class Shimmer(private val binding: ItemPlayExploreCategoryShimmerBinding) :
-        RecyclerView.ViewHolder(binding.root) {} //TODO() temp layout
+        RecyclerView.ViewHolder(binding.root) {}
 }
