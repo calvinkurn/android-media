@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 
 data class OrderShop(
     var shopId: String = "",
@@ -37,7 +37,7 @@ data class OrderShop(
     var maximumWeightWording: String = "",
     var overweight: Double = 0.0,
     var boMetadata: BoMetadata = BoMetadata(),
-    var addOn: AddOnsDataModel = AddOnsDataModel(),
+    var addOn: AddOnGiftingDataModel = AddOnGiftingDataModel(),
 
     // Analytics
     var hasTriggerViewOverweightTicker: Boolean = false,

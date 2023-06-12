@@ -131,7 +131,7 @@ import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBotto
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionViewHolder
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -1473,7 +1473,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
 
-        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
+        override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnGiftingDataModel, product: OrderProduct, shop: OrderShop) {
             // No need to open add on bottom sheet if action = 0
             if (addOn.addOnsButtonModel.action != 0) {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)

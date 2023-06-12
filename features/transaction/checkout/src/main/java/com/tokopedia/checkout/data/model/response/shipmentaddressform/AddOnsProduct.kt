@@ -12,7 +12,7 @@ data class AddOnsProduct(
     @SerializedName("bottomsheet")
     val bottomsheet: AddOnsProductBottomSheet = AddOnsProductBottomSheet(),
 
-    @SerializedName("add_on_data")
+    @SerializedName("data")
     val addOnsDataList: List<AddOnsData> = emptyList()
 ) {
     data class AddOnsProductBottomSheet(

@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import java.util.*
 
@@ -86,7 +86,7 @@ class ProductDataResponse(
     @SerializedName("product_information")
     val productInformation: List<String> = emptyList(),
     @SerializedName("add_ons")
-    val addOns: AddOnsResponse = AddOnsResponse(),
+    val addOns: AddOnGiftingResponse = AddOnGiftingResponse(),
     @SerializedName("ethical_drug")
     val ethicalDrug: EthicalDrugResponse = EthicalDrugResponse()
 )

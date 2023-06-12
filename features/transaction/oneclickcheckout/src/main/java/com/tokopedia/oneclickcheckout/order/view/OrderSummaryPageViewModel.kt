@@ -59,7 +59,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromo
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
@@ -1242,11 +1242,11 @@ class OrderSummaryPageViewModel @Inject constructor(
 
     private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
         if (orderShop.isFulfillment) {
-            orderShop.addOn = AddOnsDataModel()
+            orderShop.addOn = AddOnGiftingDataModel()
             this.orderShop.value = orderShop
         } else {
             orderProduct?.let {
-                it.addOn = AddOnsDataModel()
+                it.addOn = AddOnGiftingDataModel()
                 orderProducts.value = listOf(it)
             }
         }

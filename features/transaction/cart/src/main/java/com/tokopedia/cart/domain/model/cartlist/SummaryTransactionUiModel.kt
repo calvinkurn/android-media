@@ -17,6 +17,7 @@ data class SummaryTransactionUiModel(
     data class SummaryAddOns(
             var wording: String = "",
             var type: Int = -1,
-            var priceLabel: String = ""
+            var priceLabel: String = "",
+            var priceValue: Double = 0.0
     )
 }

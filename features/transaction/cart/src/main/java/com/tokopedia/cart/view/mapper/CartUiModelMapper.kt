@@ -44,6 +44,7 @@ import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
@@ -68,7 +69,6 @@ import kotlin.math.min
 object CartUiModelMapper {
 
     private const val BUNDLE_NO_VARIANT_CONST = -1
-    private const val QTY_ADDON_REPLACE = "{{qty}}"
 
     fun mapTickerAnnouncementUiModel(ticker: Ticker): TickerAnnouncementHolderData {
         return TickerAnnouncementHolderData(
@@ -780,35 +780,45 @@ object CartUiModelMapper {
         }
     }
 
-    private fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
+    fun getShoppingSummaryAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>): HashMap<Int, String> {
+        val mapSummary = hashMapOf<Int, String>()
+        for (summaryItem in summariesItemList) {
+            mapSummary[summaryItem.type] = summaryItem.wording
+        }
+        return mapSummary
+    }
+
+    fun mapSummariesAddOns(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
         val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
-        summaryItemList@ for (summaryItem in summariesItemList) {
-            var qtyAddOn = 0
-            var totalPriceAddOn = 0.0
-            shopLoop@ for (groupShop in availableGroupGroups) {
-                groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
-                    cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
-                        productLoop@ for (product in cartDetail.products) {
-                            addOnLoop@ for (addon in product.addOn.addOnData) {
-                                if (addon.type == summaryItem.type && addon.status == 1) {
-                                    qtyAddOn += 1
-                                    totalPriceAddOn = qtyAddOn * addon.price
-                                }
-                            }
+        var qtyAddOn = 0
+        var totalPriceAddOn = 0.0
+        shopLoop@ for (groupShop in availableGroupGroups) {
+            groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
+                cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
+                    productLoop@ for (product in cartDetail.products) {
+                        addOnLoop@ for (addon in product.addOn.addOnData) {
+                            qtyAddOn += product.productQuantity
+                            totalPriceAddOn = qtyAddOn * addon.price
+                            countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
                         }
                     }
                 }
             }
-            if (qtyAddOn > 0) {
-                val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
-                        wording = summaryItem.wording.replace(QTY_ADDON_REPLACE, "$qtyAddOn"),
-                        type = summaryItem.type,
-                        priceLabel = CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPriceAddOn, false).removeDecimalSuffix()
-                )
-                summaryAddOnList.add(summaryAddOn)
-            }
         }
 
+        val mapSummary = getShoppingSummaryAddOns(summariesItemList)
+        for (entry in countMapSummaries) {
+            val addOnWording = mapSummary[entry.key]!!.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
+                    wording = addOnWording,
+                    type = entry.key,
+                    priceLabel = addOnPrice,
+                    priceValue = entry.value.first
+            )
+            summaryAddOnList.add(summaryAddOn)
+        }
         return summaryAddOnList
     }
 

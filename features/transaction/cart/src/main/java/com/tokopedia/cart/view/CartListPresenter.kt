@@ -14,7 +14,9 @@ import com.tokopedia.cart.data.model.request.AddCartToWishlistRequest
 import com.tokopedia.cart.data.model.request.CartShopGroupTickerAggregatorParam
 import com.tokopedia.cart.data.model.request.UpdateCartWrapperRequest
 import com.tokopedia.cart.data.model.response.promo.CartPromoTicker
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.AvailableGroup
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartData
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShoppingSummary
 import com.tokopedia.cart.domain.model.cartlist.SummaryTransactionUiModel
 import com.tokopedia.cart.domain.model.updatecart.UpdateAndGetLastApplyData
 import com.tokopedia.cart.domain.usecase.AddCartToWishlistUseCase
@@ -65,6 +67,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceRecomProductCartMapData
+import com.tokopedia.purchase_platform.common.constant.CartConstant.QTY_ADDON_REPLACE
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrder
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoOrderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.clear.ClearPromoRequest
@@ -138,6 +141,7 @@ class CartListPresenter @Inject constructor(
 
     private var cartListData: CartData? = null
     private var summaryTransactionUiModel: SummaryTransactionUiModel? = null
+    private var summariesAddOnUiModel: HashMap<Int, String> = hashMapOf()
     private var promoSummaryUiModel: PromoSummaryData? = null
 
     private var hasPerformChecklistChange: Boolean = false
@@ -166,6 +170,8 @@ class CartListPresenter @Inject constructor(
 
     // Cart shop ticker debounce job
     private var cartShopGroupTickerJob: Job? = null
+
+    private var totalQtyWithAddon: Int = 0
 
     companion object {
         private const val PERCENTAGE = 100.0f
@@ -267,6 +273,7 @@ class CartListPresenter @Inject constructor(
             }
             setCartListData(cartData)
             summaryTransactionUiModel = CartUiModelMapper.mapSummaryTransactionUiModel(cartData)
+            summariesAddOnUiModel = CartUiModelMapper.getShoppingSummaryAddOns(cartData.shoppingSummary.summaryAddOnList)
             showChoosePromoWidget = cartData.promo.showChoosePromoWidget
             promoTicker = cartData.promo.ticker
             it.renderLoadGetCartDataFinish()
@@ -643,6 +650,18 @@ class CartListPresenter @Inject constructor(
             totalItemQty,
             subtotalCashback
         )
+
+        cartItemDataList.forEach {
+            it.addOnsProduct.listData.forEach {
+                println("++ id: ${it.id}")
+                println("++ price: ${it.price}")
+                println("++ type: ${it.type}")
+                println("++ status: ${it.status}")
+            }
+            println("++ wording: "+it.addOnsProduct.widget.wording)
+        }
+
+        // summaryTransactionUiModel?.listSummaryAddOns = updateSummariesAddOn(cartItemDataList)
         view?.updateCashback(subtotalCashback)
         view?.renderDetailInfoSubTotal(totalItemQty.toString(), subtotalPrice, dataList.isEmpty())
     }
@@ -653,6 +672,10 @@ class CartListPresenter @Inject constructor(
         totalItemQty: Int,
         subtotalCashback: Double
     ) {
+        println("++ totalItemQty = "+totalItemQty+", totalQtyWithAddon = "+totalQtyWithAddon)
+        for ((key, value) in summariesAddOnUiModel) {
+            println("++ $key = $value")
+        }
         summaryTransactionUiModel?.qty = totalItemQty.toString()
         if (subtotalBeforeSlashedPrice == 0.0) {
             summaryTransactionUiModel?.totalValue = subtotalPrice.toLong()
@@ -663,6 +686,43 @@ class CartListPresenter @Inject constructor(
             (subtotalBeforeSlashedPrice - subtotalPrice).toLong()
         summaryTransactionUiModel?.paymentTotal = subtotalPrice.toLong()
         summaryTransactionUiModel?.sellerCashbackValue = subtotalCashback.toLong()
+        summaryTransactionUiModel?.listSummaryAddOns?.forEach {
+            // if (it.type == summariesAddOnUiModel)
+            println("++ "+it.wording)
+        }
+    }
+
+    fun updateSummariesAddOn(summariesItemList: List<ShoppingSummary.SummaryAddOn>, availableGroupGroups: List<AvailableGroup>): List<SummaryTransactionUiModel.SummaryAddOns> {
+        val countMapSummaries = hashMapOf<Int, Pair<Double, Int>>()
+        val summaryAddOnList = ArrayList<SummaryTransactionUiModel.SummaryAddOns>()
+        var qtyAddOn = 0
+        var totalPriceAddOn = 0.0
+        shopLoop@ for (groupShop in availableGroupGroups) {
+            groupShopCart@ for (groupShopCart in groupShop.groupShopCartData) {
+                cartDetailLoop@ for (cartDetail in groupShopCart.cartDetails) {
+                    productLoop@ for (product in cartDetail.products) {
+                        addOnLoop@ for (addon in product.addOn.addOnData) {
+                            qtyAddOn += totalQtyWithAddon
+                            totalPriceAddOn = qtyAddOn * addon.price
+                            countMapSummaries[addon.type] = totalPriceAddOn to qtyAddOn
+                        }
+                    }
+                }
+            }
+        }
+
+        val mapSummary = CartUiModelMapper.getShoppingSummaryAddOns(summariesItemList)
+        for (entry in countMapSummaries) {
+            val addOnWording = mapSummary[entry.key]!!.replace(QTY_ADDON_REPLACE, entry.value.second.toString())
+            val addOnPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(entry.value.first, false).removeDecimalSuffix()
+            val summaryAddOn = SummaryTransactionUiModel.SummaryAddOns(
+                    wording = addOnWording,
+                    type = entry.key,
+                    priceLabel = addOnPrice
+            )
+            summaryAddOnList.add(summaryAddOn)
+        }
+        return summaryAddOnList
     }
 
     fun getAvailableCartItemDataListAndShopTotalWeight(cartGroupHolderData: CartGroupHolderData): Pair<ArrayList<CartItemHolderData>, Double> {
@@ -870,6 +930,10 @@ class CartListPresenter @Inject constructor(
                 subtotalBeforeSlashedPrice = returnValueNormalProduct.first
                 subtotalPrice = returnValueNormalProduct.second
                 subtotalCashback = returnValueNormalProduct.third
+            }
+
+            if (cartItemHolderData.addOnsProduct.listData.isNotEmpty()) {
+                totalQtyWithAddon = totalItemQty
             }
         }
 

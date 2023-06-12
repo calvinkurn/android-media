@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
 import com.tokopedia.purchase_platform.common.feature.fulfillment.response.TokoCabangInfo
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
 
 class GroupShopOccResponse(
     @SerializedName("errors")
@@ -33,7 +33,7 @@ class GroupShopOccResponse(
     @SerializedName("warehouse")
     val warehouse: WarehouseDataResponse = WarehouseDataResponse(),
     @SerializedName("add_ons")
-    val addOns: AddOnsResponse = AddOnsResponse()
+    val addOns: AddOnGiftingResponse = AddOnGiftingResponse()
 )
 
 class CourierSelectionError(

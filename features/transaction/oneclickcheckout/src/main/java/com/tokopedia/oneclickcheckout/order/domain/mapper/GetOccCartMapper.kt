@@ -62,16 +62,16 @@ import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.Eth
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnMetadataItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnNoteItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnTickerModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
-import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingButtonModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingMetadataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingNoteItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnGiftingTickerModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnGiftingWording
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.Button
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.PopUp
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnWordingData
@@ -550,21 +550,21 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapAddOns(addOnsResponse: AddOnsResponse?): AddOnsDataModel {
+    private fun mapAddOns(addOnsResponse: AddOnGiftingResponse?): AddOnGiftingDataModel {
         return if (addOnsResponse != null) {
-            AddOnsDataModel(
+            AddOnGiftingDataModel(
                 status = addOnsResponse.status,
                 addOnsDataItemModelList = addOnsResponse.addOnData.map { mapAddOnDataItem(it) },
                 addOnsButtonModel = mapAddOnButton(addOnsResponse.addOnButton),
                 addOnsBottomSheetModel = mapAddOnBottomSheet(addOnsResponse.addOnBottomsheet)
             )
         } else {
-            AddOnsDataModel(status = 0)
+            AddOnGiftingDataModel(status = 0)
         }
     }
 
-    private fun mapAddOnDataItem(addOnDataItem: AddOnsResponse.AddOnDataItem): AddOnDataItemModel {
-        return AddOnDataItemModel(
+    private fun mapAddOnDataItem(addOnDataItem: AddOnGiftingResponse.AddOnDataItem): AddOnGiftingDataItemModel {
+        return AddOnGiftingDataItemModel(
             addOnPrice = addOnDataItem.addOnPrice,
             addOnId = addOnDataItem.addOnId,
             addOnQty = addOnDataItem.addOnQty,
@@ -572,14 +572,14 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapAddOnMetadata(addOnMetadata: AddOnsResponse.AddOnDataItem.AddOnMetadata): AddOnMetadataItemModel {
-        return AddOnMetadataItemModel(
+    private fun mapAddOnMetadata(addOnMetadata: AddOnGiftingResponse.AddOnDataItem.AddOnMetadata): AddOnGiftingMetadataItemModel {
+        return AddOnGiftingMetadataItemModel(
             addOnNoteItemModel = mapAddOnNoteItem(addOnMetadata.addOnNote)
         )
     }
 
-    private fun mapAddOnNoteItem(addOnNote: AddOnsResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnNoteItemModel {
-        return AddOnNoteItemModel(
+    private fun mapAddOnNoteItem(addOnNote: AddOnGiftingResponse.AddOnDataItem.AddOnMetadata.AddOnNote): AddOnGiftingNoteItemModel {
+        return AddOnGiftingNoteItemModel(
             isCustomNote = addOnNote.isCustomNote,
             to = addOnNote.to,
             from = addOnNote.from,
@@ -587,8 +587,8 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapAddOnButton(addOnButton: AddOnsResponse.AddOnButton): AddOnButtonModel {
-        return AddOnButtonModel(
+    private fun mapAddOnButton(addOnButton: AddOnGiftingResponse.AddOnButton): AddOnGiftingButtonModel {
+        return AddOnGiftingButtonModel(
             leftIconUrl = addOnButton.leftIconUrl,
             rightIconUrl = addOnButton.rightIconUrl,
             description = addOnButton.description,
@@ -597,8 +597,8 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapAddOnBottomSheet(addOnBottomSheet: AddOnsResponse.AddOnBottomsheet): AddOnBottomSheetModel {
-        return AddOnBottomSheetModel(
+    private fun mapAddOnBottomSheet(addOnBottomSheet: AddOnGiftingResponse.AddOnBottomsheet): AddOnGiftingBottomSheetModel {
+        return AddOnGiftingBottomSheetModel(
             headerTitle = addOnBottomSheet.headerTitle,
             description = addOnBottomSheet.description,
             ticker = mapAddOnTicker(addOnBottomSheet.ticker),
@@ -606,14 +606,14 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapAddOnTicker(ticker: AddOnsResponse.AddOnBottomsheet.Ticker): AddOnTickerModel {
-        return AddOnTickerModel(
+    private fun mapAddOnTicker(ticker: AddOnGiftingResponse.AddOnBottomsheet.Ticker): AddOnGiftingTickerModel {
+        return AddOnGiftingTickerModel(
             text = ticker.text
         )
     }
 
-    private fun mapAddOnProduct(product: AddOnsResponse.AddOnBottomsheet.ProductsItem): AddOnProductItemModel {
-        return AddOnProductItemModel(
+    private fun mapAddOnProduct(product: AddOnGiftingResponse.AddOnBottomsheet.ProductsItem): AddOnGiftingProductItemModel {
+        return AddOnGiftingProductItemModel(
             productName = product.productName,
             productImageUrl = product.productImageUrl
         )
@@ -633,7 +633,7 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapAddOnWording(addOnWording: AddOnWording): AddOnWordingData {
+    private fun mapAddOnWording(addOnWording: AddOnGiftingWording): AddOnWordingData {
         return AddOnWordingData(
             packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
             onlyGreetingCard = addOnWording.onlyGreetingCard,
