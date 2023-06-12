@@ -25,7 +25,8 @@ data class TrackOrderModel(
     var noHistory: Int = -1,
     var receiverName: String = "",
     var shippingRefNum: String = "",
-    var invalid: Boolean = false
+    var invalid: Boolean = false,
+    var contactUsUrl: String = ""
 ) : Parcelable
 
 @Parcelize
