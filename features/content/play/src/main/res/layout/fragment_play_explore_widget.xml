@@ -9,7 +9,7 @@
     android:background="@color/Unify_Background"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
 
-    <com.tokopedia.play.util.scroll.NestedScrollableHost
+    <com.tokopedia.content.common.util.scroll.NestedScrollableHost
         android:id="@+id/host_chips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="3"
             tools:listitem="@layout/view_widget_chips" />
-    </com.tokopedia.play.util.scroll.NestedScrollableHost>
+    </com.tokopedia.content.common.util.scroll.NestedScrollableHost>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/sr_explore_widget"
