@@ -951,7 +951,6 @@ class TicketFragment :
         }
     }
 
-    @SuppressLint("DeprecatedMethod")
     private fun sendMessage() {
         showSendProgress()
         viewModel.sendMessage(isUploadImageValid, imageList, message = userMessage)
