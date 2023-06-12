@@ -284,24 +284,45 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
     private fun handleLoginUserDataList(state: LoginHelperUiState) {
         if (state.dataSourceType == LoginHelperDataSourceType.REMOTE) {
             if (state.searchText.isEmpty()) {
-                fillRecyclerViewData(state.searchText, state.loginDataList)
+                fillRecyclerViewData(state.searchText, state.loginDataList, state.cachedLoginData, state.dataSourceType)
             } else {
-                fillRecyclerViewData(state.searchText, state.filteredUserList)
+                fillRecyclerViewData(
+                    state.searchText,
+                    state.filteredUserList,
+                    dataSourceType = state.dataSourceType
+                )
             }
         } else {
             if (state.searchText.isEmpty()) {
-                fillRecyclerViewData(state.searchText, state.localLoginDataList)
+                fillRecyclerViewData(
+                    state.searchText,
+                    state.localLoginDataList,
+                    dataSourceType = state.dataSourceType
+                )
             } else {
-                fillRecyclerViewData(state.searchText, state.localFilteredLoginDataList)
+                fillRecyclerViewData(
+                    state.searchText,
+                    state.localFilteredLoginDataList,
+                    dataSourceType = state.dataSourceType
+                )
             }
         }
     }
 
-    private fun fillRecyclerViewData(searchText: String, loginDataList: Result<LoginDataUiModel>?) {
+    private fun fillRecyclerViewData(
+        searchText: String,
+        loginDataList: Result<LoginDataUiModel>?,
+        cachedLoginData: Result<LoginDataUiModel>? = null,
+        dataSourceType: LoginHelperDataSourceType
+    ) {
         if (searchText.isEmpty()) {
             when (val loginDataList = loginDataList) {
                 is Success -> {
-                    handleLoginUserDataListSuccess(loginDataList.data)
+                    if (dataSourceType == LoginHelperDataSourceType.REMOTE && cachedLoginData is Success) {
+                        handleLoginUserDataListSuccess(loginDataList.data, cachedLoginData.data)
+                    } else {
+                        handleLoginUserDataListSuccess(loginDataList.data)
+                    }
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
@@ -310,7 +331,9 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         } else {
             when (val loginDataList = loginDataList) {
                 is Success -> {
-                    handleLoginUserDataListSuccess(loginDataList.data)
+                    if (cachedLoginData is Success) {
+                        handleLoginUserDataListSuccess(loginDataList.data, cachedLoginData.data)
+                    }
                 }
                 is Fail -> {
                     handleLoginUserDataListFailure(loginDataList.throwable)
@@ -319,7 +342,10 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
         }
     }
 
-    private fun handleLoginUserDataListSuccess(loginDataList: LoginDataUiModel) {
+    private fun handleLoginUserDataListSuccess(
+        loginDataList: LoginDataUiModel,
+        cachedLoginData: LoginDataUiModel? = null
+    ) {
         loginHelperAdapter = LoginHelperRecyclerAdapter(this@LoginHelperFragment)
 
         val layoutManager = LinearLayoutManager(
@@ -328,7 +354,11 @@ class LoginHelperFragment : BaseDaggerFragment(), LoginHelperClickListener {
             false
         )
         binding?.userList?.layoutManager = layoutManager
+        loginHelperAdapter?.clearAllElements()
         loginHelperAdapter?.addData(loginDataList)
+        cachedLoginData?.let {
+            loginHelperAdapter?.addData(it)
+        }
 
         binding?.userList?.apply {
             adapter = loginHelperAdapter

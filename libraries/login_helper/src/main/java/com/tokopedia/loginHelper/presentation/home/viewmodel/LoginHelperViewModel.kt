@@ -25,7 +25,6 @@ import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperAc
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperEvent
 import com.tokopedia.loginHelper.presentation.home.viewmodel.state.LoginHelperUiState
 import com.tokopedia.loginHelper.util.CacheConstants
-import com.tokopedia.loginHelper.util.ENCRYPTION_KEY
 import com.tokopedia.loginHelper.util.exception.ErrorGetAdminTypeException
 import com.tokopedia.loginHelper.util.exception.GoToActivationPageException
 import com.tokopedia.loginHelper.util.exception.GoToSecurityQuestionException
@@ -137,24 +136,6 @@ class LoginHelperViewModel @Inject constructor(
 
     // From Persistent Cache
     private fun storeUserDetailsInState() {
-        val secretKey = aesEncryptorCBC.generateKey(ENCRYPTION_KEY)
-
-//        val decryptedUserDetails = mutableListOf<UserDataResponse>()
-//        loginData.users?.forEach {
-//            decryptedUserDetails.add(
-//                UserDataResponse(
-//                    aesEncryptorCBC.decrypt(
-//                        it.email ?: "",
-//                        secretKey
-//                    ),
-//                    aesEncryptorCBC.decrypt(it.password ?: "", secretKey)
-//                )
-//            )
-//        }
-//        val sortedUserList = decryptedUserDetails.sortedBy {
-//            it.email
-//        }
-
         val cacheManager = PersistentCacheManager.instance
         val savedData = getLocalData(cacheManager)
 
@@ -175,7 +156,7 @@ class LoginHelperViewModel @Inject constructor(
                 decryptedLocalUserDetails.toUserDataUiModel()
             )
 
-        //     updateUserDataList(Success(userList))
+        updateUserDataListLocal(Success(userList))
     }
 
     // From the File
@@ -314,6 +295,15 @@ class LoginHelperViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 loginDataList = userDataList,
+                isLoading = false
+            )
+        }
+    }
+
+    private fun updateUserDataListLocal(userDataList: Result<LoginDataUiModel>) {
+        _uiState.update {
+            it.copy(
+                cachedLoginData = userDataList,
                 isLoading = false
             )
         }

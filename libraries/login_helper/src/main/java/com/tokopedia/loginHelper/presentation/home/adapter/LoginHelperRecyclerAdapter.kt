@@ -9,7 +9,6 @@ class LoginHelperRecyclerAdapter(listener: LoginHelperClickListener) :
     BaseAdapter<LoginHelperAdapterFactoryImpl>(LoginHelperAdapterFactoryImpl(listener)) {
 
     fun addData(loginDataList: LoginDataUiModel) {
-        clearAllElements()
         addElement(loginDataList.count)
         addElement(loginDataList.users)
     }
