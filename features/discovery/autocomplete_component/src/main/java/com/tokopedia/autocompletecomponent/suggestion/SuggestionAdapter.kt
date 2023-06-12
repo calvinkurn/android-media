@@ -46,4 +46,9 @@ class SuggestionAdapter(
         notifyDataSetChanged()
     }
 
+    fun getLastItem(criteria: (Visitable<*>) -> Boolean): Int {
+        val item = list.lastOrNull { criteria(it) }
+        return item?.let { list.indexOf(item) } ?: -1
+    }
+
 }

@@ -103,6 +103,9 @@
 
     <string name="total_deduction_point_performance">Pengurangan poin performa sebanyak <![CDATA[<b>%s poin.</b>]]></string>
     <string name="title_due_to_violations">Akibat Pelanggaran</string>
+    <string name="title_penalty_type">Jenis Pelanggaran:</string>
+    <string name="cta_penalty_detail_summary">Cek Definisi Penalti</string>
+    <string name="product_name_detail"><![CDATA[<b>Produk:</b>]]> %s</string>
 
     <string name="desc_tips_success_order">Pastikan informasi produk dan jumlah stok produkmu sesuai untuk menghindari pembatalan pesanan.</string>
     <string name="desc_tips_level_reply_chat">Pastikan Seller menjadi pihak terakhir yang membalas pesan, jika tidak, maka akan terhitung sebagai chat yang tidak dibalas. Pastikan diskusi dibalas selambat-lambatnya dalam waktu 7 hari semenjak diskusi diterima. Diskusi yang dibalas melebihi 7 hari akan dihitung sebagi diskusi yang tidak dibalas.</string>

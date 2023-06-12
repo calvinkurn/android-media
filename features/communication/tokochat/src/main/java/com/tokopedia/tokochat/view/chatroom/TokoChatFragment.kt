@@ -1328,7 +1328,9 @@ open class TokoChatFragment :
 
     private fun notifyWhenAllowed(position: Int) {
         try {
-            adapter.notifyItemChanged(position)
+            baseBinding?.tokochatChatroomRv?.post {
+                adapter.notifyItemChanged(position)
+            }
         } catch (throwable: Throwable) {
             Timber.d(throwable)
         }

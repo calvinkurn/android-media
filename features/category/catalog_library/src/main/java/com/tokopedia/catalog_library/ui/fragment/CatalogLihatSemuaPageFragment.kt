@@ -25,7 +25,7 @@ import com.tokopedia.catalog_library.util.CatalogAnalyticsLihatSemuaPage
 import com.tokopedia.catalog_library.util.CatalogLibraryConstant
 import com.tokopedia.catalog_library.util.CatalogLibraryUiUpdater
 import com.tokopedia.catalog_library.util.TrackerId.Companion.IMPRESSION_ON_CATEGORY_LIST_BRAND_LANDING
-import com.tokopedia.catalog_library.viewmodels.CatalogLihatSemuaPageVM
+import com.tokopedia.catalog_library.viewmodel.CatalogLihatSemuaPageViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -91,7 +91,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
 
     private val lihatViewModel by lazy {
         viewModelFactory?.let {
-            ViewModelProvider(this, it)[CatalogLihatSemuaPageVM::class.java]
+            ViewModelProvider(this, it)[CatalogLihatSemuaPageViewModel::class.java]
         }
     }
 
@@ -173,6 +173,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             sortAsc?.chipType = ChipsUnify.TYPE_SELECTED
             sortDesc?.chipType = ChipsUnify.TYPE_NORMAL
             makeApiCall()
+            order = CatalogLibraryConstant.ASCENDING_ORDER_STR
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.DESCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.ASCENDING_ORDER_STR}",
@@ -183,6 +184,7 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
             sortAsc?.chipType = ChipsUnify.TYPE_NORMAL
             sortDesc?.chipType = ChipsUnify.TYPE_SELECTED
             makeApiCall(DESC_SORT_ORDER)
+            order = CatalogLibraryConstant.DESCENDING_ORDER_STR
             CatalogAnalyticsLihatSemuaPage.sendClickAscendingDescendingSortEvent(
                 "${CatalogLibraryConstant.GRID_VIEW_STR} - ${CatalogLibraryConstant.ASCENDING_ORDER_STR}" +
                     " - click sort: ${CatalogLibraryConstant.DESCENDING_ORDER_STR}",
@@ -286,11 +288,19 @@ class CatalogLihatSemuaPageFragment : CatalogLibraryBaseFragment(), CatalogLibra
 
     override fun onAccordionStateChange(expanded: Boolean, element: CatalogLihatDM) {
         super.onAccordionStateChange(expanded, element)
-        val expandCollapse = if (expanded) "expand" else "collapse"
-        CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
-            "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
-            userSessionInterface?.userId ?: ""
-        )
+        if (isOriginBrand) {
+            val expandCollapse = if (expanded) "expand" else "collapse"
+            CatalogAnalyticsBrandLandingPage.sendClickCollapseExpandOnBottomSheetEvent(
+                "brand page: ${"brandName"} - $brandId - category: ${element.catalogLibraryDataList?.rootCategoryName} - ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse",
+                userSessionInterface?.userId ?: ""
+            )
+        } else {
+            val expandCollapse = if (expanded) "open" else "close"
+            CatalogAnalyticsLihatSemuaPage.sendClickDropUpButtonEvent(
+                "L1 name: ${element.catalogLibraryDataList?.rootCategoryName} - L1 ID: ${element.catalogLibraryDataList?.rootCategoryId} - action: $expandCollapse - sort & filter: grid view - $order",
+                userSessionInterface?.userId ?: ""
+            )
+        }
     }
 
     override fun categoryListImpression(

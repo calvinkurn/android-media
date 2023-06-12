@@ -28,7 +28,6 @@ import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraA
 import com.tokopedia.kyc_centralized.ui.tokoKyc.camera.UserIdentificationCameraFragment
 import com.tokopedia.kyc_centralized.ui.tokoKyc.form.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoFragment
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifyprinciples.Typography
@@ -48,7 +47,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     private var stepperListener: StepperListener? = null
     private var allowedSelfie = false
 
-    private lateinit var remoteConfig: RemoteConfig
+    abstract var remoteConfig: RemoteConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,8 +71,6 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 false
             ) ?: false
         }
-
-        remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -17,12 +16,9 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
-import com.tokopedia.sessioncommon.util.OclUtils
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -56,12 +52,6 @@ class HomeAccountUserModules(val context: Context) {
 
     @Provides
     @ActivityScope
-    fun provideDataViewMapper(userSession: UserSessionInterface, userSessionDataStore: Lazy<UserSessionDataStore>): DataViewMapper {
-        return DataViewMapper(userSession, userSessionDataStore)
-    }
-
-    @Provides
-    @ActivityScope
     fun providePermissionChecker(): PermissionCheckerHelper {
         return PermissionCheckerHelper()
     }
@@ -85,20 +75,13 @@ class HomeAccountUserModules(val context: Context) {
 
     @Provides
     @ActivityScope
-    fun provideFingerprintPrefManager(@ApplicationContext context: Context): FingerprintPreference {
-        return FingerprintPreferenceManager(context)
-    }
-
-    @ActivityScope
-    @Provides
-    open fun provideAbTestPlatform(): AbTestPlatform {
+    fun provideAbTestPlatform(): AbTestPlatform {
         return RemoteConfigInstance.getInstance().abTestPlatform
     }
 
     @Provides
     @ActivityScope
-    fun provideOclUtils(abTestPlatform: AbTestPlatform): OclUtils {
-        return OclUtils(abTestPlatform)
+    fun provideFingerprintPrefManager(@ApplicationContext context: Context): FingerprintPreference {
+        return FingerprintPreferenceManager(context)
     }
-
 }
