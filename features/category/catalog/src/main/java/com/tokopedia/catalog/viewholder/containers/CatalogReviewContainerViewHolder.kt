@@ -1,6 +1,7 @@
 package com.tokopedia.catalog.viewholder.containers
 
 import android.view.View
+import android.widget.RatingBar
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,9 +46,9 @@ class CatalogReviewContainerViewHolder(private val view : View,
 
             view.findViewById<Typography>(R.id.review_rating_catalog)?.displayTextOrHide(CatalogUtil.getRatingString(element.data.avgRating))
             if(element.data.avgRating.isNullOrBlank()){
-                view.findViewById<AppCompatImageView>(R.id.rating_review_star_catalog)?.hide()
+                view.findViewById<RatingBar>(R.id.rating_review_star_catalog)?.hide()
             }else {
-                view.findViewById<AppCompatImageView>(R.id.rating_review_star_catalog)?.show()
+                view.findViewById<RatingBar>(R.id.rating_review_star_catalog)?.show()
             }
             view.findViewById<Typography>(R.id.review_count_catalog)?.displayTextOrHide(view.context?.resources?.getString(com.tokopedia.catalog.R.string.catalog_highlighted_reviews, element.data.totalHelpfulReview) ?: "")
         }

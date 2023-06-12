@@ -39,13 +39,15 @@
             android:orientation="horizontal"
             android:gravity="start|center_vertical"
             >
-            <androidx.appcompat.widget.AppCompatImageView
+            <RatingBar
                 android:id="@+id/rating_review_star_catalog"
-                android:layout_width="@dimen/unify_space_24"
-                android:layout_height="@dimen/unify_space_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
                 tools:visibility="visible"
-                app:srcCompat="@drawable/catalog_ic_rating_star_item"
+                android:numStars="1"
+                android:rating="1"
+                style="@style/RatingBar.Small"
                 />
 
             <com.tokopedia.unifyprinciples.Typography

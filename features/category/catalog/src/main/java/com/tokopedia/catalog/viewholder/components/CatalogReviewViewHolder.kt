@@ -3,6 +3,7 @@ package com.tokopedia.catalog.viewholder.components
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
+import android.widget.RatingBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -23,11 +24,6 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
 
     companion object {
         const val MAX_LINES_REVIEW_DESCRIPTION = 3
-        const val RATING_ONE = 1
-        const val RATING_TWO = 2
-        const val RATING_THREE = 3
-        const val RATING_FOUR = 4
-        const val RATING_FIVE = 5
 
         val LAYOUT = R.layout.item_catalog_review
     }
@@ -62,24 +58,13 @@ class CatalogReviewViewHolder(private val view: View) : RecyclerView.ViewHolder(
         renderReviewImage(model, catalogDetailListener)
     }
 
-    private fun getRatingDrawable(param: Int): Int {
-        return when (param) {
-            RATING_ONE -> R.drawable.catalog_ic_rating_star_one
-            RATING_TWO -> R.drawable.catalog_ic_rating_star_two
-            RATING_THREE -> R.drawable.catalog_ic_rating_star_three
-            RATING_FOUR -> R.drawable.catalog_ic_rating_star_four
-            RATING_FIVE -> R.drawable.catalog_ic_rating_star_five
-            else -> R.drawable.catalog_ic_rating_star_zero
-        }
-    }
-
     private fun setReviewStars(rating: Int?) {
-        view.findViewById<ImageView>(R.id.rating_review_catalog)?.apply {
+        view.findViewById<RatingBar>(R.id.rating_review_catalog)?.apply {
             if (rating == 0 || rating == null) {
                 hide()
                 return
             }
-            setImageDrawable(MethodChecker.getDrawable(context, getRatingDrawable(rating)))
+            this.rating = rating.toFloat()
             show()
         }
     }
