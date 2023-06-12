@@ -8,6 +8,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 
 object MacroDevOps {
+    const val LEWATI_BTN = "Lewati"
     fun setupEnvironment(intent: Intent) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         instrumentation.targetContext.startActivity(intent)
@@ -25,16 +26,15 @@ object MacroDevOps {
                 }
             )
             val device = UiDevice.getInstance(instrumentation)
-            val packageName = "${MacroIntent.TKPD_PACKAGE_NAME}.df_base"
 
             device.wait(
-                Until.hasObject(By.res(packageName, "skipDynamicOnbaording")),
-                2000L
+                Until.hasObject(By.text(LEWATI_BTN)),
+                5000L
             )
-            val btn = device.findObject(By.res(packageName, "skipDynamicOnbaording"));
+            val btn = device.findObject(By.text(LEWATI_BTN));
             btn.click()
 
-            Thread.sleep(3000L)
+            Thread.sleep(5000L)
             device.pressBack()
 
             Thread.sleep(300L)
