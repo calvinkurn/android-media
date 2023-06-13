@@ -72,7 +72,6 @@ fun ProfileSettingsScreen(
                 ReviewSettingsText(
                     text = reviewSettings.title,
                     modifier = Modifier
-                        .padding(horizontal = 16.dp)
                         .constrainAs(tvReviewSettings) {
                             top.linkTo(icReviewSettings.top)
                             bottom.linkTo(icReviewSettings.bottom)
