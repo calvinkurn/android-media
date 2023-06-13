@@ -268,7 +268,7 @@ open class DynamicPostViewHolder(
                     if (header.cardSummary.isNotEmpty()) {
                         SpannableString(
                             String.format(
-                                getString(R.string.feed_header_time_format),
+                                getString(com.tokopedia.content.common.R.string.feed_header_time_format),
                                 header.avatarDate,
                                 header.cardSummary
                             )
@@ -606,7 +606,8 @@ open class DynamicPostViewHolder(
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
                 val text: String =
-                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
+                    if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt
+                    else getString(com.tokopedia.content.common.R.string.kol_action_like)
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                     MethodChecker.getColor(
@@ -620,7 +621,10 @@ open class DynamicPostViewHolder(
 
     private fun bindComment(comment: Comment) {
         itemView.commentText.text =
-            if (comment.value == 0) if (comment.fmt.isNotEmpty()) comment.fmt else getString(R.string.kol_action_comment)
+            if (comment.value == 0) {
+                if (comment.fmt.isNotEmpty()) comment.fmt
+                else getString(com.tokopedia.content.common.R.string.kol_action_comment)
+            }
             else {
                 if (comment.fmt.isNotEmpty()) comment.fmt else comment.value.toString()
             }

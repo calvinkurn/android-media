@@ -62,7 +62,7 @@ import javax.inject.Inject
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import com.tokopedia.feedcomponent.R as feedComponentR
+import com.tokopedia.content.common.R as contentCommonR
 
 /**
  * Created By : Muhammad Furqan on 02/02/23
@@ -257,7 +257,7 @@ class FeedBaseFragment :
                     )
                     putExtra(
                         BundleData.TITLE,
-                        getString(feedComponentR.string.feed_post_sebagai)
+                        getString(contentCommonR.string.feed_post_sebagai)
                     )
                     putExtra(
                         BundleData.APPLINK_FOR_GALLERY_PROCEED,

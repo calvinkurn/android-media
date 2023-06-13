@@ -56,9 +56,9 @@ import com.tokopedia.applink.ApplinkConst.SHOP_TALK
 import com.tokopedia.applink.ApplinkConst.SellerApp
 import com.tokopedia.applink.ApplinkConst.SellerApp.REVIEW_REMINDER
 import com.tokopedia.applink.ApplinkConst.SellerApp.SELLER_SEARCH
+import com.tokopedia.applink.ApplinkConst.SellerApp.STATISTIC_DASHBOARD
 import com.tokopedia.applink.ApplinkConst.TICKET_DETAIL
 import com.tokopedia.applink.ApplinkConst.TOPCHAT_IDLESS
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
 import com.tokopedia.applink.ApplinkConst.TokopediaNow
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CHECKOUT_DIGITAL
@@ -296,6 +296,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
+    const val DF_STATISTIC = "df_statistic"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -412,7 +413,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PINPOINT) }, DF_BASE, R.string.path_pinpoint))
 
             // Merchant
-            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_SELLER, R.string.title_open_shop))
+            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
 
@@ -434,6 +435,17 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(PM_BENEFIT_PACKAGE)
                     || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
+
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
+                    || it.startsWith(SHOP_SCORE_DETAIL)
+                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                    || it.startsWith(SHOP_PENALTY)
+                    || it.startsWith(SHOP_PENALTY_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            }, DF_MERCHANT_SELLER, R.string.title_shop_score_sellerapp))
+
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
                 val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
@@ -883,7 +895,6 @@ object DeeplinkDFMapper : CoroutineScope {
                 val regexMatcherExternalAppLink = cleanExternalAppLinkPattern.toRegex()
                 regexMatcherExternalAppLink.matches(it)
             }, DF_BASE_SELLER_APP, R.string.title_shop_widget))
-            add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
@@ -977,6 +988,15 @@ object DeeplinkDFMapper : CoroutineScope {
                     { it.startsWithPattern(ApplinkConstInternalSellerapp.SELLER_FEEDBACK) },
                     DF_SELLER_FEEDBACK,
                     R.string.title_seller_feedback
+                )
+            )
+            add(
+                DFP(
+                    {
+                        it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) || it.startsWithPattern(
+                            MERCHANT_STATISTIC_DASHBOARD
+                        ) || it.startsWithPattern(STATISTIC_DASHBOARD)
+                    }, DF_STATISTIC, R.string.title_statistic
                 )
             )
         }
