@@ -765,7 +765,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showUnificationWidgetCoachMark(anchor: View) {
-        val isEligibleCoachMark = !coachMarkPrefHelper.getUnificationCoachMarkStatus()
+        val isEligibleCoachMark = !coachMarkPrefHelper.unificationCoachMarkStatus
         if (isEligibleCoachMark) {
             if (this.unificationWidgetTitleView == null) {
                 this.unificationWidgetTitleView = anchor
@@ -1008,7 +1008,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        getWidgetsData(unificationWidgets)
+        getUnificationData(unificationWidgets)
 
         notifyWidgetWithSdkChecking {
             updateWidgets(widgets)
@@ -1038,7 +1038,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        getWidgetsData(calendarWidgets)
+        getCalendarData(calendarWidgets)
 
         notifyWidgetWithSdkChecking {
             updateWidgets(widgets)
@@ -1151,24 +1151,26 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      * load only visible widget on screen, except card widget should load all directly
      * */
     private fun requestVisibleWidgetsData() {
-        val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
-        val firstVisible = layoutManager.findFirstVisibleItemPosition()
-        val lastVisible = layoutManager.findLastVisibleItemPosition()
+        if (adapter.data.any { !it.isLoaded }) {
+            val layoutManager = recyclerView?.layoutManager as? GridLayoutManager ?: return
+            val firstVisible = layoutManager.findFirstVisibleItemPosition()
+            val lastVisible = layoutManager.findLastVisibleItemPosition()
 
-        val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
-        adapter.data.forEachIndexed { index, widget ->
-            if (!widget.isLoaded) {
-                if (widget.widgetType == WidgetType.CARD) {
-                    visibleWidgets.add(widget)
-                } else {
-                    if (index in firstVisible..lastVisible) {
+            val visibleWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+            adapter.data.forEachIndexed { index, widget ->
+                if (!widget.isLoaded) {
+                    if (widget.widgetType == WidgetType.CARD) {
                         visibleWidgets.add(widget)
+                    } else {
+                        if (index in firstVisible..lastVisible) {
+                            visibleWidgets.add(widget)
+                        }
                     }
                 }
             }
-        }
 
-        if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+            if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
+        }
     }
 
     private fun reloadPage() = binding?.run {
@@ -2475,7 +2477,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun showUnificationCoachMarkWhenVisible() {
-        if (unificationWidgetTitleView == null) return
+        val isNotEligibleCoachMark = coachMarkPrefHelper.unificationCoachMarkStatus
+        if (unificationWidgetTitleView == null || isNotEligibleCoachMark) {
+            return
+        }
 
         getSellerHomeLayoutManager()?.let { layoutManager ->
             val unificationWidget = adapter.data.indexOfFirst { it is UnificationWidgetUiModel }

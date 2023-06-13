@@ -16,9 +16,8 @@ class CoachMarkPrefHelper @Inject constructor(
         const val KEY_UNIFICATION_WIDGET_COACH_MARK = "unification_widget_coach_mark_key"
     }
 
-    fun getUnificationCoachMarkStatus(): Boolean {
-        return getBoolean(KEY_UNIFICATION_WIDGET_COACH_MARK, false)
-    }
+    val unificationCoachMarkStatus: Boolean
+        get() = getBoolean(KEY_UNIFICATION_WIDGET_COACH_MARK, false)
 
     fun saveUnificationMarkFlag() {
         saveBoolean(KEY_UNIFICATION_WIDGET_COACH_MARK, true)
@@ -31,8 +30,7 @@ class CoachMarkPrefHelper @Inject constructor(
 
     private fun getBoolean(key: String, defValue: Boolean): Boolean {
         return pmCommonPreferenceManager.getBoolean(
-            key,
-            defValue
+            key, defValue
         ).orFalse()
     }
 }
