@@ -26,6 +26,7 @@ class UniversalShareFragmentTest : Fragment() {
     fun showUniversalBottomSheet(universalShareBottomSheet: UniversalShareBottomSheet) {
         universalShareBottomSheet.show(requireFragmentManager(), TAG)
     }
+
     companion object {
         private val TAG = "UniversalShareTestActivity"
     }

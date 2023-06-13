@@ -6,19 +6,34 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
-import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.test.R
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 
 class GraphqlRepositoryStub : GraphqlRepository {
+
+    var mockParam = MockParam.NO_PARAM
     override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {
         when (GqlQueryParser.parse(requests).first()) {
             "generateAffiliateLinkEligibility" -> {
-                println("masuk sini")
-                return GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(R.raw.pdp_eligible_affiliate)
+                return if (mockParam === MockParam.ELIGIBLE_COMMISSION) {
+                    println("masuk eligible commision")
+                    GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(R.raw.pdp_eligible_affiliate)
+                } else {
+                    println("masuk not eligible")
+                    GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(R.raw.pdp_not_eligible_affiliate)
+                }
             }
             else -> {
                 throw Exception("request empty")
             }
         }
+    }
+
+    enum class MockParam {
+        NO_PARAM,
+        ELIGIBLE_COMMISSION,
+        NOT_ELIGIBLE_COMMISSION,
+        ELIGIBLE_COMMISSION_EXTRA,
+        NOT_ELIGIBLE_COMMISSION_EXTRA
     }
 }

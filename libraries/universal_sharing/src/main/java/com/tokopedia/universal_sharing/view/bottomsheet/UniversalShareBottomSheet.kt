@@ -33,7 +33,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -170,10 +169,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private var affiliateInput: AffiliateInput? = null
     private var affiliateInputTemp: AffiliateInput? = null
     private var userType: String = KEY_GENERAL_USER
-
-    /**
-     * if this flag is enabled, the bottomsheet will
-     */
     private var isAffiliateCommissionEnabled = false
 
     private var showLoader: Boolean = false
@@ -249,7 +244,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
         initImageOptionsRecyclerView()
-        println("init affiliate")
         initAffiliate()
     }
 
@@ -358,10 +352,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
      */
     @Deprecated("this function is deprecated. Please use enableAffiliateCommission")
     fun affiliateRequestDataReceived(validRequest: Boolean) {
-        println("request data received")
         if (userSession.isLoggedIn && validRequest && isAffiliateEnabled()) {
             executeAffiliateEligibilityUseCase()
-            println("execute data received")
             showLoader = true
             loaderUnify?.visibility = View.VISIBLE
         } else {
@@ -416,6 +408,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
 
     /**
      * to enable affiliate commission
+     * if this flag is enabled, the bottomsheet will show
+     * affiliate commission ticker if user registered
+     * otherwise, affiliate register ticker will be showed
      * @see [https://tokopedia.atlassian.net/wiki/spaces/AF/pages/1693717743/Validate+Affiliate+Link+Generation+Eligibility]
      */
     fun enableAffiliateCommission(affiliateInput: AffiliateInput) {
@@ -954,10 +949,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
         gqlCallJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUsecase.apply {
-                    println("apply params $affiliateUsecase")
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateInput!!)
                 }.executeOnBackground()
-                println("cek result $generateAffiliateLinkEligibility")
                 var deeplink = ""
                 if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
                     deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
@@ -967,8 +960,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
                 }
             }
         }, onError = {
-            println("error execute ${it.message}")
-            clearLoader()
+                clearLoader()
                 removeHandlerTimeout()
                 it.printStackTrace()
             })
@@ -999,7 +991,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify(), HasComponent<Universa
     private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String = "") {
         clearLoader()
         removeHandlerTimeout()
-        println("show affiliate ticker ${generateAffiliateLinkEligibility}")
         if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
             showAffiliateCommission(generateAffiliateLinkEligibility)
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
