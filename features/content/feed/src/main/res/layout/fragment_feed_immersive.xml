@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/Unify_Static_Black">
 
-    <com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_feed_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -24,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </com.tokopedia.home_component.customview.pullrefresh.ParentIconSwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/feed_load_more"
