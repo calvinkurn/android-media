@@ -4,7 +4,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
@@ -28,6 +27,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_UN_OPTIMIZED_GROUP
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetPricingDetailsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsListAllInsightCountsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
@@ -36,7 +36,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.local.data.Empty
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.groupdetailchips.GroupDetailChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.insighttypechips.InsightTypeChipsUiModel
 import com.tokopedia.topads.dashboard.recommendation.views.fragments.findPositionOfSelected
-import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsInsightShopKeywordRecommendationFragment
 import javax.inject.Inject
 
 class GroupDetailMapper @Inject constructor() {
@@ -174,12 +173,14 @@ class GroupDetailMapper @Inject constructor() {
         )
     }
 
-    fun convertToAccordianKataKunciUiModel(groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?): GroupInsightsUiModel {
+    fun convertToAccordianKataKunciUiModel(
+        groupData: TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData?,
+        pricingDetails: TopAdsGetPricingDetailsResponse
+    ): GroupInsightsUiModel {
         var impressionSum = 0
         groupData?.newPositiveKeywordsRecom?.forEach {
             impressionSum += it.predictedImpression.toIntOrZero()
         }
-
         return GroupInsightsUiModel(
             TYPE_POSITIVE_KEYWORD,
             INSIGHT_TYPE_POSITIVE_KEYWORD_NAME,
@@ -188,8 +189,9 @@ class GroupDetailMapper @Inject constructor() {
 //                            false,
             AccordianKataKunciUiModel(
                 "Kata Kunci",
-                groupData?.newPositiveKeywordsRecom
-
+                groupData?.newPositiveKeywordsRecom,
+                maxBid = pricingDetails.topAdsGetPricingDetails.maxBid,
+                minBid = pricingDetails.topAdsGetPricingDetails.minBid
             )
         )
     }

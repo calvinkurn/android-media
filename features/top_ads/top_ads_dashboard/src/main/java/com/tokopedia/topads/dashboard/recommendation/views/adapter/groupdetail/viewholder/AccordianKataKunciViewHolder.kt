@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
@@ -69,13 +71,13 @@ class AccordianKataKunciViewHolder(
 
                     override fun afterTextChanged(text: Editable?) {
                         val bid = text.toString().toIntOrZero()
-                        if(bid < 400){
+                        if(bid < minBid.toZeroIfNull()){
                             keywordCost.isInputError = true
                             keywordCost.editText.error = "Min. biaya Rp400."
-                        } else if(bid > 10000){
+                        } else if(bid > maxBid.toZeroIfNull()){
                             keywordCost.isInputError = true
                             keywordCost.editText.error = "Maks. biaya Rp10.000."
-                        } else if(bid % 50 != 0){
+                        } else if(bid % INSIGHT_MULTIPLIER != 0){
                             keywordCost.isInputError = true
                             keywordCost.editText.error = "Harus kelipatan Rp50."
                         } else {
@@ -116,9 +118,13 @@ class AccordianKataKunciViewHolder(
     private val selectAllCheckbox: com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify = itemView.findViewById(R.id.selectAllCheckbox)
     private var topadsManagePromoGroupProductInput: TopadsManagePromoGroupProductInput? = null
     private var hasErrors: Boolean = false
+    private var maxBid: Int? = 0
+    private var minBid: Int? = 0
 
     override fun bind(element: AccordianKataKunciUiModel?) {
         topadsManagePromoGroupProductInput = element?.input
+        maxBid = element?.maxBid
+        minBid = element?.minBid
         kataKunciRv.layoutManager =
             LinearLayoutManager(itemView.context, LinearLayoutManager.VERTICAL, false)
         kataKunciRv.adapter = adapter

@@ -12,6 +12,7 @@ import com.tokopedia.topads.dashboard.recommendation.common.Utils
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.GroupDetailMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
+import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetPricingDetailsResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetSellerInsightDataResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.*
@@ -25,6 +26,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
     private val topAdsGetAdGroupBidInsightUseCase: TopAdsGetAdGroupBidInsightUseCase,
     private val topAdsGetTotalAdGroupsWithInsightUseCase: TopAdsGetTotalAdGroupsWithInsightUseCase,
     private val topAdsGetSellerInsightDataUseCase: TopAdsGetSellerInsightDataUseCase,
+    private val topAdsGetPricingDetailsUseCase: TopAdsGetPricingDetailsUseCase,
     private val utils: Utils
 ) {
 
@@ -34,12 +36,14 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         groupId: String
     ): Map<Int, GroupDetailDataModel> {
         return coroutineScope {
+            val pricingDetailsAsync = async { getPricingDetails(adGroupType) }
             val batchKeywordAsync = async { getBatchKeywordInsight(groupId) }
             val groupPerformanceAsync = async { getGroupPerformance(groupId, adGroupType.toString()) }
             val groupBidInsightAsync = async { getGroupBidInsight(groupId) }
             val groupWithInsightAsync = async { getGroupWithInsight(utils.convertAdTypeToString(adGroupType)) }
             val sellerInsightDataAsync = async { getSellerInsight(groupId) }
 
+            val pricingDetails = pricingDetailsAsync.await()
             val batchKeyword = batchKeywordAsync.await()
             val groupPerformance = groupPerformanceAsync.await()
             val groupBidInsight = groupBidInsightAsync.await()
@@ -76,7 +80,10 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     val groupData =
                         batchKeyword.data.topAdsBatchGetKeywordInsightByGroupIDV3.groups.firstOrNull()?.groupData
                     val kataKuchimodel =
-                        groupDetailMapper.convertToAccordianKataKunciUiModel(groupData)
+                        groupDetailMapper.convertToAccordianKataKunciUiModel(
+                            groupData,
+                            pricingDetails
+                        )
                     val keywordBidUiModel =
                         groupDetailMapper.convertToAccordianKeywordBidUiModel(groupData)
                     val negativeKeywordModel =
@@ -115,6 +122,14 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                 else -> {}
             }
             return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)
+        }
+    }
+
+    private suspend fun getPricingDetails(adGroupType: Int): TopAdsGetPricingDetailsResponse {
+        return try {
+            topAdsGetPricingDetailsUseCase.invoke(utils.convertAdTypeToString(adGroupType))
+        } catch (e: Exception) {
+            TopAdsGetPricingDetailsResponse()
         }
     }
 

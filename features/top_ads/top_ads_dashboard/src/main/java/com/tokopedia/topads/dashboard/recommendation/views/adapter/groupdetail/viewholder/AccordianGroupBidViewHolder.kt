@@ -6,9 +6,12 @@ import android.view.View
 import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_GROUP_BID_MAX_BID
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianGroupBidUiModel
 
 class AccordianGroupBidViewHolder(
@@ -76,15 +79,18 @@ class AccordianGroupBidViewHolder(
 
             override fun afterTextChanged(text: Editable?) {
                 val bid = text.toString().toIntOrZero()
-                if(bid < 350){
+                if(bid < element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()){
                     searchCost.isInputError = true
-                    searchCost.editText.error = "Min. biaya Rp350."
-                } else if(bid > 5000){
+                    searchCost.editText.error = "Min. biaya Rp${element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid}"
+                } else if(bid > INSIGHT_GROUP_BID_MAX_BID){
                     searchCost.isInputError = true
-                    searchCost.editText.error = "Maks. biaya Rp5.000."
-                } else if(bid % 50 != 0){
+                    searchCost.editText.error = "Maks. biaya Rp$INSIGHT_GROUP_BID_MAX_BID"
+                } else if(bid % INSIGHT_MULTIPLIER != 0){
                     searchCost.isInputError = true
-                    searchCost.editText.error = "Harus kelipatan Rp50."
+                    searchCost.editText.error = "Harus kelipatan Rp$INSIGHT_MULTIPLIER."
+                } else {
+                    searchCost.isInputError = false
+                    searchCost.editText.error = ""
                 }
             }
         })
@@ -96,15 +102,18 @@ class AccordianGroupBidViewHolder(
 
             override fun afterTextChanged(text: Editable?) {
                 val bid = text.toString().toIntOrZero()
-                if(bid < 350){
+                if(bid < element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()){
                     recommendationCost.isInputError = true
-                    recommendationCost.editText.error = "Min. biaya Rp350."
-                } else if(bid > 5000){
+                    recommendationCost.editText.error = "Min. biaya Rp${element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid}."
+                } else if(bid > INSIGHT_GROUP_BID_MAX_BID){
                     recommendationCost.isInputError = true
-                    recommendationCost.editText.error = "Maks. biaya Rp5.000."
-                } else if(bid % 50 != 0){
+                    recommendationCost.editText.error = "Maks. biaya Rp$INSIGHT_GROUP_BID_MAX_BID."
+                } else if(bid % INSIGHT_MULTIPLIER != 0){
                     recommendationCost.isInputError = true
-                    recommendationCost.editText.error = "Harus kelipatan Rp50."
+                    recommendationCost.editText.error = "Harus kelipatan Rp$INSIGHT_MULTIPLIER."
+                } else {
+                    recommendationCost.isInputError = false
+                    recommendationCost.editText.error = ""
                 }
             }
         })

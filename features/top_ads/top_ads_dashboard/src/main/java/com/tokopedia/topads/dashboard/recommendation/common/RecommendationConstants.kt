@@ -40,6 +40,9 @@ object RecommendationConstants {
     const val INSIGHT_TYPE_KEY = "insightType"
     const val INSIGHT_TYPE_LIST_KEY = "insightTypeList"
     const val GROUP_DETAIL_BUNDLE_KEY = "groupDetailBundle"
+    const val INSIGHT_MULTIPLIER = 50
+    const val INSIGHT_GROUP_BID_MAX_BID = 5000
+    const val INSIGHT_DAILY_BUDGET_MAX_BID = 10000000
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
 
