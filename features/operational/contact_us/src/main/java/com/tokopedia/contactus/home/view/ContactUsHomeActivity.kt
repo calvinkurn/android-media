@@ -3,6 +3,7 @@ package com.tokopedia.contactus.home.view
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,6 +19,22 @@ import java.lang.Exception
  * Created by sandeepgoyal on 02/04/18.
  */
 class ContactUsHomeActivity : BaseSimpleActivity() {
+
+    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            try {
+                val webViewFragment = fragment as? BaseWebViewFragment
+                if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
+                    webViewFragment.getWebView().goBack()
+                } else {
+                    finish()
+                }
+            } catch (e: Exception) {
+                finish()
+            }
+        }
+    }
+
     override fun getNewFragment(): Fragment {
         val url = intent.getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL)
         return if (url != null && url.isNotEmpty()) {
@@ -29,20 +46,7 @@ class ContactUsHomeActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        try {
-            val webViewFragment = fragment as? BaseWebViewFragment
-            if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
-                webViewFragment.getWebView().goBack()
-            } else {
-                super.onBackPressed()
-            }
-        } catch (e: Exception) {
-            super.onBackPressed()
-        }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

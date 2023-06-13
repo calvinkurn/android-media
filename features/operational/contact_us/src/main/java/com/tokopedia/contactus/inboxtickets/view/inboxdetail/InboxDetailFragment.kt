@@ -246,7 +246,7 @@ class TicketFragment :
             .build().inject(this)
     }
 
-    fun initView() {
+    private fun initView() {
         setupBinding()
         initImageAdapter()
         setViewListener()
@@ -956,12 +956,12 @@ class TicketFragment :
         )
     }
 
-    fun showSendProgress() {
+    private fun showSendProgress() {
         sendProgress?.show()
         ivSendButton?.invisible()
     }
 
-    fun hideSendProgress() {
+    private fun hideSendProgress() {
         sendProgress?.hide()
         ivSendButton?.show()
     }

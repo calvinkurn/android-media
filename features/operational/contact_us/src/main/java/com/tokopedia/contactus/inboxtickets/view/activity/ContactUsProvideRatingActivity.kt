@@ -340,7 +340,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         }
     }
 
-    fun onSuccessSubmit(intent: Intent) {
+    private fun onSuccessSubmit(intent: Intent) {
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
