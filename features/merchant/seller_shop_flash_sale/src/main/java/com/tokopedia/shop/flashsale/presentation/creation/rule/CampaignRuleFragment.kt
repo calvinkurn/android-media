@@ -339,7 +339,7 @@ class CampaignRuleFragment : BaseDaggerFragment(),
 
     private fun observeSelectedOosState() {
         viewModel.selectedOosState.observe(viewLifecycleOwner) { it ->
-            // TODO
+            showOosStateRadioSelected(it)
         }
     }
 
@@ -359,6 +359,15 @@ class CampaignRuleFragment : BaseDaggerFragment(),
         val binding = binding ?: return
         binding.chipsInstantPaymentMethod.chipType = ChipsUnify.TYPE_NORMAL
         binding.chipsRegularPaymentMethod.chipType = ChipsUnify.TYPE_NORMAL
+    }
+
+    private fun showOosStateRadioSelected(oosState: Boolean) {
+        val binding = binding ?: return
+        if (oosState) {
+            binding.radioOosOptionCanTransact.isSelected
+        } else {
+            binding.radioOosOptionCanNotTransact.isSelected
+        }
     }
 
     private fun showPaymentMethodBottomSheet() {
