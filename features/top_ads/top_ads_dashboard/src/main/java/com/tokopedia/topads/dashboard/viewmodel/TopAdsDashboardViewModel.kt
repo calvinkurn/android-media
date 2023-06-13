@@ -24,6 +24,7 @@ import com.tokopedia.topads.dashboard.domain.interactor.TopAdsAutoTopUpUSeCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsWidgetSummaryStatisticsUseCase
 import com.tokopedia.topads.dashboard.domain.interactor.TopadsRecommendationStatisticsUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_TOP_ADS_DASHBOARD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.data.mapper.InsightDataMapper
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsTotalAdGroupsWithInsightResponse
@@ -219,7 +220,8 @@ class TopAdsDashboardViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
             val data = topAdsListAllInsightCountsUseCase.invoke(
-                source = "gql.list_all_insight_counts.test",
+//                source = "gql.list_all_insight_counts.test",
+                source = SOURCE_TOP_ADS_DASHBOARD,
                 adGroupType = adGroupType,
                 insightType = insightType,
                 startCursor = "",
@@ -235,7 +237,8 @@ class TopAdsDashboardViewModel @Inject constructor(
     fun fetchInsightTitle() {
         launchCatchError(dispatcher.main, block = {
             _adGroupWithInsight.value = topAdsGetTotalAdGroupsWithInsightUseCase(
-                listOf(PRODUCT_KEY, HEADLINE_KEY)
+                listOf(PRODUCT_KEY, HEADLINE_KEY),
+                SOURCE_TOP_ADS_DASHBOARD
             )
         }, onError = {
                 _adGroupWithInsight.value = TopAdsListAllInsightState.Fail(it)

@@ -26,7 +26,6 @@ import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConsta
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_TYPE_LIST_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_PRODUCT_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.Utils
@@ -250,7 +249,7 @@ class SaranTabsFragment : BaseDaggerFragment() {
         val tabType = getTabType()
         viewModel?.getFirstPageData(
             adGroupType = utils?.convertAdTypeToString(tabType) ?: PRODUCT_KEY,
-            insightType = if (tabType == TYPE_PRODUCT_VALUE) INSIGHT_TYPE_ALL else INSIGHT_TYPE_NEGATIVE_KEYWORD,
+            insightType = INSIGHT_TYPE_ALL,
             mapper = mapper
         )
     }

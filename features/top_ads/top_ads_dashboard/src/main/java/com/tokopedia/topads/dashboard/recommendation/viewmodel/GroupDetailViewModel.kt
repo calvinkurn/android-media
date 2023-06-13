@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductIn
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.HEADLINE_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.PRODUCT_KEY
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
@@ -103,7 +104,8 @@ class GroupDetailViewModel @Inject constructor(
         launchCatchError(dispatcher.main, block = {
             if (isSwitchAdType) {
                 val data = topAdsListAllInsightCountsUseCase(
-                    source = "gql.list_all_insight_counts.test",
+//                    source = "gql.list_all_insight_counts.test",
+                    source = SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE,
                     adGroupType = if (adType == TYPE_PRODUCT_VALUE) PRODUCT_KEY else HEADLINE_KEY,
                     insightType = 0
                 )
@@ -192,7 +194,10 @@ class GroupDetailViewModel @Inject constructor(
     fun loadInsightCountForOtherAdType(adGroupType: Int) {
         val otherAdType = if (adGroupType == TYPE_PRODUCT_VALUE) HEADLINE_KEY else PRODUCT_KEY
         launchCatchError(dispatcher.main, block = {
-            val data = topAdsGetTotalAdGroupsWithInsightUseCase.invoke(listOf(otherAdType))
+            val data = topAdsGetTotalAdGroupsWithInsightUseCase.invoke(
+                listOf(otherAdType),
+                SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
+            )
             if (data is TopAdsListAllInsightState.Success) {
                 groupDetailMapper.putInsightCount(
                     utils.convertAdTypeToInt(otherAdType),

@@ -11,6 +11,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant.CONST_3
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_4
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_LANDING_PAGE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_ALL_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID
@@ -55,7 +56,8 @@ class TopAdsListAllInsightViewModel @Inject constructor(
             if (adGroupType == RecommendationConstants.PRODUCT_KEY) {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
                 val data = topAdsListAllInsightCountsUseCase.invoke(
-                    source = "gql.list_all_insight_counts.test",
+//                    source = "gql.list_all_insight_counts.test",
+                    source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = String.EMPTY,
@@ -65,7 +67,8 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                 _productInsights.value = state
             } else {
                 val data = topAdsListAllInsightCountsUseCase(
-                    source = "gql.list_all_insight_counts.test",
+//                    source = "gql.list_all_insight_counts.test",
+                    source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = String.EMPTY,
@@ -89,7 +92,8 @@ class TopAdsListAllInsightViewModel @Inject constructor(
             if (adGroupType == RecommendationConstants.PRODUCT_KEY) {
                 _productInsights.value = TopAdsListAllInsightState.Loading(insightType)
                 val data = topAdsListAllInsightCountsUseCase(
-                    source = "gql.list_all_insight_counts.test",
+//                    source = "gql.list_all_insight_counts.test",
+                    source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = startCursor,
@@ -99,7 +103,8 @@ class TopAdsListAllInsightViewModel @Inject constructor(
                 _productInsights.value = state
             } else {
                 val data = topAdsListAllInsightCountsUseCase(
-                    source = "gql.list_all_insight_counts.test",
+//                    source = "gql.list_all_insight_counts.test",
+                    source = SOURCE_INSIGHT_CENTER_LANDING_PAGE,
                     adGroupType = adGroupType,
                     insightType = insightType,
                     startCursor = startCursor,
