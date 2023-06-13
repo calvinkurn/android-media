@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.AddProductTagChannelResponse
 import com.tokopedia.play.broadcaster.util.handler.DefaultUseCaseHandler
 import com.tokopedia.usecase.coroutines.UseCase
@@ -38,6 +39,8 @@ class AddProductTagUseCase @Inject constructor(
                 gqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         ).executeWithRetry()
         val response = gqlResponse.getData<AddProductTagChannelResponse>(AddProductTagChannelResponse::class.java)
+        val error = gqlResponse.getError(AddProductTagChannelResponse::class.java)
+        if (error.isNotEmpty()) throw MessageErrorException(error.first().message)
         return response.productId
     }
 
