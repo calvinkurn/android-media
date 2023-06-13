@@ -47,25 +47,25 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         transitionToEnd()
     }
 
-    private fun startTransitionFromInitialToLoadingState(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromInitialToLoadingState() {
         startTransition(R.id.initial, R.id.loading, {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
-        }, onTransitionEnd)
-    }
-
-    private fun startTransitionFromErrorStateToLoadingState(onTransitionEnd: () -> Unit) {
-        startTransition(R.id.error_state, R.id.error_state_loading_intermediary, {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
-        }, {
-            startTransition(R.id.error_state_loading_intermediary, R.id.loading, onTransitionEnd = onTransitionEnd)
         })
     }
 
-    private fun startTransitionFromEmptyStateErrorToLoadingState(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromErrorStateToLoadingState() {
+        startTransition(R.id.error_state, R.id.error_state_loading_intermediary, {
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
+        }, {
+            startTransition(R.id.error_state_loading_intermediary, R.id.loading)
+        })
+    }
+
+    private fun startTransitionFromEmptyStateErrorToLoadingState() {
         startTransition(R.id.empty_state_error, R.id.empty_state_error_loading_intermediary, {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
         }, {
-            startTransition(R.id.empty_state_error_loading_intermediary, R.id.loading, onTransitionEnd = onTransitionEnd)
+            startTransition(R.id.empty_state_error_loading_intermediary, R.id.loading)
         })
     }
 
@@ -86,78 +86,69 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         )
     }
 
-    private fun startTransitionFromLoadingToShowContentWithoutStickyButton(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromLoadingToShowContentWithoutStickyButton() {
         startTransition(R.id.loading, R.id.show_content_without_sticky_button, onTransitionEnd = {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
-            onTransitionEnd()
         })
     }
 
-    private fun startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton(
-        onTransitionEnd: () -> Unit
-    ) {
+    private fun startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton() {
         startTransition(
             R.id.show_content_with_sticky_button,
-            R.id.show_content_without_sticky_button,
-            onTransitionEnd
+            R.id.show_content_without_sticky_button
         )
     }
 
-    private fun startTransitionFromLoadingToErrorState(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromLoadingToErrorState() {
         startTransition(R.id.loading, R.id.error_state, onTransitionEnd = {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
-            onTransitionEnd()
         })
     }
 
-    private fun startTransitionFromShowContentWithStickyButtonToErrorState(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromShowContentWithStickyButtonToErrorState() {
         startTransition(
             start = R.id.show_content_with_sticky_button,
-            end = R.id.show_content_error_state_intermediary,
-            onTransitionEnd = onTransitionEnd
+            end = R.id.show_content_error_state_intermediary
         )
     }
 
-    private fun startTransitionFromShowContentWithoutStickyButtonToErrorState(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromShowContentWithoutStickyButtonToErrorState() {
         startTransition(
             start = R.id.show_content_without_sticky_button,
-            end = R.id.show_content_error_state_intermediary,
-            onTransitionEnd = onTransitionEnd
+            end = R.id.show_content_error_state_intermediary
         )
     }
 
-    private fun startTransitionFromLoadingToEmptyStateError(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromLoadingToEmptyStateError() {
         startTransition(R.id.loading, R.id.empty_state_error, onTransitionEnd = {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
-            onTransitionEnd()
         })
     }
 
-    private fun startTransitionFromShowContentWithStickyButtonToEmptyStateError(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromShowContentWithStickyButtonToEmptyStateError() {
         startTransition(
             start = R.id.show_content_with_sticky_button,
-            end = R.id.show_content_empty_state_error_intermediary,
-            onTransitionEnd = onTransitionEnd
+            end = R.id.show_content_empty_state_error_intermediary
         )
     }
 
-    private fun startTransitionFromShowContentWithoutStickyButtonToEmptyStateError(onTransitionEnd: () -> Unit) {
+    private fun startTransitionFromShowContentWithoutStickyButtonToEmptyStateError() {
         startTransition(
             start = R.id.show_content_without_sticky_button,
-            end = R.id.show_content_empty_state_error_intermediary,
-            onTransitionEnd = onTransitionEnd
+            end = R.id.show_content_empty_state_error_intermediary
         )
     }
 
-    fun transitionToLoadingState(onTransitionEnd: () -> Unit) {
+    fun transitionToLoadingState() {
         when (currentState) {
-            R.id.initial -> startTransitionFromInitialToLoadingState(onTransitionEnd)
-            R.id.error_state -> startTransitionFromErrorStateToLoadingState(onTransitionEnd)
-            R.id.empty_state_error -> startTransitionFromEmptyStateErrorToLoadingState(onTransitionEnd)
+            R.id.initial -> startTransitionFromInitialToLoadingState()
+            R.id.error_state -> startTransitionFromErrorStateToLoadingState()
+            R.id.empty_state_error -> startTransitionFromEmptyStateErrorToLoadingState()
             else -> {
+                progress = 1f
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
                 onTransitionStarted = null
-                onTransitionCompleted = onTransitionEnd
+                onTransitionCompleted = null
                 transitionToState(R.id.loading)
             }
         }
@@ -169,6 +160,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton(onTransitionEnd)
             R.id.show_content_with_sticky_button -> onTransitionEnd()
             else -> {
+                progress = 1f
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = onTransitionEnd
@@ -179,10 +171,11 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     fun transitionToShowContentWithoutStickyButton(onTransitionEnd: () -> Unit) {
         when (currentState) {
-            R.id.loading -> startTransitionFromLoadingToShowContentWithoutStickyButton(onTransitionEnd)
-            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton(onTransitionEnd)
+            R.id.loading -> startTransitionFromLoadingToShowContentWithoutStickyButton()
+            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton()
             R.id.show_content_without_sticky_button -> onTransitionEnd()
             else -> {
+                progress = 1f
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = onTransitionEnd
@@ -191,13 +184,13 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         }
     }
 
-    fun transitionToErrorState(onTransitionEnd: () -> Unit) {
+    fun transitionToErrorState() {
         when (currentState) {
-            R.id.loading -> startTransitionFromLoadingToErrorState(onTransitionEnd)
-            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToErrorState(onTransitionEnd)
-            R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToErrorState(onTransitionEnd)
-            R.id.error_state -> onTransitionEnd()
+            R.id.loading -> startTransitionFromLoadingToErrorState()
+            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToErrorState()
+            R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToErrorState()
             else -> {
+                progress = 1f
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = null
@@ -206,13 +199,13 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         }
     }
 
-    fun transitionToEmptyStateError(onTransitionEnd: () -> Unit) {
+    fun transitionToEmptyStateError() {
         when (currentState) {
-            R.id.loading -> startTransitionFromLoadingToEmptyStateError(onTransitionEnd)
-            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToEmptyStateError(onTransitionEnd)
-            R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToEmptyStateError(onTransitionEnd)
-            R.id.empty_state_error -> onTransitionEnd()
+            R.id.loading -> startTransitionFromLoadingToEmptyStateError()
+            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToEmptyStateError()
+            R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToEmptyStateError()
             else -> {
+                progress = 1f
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = null

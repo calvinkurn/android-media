@@ -6,9 +6,9 @@ class BuyerOrderDetailContentAnimator(
     private val buyerOrderDetailMotionLayout: BuyerOrderDetailMotionLayout?
 ) {
 
-    fun animateToLoadingState(onTransitionEnd: () -> Unit) {
+    fun animateToLoadingState() {
         buyerOrderDetailMotionLayout?.run {
-            transitionToLoadingState(onTransitionEnd)
+            transitionToLoadingState()
         }
     }
 
@@ -20,11 +20,11 @@ class BuyerOrderDetailContentAnimator(
         }
     }
 
-    fun animateToErrorState(onTransitionEnd: () -> Unit) {
-        buyerOrderDetailMotionLayout?.transitionToErrorState(onTransitionEnd)
+    fun animateToErrorState() {
+        buyerOrderDetailMotionLayout?.transitionToErrorState()
     }
 
-    fun animateToEmptyStateError(onTransitionEnd: () -> Unit) {
-        buyerOrderDetailMotionLayout?.transitionToEmptyStateError(onTransitionEnd)
+    fun animateToEmptyStateError() {
+        buyerOrderDetailMotionLayout?.transitionToEmptyStateError()
     }
 }

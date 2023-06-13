@@ -86,7 +86,6 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 open class BuyerOrderDetailFragment :
     BaseDaggerFragment(),
@@ -390,13 +389,13 @@ open class BuyerOrderDetailFragment :
 
     private fun observeBuyerOrderDetail() {
         collectLatestWhenResumed(viewModel.buyerOrderDetailUiState) { uiState ->
-            suspendCoroutine { continuation ->
-                when (uiState) {
-                    is BuyerOrderDetailUiState.HasData.Showing -> onSuccessGetBuyerOrderDetail(uiState, continuation)
-                    is BuyerOrderDetailUiState.Error -> onFailedGetBuyerOrderDetail(uiState.throwable, continuation)
-                    is BuyerOrderDetailUiState.FullscreenLoading -> onFullscreenLoadingBuyerOrderDetail(continuation)
-                    is BuyerOrderDetailUiState.HasData.PullRefreshLoading -> onPullRefreshLoadingBuyerOrderDetail(uiState, continuation)
-                }
+            when (uiState) {
+                is BuyerOrderDetailUiState.HasData.Showing -> onSuccessGetBuyerOrderDetail(uiState)
+                is BuyerOrderDetailUiState.Error -> onFailedGetBuyerOrderDetail(uiState.throwable)
+                is BuyerOrderDetailUiState.FullscreenLoading -> onFullscreenLoadingBuyerOrderDetail()
+                is BuyerOrderDetailUiState.HasData.PullRefreshLoading -> onPullRefreshLoadingBuyerOrderDetail(
+                    uiState
+                )
             }
         }
     }
@@ -436,12 +435,11 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun onSuccessGetBuyerOrderDetail(
-        uiState: BuyerOrderDetailUiState.HasData.Showing,
-        continuation: Continuation<Unit>
+        uiState: BuyerOrderDetailUiState.HasData.Showing
     ) {
         buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
         updateToolbarMenu(uiState)
-        updateContent(uiState, continuation)
+        updateContent(uiState)
         updateStickyButtons(uiState)
         swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
@@ -457,14 +455,12 @@ open class BuyerOrderDetailFragment :
     }
 
     private fun updateContent(
-        uiState: BuyerOrderDetailUiState.HasData,
-        continuation: Continuation<Unit>
+        uiState: BuyerOrderDetailUiState.HasData
     ) {
         setupRecyclerView()
         adapter.updateItems(context, uiState)
         contentVisibilityAnimator.animateToShowContent(containsActionButtons(uiState.actionButtonsUiState.data)) {
             coachMarkManager?.notifyUpdatedAdapter()
-            continuation.resumeSafely(Unit)
         }
     }
 
@@ -533,7 +529,7 @@ open class BuyerOrderDetailFragment :
         }
     }
 
-    private fun onFailedGetBuyerOrderDetail(throwable: Throwable?, continuation: Continuation<Unit>) {
+    private fun onFailedGetBuyerOrderDetail(throwable: Throwable?) {
         buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
         val errorType = when (throwable) {
             is MessageErrorException -> null
@@ -542,11 +538,11 @@ open class BuyerOrderDetailFragment :
         }
 
         if (errorType == null) {
-            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable, continuation)
+            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
         } else {
             globalErrorBuyerOrderDetail?.apply {
                 setType(errorType)
-                contentVisibilityAnimator.animateToErrorState { continuation.resumeSafely(Unit) }
+                contentVisibilityAnimator.animateToErrorState()
             }
         }
         toolbarMenuAnimator?.transitionToEmpty()
@@ -554,30 +550,28 @@ open class BuyerOrderDetailFragment :
         stopLoadTimeMonitoring()
     }
 
-    private fun onFullscreenLoadingBuyerOrderDetail(continuation: Continuation<Unit>) {
-        contentVisibilityAnimator.animateToLoadingState { continuation.resumeSafely(Unit) }
+    private fun onFullscreenLoadingBuyerOrderDetail() {
+        contentVisibilityAnimator.animateToLoadingState()
         toolbarMenuAnimator?.transitionToEmpty()
     }
 
     private fun onPullRefreshLoadingBuyerOrderDetail(
-        uiState: BuyerOrderDetailUiState.HasData.PullRefreshLoading,
-        continuation: Continuation<Unit>
+        uiState: BuyerOrderDetailUiState.HasData.PullRefreshLoading
     ) {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         updateToolbarMenu(uiState)
-        updateContent(uiState, continuation)
+        updateContent(uiState)
         updateStickyButtons(uiState)
     }
 
     private fun EmptyStateUnify.showMessageExceptionError(
-        throwable: Throwable?,
-        continuation: Continuation<Unit>
+        throwable: Throwable?
     ) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
         } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         setDescription(errorMessage)
-        contentVisibilityAnimator.animateToEmptyStateError { continuation.resumeSafely(Unit) }
+        contentVisibilityAnimator.animateToEmptyStateError()
     }
 
     private fun setupToolbarMenuIcon() {
