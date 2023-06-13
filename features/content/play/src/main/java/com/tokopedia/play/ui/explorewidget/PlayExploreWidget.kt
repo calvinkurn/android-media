@@ -109,7 +109,7 @@ class PlayExploreWidget @Inject constructor(
         val window = dialog?.window ?: return
         window.setGravity(Gravity.END)
         window.setLayout(
-            (getScreenWidth() * 0.75).roundToInt(),
+            ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
