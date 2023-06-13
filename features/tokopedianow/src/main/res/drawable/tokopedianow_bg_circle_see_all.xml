@@ -8,7 +8,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="#00CCCCCC" />
+            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_1" />
 
             <corners android:radius="11dp" />
         </shape>
@@ -21,7 +21,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="#10CCCCCC" />
+            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_2" />
 
             <corners android:radius="11dp" />
         </shape>
@@ -34,7 +34,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="#20CCCCCC" />
+            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_3" />
 
             <corners android:radius="11dp" />
         </shape>
@@ -47,7 +47,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="#30CCCCCC" />
+            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_4" />
 
             <corners android:radius="11dp" />
         </shape>
@@ -60,7 +60,7 @@
                 android:right="1dp"
                 android:top="1dp" />
 
-            <solid android:color="#50CCCCCC" />
+            <solid android:color="@color/tokopedianow_toolbar_dms_shadow_color_5" />
 
             <corners android:radius="11dp" />
         </shape>
