@@ -26,21 +26,21 @@ title: "Home & Category"
 
 
 
-| ![](res/Screen%20Shot%202022-07-19%20at%2013.33.57.png)<br/> | ![](res/Screen%20Shot%202022-07-19%20at%2013.34.10.png)<br/> | ![](res/Screen%20Shot%202022-07-19%20at%2013.36.53.png)<br/> |
-| --- | --- | --- |
-| ![](res/Screen%20Shot%202022-07-19%20at%2013.34.20.png)<br/> | ![](res/Screen%20Shot%202022-07-19%20at%2013.37.04.png)<br/> |  |
+| ![](res/home_and_category/home.png) Home <br/>         | ![](res/home_and_category/home_scrolled.png) Home <br/>                              | ![](res/home_and_category/home_with_minicart.png) Home with Mini Cart <br/> |
+|--------------------------------------|--------------------------------------------------------------------|-----------------------------------------------------------|
+| ![](res/home_and_category/category.png) Category <br/> | ![](res/home_and_category/category_with_mini_cart.png) Category with Mini Cart <br/> |                                                           |
 
 # Flowchart
 
-![](res/home%20flow%203.png)
+![](res/home_and_category/home%20flow%203.png)
 
-![](res/category%20page.png)
+![](res/home_and_category/category%20page.png)
 
 # Page Structure
 
-![](res/Home%20Page%20Structure.drawio.png)
+![](res/home_and_category/Home%20Page%20Structure.drawio.png)
 
-![](res/Category%20Page%20Structure.drawio.png)
+![](res/home_and_category/Category%20Page%20Structure.drawio.png)
 
 Home Page and Category Page are part of Discovery TokoFood. Home TokoFood uses skeleton data from Dynamic Channel to show its content, some of the layout reused from home component, and support a lot of other layouts. Category Page almost only uses merchant lists all the time, so it is quite efficient. Both of Home Page and Category Page have load more function and always get newest merchant list data and show it.
 

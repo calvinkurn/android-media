@@ -33,7 +33,7 @@ TokoFood is a new service that will provide the optimal experience for hungry an
 
 ## Buyer Journey
 
-![](res/2l7CMyhzSUGvac_6YSf-WG6ijvHE662tc-dJo_TfZr0ZOLR8EczxWpmnIVFl-y11JGRwJ32wldDWSk-FvTnHS_VmInz_qcEt0m0nk5gLPZoyQ1DPpz4c7J2FBMdzRK2mwc26RfRGHmm1xlFGOFL0ic-rgYjN1qTzKhjl1MElrBmRcUsyeXtONGAkKL9n)
+![](res/tokofood/buyer_journey.png)
 
 ## Release Notes
 

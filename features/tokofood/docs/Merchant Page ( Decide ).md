@@ -32,19 +32,19 @@ title: "Merchant Page ( Decide )"
 
 
 
-![](res/Screenshot_1659425333.png)
+![](res/decide/merchant_page.png) Merchant Page
 
 
 
 
 
-![](res/Screenshot_1659426076.png)
+![](res/decide/stick_filter.png) Stick Filter
 
 
 
 
 
-![](res/Screenshot_1659425707.png)
+![](res/decide/merchant_info_bottom_sheet.png) Merchant Info Bottom Sheet
 
 
 
@@ -52,19 +52,19 @@ title: "Merchant Page ( Decide )"
 
 
 
-![](res/Screenshot_1659425698.png)
+![](res/decide/product_detail_bottom_sheet.png) Product Detail Bottom Sheet
 
 
 
 
 
-![](res/Screenshot_1659425914.png)
+![](res/decide/custom_order_detail_bottom_sheet.png) Custom Order Detail Bottom Sheet
 
 
 
 
 
-![](res/Screenshot_1659425715.png)
+![](res/decide/order_customization_page.png) Order Customization Page
 
 
 

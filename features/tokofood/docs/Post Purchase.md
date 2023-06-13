@@ -45,13 +45,13 @@ Post-purchase is Buyer will be able to track their order fulfillment and ask for
 
 
 
-![](res/image-20220628-100919.png)
+![](res/post_purchase/live_tracking.png) Live Tracking
 
 
 
 
 
-![](res/image-20220628-101124.png)
+![](res/post_purchase/completed_order.png) Completed Order
 
 
 
@@ -59,7 +59,7 @@ Post-purchase is Buyer will be able to track their order fulfillment and ask for
 
 
 
-![](res/image-20220628-102341.png)
+![](res/post_purchase/driver_call.png) Driver Call
 
 
 
@@ -73,15 +73,15 @@ Post-purchase is Buyer will be able to track their order fulfillment and ask for
 
 ## Flowchart
 
-![](res/NTOCEYA98H8fTSxa-V6qkr6AqZqkJpk9zyWozYc5dszV0Kd1iQBwfz5tgtBSJvh04ql4djN5kBAmmRRIiNp4an3nsi36EsdGFsanv5AbJBqjcowT9t3Nuvu5cJg8CbDusNIdZI4YfLVN6fbPNtaiSg)
+![](res/post_purchase/first_open_page.png) First Open Page
 
-![](res/HMTM3ShDc9t5nQkvYJ9FTY8sMUtVdC2DugncFNEex7x6FiTNnO1Xo0-E9_u6cobFR4uwfYno98uktVf_rycr44kGhcxCzZBT53moecU848SI-kDrKAwDc8rgoM_A3muucyw9xN2e6Z9x6mFmg4bmyA)
+![](res/post_purchase/polling_based.png) Polling Based (Periodic every 5 seconds) for update order status
 
-![](res/sGLB9s5jyfpR2x0Pr9N82pwkxgAVB5abiWmdiIvtfBHYdDvhzwNYGuc99l1w7xFhBi9er0h5qlbcyvFv9aIqOOodeNNYQiFSbr9NEoOVucR6RQaPMtHUpdYmhXlKGoNe263U3zVyAgAI6i8alZODMg)
+![](res/post_purchase/driver_call_diagram.png) Driver Call
 
 ## **Page Structure**
 
-![](res/PostPurchaseStructure.drawio%20%282%29-20220628-165647.png)
+![](res/post_purchase/page_structure_flow.png) Page Structure Flow
 
 Post Purchase has two classes to handle differentiate between live tracking order and completed order. But actually, for the completed order use the common class to reuse logic & component. and for the order live tracking using the individual class with the extends of `LifecycleObserver`
 
@@ -95,7 +95,7 @@ Post Purchase has two classes to handle differentiate between live tracking orde
 
 
 
-![](res/Order%20detail.png)
+![](res/post_purchase/Order%20detail.png)
 
 Chat with Driver with unread counter
 
@@ -103,8 +103,9 @@ Chat with Driver with unread counter
 
 
 
-![](res/Chat%20Driver%20in%20Tokofood.drawio%20%282%29.png)
+![](res/post_purchase/chat_driver.png)
 
+Chat with Driver Flowchart
 
 
 

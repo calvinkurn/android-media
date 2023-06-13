@@ -33,37 +33,41 @@ title: "TokoFood Search"
 
 
 
-![](res/image-20221027-080102.png)
+![](res/search/search_entry_point.png)
+
+Search Entry Point
 
 
 
 
 
-![](res/image-20221027-080129.png)
+![](res/search/initial_search_state_page.png)
+
+Initial Search State Page
 
 
 
 
 
+![](res/search/search_result_page.png)
 
-
-![](res/image-20221027-080154.png)
-
-
-
-
-
-![](res/image-20221027-081633.png)
+Search Result Page
 
 
 
+
+
+![](res/search/filter.png)
+
+
+Filter in Search Result Page
 
 
 
 
 ## Page Structure
 
-![](res/TokoFood%20Search.drawio.png)
+![](res/search/TokoFood%20Search.drawio.png)
 
 TokoFood search built into `SearchContainerFragment` within includes some pages such as `InitiaSearchStateFragment` And `SearchResultFragment`. To determine `InitialSearchStateFragment` or `SearchResultFragment`, we need to check the keyword size in the search bar, if the keyword size is more than or equal to 3, it will show `SearchResultFragment`, otherwise will show `InitSearchStateFragment`. `InitSearchStateFragment` has the responsibility to display content such as recent searches, popular searches & cuisine lists, and also we can remove item or all of the recent searches. For the `SearchResultFragment` has the responsibility to show search results such as merchant list and then we can filter the search results by sort, rating, and price.
 

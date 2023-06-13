@@ -26,9 +26,9 @@ title: "Purchase & Promo"
 
 
 
-| ![](res/Screen%20Shot%202022-11-21%20at%2013.55.23.png)<br/> | ![](res/Screen%20Shot%202022-11-21%20at%2013.55.32.png)<br/> | ![](res/Screen%20Shot%202022-11-21%20at%2013.59.32.png)<br/> |
-| --- | --- | --- |
-| Purchase Page (Above the Fold) | Purchase Page (Scrolled) | Promo Page |
+| ![](res/purchase_and_promo/purchase_page_above_the_fold.png)<br/>         | ![](res/purchase_and_promo/purchase_page_scrolled.png)<br/> | ![](res/purchase_and_promo/purchase_promo_page.png)<br/> |
+|---------------------------------------------------------------------------|------------------------------------------|----------------------------------------------------------|
+| Purchase Page (Above the Fold)                                            | Purchase Page (Scrolled)                 | Promo Page                                               |
 
 ## Flowchart
 
@@ -36,7 +36,7 @@ title: "Purchase & Promo"
 
 
 
-![](res/purchase_page.png)
+![](res/purchase_and_promo/purchase_page.png)
 
 
 ### Promo Page
@@ -44,7 +44,7 @@ title: "Purchase & Promo"
 
 
 
-![](res/promo_page.png)
+![](res/purchase_and_promo/promo_page.png)
 
 
 ## Use Case
