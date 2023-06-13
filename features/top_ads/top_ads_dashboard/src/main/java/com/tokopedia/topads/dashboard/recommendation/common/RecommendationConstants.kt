@@ -24,10 +24,16 @@ object RecommendationConstants {
     const val DEFAULT_SELECTED_INSIGHT_TYPE = 0
     const val KEYWORD_TYPE_POSITIVE_PHRASE = "positive_phrase"
     const val KEYWORD_TYPE_POSITIVE_EXACT = "positive_exact"
+    const val KEYWORD_TYPE_POSITIVE_BROAD = "positive_broad"
+    const val KEYWORD_TYPE_NEGATIVE_PHRASE = "negative_phrase"
+    const val KEYWORD_TYPE_NEGATIVE_EXACT = "negative_exact"
+    const val KEYWORD_TYPE_NEGATIVE_BROAD = "negative_broad"
+    const val KEYWORD_STATUS_ACTIVE = "active"
+    const val KEYWORD_STATUS_INACTIVE = "inactive"
+    const val KEYWORD_STATUS_DELETED = "deleted"
     const val INVALID_INSIGHT_TYPE = -1
     const val ACTION_CREATE_PARAM = "create"
     const val ACTION_EDIT_PARAM = "edit"
-    const val ACTIVE_KEYWORD = "active"
 
     const val KEY_AD_GROUP_TYPES = "adGroupTypes"
     const val TAB_NAME_PRODUCT = "Iklan Produk"
@@ -43,6 +49,8 @@ object RecommendationConstants {
     const val INSIGHT_MULTIPLIER = 50
     const val INSIGHT_GROUP_BID_MAX_BID = 5000
     const val INSIGHT_DAILY_BUDGET_MAX_BID = 10000000
+    const val INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE = 10000
+    const val INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE = 400
 
     const val SEARCH_REPORT_EDU_URL = "https://seller.tokopedia.com/edu/topads-laporan-pencarian/"
 

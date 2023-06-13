@@ -571,5 +571,8 @@
     <string name="topads_insight_negative_keywords_cta_text_format">Tambah %d Kata Kunci Negatif</string>
     <string name="topads_insight_ads_in_search">Iklan di Pencarian</string>
     <string name="topads_insight_ads_in_recommendations">Iklan di Rekomendasi</string>
+    <string name="topads_insight_min_bid_error_msg_format">Min. biaya Rp%d.</string>
+    <string name="topads_insight_max_bid_error_msg_format">Maks. biaya Rp%d.</string>
+    <string name="topads_insight_recommended_bid_apply">Disarankan Rp%d. Terapkan</string>
 </resources>
 

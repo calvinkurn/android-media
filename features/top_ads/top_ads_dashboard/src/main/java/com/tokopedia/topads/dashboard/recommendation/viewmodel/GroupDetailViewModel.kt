@@ -156,7 +156,7 @@ class GroupDetailViewModel @Inject constructor(
 
     fun applyInsight2(input: TopadsManagePromoGroupProductInput?, groupId: String?, adType: String?, InsightType: Int?, groupName: String?) {
         if(adType == HEADLINE_KEY && InsightType == TYPE_POSITIVE_KEYWORD){
-            val data = groupDetailMapper.convertToTopAdsManageHeadlineInput2(input, userSession.shopId, groupId, "test-gql",groupName)
+            val data = groupDetailMapper.convertToTopAdsManageHeadlineInput2(input, userSession.shopId, groupId, "android.insight_center_headline_keyword_recom",groupName)
             launchCatchError(
                 block = {
                     createHeadlineAdsUseCase.setParams(data)
@@ -176,7 +176,7 @@ class GroupDetailViewModel @Inject constructor(
             input?.let {
                 it.groupID = groupId ?: ""
                 it.shopID = userSession.shopId
-                it.source = "test-gql"
+                it.source = "product_recom_app"
                 val requestParams =
                     topAdsCreateUseCase.createRequestParamForInsight2(it)
                 launchCatchError(dispatcher.main, block = {

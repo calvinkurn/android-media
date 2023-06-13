@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.viewholder
 
+import android.graphics.Rect
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -18,7 +19,16 @@ import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductIn
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_MULTIPLIER
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_STATUS_ACTIVE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_STATUS_DELETED
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_STATUS_INACTIVE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_NEGATIVE_BROAD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_NEGATIVE_EXACT
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_NEGATIVE_PHRASE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_BROAD
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_EXACT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewPositiveKeywordsRecom
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKataKunciUiModel
 
@@ -73,18 +83,22 @@ class AccordianKataKunciViewHolder(
                         val bid = text.toString().toIntOrZero()
                         if(bid < minBid.toZeroIfNull()){
                             keywordCost.isInputError = true
-                            keywordCost.editText.error = "Min. biaya Rp400."
+                            keywordCost.setMessage(String.format(getString(R.string.topads_insight_min_bid_error_msg_format), minBid.toZeroIfNull()))
                         } else if(bid > maxBid.toZeroIfNull()){
                             keywordCost.isInputError = true
-                            keywordCost.editText.error = "Maks. biaya Rp10.000."
+                            keywordCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), maxBid.toZeroIfNull()))
                         } else if(bid % INSIGHT_MULTIPLIER != 0){
                             keywordCost.isInputError = true
-                            keywordCost.editText.error = "Harus kelipatan Rp50."
+                            keywordCost.setMessage(getString(R.string.error_bid_not_multiple_50))
                         } else {
+                            keywordCost.isInputError = false
                             element.priceBid = text.toString().toIntOrZero()
+                            if(text.toString().toIntOrZero() == element.suggestionBid)
+                                keywordCost.setMessage(getString(R.string.biaya_optimal))
+                            else
+                                keywordCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply),element.suggestionBid))
                         }
                     }
-
                 })
             }
         }
@@ -132,9 +146,9 @@ class AccordianKataKunciViewHolder(
             adapter.updateList(it)
         }
         kataKunciRv.addItemDecoration(
-            DividerItemDecoration(
+            RecommendationInsightItemDecoration(
                 itemView.context,
-                DividerItemDecoration.VERTICAL
+                LinearLayoutManager.VERTICAL
             )
         )
 
@@ -173,8 +187,8 @@ class AccordianKataKunciViewHolder(
         list?.add(KeywordEditInput(
             ACTION_CREATE_PARAM,
             keyword = KeywordEditInput.Keyword(
-                type = element.keywordType,
-                status = element.keywordStatus,
+                type = getKeywordType(element.keywordType),
+                status = getKeywordStatus(element.keywordStatus),
                 tag = element.keywordTag,
                 price_bid = if(element.priceBid.isZero()) element.suggestionBid.toDouble() else element.priceBid.toDouble(),
                 suggestionPriceBid = element.suggestionBid.toDouble(),
@@ -182,6 +196,30 @@ class AccordianKataKunciViewHolder(
             )
         ))
         topadsManagePromoGroupProductInput?.keywordOperation = list
+    }
+
+    private fun getKeywordType(type: String): String {
+        return when(type){
+            KEYWORD_TYPE_POSITIVE_EXACT,
+            KEYWORD_TYPE_POSITIVE_PHRASE,
+            KEYWORD_TYPE_POSITIVE_BROAD,
+            KEYWORD_TYPE_NEGATIVE_PHRASE,
+            KEYWORD_TYPE_NEGATIVE_EXACT,
+            KEYWORD_TYPE_NEGATIVE_BROAD -> type
+            else -> {
+                if (type.split(' ').get(0).length >= 2)
+                    KEYWORD_TYPE_POSITIVE_EXACT
+                else
+                    KEYWORD_TYPE_POSITIVE_PHRASE
+            }
+        }
+    }
+
+    private fun getKeywordStatus(status : String): String{
+        return if(status == KEYWORD_STATUS_ACTIVE || status == KEYWORD_STATUS_INACTIVE || status == KEYWORD_STATUS_DELETED)
+                status
+            else
+                KEYWORD_STATUS_ACTIVE
     }
 
     companion object {

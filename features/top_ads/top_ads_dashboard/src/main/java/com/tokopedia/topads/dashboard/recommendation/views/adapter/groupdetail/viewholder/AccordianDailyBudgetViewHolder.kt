@@ -54,14 +54,14 @@ class AccordianDailyBudgetViewHolder(
         if(budget < element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.priceDaily.toZeroIfNull()){
             hasError = true
             dailyBudget.isInputError = true
-            dailyBudget.editText.error = "Min. anggaran Rp$element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily"
+            dailyBudget.setMessage(String.format(getString(R.string.topads_insight_min_bid_error_msg_format), element?.sellerInsightData?.dailyBudgetData?.firstOrNull()?.suggestedPriceDaily.toZeroIfNull()))
         } else if(budget > INSIGHT_DAILY_BUDGET_MAX_BID){
             dailyBudget.isInputError = true
+            dailyBudget.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), INSIGHT_DAILY_BUDGET_MAX_BID))
             hasError = true
-            dailyBudget.editText.error = "Maks. anggaran Rp$INSIGHT_DAILY_BUDGET_MAX_BID"
         } else {
             dailyBudget.isInputError = false
-            dailyBudget.editText.error = ""
+            dailyBudget.setMessage("")
             hasError = false
         }
     }

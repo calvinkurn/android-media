@@ -1,7 +1,8 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
@@ -106,19 +107,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
                     val dailyBudgetUiModel = groupDetailMapper.convertToAccordianDailyBudgetUiModel(sellerInsightData)
                     groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = dailyBudgetUiModel
                 }
-                is TopAdsListAllInsightState.Fail -> {
-                    groupDetailMapper.detailPageDataMap[TYPE_DAILY_BUDGET] = GroupInsightsUiModel(
-                        TYPE_DAILY_BUDGET,
-                        INSIGHT_TYPE_DAILY_BUDGET_NAME,
-                        "Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +2.005 klik/hari.",
-                        true,
-//                            false,
-                        AccordianDailyBudgetUiModel(
-                            text = "Biaya Iklan",
-                            TopAdsGetSellerInsightDataResponse.GetSellerInsightData.SellerInsightData()
-                        )
-                    )
-                }
+                is TopAdsListAllInsightState.Fail -> {}
                 else -> {}
             }
             return@coroutineScope groupDetailMapper.reSyncDetailPageData(adGroupType)
@@ -129,7 +118,12 @@ class TopAdsGroupDetailUseCase @Inject constructor(
         return try {
             topAdsGetPricingDetailsUseCase.invoke(utils.convertAdTypeToString(adGroupType))
         } catch (e: Exception) {
-            TopAdsGetPricingDetailsResponse()
+            TopAdsGetPricingDetailsResponse(
+                TopAdsGetPricingDetailsResponse.TopAdsGetPricingDetails(
+                    maxBid = INSIGHT_PRICING_FAIL_MAX_BID_FALLBACK_VALUE,
+                    minBid = INSIGHT_PRICING_FAIL_MIN_BID_FALLBACK_VALUE
+                )
+            )
         }
     }
 

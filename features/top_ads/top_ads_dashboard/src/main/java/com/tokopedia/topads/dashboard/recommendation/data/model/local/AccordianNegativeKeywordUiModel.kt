@@ -5,7 +5,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatc
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 data class AccordianNegativeKeywordUiModel(
-    val text: String = "",
     val newNegativeKeywordsRecom: List<TopAdsBatchGroupInsightResponse.TopAdsBatchGetKeywordInsightByGroupIDV3.Group.GroupData.NewNegativeKeywordsRecom>?,
     val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
     ) : GroupDetailDataModel {

@@ -5,7 +5,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGr
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 data class AccordianGroupBidUiModel(
-    val text: String = "",
     val topAdsBatchGetAdGroupBidInsightByGroupID: TopAdsAdGroupBidInsightResponse.TopAdsBatchGetAdGroupBidInsightByGroupID,
     val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput(keywordOperation = null)
 ) : GroupDetailDataModel {

@@ -5,14 +5,12 @@ import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_EDIT_PARAM
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTIVE_KEYWORD
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.INVALID_INSIGHT_TYPE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_DAILY_BUDGET_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_GROUP_BID_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_KEYWORD_BID_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightTypeConstants.INSIGHT_TYPE_POSITIVE_KEYWORD_NAME
-import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.KEYWORD_TYPE_POSITIVE_EXACT
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_CHIPS
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_EMPTY_STATE
@@ -186,9 +184,7 @@ class GroupDetailMapper @Inject constructor() {
             INSIGHT_TYPE_POSITIVE_KEYWORD_NAME,
             "Kunjungan pembeli menurun. Pakai kata kunci populer untuk potensi tampil +$impressionSum kali/hari.",
             !groupData?.newPositiveKeywordsRecom.isNullOrEmpty(),
-//                            false,
             AccordianKataKunciUiModel(
-                "Kata Kunci",
                 groupData?.newPositiveKeywordsRecom,
                 maxBid = pricingDetails.topAdsGetPricingDetails.maxBid,
                 minBid = pricingDetails.topAdsGetPricingDetails.minBid
@@ -207,9 +203,7 @@ class GroupDetailMapper @Inject constructor() {
             INSIGHT_TYPE_KEYWORD_BID_NAME,
             "Kata kuncimu kalah saing. Sesuaikan biaya kata kunci untuk potensi tampil +$impressionSum kali/hari.",
             !groupData?.existingKeywordsBidRecom.isNullOrEmpty(),
-//                        false,
             AccordianKeywordBidUiModel(
-                "Biaya Kata Kunci",
                 groupData?.existingKeywordsBidRecom
             )
         )
@@ -226,9 +220,7 @@ class GroupDetailMapper @Inject constructor() {
             INSIGHT_TYPE_NEGATIVE_KEYWORD_NAME,
             "Iklanmu kurang efektif & boros. Potensi hemat Rp$impressionSum/hari dengan kata kunci negatif.",
             !groupData?.newNegativeKeywordsRecom.isNullOrEmpty(),
-//                            false,
             AccordianNegativeKeywordUiModel(
-                "Kata Kunci Negatif",
                 groupData?.newNegativeKeywordsRecom
             )
         )
@@ -242,9 +234,7 @@ class GroupDetailMapper @Inject constructor() {
             INSIGHT_TYPE_GROUP_BID_NAME,
             "Total tampil menurun, nih. Tambah biaya iklan untuk potensi tampil +${data?.predictedTotalImpression} kali/hari.",
             !data?.currentBidSettings.isNullOrEmpty() || !data?.suggestionBidSettings.isNullOrEmpty(),
-//                            false,
             AccordianGroupBidUiModel(
-                text = "Biaya Iklan",
                 groupBidInsight.data.topAdsBatchGetAdGroupBidInsightByGroupID
             )
         )
@@ -257,9 +247,7 @@ class GroupDetailMapper @Inject constructor() {
             INSIGHT_TYPE_DAILY_BUDGET_NAME,
             "Durasi iklan belum maksimal. Tambah anggaran untuk potensi klik +${sellerInsightData.data.getSellerInsightData.sellerInsightData.dailyBudgetData.firstOrNull()?.topSlotImpression} klik/hari.",
             data.dailyBudgetData.isNotEmpty(),
-//                            false,
             AccordianDailyBudgetUiModel(
-                text = "Biaya Iklan",
                 data
             )
         )
@@ -279,11 +267,9 @@ class GroupDetailMapper @Inject constructor() {
                     action = keywordEditInput?.action.toString(),
                     keyword = TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation.Keyword(
                         priceBid = keywordEditInput?.keyword?.price_bid?.toLong() ?: 0,
-//                        status = keywordEditInput?.keyword?.status.toString(),
-                        status = ACTIVE_KEYWORD,
+                        status = keywordEditInput?.keyword?.status.toString(),
                         tag = keywordEditInput?.keyword?.tag.toString(),
-//                        type = keywordEditInput?.keyword?.type.toString()
-                        type = KEYWORD_TYPE_POSITIVE_EXACT,
+                        type = keywordEditInput?.keyword?.type.toString()
                     )
                 )
             )

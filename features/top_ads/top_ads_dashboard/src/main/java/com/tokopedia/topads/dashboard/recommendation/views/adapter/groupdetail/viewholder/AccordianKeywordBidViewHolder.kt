@@ -12,6 +12,7 @@ import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianKeywordBidUiModel
 
@@ -98,9 +99,9 @@ class AccordianKeywordBidViewHolder(
         }
 
         biayaKataKunciRv.addItemDecoration(
-            DividerItemDecoration(
+            RecommendationInsightItemDecoration(
                 itemView.context,
-                DividerItemDecoration.VERTICAL,
+                LinearLayoutManager.VERTICAL
             )
         )
 

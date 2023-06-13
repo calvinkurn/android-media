@@ -33,7 +33,7 @@ class GroupInsightsViewHolder(
             removeAllViews()
             val accordionUnifyData = AccordionDataUnify(
                 title = element.title,
-                subtitle = element.subTitle,
+                subtitle = "${element.subTitle.substring(0,element.subTitle.length/2)}...",
                 isExpanded = element.isExpanded,
                 expandableView = getView(element.expandItemDataModel)
             )
@@ -42,6 +42,14 @@ class GroupInsightsViewHolder(
             onItemClick = { _, isExpanded ->
                 element.isExpanded = isExpanded
                 onAccordianItemClick.invoke(element)
+                removeAllViews()
+                val accordionUnifyData = AccordionDataUnify(
+                    title = element.title,
+                    subtitle = if(element.isExpanded) element.subTitle else "${element.subTitle.substring(0,element.subTitle.length/2)}...",
+                    isExpanded = element.isExpanded,
+                    expandableView = getView(element.expandItemDataModel)
+                )
+                addGroup(accordionUnifyData)
             }
         }
     }

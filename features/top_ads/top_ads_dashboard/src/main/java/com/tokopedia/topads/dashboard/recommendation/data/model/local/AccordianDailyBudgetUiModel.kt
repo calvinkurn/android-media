@@ -5,7 +5,6 @@ import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsGetS
 import com.tokopedia.topads.dashboard.recommendation.views.adapter.groupdetail.factory.GroupDetailAdapterFactory
 
 data class AccordianDailyBudgetUiModel(
-    val text: String = "",
     val sellerInsightData: TopAdsGetSellerInsightDataResponse.GetSellerInsightData.SellerInsightData,
     val input: TopadsManagePromoGroupProductInput = TopadsManagePromoGroupProductInput()
     ) : GroupDetailDataModel {

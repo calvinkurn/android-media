@@ -81,16 +81,20 @@ class AccordianGroupBidViewHolder(
                 val bid = text.toString().toIntOrZero()
                 if(bid < element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()){
                     searchCost.isInputError = true
-                    searchCost.editText.error = "Min. biaya Rp${element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid}"
+                    searchCost.setMessage(String.format(getString(R.string.topads_insight_min_bid_error_msg_format), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()))
                 } else if(bid > INSIGHT_GROUP_BID_MAX_BID){
                     searchCost.isInputError = true
                     searchCost.editText.error = "Maks. biaya Rp$INSIGHT_GROUP_BID_MAX_BID"
+                    searchCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), INSIGHT_GROUP_BID_MAX_BID))
                 } else if(bid % INSIGHT_MULTIPLIER != 0){
                     searchCost.isInputError = true
-                    searchCost.editText.error = "Harus kelipatan Rp$INSIGHT_MULTIPLIER."
+                    searchCost.setMessage(getString(R.string.error_bid_not_multiple_50))
                 } else {
                     searchCost.isInputError = false
-                    searchCost.editText.error = ""
+                    if(text.toString().toIntOrZero() == element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid.toZeroIfNull())
+                        searchCost.setMessage(getString(R.string.biaya_optimal))
+                    else
+                        searchCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.firstOrNull()?.priceBid.toZeroIfNull()))
                 }
             }
         })
@@ -104,16 +108,19 @@ class AccordianGroupBidViewHolder(
                 val bid = text.toString().toIntOrZero()
                 if(bid < element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()){
                     recommendationCost.isInputError = true
-                    recommendationCost.editText.error = "Min. biaya Rp${element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid}."
+                    recommendationCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.currentBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()))
                 } else if(bid > INSIGHT_GROUP_BID_MAX_BID){
                     recommendationCost.isInputError = true
-                    recommendationCost.editText.error = "Maks. biaya Rp$INSIGHT_GROUP_BID_MAX_BID."
+                    recommendationCost.setMessage(String.format(getString(R.string.topads_insight_max_bid_error_msg_format), INSIGHT_GROUP_BID_MAX_BID))
                 } else if(bid % INSIGHT_MULTIPLIER != 0){
                     recommendationCost.isInputError = true
-                    recommendationCost.editText.error = "Harus kelipatan Rp$INSIGHT_MULTIPLIER."
+                    recommendationCost.setMessage(getString(R.string.error_bid_not_multiple_50))
                 } else {
                     recommendationCost.isInputError = false
-                    recommendationCost.editText.error = ""
+                    if(text.toString().toIntOrZero() == element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull())
+                        recommendationCost.setMessage(getString(R.string.biaya_optimal))
+                    else
+                        recommendationCost.setMessage(String.format(getString(R.string.topads_insight_recommended_bid_apply), element?.topAdsBatchGetAdGroupBidInsightByGroupID?.groups?.firstOrNull()?.adGroupBidInsightData?.suggestionBidSettings?.getOrNull(1)?.priceBid.toZeroIfNull()))
                 }
             }
         })

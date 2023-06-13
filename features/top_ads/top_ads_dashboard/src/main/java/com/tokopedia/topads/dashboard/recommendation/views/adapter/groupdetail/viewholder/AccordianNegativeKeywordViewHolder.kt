@@ -14,6 +14,7 @@ import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductIn
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.ACTION_CREATE_PARAM
+import com.tokopedia.topads.dashboard.recommendation.common.decoration.RecommendationInsightItemDecoration
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsBatchGroupInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.AccordianNegativeKeywordUiModel
 
@@ -96,9 +97,9 @@ class AccordianNegativeKeywordViewHolder(
             adapter.updateList(it)
         }
         negatifKataKunciRv.addItemDecoration(
-            DividerItemDecoration(
+            RecommendationInsightItemDecoration(
                 itemView.context,
-                DividerItemDecoration.VERTICAL
+                LinearLayoutManager.VERTICAL
             )
         )
 
@@ -136,8 +137,8 @@ class AccordianNegativeKeywordViewHolder(
             KeywordEditInput(
                 ACTION_CREATE_PARAM,
             keyword = KeywordEditInput.Keyword(
-                type = element.keywordType,
-                status = element.keywordStatus,
+                type = getKeywordType(element.keywordType),
+                status = getKeywordStatus(element.keywordStatus),
                 tag = element.keywordTag,
                 suggestionPriceBid = element.predictedImpression.toDoubleOrZero(),
                 price_bid = element.potentialSavings.toDouble(),
@@ -146,6 +147,30 @@ class AccordianNegativeKeywordViewHolder(
         )
         )
         topadsManagePromoGroupProductInput?.keywordOperation = list
+    }
+
+    private fun getKeywordType(type: String): String {
+        return when(type){
+            RecommendationConstants.KEYWORD_TYPE_POSITIVE_EXACT,
+            RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE,
+            RecommendationConstants.KEYWORD_TYPE_POSITIVE_BROAD,
+            RecommendationConstants.KEYWORD_TYPE_NEGATIVE_PHRASE,
+            RecommendationConstants.KEYWORD_TYPE_NEGATIVE_EXACT,
+            RecommendationConstants.KEYWORD_TYPE_NEGATIVE_BROAD -> type
+            else -> {
+                if (type.split(' ').get(0).length >= 2)
+                    RecommendationConstants.KEYWORD_TYPE_POSITIVE_EXACT
+                else
+                    RecommendationConstants.KEYWORD_TYPE_POSITIVE_PHRASE
+            }
+        }
+    }
+
+    private fun getKeywordStatus(status : String): String{
+        return if(status == RecommendationConstants.KEYWORD_STATUS_ACTIVE || status == RecommendationConstants.KEYWORD_STATUS_INACTIVE || status == RecommendationConstants.KEYWORD_STATUS_DELETED)
+            status
+        else
+            RecommendationConstants.KEYWORD_STATUS_ACTIVE
     }
 
     companion object {
