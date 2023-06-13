@@ -928,7 +928,9 @@ class ShopPageCampaignFragment :
     override fun onDisplayBannerTimerClicked(
         position: Int,
         uiModel: ShopWidgetDisplayBannerTimerUiModel
-    ) {}
+    ) {
+        RouteManager.route(context, uiModel.header.ctaLink)
+    }
 
     override fun onClickCtaDisplayBannerTimerWidget(uiModel: ShopWidgetDisplayBannerTimerUiModel) {}
 

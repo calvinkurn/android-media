@@ -82,7 +82,14 @@ class ShopCampaignDisplayBannerTimerViewHolder(
         if (!GlobalConfig.isSellerApp())
             setRemindMe(uiModel)
         setWidgetImpressionListener(uiModel)
+        setItemClickListener(uiModel)
         configColorMode()
+    }
+
+    private fun setItemClickListener(uiModel: ShopWidgetDisplayBannerTimerUiModel) {
+        itemView.setOnClickListener {
+            listener.onDisplayBannerTimerClicked(bindingAdapterPosition, uiModel)
+        }
     }
 
     private fun configColorMode() {
