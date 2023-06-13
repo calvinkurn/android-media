@@ -9,7 +9,7 @@ import org.junit.Test
 
 class CategoryWishlistTest: TokoNowCategoryMainViewModelTestFixture() {
     @Test
-    fun `when update wishlist status should update the status in layout`()  {
+    fun `when updateWishlistStatus should update the status in layout`()  {
         // mock data
         val parentProductId = "1223"
         val productId = "2025598474"
@@ -69,5 +69,26 @@ class CategoryWishlistTest: TokoNowCategoryMainViewModelTestFixture() {
                     )
                 }
             )
+    }
+
+    @Test
+    fun `modify layout while its value is null should make updateWishlistStatus error and do nothing`()  {
+        val productId = "2025598474"
+        val productHasBeenWishlist = true
+        val privateFieldNameLayout = "layout"
+        val expectedWishlist = !productHasBeenWishlist
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = null
+        )
+
+        viewModel.updateWishlistStatus(
+            productId = productId,
+            hasBeenWishlist = expectedWishlist
+        )
+
+        viewModel.categoryPage
+            .verifyValueEquals(null)
     }
 }

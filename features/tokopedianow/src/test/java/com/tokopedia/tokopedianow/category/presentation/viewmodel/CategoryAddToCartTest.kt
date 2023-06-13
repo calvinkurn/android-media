@@ -20,10 +20,6 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
 
-    /**
-     * success test case sections
-     */
-
     @Test
     fun `when adding product to cart, request should be successful`() = runTest {
         // mock data
@@ -340,10 +336,6 @@ class CategoryAddToCartTest : TokoNowCategoryMainViewModelTestFixture() {
             }
             )
     }
-
-    /**
-     * failed test case sections
-     */
 
     @Test
     fun `when adding product to cart, request should be failed`() = runTest {

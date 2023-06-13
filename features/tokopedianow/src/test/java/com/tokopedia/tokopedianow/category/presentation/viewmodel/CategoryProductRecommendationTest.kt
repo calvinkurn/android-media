@@ -6,6 +6,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.ma
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryDetailMapper.mapToTicker
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMapper.mapToCategoryNavigation
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -86,5 +87,20 @@ class CategoryProductRecommendationTest: TokoNowCategoryMainViewModelTestFixture
         verifyTargetedTicker()
         viewModel.categoryPage
             .verifyValueEquals(resultList)
+    }
+
+    @Test
+    fun `modify layout while its value is null should make removeProductRecommendation error and do nothing`()  {
+        val privateFieldNameLayout = "layout"
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = null
+        )
+
+        viewModel.removeProductRecommendation()
+
+        viewModel.categoryPage
+            .verifyValueEquals(null)
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryOpenScreenTrackerModel
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -194,5 +195,20 @@ class CategoryFirstPageTest: TokoNowCategoryMainViewModelTestFixture() {
             )
         viewModel.categoryPage
             .verifyValueEquals(resultList)
+    }
+
+    @Test
+    fun `modify layout while its value is null should make getFirstPage error and do nothing`() {
+        val privateFieldNameLayout = "layout"
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = null
+        )
+
+        viewModel.getFirstPage()
+
+        viewModel.categoryPage
+            .verifyValueEquals(null)
     }
 }

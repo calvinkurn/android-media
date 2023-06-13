@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.category.domain.mapper.CategoryNavigationMappe
 import com.tokopedia.tokopedianow.category.domain.mapper.CategoryRecommendationMapper.mapToCategoryRecommendation
 import com.tokopedia.tokopedianow.category.domain.mapper.ProductRecommendationMapper
 import com.tokopedia.tokopedianow.common.domain.mapper.TickerMapper
+import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import org.junit.Test
 
@@ -234,5 +235,20 @@ class CategoryLoadMoreTest: TokoNowCategoryMainViewModelTestFixture() {
 
         viewModel.scrollNotNeeded
             .verifyValueEquals(Unit)
+    }
+
+    @Test
+    fun `modify layout while its value is null should make loadMore error and do nothing`() {
+        val privateFieldNameLayout = "layout"
+
+        viewModel.mockPrivateField(
+            name = privateFieldNameLayout,
+            value = null
+        )
+
+        viewModel.loadMore(true)
+
+        viewModel.categoryPage
+            .verifyValueEquals(null)
     }
 }

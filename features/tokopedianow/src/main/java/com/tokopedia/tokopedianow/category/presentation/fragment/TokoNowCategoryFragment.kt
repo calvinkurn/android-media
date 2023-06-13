@@ -708,7 +708,7 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
     }
 
     private fun observeCategoryHeader() {
-        viewModel.categoryHeader.observe(viewLifecycleOwner) { result ->
+        viewModel.categoryFirstPage.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     adapter.submitList(result.data)
@@ -1085,7 +1085,6 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
 
     private fun hideProductRecommendationWidget() = viewModel.removeProductRecommendation()
 
-
     private fun showMiniCart(
         data: MiniCartSimplifiedData
     ) {
@@ -1176,10 +1175,6 @@ class TokoNowCategoryFragment : BaseDaggerFragment(),
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
-
-    /**
-     * -- function without modifier section --
-     */
 
     private fun hideMiniCart() {
         binding?.miniCartWidget?.hide()

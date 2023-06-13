@@ -89,41 +89,60 @@ class TokoNowCategoryViewModel @Inject constructor(
         miniCartSource = MiniCartSource.TokonowCategoryPage
     }
 
+    /**
+     * -- private immutable variable section --
+     */
+
     private val layout: MutableList<Visitable<*>> = mutableListOf()
     private val categoryL2Models: MutableList<CategoryL2Model> = mutableListOf()
-    private var categoryRecommendation: TokoNowCategoryMenuUiModel? = null
-    private var moreShowcaseJob: Job? = null
 
     private val _updateToolbarNotification: MutableLiveData<Boolean> = MutableLiveData()
     private val _openScreenTracker: MutableLiveData<CategoryOpenScreenTrackerModel> = MutableLiveData()
     private val _atcDataTracker: MutableLiveData<CategoryAtcTrackerModel> = MutableLiveData()
-    private val _categoryHeader = MutableLiveData<Result<List<Visitable<*>>>>()
+    private val _categoryFirstPage = MutableLiveData<Result<List<Visitable<*>>>>()
     private val _categoryPage = MutableLiveData<List<Visitable<*>>>()
     private val _scrollNotNeeded = MutableLiveData<Unit>()
     private val _refreshState = MutableLiveData<Unit>()
     private val _oosState = MutableLiveData<Unit>()
 
+    /**
+     * -- private mutable variable section --
+     */
+
+    private var categoryRecommendation: TokoNowCategoryMenuUiModel? = null
+    private var moreShowcaseJob: Job? = null
+
+    /**
+     * -- public immutable variable section --
+     */
+
     val updateToolbarNotification: LiveData<Boolean> = _updateToolbarNotification
     val openScreenTracker: LiveData<CategoryOpenScreenTrackerModel> = _openScreenTracker
     val atcDataTracker: LiveData<CategoryAtcTrackerModel> = _atcDataTracker
-    val categoryHeader: LiveData<Result<List<Visitable<*>>>> = _categoryHeader
+    val categoryFirstPage: LiveData<Result<List<Visitable<*>>>> = _categoryFirstPage
     val categoryPage: LiveData<List<Visitable<*>>> = _categoryPage
     val scrollNotNeeded: LiveData<Unit> = _scrollNotNeeded
     val refreshState: LiveData<Unit> = _refreshState
     val oosState: LiveData<Unit> = _oosState
 
+    /**
+     * -- override function section --
+     */
+
     override fun onSuccessGetMiniCartData(
         miniCartData: MiniCartSimplifiedData
     ) {
         super.onSuccessGetMiniCartData(miniCartData)
-        launch {
-            layout.updateProductQuantity(
-                miniCartData = miniCartData,
-                layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
-            )
-            _categoryPage.postValue(layout)
-        }
+        layout.updateProductQuantity(
+            miniCartData = miniCartData,
+            layoutType = CategoryLayoutType.CATEGORY_SHOWCASE
+        )
+        _categoryPage.postValue(layout)
     }
+
+    /**
+     * -- private suspend function section --
+     */
 
     private suspend fun getCategoryShowcaseAsync(
         categoryL2Model: CategoryL2Model,
@@ -193,6 +212,10 @@ class TokoNowCategoryViewModel @Inject constructor(
         _categoryPage.postValue(layout)
     }
 
+    /**
+     * -- private function section --
+     */
+
     private fun addCategoryShowcases(
         categoryNavigationUiModel: CategoryNavigationUiModel
     ) {
@@ -223,11 +246,14 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     private fun getMoreShowcases() {
-        moreShowcaseJob = launch {
-            getBatchShowcase(
-                hasAdded = false
-            )
-        }
+        moreShowcaseJob = launchCatchError(
+            block =  {
+                getBatchShowcase(
+                    hasAdded = false
+                )
+            },
+            onError = { /* nothing to do */ }
+        )
     }
 
     private fun addCategoryRecommendation() {
@@ -265,6 +291,10 @@ class TokoNowCategoryViewModel @Inject constructor(
         )
         _categoryPage.postValue(layout)
     }
+
+    /**
+     * -- public function section --
+     */
 
     fun onViewCreated(
         navToolbarHeight: Int
@@ -323,22 +353,25 @@ class TokoNowCategoryViewModel @Inject constructor(
                     categoryNavigationUiModel = categoryNavigationUiModel
                 )
 
-                _categoryHeader.postValue(Success(layout))
+                _categoryFirstPage.postValue(Success(layout))
 
                 sendOpenScreenTracker(detailResponse)
             },
             onError = {
-                _categoryHeader.postValue(Fail(it))
+                _categoryFirstPage.postValue(Fail(it))
             }
         )
     }
 
     fun getFirstPage() {
-        launch {
-            getBatchShowcase(
-                hasAdded = true
-            )
-        }
+        launchCatchError(
+            block =  {
+                getBatchShowcase(
+                    hasAdded = true
+                )
+            },
+            onError = { /* nothing to do */ }
+        )
     }
 
     fun loadMore(
@@ -357,10 +390,13 @@ class TokoNowCategoryViewModel @Inject constructor(
     }
 
     fun removeProductRecommendation() {
-        launch {
-            layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
-            _categoryPage.postValue(layout)
-        }
+        launchCatchError(
+            block =  {
+                layout.removeItem(CategoryLayoutType.PRODUCT_RECOMMENDATION.name)
+                _categoryPage.postValue(layout)
+            },
+            onError = { /* nothing to do */ }
+        )
     }
 
     fun updateWishlistStatus(

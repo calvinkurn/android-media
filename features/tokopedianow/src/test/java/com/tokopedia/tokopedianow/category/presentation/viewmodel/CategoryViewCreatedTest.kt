@@ -14,10 +14,10 @@ import com.tokopedia.usecase.coroutines.Success
 import org.junit.Assert
 import org.junit.Test
 
-class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
+class CategoryViewCreatedTest: TokoNowCategoryMainViewModelTestFixture() {
 
     @Test
-    fun `getCategoryHeader should return success result with loading showcase`() {
+    fun `onViewCreated should return success result with loading showcase`() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenReturns()
 
@@ -77,12 +77,12 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
 
         verifyCategoryDetail()
         verifyTargetedTicker()
-        viewModel.categoryHeader
+        viewModel.categoryFirstPage
             .verifyValueEquals(Success(resultList))
     }
 
     @Test
-    fun `getCategoryHeader should return success result with loading showcase even though targeted ticker throws an error exception`() {
+    fun `onViewCreated should return success result with loading showcase even though targeted ticker throws an error exception`() {
         onCategoryDetail_thenReturns()
         onTargetedTicker_thenThrows()
 
@@ -131,23 +131,23 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
 
         verifyCategoryDetail()
         verifyTargetedTicker()
-        viewModel.categoryHeader
+        viewModel.categoryFirstPage
             .verifyValueEquals(Success(resultList))
     }
 
     @Test
-    fun `getCategoryHeader should return failed because category detail throws an exception`() {
+    fun `onViewCreated should return failed because category detail throws an exception`() {
         onCategoryDetail_thenThrows()
 
         viewModel.onViewCreated(
             navToolbarHeight = navToolbarHeight
         )
 
-        Assert.assertTrue(viewModel.categoryHeader.value is Fail)
+        Assert.assertTrue(viewModel.categoryFirstPage.value is Fail)
     }
 
     @Test
-    fun `the execution of getCategoryHeader should not be continued because warehouse id is zero`() {
+    fun `the execution of onViewCreated should not be continued because warehouse id is zero`() {
         setAddressData(
             warehouseId = NO_WAREHOUSE_ID,
             shopId = shopId
@@ -157,7 +157,7 @@ class CategoryHeaderTest: TokoNowCategoryMainViewModelTestFixture() {
             navToolbarHeight = navToolbarHeight
         )
 
-        viewModel.categoryHeader
+        viewModel.categoryFirstPage
             .verifyValueEquals(null)
         viewModel.oosState
             .verifyValueEquals(Unit)
