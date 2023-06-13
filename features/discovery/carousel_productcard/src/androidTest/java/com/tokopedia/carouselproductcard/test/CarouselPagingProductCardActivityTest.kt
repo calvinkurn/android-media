@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupProductModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingModel
 import com.tokopedia.carouselproductcard.paging.CarouselPagingProductCardView
-import com.tokopedia.carouselproductcard.paging.GroupChangeDirection
-import com.tokopedia.carouselproductcard.paging.SelectedGroupModel
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
+import com.tokopedia.carouselproductcard.paging.CarouselPagingSelectedGroupModel
 
 class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
 
@@ -33,7 +33,7 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
         recyclerView.adapter = adapter
     }
 
-    override fun onGroupChanged(position: Int, selectedGroupModel: SelectedGroupModel) {
+    override fun onGroupChanged(position: Int, selectedGroupModel: CarouselPagingSelectedGroupModel) {
         val currentData = adapter.data.toMutableList()
         val carouselPagingModel = currentData[position]
         val productCardGroupList = carouselPagingModel.productCardGroupList.toMutableList()
@@ -61,8 +61,8 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
                 productCardGroupList = productCardGroupList,
                 currentGroupIndex = carouselGroupProductModelIndex,
                 currentPageInGroup = when (selectedGroupModel.direction) {
-                    GroupChangeDirection.PREVIOUS -> CarouselPagingModel.LAST_PAGE_IN_GROUP
-                    GroupChangeDirection.NEXT -> CarouselPagingModel.FIRST_PAGE_IN_GROUP
+                    CarouselPagingGroupChangeDirection.PREVIOUS -> CarouselPagingModel.LAST_PAGE_IN_GROUP
+                    CarouselPagingGroupChangeDirection.NEXT -> CarouselPagingModel.FIRST_PAGE_IN_GROUP
                     else -> carouselPagingModel.currentPageInGroup
                 },
             )
@@ -119,7 +119,7 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
                 model = carouselPagingModel,
                 recycledViewPool = recycledViewPool,
                 listener = object : CarouselPagingProductCardView.CarouselPagingListener {
-                    override fun onGroupChanged(selectedGroupModel: SelectedGroupModel) {
+                    override fun onGroupChanged(selectedGroupModel: CarouselPagingSelectedGroupModel) {
                         val groupIndex =
                             carouselPagingModel
                                 .productCardGroupList
@@ -146,5 +146,5 @@ class CarouselPagingProductCardActivityTest: AppCompatActivity(), Listener {
 }
 
 internal interface Listener {
-    fun onGroupChanged(position: Int, selectedGroupModel: SelectedGroupModel)
+    fun onGroupChanged(position: Int, selectedGroupModel: CarouselPagingSelectedGroupModel)
 }

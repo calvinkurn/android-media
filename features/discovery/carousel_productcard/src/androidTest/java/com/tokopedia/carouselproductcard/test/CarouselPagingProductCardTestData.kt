@@ -55,6 +55,6 @@ internal val data = listOf(
                 productItemList = productCardList(0, 5),
             ),
         ),
-        currentGroupIndex = 0,
+        currentGroupPosition = CarouselPagingModel.FIRST_GROUP,
     ),
 )

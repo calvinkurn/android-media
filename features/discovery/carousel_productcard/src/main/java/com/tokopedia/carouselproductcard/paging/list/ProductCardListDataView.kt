@@ -6,6 +6,7 @@ import com.tokopedia.carouselproductcard.paging.Paging
 import com.tokopedia.carouselproductcard.paging.HasGroup
 import com.tokopedia.carouselproductcard.paging.Spannable
 import com.tokopedia.carouselproductcard.paging.TypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 
 internal data class ProductCardListDataView(
@@ -15,7 +16,8 @@ internal data class ProductCardListDataView(
     override val group: CarouselPagingGroupModel,
     override val pageInGroup: Int,
     override val pageCount: Int,
-): Visitable<TypeFactory>, HasGroup, Paging, Spannable {
+    val productIndex: Int,
+): Visitable<TypeFactory>, HasGroup, Paging, Spannable, ImpressHolder() {
 
     override fun type(typeFactory: TypeFactory?): Int =
         typeFactory?.type(this) ?: 0
@@ -28,6 +30,7 @@ internal data class ProductCardListDataView(
             group: CarouselPagingGroupModel,
             pageInGroup: Int,
             pageCount: Int,
+            productIndex: Int,
         ) = ProductCardListDataView(
             productCardModel,
             spanSize,
@@ -35,6 +38,7 @@ internal data class ProductCardListDataView(
             group,
             pageInGroup,
             pageCount,
+            productIndex,
         )
     }
 }

@@ -1,5 +1,5 @@
 package com.tokopedia.carouselproductcard.paging
 
-enum class GroupChangeDirection {
+enum class CarouselPagingGroupChangeDirection {
     PREVIOUS, NEXT, NO_DIRECTION
 }

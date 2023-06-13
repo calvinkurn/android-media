@@ -166,6 +166,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createBestSellingWidget(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING_LIST -> {
+                    createBestSellingListWidget(channel, position)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
@@ -396,6 +399,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 )
             )
         }
+    }
+
+    private fun createBestSellingListWidget(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int,
+    ) {
+        visitableList.add(
+            BestSellerDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel = channel,
+                    verticalPosition = verticalPosition,
+                ),
+            )
+        )
     }
 
     private fun createCampaignWidget(

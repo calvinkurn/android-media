@@ -36,7 +36,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
     private var binding: CarouselPagingProductCardLayoutBinding? = null
     private val config = AttributesConfig()
-    private val adapter = Adapter(TypeFactoryImpl())
+    private var adapter: Adapter? = null
     private val layoutManager =
         GridLayoutManager(context, config.itemPerPage, HORIZONTAL, false).also {
             it.spanSizeLookup = spanSizeLookup()
@@ -45,7 +45,7 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
     private fun spanSizeLookup() = object : GridLayoutManager.SpanSizeLookup() {
         override fun getSpanSize(position: Int): Int {
-            val visitable = adapter.getItemAt(position)
+            val visitable = adapter?.getItemAt(position) ?: return 1
             return if (visitable is Spannable) visitable.spanSize else 1
         }
     }
@@ -70,7 +70,6 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
     private fun initRecyclerView() {
         binding?.carouselPagingProductCardRecyclerView?.run {
-            adapter = this@CarouselPagingProductCardView.adapter
             layoutManager = this@CarouselPagingProductCardView.layoutManager
 
             addDivider()
@@ -95,15 +94,21 @@ class CarouselPagingProductCardView: ConstraintLayout {
     fun setPagingModel(
         model: CarouselPagingModel,
         listener: CarouselPagingListener,
-        recycledViewPool: RecycledViewPool = RecycledViewPool(),
+        recycledViewPool: RecycledViewPool? = RecycledViewPool(),
     ) {
+        adapter = Adapter(TypeFactoryImpl(listener))
+
         binding?.carouselPagingProductCardRecyclerView?.run {
+            adapter = this@CarouselPagingProductCardView.adapter
+
             setRecycledViewPool(recycledViewPool)
+
+            clearOnScrollListeners()
             addOnScrollListener(groupPaginationOnScroll(model, listener))
         }
 
         val visitableList = VisitableFactory.from(model, config.itemPerPage)
-        adapter.submitList(visitableList)
+        adapter?.submitList(visitableList)
 
         configurePageControl(model)
 
@@ -112,25 +117,23 @@ class CarouselPagingProductCardView: ConstraintLayout {
 
     private fun scrollToCurrentPage(
         visitableList: List<Visitable<TypeFactory>>,
-        model: CarouselPagingModel
+        model: CarouselPagingModel,
     ) {
-        val recyclerView = binding?.carouselPagingProductCardRecyclerView ?: return
-        val position = visitableList.indexOfItemInCurrentPage(model)
+        val position =
+            visitableList.indexOfItemInGroup(model.selectedGroup, model.currentPageInGroup)
 
-        recyclerView.scrollToPosition(position)
-        recyclerView.post {
-            val view = layoutManager.findViewByPosition(position) ?: return@post
-            val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
-            recyclerView.scrollBy(distance[0], distance[1])
-        }
+        binding?.carouselPagingProductCardRecyclerView?.scrollToPage(position)
     }
 
-    private fun List<Visitable<TypeFactory>>.indexOfItemInCurrentPage(model: CarouselPagingModel): Int {
+    private fun List<Visitable<TypeFactory>>.indexOfItemInGroup(
+        group: CarouselPagingGroupModel?,
+        pageInGroup: Int,
+    ): Int {
         val itemIndex =
-            if (model.currentPageInGroup == CarouselPagingModel.LAST_PAGE_IN_GROUP)
-                indexOfLast { it.isInGroup(model.selectedGroup) }
+            if (pageInGroup == CarouselPagingModel.LAST_PAGE_IN_GROUP)
+                indexOfLast { it.isInGroup(group) }
             else
-                indexOfFirst { it.isInPage(model.selectedGroup, model.currentPageInGroup) }
+                indexOfFirst { it.isInPage(group, pageInGroup) }
 
         return max(itemIndex, 0)
     }
@@ -143,9 +146,25 @@ class CarouselPagingProductCardView: ConstraintLayout {
             && this.group == group
             && this.pageInGroup == pageInGroup
 
+    private fun RecyclerView.scrollToPage(position: Int) {
+        post {
+            scrollToPosition(position)
+            scrollByDistance(position)
+        }
+    }
+
+    private fun RecyclerView.scrollByDistance(position: Int) {
+        post {
+            val layoutManager = this@CarouselPagingProductCardView.layoutManager
+            val view = layoutManager.findViewByPosition(position) ?: return@post
+            val distance = snapHelper.calculateDistanceToFinalSnap(layoutManager, view)
+            scrollBy(distance[0], distance[1])
+        }
+    }
+
     private fun groupPaginationOnScroll(
         model: CarouselPagingModel,
-        listener: CarouselPagingListener,
+        listener: CarouselPagingListener?,
     ) = GroupPaginationOnScrollListener(
             currentGroup = model.selectedGroup,
             currentPageInGroup = model.currentPageInGroup,
@@ -153,10 +172,10 @@ class CarouselPagingProductCardView: ConstraintLayout {
             paginationListener = paginationListener(listener)
         )
 
-    private fun paginationListener(listener: CarouselPagingListener) = object : PaginationListener {
-        override fun onGroupChanged(group: SelectedGroupModel?) {
+    private fun paginationListener(listener: CarouselPagingListener?) = object : PaginationListener {
+        override fun onGroupChanged(group: CarouselPagingSelectedGroupModel?) {
             group ?: return
-            listener.onGroupChanged(group)
+            listener?.onGroupChanged(group)
         }
 
         override fun onPageCountChanged(pageCount: Int) {
@@ -178,10 +197,19 @@ class CarouselPagingProductCardView: ConstraintLayout {
     }
 
     fun recycle() {
-        adapter.submitList(null)
+        adapter?.submitList(null)
+    }
+
+    fun scrollToGroup(carouselPagingGroupModel: CarouselPagingGroupModel, pageInGroup: Int) {
+        val visitableList = adapter?.currentList
+        val position = visitableList?.indexOfItemInGroup(carouselPagingGroupModel, pageInGroup) ?: 0
+
+        binding?.carouselPagingProductCardRecyclerView?.scrollToPage(position)
     }
 
     interface CarouselPagingListener {
-        fun onGroupChanged(selectedGroupModel: SelectedGroupModel)
+        fun onGroupChanged(selectedGroupModel: CarouselPagingSelectedGroupModel)
+        fun onItemImpress(groupModel: CarouselPagingGroupModel, itemPosition: Int)
+        fun onItemClick(groupModel: CarouselPagingGroupModel, itemPosition: Int)
     }
 }

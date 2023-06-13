@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection
+import com.tokopedia.carouselproductcard.paging.CarouselPagingGroupChangeDirection.NO_DIRECTION
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
@@ -47,6 +49,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.usecase.todowidget.DismissTodoWidgetUseCase
+import com.tokopedia.home_component.visitable.BestSellerChipProductDataModel
 import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
@@ -66,6 +69,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tokopedia.home_component.visitable.BestSellerDataModel as BestSellerRevampDataModel
 
 @FlowPreview
 @SuppressLint("SyntheticAccessor")
@@ -373,6 +377,26 @@ open class HomeRevampViewModel @Inject constructor(
                         currentBestSellerDataModel = currentDataModel,
                         filterChip = filterChip,
                         selectedChipPosition = selectedChipsPosition
+                    ),
+                    index
+                )
+            }
+        }
+    }
+
+    fun getRecommendationWidget(
+        selectedChipProduct: BestSellerChipProductDataModel,
+        scrollDirection: CarouselPagingGroupChangeDirection = NO_DIRECTION,
+    ) {
+        if (selectedChipProduct.productModelList.isNotEmpty()) return
+
+        findWidget<BestSellerRevampDataModel> { currentDataModel, index ->
+            launch {
+                updateWidget(
+                    homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
+                        currentBestSellerDataModel = currentDataModel,
+                        filterChip = selectedChipProduct.chip,
+                        scrollDirection = scrollDirection,
                     ),
                     index
                 )

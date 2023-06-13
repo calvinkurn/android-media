@@ -20,10 +20,10 @@ internal class GroupPaginationOnScrollListener(
     private var direction: Int = 0
     private var isScrolling = false
 
-    private fun groupChangeDirection(): GroupChangeDirection = when {
-        direction > 0 -> GroupChangeDirection.NEXT
-        direction < 0 -> GroupChangeDirection.PREVIOUS
-        else -> GroupChangeDirection.NO_DIRECTION
+    private fun groupChangeDirection(): CarouselPagingGroupChangeDirection = when {
+        direction > 0 -> CarouselPagingGroupChangeDirection.NEXT
+        direction < 0 -> CarouselPagingGroupChangeDirection.PREVIOUS
+        else -> CarouselPagingGroupChangeDirection.NO_DIRECTION
     }
 
     private fun groupSubscriber(
@@ -35,9 +35,9 @@ internal class GroupPaginationOnScrollListener(
             paginationListener.onGroupChanged(selectedGroup(newValue))
     }
 
-    private fun selectedGroup(group: CarouselPagingGroupModel?): SelectedGroupModel? =
+    private fun selectedGroup(group: CarouselPagingGroupModel?): CarouselPagingSelectedGroupModel? =
         group?.let {
-            SelectedGroupModel(
+            CarouselPagingSelectedGroupModel(
                 group = it,
                 direction = groupChangeDirection(),
             )
@@ -65,7 +65,7 @@ internal class GroupPaginationOnScrollListener(
     private fun changePaginationInfo(recyclerView: RecyclerView) {
         val layoutManager = recyclerView.layoutManager as? GridLayoutManager ?: return
         val adapter = recyclerView.adapter as? Adapter ?: return
-        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        val firstVisibleItemPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
         val firstVisibleItem = adapter.getItemAt(firstVisibleItemPosition)
 
         if (firstVisibleItem !is HasGroup) return
@@ -85,7 +85,7 @@ internal class GroupPaginationOnScrollListener(
     }
 
     internal interface PaginationListener {
-        fun onGroupChanged(group: SelectedGroupModel?)
+        fun onGroupChanged(group: CarouselPagingSelectedGroupModel?)
 
         fun onPageCountChanged(pageCount :Int)
 

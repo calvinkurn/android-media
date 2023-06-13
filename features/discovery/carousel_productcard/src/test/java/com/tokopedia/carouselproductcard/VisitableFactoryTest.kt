@@ -24,7 +24,7 @@ class VisitableFactoryTest {
             productCardGroupList = List(groupSize) {
                 CarouselPagingGroupProductModel(
                     group = carouselPagingGroupModel(it),
-                    productItemList = productCardList(it, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 )
             }
         )
@@ -41,32 +41,28 @@ class VisitableFactoryTest {
             val productCardListDataView = visitable as ProductCardListDataView
 
             val groupIndex = visitableIndex / productCardSize
-            val productIndex = visitableIndex % productCardSize
-            val expectedProductCardModel = productCardModel(groupIndex, productIndex)
-            val expectedPageInGroup = (productIndex / itemPerPage) + 1
+            val expectedProductIndex = visitableIndex % productCardSize
+            val expectedProductCardModel = productCardModel()
+            val expectedPageInGroup = (expectedProductIndex / itemPerPage) + 1
             val expectedPageCount = (productCardSize / itemPerPage) + 1
 
             assertEquals(expectedProductCardModel, productCardListDataView.productCardModel)
             assertEquals(carouselPagingGroupModel(groupIndex), productCardListDataView.group)
             assertEquals(expectedPageInGroup, productCardListDataView.pageInGroup)
             assertEquals(expectedPageCount, productCardListDataView.pageCount)
+            assertEquals(expectedProductIndex, productCardListDataView.productIndex)
         }
     }
 
     private fun carouselPagingGroupModel(it: Int) =
         CarouselPagingGroupModel("Test Group ${it + 1}")
 
-    private fun productCardList(groupIndex: Int, productCardSize: Int) =
-        List(productCardSize) { productIndex ->
-            productCardModel(groupIndex, productIndex)
-        }
+    private fun productCardList(productCardSize: Int) =
+        List(productCardSize) { productCardModel() }
 
-    private fun productCardModel(
-        groupIndex: Int,
-        productIndex: Int,
-    ) = ProductCardModel(
+    private fun productCardModel() = ProductCardModel(
         productImageUrl = "https://images.tokopedia.net/img/cache/200-square/product-1/2019/12/29/234900908/234900908_33fe7619-52b3-4d5d-9bc9-672549dea45b_1728_1728.jpg",
-        productName = "$groupIndex $productIndex 1 Line Product here lorem ips...",
+        productName = "1 Line Product here lorem ips...",
         formattedPrice = "Rp10.000",
         slashedPrice = "Rp100.0000",
         discountPercentage = "50%",
@@ -74,7 +70,7 @@ class VisitableFactoryTest {
             ProductCardModel.LabelGroup(
                 position = "ribbon",
                 type = "gold",
-                title = "#${productIndex + 1}"
+                title = "#1"
             ),
             ProductCardModel.LabelGroup(
                 position = "integrity",
@@ -97,7 +93,7 @@ class VisitableFactoryTest {
             productCardGroupList = List(1) {
                 CarouselPagingGroupProductModel(
                     group = CarouselPagingGroupModel(),
-                    productItemList = productCardList(it, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 )
             }
         )
@@ -117,7 +113,7 @@ class VisitableFactoryTest {
             productCardGroupList = List(1) {
                 CarouselPagingGroupProductModel(
                     group = CarouselPagingGroupModel(),
-                    productItemList = productCardList(it, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 )
             }
         )
@@ -137,7 +133,7 @@ class VisitableFactoryTest {
             productCardGroupList = List(1) {
                 CarouselPagingGroupProductModel(
                     group = CarouselPagingGroupModel(),
-                    productItemList = productCardList(it, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 )
             }
         )
@@ -156,7 +152,7 @@ class VisitableFactoryTest {
             productCardGroupList = List(1) {
                 CarouselPagingGroupProductModel(
                     group = CarouselPagingGroupModel(),
-                    productItemList = productCardList(it, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 )
             }
         )
@@ -179,7 +175,7 @@ class VisitableFactoryTest {
             productCardGroupList = List(groupSize) {
                 CarouselPagingGroupProductModel(
                     group = CarouselPagingGroupModel(),
-                    productItemList = productCardList(it, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 )
             }
         )
@@ -201,7 +197,7 @@ class VisitableFactoryTest {
             productCardGroupList = listOf(
                 CarouselPagingGroupProductModel(
                     group = CarouselPagingGroupModel(title = "group 1"),
-                    productItemList = productCardList(0, productCardSize),
+                    productItemList = productCardList(productCardSize),
                 ),
                 CarouselPagingGroupProductModel(
                     group = emptyGroupModel,

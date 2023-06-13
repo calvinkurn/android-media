@@ -28,6 +28,7 @@ internal object VisitableFactory {
                         group = groupProduct.group,
                         pageInGroup = pageInGroup,
                         pageCount = groupProduct.getPageCount(itemPerPage),
+                        productIndex = index,
                     )
                 }
             }
