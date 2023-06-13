@@ -2,8 +2,10 @@ package com.tokopedia.kyc_centralized.ui.gotoKyc.main
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.kyc_centralized.databinding.FragmentGotoKycFinalLoaderBinding
 import com.tokopedia.kyc_centralized.di.GoToKycComponent
@@ -64,6 +67,11 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
             )
             onUploadingDocuments()
             oneKycSdk.submitKycDocuments()
+        }
+
+        binding?.globalError?.setSecondaryActionClickListener {
+            val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
+            startActivity(intent)
         }
 
         binding?.unifyToolbar?.setNavigationOnClickListener {
@@ -143,14 +151,25 @@ class CaptureKycDocumentsFragment : BaseDaggerFragment() {
                 errorMessage = errorMessage,
                 projectId = args.parameter.projectId
             )
-            binding?.globalError?.setType(GlobalError.NO_CONNECTION)
+            binding?.globalError?.apply {
+                setType(GlobalError.NO_CONNECTION)
+                errorSecondaryAction.show()
+            }
         } else {
             errorMessage = FAILED_UPLOAD_DOCUMENT
             GotoKycAnalytics.sendViewOnErrorPageEvent(
                 errorMessage = errorMessage,
                 projectId = args.parameter.projectId
             )
-            binding?.globalError?.setType(GlobalError.MAINTENANCE)
+            binding?.globalError?.apply {
+                setType(GlobalError.MAINTENANCE)
+                errorSecondaryAction.hide()
+            }
+        }
+
+        binding?.globalError?.apply {
+            errorAction.text = getString(R.string.goto_kyc_try_again)
+            errorSecondaryAction.text = getString(R.string.goto_kyc_direct_to_setting)
         }
     }
 

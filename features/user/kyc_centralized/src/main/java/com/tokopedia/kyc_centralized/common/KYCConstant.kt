@@ -50,8 +50,10 @@ object KYCConstant {
     const val consentCollectionIdProduction = "bf7c9ba1-a4a9-447e-bbee-974c905a95ac"
     const val consentCollectionIdStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
 
-    //TODO change the value when goto kyc consent was ready
-    const val consentGotoKycProgressiveStaging = "8db1d162-15ea-45c1-9b69-20b256e39e44"
+    const val collectionIdGotoKycProgressiveStaging = "b41f13da-f6ef-425a-b65e-f07bbb42821c"
+    const val collectionIdGotoKycProgressiveProduction = "172a03bf-1385-425f-9ffe-94ea7119e77d"
+    const val collectionIdGotoKycNonProgressiveStaging = "6c4e768e-a059-4e90-a011-f11f587d8739"
+    const val collectionIdGotoKycNonProgressiveProduction = "23d6102a-a625-4036-964a-aa039198605a"
 
     const val PROJECT_ID_ACCOUNT = "7"
 
@@ -85,7 +87,4 @@ object KYCConstant {
         const val ACCOUNT_NOT_LINKED = 98
         const val AWAITING_APPROVAL_GOPAY = 97
     }
-
-    const val ONE_KYC_CLICKSTREAM_URL_STAGING = "https://toko-raccoon-integration.gojekapi.com/api/v1/events"
-    const val ONE_KYC_CLICKSTREAM_URL_PRODUCTION = "https://toko-raccoon.gojekapi.com/api/v1/events"
 }

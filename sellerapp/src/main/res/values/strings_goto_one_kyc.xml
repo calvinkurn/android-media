@@ -78,6 +78,7 @@
     <string name="onekyc_guideline_ktp_instruction_1">e-KTP kamu harus asli (bukan hasil scan atau fotokopi) dan difoto langsung dari kamera HP-mu.</string>
     <string name="onekyc_guideline_ktp_instruction_2">e-KTP harus muat di dalam bingkai.</string>
     <string name="onekyc_guideline_ktp_instruction_3">Pastikan e-KTP kamu bisa dibaca dengan jelas.</string>
+    <string name="onekyc_guideline_ktp_instruction_manual_4">Tekan button untuk ambil foto.</string>
     <string name="onekyc_guideline_selfie_title">Tips ambil selfie</string>
     <string name="onekyc_guideline_selfie_autocapture_info_title">Fotomu akan diambil secara otomatis</string>
     <string name="onekyc_guideline_selfie_autocapture_info_description">Kamu hanya perlu posisikan wajahmu sesuai tips di bawah ini. Kami akan otomatis ambil fotomu.</string>

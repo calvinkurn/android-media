@@ -107,12 +107,11 @@ class OnboardProgressiveBottomSheet: BottomSheetUnify() {
     }
 
     private fun initUserConsent() {
-        //TODO: change collection id to valid when ready
         val consentParam = ConsentCollectionParam(
             collectionId = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-                KYCConstant.consentGotoKycProgressiveStaging
+                KYCConstant.collectionIdGotoKycNonProgressiveStaging
             } else {
-                KYCConstant.consentGotoKycProgressiveStaging
+                KYCConstant.collectionIdGotoKycNonProgressiveProduction
             }
         )
 
