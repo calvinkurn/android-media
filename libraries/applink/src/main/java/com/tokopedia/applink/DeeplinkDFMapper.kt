@@ -292,11 +292,10 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_ALPHA_TESTING = "df_alpha_testing"
     const val DF_DIGITAL = "df_digital"
     const val DF_TOKOCHAT = "df_comm_tokochat"
-    const val DF_SELLER_PERSONA = "df_seller_persona"
+    const val DF_SELLER_FRONT_FUNNEL = "df_seller_front_funnel"
     const val DF_DILAYANI_TOKOPEDIA = "df_dilayanitokopedia"
     const val DF_CAMPAIGN_LIST = "df_campaign_list"
     const val DF_SELLER_FEEDBACK = "df_seller_feedback"
-    const val DF_STATISTIC = "df_statistic"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -962,7 +961,7 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWith(SellerApp.SELLER_PERSONA) || it.startsWith(
                     ApplinkConstInternalSellerapp.SELLER_PERSONA
                 )
-            }, DF_SELLER_PERSONA, R.string.title_seller_persona))
+            }, DF_SELLER_FRONT_FUNNEL, R.string.title_seller_persona))
 
             add(DFP({
                 it.startsWith(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
@@ -996,7 +995,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) || it.startsWithPattern(
                             MERCHANT_STATISTIC_DASHBOARD
                         ) || it.startsWithPattern(STATISTIC_DASHBOARD)
-                    }, DF_STATISTIC, R.string.title_statistic
+                    }, DF_SELLER_FRONT_FUNNEL, R.string.title_statistic
                 )
             )
         }
