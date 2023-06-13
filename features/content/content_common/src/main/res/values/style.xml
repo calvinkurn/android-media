@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SideSheetBehavior_Layout">
+
+        <attr name="behavior_draggable"/>
+
+        <attr name="shapeAppearance"/>
+
+        <attr name="shapeAppearanceOverlay"/>
+
+        <attr name="backgroundTint"/>
+
+        <attr name="android:elevation"/>
+        <attr name="android:maxWidth"/>
+        <attr name="android:maxHeight"/>
+
+
+        <attr format="reference" name="coplanarSiblingViewId"/>
+
+    </declare-styleable>
+</resources>
