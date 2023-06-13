@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
@@ -52,7 +53,7 @@ class SearchPageActivity : BaseActivity(), HasComponent<AddNewAddressRevampCompo
         if (intent != null && intent.extras != null) {
             val extra = intent.extras
             isEdit = extra?.getBoolean(AddressConstants.EXTRA_IS_EDIT)
-            isFromPinPoint = extra?.getBoolean(AddressConstants.EXTRA_FROM_PINPOINT)
+            isFromPinPoint = extra?.getBoolean(AddressConstant.EXTRA_IS_GET_PINPOINT_ONLY)
 
             extra?.getString(EXTRA_REF).let { from ->
                 if (isEdit == false) {
