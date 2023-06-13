@@ -185,6 +185,7 @@ class PlayCategoryWidgetFragment @Inject constructor(
             )
 
             is ExploreWidgetState.Fail -> {
+                analytic?.impressToasterGlobalError()
                 toaster.showToaster(
                     message = generateErrorMessage(result.state.error),
                     actionLabel = getString(R.string.play_try_again),
