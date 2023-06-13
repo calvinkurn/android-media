@@ -13,6 +13,9 @@ import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.sse.AffiliateSSE
+import com.tokopedia.affiliate.sse.AffiliateSSEPageSource
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
+import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliateGetUnreadNotificationUseCase
@@ -24,11 +27,13 @@ import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -49,7 +54,7 @@ class AffiliateAdpViewModelTest {
     private val affiliateSSEAuthTokenUseCase: AffiliateSSEAuthTokenUseCase = mockk()
     private val getUnreadNotificationUseCase: AffiliateGetUnreadNotificationUseCase = mockk()
     private val dispatchers: CoroutineDispatchers = mockk()
-    private val affiliateSSE: AffiliateSSE = mockk()
+    private val affiliateSSE: AffiliateSSE = mockk(relaxed = true)
     private var affiliateAdpViewModel = spyk(
         AffiliateAdpViewModel(
             userSessionInterface,
@@ -312,5 +317,64 @@ class AffiliateAdpViewModelTest {
 
         affiliateAdpViewModel.resetNotificationCount()
         assertEquals(0, affiliateAdpViewModel.getUnreadNotificationCount().value)
+    }
+
+    @Test
+    fun `when start sse connect and listen should run`() {
+        val dummyToken = "token"
+        val source = AffiliateSSEPageSource.AffiliateADP.source
+        val action = mockk<AffiliateSSEAction>()
+
+        coEvery { affiliateSSEAuthTokenUseCase.getAffiliateToken().data?.token.orEmpty() } returns dummyToken
+        coEvery { affiliateSSE.listen() } returns flowOf(action)
+
+        affiliateAdpViewModel.startSSE()
+
+        coVerify {
+            affiliateSSE.connect(source, dummyToken)
+            affiliateSSE.listen()
+        }
+    }
+
+    @Test
+    fun `when sse closed because of any error it should retry connection`() {
+        val dummyToken = "token"
+        val source = AffiliateSSEPageSource.AffiliateADP.source
+        val action = AffiliateSSEAction.Close(AffiliateSSECloseReason.ERROR)
+
+        coEvery { affiliateSSEAuthTokenUseCase.getAffiliateToken().data?.token.orEmpty() } returns dummyToken
+        coEvery { affiliateSSE.listen() } returns flowOf(action)
+
+        affiliateAdpViewModel.startSSE()
+
+        coVerify {
+            affiliateSSE.connect(source, dummyToken)
+            affiliateSSE.listen()
+        }
+    }
+
+    @Test
+    fun `when sse closed intentionally it should not retry`() {
+        val dummyToken = "token"
+        val source = AffiliateSSEPageSource.AffiliateADP.source
+        val action = AffiliateSSEAction.Close(AffiliateSSECloseReason.INTENDED)
+
+        coEvery { affiliateSSEAuthTokenUseCase.getAffiliateToken().data?.token.orEmpty() } returns dummyToken
+        coEvery { affiliateSSE.listen() } returns flowOf(action)
+
+        affiliateAdpViewModel.startSSE()
+
+        coVerify(exactly = 1) {
+            affiliateSSE.connect(source, dummyToken)
+        }
+    }
+
+    @Test
+    fun `when stop sse it should stop listening`() {
+        affiliateAdpViewModel.stopSSE()
+
+        coVerify {
+            affiliateSSE.close()
+        }
     }
 }
