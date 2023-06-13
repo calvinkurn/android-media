@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.shop.R
-import com.tokopedia.applink.ApplinkConst
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -25,8 +24,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
+import com.tokopedia.shop.campaign.util.tracker.VoucherDetailBottomSheetTracker
 import com.tokopedia.shop.databinding.BottomsheetVoucherDetailBinding
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -36,14 +34,24 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_SHOP_ID = "shop_id"
         private const val BUNDLE_KEY_VOUCHER_SLUG = "voucher_slug"
         private const val BUNDLE_KEY_PROMO_VOUCHER_CODE = "promo_voucher_code"
+        private const val BUNDLE_KEY_CAMPAIGN_ID = "campaign_id"
+        private const val BUNDLE_KEY_WIDGET_ID = "widget_id"
 
         @JvmStatic
-        fun newInstance(shopId: String, slug: String, promoVoucherCode: String): VoucherDetailBottomSheet {
+        fun newInstance(
+            shopId: String,
+            voucherSlug: String,
+            promoVoucherCode: String,
+            campaignId: String,
+            widgetId: String
+        ): VoucherDetailBottomSheet {
             return VoucherDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(BUNDLE_KEY_SHOP_ID, shopId)
-                    putString(BUNDLE_KEY_VOUCHER_SLUG, slug)
+                    putString(BUNDLE_KEY_VOUCHER_SLUG, voucherSlug)
                     putString(BUNDLE_KEY_PROMO_VOUCHER_CODE, promoVoucherCode)
+                    putString(BUNDLE_KEY_CAMPAIGN_ID, campaignId)
+                    putString(BUNDLE_KEY_WIDGET_ID, widgetId)
                 }
             }
         }
@@ -69,12 +77,17 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var tracker: VoucherDetailBottomSheetTracker
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider[VoucherDetailViewModel::class.java] }
 
     private val shopId by lazy { arguments?.getString(BUNDLE_KEY_SHOP_ID).orEmpty() }
     private val voucherSlug by lazy { arguments?.getString(BUNDLE_KEY_VOUCHER_SLUG).orEmpty() }
     private val promoVoucherCode by lazy { arguments?.getString(BUNDLE_KEY_PROMO_VOUCHER_CODE).orEmpty() }
+    private val campaignId by lazy { arguments?.getString(BUNDLE_KEY_CAMPAIGN_ID).orEmpty() }
+    private val widgetId by lazy { arguments?.getString(BUNDLE_KEY_WIDGET_ID).orEmpty() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +134,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     private fun setupView() {
         binding?.run {
             btnUsePromoVoucher.setOnClickListener {
+                tracker.sendUseVoucherEvent(campaignId = campaignId, shopId = shopId)
                 binding?.btnUsePromoVoucher?.startLoading()
                 viewModel.usePromoVoucher(shopId, promoVoucherCode)
             }
@@ -128,6 +142,7 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
             btnClaimPromoVoucher.setOnClickListener {
                 binding?.btnClaimPromoVoucher?.startLoading()
                 viewModel.claimPromoVoucher()
+                tracker.sendRedeemVoucherEvent(campaignId = campaignId, shopId = shopId)
             }
             imgVoucher.cornerRadius = Int.ZERO
         }
@@ -187,6 +202,12 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
     }
 
     private fun displayVoucherDetail(voucherDetail: VoucherDetail) {
+        tracker.sendVoucherDetailBottomSheetImpression(
+            campaignId = campaignId,
+            widgetId = widgetId,
+            shopId = shopId
+        )
+
         binding?.run {
             imgVoucher.loadImage(voucherDetail.imageUrlMobile)
 
@@ -206,7 +227,6 @@ class VoucherDetailBottomSheet : BottomSheetUnify() {
         }
 
         handlePromoVoucher(promoVoucherCode)
-
     }
 
     private fun handlePromoVoucher(promoVoucherCode: String) {

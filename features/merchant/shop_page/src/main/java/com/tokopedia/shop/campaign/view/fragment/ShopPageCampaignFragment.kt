@@ -834,7 +834,9 @@ class ShopPageCampaignFragment :
         val bottomSheet = ExclusiveLaunchVoucherListBottomSheet.newInstance(
             shopId = shopId,
             useDarkBackground = isCampaignTabDarkMode(),
-            slugs = listCategorySlug
+            voucherSlugs = listCategorySlug,
+            campaignId = "", //TODO: replace with real id
+            widgetId = "" //TODO: replace with real id
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -844,8 +846,10 @@ class ShopPageCampaignFragment :
 
         val bottomSheet = VoucherDetailBottomSheet.newInstance(
             shopId = shopId,
-            slug = selectedVoucher.slug,
-            promoVoucherCode = selectedVoucher.couponCode
+            voucherSlug = selectedVoucher.slug,
+            promoVoucherCode = selectedVoucher.couponCode,
+            campaignId = "", //TODO: replace with real id
+            widgetId = "" //TODO: replace with real id
         ).apply {
             setOnVoucherRedeemSuccess { redeemResult ->
                 handleRedeemVoucherSuccess(redeemResult)

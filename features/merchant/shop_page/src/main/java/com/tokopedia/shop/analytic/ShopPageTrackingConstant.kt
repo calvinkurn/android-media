@@ -153,6 +153,7 @@ object ShopPageTrackingConstant {
     const val CLICK_ADD_NOTE = "click add note"
     const val BUSINESS_UNIT = "businessUnit"
     const val PHYSICAL_GOODS = "physical goods"
+    const val PHYSICAL_GOODS_PASCAL_CASE = "Physical Goods"
     const val HOME_AND_BROWSE = "home & browse"
     const val SHARING_EXPERIENCE = "sharingexperience"
     const val CURRENT_SITE = "currentSite"
@@ -398,10 +399,16 @@ object ShopPageTrackingConstant {
         const val CAMPAIGN_WIDGET_CLICK_BANNER = "click banner widget campaign"
         const val ALL_PRODUCT_CLICKED = "click product"
         const val ALL_PRODUCT_IMPRESSION = "product list impression"
+        const val CAMPAIGN_TAB_COUPON_DETAIL_IMPRESSION = "campaign tab - impression kupon detail"
+        const val CAMPAIGN_TAB_COUPON_DETAIL_CLICK = "campaign tab - click kupon detail"
+        const val CAMPAIGN_TAB_COUPON_LIST_IMPRESSION = "campaign tab - impression kupon list"
+        const val CAMPAIGN_TAB_COUPON_IMPRESSION = "campaign tab - impression kupon"
+        const val CAMPAIGN_TAB_COUPON_CLICK = "campaign tab - click kupon"
     }
 
     object EventCategory {
         const val SHOP_PAGE_BUYER_DIRECT_PURCHASE = "shop page - buyer - direct purchase"
+        const val SHOP_PAGE_BUYER = "shop page - buyer"
     }
 
     object TrackerId {
@@ -440,6 +447,11 @@ object ShopPageTrackingConstant {
         const val TRACKER_CLICK_SINGLE_BUNDLING_WIDGET_PACKAGE_VARIANT = "25642"
         const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_BUYER = "8055"
         const val TRACKER_ID_CLICK_SHOP_NAME_ON_HEADER_AS_SELLER = "8100"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_DETAIL_IMPRESSION = "44415"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK = "44416"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_LIST_IMPRESSION = "44408"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_IMPRESSION = "44348"
+        const val TRACKER_ID_EXCLUSIVE_LAUNCH_VOUCHER_CLICK_ON_CAMPAIGN_TAB = "44349"
     }
 
     object Key {
