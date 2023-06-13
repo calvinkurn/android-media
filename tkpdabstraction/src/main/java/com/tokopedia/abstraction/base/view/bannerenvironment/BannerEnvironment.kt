@@ -30,7 +30,7 @@ class BannerEnvironment {
 
     fun isBannerEnvironmentEnabled(context: Context): Boolean {
         val cache = context.getSharedPreferences(DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, Context.MODE_PRIVATE)
-        return cache.getBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, false)
+        return cache.getBoolean(IS_DEV_OPT_ON_BANNER_ENVIRONMENT_ENABLED, true)
     }
 
     fun setBannerEnvironmentEnabled(context: Context, isDevOptOnNotifEnabled: Boolean) {
