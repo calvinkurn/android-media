@@ -203,10 +203,6 @@ class RecommendationFragment : BaseDaggerFragment() {
 
     private fun hideShimmerBottom() {
         bottomShimmerRecommendation?.hide()
-        saranAdsTypeTab?.show()
-        saranTopAdsViewPager?.show()
-        emptyStateRecyclerView?.show()
-        pageControlEmptyState?.show()
     }
 
     private fun renderTopLevelWidgetForNoTopAds(isTopAds: Boolean) {
@@ -218,10 +214,23 @@ class RecommendationFragment : BaseDaggerFragment() {
                     R.drawable.performance_widget_default_icon
                 )
             )
-            saranAdsTypeTab?.hide()
-            saranTopAdsViewPager?.hide()
+            hideTabAndShowEmptyState()
             renderEmptyStates()
             return
+        }
+    }
+
+    private fun hideTabAndShowEmptyState(isHideTab: Boolean = true) {
+        if (isHideTab) {
+            saranAdsTypeTab?.hide()
+            saranTopAdsViewPager?.hide()
+            emptyStateRecyclerView?.show()
+            pageControlEmptyState?.show()
+        } else {
+            saranAdsTypeTab?.show()
+            saranTopAdsViewPager?.show()
+            emptyStateRecyclerView?.hide()
+            pageControlEmptyState?.hide()
         }
     }
 
@@ -239,8 +248,7 @@ class RecommendationFragment : BaseDaggerFragment() {
                     R.drawable.perfomace_widget_optimized_icon
                 )
             )
-            saranAdsTypeTab?.hide()
-            saranTopAdsViewPager?.hide()
+            hideTabAndShowEmptyState()
             renderEmptyStates()
         } else if (count <= 10) {
             insightWidgetTitle?.text = "Tingkatkan performa $count grup iklanmu, yuk!"
@@ -305,9 +313,9 @@ class RecommendationFragment : BaseDaggerFragment() {
         if (data.isProduct && data.isHeadline) {
             saranAdsTypeTab?.addNewTab(TAB_NAME_PRODUCT)
             saranAdsTypeTab?.addNewTab(TAB_NAME_SHOP)
-            saranAdsTypeTab?.show()
+            hideTabAndShowEmptyState(false)
         } else {
-            saranAdsTypeTab?.hide()
+            hideTabAndShowEmptyState()
         }
         if (data.isProduct) {
             list.add(FragmentTabItem(TAB_NAME_PRODUCT, SaranTabsFragment.createInstance(TYPE_PRODUCT_VALUE)))
