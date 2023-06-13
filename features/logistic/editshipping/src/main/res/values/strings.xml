@@ -61,6 +61,7 @@
     <string name="antar_ke_gerai">Antar ke Gerai</string>
     <string name="antar_ke_gerai_desc">Bawa pesanan ke gerai terdekat dan minta resi dari petugas</string>
     <string name="detail_fitur">Detail Fitur</string>
+    <string name="success_save_shipping">Anda telah sukses memperbaharui informasi pengiriman</string>
 
     <!--Custom Product Logistic-->
     <string name="title_activity_cpl">Pengiriman Per Produk</string>

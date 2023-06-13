@@ -194,90 +194,97 @@ class ShippingEditorFragment :
 
     private fun initViewModel() {
         viewModel.shipperList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        updateData(it.data.shippers)
-                        renderTicker(it.data.ticker)
-                        checkWhitelabelCoachmarkState()
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    updateData(it.data.shippers)
+                    renderTicker(it.data.ticker)
+                    checkWhitelabelCoachmarkState()
+                }
 
-                    is ShippingEditorState.Fail -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
-                        }
-                    }
-
-                    else -> {
-                        binding?.shippingEditorLayout?.gone()
-                        binding?.btnSaveShipper?.gone()
-                        binding?.swipeRefresh?.isRefreshing = true
+                is ShippingEditorState.Fail -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
                     }
                 }
+
+                else -> {
+                    binding?.shippingEditorLayout?.gone()
+                    binding?.btnSaveShipper?.gone()
+                    binding?.swipeRefresh?.isRefreshing = true
+                }
             }
-        )
+        }
 
         viewModel.shipperTickerList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        binding?.shippingEditorLayout?.visible()
-                        binding?.btnSaveShipper?.visible()
-                        binding?.globalError?.gone()
-                        updateHeaderTickerData(it.data.headerTicker)
-                    }
-                    else -> {
-                        //no-op
-                    }
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    binding?.shippingEditorLayout?.visible()
+                    binding?.btnSaveShipper?.visible()
+                    binding?.globalError?.gone()
+                    updateHeaderTickerData(it.data.headerTicker)
+                }
+
+                else -> {
+                    //no-op
                 }
             }
-        )
+        }
 
         viewModel.shipperDetail.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        updateBottomsheetData(it.data)
-                    }
-                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
-                    else -> binding?.swipeRefresh?.isRefreshing = true
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    updateBottomsheetData(it.data)
                 }
+
+                is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
-        )
+        }
 
         viewModel.validateDataShipper.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        validateSaveData(it.data)
-                    }
-                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
-                    else -> binding?.swipeRefresh?.isRefreshing = true
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    validateSaveData(it.data)
                 }
+
+                is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
-        )
+        }
 
         viewModel.saveShippingData.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShippingEditorState.Success -> {
-                        binding?.swipeRefresh?.isRefreshing = false
-                        fetchData()
+            viewLifecycleOwner
+        ) {
+            when (it) {
+                is ShippingEditorState.Success -> {
+                    binding?.swipeRefresh?.isRefreshing = false
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            getString(R.string.save_edit_shop_success),
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_NORMAL
+                        ).show()
                     }
-                    is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
-                    else -> binding?.swipeRefresh?.isRefreshing = true
+                    fetchData()
                 }
+
+                is ShippingEditorState.Fail -> binding?.swipeRefresh?.isRefreshing = false
+                else -> binding?.swipeRefresh?.isRefreshing = true
             }
-        )
+        }
     }
 
     private fun fetchData() {
