@@ -45,13 +45,13 @@ Post-purchase is Buyer will be able to track their order fulfillment and ask for
 
 
 
-![](res/post_purchase/live_tracking.png) Live Tracking
+![](../res/post_purchase/live_tracking.png) Live Tracking
 
 
 
 
 
-![](res/post_purchase/completed_order.png) Completed Order
+![](../res/post_purchase/completed_order.png) Completed Order
 
 
 
@@ -59,7 +59,7 @@ Post-purchase is Buyer will be able to track their order fulfillment and ask for
 
 
 
-![](res/post_purchase/driver_call.png) Driver Call
+![](../res/post_purchase/driver_call.png) Driver Call
 
 
 
@@ -73,15 +73,15 @@ Post-purchase is Buyer will be able to track their order fulfillment and ask for
 
 ## Flowchart
 
-![](res/post_purchase/first_open_page.png) First Open Page
+![](../res/post_purchase/first_open_page.png) First Open Page
 
-![](res/post_purchase/polling_based.png) Polling Based (Periodic every 5 seconds) for update order status
+![](../res/post_purchase/polling_based.png) Polling Based (Periodic every 5 seconds) for update order status
 
-![](res/post_purchase/driver_call_diagram.png) Driver Call
+![](../res/post_purchase/driver_call_diagram.png) Driver Call
 
 ## **Page Structure**
 
-![](res/post_purchase/page_structure_flow.png) Page Structure Flow
+![](../res/post_purchase/page_structure_flow.png) Page Structure Flow
 
 Post Purchase has two classes to handle differentiate between live tracking order and completed order. But actually, for the completed order use the common class to reuse logic & component. and for the order live tracking using the individual class with the extends of `LifecycleObserver`
 
@@ -95,7 +95,7 @@ Post Purchase has two classes to handle differentiate between live tracking orde
 
 
 
-![](res/post_purchase/Order%20detail.png)
+![](../res/post_purchase/Order%20detail.png)
 
 Chat with Driver with unread counter
 
@@ -103,7 +103,7 @@ Chat with Driver with unread counter
 
 
 
-![](res/post_purchase/chat_driver.png)
+![](../res/post_purchase/chat_driver.png)
 
 Chat with Driver Flowchart
 

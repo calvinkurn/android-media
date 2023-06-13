@@ -1,10 +1,6 @@
 ---
-title: "Merchant Page ( Decide )"
+title: "Purchase & Promo"
 ---
-
-
-
-
 
 
 | **Status**       | <!--start status:GREEN-->RELEASE<!--end status-->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -15,81 +11,58 @@ title: "Merchant Page ( Decide )"
 | Release date     | 06 Oct 2022 / <!--start status:GREY-->MA-3.195<!--end status-->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Module type      | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Product PRD      | [TokoFood PRD](https://docs.google.com/document/d/1GnxJ1JUmOd8vCG0zpOl1K990w9ex4-YBsvf0XM_lvNU)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Package Location | `com.tokopedia.tokofood.feature.merchant`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| Fragment Class   | `MerchantPageFragment`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Package Location | `com.tokopedia.tokofood.feature.purchase`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Fragment Class   | `TokoFoodPurchaseFragment & TokoFoodPromoFragment`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 
 ## Table of Contents
 
-- [Overview](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Page+Decide#%5BhardBreak%5DOverview)
-- [Navigation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Page+Decide#%5BhardBreak%5DNavigation)
-- [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Page+Decide#Useful-Links)
+- [Overview](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo#%5BhardBreak%5DOverview)
+- [Flowchart](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo#Flowchart)
+- [Usecase](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo#Use-Case)
+- [Navigation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo#%5BhardBreak%5D%5BhardBreak%5DNavigation)
+- [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989840656/Purchase+Promo#Useful-Links)
 
 ## Overview
 
 
 
+| ![](../res/purchase_and_promo/purchase_page_above_the_fold.png)<br/> | ![](../res/purchase_and_promo/purchase_page_scrolled.png)<br/> | ![](../res/purchase_and_promo/purchase_promo_page.png)<br/> |
+|-------------------------------------------------------------------|-------------------------------------------------------------|----------------------------------------------------------|
+| Purchase Page (Above the Fold)                                    | Purchase Page (Scrolled)                                    | Promo Page                                               |
+
+## Flowchart
+
+### Purchase Page (First Load)
+
+
+
+![](../res/purchase_and_promo/purchase_page.png)
+
+
+### Promo Page
 
 
 
 
-![](res/decide/merchant_page.png) Merchant Page
+![](../res/purchase_and_promo/promo_page.png)
 
 
-
-
-
-![](res/decide/stick_filter.png) Stick Filter
-
-
-
-
-
-![](res/decide/merchant_info_bottom_sheet.png) Merchant Info Bottom Sheet
-
-
-
-
-
-
-
-![](res/decide/product_detail_bottom_sheet.png) Product Detail Bottom Sheet
-
-
-
-
-
-![](res/decide/custom_order_detail_bottom_sheet.png) Custom Order Detail Bottom Sheet
-
-
-
-
-
-![](res/decide/order_customization_page.png) Order Customization Page
-
-
-
-
-
-
+## Use Case
 
 ## Navigation
 
 
 
-| External Applink | `tokopedia://food/merchant/{merchantId}?product_id={product_id}`                  |
-|------------------|-----------------------------------------------------------------------------------|
-| Internal Applink | `tokopedia-android-internal://food/merchant/{merchantId}?product_id={product_id}` |
+| External Applink | (none) |
+|------------------|--------|
+| Internal Applink | (none) |
 
 ## Useful Links
 
 
 
-| **Document**   | **Source**                                                                                                                                                                                                                       |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Product Design | Light Mode<https://www.figma.com/file/qnn2v65Mf6qAQtqpjlao9S/TokoFood---Platform-Services-%5BM%5D?node-id=2694%3A254137> Dark Mode<https://www.figma.com/file/XvYnjpzLxyCSYdiUZwC2Pb/UI---Darkmode---TokoFood?node-id=2%3A72223> |
-| GQL            | [Tokofood-GQL GetMerchantData](/wiki/spaces/TECH/pages/1926825412/Tokofood-GQL+GetMerchantData)                                                                                                                                  |
-| Tracker        | <https://mynakama.tokopedia.com/datatracker/requestdetail/view/3055>                                                                                                                                                             |
-
-
-
+| Figma   | <https://www.figma.com/file/qnn2v65Mf6qAQtqpjlao9S/TokoFood---Platform-Services-%5BM%5D?node-id=1772%3A181413>                                                                                    |
+|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GQL     | [[GraphQL] Cart List Tokofood](/wiki/spaces/TTD/pages/1939701940) [[GraphQL] Promo List Tokofood](/wiki/spaces/TTD/pages/1947566800) [[GraphQL] Agree consent](/wiki/spaces/TTD/pages/1939703918) |
+| Tracker | <https://mynakama.tokopedia.com/datatracker/requestdetail/view/3057>                                                                                                                              |
 

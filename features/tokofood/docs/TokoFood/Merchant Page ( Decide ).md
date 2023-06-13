@@ -1,5 +1,5 @@
 ---
-title: "TokoFood Search"
+title: "Merchant Page ( Decide )"
 ---
 
 
@@ -15,15 +15,14 @@ title: "TokoFood Search"
 | Release date     | 06 Oct 2022 / <!--start status:GREY-->MA-3.195<!--end status-->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | Module type      | <!--start status:YELLOW-->FEATURE<!--end status-->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | Product PRD      | [TokoFood PRD](https://docs.google.com/document/d/1GnxJ1JUmOd8vCG0zpOl1K990w9ex4-YBsvf0XM_lvNU)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Package Location | `com.tokopedia.tokofood.feature.search`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| Fragment Class   | `SearchContainerFragment`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Package Location | `com.tokopedia.tokofood.feature.merchant`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Fragment Class   | `MerchantPageFragment`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
 ## Table of Contents
 
-- [Overview](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2076843243/TokoFood+Search#Overview)
-- [Page Structure](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2076843243/TokoFood+Search#Page-Structure)
-- [Navigation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2076843243/TokoFood+Search#%5BhardBreak%5DNavigation)
-- [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/2076843243/TokoFood+Search#Useful-Links)
+- [Overview](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Page+Decide#%5BhardBreak%5DOverview)
+- [Navigation](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Page+Decide#%5BhardBreak%5DNavigation)
+- [Useful Links](https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1989545980/Merchant+Page+Decide#Useful-Links)
 
 ## Overview
 
@@ -33,61 +32,63 @@ title: "TokoFood Search"
 
 
 
-![](res/search/search_entry_point.png)
-
-Search Entry Point
+![](../res/decide/merchant_page.png) Merchant Page
 
 
 
 
 
-![](res/search/initial_search_state_page.png)
-
-Initial Search State Page
+![](../res/decide/stick_filter.png) Stick Filter
 
 
 
 
 
-![](res/search/search_result_page.png)
-
-Search Result Page
+![](../res/decide/merchant_info_bottom_sheet.png) Merchant Info Bottom Sheet
 
 
 
 
 
-![](res/search/filter.png)
 
 
-Filter in Search Result Page
+![](../res/decide/product_detail_bottom_sheet.png) Product Detail Bottom Sheet
 
 
 
 
-## Page Structure
 
-![](res/search/TokoFood_Search.png)
+![](../res/decide/custom_order_detail_bottom_sheet.png) Custom Order Detail Bottom Sheet
 
-TokoFood search built into `SearchContainerFragment` within includes some pages such as `InitiaSearchStateFragment` And `SearchResultFragment`. To determine `InitialSearchStateFragment` or `SearchResultFragment`, we need to check the keyword size in the search bar, if the keyword size is more than or equal to 3, it will show `SearchResultFragment`, otherwise will show `InitSearchStateFragment`. `InitSearchStateFragment` has the responsibility to display content such as recent searches, popular searches & cuisine lists, and also we can remove item or all of the recent searches. For the `SearchResultFragment` has the responsibility to show search results such as merchant list and then we can filter the search results by sort, rating, and price.
+
+
+
+
+![](../res/decide/order_customization_page.png) Order Customization Page
+
+
+
+
+
+
 
 ## Navigation
 
 
 
-| External TokoFood Search Applink | `tokopedia://food/search`                  |
-|----------------------------------|--------------------------------------------|
-| Internal TokoFood Search Applink | `tokopedia-android-internal://food/search` |
+| External Applink | `tokopedia://food/merchant/{merchantId}?product_id={product_id}`                  |
+|------------------|-----------------------------------------------------------------------------------|
+| Internal Applink | `tokopedia-android-internal://food/merchant/{merchantId}?product_id={product_id}` |
 
 ## Useful Links
 
 
 
-| PRD     | <https://docs.google.com/document/d/1ffHPqUKw_VDL5MzgokuDKAZdkU5jG_Zu3dEoYzNSkF0/edit>                                                                                                                                                                                                                                                                                                                                                                                          |
-|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Figma   | <https://www.figma.com/file/qnn2v65Mf6qAQtqpjlao9S/TokoFood---Platform-Services-%5BM%5D?node-id=14056%3A346182>                                                                                                                                                                                                                                                                                                                                                                 |
-| GQL     | Initial Search State: - [Tokofood-GQL Init Search](/wiki/spaces/TECH/pages/2018508983/Tokofood-GQL+Init+Search)<br/>- [Tokofood-GQL Remove Search History](/wiki/spaces/TECH/pages/2022146065/Tokofood-GQL+Remove+Search+History)<br/><br/>Search Result Page:- [Tokofood-GQL Search Merchant](/wiki/spaces/TECH/pages/2031255828/Tokofood-GQL+Search+Merchant)<br/>- [Tokofood-GQL Filter And Sort](/wiki/spaces/TECH/pages/2019098912/Tokofood-GQL+Filter+And+Sort)<br/><br/> |
-| Tracker | <https://mynakama.tokopedia.com/datatracker/requestdetail/view/3347>                                                                                                                                                                                                                                                                                                                                                                                                            |
+| **Document**   | **Source**                                                                                                                                                                                                                       |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Product Design | Light Mode<https://www.figma.com/file/qnn2v65Mf6qAQtqpjlao9S/TokoFood---Platform-Services-%5BM%5D?node-id=2694%3A254137> Dark Mode<https://www.figma.com/file/XvYnjpzLxyCSYdiUZwC2Pb/UI---Darkmode---TokoFood?node-id=2%3A72223> |
+| GQL            | [Tokofood-GQL GetMerchantData](/wiki/spaces/TECH/pages/1926825412/Tokofood-GQL+GetMerchantData)                                                                                                                                  |
+| Tracker        | <https://mynakama.tokopedia.com/datatracker/requestdetail/view/3055>                                                                                                                                                             |
 
 
 
