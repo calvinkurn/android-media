@@ -14,12 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
-            android:id="@+id/feed_pull_refresh_icon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:color_type="white" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_feed_post"
             android:layout_width="match_parent"

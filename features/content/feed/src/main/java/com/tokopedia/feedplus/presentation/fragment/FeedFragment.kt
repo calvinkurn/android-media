@@ -52,6 +52,7 @@ import com.tokopedia.feedplus.presentation.adapter.FeedPostAdapter
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_NOT_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.FeedViewHolderPayloadActions.FEED_POST_SELECTED
 import com.tokopedia.feedplus.presentation.adapter.listener.FeedListener
+import com.tokopedia.feedplus.presentation.adapter.listener.FeedSwipeRefreshListener
 import com.tokopedia.feedplus.presentation.model.FeedAuthorModel
 import com.tokopedia.feedplus.presentation.model.FeedCardCampaignModel
 import com.tokopedia.feedplus.presentation.model.FeedCardImageContentModel
@@ -62,12 +63,14 @@ import com.tokopedia.feedplus.presentation.model.FeedDataModel
 import com.tokopedia.feedplus.presentation.model.FeedMainEvent
 import com.tokopedia.feedplus.presentation.model.FeedNoContentModel
 import com.tokopedia.feedplus.presentation.model.FeedShareModel
+import com.tokopedia.feedplus.presentation.model.FeedSwipeRefreshModel
 import com.tokopedia.feedplus.presentation.model.FeedTrackerDataModel
 import com.tokopedia.feedplus.presentation.uiview.FeedCampaignRibbonType
 import com.tokopedia.feedplus.presentation.uiview.FeedProductTagView
 import com.tokopedia.feedplus.presentation.util.VideoPlayerManager
 import com.tokopedia.feedplus.presentation.viewmodel.FeedMainViewModel
 import com.tokopedia.feedplus.presentation.viewmodel.FeedPostViewModel
+import com.tokopedia.home_component.customview.pullrefresh.LayoutIconPullRefreshView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -97,6 +100,7 @@ import com.tokopedia.feedplus.R as feedR
 class FeedFragment :
     BaseDaggerFragment(),
     FeedListener,
+    FeedSwipeRefreshListener,
     ContentThreeDotsMenuBottomSheet.Listener,
     FeedTaggedProductBottomSheet.Listener,
     FeedFollowersOnlyBottomSheet.Listener {
@@ -730,6 +734,10 @@ class FeedFragment :
         feedFollowersOnlyBottomSheet?.dismiss()
     }
 
+    override fun setPullToRefreshItem(view: LayoutIconPullRefreshView) {
+        binding.swipeRefreshFeedLayout.setContentChildViewPullRefresh(view)
+    }
+
     private fun observeReport() {
         feedMainViewModel.reportResponse.observe(viewLifecycleOwner) {
             when (it) {
@@ -768,7 +776,6 @@ class FeedFragment :
 
     private fun initView() {
         binding.let {
-            it.swipeRefreshFeedLayout.setContentChildViewPullRefresh(it.feedPullRefreshIcon)
             it.swipeRefreshFeedLayout.setOnRefreshListener {
                 feedPostViewModel.fetchFeedPosts(data?.type ?: "", isNewData = true)
             }
@@ -804,7 +811,7 @@ class FeedFragment :
                             )
                         }
                     } else {
-                        adapter?.updateList(it.data.items)
+                        adapter?.updateList(listOf(FeedSwipeRefreshModel()) + it.data.items)
                         context?.let { ctx ->
                             if (feedPostViewModel.shouldShowNoMoreContent) {
                                 adapter?.addElement(FeedNoContentModel.getNoMoreContentInstance(ctx))
