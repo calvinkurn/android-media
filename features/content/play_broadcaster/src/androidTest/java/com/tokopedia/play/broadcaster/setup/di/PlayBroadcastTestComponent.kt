@@ -45,43 +45,4 @@ import dagger.Component
     ]
 )
 @ActivityRetainedScope
-abstract class PlayBroadcastTestComponent : ActivityRetainedComponent()  {
-
-    abstract override fun appContext(): Context
-
-    abstract override fun userSession(): UserSessionInterface
-
-    abstract override fun graphqlRepository(): GraphqlRepository
-
-    abstract override fun permissionPrefs(): PermissionSharedPreferences
-
-    abstract override fun mapper(): PlayBroadcastMapper
-
-    abstract override fun coroutineDispatcher(): CoroutineDispatchers
-
-    abstract override fun broadcastAnalytic(): PlayBroadcastAnalytic
-
-    abstract override fun channelConfigStore(): ChannelConfigStore
-
-    abstract override fun productConfigStore(): ProductConfigStore
-
-    abstract override fun hydraConfigStore(): HydraConfigStore
-
-    abstract override fun navBarDialogCustomizer(): PlayBroadcastDialogCustomizer
-
-    abstract override fun broadcaster(): Broadcaster
-
-    abstract override fun broadcastTimer(): PlayBroadcastTimer
-
-    abstract override fun playWebSocket(): PlayWebSocket
-
-    abstract override fun playBroRepository(): PlayBroadcastRepository
-
-    abstract override fun playLogger(): PlayLogger
-
-    abstract override fun hydraSharedPref(): HydraSharedPreferences
-
-    abstract override fun inject(broadcastActivity: PlayBroadcastActivity)
-
-    abstract override fun inject(activity: PlayCoverCameraActivity)
-}
+abstract class PlayBroadcastTestComponent : ActivityRetainedComponent()
