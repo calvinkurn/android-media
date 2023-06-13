@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
@@ -8,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -137,6 +139,18 @@ class UserProfileReviewFragment @Inject constructor(
         )
     }
 
+    private val reviewMediaGalleryForActivityResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { data ->
+                val feedbackId = ReviewMediaGalleryRouter.getFeedbackIdResult(data)
+                val likeStatus = ReviewMediaGalleryRouter.getLikeStatusResult(data)
+                viewModel.submitAction(UserProfileAction.UpdateLikeStatus(feedbackId, likeStatus))
+            }
+        }
+    }
+
     override fun getScreenName(): String = TAG
 
     override fun onCreateView(
@@ -209,8 +223,7 @@ class UserProfileReviewFragment @Inject constructor(
                             preloadedDetailedReviewMediaResult = event.review.mapToProductReviewMediaGalleryModel(viewModel.profileUserID)
                         )
 
-                        /** TODO: startActivityForResult for handling like dislike inside media gallery */
-                        startActivity(intent)
+                        reviewMediaGalleryForActivityResult.launch(intent)
                     }
                     else -> {}
                 }
