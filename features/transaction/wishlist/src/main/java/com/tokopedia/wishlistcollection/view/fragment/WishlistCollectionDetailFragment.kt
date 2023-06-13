@@ -1059,6 +1059,7 @@ class WishlistCollectionDetailFragment :
             when (result) {
                 is Success -> {
                     finishRefresh()
+                    hitWishlistAffiliateCookie()
                     result.data.let { listData ->
                         if (!onLoadMore) {
                             collectionItemsAdapter.addList(listData)
@@ -1229,7 +1230,8 @@ class WishlistCollectionDetailFragment :
     private fun hitWishlistAffiliateCookie() {
         wishlistCollectionDetailViewModel.hitAffiliateCookie(
             affiliateUniqueId,
-            affiliateChannel
+            affiliateChannel,
+            collectionId
         )
     }
 

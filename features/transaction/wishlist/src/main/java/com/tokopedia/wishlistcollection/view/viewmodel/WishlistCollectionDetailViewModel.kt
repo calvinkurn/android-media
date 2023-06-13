@@ -9,11 +9,9 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -387,16 +385,16 @@ class WishlistCollectionDetailViewModel @Inject constructor(
 
     fun hitAffiliateCookie(
         affiliateUuid: String,
-        affiliateChannel: String
+        affiliateChannel: String,
+        wishlistCollectionId: String
     ) {
         launchCatchError(block = {
-            // TODO: Change affiliatePageDetail data
             affiliateCookieHelper.get().initCookie(
                 affiliateUUID = affiliateUuid,
                 affiliateChannel = affiliateChannel,
                 affiliatePageDetail = AffiliatePageDetail(
-                    "",
-                    source = AffiliateSdkPageSource.Shop("")
+                    pageId = wishlistCollectionId,
+                    source = AffiliateSdkPageSource.Wishlist()
                 )
             )
         }, onError = {
@@ -411,16 +409,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     ) {
         if (affiliateUUID.isNotEmpty()) {
             launchCatchError(block = {
-                // TODO: Change affiliatePageDetail data
-                val affiliateSdkProductInfo = AffiliateSdkProductInfo(
-                    "",
-                    wishlistItemOnAtc.variantName.isNotEmpty(),
-                    wishlistItemOnAtc.minOrder.toIntOrZero()
-                )
                 val affiliateSource = AffiliateSdkPageSource.DirectATC(
-                    AffiliateAtcSource.DISCOVERY_PAGE,
-                    wishlistItemOnAtc.shop.id,
-                    affiliateSdkProductInfo
+                    AffiliateAtcSource.WISHLIST,
+                    "",
+                    null
                 )
                 affiliateCookieHelper.get().initCookie(
                     affiliateUUID = affiliateUUID,

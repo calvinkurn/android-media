@@ -171,7 +171,7 @@ class WishlistCollectionSharingUtils {
         context.startActivity(Intent.createChooser(shareIntent, title))
     }
 
-    fun createShareInput(
+    private fun createShareInput(
         collectionId: String
     ): AffiliatePDPInput {
         val pageDetail = PageDetail(
