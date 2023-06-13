@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_ALA_CARTE
 import com.tokopedia.kyc_centralized.*
@@ -29,7 +30,15 @@ class KycAlaCarteUiTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        UserIdentificationInfoSimpleActivity::class.java, false, false
+        UserIdentificationInfoSimpleActivity::class.java,
+        false,
+        false
+    )
+
+    @get:Rule
+    var permissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     private lateinit var timber: MockTimber
@@ -40,6 +49,7 @@ class KycAlaCarteUiTest {
     fun setup() {
         timber = MockTimber()
         Timber.plant(timber)
+        stubAppGraphqlRepo()
         ActivityComponentFactory.instance = testComponent
     }
 
@@ -90,6 +100,31 @@ class KycAlaCarteUiTest {
     }
 
     @Test
+    fun whenAlaCarteWithShowcase_happyFlow() {
+        val projectId = "18"
+        kycApi.case = FakeKycUploadApi.Case.Success
+        val url = "https://tokopedia.com"
+        val i = Intent().apply {
+            data = Uri.parse(
+                UriUtil.buildUri(KYC_ALA_CARTE, projectId, "true", url, "ktpWithLiveness")
+            )
+        }
+        activityTestRule.launchActivity(i)
+        stubKtpCamera()
+        stubLiveness(projectId)
+        kycRobot {
+            checkTermsAndCondition()
+            atInfoClickNext()
+            atKtpIntroClickNext()
+            atFaceIntroClickNext()
+            atFinalAlacarteClickOK()
+        } validate {
+            hasRedirectUrl(timber, url)
+            assertThat(timber, hasProjectIdOf(projectId))
+        }
+    }
+
+    @Test
     fun whenLivenessResultIsFailedThenSuccess_projectIdIsHavingCorrectValue() {
         val projectId = "18"
         kycApi.case = FakeKycUploadApi.Case.Success
@@ -111,5 +146,4 @@ class KycAlaCarteUiTest {
             assertThat(timber, hasProjectIdOf(projectId))
         }
     }
-
 }

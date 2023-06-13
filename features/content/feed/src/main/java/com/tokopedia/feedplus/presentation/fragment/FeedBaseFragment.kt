@@ -222,6 +222,10 @@ class FeedBaseFragment :
         return true
     }
 
+    override fun isForceDarkModeNavigationBar(): Boolean {
+        return true
+    }
+
     override fun initInjector() {
         FeedMainInjector.get(requireContext()).inject(this)
     }
@@ -291,43 +295,43 @@ class FeedBaseFragment :
         isJustLoggedIn = false
 
         binding.vpFeedTabItemsContainer.registerOnPageChangeCallback(object :
-            OnPageChangeCallback() {
+                OnPageChangeCallback() {
 
-            var shouldSendSwipeTracker = false
+                var shouldSendSwipeTracker = false
 
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
-                    onNonLoginGoToFollowingTab.launch(
-                        RouteManager.getIntent(
-                            context,
-                            ApplinkConst.LOGIN
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    if (feedMainViewModel.getTabType(position) == TAB_TYPE_FOLLOWING && !userSession.isLoggedIn) {
+                        onNonLoginGoToFollowingTab.launch(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConst.LOGIN
+                            )
                         )
-                    )
-                }
-
-                if (shouldSendSwipeTracker) {
-                    if (THRESHOLD_OFFSET_HALF > positionOffset) {
-                        feedNavigationAnalytics.eventSwipeFollowingTab()
-                    } else {
-                        feedNavigationAnalytics.eventSwipeForYouTab()
                     }
-                    shouldSendSwipeTracker = false
+
+                    if (shouldSendSwipeTracker) {
+                        if (THRESHOLD_OFFSET_HALF > positionOffset) {
+                            feedNavigationAnalytics.eventSwipeFollowingTab()
+                        } else {
+                            feedNavigationAnalytics.eventSwipeForYouTab()
+                        }
+                        shouldSendSwipeTracker = false
+                    }
                 }
-            }
 
-            override fun onPageSelected(position: Int) {
-                feedMainViewModel.changeCurrentTabByIndex(position)
-                appLinkTabPosition = position
-            }
+                override fun onPageSelected(position: Int) {
+                    feedMainViewModel.changeCurrentTabByIndex(position)
+                    appLinkTabPosition = position
+                }
 
-            override fun onPageScrollStateChanged(state: Int) {
-                shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
-            }
-        })
+                override fun onPageScrollStateChanged(state: Int) {
+                    shouldSendSwipeTracker = state == ViewPager2.SCROLL_STATE_DRAGGING
+                }
+            })
 
         binding.viewVerticalSwipeOnboarding.setText(
             getString(R.string.feed_check_next_content)

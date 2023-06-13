@@ -11,6 +11,7 @@ import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
 import com.tokopedia.kyc_centralized.kycRobot
+import com.tokopedia.kyc_centralized.stubAppGraphqlRepo
 import com.tokopedia.kyc_centralized.ui.tokoKyc.info.UserIdentificationInfoActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.utils.view.binding.internal.findRootView
@@ -25,7 +26,9 @@ class KycFlowGeneratedIdTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        UserIdentificationInfoActivity::class.java, false, false
+        UserIdentificationInfoActivity::class.java,
+        false,
+        false
     )
 
     private val testComponent = FakeKycActivityComponentFactory()
@@ -35,6 +38,7 @@ class KycFlowGeneratedIdTest {
 
     @Before
     fun setup() {
+        stubAppGraphqlRepo()
         ActivityComponentFactory.instance = testComponent
     }
 
@@ -52,4 +56,3 @@ class KycFlowGeneratedIdTest {
         }
     }
 }
-

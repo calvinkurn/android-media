@@ -145,4 +145,7 @@ object ApplinkConstInternalSellerapp {
     const val SELLER_STOCK_REMINDER = "$INTERNAL_SELLERAPP/stock-reminder/{productId}/{productName}/{isVariant}/"
 
     const val SELLER_SHOP_HOUR = "$INTERNAL_SELLERAPP/shop/operational-hours"
+
+    //Seller Shop NIB
+    const val SELLER_SHOP_NIB = "$INTERNAL_SELLERAPP/shop-nib"
 }
