@@ -27,7 +27,7 @@ class FeedAuthorInfoView(
             imgFeedOwnerProfile.showWithCondition(imageConditions(author.logoUrl))
             imgFeedOwnerProfile.setOnClickListener {
                 feedListener.onAuthorProfilePictureClicked(trackerData)
-                RouteManager.route(root.context, author.applink)
+                RouteManager.route(root.context, author.appLink)
             }
 
             imgFeedOwnerBadge.setImageUrl(author.badgeUrl)
@@ -36,14 +36,14 @@ class FeedAuthorInfoView(
             tvFeedOwnerName.text = author.name
             tvFeedOwnerName.setOnClickListener {
                 feedListener.onAuthorNameClicked(trackerData)
-                RouteManager.route(root.context, author.applink)
+                RouteManager.route(root.context, author.appLink)
             }
 
             bindLiveLabel(isLive)
             bindFollow(author, showFollow, trackerData)
 
             root.setOnClickListener {
-                navigateToAuthorProfile(author.applink)
+                navigateToAuthorProfile(author.appLink)
             }
         }
     }
@@ -55,9 +55,9 @@ class FeedAuthorInfoView(
     ) {
         if (showFollow) {
             binding.btnFeedFollow.setOnClickListener {
-                if (author.isShop) {
+                if (author.type.isShop) {
                     feedListener.onFollowClicked(author.id, "", true, trackerData)
-                } else if (author.isUser) {
+                } else if (author.type.isUser) {
                     feedListener.onFollowClicked(
                         author.id,
                         author.encryptedUserId,
