@@ -23,9 +23,9 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
         setTypeClass(TopAdsTotalAdGroupsWithInsightResponse::class.java)
     }
 
-    suspend operator fun invoke(adGroupTypeList: List<String>):
+    suspend operator fun invoke(adGroupTypeList: List<String>, source: String):
         TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {
-        setRequestParams(createRequestParam(adGroupTypeList).parameters)
+        setRequestParams(createRequestParam(adGroupTypeList, source).parameters)
         val data = executeOnBackground()
 
         return when {
@@ -36,10 +36,11 @@ class TopAdsGetTotalAdGroupsWithInsightUseCase @Inject constructor(
         }
     }
 
-    private fun createRequestParam(adGroupTypeList: List<String>): RequestParams {
+    private fun createRequestParam(adGroupTypeList: List<String>, source: String): RequestParams {
         val requestParams = RequestParams.create()
         requestParams.putString(ParamObject.SHOP_ID, userSession.shopId)
-        requestParams.putString(SOURCE, "gql.get_total_ad_groups_with_insight_by_shop_id.test")
+//        requestParams.putString(SOURCE, "gql.get_total_ad_groups_with_insight_by_shop_id.test")
+        requestParams.putString(SOURCE, source)
         requestParams.putObject(
             FILTER,
             mapOf(

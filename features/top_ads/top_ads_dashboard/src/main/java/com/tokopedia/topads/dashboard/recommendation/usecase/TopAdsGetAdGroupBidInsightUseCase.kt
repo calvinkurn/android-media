@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.recommendation.usecase
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.recommendation.data.model.cloud.TopAdsAdGroupBidInsightResponse
 import com.tokopedia.topads.dashboard.recommendation.data.model.local.TopAdsListAllInsightState
 import com.tokopedia.usecase.RequestParams
@@ -32,7 +33,8 @@ class TopAdsGetAdGroupBidInsightUseCase @Inject constructor(
 
     private fun createRequestParam(groupId: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("source", "adbidinsight.shopinsight.test")
+//        requestParams.putString("source", "adbidinsight.shopinsight.test")
+        requestParams.putString("source", SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         requestParams.putObject(
             "groupIDs",
             listOf(groupId)

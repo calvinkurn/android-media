@@ -65,13 +65,13 @@ object RecommendationConstants {
         // topadsGetShopInfoV2_1
         // topAdsGetTotalAdGroupsWithInsightByShopID
         // topAdsListAllInsightCounts
-        const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center.landing_page"
+        const val SOURCE_INSIGHT_CENTER_LANDING_PAGE = "android.insight_center_landing_page"
 
         // topAdsGetTotalAdGroupsWithInsightByShopID
         // topAdsListAllInsightCounts
         // topAdsBatchGetKeywordInsightByGroupIDV3
         // topAdsBatchGetAdGroupBidInsightByGroupID
-        const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center.group_detail_page"
+        const val SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE = "android.insight_center_group_detail_page"
 
         // topAdsGetTotalAdGroupsWithInsightByShopID
         // topAdsListAllInsightCounts

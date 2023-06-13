@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.recommendation.usecase
 
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.InsightGqlInputSource.SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_DAILY_BUDGET
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_GROUP_BID
 import com.tokopedia.topads.dashboard.recommendation.common.RecommendationConstants.TYPE_KEYWORD_BID
@@ -142,7 +143,7 @@ class TopAdsGroupDetailUseCase @Inject constructor(
 
     private suspend fun getGroupWithInsight(AdGroupType: String): TopAdsListAllInsightState<TopAdsTotalAdGroupsWithInsightResponse> {
         return try {
-            topAdsGetTotalAdGroupsWithInsightUseCase(listOf(AdGroupType))
+            topAdsGetTotalAdGroupsWithInsightUseCase(listOf(AdGroupType), SOURCE_INSIGHT_CENTER_GROUP_DETAIL_PAGE)
         } catch (e: Exception) {
             TopAdsListAllInsightState.Fail(e)
         }
