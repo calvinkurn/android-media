@@ -60,7 +60,7 @@ class SomConfirmReqPickupViewModelTest {
 
     // confirm_req_pickup
     @Test
-    fun confirmReqPickup_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun confirmReqPickup_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somConfirmReqPickupUseCase.execute(any())
@@ -78,7 +78,7 @@ class SomConfirmReqPickupViewModelTest {
     }
 
     @Test
-    fun getShippingList_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun getShippingList_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somConfirmReqPickupUseCase.execute(any())
@@ -92,7 +92,7 @@ class SomConfirmReqPickupViewModelTest {
     }
 
     @Test
-    fun getShippingList_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun getShippingList_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somConfirmReqPickupUseCase.execute(any())
@@ -111,7 +111,7 @@ class SomConfirmReqPickupViewModelTest {
 
     // process_req_pickup
     @Test
-    fun processReqPickup_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
+    fun processReqPickup_shouldReturnSuccess() = coroutineTestRule.runTest {
         //given
         coEvery {
             somProcessReqPickupUseCase.execute(any())
@@ -126,7 +126,7 @@ class SomConfirmReqPickupViewModelTest {
     }
 
     @Test
-    fun processReqPickup_shouldReturnFail() = coroutineTestRule.runBlockingTest {
+    fun processReqPickup_shouldReturnFail() = coroutineTestRule.runTest {
         //given
         coEvery {
             somProcessReqPickupUseCase.execute(any())
@@ -140,7 +140,7 @@ class SomConfirmReqPickupViewModelTest {
     }
 
     @Test
-    fun processReqPickup_shouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
+    fun processReqPickup_shouldNotReturnEmpty() = coroutineTestRule.runTest {
         //given
         coEvery {
             somProcessReqPickupUseCase.execute(any())

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,12 +16,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
+import com.tokopedia.affiliate.AFFILIATE_NC
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.CLICK_TYPE
 import com.tokopedia.affiliate.COACHMARK_TAG
 import com.tokopedia.affiliate.COMMISSION_TYPE
-import com.tokopedia.affiliate.LINK_HISTORY_BUTTON_CLICKED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TIME_EIGHTEEN
@@ -63,14 +63,18 @@ import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageCircle
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -108,6 +112,33 @@ class AffiliateHomeFragment :
     private var isUserBlackListed = false
     private var isNoPromoItem = false
     private var isNoMoreData = false
+    private var productRV: RecyclerView? = null
+    private var swipeRefresh: SwipeToRefresh? = null
+    private var navToolbar: NavToolbar? = null
+    private var loader: LoaderUnify? = null
+    private fun isAffiliateNCEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_NC,
+            ""
+        ) == AFFILIATE_NC
+
+    private val loginRequest = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            setUserDetails()
+            affiliateHomeViewModel.getAffiliateValidateUser()
+        } else {
+            activity?.finish()
+        }
+    }
+    private val linkHistory = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            bottomNavBarClickListener?.selectItem(
+                AffiliateActivity.PROMO_MENU,
+                R.id.menu_promo_affiliate,
+                true
+            )
+        }
+    }
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
@@ -172,12 +203,12 @@ class AffiliateHomeFragment :
     }
 
     private fun afterViewCreated() {
-        val productRV = view?.findViewById<RecyclerView>(R.id.products_rv)
+        productRV = view?.findViewById(R.id.products_rv)
+        swipeRefresh = view?.findViewById(R.id.swipe_refresh_layout)
+        navToolbar = view?.findViewById(R.id.home_navToolbar)
+        loader = view?.findViewById(R.id.affiliate_progress_bar)
         if (!affiliateHomeViewModel.isUserLoggedIn()) {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                AFFILIATE_LOGIN_REQUEST_CODE
-            )
+            loginRequest.launch(RouteManager.getIntent(context, ApplinkConst.LOGIN))
         } else {
             affiliateHomeViewModel.getAffiliateValidateUser()
         }
@@ -185,22 +216,29 @@ class AffiliateHomeFragment :
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         productRV?.layoutManager = layoutManager
-        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
+        swipeRefresh?.setOnRefreshListener {
             isSwipeRefresh = true
             resetItems()
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         productRV?.adapter = adapter
         loadMoreTriggerListener?.let { productRV?.addOnScrollListener(it) }
-        view?.findViewById<NavToolbar>(R.id.home_navToolbar)?.run {
-            viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(
-                IconBuilder()
-                    .addIcon(IconList.ID_BILL) {
-                        openHistoryActivity()
-                    }
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+        navToolbar?.run {
+            val iconBuilder = IconBuilder()
+            if (isAffiliateNCEnabled()) {
+                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                    affiliateHomeViewModel.resetNotificationCount()
+                    sendNotificationClickEvent()
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
+                    )
+                }
+            }
+            iconBuilder
+                .addIcon(IconList.ID_BILL) { openHistoryActivity() }
+                .addIcon(IconList.ID_NAV_GLOBAL) {}
+            setIcon(iconBuilder)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.label_affiliate)
             setOnBackButtonClickListener {
@@ -215,6 +253,17 @@ class AffiliateHomeFragment :
             affiliateActivityInterface?.showCoachMarker()
         }
         setUserDetails()
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
+    }
+
+    private fun sendNotificationClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            "",
+            userSessionInterface.userId
+        )
     }
 
     private fun openHistoryActivity() {
@@ -225,7 +274,7 @@ class AffiliateHomeFragment :
         )
         val intent = Intent(context, AffiliateComponentActivity::class.java)
         intent.putExtra("isUserBlackListed", isUserBlackListed)
-        startActivityForResult(intent, LINK_HISTORY_BUTTON_CLICKED)
+        linkHistory.launch(intent)
     }
 
     private fun setUserDetails() {
@@ -239,6 +288,7 @@ class AffiliateHomeFragment :
         listSize = 0
         adapter.resetList()
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, isFullLoad = true)
+        affiliateHomeViewModel.fetchUnreadNotificationCount()
     }
 
     private fun setAffiliateGreeting() {
@@ -251,7 +301,9 @@ class AffiliateHomeFragment :
             }
     }
 
-    private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
+    private fun getEndlessRecyclerViewListener(
+        recyclerViewLayoutManager: RecyclerView.LayoutManager
+    ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (!isNoPromoItem && !isNoMoreData) {
@@ -272,14 +324,14 @@ class AffiliateHomeFragment :
             if (changed) resetItems()
         }
         affiliateHomeViewModel.progressBar().observe(this) { visibility ->
-            setProgressBar(visibility)
+            loader?.isVisible = visibility.orFalse()
         }
         affiliateHomeViewModel.getErrorMessage().observe(this) { error ->
             onGetError(error)
         }
         affiliateHomeViewModel.getValidateUserdata().observe(this) { validateUserdata ->
-            view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.show()
+            loader?.gone()
+            swipeRefresh?.show()
             onGetValidateUserData(validateUserdata)
         }
 
@@ -328,6 +380,11 @@ class AffiliateHomeFragment :
         affiliateHomeViewModel.noMoreDataAvailable().observe(this) { noDataAvailable ->
             isNoMoreData = noDataAvailable
         }
+        affiliateHomeViewModel.getUnreadNotificationCount().observe(this) { count ->
+            navToolbar?.apply {
+                setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
+            }
+        }
     }
 
     private fun sendTickerImpression(tickerType: String?, tickerId: Long?) {
@@ -348,7 +405,7 @@ class AffiliateHomeFragment :
     private fun onGetAffiliateDataItems(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
         adapter.removeShimmer(listSize)
         if (isSwipeRefresh) {
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing = false
+            swipeRefresh?.isRefreshing = false
             isSwipeRefresh = !isSwipeRefresh
         }
         if (dataList.isNotEmpty()) {
@@ -365,28 +422,20 @@ class AffiliateHomeFragment :
                 is UnknownHostException, is SocketTimeoutException -> {
                     setType(GlobalError.NO_CONNECTION)
                 }
+
                 is IllegalStateException -> {
                     setType(GlobalError.PAGE_FULL)
                 }
+
                 else -> {
                     setType(GlobalError.SERVER_ERROR)
                 }
             }
-            view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
+            swipeRefresh?.hide()
             show()
             setActionClickListener {
                 hide()
                 affiliateHomeViewModel.getAffiliateValidateUser()
-            }
-        }
-    }
-
-    private fun setProgressBar(visibility: Boolean?) {
-        if (visibility != null) {
-            if (visibility) {
-                view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
-            } else {
-                view?.findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
             }
         }
     }
@@ -440,29 +489,6 @@ class AffiliateHomeFragment :
 
     override fun setViewModel(viewModel: BaseViewModel) {
         affiliateHomeViewModel = viewModel as AffiliateHomeViewModel
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when (requestCode) {
-            AFFILIATE_LOGIN_REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    setUserDetails()
-                    affiliateHomeViewModel.getAffiliateValidateUser()
-                } else {
-                    activity?.finish()
-                }
-            }
-            LINK_HISTORY_BUTTON_CLICKED -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    bottomNavBarClickListener?.selectItem(
-                        AffiliateActivity.PROMO_MENU,
-                        R.id.menu_promo_affiliate,
-                        true
-                    )
-                }
-            }
-            else -> super.onActivityResult(requestCode, resultCode, data)
-        }
     }
 
     override fun onProductClick(
@@ -533,7 +559,13 @@ class AffiliateHomeFragment :
     override fun onInfoClick(
         title: String?,
         desc: String?,
-        metrics: List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>?,
+        metrics: List<AffiliateUserPerformaListItemData
+            .GetAffiliatePerformance
+            .Data
+            .UserData
+            .Metrics
+            .Tooltip
+            .SubMetrics?>?,
         type: String?,
         tickerInfo: String?
     ) {
@@ -567,11 +599,7 @@ class AffiliateHomeFragment :
 
     override fun onSystemDown() {
         affiliateHomeViewModel.getAnnouncementInformation()
-        hideViews()
-    }
-
-    private fun hideViews() {
-        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
+        swipeRefresh?.hide()
     }
 
     override fun onReviewed() {
@@ -616,9 +644,15 @@ class AffiliateHomeFragment :
     }
 
     private fun partialReset() {
-        val index = adapter.list.indexOfFirst { it is AffiliatePerformaSharedProductCardsModel }
-        adapter.list.removeAll { it is AffiliatePerformaSharedProductCardsModel }
-        adapter.notifyItemRangeRemoved(index, listSize - index)
+        val index = adapter.list.indexOfFirst {
+            it is AffiliatePerformaSharedProductCardsModel || it is AffiliateNoPromoItemFoundModel
+        }
+        adapter.list.removeAll {
+            it is AffiliatePerformaSharedProductCardsModel || it is AffiliateNoPromoItemFoundModel
+        }
+        if (index >= 0) {
+            adapter.notifyItemRangeRemoved(index, listSize - index)
+        }
         loadMoreTriggerListener?.resetState()
         listSize = affiliateHomeViewModel.staticSize
         isNoMoreData = false

@@ -38,7 +38,7 @@ import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
 import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
 import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
-import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TIPPING
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.isHypen
 import com.tokopedia.logisticorder.utils.toHyphenIfEmptyOrNull
@@ -227,7 +227,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun setDriverInfo(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status == SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status == SUCCESS_TIPPING || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
             binding?.dividerTippingGojek?.visibility = View.VISIBLE
@@ -311,7 +311,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             }
 
             btnTipping.text = when (tippingData.status) {
-                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> getString(R.string.btn_tipping_success_text)
+                SUCCESS_PAYMENT, SUCCESS_TIPPING -> getString(R.string.btn_tipping_success_text)
                 WAITING_PAYMENT -> getString(R.string.btn_tipping_waiting_payment_text)
                 REFUND_TIP -> getString(R.string.btn_tipping_refund_text)
                 else -> getString(R.string.btn_tipping_open_text)
@@ -325,7 +325,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             }
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
-                    SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
+                    SUCCESS_PAYMENT, SUCCESS_TIPPING, OPEN -> {
                         DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
                     }
                     WAITING_PAYMENT -> {

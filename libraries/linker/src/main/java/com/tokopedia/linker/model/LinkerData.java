@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.linker.LinkerUtils;
 
+import java.util.Objects;
+
 
 public class LinkerData implements Parcelable {
     public static final String TAG = LinkerData.class.getSimpleName();
@@ -242,7 +244,7 @@ public class LinkerData implements Parcelable {
     }
 
     public String getUri() {
-        return uri;
+        return this.uri;
     }
 
     public void setUri(String uri) {

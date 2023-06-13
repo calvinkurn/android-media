@@ -159,10 +159,10 @@
     <string name="paste_info_step_one">Tempel dan cek link nya untuk pastikan link tersebut bisa dipromosikan.</string>
     <string name="paste_info_step_two">Jika bisa, klik tombol &#8220;Promosikan&#8221; untuk bagikan link-nya ke sosmed kamu.</string>
     <string name="affiliate_date">Dibuat %s</string>
-    <string name="promo_recommended_info">Cek rekomendasi dari Tokopedia</string>
+    <string name="promo_recommended_info">Cek rekomendasi dari Tokopedia Affiliate</string>
     <string name="promo_share_link_info">Bagikan link dari halaman produk/toko</string>
     <string name="promo_info_title">Promosinya gampang, komisinya dapet!</string>
-    <string name="promo_info_desc"><![CDATA[Punya produk & toko favoritmu? Kamu bisa promosikan link-nya dengan cara-cara mudah yang bisa dipilih!]]></string>
+    <string name="promo_info_desc">Promosikan link dengan cara mudah yang bisa dipilih!</string>
     <string name="article_widget_detail">%s • %s • %s</string>
     <string name="article_widget_detail_read">Baca %s menit</string>
     <string name="see_all_event_widget_detail">%s • %s</string>
@@ -196,13 +196,18 @@
     <string name="affiliate_empty_ssa_list_title">Yaah, belum ada toko dengan Komisi Ekstra</string>
     <string name="affiliate_empty_ssa_list_desc">Kamu bisa cari produk dengan Komisi Ekstra juga, lho.</string>
     <string name="affiliate_empty_ssa_list_cta">Balik ke Promosikan</string>
-    <string name="affiliate_mau_bonus_hingga_jutaan">Mau bonus hingga jutaan? \ud83c\udf81</string>
-    <string name="affiliate_ikutan_main_misi_komisi_aja_yuk">Ikutan main Misi Komisi aja, yuk~</string>
+    <string name="affiliate_mau_bonus_hingga_jutaan">Mau bonus hingga jutaan?</string>
+    <string name="affiliate_gamification_card_info">Ikutan misinya buat dapetin komisi dan banyak bonus!</string>
     <string name="affiliate_kebijakan_privasi">Kebijakan Privasi</string>
     <string name="affiliate_dan">dan</string>
     <string name="affiliate_disco_inspiration_title">Event penuh komisi</string>
+    <string name="affiliate_disco_promo_inspiration_title">Banyak komisi di event ini</string>
     <string name="affiliate_landing_page_search_passive_placeholder">Artikel, Event, atau Kamus Affiliate</string>
     <string name="affiliate_landing_page_search_active_placeholder">Mau cari tahu apa?</string>
     <string name="affiliate_promo_carousel_title">Komisi ini nungguin kamu~</string>
     <string name="affiliate_promo_carousel_subtitle">Ayo promosikan toko atau produk ini!</string>
+    <string name="affiliate_gami_button_text">Yuk, Ikut Misi!</string>
+    <string name="affiliate_ssa_promo_title">Toko dengan komisi ekstra!</string>
+    <string name="affiliate_tokonow_promo_title">Komisi fresh dari Tokopedia NOW!</string>
+    <string name="affiliate_tokonow_promo_subtitle">Kini udah bisa promosi &amp; share link NOW!</string>
 </resources>

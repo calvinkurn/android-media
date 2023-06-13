@@ -157,6 +157,7 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
             reviewText
             reviewImageUrl
             reviewId
+            productUrl
           }
         }
         ... on CatalogLibraryEntrypointResponse {

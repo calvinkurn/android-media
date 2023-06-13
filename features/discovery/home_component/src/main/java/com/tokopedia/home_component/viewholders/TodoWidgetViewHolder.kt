@@ -103,7 +103,8 @@ class TodoWidgetViewHolder(
                     ctaText = todoWidget.ctaText,
                     feParam = todoWidget.feParam,
                     channel = element.channelModel,
-                    verticalPosition = adapterPosition,
+                    verticalPosition = element.channelModel.verticalPosition,
+                    cardPosition = index,
                     isCarousel = element.todoWidgetList.size > 1,
                     todoWidgetDismissListener = this,
                     cardInteraction = true
@@ -173,7 +174,7 @@ class TodoWidgetViewHolder(
     override fun dismiss(element: CarouselTodoWidgetDataModel, position: Int) {
         visitables.removeAt(position)
         adapter?.notifyItemRemoved(position)
-        todoWidgetComponentListener.onTodoCloseClicked(element, position)
+        todoWidgetComponentListener.onTodoCloseClicked(element)
     }
 }
 

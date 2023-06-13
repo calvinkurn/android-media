@@ -8,7 +8,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import java.lang.Exception
 
-
 /**
  * will check if the url match with the native page, do the map, and launch the activity.
  * @return true if it is successfully find the matching native page and launch the activity
@@ -25,8 +24,8 @@ object RouteManagerKt {
         if (url.endsWith(".pl")) {
             return false
         }
-        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST)
-            && !UriUtil.isHostStaging(url)
+        if (!url.contains(DeepLinkChecker.WEB_HOST) && !url.contains(DeepLinkChecker.MOBILE_HOST) &&
+            !UriUtil.isHostStaging(url) && !url.contains(DeepLinkChecker.WEB_HOST_SELLER)
         ) {
             return false
         }
@@ -70,7 +69,7 @@ object RouteManagerKt {
                 return DeepLinkChecker.openHot(url, activity)
             }
             DeepLinkChecker.CATALOG -> {
-                //TODO still use className
+                // TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)
             }
             DeepLinkChecker.TOKOPOINT -> {
@@ -109,8 +108,10 @@ object RouteManagerKt {
                 val merchantCode = getLinkSegment(url)[2]
                 val paymentId = getLinkSegment(url)[3]
                 return RouteManager.route(
-                    activity, ApplinkConst.THANKYOU_PAGE_NATIVE,
-                    paymentId, merchantCode
+                    activity,
+                    ApplinkConst.THANKYOU_PAGE_NATIVE,
+                    paymentId,
+                    merchantCode
                 )
             }
             DeepLinkChecker.SALDO_DEPOSIT -> {

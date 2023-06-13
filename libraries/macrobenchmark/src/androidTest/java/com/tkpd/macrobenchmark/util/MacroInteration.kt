@@ -7,7 +7,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 
 object MacroInteration {
-    private val DEFAULT_TIMEOUT = 60000L
+    val DEFAULT_TIMEOUT = 60000L
     private val IDLE_DURATION = 2000L
 
     fun basicFlingInteraction(

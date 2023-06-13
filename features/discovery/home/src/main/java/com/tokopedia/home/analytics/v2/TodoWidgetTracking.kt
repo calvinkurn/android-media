@@ -2,11 +2,13 @@ package com.tokopedia.home.analytics.v2
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.EVENT_ACTION_CLICK_CARD
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.EVENT_ACTION_CLICK_CLOSE
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.EVENT_ACTION_IMPRESSION
-import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.FORMAT_DASH_TWO_VALUES
+import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.FORMAT_EVENT_LABEL
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.ITEM_ID_FORMAT
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.ITEM_NAME_FORMAT
+import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.TRACKER_ID_CLICK_CARD
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.TRACKER_ID_CLICK_CLOSE
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.TRACKER_ID_CLICK_CTA
 import com.tokopedia.home.analytics.v2.TodoWidgetTracking.CustomAction.Companion.TRACKER_ID_IMPRESSION
@@ -23,34 +25,36 @@ object TodoWidgetTracking : BaseTrackerConst() {
         companion object {
             const val DYNAMIC_CHANNEL_TODO_WIDGET = "dynamic channel to do widget"
             const val EVENT_ACTION_CLICK_CTA = "click CTA button on dynamic channel to do widget"
+            const val EVENT_ACTION_CLICK_CARD = "click on card on dynamic channel to do widget"
             const val EVENT_ACTION_CLICK_CLOSE = "click close button on dynamic channel to do widget"
             const val EVENT_ACTION_IMPRESSION = "impression on banner dynamic channel to do widget"
-            const val DEFAULT_VALUE = ""
-            const val DEFAULT_BANNER_ID = "0"
-            const val FORMAT_DASH_TWO_VALUES = "%s - %s"
-            const val ITEM_ID_FORMAT = "%s_%s_%s_%s"
+            const val FORMAT_EVENT_LABEL = "%s_%s_%s_%s_%s_%s"
+            const val ITEM_ID_FORMAT = "%s_%s_%s_%s_%s_%s_%s"
             const val ITEM_NAME_FORMAT = "/ - p%s - $DYNAMIC_CHANNEL_TODO_WIDGET - banner - %s"
             const val TRACKER_ID_IMPRESSION = "41015"
             const val TRACKER_ID_CLICK_CTA = "41016"
+            const val TRACKER_ID_CLICK_CARD = "43721"
             const val TRACKER_ID_CLICK_CLOSE = "41017"
         }
     }
 
-    fun getTodoWidgetView(element: CarouselTodoWidgetDataModel, horizontalPosition: Int, userId: String): Map<String, Any> {
+    fun getTodoWidgetView(element: CarouselTodoWidgetDataModel, userId: String): Map<String, Any> {
         val trackingBuilder = BaseTrackerBuilder()
-        val creativeSlot = (horizontalPosition + 1).toString()
+        val creativeSlot = (element.cardPosition + 1).toString()
         val itemId = ITEM_ID_FORMAT.format(
             element.channel.id,
             element.channel.channelBanner.id,
-            element.channel.trackingAttributionModel.persoType,
-            element.channel.trackingAttributionModel.categoryId
+            element.dataSource,
+            element.title,
+            element.contextInfo,
+            element.price,
+            element.dueDate
         )
         val itemName = ITEM_NAME_FORMAT.format(
             element.verticalPosition,
-            element.channel.channelHeader.name
+            element.title
         )
 
-        // make sure lagi titlenya
         val listPromotions = arrayListOf(
             Promotion(
                 creative = element.title,
@@ -64,7 +68,7 @@ object TodoWidgetTracking : BaseTrackerConst() {
             event = Event.PROMO_VIEW,
             eventCategory = Category.HOMEPAGE,
             eventAction = EVENT_ACTION_IMPRESSION,
-            eventLabel = FORMAT_DASH_TWO_VALUES.format(element.channel.id, element.dataSource),
+            eventLabel = element.channel.id,
             promotions = listPromotions
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -75,15 +79,12 @@ object TodoWidgetTracking : BaseTrackerConst() {
             .build()
     }
 
-    fun sendTodoWidgetCTAClicked(element: CarouselTodoWidgetDataModel, horizontalPosition: Int, userId: String) {
+    fun sendTodoWidgetCTAClicked(element: CarouselTodoWidgetDataModel, userId: String) {
         val bundle = Bundle()
         bundle.putString(Event.KEY, Event.SELECT_CONTENT)
         bundle.putString(Action.KEY, CustomAction.EVENT_ACTION_CLICK_CTA)
         bundle.putString(Category.KEY, Category.HOMEPAGE)
-        bundle.putString(
-            Label.KEY,
-            FORMAT_DASH_TWO_VALUES.format(element.channel.id, element.dataSource)
-        )
+        bundle.putString(Label.KEY, element.channel.id)
         bundle.putString(TrackerId.KEY, TRACKER_ID_CLICK_CTA)
         bundle.putString(BusinessUnit.KEY, BusinessUnit.DEFAULT)
         bundle.putString(CampaignCode.KEY, element.channel.trackingAttributionModel.campaignCode)
@@ -92,21 +93,24 @@ object TodoWidgetTracking : BaseTrackerConst() {
         bundle.putString(ChannelId.KEY, element.channel.id)
         val promotion = Bundle().apply {
             putString(Promotion.CREATIVE_NAME, element.title)
-            putString(Promotion.CREATIVE_SLOT, (horizontalPosition + 1).toString())
+            putString(Promotion.CREATIVE_SLOT, (element.cardPosition + 1).toString())
             putString(
                 Promotion.ITEM_ID,
                 ITEM_ID_FORMAT.format(
                     element.channel.id,
                     element.channel.channelBanner.id,
-                    element.channel.trackingAttributionModel.persoType,
-                    element.channel.trackingAttributionModel.categoryId
+                    element.dataSource,
+                    element.title,
+                    element.contextInfo,
+                    element.price,
+                    element.dueDate
                 )
             )
             putString(
                 Promotion.ITEM_NAME,
                 ITEM_NAME_FORMAT.format(
                     element.verticalPosition,
-                    element.channel.channelHeader.name
+                    element.title
                 )
             )
         }
@@ -115,13 +119,43 @@ object TodoWidgetTracking : BaseTrackerConst() {
         getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
+    fun sendTodoWidgetCardClicked(element: CarouselTodoWidgetDataModel) {
+        val trackerBuilder = BaseTrackerBuilder()
+        trackerBuilder.constructBasicGeneralClick(
+            event = Event.CLICK_HOMEPAGE,
+            eventCategory = Category.HOMEPAGE,
+            eventAction = EVENT_ACTION_CLICK_CARD,
+            eventLabel = FORMAT_EVENT_LABEL.format(
+                element.channel.id,
+                element.dataSource,
+                element.title,
+                element.contextInfo,
+                element.price,
+                element.dueDate
+            )
+        )
+            .appendBusinessUnit(BusinessUnit.DEFAULT)
+            .appendCurrentSite(CurrentSite.DEFAULT)
+            .appendChannelId(element.channel.id)
+            .appendCustomKeyValue(TrackerId.KEY, TRACKER_ID_CLICK_CARD)
+
+        getTracker().sendGeneralEvent(trackerBuilder.build())
+    }
+
     fun sendTodoWidgetCloseClicked(element: CarouselTodoWidgetDataModel) {
         val trackerBuilder = BaseTrackerBuilder()
         trackerBuilder.constructBasicGeneralClick(
             event = Event.CLICK_HOMEPAGE,
             eventCategory = Category.HOMEPAGE,
             eventAction = EVENT_ACTION_CLICK_CLOSE,
-            eventLabel = FORMAT_DASH_TWO_VALUES.format(element.channel.id, element.dataSource)
+            eventLabel = FORMAT_EVENT_LABEL.format(
+                element.channel.id,
+                element.dataSource,
+                element.title,
+                element.contextInfo,
+                element.price,
+                element.dueDate
+            )
         )
             .appendBusinessUnit(BusinessUnit.DEFAULT)
             .appendCurrentSite(CurrentSite.DEFAULT)

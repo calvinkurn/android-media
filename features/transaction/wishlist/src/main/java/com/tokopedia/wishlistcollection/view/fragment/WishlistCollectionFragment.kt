@@ -564,6 +564,9 @@ class WishlistCollectionFragment :
                 is Success -> {
                     collectionAdapter.addList(result.data)
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

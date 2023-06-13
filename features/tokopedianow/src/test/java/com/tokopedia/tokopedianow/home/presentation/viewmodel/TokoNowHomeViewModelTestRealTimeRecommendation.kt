@@ -24,18 +24,20 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestFixture() {
 
     companion object {
-        private const val CHANGE_QUANTITY_DELAY = 500L
+        private const val CHANGE_QUANTITY_DELAY = 1000L
     }
 
     @Test
     fun `given rtr wiget param page name and interaction TRUE when addProductToCart should get real time recommendation`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "2"
             val channelId = "1001"
             val rtrEnabled = true
@@ -188,7 +190,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given add product to cart when addProductToCart other product should map real time recom widget state REFRESH`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val rtrEnabled = true
             val rtrPageName = "rtr_default"
@@ -366,7 +368,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given empty real time recom response when refreshRealTimeRecommendation should map latest real time recom data`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "2"
             val channelId = "1001"
             val rtrEnabled = true
@@ -526,7 +528,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given rtr wiget param page name and interaction FALSE when addProductToCart should NOT get real time recommendation`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "2"
             val channelId = "1001"
             val rtrEnabled = false
@@ -661,7 +663,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given get real time recommendation error when addProductToCart should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "2"
             val channelId = "1001"
             val rtrPageName = "rtr_default"
@@ -704,7 +706,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given real time recommendation when removeRealTimeRecommendation should map real time recom product list empty`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val productId = "2"
             val channelId = "1001"
             val rtrEnabled = true
@@ -858,7 +860,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
 
     @Test
     fun `given empty channelId when addProductToCart should NOT call get recommendation use case`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             viewModel.onCartQuantityChanged(
                 productId = "2",
                 quantity = 1,

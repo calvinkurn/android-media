@@ -1,8 +1,10 @@
 package com.tokopedia.tokochat.di
 
 import android.content.Context
+import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
@@ -22,6 +24,12 @@ object TokoChatModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @ActivityScope
+    @Provides
+    fun provideRemoteConfig(@TokoChatQualifier remoteConfig: RemoteConfig): RemoteConfig {
+        return remoteConfig
     }
 
     @ActivityScope

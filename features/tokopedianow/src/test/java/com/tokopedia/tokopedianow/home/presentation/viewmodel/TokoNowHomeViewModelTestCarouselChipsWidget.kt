@@ -23,19 +23,21 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixture() {
 
     companion object {
-        private const val ADD_TO_CART_DELAY = 500L
-        private const val SWITCH_PRODUCT_CAROUSEL_TAB_DELAY = 500L
+        private const val ADD_TO_CART_DELAY = 700L
+        private const val SWITCH_PRODUCT_CAROUSEL_TAB_DELAY = 700L
     }
 
     @Test
     fun `given chip carousel layout response when getLayoutComponentData should map carousel chips widget to homeLayoutList`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val layout = "chip_carousel"
 
             val channelId = "1001"
@@ -172,7 +174,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given chip carousel when switchProductCarouselChipTab should update carousel chips widget`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val selectedChipId = "3"
             val layout = "chip_carousel"
@@ -330,7 +332,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given chip carousel when switchProductCarouselChipTab multiple times should call getRecommendationUseCase once`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val layout = "chip_carousel"
 
@@ -384,7 +386,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given chip carousel when switchProductCarouselChipTab error should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val layout = "chip_carousel"
 
@@ -528,7 +530,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given selected chip not found when switchProductCarouselChipTab should do nothing`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val selectedChipId = "99"
 
             val channelId = "1001"
@@ -577,7 +579,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given chip carousel when add to cart should update homeAddToCartTracker live data`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val channelId = "1001"
             val productId = "5"
             val shopId = "5"
@@ -707,7 +709,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
                         name = "Tahu Bulat",
                         isVariant = true,
                         price = "",
-                        orderQuantity = 0,
+                        orderQuantity = 2,
                         usePreDraw = true,
                         needToShowQuantityEditor = true,
                         needToChangeMaxLinesName = true,
@@ -749,7 +751,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given product not found when add to cart should NOT update homeAddToCartTracker live data`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val channelId = "1001"
             val productId = "5"
             val shopId = "5"
@@ -832,7 +834,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given chipId same with current selected chipId when switchProductCarouselChipTab should NOT call get getRecommendationUseCase`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val chipId = "1"
             val currentSelectedChipId = "1"
 
@@ -899,7 +901,7 @@ class TokoNowHomeViewModelTestCarouselChipsWidget : TokoNowHomeViewModelTestFixt
 
     @Test
     fun `given chip carousel not found when switchProductCarouselChipTab should NOT call get getRecommendationUseCase`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val chipId = "1"
             val channelId = "1001"
             val homeLayoutResponse = emptyList<HomeLayoutResponse>()

@@ -26,6 +26,7 @@ data class VariantOptionWithAttribute(
 ) {
 
     companion object {
+        val EMPTY = VariantOptionWithAttribute()
 
         fun create(
             variantOption: VariantOption,
@@ -50,4 +51,6 @@ data class VariantOptionWithAttribute(
             flashSale = isFlashSale
         )
     }
+
+    fun isEmpty() = this == EMPTY
 }

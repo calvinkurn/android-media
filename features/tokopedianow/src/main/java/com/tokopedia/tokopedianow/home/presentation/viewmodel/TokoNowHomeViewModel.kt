@@ -17,6 +17,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.productcard.compact.productcardcarousel.presentation.uimodel.ProductCardCompactCarouselItemUiModel
@@ -37,10 +38,11 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.GetTargetedTickerUseCase
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
+import com.tokopedia.tokopedianow.common.model.TokoNowBundleUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseProductUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
+import com.tokopedia.tokopedianow.common.model.categorymenu.TokoNowCategoryMenuUiModel
 import com.tokopedia.tokopedianow.common.service.NowAffiliateService
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
@@ -62,6 +64,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeClaimCouponList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapPlayWidgetData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductBundleRecomData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
@@ -144,6 +147,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase,
     private val getCatalogCouponListUseCase: GetCatalogCouponListUseCase,
     private val redeemCouponUseCase: RedeemCouponUseCase,
+    private val getProductBundleRecomUseCase: GetProductBundleRecomUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
@@ -169,6 +173,7 @@ class TokoNowHomeViewModel @Inject constructor(
         private const val DEFAULT_INDEX = 1
         private const val SUCCESS_CODE = "200"
         private const val DEFAULT_HEADER_Y_COORDINATE = 0f
+        private const val QUERY_PARAM_PRODUCT_BUNDLE = "type=SINGLE,MULTIPLE&pageName=now_homepage"
         private const val SWITCH_PRODUCT_CAROUSEL_TAB_DELAY = 500L
     }
 
@@ -414,7 +419,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 response = response,
                 widgetId = widgetId,
                 slugs = slugs,
-                state = TokoNowLayoutState.SHOW,
+                state = TokoNowLayoutState.SHOW
             )
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
@@ -490,20 +495,20 @@ class TokoNowHomeViewModel @Inject constructor(
             stock = stock,
             isVariant = isVariant,
             onSuccessAddToCart = {
-                trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateProductCartQuantity(productId, quantity, type)
                 checkRealTimeRecommendation(channelId, productId, type)
+                trackProductAddToCart(productId, quantity, type, it.data.cartId)
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = { miniCartItem, _ ->
                 val cartId = miniCartItem.cartId
-                trackProductUpdateCart(productId, quantity, type, cartId)
                 updateProductCartQuantity(productId, quantity, type)
+                trackProductUpdateCart(productId, quantity, type, cartId)
                 updateToolbarNotification()
             },
             onSuccessDeleteCart = { miniCartItem, _ ->
-                trackProductRemoveCart(productId, type, miniCartItem.cartId)
                 updateProductCartQuantity(productId, DEFAULT_QUANTITY, type)
+                trackProductRemoveCart(productId, type, miniCartItem.cartId)
                 updateToolbarNotification()
             },
             onError = {
@@ -553,7 +558,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun getRepurchaseProducts(): List<TokoNowProductCardUiModel> {
+    fun getRepurchaseProducts(): List<TokoNowRepurchaseProductUiModel> {
         val item = homeLayoutItemList.firstOrNull { it?.layout is TokoNowRepurchaseUiModel }
         val repurchase = item?.layout as? TokoNowRepurchaseUiModel
         return repurchase?.productList.orEmpty()
@@ -605,8 +610,8 @@ class TokoNowHomeViewModel @Inject constructor(
 
             _homeLayoutList.postValue(Success(data))
         }, onError = {
-                removeWidget(item.id)
-            })
+            removeWidget(item.id)
+        })
     }
 
     fun updatePlayWidget(channelId: String, totalView: String) {
@@ -720,8 +725,8 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = referralEvaluateJoinUseCase.execute(referralData)
             _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
         }, onError = {
-                _referralEvaluate.postValue(Fail(it))
-            })
+            _referralEvaluate.postValue(Fail(it))
+        })
     }
 
     fun switchProductCarouselChipTab(channelId: String, chipId: String) {
@@ -798,6 +803,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is TokoNowCategoryMenuUiModel -> getCategoryMenuDataAsync(warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
+            is TokoNowBundleUiModel -> getProductBundleRecomAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
     }
@@ -826,6 +832,19 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeCategoryMenuData(response, warehouseId)
         }) {
             homeLayoutItemList.mapHomeCategoryMenuData(emptyList())
+        }
+    }
+
+    private suspend fun getProductBundleRecomAsync(
+        item: TokoNowBundleUiModel
+    ): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = getProductBundleRecomUseCase.execute(
+                queryParam = QUERY_PARAM_PRODUCT_BUNDLE
+            )
+            homeLayoutItemList.mapProductBundleRecomData(item, response)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
         }
     }
 

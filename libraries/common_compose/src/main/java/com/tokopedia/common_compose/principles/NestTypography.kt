@@ -167,16 +167,19 @@ fun NestTypographyDisplay3Preview() {
 @Preview(name = "Typography with Annotation String")
 @Composable
 fun NestTypographyAnnotationPreview() {
+    val helloColor = NestTheme.colors.NN._600
+    val worldColor = NestTheme.colors.GN._500
+
     NestTypography(
         text = buildAnnotatedString {
             withStyle(style = ParagraphStyle(lineHeight = 30.sp)) {
-                withStyle(style = SpanStyle(color = NestTheme.colors.NN._600)) {
+                withStyle(style = SpanStyle(color = helloColor)) {
                     append("Hello ")
                 }
                 withStyle(
                     style = SpanStyle(
                         fontWeight = FontWeight.Bold,
-                        color = NestTheme.colors.GN._500
+                        color = worldColor
                     )
                 ) {
                     append("World ")

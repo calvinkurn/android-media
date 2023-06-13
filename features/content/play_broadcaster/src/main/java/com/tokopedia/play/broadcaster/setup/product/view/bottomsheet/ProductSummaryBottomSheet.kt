@@ -200,6 +200,9 @@ class ProductSummaryBottomSheet @Inject constructor(
                             )
                         }
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         }

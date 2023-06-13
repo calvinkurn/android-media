@@ -21,9 +21,11 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 
 class ProductPreviewViewHolder(
-        itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener
+    itemView: View,
+    attachmentItemPreviewListener: AttachmentItemPreviewListener
 ) : AttachmentPreviewViewHolder<TopchatProductAttachmentPreviewUiModel>(
-        itemView, attachmentItemPreviewListener
+    itemView,
+    attachmentItemPreviewListener
 ) {
 
     private val productImage = itemView.findViewById<ImageView>(R.id.iv_product)
@@ -41,31 +43,31 @@ class ProductPreviewViewHolder(
     private val retryBtn = itemView.findViewById<FrameLayout>(R.id.iu_retry_product_preview)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
-            view = container,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
-            shadowColor = R.color.topchat_dms_black_12,
-            elevation = R.dimen.dp_topchat_2,
-            shadowRadius = R.dimen.dp_topchat_2,
-            shadowGravity = Gravity.CENTER,
-            useViewPadding = true
+        view = container,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
+        shadowColor = R.color.topchat_dms_black_12,
+        elevation = R.dimen.dp_topchat_2,
+        shadowRadius = R.dimen.dp_topchat_2,
+        shadowGravity = Gravity.CENTER,
+        useViewPadding = true
     )
 
     private val retryBg = ViewUtil.generateBackgroundWithShadow(
-            view = retryContainer,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
-            topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
-            bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
-            bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
-            shadowColor = R.color.topchat_dms_black_12,
-            elevation = R.dimen.dp_topchat_4,
-            shadowRadius = R.dimen.dp_topchat_4,
-            shadowGravity = Gravity.CENTER,
-            useViewPadding = true
+        view = retryContainer,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+        topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+        topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+        bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+        bottomRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_40,
+        shadowColor = R.color.topchat_dms_black_12,
+        elevation = R.dimen.dp_topchat_4,
+        shadowRadius = R.dimen.dp_topchat_4,
+        shadowGravity = Gravity.CENTER,
+        useViewPadding = true
     )
 
     override fun getButtonView(itemView: View): ImageView? {
@@ -164,7 +166,9 @@ class ProductPreviewViewHolder(
         if (model.hasColorVariant()) {
             productColorVariant.show()
             productColorVariantValue?.text = ellipsizeLongText(
-                    model.colorVariant, MAX_VARIANT_LABEL_CHAR)
+                model.colorVariant,
+                MAX_VARIANT_LABEL_CHAR
+            )
         } else {
             productColorVariant?.hide()
         }
@@ -172,7 +176,9 @@ class ProductPreviewViewHolder(
         val productHasSizeVariant = model.hasSizeVariant()
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
             productSizeVariantValue?.text = ellipsizeLongText(
-                    model.sizeVariant, MAX_VARIANT_LABEL_CHAR)
+                model.sizeVariant,
+                MAX_VARIANT_LABEL_CHAR
+            )
         }
     }
 

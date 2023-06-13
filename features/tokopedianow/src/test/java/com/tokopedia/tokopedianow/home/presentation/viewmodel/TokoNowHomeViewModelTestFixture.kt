@@ -17,7 +17,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.minicart.common.domain.usecase.GetProductBundleRecomUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
@@ -61,6 +63,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.claimcoupon.HomeClai
 import com.tokopedia.tokopedianow.util.TestUtils.getPrivateField
 import com.tokopedia.tokopedianow.util.TestUtils.mockPrivateField
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.StandardTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -119,6 +123,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     lateinit var getQuestWidgetListUseCase: GetQuestWidgetListUseCase
 
     @RelaxedMockK
+    lateinit var getProductBundleRecomUseCase: GetProductBundleRecomUseCase
+    @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
 
     @RelaxedMockK
@@ -149,7 +155,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     val rule = InstantTaskExecutorRule()
 
     @get:Rule
-    val coroutineTestRule = CoroutineTestRule()
+    val coroutineTestRule = UnconfinedTestRule()
 
     protected lateinit var viewModel : TokoNowHomeViewModel
 
@@ -173,7 +179,9 @@ abstract class TokoNowHomeViewModelTestFixture {
             getHomeReferralUseCase,
             referralEvaluateJoinUseCase,
             getCatalogCouponListUseCase,
-            redeemCouponUseCase,playWidgetTools,
+            redeemCouponUseCase,
+            getProductBundleRecomUseCase,
+            playWidgetTools,
             userSession,
             coroutineTestRule.dispatchers,
             addToCartUseCase,
@@ -353,6 +361,10 @@ abstract class TokoNowHomeViewModelTestFixture {
         coVerify { redeemCouponUseCase.execute(any(), any(), any(), any(), any()) }
     }
 
+    protected fun verifyGetProductBundleRecomUseCaseCalled() {
+        coVerify { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) }
+    }
+
     protected fun verifyGetMiniCartUseCaseCalled() {
         verify { getMiniCartUseCase.setParams(any(), MiniCartSource.TokonowHome) }
         verify { getMiniCartUseCase.execute(any(), any()) }
@@ -451,6 +463,14 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetCategoryList_thenReturn(categoryListResponse: CategoryListResponse) {
         coEvery { getCategoryListUseCase.execute("1", 1) } returns categoryListResponse
+    }
+
+    protected fun onGetProductBundleRecom_thenReturn(productBundleRecomResponse: ProductBundleRecomResponse) {
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } returns productBundleRecomResponse
+    }
+
+    protected fun onGetProductBundleRecom_thenReturn(errorThrowable: Throwable) {
+        coEvery { getProductBundleRecomUseCase.execute(productIds = any(), excludeBundleIds = any(), queryParam = any()) } throws  errorThrowable
     }
 
     protected fun onGetCatalogCouponList_thenReturn(catalogCouponList: GetCatalogCouponListResponse.TokopointsCatalogWithCouponList) {

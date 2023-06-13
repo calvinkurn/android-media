@@ -61,7 +61,7 @@ class TableColumnHtmlViewHolder(
         with(binding) {
             val textColorInt = element.colorInt ?: MethodChecker.getColor(
                 root.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                com.tokopedia.unifyprinciples.R.color.Unify_NN900
             )
             element.colorInt = textColorInt
             tvTableColumnHtml.run {

@@ -9,7 +9,7 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -37,7 +37,7 @@ class FetchUserDobUseCaseTest {
 
     @Test(expected = NullPointerException::class)
     fun `getRestData throws exception`() {
-        runBlockingTest {
+        runTest {
             coEvery {
                 (repository.getRestData("",
                         object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
@@ -53,7 +53,7 @@ class FetchUserDobUseCaseTest {
 
     @Test
     fun `check function invokation of getRestData`() {
-        runBlockingTest {
+        runTest {
             coEvery {
                 (repository.getRestData("",
                         object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,

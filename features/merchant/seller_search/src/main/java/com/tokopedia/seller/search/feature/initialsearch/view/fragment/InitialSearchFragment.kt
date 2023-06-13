@@ -29,7 +29,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-
 class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
 
     @Inject
@@ -73,7 +72,8 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.initial_search_fragment, container, false)
@@ -138,38 +138,53 @@ class InitialSearchFragment : BaseDaggerFragment(), HistorySearchListener {
     }
 
     private fun observeInsertSearch() {
-        viewModel.insertSuccessSearch.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    dropKeyBoard()
-                }
-                is Fail -> {
-                    dropKeyBoard()
+        viewModel.insertSuccessSearch.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        dropKeyBoard()
+                    }
+                    is Fail -> {
+                        dropKeyBoard()
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observeDeleteHistorySearch() {
-        viewModel.deleteHistorySearch.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    removePositionHistory()
+        viewModel.deleteHistorySearch.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        removePositionHistory()
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observeGetSellerSearch() {
-        viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
-            (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
-            when (it) {
-                is Success -> {
-                    setHistorySearch(it.data.first, it.data.second)
-                    stopSearchResultPagePerformanceMonitoring()
+        viewModel.getSellerSearch.observe(
+            viewLifecycleOwner,
+            Observer {
+                (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
+                when (it) {
+                    is Success -> {
+                        setHistorySearch(it.data.first, it.data.second)
+                        stopSearchResultPagePerformanceMonitoring()
+                    }
+                    else -> {
+                        // no-op
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun dropKeyBoard() {

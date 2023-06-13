@@ -9,10 +9,12 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.util.*
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import junit.framework.Assert.fail
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 /**
@@ -37,6 +39,9 @@ class PlayShortsConfigViewModelTest {
     private val mockConfigBanned = uiModelBuilder.buildShortsConfig(isBanned = true)
 
     private val mockException = Exception("Network Error")
+
+    @get:Rule
+    val rule: CoroutineTestRule = CoroutineTestRule()
 
     @Before
     fun setUp() {

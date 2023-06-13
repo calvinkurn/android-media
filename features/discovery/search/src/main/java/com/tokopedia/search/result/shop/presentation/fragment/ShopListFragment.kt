@@ -215,6 +215,9 @@ internal class ShopListFragment:
                 showRetryLayout(searchShopLiveData)
                 hideSearchPageLoading()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

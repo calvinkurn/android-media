@@ -21,7 +21,10 @@ import io.mockk.coVerify
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import java.util.*
 
@@ -90,7 +93,7 @@ class ChooseProductViewModelUiInteractionTest: ChooseProductViewModelTestFixture
     }
 
     @Test
-    fun `When there is product, criteria or maxproduct datachanges, Expect invoke validation related flow`() = runBlockingTest {
+    fun `When there is product, criteria or maxproduct datachanges, Expect invoke validation related flow`() = runTest {
         // given
         coEvery {
             getFlashSaleProductListToReserveUseCase.execute(any())
@@ -107,12 +110,12 @@ class ChooseProductViewModelUiInteractionTest: ChooseProductViewModelTestFixture
         var selectionValidationResult: ChooseProductUiMapper.SelectionValidationResult? = null
 
         // when
-        val validationResultJob = launch {
+        val validationResultJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.validationResult.collectLatest {
                 validationResult = it
             }
         }
-        val selectionValidationResultJob = launch {
+        val selectionValidationResultJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.selectionValidationResult.collectLatest {
                 selectionValidationResult = it
             }
@@ -120,6 +123,7 @@ class ChooseProductViewModelUiInteractionTest: ChooseProductViewModelTestFixture
         viewModel.getCriteriaList()
         viewModel.getMaxProductSubmission()
         viewModel.getProductList(0,0,"")
+        advanceUntilIdle()
         validationResultJob.cancel()
         selectionValidationResultJob.cancel()
 

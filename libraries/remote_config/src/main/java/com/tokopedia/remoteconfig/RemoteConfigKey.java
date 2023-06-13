@@ -29,7 +29,6 @@ public class RemoteConfigKey {
     public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
-    public static final String ENABLE_EPHARMACY_UPLOAD_PAGE = "android_main_app_enable_epharmacy_page";
     public static final String ENABLE_MINI_CONSULTATION_PAGE = "android_main_app_enable_mini_consultation";
     public static final String DISABLE_CATALOG_LIBRARY_PAGE = "android_main_app_disable_catalog_library";
 
@@ -38,8 +37,6 @@ public class RemoteConfigKey {
     public static final String NOTIFICATION_LOGGER = "notification_logger";
     public static final String MAINAPP_NATIVE_PROMO_LIST = "mainapp_native_promo_list";
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
-    public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
-
 
 
     public static final String SHOW_REFERRAL_HELP_LINK = "app_show_apa_itu_tokocash_referral";
@@ -79,12 +76,6 @@ public class RemoteConfigKey {
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 
-
-
-
-
-    public static final String ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL = "android_customer_travel_enable_cross_sell";
-
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
     public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
@@ -107,11 +98,8 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_TRACEROUTE_MIN_VERSION = "android_main_app_enabled_traceroute_min_version";
 
-    public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
+    public static final String MAINAPP_ENTERTAINMENT_ALWAYS_NATIVE = "android_enable_always_native_entertainment";
 
-
-    public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
-    public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
     public static final String MAINAPP_RECHARGE_BUYER_ORDER_DETAIL = "android_enable_dg_order_detail_new";
     public static final String MAINAPP_RECHARGE_CC_PROMO_RECOM = "android_enable_cc_promorecom";
 
@@ -186,8 +174,6 @@ public class RemoteConfigKey {
 
     public static final String FORCE_LIGHT_MODE = "android_force_light_mode";
 
-    public static final String ENABLE_ADD_BILLS_SBM = "android_main_app_enable_add_bills_sbm";
-
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
@@ -240,14 +226,23 @@ public class RemoteConfigKey {
     public static final String ENABLE_WEBVIEW_PRINT_JS_INTERFACE = "android_enable_webview_print_jsinterface";
 
     public static final String SELLER_HOME_ENABLE_WATCH_APP_CHECKING = "android_sellerapp_home_enable_watch_app_checking";
-
-    public static final String IS_CONTACT_US_MVVM = "android_contactus_is_mvvm";
-
     public static final String ENABLE_POST_ATC_PDP = "android_enable_post_atc_pdp";
 
+    public static final String ENABLE_PERFORMANCE_TRACE = "android_enable_performance_trace";
+
     public static final String DEV_OPTS_AUTHORIZATION = "android_dev_opts_password_hash";
+
+    public static final String ENABLE_CHATBOT_MVVM = "android_chatbot_is_mvvm";
 
     public static final String ENABLE_MULTI_BO_BOTTOM_SHEET = "android_enable_multi_bo_bottom_sheet";
 
     public static final String IS_TOKOFOOD_NEW_GTP_FLOW = "android_tokofood_new_gtp";
+
+    public static final String IS_USING_NEW_FEED = "android_main_app_show_unified_feed";
+
+    public static final String BUBBLE_TOPCHAT_CM = "android_enable_bubble_topchat_cm";
+
+    public static final String FINTECH_WEBVIEW_HIDE_TOOLBAR = "android_fintech_webview_hide_toolbar";
+
+    public static final String FEED_NEW_ICON = "FeedNewIcon";
 }

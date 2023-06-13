@@ -273,6 +273,9 @@ open class ProductManageFragment :
                             isCarousel = true
                         )
                     }
+                    else -> {
+                        // no op
+                    }
                 }
             }
         }
@@ -1785,6 +1788,9 @@ open class ProductManageFragment :
 
                 getFiltersTab(withDelay = true)
             }
+            else -> {
+                // no op
+            }
         }
 
         if (result.failed.isEmpty()) {
@@ -2270,7 +2276,6 @@ open class ProductManageFragment :
             context,
             ApplinkConstInternalMarketplace.STOCK_REMINDER,
             productManageUiModel.id,
-            productManageUiModel.title,
             productManageUiModel.isVariant.toString()
         )
         startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
@@ -2826,6 +2831,9 @@ open class ProductManageFragment :
                     }
                     renderCheckedView()
                 }
+                else -> {
+                    // no op
+                }
             }
         }
     }
@@ -2851,6 +2859,9 @@ open class ProductManageFragment :
         viewLifecycleOwner.observe(viewModel.productListFeaturedOnlyResult) {
             when (it) {
                 is Success -> productListFeaturedOnlySize = it.data
+                else -> {
+                    // no op
+                }
             }
         }
     }

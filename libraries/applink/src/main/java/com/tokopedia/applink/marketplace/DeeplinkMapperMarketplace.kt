@@ -54,7 +54,7 @@ object DeeplinkMapperMarketplace {
 
     fun getShopPageInternalAppLink(ctx: Context, uri: Uri, deeplink: String, internalAppLink: String, shopId: String):String {
         return if (isSpecialShop(shopId) && uri.pathSegments.size == 1) {
-            DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink, ctx)
+            DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop(deeplink)
         } else if(isTokopediaNowShopId(shopId) && !GlobalConfig.isSellerApp()){
             ApplinkConstInternalTokopediaNow.HOME
         } else {
@@ -65,7 +65,6 @@ object DeeplinkMapperMarketplace {
             }
         }
     }
-
     fun getShopOperationalHourInternalAppLink(shopId: String):String {
         return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
     }
@@ -84,7 +83,7 @@ object DeeplinkMapperMarketplace {
         }
     }
 
-    private fun getShopReviewDestinationPage(uri: Uri, shopId: String): String {
+    fun getShopReviewDestinationPage(uri: Uri, shopId: String): String {
         val source = uri.getQueryParameter(PARAM_SOURCE).orEmpty()
         return if (source.isNotEmpty() && source == REVIEW_FULL_PAGE_SOURCE) {
             // review page full page

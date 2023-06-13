@@ -6,6 +6,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
@@ -121,6 +122,7 @@ class InspirationCarouselDataView(
             val minOrder: String = "",
             val trackingOption: Int = 0,
             val stockBarDataView: StockBarDataView = StockBarDataView(),
+            val warehouseID: String = "",
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 
@@ -175,6 +177,7 @@ class InspirationCarouselDataView(
                     "dimension61", filterSortParams,
                     "dimension90", dimension90,
                     "dimension131", externalReference.orNone(),
+                    "dimension56", warehouseID.ifNullOrBlank { "0" },
                 )
             }
 
@@ -201,6 +204,7 @@ class InspirationCarouselDataView(
                     "shop_name", shopName,
                     "shop_type", "none / other",
                     "variant", "none / other",
+                    "dimension56", warehouseID.ifNullOrBlank { "0" },
                 )
             }
 

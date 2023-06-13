@@ -70,11 +70,15 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
 
     private fun getResourcesConfig(): Triple<Int, Int, Int> =
         if (GlobalConfig.isSellerApp()) {
-            Triple(
-                R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
-                R.string.cm_notifications_general_prompt_sellerapp_title,
-                R.string.cm_notifications_general_prompt_sellerapp_description
-            )
+            if (isReminderPrompt) {
+                getResourcesConfigForReminderPrompt()
+            } else {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
+                    R.string.cm_notifications_general_prompt_sellerapp_title,
+                    R.string.cm_notifications_general_prompt_sellerapp_description
+                )
+            }
         } else {
             if (isReminderPrompt) {
                 getResourcesConfigForReminderPrompt()
@@ -88,7 +92,7 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         }
 
     private fun getResourcesConfigForReminderPrompt(): Triple<Int, Int, Int> =
-        when(pageName) {
+        when (pageName) {
             KEJAR_DISKON -> {
                 Triple(
                     R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
@@ -108,6 +112,13 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
                     R.drawable.cm_notifications_general_prompt_bottomsheet_mainapp,
                     R.string.cm_notifications_general_prompt_live_shopping_title,
                     R.string.cm_notifications_general_prompt_live_shopping_description
+                )
+            }
+            STOCK_REMINDER -> {
+                Triple(
+                    R.drawable.cm_notifications_general_prompt_bottomsheet_sellerapp,
+                    R.string.cm_notifications_general_prompt_product_list_title,
+                    R.string.cm_notifications_general_prompt_product_list_description
                 )
             }
             else -> {
@@ -154,7 +165,6 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
                     it.applicationContext
                 ).sendGeneralPromptClickCloseEvent(it, activityName)
             }
-
         }
     }
 
@@ -252,6 +262,6 @@ class NotificationGeneralPromptBottomSheet : BottomSheetUnify() {
         const val KEJAR_DISKON = "kejarDiskon"
         const val TAP_TAP_KOTAK = "tapTapKotak"
         const val LIVE_SHOPPING = "liveShopping"
-
+        const val STOCK_REMINDER = "stockReminder"
     }
 }

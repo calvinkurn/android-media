@@ -20,22 +20,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.components.NestChips
+import com.tokopedia.common_compose.components.NestChipsRight
+import com.tokopedia.common_compose.components.NestChipsSize
+import com.tokopedia.common_compose.components.NestChipsState
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.iconunify.R
 
 @Composable
 fun NestSortFilter(
-    modifier: Modifier = Modifier,
-    size: Size = Size.DEFAULT,
     items: List<SortFilter>,
     showClearFilterIcon: Boolean,
-    onItemClicked: (SortFilter) -> Unit,
-    onClearFilter: () -> Unit
+    modifier: Modifier = Modifier,
+    onClearFilter: () -> Unit = {},
+    onItemClicked: (SortFilter) -> Unit = {},
+    size: Size = Size.DEFAULT
 ) {
     val chipSize = when (size) {
-        Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
-        Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
+        Size.DEFAULT -> NestChipsSize.Small
+        Size.LARGE -> NestChipsSize.Large
     }
     Row(modifier = modifier) {
         val closeVisible by remember(items) {
@@ -56,9 +59,17 @@ fun NestSortFilter(
             items(items) {
                 NestChips(
                     text = it.title,
-                    isSelected = it.isSelected,
+                    state = if (it.isSelected) {
+                        NestChipsState.Selected
+                    } else {
+                        NestChipsState.Default
+                    },
                     size = chipSize,
-                    showChevron = it.showChevron,
+                    right = if (it.showChevron) {
+                        NestChipsRight.Chevron {}
+                    } else {
+                        null
+                    },
                     onClick = {
                         onItemClicked(it)
                         it.onClick()
@@ -102,8 +113,8 @@ fun NestSortFilterAdvanced(
     onItemClicked: (SortFilter) -> Unit
 ) {
     val chipSize = when (size) {
-        Size.DEFAULT -> com.tokopedia.common_compose.components.Size.SMALL
-        Size.LARGE -> com.tokopedia.common_compose.components.Size.LARGE
+        Size.DEFAULT -> NestChipsSize.Small
+        Size.LARGE -> NestChipsSize.Large
     }
     val ld = LocalDensity.current
     val selectedSize = items.filter { it.isSelected }.size
@@ -141,9 +152,17 @@ fun NestSortFilterAdvanced(
             items(items) {
                 NestChips(
                     text = it.title,
-                    isSelected = it.isSelected,
+                    state = if (it.isSelected) {
+                        NestChipsState.Selected
+                    } else {
+                        NestChipsState.Default
+                    },
                     size = chipSize,
-                    showChevron = it.showChevron,
+                    right = if (it.showChevron) {
+                        NestChipsRight.Chevron {}
+                    } else {
+                        null
+                    },
                     onClick = {
                         onItemClicked(it)
                         it.onClick()
@@ -211,9 +230,9 @@ private fun NestSortFilterPreview() {
                 }
                 NestTypography(text = "Quick Filter", textStyle = NestTheme.typography.heading5)
                 NestSortFilter(
-                    size = size,
                     items = items,
                     showClearFilterIcon = true,
+                    onClearFilter = { items = items.map { it.copy(isSelected = false) } },
                     onItemClicked = { sf ->
                         items = items.map {
                             if (it == sf) {
@@ -223,7 +242,7 @@ private fun NestSortFilterPreview() {
                             }
                         }
                     },
-                    onClearFilter = { items = items.map { it.copy(isSelected = false) } }
+                    size = size
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 NestTypography(text = "Advanced Filter", textStyle = NestTheme.typography.heading5)

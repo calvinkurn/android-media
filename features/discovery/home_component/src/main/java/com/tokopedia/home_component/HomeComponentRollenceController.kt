@@ -13,11 +13,13 @@ object HomeComponentRollenceController {
     private const val HPB_DURATION_4S = 4000L
     private const val HPB_DURATION_5S = 5000L
     private const val HPB_DURATION_6S = 6000L
+    private var rollenceDynamicChannelHeader: String = ""
 
     fun fetchHomeComponentRollenceValue() {
         rollenceHPBDurationValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DURATION_EXP, RollenceKey.HOME_COMPONENT_HPB_DURATION_CONTROL)
         rollenceHPBDotsInfiniteValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_EXP, RollenceKey.HOME_COMPONENT_HPB_DOTS_INFINITE_CONTROL)
         rollenceDynamicIcons = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_EXP, "")
+        rollenceDynamicChannelHeader = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_EXP, "")
     }
 
     private fun getRollenceValueHPBDotsInfinite(): String {
@@ -34,6 +36,10 @@ object HomeComponentRollenceController {
 
     fun isHomeComponentDynamicIconsUsingRollenceVariant(): Boolean {
         return rollenceDynamicIcons == RollenceKey.HOME_COMPONENT_DYNAMIC_ICON_VARIANT
+    }
+
+    fun isDynamicChannelHeaderUsingRollenceVariant(): Boolean {
+        return rollenceDynamicChannelHeader == RollenceKey.HOME_COMPONENT_DYNAMIC_CHANNEL_HEADER_VARIANT
     }
 
     fun getHPBDuration(): Long {

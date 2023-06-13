@@ -1014,7 +1014,8 @@
                   "percentage_value": 0,
                   "value": "Tersedia",
                   "color": "#31353b"
-                }
+                },
+                "warehouse_id_default": "1234"
               },
               {
                 "id": 219723600,

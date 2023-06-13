@@ -10,6 +10,8 @@ import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.data.Product
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,6 +28,9 @@ class OrderHistoryViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testRule = UnconfinedTestRule()
 
     private val productHistoryUseCase: GetProductOrderHistoryUseCase = mockk(relaxed = true)
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true)

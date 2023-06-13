@@ -85,10 +85,16 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         getComponent(WithdrawComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.swd_fragment_base_withdrawal,
-                container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            R.layout.swd_fragment_base_withdrawal,
+            container,
+            false
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -109,34 +115,47 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
 
     abstract fun onViewCreated(savedInstanceState: Bundle?)
 
-    abstract fun updateWithdrawalHint(bankAccount: BankAccount?,
-                                      withdrawalAmount: Long)
+    abstract fun updateWithdrawalHint(
+        bankAccount: BankAccount?,
+        withdrawalAmount: Long
+    )
 
-    abstract fun updateWithdrawalButtonState(bankAccount: BankAccount?,
-                                             withdrawalAmount: Long)
+    abstract fun updateWithdrawalButtonState(
+        bankAccount: BankAccount?,
+        withdrawalAmount: Long
+    )
 
     private fun observeCheckRPEligibility() {
-        rekeningPremiumViewModel?.rekeningPremiumMutableData?.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    checkEligible = it.data
-                    saldoWithdrawalViewModel?.let { observeBankListResponse() }
+        rekeningPremiumViewModel?.rekeningPremiumMutableData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        checkEligible = it.data
+                        saldoWithdrawalViewModel?.let { observeBankListResponse() }
+                    }
+                    else -> {
+                        // no op
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun observeBankListResponse() {
-        saldoWithdrawalViewModel?.bankListResponseMutableData?.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    updateBankAccountAdapter(it.data)
-                }
-                is Fail -> {
-                    updateBankAccountAdapter(arrayListOf())
+        saldoWithdrawalViewModel?.bankListResponseMutableData?.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is Success -> {
+                        updateBankAccountAdapter(it.data)
+                    }
+                    is Fail -> {
+                        updateBankAccountAdapter(arrayListOf())
+                    }
                 }
             }
-        })
+        )
     }
 
     fun changeHint(isError: Boolean, hintText: String) {
@@ -162,8 +181,10 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         }
         this.balance = balance
         if (balance > 0L) {
-            tvTotalSaldoBalance.text = getString(R.string.swd_rp,
-                    CurrencyFormatHelper.convertToRupiah(balance.toString()))
+            tvTotalSaldoBalance.text = getString(
+                R.string.swd_rp,
+                CurrencyFormatHelper.convertToRupiah(balance.toString())
+            )
         } else {
             showBlankState()
         }
@@ -176,7 +197,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         val message = when (accountBalanceType) {
             is BuyerSaldoWithdrawal -> getString(R.string.swd_refund_empty_msg)
             is SellerSaldoWithdrawal -> getString(R.string.swd_penghasilan_empty_msg)
-
         }
         emptySaldoDescription.text = message
     }
@@ -210,8 +230,10 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     }
 
     private fun setCurrencyTextWatcherToSaldoInput() {
-        tfWithdrawal.textFieldInput.filters = arrayOf<InputFilter>(InputFilter
-                .LengthFilter(WithdrawConstant.MAX_WITHDRAWAL_INPUT_LENGTH))
+        tfWithdrawal.textFieldInput.filters = arrayOf<InputFilter>(
+            InputFilter
+                .LengthFilter(WithdrawConstant.MAX_WITHDRAWAL_INPUT_LENGTH)
+        )
         tfWithdrawal.textFieldInput.addTextChangedListener(watcher())
     }
 
@@ -231,7 +253,7 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
     private fun copyAllBalanceToWithdrawalAmount() {
         tfWithdrawal.textFieldInput.setText(balance.toString())
         tfWithdrawal.textFieldInput.setSelection(tfWithdrawal.textFieldInput.length())
-        analytics.get().eventClickWithdrawalAll();
+        analytics.get().eventClickWithdrawalAll()
     }
 
     private fun createTermsAndConditionSpannable(context: Context): SpannableStringBuilder? {
@@ -242,18 +264,21 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         val endIndex = spannableString.length
         val color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                openTermsAndConditionBottomSheet()
-                analytics.get().eventClickTANDC()
-            }
+        spannableString.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    openTermsAndConditionBottomSheet()
+                    analytics.get().eventClickTANDC()
+                }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = color
-            }
-        }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
+                    ds.color = color
+                }
+            },
+            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
         return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
     }
 
@@ -265,8 +290,11 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                 isHideable = true
             }
             bottomSheetUnify.setTitle(getString(R.string.swd_tnc_title))
-            val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc,
-                    null, true)
+            val view = layoutInflater.inflate(
+                R.layout.swd_layout_withdraw_tnc,
+                null,
+                true
+            )
             val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
             webView.settings.javaScriptEnabled = true
             webView.loadAuthUrl(WithdrawConstant.WEB_TNC_URL, userSession.get())
@@ -307,8 +335,10 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         try {
             tfWithdrawal?.textFieldInput?.let { textFieldInput ->
                 val inputText = (textFieldInput.text ?: "").toString()
-                val withdrawal: Long = StringUtils.convertToNumeric(inputText,
-                    false).toLong()
+                val withdrawal: Long = StringUtils.convertToNumeric(
+                    inputText,
+                    false
+                ).toLong()
                 updateWithdrawalHint(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
                 if (withdrawal == 0L) {
                     textFieldInput.setSelection(textFieldInput.length())
@@ -316,7 +346,6 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                 updateWithdrawalButtonState(bankAccountAdapter.getSelectedBankAccount(), withdrawal)
             }
         } catch (e: Exception) {
-
         }
     }
 
@@ -324,19 +353,26 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         if (!isRekeningPremiumCoachMarkShown() && context != null) {
             updateRekeningPremiumCoachMarkShown()
             val coachMarks = ArrayList<CoachMarkItem>()
-            coachMarks.add(CoachMarkItem(iconView,
+            coachMarks.add(
+                CoachMarkItem(
+                    iconView,
                     getString(R.string.swd_join_premium_account_icon_title),
                     getString(R.string.swd_join_premium_account_icon_description),
-                    CoachMarkContentPosition.TOP, ContextCompat.getColor(requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68)))
+                    CoachMarkContentPosition.TOP,
+                    ContextCompat.getColor(
+                        requireContext(),
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    )
+                )
+            )
             val coachMark = CoachMarkBuilder()
-                    .build()
+                .build()
             coachMark.show(activity, KEY_CAN_SHOW_RP_COACH_MARK, coachMarks, 0)
         }
     }
 
     override fun onDisabledBankClick(bankAccount: BankAccount) {
-        if (checkEligible.data.isIsPowerWD)
+        if (checkEligible.data.isIsPowerWD) {
             activity?.let {
                 val disabledAccountBottomSheet = DisabledAccountBottomSheet.getInstance(bankAccount)
                 disabledAccountBottomSheet.isFullpage = false
@@ -347,13 +383,14 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
                 }
                 analytics.get().onDisableAccountInfoSheetOpen(bankAccount.bankName)
             }
+        }
         analytics.get().onDisableAccountClick(bankAccount.bankName)
     }
 
     override fun showPremiumAccountDialog(bankAccount: BankAccount) {
         activity?.let { activity ->
             val premiumAccountBottomSheet = RekPremBankAccountInfoBottomSheet
-                    .getInstance(checkEligible, bankAccount)
+                .getInstance(checkEligible, bankAccount)
             premiumAccountBottomSheet.isFullpage = false
             premiumAccountBottomSheet.show(activity.supportFragmentManager, "")
             analytics.get().onRekeningPremiumLogoClick()
@@ -364,17 +401,19 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         analytics.get().eventClickTarikSaldo()
         bankAccountAdapter.getSelectedBankAccount()?.let { bankAccount ->
             val withdrawalAmount = StringUtils
-                    .convertToNumeric(tfWithdrawal.textFieldInput.text.toString(),
-                            false).toLong()
+                .convertToNumeric(
+                    tfWithdrawal.textFieldInput.text.toString(),
+                    false
+                ).toLong()
             if (parentFragment is SaldoWithdrawalFragment) {
                 when (accountBalanceType) {
                     is BuyerSaldoWithdrawal -> {
                         (parentFragment as SaldoWithdrawalFragment)
-                                .initiateBuyerWithdrawal(bankAccount, withdrawalAmount)
+                            .initiateBuyerWithdrawal(bankAccount, withdrawalAmount)
                     }
                     is SellerSaldoWithdrawal -> {
                         (parentFragment as SaldoWithdrawalFragment)
-                                .initiateSellerWithdrawal(bankAccount, withdrawalAmount)
+                            .initiateSellerWithdrawal(bankAccount, withdrawalAmount)
                     }
                 }
             }
@@ -399,4 +438,3 @@ abstract class BaseWithdrawalFragment : BaseDaggerFragment(), BankAccountAdapter
         const val KEY_CAN_SHOW_RP_COACH_MARK = "com.tokopedia.withdraw.saldowithdrawal.rekprem_logo_coach_mark"
     }
 }
-

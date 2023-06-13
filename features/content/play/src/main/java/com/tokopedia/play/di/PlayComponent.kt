@@ -2,6 +2,7 @@ package com.tokopedia.play.di
 
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.comment.di.ContentCommentModule
 import com.tokopedia.play.di.module.PlayRepositoryModule
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.widget.di.PlayWidgetModule
@@ -21,6 +22,7 @@ import dagger.Component.Builder
             PlayBindModule::class,
             PlayRepositoryModule::class,
             PlayWidgetModule::class,
+            ContentCommentModule::class,
         ],
         dependencies = [BaseAppComponent::class]
 )

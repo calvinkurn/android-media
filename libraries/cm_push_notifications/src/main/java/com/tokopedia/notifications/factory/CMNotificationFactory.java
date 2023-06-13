@@ -14,7 +14,9 @@ import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.factory.custom_notifications.ReplyChatNotification;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +25,8 @@ import java.util.Map;
 public class CMNotificationFactory {
 
     @Nullable
-    public static BaseNotification getNotification(Context context, BaseNotificationModel baseNotificationModel) {
+    public static BaseNotification getNotification(Context context, BaseNotificationModel baseNotificationModel,
+                                                   List<BaseNotificationModel> baseNotificationModelList) {
         if (context == null) {
             return null;
         }
@@ -45,9 +48,9 @@ public class CMNotificationFactory {
                 if (baseNotificationModel.isReviewOn()) {
                     return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
                 } else if (baseNotificationModel.isReplyChat()) {
-                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel);
+                    return new ReplyChatNotification(context.getApplicationContext(), baseNotificationModel, getTopChatNotificationModelList(baseNotificationModelList));
                 } else {
-                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel, baseNotificationModelList);
                 }
             }
 
@@ -91,5 +94,13 @@ public class CMNotificationFactory {
         notificationManager.cancel(notificationId);
     }
 
-
+    public static List<BaseNotificationModel> getTopChatNotificationModelList(List<BaseNotificationModel> baseNotificationModelList) {
+        List<BaseNotificationModel> topChatNotificationModelList = new ArrayList<>();
+        for (BaseNotificationModel baseNotificationModel : baseNotificationModelList) {
+            if (baseNotificationModel.isTopChatOn()) {
+                topChatNotificationModelList.add(baseNotificationModel);
+            }
+        }
+        return topChatNotificationModelList;
+    }
 }

@@ -19,6 +19,8 @@ class LogisticTestInterceptor : BaseLogisticInterceptor() {
 
     var pinPointValidationResponsePath: String = ""
 
+    var getCollectionPointResponsePath: String = ""
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val copy = chain.request().newBuilder().build()
         val requestString = readRequestString(copy)
@@ -37,6 +39,8 @@ class LogisticTestInterceptor : BaseLogisticInterceptor() {
             return mockResponse(copy, saveAddressResponsePath)
         } else if (requestString.contains(PINPOINT_VALIDATION_KEY)) {
             return mockResponse(copy, pinPointValidationResponsePath)
+        } else if (requestString.contains(GET_COLLECTION_POINT)) {
+            return mockResponse(copy, getCollectionPointResponsePath)
         }
         return chain.proceed(chain.request())
     }
@@ -49,6 +53,7 @@ class LogisticTestInterceptor : BaseLogisticInterceptor() {
         editAddressResponsePath = ""
         saveAddressResponsePath = ""
         pinPointValidationResponsePath = ""
+        getCollectionPointResponsePath = ""
     }
 }
 
@@ -59,3 +64,4 @@ const val GET_DISTRICT_RECOMMENDATION_KEY = "GetDistrictRecommendation"
 const val GET_ADDRESS_KEY = "kero_get_address"
 const val EDIT_ADDRESS_KEY = "kero_edit_address"
 const val PINPOINT_VALIDATION_KEY = "pinpoint_validation"
+const val GET_COLLECTION_POINT = "GetCollectionPoint"

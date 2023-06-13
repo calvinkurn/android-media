@@ -11,6 +11,7 @@ import com.tokopedia.topads.common.data.response.Error
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
+import com.tokopedia.unit.test.rule.UnconfinedTestRule
 import io.mockk.*
 import org.junit.Assert.*
 
@@ -23,6 +24,9 @@ class TopAdsProductListViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val testCoroutineRule = UnconfinedTestRule()
 
     private val topAdsGetListProductUseCase: TopAdsGetListProductUseCase = mockk(relaxed = true)
     private val getRecommendedHeadlineProductsUseCase: GetRecommendedHeadlineProductsUseCase =

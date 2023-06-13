@@ -2,6 +2,7 @@ package com.tkpd.atcvariant.view.bottomsheet
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -51,6 +52,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product.detail.common.PostAtcHelper
 import com.tokopedia.product.detail.common.ProductCartHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
@@ -581,7 +583,9 @@ class AtcVariantBottomSheet :
     }
 
     private fun getAtcActivity(): Activity {
-        return context as AtcVariantActivity
+        return if (activity is AtcVariantActivity)
+            context as AtcVariantActivity
+        else requireActivity()
     }
 
     private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {
@@ -601,16 +605,20 @@ class AtcVariantBottomSheet :
     }
 
     private fun onSuccessAtc(successMessage: String?, cartId: String) {
-        context?.let {
+        val context = context ?: return
+        val productId = adapter.getHeaderDataModel()?.productId ?: return
+        val variantAggregatorData = viewModel.getVariantAggregatorData() ?: return
+        val postAtcLayoutId = variantAggregatorData.variantData.postAtcLayout.layoutId
+
+        if (postAtcLayoutId.isEmpty()) {
             val message = if (successMessage == null || successMessage.isEmpty()) {
-                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+                context.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
             } else {
                 successMessage
             }
 
             showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
                 val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-                val productId = adapter.getHeaderDataModel()?.productId ?: ""
                 ProductTrackingCommon.onSeeCartVariantBottomSheetClicked(
                     message,
                     productId,
@@ -623,7 +631,25 @@ class AtcVariantBottomSheet :
                 requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
                 cartId = cartId
             )
+        } else {
+            showPostATC(context, productId, postAtcLayoutId, cartId)
         }
+    }
+
+    private fun showPostATC(
+        context: Context,
+        productId: String,
+        postAtcLayoutId: String,
+        cartId: String
+    ) {
+        dismiss()
+        PostAtcHelper.start(
+            context,
+            productId,
+            layoutId = postAtcLayoutId,
+            cartId = cartId,
+            pageSource = PostAtcHelper.Source.PDP
+        )
     }
 
     private fun goToCheckout() {
@@ -845,7 +871,8 @@ class AtcVariantBottomSheet :
 
     private fun doAddWishlistV2(productId: String) {
         viewModel.addWishlistV2(
-            productId, userSessionInterface.userId,
+            productId,
+            userSessionInterface.userId,
             object : WishlistV2ActionListener {
                 override fun onErrorAddWishList(
                     throwable: Throwable,
@@ -867,7 +894,7 @@ class AtcVariantBottomSheet :
                 }
 
                 override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
-                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) { }
+                override fun onSuccessRemoveWishlist(result: DeleteWishlistV2Response.Data.WishlistRemoveV2, productId: String) {}
             }
         )
     }

@@ -13,6 +13,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_OFFSET
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
@@ -157,6 +158,9 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     private fun initReplyAreaListener(
         replyAreaListener: TokoChatReplyAreaListener?
     ) {
+        attachmentButton?.showWithCondition(
+            replyAreaListener?.shouldShowAttachmentButton() == true
+        )
         attachmentButton?.setOnClickListener {
             replyAreaListener?.onClickAttachmentButton()
         }

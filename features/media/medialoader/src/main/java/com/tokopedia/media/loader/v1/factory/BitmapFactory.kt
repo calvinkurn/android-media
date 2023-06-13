@@ -16,7 +16,7 @@ import com.tokopedia.media.loader.utils.AspectRatio
 import com.tokopedia.media.loader.utils.toUri
 import com.tokopedia.media.loader.transform.BlurHashDecoder.decode as blurHashDecode
 
-class BitmapFactory : MediaLoaderFactory<Bitmap>() {
+internal class BitmapFactory : MediaLoaderFactory<Bitmap>() {
 
     /*
     * The blurhash (built-in) list,

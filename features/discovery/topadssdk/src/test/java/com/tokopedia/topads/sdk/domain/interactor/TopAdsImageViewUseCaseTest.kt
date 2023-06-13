@@ -5,7 +5,7 @@ import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -38,7 +38,7 @@ class TopAdsImageViewUseCaseTest {
     @Test
     fun `test getImageData`() {
         val map = mutableMapOf<String, Any>()
-        runBlockingTest {
+        runTest {
             coEvery { repository.getImageData(map, irisSessionId) } returns mockk()
             useCase.getImageData(map)
             coVerify { repository.getImageData(map, irisSessionId) }

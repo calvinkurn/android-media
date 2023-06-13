@@ -11,8 +11,8 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import java.io.Closeable
 
 /**
@@ -107,7 +107,7 @@ class UserProfileViewModelRobot(
 
     fun start(fn: suspend UserProfileViewModelRobot.() -> Unit) {
         use {
-            runBlockingTest { fn() }
+            runTest { fn() }
         }
     }
 

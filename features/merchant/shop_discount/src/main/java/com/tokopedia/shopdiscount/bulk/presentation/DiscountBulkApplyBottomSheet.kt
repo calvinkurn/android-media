@@ -38,9 +38,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.DecimalFormat
 import java.text.NumberFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
-
 
 class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
@@ -80,7 +80,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             }
             return bottomSheet
         }
-
     }
 
     private val title by lazy { arguments?.getString(BUNDLE_KEY_TITLE).orEmpty() }
@@ -124,7 +123,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         setupDependencyInjection()
     }
 
-
     private fun setupDependencyInjection() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -140,7 +138,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         setupBottomSheet(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
-
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetDiscountBulkApplyBinding.inflate(inflater, container, false)
@@ -183,8 +180,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
         if (benefits.isNotEmpty()) {
             val benefit = benefits[0]
-            if(isUsingVps)
+            if (isUsingVps) {
                 viewModel.setBenefitPackageName(benefit.packageName)
+            }
 
             handleBottomSheetAppearance(benefit, isUsingVps)
         }
@@ -215,10 +213,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                     clearErrorMessage(binding?.tfuDiscountAmount ?: return@observe)
                 }
             }
-
         }
     }
-
 
     private fun observeStartDateChange() {
         viewModel.startDate.observe(viewLifecycleOwner) { startDate ->
@@ -308,7 +304,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         if (discountStatusId == DiscountStatus.ONGOING) {
             binding?.tfuStartDate?.isEnabled = false
         }
-
     }
 
     private fun setupDatePicker() {
@@ -338,7 +333,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                     count: Int,
                     after: Int
                 ) {
-
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -347,13 +341,10 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-
                 }
-
             })
         }
     }
-
 
     private fun setupDiscountAmountListener() {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
@@ -361,7 +352,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
         binding?.run {
             val watcher = NumberThousandSeparatorTextWatcher(
-                tfuDiscountAmount.textInputLayout.editText ?: return, numberFormatter
+                tfuDiscountAmount.textInputLayout.editText ?: return,
+                numberFormatter
             ) { number, formattedNumber ->
                 viewModel.onDiscountAmountChanged(number)
 
@@ -374,7 +366,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             }
             tfuDiscountAmount.textInputLayout.editText?.addTextChangedListener(watcher)
         }
-
     }
 
     private fun setupChipsClickListener() {
@@ -399,7 +390,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
             }
         }
-
     }
 
     private fun setupSixMonthPeriodChipListener() {
@@ -417,7 +407,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
             }
         }
-
     }
 
     private fun setupOneMonthPeriodChipListener() {
@@ -435,7 +424,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
             }
         }
-
     }
 
     private fun setupCustomSelectionPeriodChipListener() {
@@ -457,7 +445,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 viewModel.onCustomSelectionPeriodSelected(Calendar.getInstance())
             }
         }
-
     }
 
     private fun displayStartDateTimePicker() {
@@ -474,7 +461,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                     viewModel.setSelectedStartDate(selectedDate)
                     binding?.chipCustomSelection?.chipType = ChipsUnify.TYPE_SELECTED
                 }
-
             }
         )
     }
@@ -501,7 +487,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                     viewModel.setSelectedEndDate(selectedDate)
                     binding?.chipCustomSelection?.chipType = ChipsUnify.TYPE_SELECTED
                 }
-
             }
         )
     }
@@ -537,7 +522,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.chipCustomSelection?.gone()
     }
 
-    private fun Date.advanceByOneYear() : Date {
+    private fun Date.advanceByOneYear(): Date {
         val calendar = Calendar.getInstance()
         calendar.time = this
         calendar.add(Calendar.YEAR, ONE_YEAR)

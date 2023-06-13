@@ -243,6 +243,9 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
                         TokofoodErrorLogger.ErrorDescription.ERROR_REMOVE_RECENT_SEARCH,
                     )
                 }
+                else -> {
+                    //no-op
+                }
             }
         }
     }

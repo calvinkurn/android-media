@@ -46,7 +46,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.devMonitoringTools)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.applink_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.applink_annotation_processor
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.robolectric
     testImplementation rootProject.ext.testDependencies.testCore

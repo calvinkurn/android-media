@@ -265,6 +265,9 @@ class ShippingEditorFragment :
                         binding?.globalError?.gone()
                         updateHeaderTickerData(it.data.headerTicker)
                     }
+                    else -> {
+                        //no-op
+                    }
                 }
             }
         )

@@ -42,7 +42,6 @@ import javax.inject.Inject
 class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     companion object {
-
         const val TAG = "post_atc_bs"
 
         private const val ARG_PRODUCT_ID = "productId"
@@ -117,6 +116,9 @@ class PostAtcBottomSheet : BottomSheetUnify(), PostAtcListener {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         clearContentPadding = true
+        isHideable = true
+        showKnob = true
+        showHeader = false
 
         binding = PostAtcBottomSheetBinding.inflate(inflater, container, false).also {
             setupView(it)

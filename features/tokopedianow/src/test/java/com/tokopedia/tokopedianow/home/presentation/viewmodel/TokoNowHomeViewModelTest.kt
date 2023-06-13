@@ -18,8 +18,6 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowMedi
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase.WidgetType.TokoNowSmallWidget
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.NonVariant
 import com.tokopedia.productcard.compact.productcard.presentation.uimodel.ProductCardCompactUiModel
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.constant.ServiceType
@@ -68,7 +66,6 @@ import com.tokopedia.tokopedianow.data.createPlayWidgetUiModel
 import com.tokopedia.tokopedianow.data.createQuestWidgetList
 import com.tokopedia.tokopedianow.data.createQuestWidgetListEmpty
 import com.tokopedia.tokopedianow.data.createSliderBannerDataModel
-import com.tokopedia.tokopedianow.data.createTicker
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -1032,13 +1029,12 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
             createHomeProductCardUiModel(
                 channelId = channelId,
                 productId = productId,
-                quantity = 4,
+                quantity = 0,
                 stock = 5,
-                product = ProductCardModel(
-                    hasAddToCartButton = true,
-                    nonVariant = NonVariant(minQuantity = 3, maxQuantity = 4)
-                ),
+                minOrder = 3,
+                maxOrder = 4,
                 position = 1,
+                originalPosition = 1,
                 headerName = "Kamu pernah beli"
             )
         )
@@ -1192,13 +1188,12 @@ class TokoNowHomeViewModelTest : TokoNowHomeViewModelTestFixture() {
                 createHomeProductCardUiModel(
                     channelId = channelId,
                     productId = productId,
-                    quantity = 4,
+                    quantity = 0,
                     stock = 5,
-                    product = ProductCardModel(
-                        hasAddToCartButton = true,
-                        nonVariant = NonVariant(0, 3, 4)
-                    ),
+                    minOrder = 3,
+                    maxOrder = 4,
                     position = 1,
+                    originalPosition = 1,
                     headerName = "Kamu pernah beli"
                 )
             ),

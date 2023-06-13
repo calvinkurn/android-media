@@ -172,10 +172,6 @@
         </value>
     </entry>
     <entry>
-        <key>mainapp_digital_smartcard</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>mainapp_enable_notif_center</key>
         <value>true</value>
     </entry>
@@ -264,10 +260,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_hotel_enable_booking_for_today</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_customer_hotel_search_with_map</key>
         <value>true</value>
     </entry>
@@ -330,10 +322,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_customer_travel_enable_cross_sell</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>android_customer_enable_new_deals_revamp_flow</key>
         <value>true</value>
     </entry>
@@ -352,10 +340,6 @@
     <entry>
         <key>android_main_app_enabled_old_pdp</key>
         <value>false</value>
-    </entry>
-    <entry>
-        <key>android_main_app_enabled_umrah</key>
-        <value>true</value>
     </entry>
     <entry>
         <key>android_main_app_enable_new_shop_page</key>
@@ -627,10 +611,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_main_app_enable_add_bills_sbm</key>
-        <value>true</value>
-    </entry>
-    <entry>
         <key>android_main_app_enable_new_recharge_order_detail</key>
         <value>true</value>
     </entry>
@@ -653,5 +633,9 @@
     <entry>
         <key>android_robust_tester</key>
         <value></value>
+    </entry>
+    <entry>
+        <key>android_enable_m3u8_thumbnail_loader</key>
+        <value>false</value>
     </entry>
 </defaultsMap>

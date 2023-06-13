@@ -12,6 +12,8 @@ import androidx.work.ForegroundInfo
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play_common.shortsuploader.activity.PlayShortsPostUploadActivity
 import javax.inject.Inject
@@ -116,7 +118,7 @@ class PlayShortsUploadNotificationManager @Inject constructor(
             channelId = uploadData?.shortsId.orEmpty(),
             authorId = uploadData?.authorId.orEmpty(),
             authorType = uploadData?.authorType.orEmpty(),
-            webLink = getPlayRoomWebLink(uploadData.orEmpty())
+            appLink = getPlayRoomAppLink(uploadData.orEmpty())
         ).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
@@ -193,11 +195,9 @@ class PlayShortsUploadNotificationManager @Inject constructor(
         return ForegroundInfo(notificationIdAfterUpload, notification)
     }
 
-    private fun getPlayRoomWebLink(uploadData: PlayShortsUploadModel): String {
+    private fun getPlayRoomAppLink(uploadData: PlayShortsUploadModel): String {
         return buildString {
-            append(TokopediaUrl.getInstance().WEB)
-            append(PLAY_ROOM_PATH)
-            append(uploadData.shortsId)
+            append(UriUtil.buildUri(ApplinkConst.PLAY_DETAIL, uploadData.shortsId))
             append("?")
             append("$SOURCE_TYPE=${getSourceType(uploadData.authorType)}")
             append("&")

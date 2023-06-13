@@ -28,6 +28,8 @@ import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.SectionTitle
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.unit.test.ext.verifyValueEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
@@ -491,7 +493,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `given recipe is NOT bookmarked and addBookmark true when onClickBookmarkBtn should call add recipe bookmark`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = 3L
             val warehouseId = "3"
 
@@ -513,7 +515,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             viewModel.onClickBookmarkBtn(addBookmark)
             viewModel.onClickBookmarkBtn(addBookmark)
 
-            advanceTimeBy(500L)
+            advanceTimeBy(1000L)
 
             val expectedIsBookmarked = true
             val expectedBookmarkData = BookmarkUiModel(
@@ -533,7 +535,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `given addBookmark error when onClickBookmarkBtn should set isBookmarked and isSuccess false`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = 3L
             val addBookmark = true
 
@@ -542,7 +544,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
             viewModel.onClickBookmarkBtn(addBookmark)
 
-            advanceTimeBy(500L)
+            advanceTimeBy(1000L)
 
             val expectedIsBookmarked = false
             val expectedBookmarkData = BookmarkUiModel(
@@ -562,7 +564,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `given recipe is bookmarked and addBookmark true when onClickBookmarkBtn should NOT call add recipe bookmark`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = 3L
             val warehouseId = "3"
 
@@ -588,7 +590,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `given recipe is bookmarked and addBookmark false when onClickBookmarkBtn should call remove recipe bookmark`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = 3L
             val warehouseId = "3"
 
@@ -610,7 +612,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             viewModel.onClickBookmarkBtn(addBookmark)
             viewModel.onClickBookmarkBtn(addBookmark)
 
-            advanceTimeBy(500L)
+            advanceTimeBy(1000L)
 
             val expectedIsBookmarked = false
             val expectedBookmarkData = BookmarkUiModel(
@@ -630,7 +632,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `given removeBookmark error when onClickBookmarkBtn should set isBookmarked true and isSuccess false`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = 3L
             val warehouseId = "3"
 
@@ -652,7 +654,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
             viewModel.onViewCreated()
             viewModel.onClickBookmarkBtn(addBookmark)
 
-            advanceTimeBy(500L)
+            advanceTimeBy(1000L)
 
             val expectedIsBookmarked = true
             val expectedBookmarkData = BookmarkUiModel(
@@ -672,7 +674,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
 
     @Test
     fun `given recipe is NOT bookmarked and addBookmark false when onClickBookmarkBtn should NOT call remove recipe bookmark`() {
-        coroutineTestRule.runBlockingTest {
+        runTest {
             val shopId = 3L
             val warehouseId = "3"
 

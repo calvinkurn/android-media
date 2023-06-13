@@ -249,24 +249,29 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setConditionalInfo(ConditionalInfo conditionalInfo) {
-
-        conditionalInfoText.setVisibility(View.VISIBLE);
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8));
-        if (!TextUtils.isEmpty(conditionalInfo.getColor().getBackground())) {
-            shape.setColor(Color.parseColor(conditionalInfo.getColor().getBackground()));
+        if (getContext() != null) {
+            conditionalInfoText.setVisibility(View.VISIBLE);
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8));
+            if (!TextUtils.isEmpty(conditionalInfo.getColor().getBackground())) {
+                shape.setColor(Color.parseColor(conditionalInfo.getColor().getBackground()));
+            }
+            if (!TextUtils.isEmpty(conditionalInfo.getColor().getBorder())) {
+                shape.setStroke(getContext().getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.getColor().getBorder()));
+            }
+            conditionalInfoText.setBackground(shape);
+            conditionalInfoText.setPadding(
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16),
+                    getContext().getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
+            );
+            conditionalInfoText.setText(conditionalInfo.getText());
+            if (!TextUtils.isEmpty(conditionalInfo.getColor().getTextColor())) {
+                conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.getColor().getTextColor()));
+            }
         }
-        if (!TextUtils.isEmpty(conditionalInfo.getColor().getBorder())) {
-            shape.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.abstraction.R.dimen.dp_2), Color.parseColor(conditionalInfo.getColor().getBorder()));
-        }
-        conditionalInfoText.setBackground(shape);
-        conditionalInfoText.setPadding(getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16), getResources().getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16));
-        conditionalInfoText.setText(conditionalInfo.getText());
-        if (!TextUtils.isEmpty(conditionalInfo.getColor().getTextColor())) {
-            conditionalInfoText.setTextColor(Color.parseColor(conditionalInfo.getColor().getTextColor()));
-        }
-
     }
 
     @Override
@@ -336,14 +341,16 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setAdditionInfoVisibility(int visibility) {
-        additionalText.setVisibility(visibility);
-        additionalText.setOnClickListener(view -> {
-            additionalText.setOnClickListener(null);
-            additionalText.setText(getResources().getString(R.string.additional_text));
-            additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-            additionalText.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
-            additionalInfoLayout.setVisibility(View.VISIBLE);
-        });
+        if (getContext() != null) {
+            additionalText.setVisibility(visibility);
+            additionalText.setOnClickListener(view -> {
+                additionalText.setOnClickListener(null);
+                additionalText.setText(getContext().getResources().getString(R.string.additional_text));
+                additionalText.setTypeface(Typeface.DEFAULT_BOLD);
+                additionalText.setTextColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+                additionalInfoLayout.setVisibility(View.VISIBLE);
+            });
+        }
     }
 
     @Override
@@ -448,7 +455,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)); // specific color for this link
+                if (getContext() != null) {
+                    ds.setColor(getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)); // specific color for this link
+                }
             }
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
@@ -458,53 +467,57 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setTopActionButton(ActionButton actionButton) {
-        primaryActionBtn.setText(actionButton.getLabel());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3));
-        if (!actionButton.getActionColor().getBackground().equals("")) {
-            shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        if (getContext() != null) {
+            primaryActionBtn.setText(actionButton.getLabel());
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3));
+            if (!actionButton.getActionColor().getBackground().equals("")) {
+                shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+            }
+            if (!actionButton.getActionColor().getBorder().equals("")) {
+                shape.setStroke(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1), Color.parseColor(actionButton.getActionColor().getBorder()));
+            }
+            primaryActionBtn.setBackground(shape);
+            if (!actionButton.getActionColor().getTextColor().equals("")) {
+                primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+            }
+            if (!TextUtils.isEmpty(actionButton.getUri())) {
+                primaryActionBtn.setOnClickListener(v -> {
+                    presenter.onActionButtonClick(ActionButton.PRIMARY_BUTTON, actionButton.getLabel());
+                    onActionButtonClick(actionButton.getUri());
+                });
+            }
+            proceedStickyButton(actionButton, ActionButton.PRIMARY_BUTTON);
         }
-        if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1), Color.parseColor(actionButton.getActionColor().getBorder()));
-        }
-        primaryActionBtn.setBackground(shape);
-        if (!actionButton.getActionColor().getTextColor().equals("")) {
-            primaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
-        }
-        if (!TextUtils.isEmpty(actionButton.getUri())) {
-            primaryActionBtn.setOnClickListener(v -> {
-                presenter.onActionButtonClick(ActionButton.PRIMARY_BUTTON, actionButton.getLabel());
-                onActionButtonClick(actionButton.getUri());
-            });
-        }
-        proceedStickyButton(actionButton, ActionButton.PRIMARY_BUTTON);
     }
 
     @Override
     public void setBottomActionButton(ActionButton actionButton) {
-        secondaryActionBtn.setText(actionButton.getLabel());
-        GradientDrawable shape = new GradientDrawable();
-        shape.setShape(GradientDrawable.RECTANGLE);
-        shape.setCornerRadius(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3));
-        if (!actionButton.getActionColor().getBackground().equals("")) {
-            shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+        if (getContext() != null) {
+            secondaryActionBtn.setText(actionButton.getLabel());
+            GradientDrawable shape = new GradientDrawable();
+            shape.setShape(GradientDrawable.RECTANGLE);
+            shape.setCornerRadius(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3));
+            if (!actionButton.getActionColor().getBackground().equals("")) {
+                shape.setColor((Color.parseColor(actionButton.getActionColor().getBackground())));
+            }
+            if (!actionButton.getActionColor().getBorder().equals("")) {
+                shape.setStroke(getContext().getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
+                        Color.parseColor(actionButton.getActionColor().getBorder()));
+            }
+            secondaryActionBtn.setBackground(shape);
+            if (!actionButton.getActionColor().getTextColor().equals("")) {
+                secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
+            }
+            if (!TextUtils.isEmpty(actionButton.getUri())) {
+                secondaryActionBtn.setOnClickListener(v -> {
+                    presenter.onActionButtonClick(ActionButton.SECONDARY_BUTTON, actionButton.getLabel());
+                    onActionButtonClick(actionButton.getUri());
+                });
+            }
+            proceedStickyButton(actionButton, ActionButton.SECONDARY_BUTTON);
         }
-        if (!actionButton.getActionColor().getBorder().equals("")) {
-            shape.setStroke(getResources().getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1),
-                    Color.parseColor(actionButton.getActionColor().getBorder()));
-        }
-        secondaryActionBtn.setBackground(shape);
-        if (!actionButton.getActionColor().getTextColor().equals("")) {
-            secondaryActionBtn.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
-        }
-        if (!TextUtils.isEmpty(actionButton.getUri())) {
-            secondaryActionBtn.setOnClickListener(v -> {
-                presenter.onActionButtonClick(ActionButton.SECONDARY_BUTTON, actionButton.getLabel());
-                onActionButtonClick(actionButton.getUri());
-            });
-        }
-        proceedStickyButton(actionButton, ActionButton.SECONDARY_BUTTON);
     }
 
     private void proceedStickyButton(ActionButton actionButton, String trackingLabel) {

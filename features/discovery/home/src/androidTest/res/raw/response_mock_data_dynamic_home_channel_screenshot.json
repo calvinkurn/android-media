@@ -6699,6 +6699,263 @@
                             "#FFFFFF"
                         ]
                     }
+                },
+                {
+                    "id": 266956,
+                    "dividerType": 0,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Promo!",
+                    "layout": "content_card",
+                    "campaignType": 0,
+                    "type": "",
+                    "pageName": "",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 286527,
+                        "name": "Promo!",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/deals?source=homepage.content_card.0.266956",
+                        "applink": "tokopedia://discovery/deals?source=homepage.content_card.0.266956",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#31353b"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "deals",
+                            "id": 974505963,
+                            "back_color": "#11FF33",
+                            "name": "Kamu pengen ini?",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/discovery/deals?activeTab=1&componentID=41&pinProduct=true&product_id=974505963&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "applink": "tokopedia://discovery/deals?activeTab=1&componentID=41&pinProduct=true&product_id=974505963&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/27/45e98069-2bca-48ab-8f34-2b3687e46902.jpg",
+                            "label": "Hingga 90%",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": "400+ produk"
+                            },
+                            "textColor": "#FFFFFF",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "deals",
+                            "id": 4769873197,
+                            "back_color": "#11FF33",
+                            "name": "Diskon gede-gedean!",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/discovery/deals?activeTab=2&componentID=24&pinProduct=true&product_id=4769873197&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "applink": "tokopedia://discovery/deals?activeTab=2&componentID=24&pinProduct=true&product_id=4769873197&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/12/d0af67d7-73f0-4fe9-9542-3a8fa35ce072.jpg",
+                            "label": "Di atas 50%",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": "200+ produk"
+                            },
+                            "textColor": "#FFFFFF",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "deals",
+                            "id": 1374355300,
+                            "back_color": "#11FF33",
+                            "name": "Kejar Diskon Hari Ini",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/discovery/deals?activeTab=3&componentID=2022&pinProduct=true&product_id=1374355300&source=homepage.browse_widget.0.40991&source=deals-browse.content_card..null",
+                            "applink": "tokopedia://discovery/deals?activeTab=3&componentID=2022&pinProduct=true&product_id=1374355300&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2021/8/8/40268dde-8029-4c47-a660-2e058fade11b.jpg",
+                            "label": "Flash sale 90%",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": "900+ produk"
+                            },
+                            "textColor": "#FFFFFF",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "deals",
+                            "id": 879380418,
+                            "back_color": "#11FF33",
+                            "name": "Belanja serba hemat ",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/discovery/deals?activeTab=5&componentID=23&pinProduct=true&product_id=879380418&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "applink": "tokopedia://discovery/deals?activeTab=5&componentID=23&pinProduct=true&product_id=879380418&source=homepage.browse_widget.0.251917&source=deals-browse.content_card..null",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/8/9/28469f58-682b-4a9a-af8f-ae6619922f04.jpg",
+                            "label": "Di bawah 100rb",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "name": "",
+                                "city": "",
+                                "imageUrl": "",
+                                "url": "",
+                                "applink": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": "200+ produk"
+                            },
+                            "textColor": "#FFFFFF",
+                            "badges": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
                 }
             ]
         }

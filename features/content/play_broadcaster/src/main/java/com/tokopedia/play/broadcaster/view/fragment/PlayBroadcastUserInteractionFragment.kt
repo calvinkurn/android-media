@@ -1070,6 +1070,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
             }
+            else -> {
+                //no-op
+            }
         }
     }
 

@@ -31,6 +31,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetPieChartDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetPostDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetRichListDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
@@ -61,6 +62,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RichListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
@@ -125,6 +128,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
         private const val DATA_KEY_MILESTONE = "MILESTONE"
         private const val DATA_KEY_UNIFICATION = "UNIFICATION"
+        private const val DATA_KEY_RICH_LIST = "RICH_LIST"
     }
 
     @RelaxedMockK
@@ -182,6 +186,9 @@ class SellerHomeViewModelTest {
     lateinit var getUnificationDataUseCase: GetUnificationDataUseCase
 
     @RelaxedMockK
+    lateinit var getRichListDataUseCase: GetRichListDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
@@ -228,6 +235,7 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
             { getUnificationDataUseCase },
+            { getRichListDataUseCase },
             { userSession },
             { remoteConfig },
             coroutineTestRule.dispatchers
@@ -252,6 +260,7 @@ class SellerHomeViewModelTest {
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
             { getUnificationDataUseCase },
+            { getRichListDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
             { submitWidgetDismissUseCase },
@@ -293,7 +302,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get ticker when cache enabled then fetch from cache should success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val networkException = Exception("from network")
             val cacheResult = listOf(TickerItemUiModel())
 
@@ -334,7 +343,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get ticker when cache enabled then throw exception should return remote exception`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val networkException = Exception("from network")
             val cacheException = Exception("from cache")
 
@@ -635,7 +644,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get widget layout with given height and new caching disabled then throws exception should return failed result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val exception = Throwable()
             val isCachingEnabled = true
             val isFirstLoad = false
@@ -817,7 +826,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get milestone widget data then return success`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val dataKeys = listOf(anyString())
             val result = listOf(MilestoneDataUiModel())
 
@@ -838,7 +847,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get milestone widget data then throw exception`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val dataKeys = listOf(anyString())
             val exception = RuntimeException("")
             getMilestoneDataUseCase.params = GetMilestoneDataUseCase.createParams(dataKeys)
@@ -856,7 +865,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when fetch shop info by id then return success`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "12345"
             val shopInfo = ShopInfoResultResponse(
                 coreInfo = ShopCoreInfoResponse("abc"),
@@ -884,7 +893,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when fetch shop info by id then return null data should still success`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "12345"
             val shopInfo = ShopInfoResultResponse(
                 coreInfo = null,
@@ -912,7 +921,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when fetch shop info by id then throw exception`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "12345"
             val exception = MessageErrorException()
             every {
@@ -932,7 +941,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when send shop quest tracker then return success`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val response = ShopQuestGeneralTracker()
             shopQuestGeneralTrackerUseCase.params =
                 ShopQuestGeneralTrackerUseCase.createRequestParams(
@@ -954,7 +963,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when send shop quest tracker then throw exception`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val exception = Exception()
             shopQuestGeneralTrackerUseCase.params =
                 ShopQuestGeneralTrackerUseCase.createRequestParams(
@@ -1297,6 +1306,101 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `get rich list widget data then returns success result`() = runBlocking {
+        val widgets = getRichListMockData()
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+        val result = listOf(RichListDataUiModel(dataKey = DATA_KEY_RICH_LIST))
+
+        getRichListDataUseCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys,
+            shopId = shopId,
+            pageSource = dynamicParameter.pageSource
+        )
+
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        coVerify {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(widgets.size == expectedResult.data.size)
+        viewModel.richListWidgetData.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `get rich list widget data then returns failed result`() = runBlocking {
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+        val throwable = MessageErrorException("error message")
+
+        getRichListDataUseCase.params = GetRichListDataUseCase.createParam(
+            dataKeys = dataKeys,
+            shopId = shopId,
+            pageSource = dynamicParameter.pageSource
+        )
+
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        coVerify {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        viewModel.richListWidgetData.verifyErrorEquals(Fail(throwable))
+    }
+
+    @Test
+    fun `when get rich list from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(DATA_KEY_RICH_LIST)
+        val shopId = "123"
+
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getRichListDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getRichListWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getRichListDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getRichListDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getRichListDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.richListWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `get progress widget data from remote then returns success result`() = runBlocking {
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
@@ -1498,7 +1602,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when submit feedback dismissal widget should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val param = SubmitWidgetDismissUiModel()
             val mockResult = WidgetDismissalResultUiModel()
 
@@ -1521,7 +1625,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when submit feedback dismissal widget should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val param = SubmitWidgetDismissUiModel(
                 action = SubmitWidgetDismissUiModel.Action.DISMISS
             )
@@ -1544,7 +1648,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get shop state info should return success result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "123"
             val dataKeys = "shopStateChanged"
             val pageSource = "seller-home"
@@ -1572,7 +1676,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `when get shop state info should return error result`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val shopId = "123"
             val dataKeys = "shopStateChanged"
             val pageSource = "seller-home"
@@ -3155,7 +3259,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty then set card widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val page = "home"
             val param = listOf("cardWidget")
             val cardData = CardDataUiModel()
@@ -3175,7 +3279,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty and sse is not connected then set card widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val page = "home"
             val param = listOf("cardWidget")
             val cardData = CardDataUiModel()
@@ -3197,7 +3301,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty then set milestone widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val page = "home"
             val param = listOf("milestoneWidget")
             val milestoneData = MilestoneDataUiModel()
@@ -3216,7 +3320,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `on start SSE when realTimeDataKeys is not empty and sse is not connected then set milestone widgets data liveData`() {
-        coroutineTestRule.runBlockingTest {
+        coroutineTestRule.runTest {
             val page = "home"
             val param = listOf("milestoneWidget")
             val milestoneData = MilestoneDataUiModel()
@@ -3586,6 +3690,29 @@ class SellerHomeViewModelTest {
                 tag = "",
                 appLink = "",
                 dataKey = DATA_KEY_UNIFICATION,
+                ctaText = "",
+                gridSize = WidgetGridSize.GRID_SIZE_1,
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                emptyState = WidgetEmptyStateUiModel()
+            )
+        )
+    }
+
+    private fun getRichListMockData(): List<RichListWidgetUiModel> {
+        return listOf(
+            RichListWidgetUiModel(
+                id = "123",
+                widgetType = WidgetType.RICH_LIST,
+                title = "richlist",
+                subtitle = "",
+                tooltip = null,
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_RICH_LIST,
                 ctaText = "",
                 gridSize = WidgetGridSize.GRID_SIZE_1,
                 isShowEmpty = true,

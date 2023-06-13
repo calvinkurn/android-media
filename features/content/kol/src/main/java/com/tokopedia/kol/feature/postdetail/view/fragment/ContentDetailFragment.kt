@@ -1999,6 +1999,9 @@ class ContentDetailFragment :
                         requireView()
                     )
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -2014,7 +2017,7 @@ class ContentDetailFragment :
                             productTagBS.showToasterOnBottomSheetOnSuccessFollow(
                                 getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                 Toaster.TYPE_NORMAL,
-                                getString(com.tokopedia.feedcomponent.R.string.feed_asgc_campaign_toaster_action_text)
+                                getString(com.tokopedia.feedcomponent.R.string.feed_ok)
                             )
                             feedFollowersOnlyBottomSheet?.dismiss()
                         }
@@ -2045,6 +2048,9 @@ class ContentDetailFragment :
                                 .show()
                         }
                     }
+                }
+                else -> {
+                    // no-op
                 }
             }
         }
@@ -2438,6 +2444,9 @@ class ContentDetailFragment :
                 is ContentDetailResult.Success -> {
                     onSuccessFetchStatusCampaignReminderButton(it.data)
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -2456,6 +2465,9 @@ class ContentDetailFragment :
                         Toaster.TYPE_ERROR
                     )
                 }
+                else -> {
+                    // no-op
+                }
             }
         }
     }
@@ -2467,6 +2479,9 @@ class ContentDetailFragment :
             when (it) {
                 is Success -> {
                     onSuccessFetchLatestFeedWidgetData(it.data.feedXCard, it.data.rowNumber)
+                }
+                else -> {
+                    // no-op
                 }
             }
         }

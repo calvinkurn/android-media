@@ -18,6 +18,7 @@ import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.utils.toUri
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.tokochat.di.TokoChatActivityComponentFactory
 import com.tokopedia.tokochat.stub.common.BabbleCourierClientStub
 import com.tokopedia.tokochat.stub.common.ConversationsPreferencesStub
@@ -30,6 +31,7 @@ import com.tokopedia.tokochat.stub.domain.response.ApiResponseStub
 import com.tokopedia.tokochat.stub.domain.response.GqlResponseStub
 import com.tokopedia.tokochat.stub.domain.usecase.TokoChatChannelUseCaseStub
 import com.tokopedia.tokochat.view.chatroom.TokoChatActivity
+import com.tokopedia.tokochat.view.chatroom.TokoChatFragment
 import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -86,6 +88,9 @@ abstract class BaseTokoChatTest {
     @Inject
     lateinit var cacheManager: TokoChatCacheManager
 
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
+
     protected lateinit var activity: TokoChatActivity
 
     @Before
@@ -105,6 +110,7 @@ abstract class BaseTokoChatTest {
         resetDatabase()
         removeDummyCache()
         prepareDatabase()
+        enableAttachmentMenu()
     }
 
     @After
@@ -238,6 +244,13 @@ abstract class BaseTokoChatTest {
 
     private fun removeDummyCache() {
         (cacheManager as TokoChatCacheManagerStub).resetAll()
+    }
+
+    private fun enableAttachmentMenu() {
+        remoteConfig.setString(
+            TokoChatFragment.TOKOCHAT_ATTACHMENT_MENU,
+            "true"
+        )
     }
 
     companion object {
