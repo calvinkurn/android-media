@@ -219,7 +219,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
         when (permissionState) {
             PERMISSION_GRANTED -> {
-                if (!viewModel.isFromPinpoint) {
+                if (!viewModel.isGetPinPointOnly) {
                     if (!viewModel.isEdit) {
                         AddNewAddressRevampAnalytics.onClickAllowLocationSearch(userSession.userId)
                     }
@@ -232,14 +232,14 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
 
             PERMISSION_DENIED -> {
-                if (!viewModel.isEdit && !viewModel.isFromPinpoint) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
 
             PERMISSION_DONT_ASK_AGAIN -> {
                 showBottomSheetLocUndefined(true)
-                if (!viewModel.isEdit && !viewModel.isFromPinpoint) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickDontAllowLocationSearch(userSession.userId)
                 }
             }
@@ -307,7 +307,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (!viewModel.isFromPinpoint) {
+                    if (!viewModel.isGetPinPointOnly) {
                         if (!viewModel.isEdit) {
                             AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
                         } else {
@@ -318,7 +318,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             }
 
             setOnClickListener {
-                if (!viewModel.isFromPinpoint) {
+                if (!viewModel.isGetPinPointOnly) {
                     if (!viewModel.isEdit) {
                         AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
                     } else {
@@ -350,7 +350,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
         binding?.rlSearchCurrentLocation?.setOnClickListener {
-            if (!viewModel.isFromPinpoint) {
+            if (!viewModel.isGetPinPointOnly) {
                 if (!viewModel.isEdit) {
                     AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
                 } else {
@@ -384,7 +384,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
 
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
-                if (!viewModel.isEdit && !viewModel.isFromPinpoint) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickXOnBlockGpsSearch(userSession.userId)
                 }
                 dismiss()
@@ -406,7 +406,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                if (!viewModel.isEdit && !viewModel.isFromPinpoint) {
+                if (!viewModel.isEdit && !viewModel.isGetPinPointOnly) {
                     AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiSearch(userSession.userId)
                 }
                 if (!isDontAskAgain) {
@@ -571,7 +571,7 @@ class SearchPageFragment : BaseDaggerFragment(), AutoCompleteListAdapter.AutoCom
         }
 
     override fun onItemClicked(placeId: String) {
-        if (!viewModel.isFromPinpoint) {
+        if (!viewModel.isGetPinPointOnly) {
             if (!viewModel.isEdit) {
                 AddNewAddressRevampAnalytics.onClickDropdownSuggestion(userSession.userId)
             } else {
