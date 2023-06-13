@@ -495,7 +495,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun impressPage() {
         reviewDetailTracker.trackImpressionReviewDetailPage(
             loggedInUserId = sharedReviewMediaGalleryViewModel.getUserID(),
-            feedbackId = sharedReviewMediaGalleryViewModel.getFeedbackID(),
+            feedbackId = sharedReviewMediaGalleryViewModel.getFeedbackId(),
             productId = sharedReviewMediaGalleryViewModel.getProductId(),
             reviewUserId = sharedReviewMediaGalleryViewModel.getReviewUserID(),
             isReviewOwner = sharedReviewMediaGalleryViewModel.isReviewOwner,

@@ -536,8 +536,4 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     fun getReviewUserID(): String {
         return _detailedReviewMediaResult.value?.detail?.reviewDetail?.firstOrNull()?.user?.userId.orEmpty()
     }
-
-    fun getFeedbackID(): String {
-        return _detailedReviewMediaResult.value?.detail?.reviewDetail?.firstOrNull()?.feedbackId.orEmpty()
-    }
 }
