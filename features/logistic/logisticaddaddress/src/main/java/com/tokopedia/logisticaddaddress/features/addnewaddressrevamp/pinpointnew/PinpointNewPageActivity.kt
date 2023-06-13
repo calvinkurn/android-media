@@ -43,10 +43,12 @@ class PinpointNewPageActivity : BaseSimpleActivity(), HasComponent<AddNewAddress
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (isEdit == true && isGetPinPointOnly == true) {
-            EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
-        } else {
-            AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+        if (isGetPinPointOnly == false) {
+            if (isEdit == true) {
+                EditAddressRevampAnalytics.onClickBackPinpoint(userSession.userId)
+            } else {
+                AddNewAddressRevampAnalytics.onClickBackArrowPinpoint(userSession.userId)
+            }
         }
     }
 
