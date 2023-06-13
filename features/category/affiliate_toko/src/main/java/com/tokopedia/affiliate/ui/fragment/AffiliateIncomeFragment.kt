@@ -202,8 +202,10 @@ class AffiliateIncomeFragment :
                 )
             }
         }
-        if (isAffiliateNCEnabled()) {
-            affiliateIncomeViewModel?.fetchUnreadNotificationCount()
+        affiliateIncomeViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+            binding?.withdrawalNavToolbar?.apply {
+                setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
+            }
         }
     }
 
@@ -421,6 +423,9 @@ class AffiliateIncomeFragment :
         }
         initDateRangeClickListener()
         affiliateIncomeViewModel?.getAffiliateValidateUser(userSession?.email.orEmpty())
+        if (isAffiliateNCEnabled()) {
+            affiliateIncomeViewModel?.fetchUnreadNotificationCount()
+        }
     }
 
     private fun sendNotificationClickEvent() {
