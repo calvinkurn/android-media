@@ -147,7 +147,7 @@ sealed class ExploreWidgetState {
     object Success : ExploreWidgetState()
     object Loading : ExploreWidgetState()
     object Empty : ExploreWidgetState()
-    data class Fail(val error: Throwable, val onRetry: (() -> Unit) = {}) : ExploreWidgetState()
+    data class Fail(val error: Throwable, val onRetry: () -> Unit = {}) : ExploreWidgetState()
 
     val isSuccess: Boolean
         get() = this == Success

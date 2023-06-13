@@ -41,13 +41,11 @@ import com.tokopedia.play_common.lifecycle.viewLifecycleBound
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.util.AnimationUtils
 import com.tokopedia.play_common.util.PlayToaster
-import com.tokopedia.play_common.util.extension.awaitLayout
 import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tokopedia.play.R as playR
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -329,7 +327,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                     type = Toaster.TYPE_ERROR,
                     actionListener = {
                         analytic?.clickRetryToaster()
-                        viewModel.submitAction(RefreshWidget)
+                        run { state.onRetry() }
                     }
                 )
             }
