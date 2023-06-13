@@ -2055,7 +2055,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
-        eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked)
+        eventBus.emit(ExploreWidgetViewComponent.Event.OnClicked(playViewModel.widgetInfo))
         PlayExploreWidget
             .getOrCreate(childFragmentManager, requireActivity().classLoader)
             .apply {
@@ -2067,7 +2067,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onExploreWidgetIconImpressed(viewComponent: ExploreWidgetViewComponent) {
-        eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed)
+        eventBus.emit(ExploreWidgetViewComponent.Event.OnImpressed(playViewModel.widgetInfo))
     }
 
     private fun onCommentIconEvent(event: CommentIconUiComponent.Event) {
