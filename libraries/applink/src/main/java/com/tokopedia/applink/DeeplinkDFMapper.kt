@@ -413,7 +413,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PINPOINT) }, DF_BASE, R.string.path_pinpoint))
 
             // Merchant
-            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_SELLER, R.string.title_open_shop))
+            add(DFP({ it.startsWith(OPEN_SHOP) }, DF_MERCHANT_LOGIN, R.string.title_open_shop))
             add(DFP({ it.startsWithPattern(MERCHANT_PRODUCT_BUNDLE) }, DF_MERCHANT_NONLOGIN, R.string.title_bundling_selection_page ))
             add(DFP({ it.startsWithPattern(MERCHANT_GIFTING) }, DF_MERCHANT_NONLOGIN, R.string.title_gifting_bottomsheet ))
 
@@ -435,6 +435,17 @@ object DeeplinkDFMapper : CoroutineScope {
                     || it.startsWith(PM_BENEFIT_PACKAGE)
                     || it.startsWith(ApplinkConstInternalMarketplace.PM_BENEFIT_PACKAGE)
             }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
+
+            add(DFP({ it.startsWith(MERCHANT_SHOP_SCORE)
+                    || it.startsWith(SHOP_SCORE_DETAIL)
+                    || it.startsWith(SellerApp.SHOP_SCORE_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PERFORMANCE)
+                    || it.startsWith(SHOP_PENALTY)
+                    || it.startsWith(SHOP_PENALTY_DETAIL)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY)
+                    || it.startsWith(ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL)
+            }, DF_MERCHANT_SELLER, R.string.title_shop_score_sellerapp))
+
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
                 val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()

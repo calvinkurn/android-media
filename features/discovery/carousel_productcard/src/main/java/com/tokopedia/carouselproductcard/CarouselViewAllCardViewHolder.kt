@@ -16,18 +16,21 @@ internal class CarouselViewAllCardViewHolder(
     }
 
     override fun bind(model: CarouselViewAllCardModel) {
-        bindTitle(model)
+        bindData(model)
         bindClickListener(model)
     }
 
-    private fun bindTitle(model: CarouselViewAllCardModel) {
+    private fun bindData(model: CarouselViewAllCardModel) {
+        binding?.carouselProductViewAllCard?.isTitleNumberStyle = model.data.titleIsInteger
         binding?.carouselProductViewAllCard?.title = model.data.title
+        binding?.carouselProductViewAllCard?.description = model.data.description
+        binding?.carouselProductViewAllCard?.mode = model.data.viewAllCardMode
     }
 
     private fun bindClickListener(model: CarouselViewAllCardModel) {
         val onViewAllCardClickListener = model.getOnViewAllCardClickListener()
 
-        binding?.carouselProductViewAllCard?.setCta("") {
+        binding?.carouselProductViewAllCard?.setCta(model.data.ctaText) {
             onViewAllCardClickListener?.onViewAllCardClick()
         }
     }

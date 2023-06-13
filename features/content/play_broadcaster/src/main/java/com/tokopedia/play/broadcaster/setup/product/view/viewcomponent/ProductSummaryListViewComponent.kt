@@ -1,18 +1,23 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewcomponent
 
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductSummaryViewHolder
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created By : Jonathan Darwin on February 07, 2022
  */
 internal class ProductSummaryListViewComponent(
-    view: RecyclerView,
+    private val view: RecyclerView,
     listener: Listener,
 ) : ViewComponent(view) {
 
@@ -45,13 +50,28 @@ internal class ProductSummaryListViewComponent(
                 }
 
                 addAll(section.products.map { product ->
-                    productIdx += 1
-                    ProductSummaryAdapter.Model.Body(product.copy(number = productIdx.toString()), isEligibleForPin, isProductNumerationShown)
+                    productIdx += 1 //if numeration is not available / in prep page use hard-coded
+                    ProductSummaryAdapter.Model.Body(product.copy(number = product.number.ifBlank { "$productIdx" }), isEligibleForPin, isProductNumerationShown)
                 })
             }
         }
 
         adapter.setItemsAndAnimateChanges(finalList)
+    }
+
+    fun getProductCommissionCoachMark(
+        firstProductCommissionView: (view: View) -> Unit,
+    ) {
+        view.addOneTimeGlobalLayoutListener {
+            adapter.getItems().forEachIndexed { index, _ ->
+                val holder = view.findViewHolderForAdapterPosition(index)
+                val view = holder?.itemView?.findViewById<Typography>(R.id.tv_commission_fmt)
+                if (view?.isVisible == true) {
+                    firstProductCommissionView.invoke(view)
+                    return@addOneTimeGlobalLayoutListener
+                }
+            }
+        }
     }
 
     interface Listener {
