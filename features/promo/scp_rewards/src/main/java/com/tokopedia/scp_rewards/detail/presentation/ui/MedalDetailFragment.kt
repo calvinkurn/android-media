@@ -33,6 +33,7 @@ import com.tokopedia.scp_rewards.common.data.Success
 import com.tokopedia.scp_rewards.common.utils.launchLink
 import com.tokopedia.scp_rewards.common.utils.launchWeblink
 import com.tokopedia.scp_rewards.databinding.MedalDetailFragmentLayoutBinding
+import com.tokopedia.scp_rewards.detail.analytics.MedalDetailAnalyticsImpl
 import com.tokopedia.scp_rewards.detail.di.MedalDetailComponent
 import com.tokopedia.scp_rewards.detail.domain.model.Benefit
 import com.tokopedia.scp_rewards.detail.domain.model.BenefitButton
@@ -193,6 +194,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
                         loadTaskProgress(data.detail?.medaliDetailPage?.mission)
                         loadCouponWidget(data.detail?.medaliDetailPage?.benefit)
                         loadFooter(data.detail?.medaliDetailPage?.benefitButton)
+                        MedalDetailAnalyticsImpl.sendImpressionMDP(medaliSlug)
                     }
 
                     is Error -> {
@@ -202,6 +204,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
                     is Loading -> {
                         binding.loadContainer.loaderFlipper.visible()
+                        MedalDetailAnalyticsImpl.sendImpressionPageShimmer(medaliSlug)
                     }
                 }
             }
@@ -270,6 +273,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
         medaliDetailPage?.tncButton?.apply {
             binding.tvTermsConditions.text = text
             binding.tvTermsConditions.setOnClickListener {
+                MedalDetailAnalyticsImpl.sendClickTncCta(medaliSlug)
                 launchWeblink(requireContext(), url.orEmpty())
             }
         }
@@ -417,6 +421,11 @@ class MedalDetailFragment : BaseDaggerFragment() {
             }
             binding.couponView.renderCoupons(couponList)
         }
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        MedalDetailAnalyticsImpl.sendClickBackButton(medaliSlug)
+        return super.onFragmentBackPressed()
     }
 
     override fun getScreenName() = ""
