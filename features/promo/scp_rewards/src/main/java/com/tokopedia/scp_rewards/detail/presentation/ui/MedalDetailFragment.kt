@@ -42,7 +42,7 @@ import com.tokopedia.scp_rewards.detail.domain.model.MedaliDetailPage
 import com.tokopedia.scp_rewards.detail.domain.model.Mission
 import com.tokopedia.scp_rewards.detail.presentation.viewmodel.MedalDetailViewModel
 import com.tokopedia.scp_rewards.widget.medalDetail.MedalDetail
-import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeader
+import com.tokopedia.scp_rewards.widget.medalHeader.MedalHeaderData
 import com.tokopedia.scp_rewards_widgets.medal_footer.FooterData
 import com.tokopedia.scp_rewards_widgets.model.MedalRewardsModel
 import com.tokopedia.scp_rewards_widgets.task_progress.Task
@@ -252,7 +252,7 @@ class MedalDetailFragment : BaseDaggerFragment() {
 
     private fun loadHeader(medaliDetailPage: MedaliDetailPage?) {
         binding.viewMedalHeader.bindData(
-            MedalHeader(
+            MedalHeaderData(
                 isGrayScale = medaliDetailPage?.isMedaliGrayScale ?: false,
                 medalIconUrl = medaliDetailPage?.iconImageURL,
                 lottieUrl = medaliDetailPage?.shimmerShutterLottieURL,
@@ -269,6 +269,20 @@ class MedalDetailFragment : BaseDaggerFragment() {
                 shutterText = medaliDetailPage?.shutterText.orEmpty(),
                 coachMarkInformation = medaliDetailPage?.coachMark?.text
             )
+        ) {
+            MedalDetailAnalyticsImpl.sendClickMedali(
+                medaliSlug, medaliDetailPage?.isMedaliGrayScale ?: false,
+                medaliDetailPage?.sourceText.orEmpty(),
+                medaliDetailPage?.name.orEmpty(),
+                medaliDetailPage?.description.orEmpty()
+            )
+        }
+
+        MedalDetailAnalyticsImpl.sendImpressionMedali(
+            medaliSlug, medaliDetailPage?.isMedaliGrayScale ?: false,
+            medaliDetailPage?.sourceText.orEmpty(),
+            medaliDetailPage?.name.orEmpty(),
+            medaliDetailPage?.description.orEmpty()
         )
         medaliDetailPage?.tncButton?.apply {
             binding.tvTermsConditions.text = text

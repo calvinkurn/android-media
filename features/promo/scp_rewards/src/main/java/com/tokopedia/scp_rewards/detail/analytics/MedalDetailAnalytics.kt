@@ -8,9 +8,21 @@ interface MedalDetailAnalytics {
 
     fun sendClickTncCta(badgeId: String)
 
-    fun sendImpressionMedali(badgeId: String)
+    fun sendImpressionMedali(
+        badgeId: String,
+        isLocked: Boolean,
+        poweredBy: String,
+        medalTitle: String,
+        medalDescription: String
+    )
 
-    fun sendClickMedali(badgeId: String)
+    fun sendClickMedali(
+        badgeId: String,
+        isLocked: Boolean,
+        poweredBy: String,
+        medalTitle: String,
+        medalDescription: String
+    )
 
     fun sendImpressionProgressSection(badgeId: String)
 
@@ -31,5 +43,4 @@ interface MedalDetailAnalytics {
     fun sendImpressionCouponError(badgeId: String)
 
     fun sendImpressionCoachmark(badgeId: String)
-
 }

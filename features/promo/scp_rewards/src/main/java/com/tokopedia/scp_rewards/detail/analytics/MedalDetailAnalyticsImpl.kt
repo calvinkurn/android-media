@@ -1,8 +1,10 @@
 package com.tokopedia.scp_rewards.detail.analytics
 
+import android.util.Log
 import com.tokopedia.scp_rewards.common.constants.TrackerConstants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.constant.TrackerConstant
+import org.json.JSONObject
 
 object MedalDetailAnalyticsImpl : MedalDetailAnalytics {
 
@@ -47,12 +49,26 @@ object MedalDetailAnalyticsImpl : MedalDetailAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    override fun sendImpressionMedali(badgeId: String) {
+    override fun sendImpressionMedali(
+        badgeId: String,
+        isLocked: Boolean,
+        poweredBy: String,
+        medalTitle: String,
+        medalDescription: String
+    ) {
+        val eventLabel = JSONObject().apply {
+            put(TrackerConstants.EventLabelProperties.BADGE_ID, badgeId)
+            put(TrackerConstants.EventLabelProperties.MEDALI_STATUS, if(isLocked) "locked" else "unlock")
+            put(TrackerConstants.EventLabelProperties.POWERED_BY, poweredBy)
+            put(TrackerConstants.EventLabelProperties.MEDAL_TITLE, medalTitle)
+            put(TrackerConstants.EventLabelProperties.MEDAL_DESCRIPTION, medalDescription)
+        }
+        Log.e("TAG-eventLabel", eventLabel.toString())
         val map = mutableMapOf<String, Any>(
             TrackerConstant.EVENT to TrackerConstants.Event.VIEW_EVENT,
             TrackerConstant.EVENT_ACTION to "view medali",
             TrackerConstant.EVENT_CATEGORY to TrackerConstants.General.MDP_EVENT_ACTION,
-            TrackerConstant.EVENT_LABEL to badgeId,
+            TrackerConstant.EVENT_LABEL to eventLabel.toString(),
             TrackerConstant.TRACKER_ID to "43982",
             TrackerConstant.BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
             TrackerConstant.CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE
@@ -60,12 +76,27 @@ object MedalDetailAnalyticsImpl : MedalDetailAnalytics {
         gtm.sendGeneralEvent(map)
     }
 
-    override fun sendClickMedali(badgeId: String) {
+    override fun sendClickMedali(
+        badgeId: String,
+        isLocked: Boolean,
+        poweredBy: String,
+        medalTitle: String,
+        medalDescription: String
+    ) {
+
+        val eventLabel = JSONObject().apply {
+            put(TrackerConstants.EventLabelProperties.BADGE_ID, badgeId)
+            put(TrackerConstants.EventLabelProperties.MEDALI_STATUS, if(isLocked) "locked" else "unlock")
+            put(TrackerConstants.EventLabelProperties.POWERED_BY, poweredBy)
+            put(TrackerConstants.EventLabelProperties.MEDAL_TITLE, medalTitle)
+            put(TrackerConstants.EventLabelProperties.MEDAL_DESCRIPTION, medalDescription)
+        }
+        Log.e("TAG-eventLabel", eventLabel.toString())
         val map = mutableMapOf<String, Any>(
             TrackerConstant.EVENT to TrackerConstants.Event.CLICK_EVENT,
             TrackerConstant.EVENT_ACTION to "click medali",
             TrackerConstant.EVENT_CATEGORY to TrackerConstants.General.MDP_EVENT_ACTION,
-            TrackerConstant.EVENT_LABEL to badgeId,
+            TrackerConstant.EVENT_LABEL to eventLabel,
             TrackerConstant.TRACKER_ID to "43983",
             TrackerConstant.BUSINESS_UNIT to TrackerConstants.Business.BUSINESS_UNIT,
             TrackerConstant.CURRENT_SITE to TrackerConstants.Business.CURRENT_SITE

@@ -16,7 +16,7 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
 
     private val binding = WidgetMedalHeaderBinding.inflate(LayoutInflater.from(context), this)
 
-    fun bindData(data: MedalHeader) {
+    fun bindData(data: MedalHeaderData, onMedalClickAction: (() -> Unit)? = null) {
         with(binding) {
             if (data.isGrayScale) {
                 ivMedalIcon.visible()
@@ -26,7 +26,7 @@ class MedalHeaderView(private val context: Context, attrs: AttributeSet?) :
             } else {
                 ivMedalIcon.hide()
                 lottieView.visible()
-                lottieView.loadLottie(data)
+                lottieView.loadLottie(data, onMedalClickAction)
             }
             loadBackground(data.background, data.backgroundColor)
             binding.ivBadgeBase.setImageUrl(data.baseImageURL ?: "")
