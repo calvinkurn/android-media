@@ -11,7 +11,9 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
+import com.tokopedia.affiliate.AFFILIATE_NC
 import com.tokopedia.affiliate.AFFILIATE_PRIVACY_POLICY_URL_WEBVIEW
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
 import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
@@ -30,8 +32,10 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.affiliate_toko.databinding.AffiliateEducationLandingPageBinding
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -82,6 +86,12 @@ class AffiliateEducationLandingPage :
             .build().injectEducationLandingPage(this)
     }
 
+    private fun isAffiliateNCEnabled() =
+        RemoteConfigInstance.getInstance()?.abTestPlatform?.getString(
+            AFFILIATE_NC,
+            ""
+        ) == AFFILIATE_NC
+
     companion object {
 
         private const val IS_APP_LINK = "isAppLink"
@@ -123,19 +133,18 @@ class AffiliateEducationLandingPage :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        setSearchListener(searchBar)
         binding?.eduNavToolbar?.run {
             val iconBuilder = IconBuilder()
-//            if (isAffiliateNCEnabled()) {
-//                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
-//                    affiliateIncomeViewModel?.resetNotificationCount()
-//                    sendNotificationClickEvent()
-//                    RouteManager.route(
-//                        context,
-//                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
-//                    )
-//                }
-//            }
+            if (isAffiliateNCEnabled()) {
+                iconBuilder.addIcon(IconList.ID_NOTIFICATION, disableRouteManager = true) {
+                    eduViewModel?.resetNotificationCount()
+                    sendNotificationClickEvent()
+                    RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.AFFILIATE_NOTIFICATION
+                    )
+                }
+            }
             iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
             setOnBackButtonClickListener {
@@ -163,6 +172,24 @@ class AffiliateEducationLandingPage :
         if (arguments?.getBoolean(IS_HELP_APP_LINK, false) == true) {
             onBantuanClick()
         }
+        if (isAffiliateNCEnabled()) {
+            eduViewModel?.fetchUnreadNotificationCount()
+            eduViewModel?.getUnreadNotificationCount()?.observe(this) { count ->
+                binding?.eduNavToolbar?.apply {
+                    setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, count)
+                }
+            }
+        }
+    }
+
+    private fun sendNotificationClickEvent() {
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_NOTIFICATION_ENTRY_POINT,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE,
+            "",
+            userSessionInterface?.userId.orEmpty()
+        )
     }
 
     private fun setSearchListener(navToolbar: NavToolbar) {

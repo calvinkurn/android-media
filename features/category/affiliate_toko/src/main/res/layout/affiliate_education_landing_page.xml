@@ -6,17 +6,6 @@
     android:paddingBottom="60dp"
     android:theme="@style/Theme.White">
 
-    <!--    <com.tokopedia.unifycomponents.SearchBarUnify-->
-    <!--        android:id="@+id/edukasi_navToolbar"-->
-    <!--        app:search_bar_placeholder="@string/affiliate_landing_page_search_passive_placeholder"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        android:layout_marginStart="16dp"-->
-    <!--        android:layout_marginEnd="16dp"-->
-    <!--        android:layout_marginTop="4dp"-->
-    <!--        app:search_bar_show_icon="false" />-->
-
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/edu_navToolbar"
         android:layout_width="match_parent"
