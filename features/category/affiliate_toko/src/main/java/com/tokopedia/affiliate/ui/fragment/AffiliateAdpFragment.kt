@@ -351,7 +351,7 @@ class AffiliateAdpFragment :
         }
 
         affiliateAdpViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
-            if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET) {
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && !isAffiliatePromoteHomeEnabled()) {
                 context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
                     if (it.getString(USER_ID, null) != userSessionInterface?.userId.orEmpty() || it.getLong(
                             TICKER_ID,

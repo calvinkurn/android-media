@@ -53,6 +53,7 @@ import com.tokopedia.affiliate.ui.activity.AffiliateDiscoPromoListActivity
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateSSAShopListActivity
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetPromoCopyPasteInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -137,6 +138,9 @@ class AffiliatePromoFragment :
 
     companion object {
         private const val TICKER_BOTTOM_SHEET = "bottomSheet"
+        private const val TICKER_SHARED_PREF = "tickerSharedPref"
+        private const val USER_ID = "userId"
+        private const val TICKER_ID = "tickerId"
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -411,17 +415,45 @@ class AffiliatePromoFragment :
         affiliatePromoViewModel?.getValidateUserdata()?.observe(this) { validateUserdata ->
             onGetValidateUserData(validateUserdata)
         }
-        affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(this) {
-            if (it.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+        affiliatePromoViewModel?.getAffiliateAnnouncement()?.observe(this) { announcementData ->
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
                 sendTickerImpression(
-                    it.getAffiliateAnnouncementV2?.data?.type,
-                    it.getAffiliateAnnouncementV2?.data?.id
+                    announcementData.getAffiliateAnnouncementV2?.data?.type,
+                    announcementData.getAffiliateAnnouncementV2?.data?.id
                 )
                 binding?.affiliateAnnouncementTicker?.setAnnouncementData(
-                    it,
+                    announcementData,
                     activity,
                     source = PAGE_ANNOUNCEMENT_PROMOSIKAN
                 )
+            } else if (announcementData.getAffiliateAnnouncementV2?.data?.subType == TICKER_BOTTOM_SHEET && isAffiliatePromoteHomeEnabled()) {
+                context?.getSharedPreferences(TICKER_SHARED_PREF, Context.MODE_PRIVATE)?.let {
+                    if (it.getString(
+                            USER_ID,
+                            null
+                        ) != userSessionInterface?.userId.orEmpty() || it.getLong(
+                                TICKER_ID,
+                                -1
+                            ) != announcementData.getAffiliateAnnouncementV2?.data?.id
+                    ) {
+                        it.edit().apply {
+                            putLong(
+                                TICKER_ID,
+                                announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0
+                            )
+                            putString(
+                                USER_ID,
+                                userSessionInterface?.userId.orEmpty()
+                            )
+                            apply()
+                        }
+
+                        AffiliateBottomSheetInfo.newInstance(
+                            announcementData.getAffiliateAnnouncementV2?.data?.id ?: 0,
+                            announcementData.getAffiliateAnnouncementV2?.data?.tickerData?.first()
+                        ).show(childFragmentManager, "")
+                    }
+                }
             }
         }
         affiliatePromoViewModel?.getDiscoCampaignBanners()?.observe(this) {
