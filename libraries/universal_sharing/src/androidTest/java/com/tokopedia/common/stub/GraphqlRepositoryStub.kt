@@ -16,10 +16,8 @@ class GraphqlRepositoryStub : GraphqlRepository {
         when (GqlQueryParser.parse(requests).first()) {
             "generateAffiliateLinkEligibility" -> {
                 return if (mockParam === MockParam.ELIGIBLE_COMMISSION) {
-                    println("masuk eligible commision")
                     GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(R.raw.pdp_eligible_affiliate)
                 } else {
-                    println("masuk not eligible")
                     GqlMockUtil.createSuccessResponse<GenerateAffiliateLinkEligibility.Response>(R.raw.pdp_not_eligible_affiliate)
                 }
             }
@@ -32,8 +30,6 @@ class GraphqlRepositoryStub : GraphqlRepository {
     enum class MockParam {
         NO_PARAM,
         ELIGIBLE_COMMISSION,
-        NOT_ELIGIBLE_COMMISSION,
-        ELIGIBLE_COMMISSION_EXTRA,
-        NOT_ELIGIBLE_COMMISSION_EXTRA
+        NOT_ELIGIBLE_COMMISSION
     }
 }
